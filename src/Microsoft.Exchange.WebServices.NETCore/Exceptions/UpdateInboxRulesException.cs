@@ -23,100 +23,102 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+/// <summary>
+/// Represents an exception thrown when an error occurs as a result of calling 
+/// the UpdateInboxRules operation.
+/// </summary>
+public sealed class UpdateInboxRulesException : ServiceRemoteException
 {
-    using System;
-    using System.Collections.Generic;
-	using System.Runtime.Serialization;
+    /// <summary>
+    /// ServiceResponse when service operation failed remotely.
+    /// </summary>
+    private readonly ServiceResponse serviceResponse;
 
     /// <summary>
-    /// Represents an exception thrown when an error occurs as a result of calling 
-    /// the UpdateInboxRules operation.
+    /// Rule operation error collection.
     /// </summary>
-    public sealed class UpdateInboxRulesException : ServiceRemoteException
+    private readonly RuleOperationErrorCollection errors;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UpdateInboxRulesException"/> class.
+    /// </summary>
+    /// <param name="serviceResponse">The rule operation service response.</param>
+    /// <param name="ruleOperations">The original operations.</param>
+    internal UpdateInboxRulesException(
+        UpdateInboxRulesResponse serviceResponse,
+        IEnumerator<RuleOperation> ruleOperations
+    )
+        : base()
     {
-        /// <summary>
-        /// ServiceResponse when service operation failed remotely.
-        /// </summary>
-        private readonly ServiceResponse serviceResponse;
-
-        /// <summary>
-        /// Rule operation error collection.
-        /// </summary>
-        private readonly RuleOperationErrorCollection errors;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateInboxRulesException"/> class.
-        /// </summary>
-        /// <param name="serviceResponse">The rule operation service response.</param>
-        /// <param name="ruleOperations">The original operations.</param>
-        internal UpdateInboxRulesException(UpdateInboxRulesResponse serviceResponse, IEnumerator<RuleOperation> ruleOperations)
-            : base()
+        this.serviceResponse = serviceResponse;
+        this.errors = serviceResponse.Errors;
+        foreach (RuleOperationError error in this.errors)
         {
-            this.serviceResponse = serviceResponse;
-            this.errors = serviceResponse.Errors;
-            foreach (RuleOperationError error in this.errors)
-            {
-                error.SetOperationByIndex(ruleOperations);
-            }
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.UpdateInboxRulesException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		private UpdateInboxRulesException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-			this.serviceResponse = (ServiceResponse)info.GetValue("ServiceResponse", typeof(ServiceResponse));
-			this.errors = (RuleOperationErrorCollection)info.GetValue("Errors", typeof(RuleOperationErrorCollection));
-		}
-
-		/// <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and additional exception information.</summary>
-		/// <param name="info">The object that holds the serialized object data. </param>
-		/// <param name="context">The contextual information about the source or destination. </param>
-		/// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> object is a null reference (Nothing in Visual Basic). </exception>
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			EwsUtilities.Assert(info != null, "UpdateInboxRulesException.GetObjectData", "info is null");
-
-			base.GetObjectData(info, context);
-
-			info.AddValue("Errors", this.errors, typeof(RuleOperationErrorCollection));
-			info.AddValue("ServiceResponse", this.serviceResponse, typeof(ServiceResponse));
-		}
-
-		/// <summary>
-		/// Gets the ServiceResponse for the exception.
-		/// </summary>
-		public ServiceResponse ServiceResponse
-        {
-            get { return this.serviceResponse; }
+            error.SetOperationByIndex(ruleOperations);
         }
+    }
 
-        /// <summary>
-        /// Gets the rule operation error collection.
-        /// </summary>
-        public RuleOperationErrorCollection Errors
-        {
-            get { return this.errors; }
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.UpdateInboxRulesException"/> class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    private UpdateInboxRulesException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+        this.serviceResponse = (ServiceResponse)info.GetValue("ServiceResponse", typeof(ServiceResponse));
+        this.errors = (RuleOperationErrorCollection)info.GetValue("Errors", typeof(RuleOperationErrorCollection));
+    }
 
-        /// <summary>
-        /// Gets the rule operation error code.
-        /// </summary>
-        public ServiceError ErrorCode
-        {
-            get { return this.serviceResponse.ErrorCode; }
-        }
+    /// <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and additional exception information.</summary>
+    /// <param name="info">The object that holds the serialized object data. </param>
+    /// <param name="context">The contextual information about the source or destination. </param>
+    /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> object is a null reference (Nothing in Visual Basic). </exception>
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        EwsUtilities.Assert(info != null, "UpdateInboxRulesException.GetObjectData", "info is null");
 
-        /// <summary>
-        /// Gets the rule operation error message.
-        /// </summary>
-        public string ErrorMessage
-        {
-            get { return this.serviceResponse.ErrorMessage; }
-        }
+        base.GetObjectData(info, context);
+
+        info.AddValue("Errors", this.errors, typeof(RuleOperationErrorCollection));
+        info.AddValue("ServiceResponse", this.serviceResponse, typeof(ServiceResponse));
+    }
+
+    /// <summary>
+    /// Gets the ServiceResponse for the exception.
+    /// </summary>
+    public ServiceResponse ServiceResponse
+    {
+        get { return this.serviceResponse; }
+    }
+
+    /// <summary>
+    /// Gets the rule operation error collection.
+    /// </summary>
+    public RuleOperationErrorCollection Errors
+    {
+        get { return this.errors; }
+    }
+
+    /// <summary>
+    /// Gets the rule operation error code.
+    /// </summary>
+    public ServiceError ErrorCode
+    {
+        get { return this.serviceResponse.ErrorCode; }
+    }
+
+    /// <summary>
+    /// Gets the rule operation error message.
+    /// </summary>
+    public string ErrorMessage
+    {
+        get { return this.serviceResponse.ErrorMessage; }
     }
 }

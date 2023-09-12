@@ -23,117 +23,92 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System.Collections.Generic;
+using System.Xml;
+
+/// <summary>
+/// Represents the EducationInsightValue.
+/// </summary>
+public sealed class EducationInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private string institute;
+    private string degree;
+    private long startUtcTicks;
+    private long endUtcTicks;
 
     /// <summary>
-    /// Represents the EducationInsightValue.
+    /// Gets the Institute
     /// </summary>
-    public sealed class EducationInsightValue : InsightValue
+    public string Institute
     {
-        private string institute;
-        private string degree;
-        private long startUtcTicks;
-        private long endUtcTicks;
+        get { return this.institute; }
 
-        /// <summary>
-        /// Gets the Institute
-        /// </summary>
-        public string Institute
+        set { this.SetFieldValue<string>(ref this.institute, value); }
+    }
+
+    /// <summary>
+    /// Gets the Degree
+    /// </summary>
+    public string Degree
+    {
+        get { return this.degree; }
+
+        set { this.SetFieldValue<string>(ref this.degree, value); }
+    }
+
+    /// <summary>
+    /// Gets the StartUtcTicks
+    /// </summary>
+    public long StartUtcTicks
+    {
+        get { return this.startUtcTicks; }
+
+        set { this.SetFieldValue<long>(ref this.startUtcTicks, value); }
+    }
+
+    /// <summary>
+    /// Gets the EndUtcTicks
+    /// </summary>
+    public long EndUtcTicks
+    {
+        get { return this.endUtcTicks; }
+
+        set { this.SetFieldValue<long>(ref this.endUtcTicks, value); }
+    }
+
+    /// <summary>
+    /// Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get
-            {
-                return this.institute;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.institute, value);
-            }
+            case XmlElementNames.InsightSource:
+                this.InsightSource = reader.ReadElementValue<string>();
+                break;
+            case XmlElementNames.UpdatedUtcTicks:
+                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            case XmlElementNames.Institute:
+                this.Institute = reader.ReadElementValue();
+                break;
+            case XmlElementNames.Degree:
+                this.Degree = reader.ReadElementValue();
+                break;
+            case XmlElementNames.StartUtcTicks:
+                this.StartUtcTicks = reader.ReadElementValue<long>();
+                break;
+            case XmlElementNames.EndUtcTicks:
+                this.EndUtcTicks = reader.ReadElementValue<long>();
+                break;
+            default:
+                return false;
         }
 
-        /// <summary>
-        /// Gets the Degree
-        /// </summary>
-        public string Degree
-        {
-            get
-            {
-                return this.degree;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.degree, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the StartUtcTicks
-        /// </summary>
-        public long StartUtcTicks
-        {
-            get
-            {
-                return this.startUtcTicks;
-            }
-
-            set
-            {
-                this.SetFieldValue<long>(ref this.startUtcTicks, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the EndUtcTicks
-        /// </summary>
-        public long EndUtcTicks
-        {
-            get
-            {
-                return this.endUtcTicks;
-            }
-
-            set
-            {
-                this.SetFieldValue<long>(ref this.endUtcTicks, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Institute:
-                    this.Institute = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Degree:
-                    this.Degree = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.StartUtcTicks:
-                    this.StartUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.EndUtcTicks:
-                    this.EndUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

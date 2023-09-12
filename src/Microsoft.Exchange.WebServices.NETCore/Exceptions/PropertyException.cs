@@ -24,87 +24,83 @@
  */
 
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System;
+using System.Runtime.Serialization;
+
+/// <summary>
+/// Represents an error that occurs when an operation on a property fails.
+/// </summary>
+public class PropertyException : ServiceLocalException
 {
-    using System;
-    using System.Runtime.Serialization;
+    /// <summary>
+    /// The name of the property that is at the origin of the exception.
+    /// </summary>
+    private readonly string name;
 
     /// <summary>
-    /// Represents an error that occurs when an operation on a property fails.
+    /// PropertyException constructor.
     /// </summary>
-    public class PropertyException : ServiceLocalException
+    /// <param name="name">The name of the property that is at the origin of the exception.</param>
+    public PropertyException(string name)
+        : base()
     {
-        /// <summary>
-        /// The name of the property that is at the origin of the exception.
-        /// </summary>
-        private readonly string name;
+        this.name = name;
+    }
 
-        /// <summary>
-        /// PropertyException constructor.
-        /// </summary>
-        /// <param name="name">The name of the property that is at the origin of the exception.</param>
-        public PropertyException(string name)
-            : base()
-        {
-            this.name = name;
-        }
+    /// <summary>
+    /// PropertyException Constructor.
+    /// </summary>
+    /// <param name="message">Error message text.</param>
+    /// <param name="name">The name of the property that is at the origin of the exception.</param>
+    public PropertyException(string message, string name)
+        : base(message)
+    {
+        this.name = name;
+    }
 
-        /// <summary>
-        /// PropertyException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="name">The name of the property that is at the origin of the exception.</param>
-        public PropertyException(string message, string name)
-            : base(message)
-        {
-            this.name = name;
-        }
+    /// <summary>
+    /// PropertyException Constructor.
+    /// </summary>
+    /// <param name="message">Error message text.</param>
+    /// <param name="name">The name of the property that is at the origin of the exception.</param>
+    /// <param name="innerException">Inner exception.</param>
+    public PropertyException(string message, string name, Exception innerException)
+        : base(message, innerException)
+    {
+        this.name = name;
+    }
 
-        /// <summary>
-        /// PropertyException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="name">The name of the property that is at the origin of the exception.</param>
-        /// <param name="innerException">Inner exception.</param>
-        public PropertyException(
-            string message,
-            string name,
-            Exception innerException)
-            : base(message, innerException)
-        {
-            this.name = name;
-		}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.PropertyException"/> class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected PropertyException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+        this.name = info.GetString("PropertyName");
+    }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.PropertyException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		protected PropertyException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-			this.name = info.GetString("PropertyName");
-		}
+    /// <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and additional exception information.</summary>
+    /// <param name="info">The object that holds the serialized object data. </param>
+    /// <param name="context">The contextual information about the source or destination. </param>
+    /// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> object is a null reference (Nothing in Visual Basic). </exception>
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        EwsUtilities.Assert(info != null, "PropertyException.GetObjectData", "info is null");
 
-		/// <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and additional exception information.</summary>
-		/// <param name="info">The object that holds the serialized object data. </param>
-		/// <param name="context">The contextual information about the source or destination. </param>
-		/// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> object is a null reference (Nothing in Visual Basic). </exception>
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			EwsUtilities.Assert(info != null, "PropertyException.GetObjectData", "info is null");
+        base.GetObjectData(info, context);
 
-			base.GetObjectData(info, context);
+        info.AddValue("PropertyName", this.name);
+    }
 
-			info.AddValue("PropertyName", this.name);
-		}
-
-		/// <summary>
-		/// Gets the name of the property that caused the exception.
-		/// </summary>
-		public string Name
-        {
-            get { return this.name; }
-        }
+    /// <summary>
+    /// Gets the name of the property that caused the exception.
+    /// </summary>
+    public string Name
+    {
+        get { return this.name; }
     }
 }

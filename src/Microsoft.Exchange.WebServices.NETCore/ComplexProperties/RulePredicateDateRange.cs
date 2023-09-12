@@ -23,115 +23,101 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System;
+
+/// <summary>
+/// Represents the date and time range within which messages have been received.
+/// </summary>
+public sealed class RulePredicateDateRange : ComplexProperty
 {
-    using System;
+    /// <summary>
+    /// The start DateTime.
+    /// </summary>
+    private DateTime? start;
 
     /// <summary>
-    /// Represents the date and time range within which messages have been received.
+    /// The end DateTime.
     /// </summary>
-    public sealed class RulePredicateDateRange : ComplexProperty
+    private DateTime? end;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RulePredicateDateRange"/> class.
+    /// </summary>
+    internal RulePredicateDateRange()
+        : base()
     {
-        /// <summary>
-        /// The start DateTime.
-        /// </summary>
-        private DateTime? start;
+    }
 
-        /// <summary>
-        /// The end DateTime.
-        /// </summary>
-        private DateTime? end;
+    /// <summary>
+    /// Gets or sets the range start date and time. If Start is set to null, no 
+    /// start date applies.
+    /// </summary>
+    public DateTime? Start
+    {
+        get { return this.start; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RulePredicateDateRange"/> class.
-        /// </summary>
-        internal RulePredicateDateRange()
-            : base()
+        set { this.SetFieldValue<DateTime?>(ref this.start, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets the range end date and time. If End is set to null, no end 
+    /// date applies.
+    /// </summary>
+    public DateTime? End
+    {
+        get { return this.end; }
+
+        set { this.SetFieldValue<DateTime?>(ref this.end, value); }
+    }
+
+    /// <summary>
+    /// Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
+            case XmlElementNames.StartDateTime:
+                this.start = reader.ReadElementValueAsDateTime();
+                return true;
+            case XmlElementNames.EndDateTime:
+                this.end = reader.ReadElementValueAsDateTime();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (this.Start.HasValue)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.StartDateTime, this.Start.Value);
         }
 
-        /// <summary>
-        /// Gets or sets the range start date and time. If Start is set to null, no 
-        /// start date applies.
-        /// </summary>
-        public DateTime? Start
+        if (this.End.HasValue)
         {
-            get
-            {
-                return this.start;
-            }
-
-            set
-            {
-                this.SetFieldValue<DateTime?>(ref this.start, value);
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EndDateTime, this.End.Value);
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the range end date and time. If End is set to null, no end 
-        /// date applies.
-        /// </summary>
-        public DateTime? End
+    /// <summary>
+    /// Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+        if (this.start.HasValue && this.end.HasValue && this.start.Value > this.end.Value)
         {
-            get
-            {
-                return this.end;
-            }
-
-            set
-            {
-                this.SetFieldValue<DateTime?>(ref this.end, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.StartDateTime:
-                    this.start = reader.ReadElementValueAsDateTime();
-                    return true;
-                case XmlElementNames.EndDateTime:
-                    this.end = reader.ReadElementValueAsDateTime();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            if (this.Start.HasValue)
-            {
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.StartDateTime, this.Start.Value);
-            }
-            if (this.End.HasValue)
-            {
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EndDateTime, this.End.Value);
-            }
-        }
-
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        internal override void InternalValidate()
-        {
-            base.InternalValidate();
-            if (this.start.HasValue &&
-                this.end.HasValue &&
-                this.start.Value > this.end.Value)
-            {
-                throw new ServiceValidationException("Start date time cannot be bigger than end date time.");
-            }
+            throw new ServiceValidationException("Start date time cannot be bigger than end date time.");
         }
     }
 }

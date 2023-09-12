@@ -23,16 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
-{
-    using System.Collections.Generic;
+namespace Microsoft.Exchange.WebServices.Data;
 
-    /// <summary>
-    /// Represents a ResolveNames request.
-    /// </summary>
-    internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveNamesResponse>
-    {
-        private static LazyMember<Dictionary<ResolveNameSearchLocation, string>> searchScopeMap = new LazyMember<Dictionary<ResolveNameSearchLocation, string>>(
+using System.Collections.Generic;
+
+/// <summary>
+/// Represents a ResolveNames request.
+/// </summary>
+internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveNamesResponse>
+{
+    private static LazyMember<Dictionary<ResolveNameSearchLocation, string>> searchScopeMap =
+        new LazyMember<Dictionary<ResolveNameSearchLocation, string>>(
             delegate
             {
                 Dictionary<ResolveNameSearchLocation, string> map = new Dictionary<ResolveNameSearchLocation, string>();
@@ -43,189 +44,186 @@ namespace Microsoft.Exchange.WebServices.Data
                 map.Add(ResolveNameSearchLocation.ContactsThenDirectory, "ContactsActiveDirectory");
 
                 return map;
-            });
-
-        private string nameToResolve;
-        private bool returnFullContactData;
-        private ResolveNameSearchLocation searchLocation;
-        private PropertySet contactDataPropertySet;
-        private FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
-
-        /// <summary>
-        /// Asserts the valid.
-        /// </summary>
-        internal override void Validate()
-        {
-            base.Validate();
-            EwsUtilities.ValidateNonBlankStringParam(this.NameToResolve, "NameToResolve");
-        }
-
-        /// <summary>
-        /// Creates the service response.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="responseIndex">Index of the response.</param>
-        /// <returns>Service response.</returns>
-        internal override ResolveNamesResponse CreateServiceResponse(ExchangeService service, int responseIndex)
-        {
-            return new ResolveNamesResponse(service);
-        }
-
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <returns>XML element name,</returns>
-        internal override string GetXmlElementName()
-        {
-            return XmlElementNames.ResolveNames;
-        }
-
-        /// <summary>
-        /// Gets the name of the response XML element.
-        /// </summary>
-        /// <returns>XML element name,</returns>
-        internal override string GetResponseXmlElementName()
-        {
-            return XmlElementNames.ResolveNamesResponse;
-        }
-
-        /// <summary>
-        /// Gets the name of the response message XML element.
-        /// </summary>
-        /// <returns>XML element name,</returns>
-        internal override string GetResponseMessageXmlElementName()
-        {
-            return XmlElementNames.ResolveNamesResponseMessage;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveNamesRequest"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        internal ResolveNamesRequest(ExchangeService service)
-            : base(service, ServiceErrorHandling.ThrowOnError)
-        {
-        }
-
-        /// <summary>
-        /// Gets the expected response message count.
-        /// </summary>
-        /// <returns>Number of expected response messages.</returns>
-        internal override int GetExpectedResponseMessageCount()
-        {
-            return 1;
-        }
-
-        /// <summary>
-        /// Writes the attributes to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteAttributeValue(
-                XmlAttributeNames.ReturnFullContactData,
-                this.ReturnFullContactData);
-
-            string searchScope = null;
-
-            searchScopeMap.Member.TryGetValue(this.SearchLocation, out searchScope);
-
-            EwsUtilities.Assert(
-                !string.IsNullOrEmpty(searchScope),
-                "ResolveNameRequest.WriteAttributesToXml",
-                "The specified search location cannot be mapped to an EWS search scope.");
-
-            string propertySet = null;
-            if (this.contactDataPropertySet != null)
-            {
-                PropertySet.DefaultPropertySetMap.Member.TryGetValue(this.contactDataPropertySet.BasePropertySet, out propertySet);
             }
+        );
 
-            if (!this.Service.Exchange2007CompatibilityMode)
-            {
-                writer.WriteAttributeValue(XmlAttributeNames.SearchScope, searchScope);
-            }
-            if (!string.IsNullOrEmpty(propertySet))
-            {
-                writer.WriteAttributeValue(XmlAttributeNames.ContactDataShape, propertySet);
-            }
-        }
+    private string nameToResolve;
+    private bool returnFullContactData;
+    private ResolveNameSearchLocation searchLocation;
+    private PropertySet contactDataPropertySet;
+    private FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
 
-        /// <summary>
-        /// Writes the elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    /// <summary>
+    /// Asserts the valid.
+    /// </summary>
+    internal override void Validate()
+    {
+        base.Validate();
+        EwsUtilities.ValidateNonBlankStringParam(this.NameToResolve, "NameToResolve");
+    }
+
+    /// <summary>
+    /// Creates the service response.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="responseIndex">Index of the response.</param>
+    /// <returns>Service response.</returns>
+    internal override ResolveNamesResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    {
+        return new ResolveNamesResponse(service);
+    }
+
+    /// <summary>
+    /// Gets the name of the XML element.
+    /// </summary>
+    /// <returns>XML element name,</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.ResolveNames;
+    }
+
+    /// <summary>
+    /// Gets the name of the response XML element.
+    /// </summary>
+    /// <returns>XML element name,</returns>
+    internal override string GetResponseXmlElementName()
+    {
+        return XmlElementNames.ResolveNamesResponse;
+    }
+
+    /// <summary>
+    /// Gets the name of the response message XML element.
+    /// </summary>
+    /// <returns>XML element name,</returns>
+    internal override string GetResponseMessageXmlElementName()
+    {
+        return XmlElementNames.ResolveNamesResponseMessage;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResolveNamesRequest"/> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ResolveNamesRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
+    /// Gets the expected response message count.
+    /// </summary>
+    /// <returns>Number of expected response messages.</returns>
+    internal override int GetExpectedResponseMessageCount()
+    {
+        return 1;
+    }
+
+    /// <summary>
+    /// Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteAttributeValue(XmlAttributeNames.ReturnFullContactData, this.ReturnFullContactData);
+
+        string searchScope = null;
+
+        searchScopeMap.Member.TryGetValue(this.SearchLocation, out searchScope);
+
+        EwsUtilities.Assert(
+            !string.IsNullOrEmpty(searchScope),
+            "ResolveNameRequest.WriteAttributesToXml",
+            "The specified search location cannot be mapped to an EWS search scope."
+        );
+
+        string propertySet = null;
+        if (this.contactDataPropertySet != null)
         {
-            this.ParentFolderIds.WriteToXml(
-                writer,
-                XmlNamespace.Messages,
-                XmlElementNames.ParentFolderIds);
-
-            writer.WriteElementValue(
-                XmlNamespace.Messages,
-                XmlElementNames.UnresolvedEntry,
-                this.NameToResolve);
+            PropertySet.DefaultPropertySetMap.Member.TryGetValue(
+                this.contactDataPropertySet.BasePropertySet,
+                out propertySet
+            );
         }
 
-        /// <summary>
-        /// Gets the request version.
-        /// </summary>
-        /// <returns>Earliest Exchange version in which this request is supported.</returns>
-        internal override ExchangeVersion GetMinimumRequiredServerVersion()
+        if (!this.Service.Exchange2007CompatibilityMode)
         {
-            return ExchangeVersion.Exchange2007_SP1;
+            writer.WriteAttributeValue(XmlAttributeNames.SearchScope, searchScope);
         }
 
-        /// <summary>
-        /// Gets or sets the name to resolve.
-        /// </summary>
-        /// <value>The name to resolve.</value>
-        public string NameToResolve
+        if (!string.IsNullOrEmpty(propertySet))
         {
-            get { return this.nameToResolve; }
-            set { this.nameToResolve = value; }
+            writer.WriteAttributeValue(XmlAttributeNames.ContactDataShape, propertySet);
         }
+    }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether to return full contact data or not.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
-        /// </value>
-        public bool ReturnFullContactData
-        {
-            get { return this.returnFullContactData; }
-            set { this.returnFullContactData = value; }
-        }
+    /// <summary>
+    /// Writes the elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        this.ParentFolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ParentFolderIds);
 
-        /// <summary>
-        /// Gets or sets the search location.
-        /// </summary>
-        /// <value>The search scope.</value>
-        public ResolveNameSearchLocation SearchLocation
-        {
-            get { return this.searchLocation; }
-            set { this.searchLocation = value; }
-        }
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.UnresolvedEntry, this.NameToResolve);
+    }
 
-        /// <summary>
-        /// Gets or sets the PropertySet for Contact Data
-        /// </summary>
-        /// <value>The PropertySet</value>
-        public PropertySet ContactDataPropertySet
-        {
-            get { return this.contactDataPropertySet; }
-            set { this.contactDataPropertySet = value; }
-        }
+    /// <summary>
+    /// Gets the request version.
+    /// </summary>
+    /// <returns>Earliest Exchange version in which this request is supported.</returns>
+    internal override ExchangeVersion GetMinimumRequiredServerVersion()
+    {
+        return ExchangeVersion.Exchange2007_SP1;
+    }
 
-        /// <summary>
-        /// Gets the parent folder ids.
-        /// </summary>
-        /// <value>The parent folder ids.</value>
-        public FolderIdWrapperList ParentFolderIds
-        {
-            get { return this.parentFolderIds; }
-        }
+    /// <summary>
+    /// Gets or sets the name to resolve.
+    /// </summary>
+    /// <value>The name to resolve.</value>
+    public string NameToResolve
+    {
+        get { return this.nameToResolve; }
+        set { this.nameToResolve = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to return full contact data or not.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
+    /// </value>
+    public bool ReturnFullContactData
+    {
+        get { return this.returnFullContactData; }
+        set { this.returnFullContactData = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the search location.
+    /// </summary>
+    /// <value>The search scope.</value>
+    public ResolveNameSearchLocation SearchLocation
+    {
+        get { return this.searchLocation; }
+        set { this.searchLocation = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the PropertySet for Contact Data
+    /// </summary>
+    /// <value>The PropertySet</value>
+    public PropertySet ContactDataPropertySet
+    {
+        get { return this.contactDataPropertySet; }
+        set { this.contactDataPropertySet = value; }
+    }
+
+    /// <summary>
+    /// Gets the parent folder ids.
+    /// </summary>
+    /// <value>The parent folder ids.</value>
+    public FolderIdWrapperList ParentFolderIds
+    {
+        get { return this.parentFolderIds; }
     }
 }

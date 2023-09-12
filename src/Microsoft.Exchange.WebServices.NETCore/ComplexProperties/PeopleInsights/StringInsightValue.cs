@@ -23,57 +23,50 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System.Collections.Generic;
+using System.Xml;
+
+/// <summary>
+/// Represents the StringInsightValue.
+/// </summary>
+public sealed class StringInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private string data;
 
     /// <summary>
-    /// Represents the StringInsightValue.
+    /// Gets the Data
     /// </summary>
-    public sealed class StringInsightValue : InsightValue
+    public string Data
     {
-        private string data;
+        get { return this.data; }
 
-        /// <summary>
-        /// Gets the Data
-        /// </summary>
-        public string Data
+        set { this.SetFieldValue<string>(ref this.data, value); }
+    }
+
+    /// <summary>
+    /// Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get
-            {
-                return this.data;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.data, value);
-            }
+            case XmlElementNames.InsightSource:
+                this.InsightSource = reader.ReadElementValue<string>();
+                break;
+            case XmlElementNames.UpdatedUtcTicks:
+                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            case XmlElementNames.Data:
+                this.Data = reader.ReadElementValue();
+                break;
+            default:
+                return false;
         }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Data:
-                    this.Data = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
-    }    
+        return true;
+    }
 }

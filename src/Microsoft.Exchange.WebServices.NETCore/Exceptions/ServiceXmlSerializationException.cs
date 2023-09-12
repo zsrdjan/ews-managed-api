@@ -23,51 +23,50 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System;
+using System.Runtime.Serialization;
+
+/// <summary>
+/// Represents an error that occurs when the XML for a request cannot be serialized.
+/// </summary>
+public class ServiceXmlSerializationException : ServiceLocalException
 {
-    using System;
-    using System.Runtime.Serialization;
+    /// <summary>
+    /// ServiceXmlSerializationException Constructor.
+    /// </summary>
+    public ServiceXmlSerializationException()
+        : base()
+    {
+    }
 
     /// <summary>
-    /// Represents an error that occurs when the XML for a request cannot be serialized.
+    /// ServiceXmlSerializationException Constructor.
     /// </summary>
-    public class ServiceXmlSerializationException : ServiceLocalException
+    /// <param name="message">Error message text.</param>
+    public ServiceXmlSerializationException(string message)
+        : base(message)
     {
-        /// <summary>
-        /// ServiceXmlSerializationException Constructor.
-        /// </summary>
-        public ServiceXmlSerializationException()
-            : base()
-        {
-        }
+    }
 
-        /// <summary>
-        /// ServiceXmlSerializationException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        public ServiceXmlSerializationException(string message)
-            : base(message)
-        {
-        }
+    /// <summary>
+    /// ServiceXmlSerializationException Constructor.
+    /// </summary>
+    /// <param name="message">Error message text.</param>
+    /// <param name="innerException">Inner exception.</param>
+    public ServiceXmlSerializationException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        /// <summary>
-        /// ServiceXmlSerializationException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="innerException">Inner exception.</param>
-        public ServiceXmlSerializationException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceXmlSerializationException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		protected ServiceXmlSerializationException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-	    {
-		}
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceXmlSerializationException"/> class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected ServiceXmlSerializationException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
 }

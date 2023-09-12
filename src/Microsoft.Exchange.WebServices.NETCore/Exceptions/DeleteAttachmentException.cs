@@ -23,50 +23,51 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+using System;
+using System.Runtime.Serialization;
+
+/// <summary>
+/// Represents an error that occurs when a call to the DeleteAttachment web method fails.
+/// </summary>
+public sealed class DeleteAttachmentException : BatchServiceResponseException<DeleteAttachmentResponse>
 {
-    using System;
-	using System.Runtime.Serialization;
+    /// <summary>
+    /// Initializes a new instance of DeleteAttachmentException.
+    /// </summary>
+    /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
+    /// <param name="message">The message that describes the error.</param>
+    internal DeleteAttachmentException(
+        ServiceResponseCollection<DeleteAttachmentResponse> serviceResponses,
+        string message
+    )
+        : base(serviceResponses, message)
+    {
+    }
 
     /// <summary>
-    /// Represents an error that occurs when a call to the DeleteAttachment web method fails.
+    /// Initializes a new instance of DeleteAttachmentException.
     /// </summary>
-    public sealed class DeleteAttachmentException : BatchServiceResponseException<DeleteAttachmentResponse>
+    /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
+    internal DeleteAttachmentException(
+        ServiceResponseCollection<DeleteAttachmentResponse> serviceResponses,
+        string message,
+        Exception innerException
+    )
+        : base(serviceResponses, message, innerException)
     {
-        /// <summary>
-        /// Initializes a new instance of DeleteAttachmentException.
-        /// </summary>
-        /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
-        /// <param name="message">The message that describes the error.</param>
-        internal DeleteAttachmentException(
-            ServiceResponseCollection<DeleteAttachmentResponse> serviceResponses,
-            string message)
-            : base(serviceResponses, message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of DeleteAttachmentException.
-        /// </summary>
-        /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
-        /// <param name="message">The message that describes the error.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception.</param>
-        internal DeleteAttachmentException(
-            ServiceResponseCollection<DeleteAttachmentResponse> serviceResponses,
-            string message,
-            Exception innerException)
-            : base(serviceResponses, message, innerException)
-        {
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.DeleteAttachmentException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		private DeleteAttachmentException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.DeleteAttachmentException"/> class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    private DeleteAttachmentException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
 }
