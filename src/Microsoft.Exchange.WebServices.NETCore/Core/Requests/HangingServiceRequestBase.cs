@@ -90,7 +90,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     ///     Test switch to log all bytes that come across the wire.
     ///     Helpful when parsing fails before certain bytes hit the trace logs.
     /// </summary>
-    internal static bool LogAllWireBytes = false;
+    internal static readonly bool LogAllWireBytes = false;
 
     /// <summary>
     ///     Callback delegate to handle response objects
@@ -110,7 +110,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <summary>
     ///     Expected minimum frequency in responses, in milliseconds.
     /// </summary>
-    protected int heartbeatFrequencyMilliseconds;
+    protected readonly int heartbeatFrequencyMilliseconds;
 
     /// <summary>
     ///     lock object

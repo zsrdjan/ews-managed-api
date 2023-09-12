@@ -24,7 +24,6 @@
  */
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -91,11 +90,6 @@ internal static class DnsNativeMethods
     /// <param name="pReserved">Reserved argument.</param>
     /// <returns>WIN32 status code</returns>
     /// <remarks>For aipServers, DnqQuery expects either null or an array of one IPv4 address.</remarks>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage",
-        Justification = "Managed API"
-    )]
     [DllImport(
         DNSAPI,
         EntryPoint = "DnsQuery_W",
@@ -118,11 +112,6 @@ internal static class DnsNativeMethods
     /// </summary>
     /// <param name="ptrRecords">DNS records pointer</param>
     /// <param name="freeType">Record List Free type</param>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage",
-        Justification = "Managed API"
-    )]
     [DllImport(
         DNSAPI,
         EntryPoint = "DnsRecordListFree",

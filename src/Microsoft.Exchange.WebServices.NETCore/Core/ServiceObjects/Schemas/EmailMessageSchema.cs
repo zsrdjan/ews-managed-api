@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for e-mail messages.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class EmailMessageSchema : ItemSchema
 {
@@ -62,11 +63,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the ToRecipients property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ToRecipients = new ComplexPropertyDefinition<EmailAddressCollection>(
         XmlElementNames.ToRecipients,
         FieldUris.ToRecipients,
@@ -75,17 +71,12 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddressCollection(); }
+        () => new EmailAddressCollection()
     );
 
     /// <summary>
     ///     Defines the BccRecipients property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition BccRecipients = new ComplexPropertyDefinition<EmailAddressCollection>(
         XmlElementNames.BccRecipients,
         FieldUris.BccRecipients,
@@ -94,17 +85,12 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddressCollection(); }
+        () => new EmailAddressCollection()
     );
 
     /// <summary>
     ///     Defines the CcRecipients property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition CcRecipients = new ComplexPropertyDefinition<EmailAddressCollection>(
         XmlElementNames.CcRecipients,
         FieldUris.CcRecipients,
@@ -113,17 +99,12 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddressCollection(); }
+        () => new EmailAddressCollection()
     );
 
     /// <summary>
     ///     Defines the ConversationIndex property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConversationIndex = new ByteArrayPropertyDefinition(
         XmlElementNames.ConversationIndex,
         FieldUris.ConversationIndex,
@@ -134,11 +115,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the ConversationTopic property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConversationTopic = new StringPropertyDefinition(
         XmlElementNames.ConversationTopic,
         FieldUris.ConversationTopic,
@@ -149,11 +125,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the From property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition From = new ContainedPropertyDefinition<EmailAddress>(
         XmlElementNames.From,
         FieldUris.From,
@@ -163,17 +134,12 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddress(); }
+        () => new EmailAddress()
     );
 
     /// <summary>
     ///     Defines the IsDeliveryReceiptRequested property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsDeliveryReceiptRequested = new BoolPropertyDefinition(
         XmlElementNames.IsDeliveryReceiptRequested,
         FieldUris.IsDeliveryReceiptRequested,
@@ -187,11 +153,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the IsRead property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsRead = new BoolPropertyDefinition(
         XmlElementNames.IsRead,
         FieldUris.IsRead,
@@ -202,11 +163,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the IsReadReceiptRequested property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsReadReceiptRequested = new BoolPropertyDefinition(
         XmlElementNames.IsReadReceiptRequested,
         FieldUris.IsReadReceiptRequested,
@@ -220,11 +176,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the IsResponseRequested property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsResponseRequested = new BoolPropertyDefinition(
         XmlElementNames.IsResponseRequested,
         FieldUris.IsResponseRequested,
@@ -239,11 +190,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the InternetMessageId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition InternetMessageId = new StringPropertyDefinition(
         XmlElementNames.InternetMessageId,
         FieldUris.InternetMessageId,
@@ -254,11 +200,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the References property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition References = new StringPropertyDefinition(
         XmlElementNames.References,
         FieldUris.References,
@@ -272,11 +213,6 @@ public class EmailMessageSchema : ItemSchema
     /// <summary>
     ///     Defines the ReplyTo property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ReplyTo = new ComplexPropertyDefinition<EmailAddressCollection>(
         XmlElementNames.ReplyTo,
         FieldUris.ReplyTo,
@@ -285,108 +221,78 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddressCollection(); }
+        () => new EmailAddressCollection()
     );
 
     /// <summary>
     ///     Defines the Sender property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Sender = new ContainedPropertyDefinition<EmailAddress>(
         XmlElementNames.Sender,
         FieldUris.Sender,
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddress(); }
+        () => new EmailAddress()
     );
 
     /// <summary>
     ///     Defines the ReceivedBy property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ReceivedBy = new ContainedPropertyDefinition<EmailAddress>(
         XmlElementNames.ReceivedBy,
         FieldUris.ReceivedBy,
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddress(); }
+        () => new EmailAddress()
     );
 
     /// <summary>
     ///     Defines the ReceivedRepresenting property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ReceivedRepresenting = new ContainedPropertyDefinition<EmailAddress>(
         XmlElementNames.ReceivedRepresenting,
         FieldUris.ReceivedRepresenting,
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddress(); }
+        () => new EmailAddress()
     );
 
     /// <summary>
     ///     Defines the ApprovalRequestData property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ApprovalRequestData = new ComplexPropertyDefinition<ApprovalRequestData>(
         XmlElementNames.ApprovalRequestData,
         FieldUris.ApprovalRequestData,
         ExchangeVersion.Exchange2013,
-        delegate { return new ApprovalRequestData(); }
+        () => new ApprovalRequestData()
     );
 
     /// <summary>
     ///     Defines the VotingInformation property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition VotingInformation = new ComplexPropertyDefinition<VotingInformation>(
         XmlElementNames.VotingInformation,
         FieldUris.VotingInformation,
         ExchangeVersion.Exchange2013,
-        delegate { return new VotingInformation(); }
+        () => new VotingInformation()
     );
 
     /// <summary>
     ///     Defines the Likers property
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Likers = new ComplexPropertyDefinition<EmailAddressCollection>(
         XmlElementNames.Likers,
         FieldUris.Likers,
         PropertyDefinitionFlags.AutoInstantiateOnRead,
         ExchangeVersion.Exchange2015,
-        delegate { return new EmailAddressCollection(); }
+        () => new EmailAddressCollection()
     );
 
     // This must be after the declaration of property definitions
-    internal static new readonly EmailMessageSchema Instance = new EmailMessageSchema();
+    internal new static readonly EmailMessageSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for search folders.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class SearchFolderSchema : FolderSchema
 {
@@ -44,11 +45,6 @@ public class SearchFolderSchema : FolderSchema
     /// <summary>
     ///     Defines the SearchParameters property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition SearchParameters = new ComplexPropertyDefinition<SearchFolderParameters>(
         XmlElementNames.SearchParameters,
         FieldUris.SearchParameters,
@@ -56,11 +52,11 @@ public class SearchFolderSchema : FolderSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.AutoInstantiateOnRead,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new SearchFolderParameters(); }
+        () => new SearchFolderParameters()
     );
 
     // This must be declared after the property definitions
-    internal static new readonly SearchFolderSchema Instance = new SearchFolderSchema();
+    internal new static readonly SearchFolderSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

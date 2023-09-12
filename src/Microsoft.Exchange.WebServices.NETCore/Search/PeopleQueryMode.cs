@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -50,7 +50,7 @@ public sealed class PeopleQueryMode
     /// <summary>
     ///     The sources used for this mode.
     /// </summary>
-    internal HashSet<string> Sources;
+    internal readonly HashSet<string> Sources;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="PeopleQueryMode" /> class.

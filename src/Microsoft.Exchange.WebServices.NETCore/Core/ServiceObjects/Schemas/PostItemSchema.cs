@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for post items.
 /// </summary>
+[PublicAPI]
 [Schema]
 public sealed class PostItemSchema : ItemSchema
 {
@@ -44,61 +45,31 @@ public sealed class PostItemSchema : ItemSchema
     /// <summary>
     ///     Defines the ConversationIndex property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConversationIndex = EmailMessageSchema.ConversationIndex;
 
     /// <summary>
     ///     Defines the ConversationTopic property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConversationTopic = EmailMessageSchema.ConversationTopic;
 
     /// <summary>
     ///     Defines the From property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition From = EmailMessageSchema.From;
 
     /// <summary>
     ///     Defines the InternetMessageId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition InternetMessageId = EmailMessageSchema.InternetMessageId;
 
     /// <summary>
     ///     Defines the IsRead property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsRead = EmailMessageSchema.IsRead;
 
     /// <summary>
     ///     Defines the PostedTime property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PostedTime = new DateTimePropertyDefinition(
         XmlElementNames.PostedTime,
         FieldUris.PostedTime,
@@ -109,25 +80,15 @@ public sealed class PostItemSchema : ItemSchema
     /// <summary>
     ///     Defines the References property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition References = EmailMessageSchema.References;
 
     /// <summary>
     ///     Defines the Sender property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Sender = EmailMessageSchema.Sender;
 
     // This must be after the declaration of property definitions
-    internal static new readonly PostItemSchema Instance = new PostItemSchema();
+    internal new static readonly PostItemSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

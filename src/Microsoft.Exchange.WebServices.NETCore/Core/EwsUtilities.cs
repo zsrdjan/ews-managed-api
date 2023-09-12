@@ -25,6 +25,7 @@
 
 using System.Collections;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -227,9 +228,9 @@ internal static class EwsUtilities
     /// <param name="condition">Assertion.</param>
     /// <param name="caller">The caller.</param>
     /// <param name="message">The message to use if assertion fails.</param>
-    internal static void Assert(bool condition, string caller, string message)
+    internal static void Assert([DoesNotReturnIf(false)] bool condition, string caller, string message)
     {
-        Debug.Assert(condition, string.Format("[{0}] {1}", caller, message));
+        Debug.Assert(condition, $"[{caller}] {message}");
     }
 
     /// <summary>
@@ -239,30 +240,20 @@ internal static class EwsUtilities
     /// <returns>Namespace prefix string.</returns>
     internal static string GetNamespacePrefix(XmlNamespace xmlNamespace)
     {
-        switch (xmlNamespace)
+        return xmlNamespace switch
         {
-            case XmlNamespace.Types:
-                return EwsTypesNamespacePrefix;
-            case XmlNamespace.Messages:
-                return EwsMessagesNamespacePrefix;
-            case XmlNamespace.Errors:
-                return EwsErrorsNamespacePrefix;
-            case XmlNamespace.Soap:
-            case XmlNamespace.Soap12:
-                return EwsSoapNamespacePrefix;
-            case XmlNamespace.XmlSchemaInstance:
-                return EwsXmlSchemaInstanceNamespacePrefix;
-            case XmlNamespace.PassportSoapFault:
-                return PassportSoapFaultNamespacePrefix;
-            case XmlNamespace.WSTrustFebruary2005:
-                return WSTrustFebruary2005NamespacePrefix;
-            case XmlNamespace.WSAddressing:
-                return WSAddressingNamespacePrefix;
-            case XmlNamespace.Autodiscover:
-                return AutodiscoverSoapNamespacePrefix;
-            default:
-                return string.Empty;
-        }
+            XmlNamespace.Types => EwsTypesNamespacePrefix,
+            XmlNamespace.Messages => EwsMessagesNamespacePrefix,
+            XmlNamespace.Errors => EwsErrorsNamespacePrefix,
+            XmlNamespace.Soap => EwsSoapNamespacePrefix,
+            XmlNamespace.Soap12 => EwsSoapNamespacePrefix,
+            XmlNamespace.XmlSchemaInstance => EwsXmlSchemaInstanceNamespacePrefix,
+            XmlNamespace.PassportSoapFault => PassportSoapFaultNamespacePrefix,
+            XmlNamespace.WSTrustFebruary2005 => WSTrustFebruary2005NamespacePrefix,
+            XmlNamespace.WSAddressing => WSAddressingNamespacePrefix,
+            XmlNamespace.Autodiscover => AutodiscoverSoapNamespacePrefix,
+            _ => string.Empty,
+        };
     }
 
     /// <summary>
@@ -272,31 +263,20 @@ internal static class EwsUtilities
     /// <returns>Uri as string</returns>
     internal static string GetNamespaceUri(XmlNamespace xmlNamespace)
     {
-        switch (xmlNamespace)
+        return xmlNamespace switch
         {
-            case XmlNamespace.Types:
-                return EwsTypesNamespace;
-            case XmlNamespace.Messages:
-                return EwsMessagesNamespace;
-            case XmlNamespace.Errors:
-                return EwsErrorsNamespace;
-            case XmlNamespace.Soap:
-                return EwsSoapNamespace;
-            case XmlNamespace.Soap12:
-                return EwsSoap12Namespace;
-            case XmlNamespace.XmlSchemaInstance:
-                return EwsXmlSchemaInstanceNamespace;
-            case XmlNamespace.PassportSoapFault:
-                return PassportSoapFaultNamespace;
-            case XmlNamespace.WSTrustFebruary2005:
-                return WSTrustFebruary2005Namespace;
-            case XmlNamespace.WSAddressing:
-                return WSAddressingNamespace;
-            case XmlNamespace.Autodiscover:
-                return AutodiscoverSoapNamespace;
-            default:
-                return string.Empty;
-        }
+            XmlNamespace.Types => EwsTypesNamespace,
+            XmlNamespace.Messages => EwsMessagesNamespace,
+            XmlNamespace.Errors => EwsErrorsNamespace,
+            XmlNamespace.Soap => EwsSoapNamespace,
+            XmlNamespace.Soap12 => EwsSoap12Namespace,
+            XmlNamespace.XmlSchemaInstance => EwsXmlSchemaInstanceNamespace,
+            XmlNamespace.PassportSoapFault => PassportSoapFaultNamespace,
+            XmlNamespace.WSTrustFebruary2005 => WSTrustFebruary2005Namespace,
+            XmlNamespace.WSAddressing => WSAddressingNamespace,
+            XmlNamespace.Autodiscover => AutodiscoverSoapNamespace,
+            _ => string.Empty,
+        };
     }
 
     /// <summary>
@@ -306,29 +286,19 @@ internal static class EwsUtilities
     /// <returns>XmlNamespace enum value.</returns>
     internal static XmlNamespace GetNamespaceFromUri(string namespaceUri)
     {
-        switch (namespaceUri)
+        return namespaceUri switch
         {
-            case EwsErrorsNamespace:
-                return XmlNamespace.Errors;
-            case EwsTypesNamespace:
-                return XmlNamespace.Types;
-            case EwsMessagesNamespace:
-                return XmlNamespace.Messages;
-            case EwsSoapNamespace:
-                return XmlNamespace.Soap;
-            case EwsSoap12Namespace:
-                return XmlNamespace.Soap12;
-            case EwsXmlSchemaInstanceNamespace:
-                return XmlNamespace.XmlSchemaInstance;
-            case PassportSoapFaultNamespace:
-                return XmlNamespace.PassportSoapFault;
-            case WSTrustFebruary2005Namespace:
-                return XmlNamespace.WSTrustFebruary2005;
-            case WSAddressingNamespace:
-                return XmlNamespace.WSAddressing;
-            default:
-                return XmlNamespace.NotSpecified;
-        }
+            EwsErrorsNamespace => XmlNamespace.Errors,
+            EwsTypesNamespace => XmlNamespace.Types,
+            EwsMessagesNamespace => XmlNamespace.Messages,
+            EwsSoapNamespace => XmlNamespace.Soap,
+            EwsSoap12Namespace => XmlNamespace.Soap12,
+            EwsXmlSchemaInstanceNamespace => XmlNamespace.XmlSchemaInstance,
+            PassportSoapFaultNamespace => XmlNamespace.PassportSoapFault,
+            WSTrustFebruary2005Namespace => XmlNamespace.WSTrustFebruary2005,
+            WSAddressingNamespace => XmlNamespace.WSAddressing,
+            _ => XmlNamespace.NotSpecified,
+        };
     }
 
     /// <summary>
@@ -344,15 +314,14 @@ internal static class EwsUtilities
     )
         where TServiceObject : ServiceObject
     {
-        Type itemClass;
-
-        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out itemClass))
+        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
+                xmlElementName,
+                out var itemClass
+            ))
         {
-            CreateServiceObjectWithServiceParam creationDelegate;
-
             if (serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(
                     itemClass,
-                    out creationDelegate
+                    out var creationDelegate
                 ))
             {
                 return (TServiceObject)creationDelegate(service);
@@ -373,11 +342,9 @@ internal static class EwsUtilities
     /// <returns>New Item.</returns>
     internal static Item CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
     {
-        CreateServiceObjectWithAttachmentParam creationDelegate;
-
         if (serviceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
                 itemClass,
-                out creationDelegate
+                out var creationDelegate
             ))
         {
             return (Item)creationDelegate(itemAttachment, isNew);
@@ -394,9 +361,10 @@ internal static class EwsUtilities
     /// <returns>New Item.</returns>
     internal static Item CreateItemFromXmlElementName(ItemAttachment itemAttachment, string xmlElementName)
     {
-        Type itemClass;
-
-        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out itemClass))
+        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
+                xmlElementName,
+                out var itemClass
+            ))
         {
             return CreateItemFromItemClass(itemAttachment, itemClass, false);
         }
@@ -411,8 +379,7 @@ internal static class EwsUtilities
     /// <returns></returns>
     internal static Type GetItemTypeFromXmlElementName(string xmlElementName)
     {
-        Type itemClass = null;
-        serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out itemClass);
+        serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass);
         return itemClass;
     }
 
@@ -721,10 +688,11 @@ internal static class EwsUtilities
     /// <returns>String representation of enum to be used in the protocol</returns>
     internal static string SerializeEnum(Enum value)
     {
-        Dictionary<Enum, string> enumToStringDict;
-        string strValue;
-        if (enumToSchemaDictionaries.Member.TryGetValue(value.GetType(), out enumToStringDict) &&
-            enumToStringDict.TryGetValue(value, out strValue))
+        if (enumToSchemaDictionaries.Member.TryGetValue(
+                value.GetType(),
+                out Dictionary<Enum, string> enumToStringDict
+            ) &&
+            enumToStringDict.TryGetValue(value, out var strValue))
         {
             return strValue;
         }
@@ -742,10 +710,8 @@ internal static class EwsUtilities
     {
         if (typeof(T).GetTypeInfo().IsEnum)
         {
-            Dictionary<string, Enum> stringToEnumDict;
-            Enum enumValue;
-            if (schemaToEnumDictionaries.Member.TryGetValue(typeof(T), out stringToEnumDict) &&
-                stringToEnumDict.TryGetValue(value, out enumValue))
+            if (schemaToEnumDictionaries.Member.TryGetValue(typeof(T), out Dictionary<string, Enum> stringToEnumDict) &&
+                stringToEnumDict.TryGetValue(value, out var enumValue))
             {
                 // This double-casting is ugly, but necessary. By this point, we know that T is an Enum
                 // (same as returned by the dictionary), but the compiler can't prove it. Thus, the 
@@ -1145,8 +1111,7 @@ internal static class EwsUtilities
     private static string GetSimplifiedTypeName(string typeName)
     {
         // If type has a shortname (e.g. int for Int32) map to the short name.
-        string name;
-        return typeNameToShortNameMap.Member.TryGetValue(typeName, out name) ? name : typeName;
+        return typeNameToShortNameMap.Member.TryGetValue(typeName, out var name) ? name : typeName;
     }
 
     #endregion

@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for meeting messages.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class MeetingMessageSchema : EmailMessageSchema
 {
@@ -49,26 +50,16 @@ public class MeetingMessageSchema : EmailMessageSchema
     /// <summary>
     ///     Defines the AssociatedAppointmentId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AssociatedAppointmentId = new ComplexPropertyDefinition<ItemId>(
         XmlElementNames.AssociatedCalendarItemId,
         FieldUris.AssociatedCalendarItemId,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new ItemId(); }
+        () => new ItemId()
     );
 
     /// <summary>
     ///     Defines the IsDelegated property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsDelegated = new BoolPropertyDefinition(
         XmlElementNames.IsDelegated,
         FieldUris.IsDelegated,
@@ -79,11 +70,6 @@ public class MeetingMessageSchema : EmailMessageSchema
     /// <summary>
     ///     Defines the IsOutOfDate property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsOutOfDate = new BoolPropertyDefinition(
         XmlElementNames.IsOutOfDate,
         FieldUris.IsOutOfDate,
@@ -93,11 +79,6 @@ public class MeetingMessageSchema : EmailMessageSchema
     /// <summary>
     ///     Defines the HasBeenProcessed property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition HasBeenProcessed = new BoolPropertyDefinition(
         XmlElementNames.HasBeenProcessed,
         FieldUris.HasBeenProcessed,
@@ -108,11 +89,6 @@ public class MeetingMessageSchema : EmailMessageSchema
     /// <summary>
     ///     Defines the ResponseType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ResponseType = new GenericPropertyDefinition<MeetingResponseType>(
         XmlElementNames.ResponseType,
         FieldUris.ResponseType,
@@ -123,41 +99,21 @@ public class MeetingMessageSchema : EmailMessageSchema
     /// <summary>
     ///     Defines the iCalendar Uid property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ICalUid = AppointmentSchema.ICalUid;
 
     /// <summary>
     ///     Defines the iCalendar RecurrenceId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ICalRecurrenceId = AppointmentSchema.ICalRecurrenceId;
 
     /// <summary>
     ///     Defines the iCalendar DateTimeStamp property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ICalDateTimeStamp = AppointmentSchema.ICalDateTimeStamp;
 
     /// <summary>
     ///     Defines the IsOrganizer property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsOrganizer = new GenericPropertyDefinition<bool>(
         XmlElementNames.IsOrganizer,
         FieldUris.IsOrganizer,
@@ -166,7 +122,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     );
 
     // This must be after the declaration of property definitions
-    internal static new readonly MeetingMessageSchema Instance = new MeetingMessageSchema();
+    internal new static readonly MeetingMessageSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

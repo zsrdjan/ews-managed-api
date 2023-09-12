@@ -33,12 +33,12 @@ public sealed class PhoneCall : ComplexProperty
     private const string SuccessfulResponseText = "OK";
     private const int SuccessfulResponseCode = 200;
 
-    private readonly ExchangeService service;
-    private PhoneCallState state;
-    private ConnectionFailureCause connectionFailureCause;
-    private string sipResponseText;
-    private int sipResponseCode;
-    private readonly PhoneCallId id;
+    private readonly ExchangeService _service;
+    private PhoneCallState _state;
+    private ConnectionFailureCause _connectionFailureCause;
+    private string _sipResponseText;
+    private int _sipResponseCode;
+    private readonly PhoneCallId _id;
 
     /// <summary>
     ///     PhoneCall Constructor.
@@ -48,11 +48,11 @@ public sealed class PhoneCall : ComplexProperty
     {
         EwsUtilities.Assert(service != null, "PhoneCall.ctor", "service is null");
 
-        this.service = service;
-        state = PhoneCallState.Connecting;
-        connectionFailureCause = ConnectionFailureCause.None;
-        sipResponseText = SuccessfulResponseText;
-        sipResponseCode = SuccessfulResponseCode;
+        this._service = service;
+        _state = PhoneCallState.Connecting;
+        _connectionFailureCause = ConnectionFailureCause.None;
+        _sipResponseText = SuccessfulResponseText;
+        _sipResponseCode = SuccessfulResponseCode;
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public sealed class PhoneCall : ComplexProperty
     internal PhoneCall(ExchangeService service, PhoneCallId id)
         : this(service)
     {
-        this.id = id;
+        this._id = id;
     }
 
     /// <summary>
@@ -71,11 +71,11 @@ public sealed class PhoneCall : ComplexProperty
     /// </summary>
     public async System.Threading.Tasks.Task Refresh(CancellationToken token = default)
     {
-        var phoneCall = await service.UnifiedMessaging.GetPhoneCallInformation(id, token).ConfigureAwait(false);
-        state = phoneCall.State;
-        connectionFailureCause = phoneCall.ConnectionFailureCause;
-        sipResponseText = phoneCall.SIPResponseText;
-        sipResponseCode = phoneCall.SIPResponseCode;
+        var phoneCall = await _service.UnifiedMessaging.GetPhoneCallInformation(_id, token).ConfigureAwait(false);
+        _state = phoneCall.State;
+        _connectionFailureCause = phoneCall.ConnectionFailureCause;
+        _sipResponseText = phoneCall.SIPResponseText;
+        _sipResponseCode = phoneCall.SIPResponseCode;
     }
 
     /// <summary>
@@ -85,13 +85,13 @@ public sealed class PhoneCall : ComplexProperty
     {
         // If call is already disconnected, throw exception
         //
-        if (state == PhoneCallState.Disconnected)
+        if (_state == PhoneCallState.Disconnected)
         {
             throw new ServiceLocalException(Strings.PhoneCallAlreadyDisconnected);
         }
 
-        await service.UnifiedMessaging.DisconnectPhoneCall(id, token);
-        state = PhoneCallState.Disconnected;
+        await _service.UnifiedMessaging.DisconnectPhoneCall(_id, token);
+        _state = PhoneCallState.Disconnected;
     }
 
     /// <summary>
@@ -104,16 +104,16 @@ public sealed class PhoneCall : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.PhoneCallState:
-                state = reader.ReadElementValue<PhoneCallState>();
+                _state = reader.ReadElementValue<PhoneCallState>();
                 return true;
             case XmlElementNames.ConnectionFailureCause:
-                connectionFailureCause = reader.ReadElementValue<ConnectionFailureCause>();
+                _connectionFailureCause = reader.ReadElementValue<ConnectionFailureCause>();
                 return true;
             case XmlElementNames.SIPResponseText:
-                sipResponseText = reader.ReadElementValue();
+                _sipResponseText = reader.ReadElementValue();
                 return true;
             case XmlElementNames.SIPResponseCode:
-                sipResponseCode = reader.ReadElementValue<int>();
+                _sipResponseCode = reader.ReadElementValue<int>();
                 return true;
             default:
                 return false;
@@ -123,20 +123,20 @@ public sealed class PhoneCall : ComplexProperty
     /// <summary>
     ///     Gets a value indicating the last known state of this phone call.
     /// </summary>
-    public PhoneCallState State => state;
+    public PhoneCallState State => _state;
 
     /// <summary>
     ///     Gets a value indicating the reason why this phone call failed to connect.
     /// </summary>
-    public ConnectionFailureCause ConnectionFailureCause => connectionFailureCause;
+    public ConnectionFailureCause ConnectionFailureCause => _connectionFailureCause;
 
     /// <summary>
     ///     Gets the SIP response text of this phone call.
     /// </summary>
-    public string SIPResponseText => sipResponseText;
+    public string SIPResponseText => _sipResponseText;
 
     /// <summary>
     ///     Gets the SIP response code of this phone call.
     /// </summary>
-    public int SIPResponseCode => sipResponseCode;
+    public int SIPResponseCode => _sipResponseCode;
 }

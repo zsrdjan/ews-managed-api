@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-///     Represents the schem for contacts.
+///     Represents the schema for contacts.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class ContactSchema : ItemSchema
 {
@@ -93,11 +94,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the FileAs property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FileAs = new StringPropertyDefinition(
         XmlElementNames.FileAs,
         FieldUris.FileAs,
@@ -111,11 +107,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the FileAsMapping property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FileAsMapping = new GenericPropertyDefinition<FileAsMapping>(
         XmlElementNames.FileAsMapping,
         FieldUris.FileAsMapping,
@@ -129,11 +120,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayName = new StringPropertyDefinition(
         XmlElementNames.DisplayName,
         FieldUris.DisplayName,
@@ -147,11 +133,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the GivenName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition GivenName = new StringPropertyDefinition(
         XmlElementNames.GivenName,
         FieldUris.GivenName,
@@ -165,11 +146,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Initials property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Initials = new StringPropertyDefinition(
         XmlElementNames.Initials,
         FieldUris.Initials,
@@ -183,11 +159,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the MiddleName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MiddleName = new StringPropertyDefinition(
         XmlElementNames.MiddleName,
         FieldUris.MiddleName,
@@ -201,11 +172,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the NickName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition NickName = new StringPropertyDefinition(
         XmlElementNames.NickName,
         FieldUris.NickName,
@@ -219,27 +185,17 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the CompleteName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition CompleteName = new ComplexPropertyDefinition<CompleteName>(
         XmlElementNames.CompleteName,
         FieldUris.CompleteName,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new CompleteName(); }
+        () => new CompleteName()
     );
 
     /// <summary>
     ///     Defines the CompanyName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition CompanyName = new StringPropertyDefinition(
         XmlElementNames.CompanyName,
         FieldUris.CompanyName,
@@ -253,11 +209,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the EmailAddresses property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EmailAddresses = new ComplexPropertyDefinition<EmailAddressDictionary>(
         XmlElementNames.EmailAddresses,
         FieldUris.EmailAddresses,
@@ -265,17 +216,12 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddressDictionary(); }
+        () => new EmailAddressDictionary()
     );
 
     /// <summary>
     ///     Defines the PhysicalAddresses property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PhysicalAddresses =
         new ComplexPropertyDefinition<PhysicalAddressDictionary>(
             XmlElementNames.PhysicalAddresses,
@@ -284,17 +230,12 @@ public class ContactSchema : ItemSchema
             PropertyDefinitionFlags.CanSet |
             PropertyDefinitionFlags.CanUpdate,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new PhysicalAddressDictionary(); }
+            () => new PhysicalAddressDictionary()
         );
 
     /// <summary>
     ///     Defines the PhoneNumbers property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PhoneNumbers = new ComplexPropertyDefinition<PhoneNumberDictionary>(
         XmlElementNames.PhoneNumbers,
         FieldUris.PhoneNumbers,
@@ -302,17 +243,12 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new PhoneNumberDictionary(); }
+        () => new PhoneNumberDictionary()
     );
 
     /// <summary>
     ///     Defines the AssistantName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AssistantName = new StringPropertyDefinition(
         XmlElementNames.AssistantName,
         FieldUris.AssistantName,
@@ -326,11 +262,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Birthday property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Birthday = new DateTimePropertyDefinition(
         XmlElementNames.Birthday,
         FieldUris.Birthday,
@@ -347,11 +278,6 @@ public class ContactSchema : ItemSchema
     /// <remarks>
     ///     Defined as anyURI in the EWS schema. String is fine here.
     /// </remarks>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition BusinessHomePage = new StringPropertyDefinition(
         XmlElementNames.BusinessHomePage,
         FieldUris.BusinessHomePage,
@@ -365,11 +291,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Children property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Children = new ComplexPropertyDefinition<StringList>(
         XmlElementNames.Children,
         FieldUris.Children,
@@ -379,17 +300,12 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new StringList(); }
+        () => new StringList()
     );
 
     /// <summary>
     ///     Defines the Companies property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Companies = new ComplexPropertyDefinition<StringList>(
         XmlElementNames.Companies,
         FieldUris.Companies,
@@ -399,17 +315,12 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new StringList(); }
+        () => new StringList()
     );
 
     /// <summary>
     ///     Defines the ContactSource property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ContactSource = new GenericPropertyDefinition<ContactSource>(
         XmlElementNames.ContactSource,
         FieldUris.ContactSource,
@@ -420,11 +331,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Department property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Department = new StringPropertyDefinition(
         XmlElementNames.Department,
         FieldUris.Department,
@@ -438,11 +344,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Generation property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Generation = new StringPropertyDefinition(
         XmlElementNames.Generation,
         FieldUris.Generation,
@@ -456,11 +357,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the ImAddresses property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ImAddresses = new ComplexPropertyDefinition<ImAddressDictionary>(
         XmlElementNames.ImAddresses,
         FieldUris.ImAddresses,
@@ -468,17 +364,12 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new ImAddressDictionary(); }
+        () => new ImAddressDictionary()
     );
 
     /// <summary>
     ///     Defines the JobTitle property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition JobTitle = new StringPropertyDefinition(
         XmlElementNames.JobTitle,
         FieldUris.JobTitle,
@@ -492,11 +383,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Manager property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Manager = new StringPropertyDefinition(
         XmlElementNames.Manager,
         FieldUris.Manager,
@@ -510,11 +396,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Mileage property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Mileage = new StringPropertyDefinition(
         XmlElementNames.Mileage,
         FieldUris.Mileage,
@@ -528,11 +409,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the OfficeLocation property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OfficeLocation = new StringPropertyDefinition(
         XmlElementNames.OfficeLocation,
         FieldUris.OfficeLocation,
@@ -546,11 +422,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the PostalAddressIndex property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PostalAddressIndex = new GenericPropertyDefinition<PhysicalAddressIndex>(
         XmlElementNames.PostalAddressIndex,
         FieldUris.PostalAddressIndex,
@@ -564,11 +435,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Profession property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Profession = new StringPropertyDefinition(
         XmlElementNames.Profession,
         FieldUris.Profession,
@@ -582,11 +448,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the SpouseName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition SpouseName = new StringPropertyDefinition(
         XmlElementNames.SpouseName,
         FieldUris.SpouseName,
@@ -600,11 +461,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Surname property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Surname = new StringPropertyDefinition(
         XmlElementNames.Surname,
         FieldUris.Surname,
@@ -618,11 +474,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the WeddingAnniversary property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition WeddingAnniversary = new DateTimePropertyDefinition(
         XmlElementNames.WeddingAnniversary,
         FieldUris.WeddingAnniversary,
@@ -636,11 +487,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the HasPicture property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition HasPicture = new BoolPropertyDefinition(
         XmlElementNames.HasPicture,
         FieldUris.HasPicture,
@@ -654,11 +500,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the PhoneticFullName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PhoneticFullName = new StringPropertyDefinition(
         XmlElementNames.PhoneticFullName,
         FieldUris.PhoneticFullName,
@@ -669,11 +510,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the PhoneticFirstName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PhoneticFirstName = new StringPropertyDefinition(
         XmlElementNames.PhoneticFirstName,
         FieldUris.PhoneticFirstName,
@@ -684,11 +520,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the PhoneticLastName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PhoneticLastName = new StringPropertyDefinition(
         XmlElementNames.PhoneticLastName,
         FieldUris.PhoneticLastName,
@@ -699,11 +530,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Alias property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Alias = new StringPropertyDefinition(
         XmlElementNames.Alias,
         FieldUris.Alias,
@@ -714,11 +540,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Notes property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Notes = new StringPropertyDefinition(
         XmlElementNames.Notes,
         FieldUris.Notes,
@@ -729,11 +550,6 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the Photo property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Photo = new ByteArrayPropertyDefinition(
         XmlElementNames.Photo,
         FieldUris.Photo,
@@ -744,43 +560,28 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the UserSMIMECertificate property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition UserSMIMECertificate = new ComplexPropertyDefinition<ByteArrayArray>(
         XmlElementNames.UserSMIMECertificate,
         FieldUris.UserSMIMECertificate,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate { return new ByteArrayArray(); }
+        () => new ByteArrayArray()
     );
 
     /// <summary>
     ///     Defines the MSExchangeCertificate property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MSExchangeCertificate = new ComplexPropertyDefinition<ByteArrayArray>(
         XmlElementNames.MSExchangeCertificate,
         FieldUris.MSExchangeCertificate,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate { return new ByteArrayArray(); }
+        () => new ByteArrayArray()
     );
 
     /// <summary>
     ///     Defines the DirectoryId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DirectoryId = new StringPropertyDefinition(
         XmlElementNames.DirectoryId,
         FieldUris.DirectoryId,
@@ -791,34 +592,24 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the ManagerMailbox property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ManagerMailbox = new ContainedPropertyDefinition<EmailAddress>(
         XmlElementNames.ManagerMailbox,
         FieldUris.ManagerMailbox,
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate { return new EmailAddress(); }
+        () => new EmailAddress()
     );
 
     /// <summary>
     ///     Defines the DirectReports property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DirectReports = new ComplexPropertyDefinition<EmailAddressCollection>(
         XmlElementNames.DirectReports,
         FieldUris.DirectReports,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate { return new EmailAddressCollection(); }
+        () => new EmailAddressCollection()
     );
 
     #endregion
@@ -829,35 +620,17 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the EmailAddress1 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition EmailAddress1 =
-        new IndexedPropertyDefinition(FieldUris.EmailAddress, "EmailAddress1");
+    public static readonly IndexedPropertyDefinition EmailAddress1 = new(FieldUris.EmailAddress, "EmailAddress1");
 
     /// <summary>
     ///     Defines the EmailAddress2 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition EmailAddress2 =
-        new IndexedPropertyDefinition(FieldUris.EmailAddress, "EmailAddress2");
+    public static readonly IndexedPropertyDefinition EmailAddress2 = new(FieldUris.EmailAddress, "EmailAddress2");
 
     /// <summary>
     ///     Defines the EmailAddress3 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition EmailAddress3 =
-        new IndexedPropertyDefinition(FieldUris.EmailAddress, "EmailAddress3");
+    public static readonly IndexedPropertyDefinition EmailAddress3 = new(FieldUris.EmailAddress, "EmailAddress3");
 
     #endregion
 
@@ -867,41 +640,17 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the ImAddress1 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition ImAddress1 = new IndexedPropertyDefinition(
-        FieldUris.ImAddress,
-        "ImAddress1"
-    );
+    public static readonly IndexedPropertyDefinition ImAddress1 = new(FieldUris.ImAddress, "ImAddress1");
 
     /// <summary>
     ///     Defines the ImAddress2 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition ImAddress2 = new IndexedPropertyDefinition(
-        FieldUris.ImAddress,
-        "ImAddress2"
-    );
+    public static readonly IndexedPropertyDefinition ImAddress2 = new(FieldUris.ImAddress, "ImAddress2");
 
     /// <summary>
     ///     Defines the ImAddress3 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition ImAddress3 = new IndexedPropertyDefinition(
-        FieldUris.ImAddress,
-        "ImAddress3"
-    );
+    public static readonly IndexedPropertyDefinition ImAddress3 = new(FieldUris.ImAddress, "ImAddress3");
 
     #endregion
 
@@ -911,229 +660,97 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the AssistentPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition AssistantPhone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "AssistantPhone");
+    public static readonly IndexedPropertyDefinition AssistantPhone = new(FieldUris.PhoneNumber, "AssistantPhone");
 
     /// <summary>
     ///     Defines the BusinessFax property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessFax =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "BusinessFax");
+    public static readonly IndexedPropertyDefinition BusinessFax = new(FieldUris.PhoneNumber, "BusinessFax");
 
     /// <summary>
     ///     Defines the BusinessPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessPhone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "BusinessPhone");
+    public static readonly IndexedPropertyDefinition BusinessPhone = new(FieldUris.PhoneNumber, "BusinessPhone");
 
     /// <summary>
     ///     Defines the BusinessPhone2 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessPhone2 =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "BusinessPhone2");
+    public static readonly IndexedPropertyDefinition BusinessPhone2 = new(FieldUris.PhoneNumber, "BusinessPhone2");
 
     /// <summary>
     ///     Defines the Callback property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition Callback = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "Callback"
-    );
+    public static readonly IndexedPropertyDefinition Callback = new(FieldUris.PhoneNumber, "Callback");
 
     /// <summary>
     ///     Defines the CarPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition CarPhone = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "CarPhone"
-    );
+    public static readonly IndexedPropertyDefinition CarPhone = new(FieldUris.PhoneNumber, "CarPhone");
 
     /// <summary>
     ///     Defines the CompanyMainPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition CompanyMainPhone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "CompanyMainPhone");
+    public static readonly IndexedPropertyDefinition CompanyMainPhone = new(FieldUris.PhoneNumber, "CompanyMainPhone");
 
     /// <summary>
     ///     Defines the HomeFax property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomeFax = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "HomeFax"
-    );
+    public static readonly IndexedPropertyDefinition HomeFax = new(FieldUris.PhoneNumber, "HomeFax");
 
     /// <summary>
     ///     Defines the HomePhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomePhone = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "HomePhone"
-    );
+    public static readonly IndexedPropertyDefinition HomePhone = new(FieldUris.PhoneNumber, "HomePhone");
 
     /// <summary>
     ///     Defines the HomePhone2 property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomePhone2 = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "HomePhone2"
-    );
+    public static readonly IndexedPropertyDefinition HomePhone2 = new(FieldUris.PhoneNumber, "HomePhone2");
 
     /// <summary>
     ///     Defines the Isdn property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition Isdn =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "Isdn");
+    public static readonly IndexedPropertyDefinition Isdn = new(FieldUris.PhoneNumber, "Isdn");
 
     /// <summary>
     ///     Defines the MobilePhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition MobilePhone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "MobilePhone");
+    public static readonly IndexedPropertyDefinition MobilePhone = new(FieldUris.PhoneNumber, "MobilePhone");
 
     /// <summary>
     ///     Defines the OtherFax property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherFax = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "OtherFax"
-    );
+    public static readonly IndexedPropertyDefinition OtherFax = new(FieldUris.PhoneNumber, "OtherFax");
 
     /// <summary>
     ///     Defines the OtherTelephone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherTelephone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "OtherTelephone");
+    public static readonly IndexedPropertyDefinition OtherTelephone = new(FieldUris.PhoneNumber, "OtherTelephone");
 
     /// <summary>
     ///     Defines the Pager property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition Pager = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "Pager"
-    );
+    public static readonly IndexedPropertyDefinition Pager = new(FieldUris.PhoneNumber, "Pager");
 
     /// <summary>
     ///     Defines the PrimaryPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition PrimaryPhone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "PrimaryPhone");
+    public static readonly IndexedPropertyDefinition PrimaryPhone = new(FieldUris.PhoneNumber, "PrimaryPhone");
 
     /// <summary>
     ///     Defines the RadioPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition RadioPhone = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "RadioPhone"
-    );
+    public static readonly IndexedPropertyDefinition RadioPhone = new(FieldUris.PhoneNumber, "RadioPhone");
 
     /// <summary>
     ///     Defines the Telex property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition Telex = new IndexedPropertyDefinition(
-        FieldUris.PhoneNumber,
-        "Telex"
-    );
+    public static readonly IndexedPropertyDefinition Telex = new(FieldUris.PhoneNumber, "Telex");
 
     /// <summary>
     ///     Defines the TtyTddPhone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition TtyTddPhone =
-        new IndexedPropertyDefinition(FieldUris.PhoneNumber, "TtyTddPhone");
+    public static readonly IndexedPropertyDefinition TtyTddPhone = new(FieldUris.PhoneNumber, "TtyTddPhone");
 
     #endregion
 
@@ -1143,57 +760,42 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the BusinessAddressStreet property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessAddressStreet =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressStreet, "Business");
+    public static readonly IndexedPropertyDefinition BusinessAddressStreet = new(
+        FieldUris.PhysicalAddressStreet,
+        "Business"
+    );
 
     /// <summary>
     ///     Defines the BusinessAddressCity property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessAddressCity =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressCity, "Business");
+    public static readonly IndexedPropertyDefinition BusinessAddressCity = new(
+        FieldUris.PhysicalAddressCity,
+        "Business"
+    );
 
     /// <summary>
     ///     Defines the BusinessAddressState property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessAddressState =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressState, "Business");
+    public static readonly IndexedPropertyDefinition BusinessAddressState = new(
+        FieldUris.PhysicalAddressState,
+        "Business"
+    );
 
     /// <summary>
     ///     Defines the BusinessAddressCountryOrRegion property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessAddressCountryOrRegion =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressCountryOrRegion, "Business");
+    public static readonly IndexedPropertyDefinition BusinessAddressCountryOrRegion = new(
+        FieldUris.PhysicalAddressCountryOrRegion,
+        "Business"
+    );
 
     /// <summary>
     ///     Defines the BusinessAddressPostalCode property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition BusinessAddressPostalCode =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressPostalCode, "Business");
+    public static readonly IndexedPropertyDefinition BusinessAddressPostalCode = new(
+        FieldUris.PhysicalAddressPostalCode,
+        "Business"
+    );
 
     #endregion
 
@@ -1203,57 +805,33 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the HomeAddressStreet property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomeAddressStreet =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressStreet, "Home");
+    public static readonly IndexedPropertyDefinition HomeAddressStreet = new(FieldUris.PhysicalAddressStreet, "Home");
 
     /// <summary>
     ///     Defines the HomeAddressCity property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomeAddressCity =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressCity, "Home");
+    public static readonly IndexedPropertyDefinition HomeAddressCity = new(FieldUris.PhysicalAddressCity, "Home");
 
     /// <summary>
     ///     Defines the HomeAddressState property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomeAddressState =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressState, "Home");
+    public static readonly IndexedPropertyDefinition HomeAddressState = new(FieldUris.PhysicalAddressState, "Home");
 
     /// <summary>
     ///     Defines the HomeAddressCountryOrRegion property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomeAddressCountryOrRegion =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressCountryOrRegion, "Home");
+    public static readonly IndexedPropertyDefinition HomeAddressCountryOrRegion = new(
+        FieldUris.PhysicalAddressCountryOrRegion,
+        "Home"
+    );
 
     /// <summary>
     ///     Defines the HomeAddressPostalCode property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition HomeAddressPostalCode =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressPostalCode, "Home");
+    public static readonly IndexedPropertyDefinition HomeAddressPostalCode = new(
+        FieldUris.PhysicalAddressPostalCode,
+        "Home"
+    );
 
     #endregion
 
@@ -1263,63 +841,39 @@ public class ContactSchema : ItemSchema
     /// <summary>
     ///     Defines the OtherAddressStreet property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherAddressStreet =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressStreet, "Other");
+    public static readonly IndexedPropertyDefinition OtherAddressStreet = new(FieldUris.PhysicalAddressStreet, "Other");
 
     /// <summary>
     ///     Defines the OtherAddressCity property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherAddressCity =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressCity, "Other");
+    public static readonly IndexedPropertyDefinition OtherAddressCity = new(FieldUris.PhysicalAddressCity, "Other");
 
     /// <summary>
     ///     Defines the OtherAddressState property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherAddressState =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressState, "Other");
+    public static readonly IndexedPropertyDefinition OtherAddressState = new(FieldUris.PhysicalAddressState, "Other");
 
     /// <summary>
     ///     Defines the OtherAddressCountryOrRegion property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherAddressCountryOrRegion =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressCountryOrRegion, "Other");
+    public static readonly IndexedPropertyDefinition OtherAddressCountryOrRegion = new(
+        FieldUris.PhysicalAddressCountryOrRegion,
+        "Other"
+    );
 
     /// <summary>
     ///     Defines the OtherAddressPostalCode property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
-    public static readonly IndexedPropertyDefinition OtherAddressPostalCode =
-        new IndexedPropertyDefinition(FieldUris.PhysicalAddressPostalCode, "Other");
+    public static readonly IndexedPropertyDefinition OtherAddressPostalCode = new(
+        FieldUris.PhysicalAddressPostalCode,
+        "Other"
+    );
 
     #endregion
 
 
     // This must be declared after the property definitions
-    internal static new readonly ContactSchema Instance = new ContactSchema();
+    internal new static readonly ContactSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

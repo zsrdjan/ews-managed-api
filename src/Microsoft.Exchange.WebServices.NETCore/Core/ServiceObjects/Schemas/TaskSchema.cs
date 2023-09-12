@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for task items.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class TaskSchema : ItemSchema
 {
@@ -65,11 +66,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the ActualWork property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ActualWork = new IntPropertyDefinition(
         XmlElementNames.ActualWork,
         FieldUris.ActualWork,
@@ -84,11 +80,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the AssignedTime property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AssignedTime = new DateTimePropertyDefinition(
         XmlElementNames.AssignedTime,
         FieldUris.AssignedTime,
@@ -100,11 +91,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the BillingInformation property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition BillingInformation = new StringPropertyDefinition(
         XmlElementNames.BillingInformation,
         FieldUris.BillingInformation,
@@ -118,11 +104,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the ChangeCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ChangeCount = new IntPropertyDefinition(
         XmlElementNames.ChangeCount,
         FieldUris.ChangeCount,
@@ -133,11 +114,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Companies property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Companies = new ComplexPropertyDefinition<StringList>(
         XmlElementNames.Companies,
         FieldUris.Companies,
@@ -147,17 +123,12 @@ public class TaskSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new StringList(); }
+        () => new StringList()
     );
 
     /// <summary>
     ///     Defines the CompleteDate property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition CompleteDate = new DateTimePropertyDefinition(
         XmlElementNames.CompleteDate,
         FieldUris.CompleteDate,
@@ -172,11 +143,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Contacts property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Contacts = new ComplexPropertyDefinition<StringList>(
         XmlElementNames.Contacts,
         FieldUris.Contacts,
@@ -186,17 +152,12 @@ public class TaskSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new StringList(); }
+        () => new StringList()
     );
 
     /// <summary>
     ///     Defines the DelegationState property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DelegationState = new TaskDelegationStatePropertyDefinition(
         XmlElementNames.DelegationState,
         FieldUris.DelegationState,
@@ -207,11 +168,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Delegator property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Delegator = new StringPropertyDefinition(
         XmlElementNames.Delegator,
         FieldUris.Delegator,
@@ -222,11 +178,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the DueDate property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DueDate = new DateTimePropertyDefinition(
         XmlElementNames.DueDate,
         FieldUris.DueDate,
@@ -243,11 +194,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Mode property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Mode = new GenericPropertyDefinition<TaskMode>(
         XmlElementNames.IsAssignmentEditable,
         FieldUris.IsAssignmentEditable,
@@ -258,11 +204,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the IsComplete property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsComplete = new BoolPropertyDefinition(
         XmlElementNames.IsComplete,
         FieldUris.IsComplete,
@@ -273,11 +214,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the IsRecurring property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsRecurring = new BoolPropertyDefinition(
         XmlElementNames.IsRecurring,
         FieldUris.IsRecurring,
@@ -288,11 +224,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the IsTeamTask property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsTeamTask = new BoolPropertyDefinition(
         XmlElementNames.IsTeamTask,
         FieldUris.IsTeamTask,
@@ -303,11 +234,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Mileage property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Mileage = new StringPropertyDefinition(
         XmlElementNames.Mileage,
         FieldUris.Mileage,
@@ -321,11 +247,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Owner property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Owner = new StringPropertyDefinition(
         XmlElementNames.Owner,
         FieldUris.Owner,
@@ -336,11 +257,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the PercentComplete property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PercentComplete = new DoublePropertyDefinition(
         XmlElementNames.PercentComplete,
         FieldUris.PercentComplete,
@@ -351,11 +267,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Recurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Recurrence = new RecurrencePropertyDefinition(
         XmlElementNames.Recurrence,
         FieldUris.Recurrence,
@@ -366,11 +277,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the StartDate property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition StartDate = new DateTimePropertyDefinition(
         XmlElementNames.StartDate,
         FieldUris.StartDate,
@@ -385,11 +291,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the Status property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Status = new GenericPropertyDefinition<TaskStatus>(
         XmlElementNames.Status,
         FieldUris.Status,
@@ -400,11 +301,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the StatusDescription property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition StatusDescription = new StringPropertyDefinition(
         XmlElementNames.StatusDescription,
         FieldUris.StatusDescription,
@@ -415,11 +311,6 @@ public class TaskSchema : ItemSchema
     /// <summary>
     ///     Defines the TotalWork property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition TotalWork = new IntPropertyDefinition(
         XmlElementNames.TotalWork,
         FieldUris.TotalWork,
@@ -432,7 +323,7 @@ public class TaskSchema : ItemSchema
     ); // isNullable
 
     // This must be declared after the property definitions
-    internal static new readonly TaskSchema Instance = new TaskSchema();
+    internal new static readonly TaskSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

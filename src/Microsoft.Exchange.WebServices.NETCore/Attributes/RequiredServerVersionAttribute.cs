@@ -33,22 +33,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class RequiredServerVersionAttribute : Attribute
 {
     /// <summary>
-    ///     Exchange version.
-    /// </summary>
-    private readonly ExchangeVersion version;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="RequiredServerVersionAttribute" /> class.
     /// </summary>
     /// <param name="version">The Exchange version.</param>
     internal RequiredServerVersionAttribute(ExchangeVersion version)
     {
-        this.version = version;
+        Version = version;
     }
 
     /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
-    internal ExchangeVersion Version => version;
+    internal ExchangeVersion Version { get; }
 }

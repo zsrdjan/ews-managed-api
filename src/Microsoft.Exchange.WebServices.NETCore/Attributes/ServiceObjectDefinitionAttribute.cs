@@ -31,31 +31,24 @@ namespace Microsoft.Exchange.WebServices.Data;
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 internal sealed class ServiceObjectDefinitionAttribute : Attribute
 {
-    private readonly string xmlElementName;
-    private bool returnedByServer;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceObjectDefinitionAttribute" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal ServiceObjectDefinitionAttribute(string xmlElementName)
     {
-        this.xmlElementName = xmlElementName;
-        returnedByServer = true;
+        XmlElementName = xmlElementName;
+        ReturnedByServer = true;
     }
 
     /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
-    internal string XmlElementName => xmlElementName;
+    internal string XmlElementName { get; }
 
     /// <summary>
     ///     True if this ServiceObject can be returned by the server as an object, false otherwise.
     /// </summary>
-    public bool ReturnedByServer
-    {
-        get => returnedByServer;
-        set => returnedByServer = value;
-    }
+    public bool ReturnedByServer { get; set; }
 }

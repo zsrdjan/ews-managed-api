@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Persona schema
 /// </summary>
+[PublicAPI]
 [Schema]
 public class PersonaSchema : ItemSchema
 {
@@ -70,11 +71,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the PersonaId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PersonaId = new ComplexPropertyDefinition<ItemId>(
         XmlElementNames.PersonaId,
         FieldUris.PersonaId,
@@ -84,17 +80,12 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate { return new ItemId(); }
+        () => new ItemId()
     );
 
     /// <summary>
     ///     Defines the PersonaType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PersonaType = new StringPropertyDefinition(
         XmlElementNames.PersonaType,
         FieldUris.PersonaType,
@@ -108,11 +99,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the CreationTime property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition CreationTime = new DateTimePropertyDefinition(
         XmlElementNames.CreationTime,
         FieldUris.CreationTime,
@@ -126,11 +112,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayNameFirstLastHeader property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayNameFirstLastHeader = new StringPropertyDefinition(
         XmlElementNames.DisplayNameFirstLastHeader,
         FieldUris.DisplayNameFirstLastHeader,
@@ -144,11 +125,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayNameLastFirstHeader property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayNameLastFirstHeader = new StringPropertyDefinition(
         XmlElementNames.DisplayNameLastFirstHeader,
         FieldUris.DisplayNameLastFirstHeader,
@@ -162,11 +138,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayName = new StringPropertyDefinition(
         XmlElementNames.DisplayName,
         FieldUris.DisplayName,
@@ -180,11 +151,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayNameFirstLast property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayNameFirstLast = new StringPropertyDefinition(
         XmlElementNames.DisplayNameFirstLast,
         FieldUris.DisplayNameFirstLast,
@@ -198,11 +164,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayNameLastFirst property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayNameLastFirst = new StringPropertyDefinition(
         XmlElementNames.DisplayNameLastFirst,
         FieldUris.DisplayNameLastFirst,
@@ -216,11 +177,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the FileAs property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FileAs = new StringPropertyDefinition(
         XmlElementNames.FileAs,
         FieldUris.FileAs,
@@ -234,11 +190,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the Generation property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Generation = new StringPropertyDefinition(
         XmlElementNames.Generation,
         FieldUris.Generation,
@@ -252,11 +203,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the DisplayNamePrefix property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayNamePrefix = new StringPropertyDefinition(
         XmlElementNames.DisplayNamePrefix,
         FieldUris.DisplayNamePrefix,
@@ -270,11 +216,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the GivenName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition GivenName = new StringPropertyDefinition(
         XmlElementNames.GivenName,
         FieldUris.GivenName,
@@ -288,11 +229,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the Surname property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Surname = new StringPropertyDefinition(
         XmlElementNames.Surname,
         FieldUris.Surname,
@@ -306,11 +242,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the Title property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Title = new StringPropertyDefinition(
         XmlElementNames.Title,
         FieldUris.Title,
@@ -324,11 +255,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the CompanyName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition CompanyName = new StringPropertyDefinition(
         XmlElementNames.CompanyName,
         FieldUris.CompanyName,
@@ -342,11 +268,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the EmailAddress property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EmailAddress = new ComplexPropertyDefinition<PersonaEmailAddress>(
         XmlElementNames.EmailAddress,
         FieldUris.EmailAddress,
@@ -356,17 +277,12 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate { return new PersonaEmailAddress(); }
+        () => new PersonaEmailAddress()
     );
 
     /// <summary>
     ///     Defines the EmailAddresses property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EmailAddresses =
         new ComplexPropertyDefinition<PersonaEmailAddressCollection>(
             XmlElementNames.EmailAddresses,
@@ -377,17 +293,12 @@ public class PersonaSchema : ItemSchema
             PropertyDefinitionFlags.CanDelete |
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013_SP1,
-            delegate { return new PersonaEmailAddressCollection(); }
+            () => new PersonaEmailAddressCollection()
         );
 
     /// <summary>
     ///     Defines the ImAddress property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ImAddress = new StringPropertyDefinition(
         XmlElementNames.ImAddress,
         FieldUris.ImAddress,
@@ -401,11 +312,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the HomeCity property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition HomeCity = new StringPropertyDefinition(
         XmlElementNames.HomeCity,
         FieldUris.HomeCity,
@@ -419,11 +325,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the WorkCity property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition WorkCity = new StringPropertyDefinition(
         XmlElementNames.WorkCity,
         FieldUris.WorkCity,
@@ -437,11 +338,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the Alias property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Alias = new StringPropertyDefinition(
         XmlElementNames.Alias,
         FieldUris.Alias,
@@ -455,11 +351,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the RelevanceScore property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition RelevanceScore = new IntPropertyDefinition(
         XmlElementNames.RelevanceScore,
         FieldUris.RelevanceScore,
@@ -474,11 +365,6 @@ public class PersonaSchema : ItemSchema
     /// <summary>
     ///     Defines the Attributions property
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Attributions = new ComplexPropertyDefinition<AttributionCollection>(
         XmlElementNames.Attributions,
         FieldUris.Attributions,
@@ -488,17 +374,12 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate { return new AttributionCollection(); }
+        () => new AttributionCollection()
     );
 
     /// <summary>
     ///     Defines the OfficeLocations property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OfficeLocations =
         new ComplexPropertyDefinition<AttributedStringCollection>(
             XmlElementNames.OfficeLocations,
@@ -509,17 +390,12 @@ public class PersonaSchema : ItemSchema
             PropertyDefinitionFlags.CanDelete |
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013_SP1,
-            delegate { return new AttributedStringCollection(); }
+            () => new AttributedStringCollection()
         );
 
     /// <summary>
     ///     Defines the ImAddresses property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ImAddresses = new ComplexPropertyDefinition<AttributedStringCollection>(
         XmlElementNames.ImAddresses,
         FieldUris.ImAddresses,
@@ -529,17 +405,12 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate { return new AttributedStringCollection(); }
+        () => new AttributedStringCollection()
     );
 
     /// <summary>
     ///     Defines the Departments property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Departments = new ComplexPropertyDefinition<AttributedStringCollection>(
         XmlElementNames.Departments,
         FieldUris.Departments,
@@ -549,17 +420,12 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate { return new AttributedStringCollection(); }
+        () => new AttributedStringCollection()
     );
 
     /// <summary>
     ///     Defines the ThirdPartyPhotoUrls property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ThirdPartyPhotoUrls =
         new ComplexPropertyDefinition<AttributedStringCollection>(
             XmlElementNames.ThirdPartyPhotoUrls,
@@ -570,11 +436,11 @@ public class PersonaSchema : ItemSchema
             PropertyDefinitionFlags.CanDelete |
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013_SP1,
-            delegate { return new AttributedStringCollection(); }
+            () => new AttributedStringCollection()
         );
 
     // This must be declared after the property definitions
-    internal static new readonly PersonaSchema Instance = new PersonaSchema();
+    internal new static readonly PersonaSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

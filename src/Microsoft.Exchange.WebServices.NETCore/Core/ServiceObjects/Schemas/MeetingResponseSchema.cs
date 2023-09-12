@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for meeting messages.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class MeetingResponseSchema : MeetingMessageSchema
 {
@@ -45,97 +46,57 @@ public class MeetingResponseSchema : MeetingMessageSchema
     /// <summary>
     ///     Defines the Start property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Start = AppointmentSchema.Start;
 
     /// <summary>
     ///     Defines the End property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition End = AppointmentSchema.End;
 
     /// <summary>
     ///     Defines the Location property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Location = AppointmentSchema.Location;
 
     /// <summary>
     ///     Defines the AppointmentType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentType = AppointmentSchema.AppointmentType;
 
     /// <summary>
     ///     Defines the Recurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Recurrence = AppointmentSchema.Recurrence;
 
     /// <summary>
     ///     Defines the Proposed Start property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ProposedStart = new ScopedDateTimePropertyDefinition(
         XmlElementNames.ProposedStart,
         FieldUris.ProposedStart,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate { return AppointmentSchema.StartTimeZone; }
+        _ => AppointmentSchema.StartTimeZone
     );
 
     /// <summary>
     ///     Defines the Proposed End property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ProposedEnd = new ScopedDateTimePropertyDefinition(
         XmlElementNames.ProposedEnd,
         FieldUris.ProposedEnd,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate { return AppointmentSchema.EndTimeZone; }
+        _ => AppointmentSchema.EndTimeZone
     );
 
     /// <summary>
     ///     Enhanced Location property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EnhancedLocation = AppointmentSchema.EnhancedLocation;
 
     // This must be after the declaration of property definitions
-    internal static new readonly MeetingResponseSchema Instance = new MeetingResponseSchema();
+    internal new static readonly MeetingResponseSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

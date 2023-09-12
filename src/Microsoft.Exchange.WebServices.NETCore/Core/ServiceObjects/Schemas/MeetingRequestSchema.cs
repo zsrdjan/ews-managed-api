@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for meeting requests.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class MeetingRequestSchema : MeetingMessageSchema
 {
@@ -46,11 +47,6 @@ public class MeetingRequestSchema : MeetingMessageSchema
     /// <summary>
     ///     Defines the MeetingRequestType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MeetingRequestType = new GenericPropertyDefinition<MeetingRequestType>(
         XmlElementNames.MeetingRequestType,
         FieldUris.MeetingRequestType,
@@ -60,11 +56,6 @@ public class MeetingRequestSchema : MeetingMessageSchema
     /// <summary>
     ///     Defines the IntendedFreeBusyStatus property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IntendedFreeBusyStatus =
         new GenericPropertyDefinition<LegacyFreeBusyStatus>(
             XmlElementNames.IntendedFreeBusyStatus,
@@ -76,336 +67,171 @@ public class MeetingRequestSchema : MeetingMessageSchema
     /// <summary>
     ///     Defines the ChangeHighlights property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ChangeHighlights = new ComplexPropertyDefinition<ChangeHighlights>(
         XmlElementNames.ChangeHighlights,
         FieldUris.ChangeHighlights,
         ExchangeVersion.Exchange2013,
-        delegate { return new ChangeHighlights(); }
+        () => new ChangeHighlights()
     );
 
     /// <summary>
     ///     Enhanced Location property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EnhancedLocation = AppointmentSchema.EnhancedLocation;
 
     /// <summary>
     ///     Defines the Start property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Start = AppointmentSchema.Start;
 
     /// <summary>
     ///     Defines the End property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition End = AppointmentSchema.End;
 
     /// <summary>
     ///     Defines the OriginalStart property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OriginalStart = AppointmentSchema.OriginalStart;
 
     /// <summary>
     ///     Defines the IsAllDayEvent property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsAllDayEvent = AppointmentSchema.IsAllDayEvent;
 
     /// <summary>
     ///     Defines the LegacyFreeBusyStatus property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition LegacyFreeBusyStatus = AppointmentSchema.LegacyFreeBusyStatus;
 
     /// <summary>
     ///     Defines the Location property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Location = AppointmentSchema.Location;
 
     /// <summary>
     ///     Defines the When property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition When = AppointmentSchema.When;
 
     /// <summary>
     ///     Defines the IsMeeting property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsMeeting = AppointmentSchema.IsMeeting;
 
     /// <summary>
     ///     Defines the IsCancelled property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsCancelled = AppointmentSchema.IsCancelled;
 
     /// <summary>
     ///     Defines the IsRecurring property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsRecurring = AppointmentSchema.IsRecurring;
 
     /// <summary>
     ///     Defines the MeetingRequestWasSent property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MeetingRequestWasSent = AppointmentSchema.MeetingRequestWasSent;
 
     /// <summary>
     ///     Defines the AppointmentType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentType = AppointmentSchema.AppointmentType;
 
     /// <summary>
     ///     Defines the MyResponseType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MyResponseType = AppointmentSchema.MyResponseType;
 
     /// <summary>
     ///     Defines the Organizer property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Organizer = AppointmentSchema.Organizer;
 
     /// <summary>
     ///     Defines the RequiredAttendees property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition RequiredAttendees = AppointmentSchema.RequiredAttendees;
 
     /// <summary>
     ///     Defines the OptionalAttendees property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OptionalAttendees = AppointmentSchema.OptionalAttendees;
 
     /// <summary>
     ///     Defines the Resources property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Resources = AppointmentSchema.Resources;
 
     /// <summary>
     ///     Defines the ConflictingMeetingCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConflictingMeetingCount = AppointmentSchema.ConflictingMeetingCount;
 
     /// <summary>
     ///     Defines the AdjacentMeetingCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AdjacentMeetingCount = AppointmentSchema.AdjacentMeetingCount;
 
     /// <summary>
     ///     Defines the ConflictingMeetings property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConflictingMeetings = AppointmentSchema.ConflictingMeetings;
 
     /// <summary>
     ///     Defines the AdjacentMeetings property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AdjacentMeetings = AppointmentSchema.AdjacentMeetings;
 
     /// <summary>
     ///     Defines the Duration property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Duration = AppointmentSchema.Duration;
 
     /// <summary>
     ///     Defines the TimeZone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition TimeZone = AppointmentSchema.TimeZone;
 
     /// <summary>
     ///     Defines the AppointmentReplyTime property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentReplyTime = AppointmentSchema.AppointmentReplyTime;
 
     /// <summary>
     ///     Defines the AppointmentSequenceNumber property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentSequenceNumber = AppointmentSchema.AppointmentSequenceNumber;
 
     /// <summary>
     ///     Defines the AppointmentState property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentState = AppointmentSchema.AppointmentState;
 
     /// <summary>
     ///     Defines the Recurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Recurrence = AppointmentSchema.Recurrence;
 
     /// <summary>
     ///     Defines the FirstOccurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FirstOccurrence = AppointmentSchema.FirstOccurrence;
 
     /// <summary>
     ///     Defines the LastOccurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition LastOccurrence = AppointmentSchema.LastOccurrence;
 
     /// <summary>
     ///     Defines the ModifiedOccurrences property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ModifiedOccurrences = AppointmentSchema.ModifiedOccurrences;
 
     /// <summary>
     ///     Defines the DeletedOccurrences property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DeletedOccurrences = AppointmentSchema.DeletedOccurrences;
 
     /// <summary>
@@ -416,75 +242,40 @@ public class MeetingRequestSchema : MeetingMessageSchema
     /// <summary>
     ///     Defines the StartTimeZone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition StartTimeZone = AppointmentSchema.StartTimeZone;
 
     /// <summary>
     ///     Defines the EndTimeZone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EndTimeZone = AppointmentSchema.EndTimeZone;
 
     /// <summary>
     ///     Defines the ConferenceType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConferenceType = AppointmentSchema.ConferenceType;
 
     /// <summary>
     ///     Defines the AllowNewTimeProposal property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AllowNewTimeProposal = AppointmentSchema.AllowNewTimeProposal;
 
     /// <summary>
     ///     Defines the IsOnlineMeeting property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsOnlineMeeting = AppointmentSchema.IsOnlineMeeting;
 
     /// <summary>
     ///     Defines the MeetingWorkspaceUrl property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MeetingWorkspaceUrl = AppointmentSchema.MeetingWorkspaceUrl;
 
     /// <summary>
     ///     Defines the NetShowUrl property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition NetShowUrl = AppointmentSchema.NetShowUrl;
 
     // This must be after the declaration of property definitions
-    internal static new readonly MeetingRequestSchema Instance = new MeetingRequestSchema();
+    internal new static readonly MeetingRequestSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

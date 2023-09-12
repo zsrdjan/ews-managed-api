@@ -23,44 +23,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for contact groups.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class ContactGroupSchema : ItemSchema
 {
     /// <summary>
     ///     Defines the DisplayName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayName = ContactSchema.DisplayName;
 
     /// <summary>
     ///     Defines the FileAs property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FileAs = ContactSchema.FileAs;
 
     /// <summary>
     ///     Defines the Members property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Members = new ComplexPropertyDefinition<GroupMemberCollection>(
         XmlElementNames.Members,
         FieldUris.Members,
@@ -68,13 +54,13 @@ public class ContactGroupSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2010,
-        delegate { return new GroupMemberCollection(); }
+        () => new GroupMemberCollection()
     );
 
     /// <summary>
     ///     This must be declared after the property definitions.
     /// </summary>
-    internal static new readonly ContactGroupSchema Instance = new ContactGroupSchema();
+    internal new static readonly ContactGroupSchema Instance = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ContactGroupSchema" /> class.

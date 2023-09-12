@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for appointment and meeting requests.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class AppointmentSchema : ItemSchema
 {
@@ -89,11 +90,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the StartTimeZone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition StartTimeZone = new StartTimeZonePropertyDefinition(
         XmlElementNames.StartTimeZone,
         FieldUris.StartTimeZone,
@@ -104,11 +100,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the EndTimeZone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EndTimeZone = new TimeZonePropertyDefinition(
         XmlElementNames.EndTimeZone,
         FieldUris.EndTimeZone,
@@ -119,11 +110,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the Start property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Start = new ScopedDateTimePropertyDefinition(
         XmlElementNames.Start,
         FieldUris.Start,
@@ -135,30 +121,17 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the End property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition End = new ScopedDateTimePropertyDefinition(
         XmlElementNames.End,
         FieldUris.End,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanUpdate | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate(ExchangeVersion version)
-        {
-            return version == ExchangeVersion.Exchange2007_SP1 ? StartTimeZone : EndTimeZone;
-        }
+        version => version == ExchangeVersion.Exchange2007_SP1 ? StartTimeZone : EndTimeZone
     );
 
     /// <summary>
     ///     Defines the OriginalStart property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OriginalStart = new DateTimePropertyDefinition(
         XmlElementNames.OriginalStart,
         FieldUris.OriginalStart,
@@ -168,11 +141,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the IsAllDayEvent property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsAllDayEvent = new BoolPropertyDefinition(
         XmlElementNames.IsAllDayEvent,
         FieldUris.IsAllDayEvent,
@@ -183,11 +151,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the LegacyFreeBusyStatus property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition LegacyFreeBusyStatus =
         new GenericPropertyDefinition<LegacyFreeBusyStatus>(
             XmlElementNames.LegacyFreeBusyStatus,
@@ -199,11 +162,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the Location property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Location = new StringPropertyDefinition(
         XmlElementNames.Location,
         FieldUris.Location,
@@ -217,11 +175,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the When property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition When = new StringPropertyDefinition(
         XmlElementNames.When,
         FieldUris.When,
@@ -235,11 +188,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the IsMeeting property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsMeeting = new BoolPropertyDefinition(
         XmlElementNames.IsMeeting,
         FieldUris.IsMeeting,
@@ -250,11 +198,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the IsCancelled property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsCancelled = new BoolPropertyDefinition(
         XmlElementNames.IsCancelled,
         FieldUris.IsCancelled,
@@ -265,11 +208,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the IsRecurring property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsRecurring = new BoolPropertyDefinition(
         XmlElementNames.IsRecurring,
         FieldUris.IsRecurring,
@@ -280,11 +218,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the MeetingRequestWasSent property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MeetingRequestWasSent = new BoolPropertyDefinition(
         XmlElementNames.MeetingRequestWasSent,
         FieldUris.MeetingRequestWasSent,
@@ -295,11 +228,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the IsResponseRequested property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsResponseRequested = new BoolPropertyDefinition(
         XmlElementNames.IsResponseRequested,
         FieldUris.IsResponseRequested,
@@ -310,11 +238,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the AppointmentType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentType = new GenericPropertyDefinition<AppointmentType>(
         XmlElementNames.CalendarItemType,
         FieldUris.CalendarItemType,
@@ -325,11 +248,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the MyResponseType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MyResponseType = new GenericPropertyDefinition<MeetingResponseType>(
         XmlElementNames.MyResponseType,
         FieldUris.MyResponseType,
@@ -340,28 +258,18 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the Organizer property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Organizer = new ContainedPropertyDefinition<EmailAddress>(
         XmlElementNames.Organizer,
         FieldUris.Organizer,
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new EmailAddress(); }
+        () => new EmailAddress()
     );
 
     /// <summary>
     ///     Defines the RequiredAttendees property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition RequiredAttendees = new ComplexPropertyDefinition<AttendeeCollection>(
         XmlElementNames.RequiredAttendees,
         FieldUris.RequiredAttendees,
@@ -370,17 +278,12 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new AttendeeCollection(); }
+        () => new AttendeeCollection()
     );
 
     /// <summary>
     ///     Defines the OptionalAttendees property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OptionalAttendees = new ComplexPropertyDefinition<AttendeeCollection>(
         XmlElementNames.OptionalAttendees,
         FieldUris.OptionalAttendees,
@@ -389,17 +292,12 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new AttendeeCollection(); }
+        () => new AttendeeCollection()
     );
 
     /// <summary>
     ///     Defines the Resources property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Resources = new ComplexPropertyDefinition<AttendeeCollection>(
         XmlElementNames.Resources,
         FieldUris.Resources,
@@ -408,17 +306,12 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new AttendeeCollection(); }
+        () => new AttendeeCollection()
     );
 
     /// <summary>
     ///     Defines the ConflictingMeetingCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConflictingMeetingCount = new IntPropertyDefinition(
         XmlElementNames.ConflictingMeetingCount,
         FieldUris.ConflictingMeetingCount,
@@ -428,11 +321,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the AdjacentMeetingCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AdjacentMeetingCount = new IntPropertyDefinition(
         XmlElementNames.AdjacentMeetingCount,
         FieldUris.AdjacentMeetingCount,
@@ -442,43 +330,28 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the ConflictingMeetings property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConflictingMeetings =
         new ComplexPropertyDefinition<ItemCollection<Appointment>>(
             XmlElementNames.ConflictingMeetings,
             FieldUris.ConflictingMeetings,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new ItemCollection<Appointment>(); }
+            () => new ItemCollection<Appointment>()
         );
 
     /// <summary>
     ///     Defines the AdjacentMeetings property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AdjacentMeetings =
         new ComplexPropertyDefinition<ItemCollection<Appointment>>(
             XmlElementNames.AdjacentMeetings,
             FieldUris.AdjacentMeetings,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new ItemCollection<Appointment>(); }
+            () => new ItemCollection<Appointment>()
         );
 
     /// <summary>
     ///     Defines the Duration property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Duration = new TimeSpanPropertyDefinition(
         XmlElementNames.Duration,
         FieldUris.Duration,
@@ -489,11 +362,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the TimeZone property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition TimeZone = new StringPropertyDefinition(
         XmlElementNames.TimeZone,
         FieldUris.TimeZone,
@@ -504,11 +372,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the AppointmentReplyTime property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentReplyTime = new DateTimePropertyDefinition(
         XmlElementNames.AppointmentReplyTime,
         FieldUris.AppointmentReplyTime,
@@ -519,11 +382,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the AppointmentSequenceNumber property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentSequenceNumber = new IntPropertyDefinition(
         XmlElementNames.AppointmentSequenceNumber,
         FieldUris.AppointmentSequenceNumber,
@@ -533,11 +391,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the AppointmentState property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AppointmentState = new IntPropertyDefinition(
         XmlElementNames.AppointmentState,
         FieldUris.AppointmentState,
@@ -548,11 +401,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the Recurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Recurrence = new RecurrencePropertyDefinition(
         XmlElementNames.Recurrence,
         FieldUris.Recurrence,
@@ -563,63 +411,43 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the FirstOccurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FirstOccurrence = new ComplexPropertyDefinition<OccurrenceInfo>(
         XmlElementNames.FirstOccurrence,
         FieldUris.FirstOccurrence,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new OccurrenceInfo(); }
+        () => new OccurrenceInfo()
     );
 
     /// <summary>
     ///     Defines the LastOccurrence property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition LastOccurrence = new ComplexPropertyDefinition<OccurrenceInfo>(
         XmlElementNames.LastOccurrence,
         FieldUris.LastOccurrence,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new OccurrenceInfo(); }
+        () => new OccurrenceInfo()
     );
 
     /// <summary>
     ///     Defines the ModifiedOccurrences property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ModifiedOccurrences =
         new ComplexPropertyDefinition<OccurrenceInfoCollection>(
             XmlElementNames.ModifiedOccurrences,
             FieldUris.ModifiedOccurrences,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new OccurrenceInfoCollection(); }
+            () => new OccurrenceInfoCollection()
         );
 
     /// <summary>
     ///     Defines the DeletedOccurrences property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DeletedOccurrences =
         new ComplexPropertyDefinition<DeletedOccurrenceInfoCollection>(
             XmlElementNames.DeletedOccurrences,
             FieldUris.DeletedOccurrences,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new DeletedOccurrenceInfoCollection(); }
+            () => new DeletedOccurrenceInfoCollection()
         );
 
     /// <summary>
@@ -635,11 +463,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the ConferenceType property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ConferenceType = new IntPropertyDefinition(
         XmlElementNames.ConferenceType,
         FieldUris.ConferenceType,
@@ -650,11 +473,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the AllowNewTimeProposal property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition AllowNewTimeProposal = new BoolPropertyDefinition(
         XmlElementNames.AllowNewTimeProposal,
         FieldUris.AllowNewTimeProposal,
@@ -665,11 +483,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the IsOnlineMeeting property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition IsOnlineMeeting = new BoolPropertyDefinition(
         XmlElementNames.IsOnlineMeeting,
         FieldUris.IsOnlineMeeting,
@@ -680,11 +493,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the MeetingWorkspaceUrl property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition MeetingWorkspaceUrl = new StringPropertyDefinition(
         XmlElementNames.MeetingWorkspaceUrl,
         FieldUris.MeetingWorkspaceUrl,
@@ -698,11 +506,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the NetShowUrl property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition NetShowUrl = new StringPropertyDefinition(
         XmlElementNames.NetShowUrl,
         FieldUris.NetShowUrl,
@@ -716,11 +519,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the iCalendar Uid property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ICalUid = new StringPropertyDefinition(
         XmlElementNames.Uid,
         FieldUris.Uid,
@@ -731,11 +529,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the iCalendar RecurrenceId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ICalRecurrenceId = new DateTimePropertyDefinition(
         XmlElementNames.RecurrenceId,
         FieldUris.RecurrenceId,
@@ -747,11 +540,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Defines the iCalendar DateTimeStamp property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ICalDateTimeStamp = new DateTimePropertyDefinition(
         XmlElementNames.DateTimeStamp,
         FieldUris.DateTimeStamp,
@@ -763,11 +551,6 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     Enhanced Location property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EnhancedLocation = new ComplexPropertyDefinition<EnhancedLocation>(
         XmlElementNames.EnhancedLocation,
         FieldUris.EnhancedLocation,
@@ -776,17 +559,12 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate { return new EnhancedLocation(); }
+        () => new EnhancedLocation()
     );
 
     /// <summary>
     ///     JoinOnlineMeetingUrl property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition JoinOnlineMeetingUrl = new StringPropertyDefinition(
         XmlElementNames.JoinOnlineMeetingUrl,
         FieldUris.JoinOnlineMeetingUrl,
@@ -797,18 +575,13 @@ public class AppointmentSchema : ItemSchema
     /// <summary>
     ///     OnlineMeetingSettings property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition OnlineMeetingSettings =
         new ComplexPropertyDefinition<OnlineMeetingSettings>(
             XmlElementNames.OnlineMeetingSettings,
             FieldUris.OnlineMeetingSettings,
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013,
-            delegate { return new OnlineMeetingSettings(); }
+            () => new OnlineMeetingSettings()
         );
 
     /// <summary>
@@ -817,7 +590,7 @@ public class AppointmentSchema : ItemSchema
     /// <remarks>
     ///     This must be after the declaration of property definitions.
     /// </remarks>
-    internal static new readonly AppointmentSchema Instance = new AppointmentSchema();
+    internal new static readonly AppointmentSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

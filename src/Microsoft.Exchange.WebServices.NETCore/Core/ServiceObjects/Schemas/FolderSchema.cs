@@ -23,13 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the schema for folders.
 /// </summary>
+[PublicAPI]
 [Schema]
 public class FolderSchema : ServiceObjectSchema
 {
@@ -56,27 +57,17 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the Id property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Id = new ComplexPropertyDefinition<FolderId>(
         XmlElementNames.FolderId,
         FieldUris.FolderId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new FolderId(); }
+        () => new FolderId()
     );
 
     /// <summary>
     ///     Defines the FolderClass property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition FolderClass = new StringPropertyDefinition(
         XmlElementNames.FolderClass,
         FieldUris.FolderClass,
@@ -87,27 +78,17 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the ParentFolderId property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ParentFolderId = new ComplexPropertyDefinition<FolderId>(
         XmlElementNames.ParentFolderId,
         FieldUris.ParentFolderId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new FolderId(); }
+        () => new FolderId()
     );
 
     /// <summary>
     ///     Defines the ChildFolderCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ChildFolderCount = new IntPropertyDefinition(
         XmlElementNames.ChildFolderCount,
         FieldUris.ChildFolderCount,
@@ -118,11 +99,6 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the DisplayName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition DisplayName = new StringPropertyDefinition(
         XmlElementNames.DisplayName,
         FieldUris.DisplayName,
@@ -136,11 +112,6 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the UnreadCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition UnreadCount = new IntPropertyDefinition(
         XmlElementNames.UnreadCount,
         FieldUris.UnreadCount,
@@ -151,11 +122,6 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the TotalCount property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition TotalCount = new IntPropertyDefinition(
         XmlElementNames.TotalCount,
         FieldUris.TotalCount,
@@ -166,28 +132,18 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the ManagedFolderInformation property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ManagedFolderInformation =
         new ComplexPropertyDefinition<ManagedFolderInformation>(
             XmlElementNames.ManagedFolderInformation,
             FieldUris.ManagedFolderInformation,
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new ManagedFolderInformation(); }
+            () => new ManagedFolderInformation()
         );
 
     /// <summary>
     ///     Defines the EffectiveRights property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition EffectiveRights = new EffectiveRightsPropertyDefinition(
         XmlElementNames.EffectiveRights,
         FieldUris.EffectiveRights,
@@ -198,11 +154,6 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the Permissions property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition Permissions = new PermissionSetPropertyDefinition(
         XmlElementNames.PermissionSet,
         FieldUris.PermissionSet,
@@ -217,11 +168,6 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the WellKnownFolderName property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition WellKnownFolderName = new StringPropertyDefinition(
         XmlElementNames.DistinguishedFolderId,
         FieldUris.DistinguishedFolderId,
@@ -232,11 +178,6 @@ public class FolderSchema : ServiceObjectSchema
     /// <summary>
     ///     Defines the PolicyTag property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition PolicyTag = new ComplexPropertyDefinition<PolicyTag>(
         XmlElementNames.PolicyTag,
         FieldUris.PolicyTag,
@@ -245,17 +186,12 @@ public class FolderSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate { return new PolicyTag(); }
+        () => new PolicyTag()
     );
 
     /// <summary>
     ///     Defines the ArchiveTag property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable type"
-    )]
     public static readonly PropertyDefinition ArchiveTag = new ComplexPropertyDefinition<ArchiveTag>(
         XmlElementNames.ArchiveTag,
         FieldUris.ArchiveTag,
@@ -264,11 +200,11 @@ public class FolderSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate { return new ArchiveTag(); }
+        () => new ArchiveTag()
     );
 
     // This must be declared after the property definitions
-    internal static readonly FolderSchema Instance = new FolderSchema();
+    internal static readonly FolderSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.
