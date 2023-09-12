@@ -25,18 +25,16 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents an UpdateDelegate request.
+///     Represents an UpdateDelegate request.
 /// </summary>
 internal class UpdateDelegateRequest : DelegateManagementRequestBase<DelegateManagementResponse>
 {
-    private List<DelegateUser> delegateUsers = new List<DelegateUser>();
+    private readonly List<DelegateUser> delegateUsers = new List<DelegateUser>();
     private MeetingRequestsDeliveryScope? meetingRequestsDeliveryScope;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateDelegateRequest"/> class.
+    ///     Initializes a new instance of the <see cref="UpdateDelegateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal UpdateDelegateRequest(ExchangeService service)
@@ -45,21 +43,21 @@ internal class UpdateDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Validate request..
+    ///     Validate request..
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(this.DelegateUsers, "DelegateUsers");
+        EwsUtilities.ValidateParamCollection(DelegateUsers, "DelegateUsers");
 
-        foreach (DelegateUser delegateUser in this.DelegateUsers)
+        foreach (var delegateUser in DelegateUsers)
         {
             delegateUser.ValidateUpdateDelegate();
         }
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -68,25 +66,25 @@ internal class UpdateDelegateRequest : DelegateManagementRequestBase<DelegateMan
 
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.DelegateUsers);
 
-        foreach (DelegateUser delegateUser in this.DelegateUsers)
+        foreach (var delegateUser in DelegateUsers)
         {
             delegateUser.WriteToXml(writer, XmlElementNames.DelegateUser);
         }
 
         writer.WriteEndElement(); // DelegateUsers
 
-        if (this.MeetingRequestsDeliveryScope.HasValue)
+        if (MeetingRequestsDeliveryScope.HasValue)
         {
             writer.WriteElementValue(
                 XmlNamespace.Messages,
                 XmlElementNames.DeliverMeetingRequests,
-                this.MeetingRequestsDeliveryScope.Value
+                MeetingRequestsDeliveryScope.Value
             );
         }
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -95,16 +93,16 @@ internal class UpdateDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Creates the response.
+    ///     Creates the response.
     /// </summary>
     /// <returns>Response object.</returns>
     internal override DelegateManagementResponse CreateResponse()
     {
-        return new DelegateManagementResponse(true, this.delegateUsers);
+        return new DelegateManagementResponse(true, delegateUsers);
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -113,7 +111,7 @@ internal class UpdateDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -122,21 +120,18 @@ internal class UpdateDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Gets or sets the meeting requests delivery scope.
+    ///     Gets or sets the meeting requests delivery scope.
     /// </summary>
     /// <value>The meeting requests delivery scope.</value>
     public MeetingRequestsDeliveryScope? MeetingRequestsDeliveryScope
     {
-        get { return this.meetingRequestsDeliveryScope; }
-        set { this.meetingRequestsDeliveryScope = value; }
+        get => meetingRequestsDeliveryScope;
+        set => meetingRequestsDeliveryScope = value;
     }
 
     /// <summary>
-    /// Gets the delegate users.
+    ///     Gets the delegate users.
     /// </summary>
     /// <value>The delegate users.</value>
-    public List<DelegateUser> DelegateUsers
-    {
-        get { return this.delegateUsers; }
-    }
+    public List<DelegateUser> DelegateUsers => delegateUsers;
 }

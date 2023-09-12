@@ -23,22 +23,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Net;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Net;
-using System.Xml;
-
 /// <summary>
-/// WebCredentials wraps an instance of ICredentials used for password-based authentication schemes such as basic, digest, NTLM, and Kerberos authentication.
+///     WebCredentials wraps an instance of ICredentials used for password-based authentication schemes such as basic,
+///     digest, NTLM, and Kerberos authentication.
 /// </summary>
 public sealed class WebCredentials : ExchangeCredentials
 {
-    private ICredentials credentials;
+    private readonly ICredentials credentials;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebCredentials"/> class to use
-    /// the default network credentials.
+    ///     Initializes a new instance of the <see cref="WebCredentials" /> class to use
+    ///     the default network credentials.
     /// </summary>
     public WebCredentials()
         : this(CredentialCache.DefaultNetworkCredentials)
@@ -46,8 +45,8 @@ public sealed class WebCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebCredentials"/> class using
-    /// specified credentials.
+    ///     Initializes a new instance of the <see cref="WebCredentials" /> class using
+    ///     specified credentials.
     /// </summary>
     /// <param name="credentials">Credentials to use.</param>
     public WebCredentials(ICredentials credentials)
@@ -58,7 +57,7 @@ public sealed class WebCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="WebCredentials" /> class.
     /// </summary>
     /// <param name="username">The username.</param>
     /// <param name="password">The password.</param>
@@ -68,7 +67,7 @@ public sealed class WebCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="WebCredentials" /> class.
     /// </summary>
     /// <param name="username">Account username.</param>
     /// <param name="password">Account password.</param>
@@ -79,26 +78,23 @@ public sealed class WebCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Applies NetworkCredential associated with this instance to a service request.
+    ///     Applies NetworkCredential associated with this instance to a service request.
     /// </summary>
     /// <param name="request">The request.</param>
     internal override void PrepareWebRequest(IEwsHttpWebRequest request)
     {
-        request.Credentials = this.credentials;
+        request.Credentials = credentials;
     }
 
     /// <summary>
-    /// Gets the Credentials from this instance.
+    ///     Gets the Credentials from this instance.
     /// </summary>
     /// <value>The credentials.</value>
-    public ICredentials Credentials
-    {
-        get { return this.credentials; }
-    }
+    public ICredentials Credentials => credentials;
 
     /// <summary>
-    /// Adjusts the URL endpoint based on the credentials. 
-    /// For WebCredentials, the end user is responsible for setting the url.
+    ///     Adjusts the URL endpoint based on the credentials.
+    ///     For WebCredentials, the end user is responsible for setting the url.
     /// </summary>
     /// <param name="url">The URL.</param>
     /// <returns>The unchanged URL.</returns>

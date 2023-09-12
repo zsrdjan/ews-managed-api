@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a SearchMailboxesRequest request.
+///     Represents a SearchMailboxesRequest request.
 /// </summary>
 internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<SearchMailboxesResponse>,
     IDiscoveryVersionable
@@ -46,7 +42,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     private PreviewItemResponseShape previewItemResponseShape;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SearchMailboxesRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SearchMailboxesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -56,7 +52,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -67,7 +63,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -76,7 +72,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -85,7 +81,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -94,7 +90,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -103,18 +99,18 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (this.SearchQueries == null || this.SearchQueries.Count == 0)
+        if (SearchQueries == null || SearchQueries.Count == 0)
         {
             throw new ServiceValidationException(Strings.MailboxQueriesParameterIsNotSpecified);
         }
 
-        foreach (MailboxQuery searchQuery in this.SearchQueries)
+        foreach (var searchQuery in SearchQueries)
         {
             if (searchQuery.MailboxSearchScopes == null || searchQuery.MailboxSearchScopes.Length == 0)
             {
@@ -122,12 +118,12 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
             }
         }
 
-        if (!string.IsNullOrEmpty(this.SortByProperty))
+        if (!string.IsNullOrEmpty(SortByProperty))
         {
             PropertyDefinitionBase prop = null;
             try
             {
-                prop = ServiceObjectSchema.FindPropertyDefinition(this.SortByProperty);
+                prop = ServiceObjectSchema.FindPropertyDefinition(SortByProperty);
             }
             catch (KeyNotFoundException)
             {
@@ -136,22 +132,22 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
             if (prop == null)
             {
                 throw new ServiceValidationException(
-                    string.Format(Strings.InvalidSortByPropertyForMailboxSearch, this.SortByProperty)
+                    string.Format(Strings.InvalidSortByPropertyForMailboxSearch, SortByProperty)
                 );
             }
         }
     }
 
     /// <summary>
-    /// Parses the response.
-    /// See O15:324151 on why we need to override ParseResponse here instead of calling the one in MultiResponseServiceRequest.cs
+    ///     Parses the response.
+    ///     See O15:324151 on why we need to override ParseResponse here instead of calling the one in
+    ///     MultiResponseServiceRequest.cs
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Service response collection.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        ServiceResponseCollection<SearchMailboxesResponse> serviceResponses =
-            new ServiceResponseCollection<SearchMailboxesResponse>();
+        var serviceResponses = new ServiceResponseCollection<SearchMailboxesResponse>();
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ResponseMessages);
 
@@ -164,8 +160,8 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
                 break;
             }
 
-            SearchMailboxesResponse response = new SearchMailboxesResponse();
-            response.LoadFromXml(reader, this.GetResponseMessageXmlElementName());
+            var response = new SearchMailboxesResponse();
+            response.LoadFromXml(reader, GetResponseMessageXmlElementName());
             serviceResponses.Add(response);
         }
 
@@ -175,18 +171,18 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SearchQueries);
-        foreach (MailboxQuery mailboxQuery in this.SearchQueries)
+        foreach (var mailboxQuery in SearchQueries)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.MailboxQuery);
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Query, mailboxQuery.Query);
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScopes);
-            foreach (MailboxSearchScope mailboxSearchScope in mailboxQuery.MailboxSearchScopes)
+            foreach (var mailboxSearchScope in mailboxQuery.MailboxSearchScopes)
             {
                 // The checks here silently downgrade the schema based on compatibility checks, to receive errors use the validate method
                 if (mailboxSearchScope.SearchScopeType == MailboxSearchScopeType.LegacyExchangeDN ||
@@ -223,7 +219,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
                         if (mailboxSearchScope.ExtendedAttributes != null &&
                             mailboxSearchScope.ExtendedAttributes.Count > 0)
                         {
-                            foreach (ExtendedAttribute attribute in mailboxSearchScope.ExtendedAttributes)
+                            foreach (var attribute in mailboxSearchScope.ExtendedAttributes)
                             {
                                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ExtendedAttribute);
                                 writer.WriteElementValue(
@@ -252,22 +248,17 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
         }
 
         writer.WriteEndElement(); // SearchQueries
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ResultType, this.ResultType);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ResultType, ResultType);
 
-        if (this.PreviewItemResponseShape != null)
+        if (PreviewItemResponseShape != null)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.PreviewItemResponseShape);
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.BaseShape,
-                this.PreviewItemResponseShape.BaseShape
-            );
-            if (this.PreviewItemResponseShape.AdditionalProperties != null &&
-                this.PreviewItemResponseShape.AdditionalProperties.Length > 0)
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.BaseShape, PreviewItemResponseShape.BaseShape);
+            if (PreviewItemResponseShape.AdditionalProperties != null &&
+                PreviewItemResponseShape.AdditionalProperties.Length > 0)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.AdditionalProperties);
-                foreach (ExtendedPropertyDefinition additionalProperty in this.PreviewItemResponseShape
-                             .AdditionalProperties)
+                foreach (var additionalProperty in PreviewItemResponseShape.AdditionalProperties)
                 {
                     additionalProperty.WriteToXml(writer);
                 }
@@ -278,40 +269,40 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
             writer.WriteEndElement(); // PreviewItemResponseShape
         }
 
-        if (!string.IsNullOrEmpty(this.SortByProperty))
+        if (!string.IsNullOrEmpty(SortByProperty))
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SortBy);
-            writer.WriteAttributeValue(XmlElementNames.Order, this.SortOrder.ToString());
+            writer.WriteAttributeValue(XmlElementNames.Order, SortOrder.ToString());
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldURI);
-            writer.WriteAttributeValue(XmlElementNames.FieldURI, this.sortByProperty);
+            writer.WriteAttributeValue(XmlElementNames.FieldURI, sortByProperty);
             writer.WriteEndElement(); // FieldURI
             writer.WriteEndElement(); // SortBy
         }
 
         // Language
-        if (!string.IsNullOrEmpty(this.Language))
+        if (!string.IsNullOrEmpty(Language))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Language, this.Language);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Language, Language);
         }
 
         // Dedupe
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Deduplication, this.performDeduplication);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Deduplication, performDeduplication);
 
-        if (this.PageSize > 0)
+        if (PageSize > 0)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageSize, this.PageSize.ToString());
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageSize, PageSize.ToString());
         }
 
-        if (!string.IsNullOrEmpty(this.PageItemReference))
+        if (!string.IsNullOrEmpty(PageItemReference))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageItemReference, this.PageItemReference);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageItemReference, PageItemReference);
         }
 
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageDirection, this.PageDirection.ToString());
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageDirection, PageDirection.ToString());
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -320,96 +311,96 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     }
 
     /// <summary>
-    /// Collection of query + mailboxes
+    ///     Collection of query + mailboxes
     /// </summary>
     public List<MailboxQuery> SearchQueries
     {
-        get { return this.searchQueries; }
-        set { this.searchQueries = value; }
+        get => searchQueries;
+        set => searchQueries = value;
     }
 
     /// <summary>
-    /// Search result type
+    ///     Search result type
     /// </summary>
     public SearchResultType ResultType
     {
-        get { return this.searchResultType; }
-        set { this.searchResultType = value; }
+        get => searchResultType;
+        set => searchResultType = value;
     }
 
     /// <summary>
-    /// Preview item response shape
+    ///     Preview item response shape
     /// </summary>
     public PreviewItemResponseShape PreviewItemResponseShape
     {
-        get { return this.previewItemResponseShape; }
-        set { this.previewItemResponseShape = value; }
+        get => previewItemResponseShape;
+        set => previewItemResponseShape = value;
     }
 
     /// <summary>
-    /// Sort order
+    ///     Sort order
     /// </summary>
     public SortDirection SortOrder
     {
-        get { return this.sortOrder; }
-        set { this.sortOrder = value; }
+        get => sortOrder;
+        set => sortOrder = value;
     }
 
     /// <summary>
-    /// Sort by property name
+    ///     Sort by property name
     /// </summary>
     public string SortByProperty
     {
-        get { return this.sortByProperty; }
-        set { this.sortByProperty = value; }
+        get => sortByProperty;
+        set => sortByProperty = value;
     }
 
     /// <summary>
-    /// Query language
+    ///     Query language
     /// </summary>
     public string Language { get; set; }
 
     /// <summary>
-    /// Perform deduplication or not
+    ///     Perform deduplication or not
     /// </summary>
     public bool PerformDeduplication
     {
-        get { return this.performDeduplication; }
-        set { this.performDeduplication = value; }
+        get => performDeduplication;
+        set => performDeduplication = value;
     }
 
     /// <summary>
-    /// Page size
+    ///     Page size
     /// </summary>
     public int PageSize
     {
-        get { return this.pageSize; }
-        set { this.pageSize = value; }
+        get => pageSize;
+        set => pageSize = value;
     }
 
     /// <summary>
-    /// Page item reference
+    ///     Page item reference
     /// </summary>
     public string PageItemReference
     {
-        get { return this.pageItemReference; }
-        set { this.pageItemReference = value; }
+        get => pageItemReference;
+        set => pageItemReference = value;
     }
 
     /// <summary>
-    /// Page direction
+    ///     Page direction
     /// </summary>
     public SearchPageDirection PageDirection
     {
-        get { return this.pageDirection; }
-        set { this.pageDirection = value; }
+        get => pageDirection;
+        set => pageDirection = value;
     }
 
     /// <summary>
-    /// Gets or sets the server version.
+    ///     Gets or sets the server version.
     /// </summary>
     /// <value>
-    /// The server version.
+    ///     The server version.
     /// </value>
     long IDiscoveryVersionable.ServerVersion { get; set; }
 }

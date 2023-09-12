@@ -23,20 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a ExecuteDiagnosticMethod request.
+///     Represents a ExecuteDiagnosticMethod request.
 /// </summary>
 internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceRequest<ExecuteDiagnosticMethodResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExecuteDiagnosticMethodRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ExecuteDiagnosticMethodRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal ExecuteDiagnosticMethodRequest(ExchangeService service)
@@ -45,7 +42,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -54,20 +51,20 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Verb, this.Verb);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Verb, Verb);
 
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Parameter);
-        writer.WriteNode(this.Parameter);
+        writer.WriteNode(Parameter);
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -76,7 +73,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -88,17 +85,17 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets or sets the verb of the method to execute.
+    ///     Gets or sets the verb of the method to execute.
     /// </summary>
     internal string Verb { get; set; }
 
     /// <summary>
-    /// Gets or sets the parameter to the executing method.
+    ///     Gets or sets the parameter to the executing method.
     /// </summary>
     internal XmlNode Parameter { get; set; }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -109,7 +106,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -118,7 +115,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()

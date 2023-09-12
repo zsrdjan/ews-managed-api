@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Persona schema
+///     Persona schema
 /// </summary>
 [Schema]
 public class PersonaSchema : ItemSchema
 {
     /// <summary>
-    /// FieldURIs for persona.
+    ///     FieldURIs for persona.
     /// </summary>
     private static class FieldUris
     {
@@ -68,7 +68,7 @@ public class PersonaSchema : ItemSchema
     }
 
     /// <summary>
-    /// Defines the PersonaId property.
+    ///     Defines the PersonaId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -84,11 +84,11 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate() { return new ItemId(); }
+        delegate { return new ItemId(); }
     );
 
     /// <summary>
-    /// Defines the PersonaType property.
+    ///     Defines the PersonaType property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -106,7 +106,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the CreationTime property.
+    ///     Defines the CreationTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -124,7 +124,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayNameFirstLastHeader property.
+    ///     Defines the DisplayNameFirstLastHeader property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -142,7 +142,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayNameLastFirstHeader property.
+    ///     Defines the DisplayNameLastFirstHeader property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -160,7 +160,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayName property.
+    ///     Defines the DisplayName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -178,7 +178,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayNameFirstLast property.
+    ///     Defines the DisplayNameFirstLast property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -196,7 +196,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayNameLastFirst property.
+    ///     Defines the DisplayNameLastFirst property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -214,7 +214,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the FileAs property.
+    ///     Defines the FileAs property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -232,7 +232,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Generation property.
+    ///     Defines the Generation property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -250,7 +250,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayNamePrefix property.
+    ///     Defines the DisplayNamePrefix property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -268,7 +268,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the GivenName property.
+    ///     Defines the GivenName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -286,7 +286,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Surname property.
+    ///     Defines the Surname property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -304,7 +304,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Title property.
+    ///     Defines the Title property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -322,7 +322,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the CompanyName property.
+    ///     Defines the CompanyName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -340,7 +340,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the EmailAddress property.
+    ///     Defines the EmailAddress property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -356,11 +356,11 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate() { return new PersonaEmailAddress(); }
+        delegate { return new PersonaEmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the EmailAddresses property.
+    ///     Defines the EmailAddresses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -377,11 +377,11 @@ public class PersonaSchema : ItemSchema
             PropertyDefinitionFlags.CanDelete |
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013_SP1,
-            delegate() { return new PersonaEmailAddressCollection(); }
+            delegate { return new PersonaEmailAddressCollection(); }
         );
 
     /// <summary>
-    /// Defines the ImAddress property.
+    ///     Defines the ImAddress property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -399,7 +399,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the HomeCity property.
+    ///     Defines the HomeCity property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -417,7 +417,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the WorkCity property.
+    ///     Defines the WorkCity property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -435,7 +435,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Alias property.
+    ///     Defines the Alias property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -453,7 +453,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the RelevanceScore property.
+    ///     Defines the RelevanceScore property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -472,7 +472,7 @@ public class PersonaSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Attributions property
+    ///     Defines the Attributions property
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -488,11 +488,11 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate() { return new AttributionCollection(); }
+        delegate { return new AttributionCollection(); }
     );
 
     /// <summary>
-    /// Defines the OfficeLocations property.
+    ///     Defines the OfficeLocations property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -509,11 +509,11 @@ public class PersonaSchema : ItemSchema
             PropertyDefinitionFlags.CanDelete |
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013_SP1,
-            delegate() { return new AttributedStringCollection(); }
+            delegate { return new AttributedStringCollection(); }
         );
 
     /// <summary>
-    /// Defines the ImAddresses property.
+    ///     Defines the ImAddresses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -529,11 +529,11 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate() { return new AttributedStringCollection(); }
+        delegate { return new AttributedStringCollection(); }
     );
 
     /// <summary>
-    /// Defines the Departments property.
+    ///     Defines the Departments property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -549,11 +549,11 @@ public class PersonaSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013_SP1,
-        delegate() { return new AttributedStringCollection(); }
+        delegate { return new AttributedStringCollection(); }
     );
 
     /// <summary>
-    /// Defines the ThirdPartyPhotoUrls property.
+    ///     Defines the ThirdPartyPhotoUrls property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -570,56 +570,56 @@ public class PersonaSchema : ItemSchema
             PropertyDefinitionFlags.CanDelete |
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013_SP1,
-            delegate() { return new AttributedStringCollection(); }
+            delegate { return new AttributedStringCollection(); }
         );
 
     // This must be declared after the property definitions
     internal static new readonly PersonaSchema Instance = new PersonaSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(PersonaId);
-        this.RegisterProperty(PersonaType);
-        this.RegisterProperty(CreationTime);
-        this.RegisterProperty(DisplayNameFirstLastHeader);
-        this.RegisterProperty(DisplayNameLastFirstHeader);
-        this.RegisterProperty(DisplayName);
-        this.RegisterProperty(DisplayNameFirstLast);
-        this.RegisterProperty(DisplayNameLastFirst);
-        this.RegisterProperty(FileAs);
-        this.RegisterProperty(Generation);
-        this.RegisterProperty(DisplayNamePrefix);
-        this.RegisterProperty(GivenName);
-        this.RegisterProperty(Surname);
-        this.RegisterProperty(Title);
-        this.RegisterProperty(CompanyName);
-        this.RegisterProperty(EmailAddress);
-        this.RegisterProperty(EmailAddresses);
-        this.RegisterProperty(ImAddress);
-        this.RegisterProperty(HomeCity);
-        this.RegisterProperty(WorkCity);
-        this.RegisterProperty(Alias);
-        this.RegisterProperty(RelevanceScore);
-        this.RegisterProperty(Attributions);
-        this.RegisterProperty(OfficeLocations);
-        this.RegisterProperty(ImAddresses);
-        this.RegisterProperty(Departments);
-        this.RegisterProperty(ThirdPartyPhotoUrls);
+        RegisterProperty(PersonaId);
+        RegisterProperty(PersonaType);
+        RegisterProperty(CreationTime);
+        RegisterProperty(DisplayNameFirstLastHeader);
+        RegisterProperty(DisplayNameLastFirstHeader);
+        RegisterProperty(DisplayName);
+        RegisterProperty(DisplayNameFirstLast);
+        RegisterProperty(DisplayNameLastFirst);
+        RegisterProperty(FileAs);
+        RegisterProperty(Generation);
+        RegisterProperty(DisplayNamePrefix);
+        RegisterProperty(GivenName);
+        RegisterProperty(Surname);
+        RegisterProperty(Title);
+        RegisterProperty(CompanyName);
+        RegisterProperty(EmailAddress);
+        RegisterProperty(EmailAddresses);
+        RegisterProperty(ImAddress);
+        RegisterProperty(HomeCity);
+        RegisterProperty(WorkCity);
+        RegisterProperty(Alias);
+        RegisterProperty(RelevanceScore);
+        RegisterProperty(Attributions);
+        RegisterProperty(OfficeLocations);
+        RegisterProperty(ImAddresses);
+        RegisterProperty(Departments);
+        RegisterProperty(ThirdPartyPhotoUrls);
     }
 
     /// <summary>
-    /// internal constructor
+    ///     internal constructor
     /// </summary>
     internal PersonaSchema()
-        : base()
     {
     }
 }

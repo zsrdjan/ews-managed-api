@@ -25,29 +25,25 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.IO;
-
 /// <summary>
-/// Represents an AddressEntity object.
+///     Represents an AddressEntity object.
 /// </summary>
 public sealed class AddressEntity : ExtractedEntity
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AddressEntity"/> class.
+    ///     Initializes a new instance of the <see cref="AddressEntity" /> class.
     /// </summary>
     internal AddressEntity()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets the meeting suggestion Location.
+    ///     Gets the meeting suggestion Location.
     /// </summary>
     public string Address { get; internal set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -56,7 +52,7 @@ public sealed class AddressEntity : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgAddress:
-                this.Address = reader.ReadElementValue();
+                Address = reader.ReadElementValue();
                 return true;
 
             default:

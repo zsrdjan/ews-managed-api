@@ -26,12 +26,12 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents Integer property defintion.
+///     Represents Integer property defintion.
 /// </summary>
 internal class IntPropertyDefinition : GenericPropertyDefinition<int>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="IntPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -42,7 +42,7 @@ internal class IntPropertyDefinition : GenericPropertyDefinition<int>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="IntPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -59,7 +59,7 @@ internal class IntPropertyDefinition : GenericPropertyDefinition<int>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="IntPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents information for a managed folder.
+///     Represents information for a managed folder.
 /// </summary>
 public sealed class ManagedFolderInformation : ComplexProperty
 {
@@ -46,15 +42,14 @@ public sealed class ManagedFolderInformation : ComplexProperty
     private string homePage;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ManagedFolderInformation"/> class.
+    ///     Initializes a new instance of the <see cref="ManagedFolderInformation" /> class.
     /// </summary>
     internal ManagedFolderInformation()
-        : base()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -63,34 +58,34 @@ public sealed class ManagedFolderInformation : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.CanDelete:
-                this.canDelete = reader.ReadValue<bool>();
+                canDelete = reader.ReadValue<bool>();
                 return true;
             case XmlElementNames.CanRenameOrMove:
-                this.canRenameOrMove = reader.ReadValue<bool>();
+                canRenameOrMove = reader.ReadValue<bool>();
                 return true;
             case XmlElementNames.MustDisplayComment:
-                this.mustDisplayComment = reader.ReadValue<bool>();
+                mustDisplayComment = reader.ReadValue<bool>();
                 return true;
             case XmlElementNames.HasQuota:
-                this.hasQuota = reader.ReadValue<bool>();
+                hasQuota = reader.ReadValue<bool>();
                 return true;
             case XmlElementNames.IsManagedFoldersRoot:
-                this.isManagedFoldersRoot = reader.ReadValue<bool>();
+                isManagedFoldersRoot = reader.ReadValue<bool>();
                 return true;
             case XmlElementNames.ManagedFolderId:
-                this.managedFolderId = reader.ReadValue();
+                managedFolderId = reader.ReadValue();
                 return true;
             case XmlElementNames.Comment:
-                reader.TryReadValue(ref this.comment);
+                reader.TryReadValue(ref comment);
                 return true;
             case XmlElementNames.StorageQuota:
-                this.storageQuota = reader.ReadValue<int>();
+                storageQuota = reader.ReadValue<int>();
                 return true;
             case XmlElementNames.FolderSize:
-                this.folderSize = reader.ReadValue<int>();
+                folderSize = reader.ReadValue<int>();
                 return true;
             case XmlElementNames.HomePage:
-                reader.TryReadValue(ref this.homePage);
+                reader.TryReadValue(ref homePage);
                 return true;
             default:
                 return false;
@@ -98,82 +93,52 @@ public sealed class ManagedFolderInformation : ComplexProperty
     }
 
     /// <summary>
-    /// Gets a value indicating whether the user can delete objects in the folder.
+    ///     Gets a value indicating whether the user can delete objects in the folder.
     /// </summary>
-    public bool? CanDelete
-    {
-        get { return this.canDelete; }
-    }
+    public bool? CanDelete => canDelete;
 
     /// <summary>
-    /// Gets a value indicating whether the user can rename or move objects in the folder.
+    ///     Gets a value indicating whether the user can rename or move objects in the folder.
     /// </summary>
-    public bool? CanRenameOrMove
-    {
-        get { return this.canRenameOrMove; }
-    }
+    public bool? CanRenameOrMove => canRenameOrMove;
 
     /// <summary>
-    /// Gets a value indicating whether the client application must display the Comment property to the user.
+    ///     Gets a value indicating whether the client application must display the Comment property to the user.
     /// </summary>
-    public bool? MustDisplayComment
-    {
-        get { return this.mustDisplayComment; }
-    }
+    public bool? MustDisplayComment => mustDisplayComment;
 
     /// <summary>
-    /// Gets a value indicating whether the folder has a quota.
+    ///     Gets a value indicating whether the folder has a quota.
     /// </summary>
-    public bool? HasQuota
-    {
-        get { return this.hasQuota; }
-    }
+    public bool? HasQuota => hasQuota;
 
     /// <summary>
-    /// Gets a value indicating whether the folder is the root of the managed folder hierarchy.
+    ///     Gets a value indicating whether the folder is the root of the managed folder hierarchy.
     /// </summary>
-    public bool? IsManagedFoldersRoot
-    {
-        get { return this.isManagedFoldersRoot; }
-    }
+    public bool? IsManagedFoldersRoot => isManagedFoldersRoot;
 
     /// <summary>
-    /// Gets the Managed Folder Id of the folder.
+    ///     Gets the Managed Folder Id of the folder.
     /// </summary>
-    public string ManagedFolderId
-    {
-        get { return this.managedFolderId; }
-    }
+    public string ManagedFolderId => managedFolderId;
 
     /// <summary>
-    /// Gets the comment associated with the folder.
+    ///     Gets the comment associated with the folder.
     /// </summary>
-    public string Comment
-    {
-        get { return this.comment; }
-    }
+    public string Comment => comment;
 
     /// <summary>
-    /// Gets the storage quota of the folder.
+    ///     Gets the storage quota of the folder.
     /// </summary>
-    public int? StorageQuota
-    {
-        get { return this.storageQuota; }
-    }
+    public int? StorageQuota => storageQuota;
 
     /// <summary>
-    /// Gets the size of the folder.
+    ///     Gets the size of the folder.
     /// </summary>
-    public int? FolderSize
-    {
-        get { return this.folderSize; }
-    }
+    public int? FolderSize => folderSize;
 
     /// <summary>
-    /// Gets the home page associated with the folder.
+    ///     Gets the home page associated with the folder.
     /// </summary>
-    public string HomePage
-    {
-        get { return this.homePage; }
-    }
+    public string HomePage => homePage;
 }

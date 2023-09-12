@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents Boolean property definition
+///     Represents Boolean property definition
 /// </summary>
 internal sealed class BoolPropertyDefinition : GenericPropertyDefinition<bool>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoolPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="BoolPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -44,7 +42,7 @@ internal sealed class BoolPropertyDefinition : GenericPropertyDefinition<bool>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoolPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="BoolPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -61,7 +59,7 @@ internal sealed class BoolPropertyDefinition : GenericPropertyDefinition<bool>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoolPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="BoolPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -80,7 +78,7 @@ internal sealed class BoolPropertyDefinition : GenericPropertyDefinition<bool>
     }
 
     /// <summary>
-    /// Convert instance to string.
+    ///     Convert instance to string.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>String representation of Boolean property.</returns>

@@ -26,72 +26,59 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an error that occurred as a result of executing a rule operation. 
+///     Represents an error that occurred as a result of executing a rule operation.
 /// </summary>
 public sealed class RuleError : ComplexProperty
 {
     /// <summary>
-    /// Rule property.
+    ///     Rule property.
     /// </summary>
     private RuleProperty ruleProperty;
 
     /// <summary>
-    /// Rule validation error code.
+    ///     Rule validation error code.
     /// </summary>
     private RuleErrorCode errorCode;
 
     /// <summary>
-    /// Error message.
+    ///     Error message.
     /// </summary>
     private string errorMessage;
 
     /// <summary>
-    /// Field value.
+    ///     Field value.
     /// </summary>
     private string value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RuleError"/> class.
+    ///     Initializes a new instance of the <see cref="RuleError" /> class.
     /// </summary>
     internal RuleError()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets the property which failed validation.
+    ///     Gets the property which failed validation.
     /// </summary>
-    public RuleProperty RuleProperty
-    {
-        get { return this.ruleProperty; }
-    }
+    public RuleProperty RuleProperty => ruleProperty;
 
     /// <summary>
-    /// Gets the validation error code.
+    ///     Gets the validation error code.
     /// </summary>
-    public RuleErrorCode ErrorCode
-    {
-        get { return this.errorCode; }
-    }
+    public RuleErrorCode ErrorCode => errorCode;
 
     /// <summary>
-    /// Gets the error message.
+    ///     Gets the error message.
     /// </summary>
-    public string ErrorMessage
-    {
-        get { return this.errorMessage; }
-    }
+    public string ErrorMessage => errorMessage;
 
     /// <summary>
-    /// Gets the value that failed validation.
+    ///     Gets the value that failed validation.
     /// </summary>
-    public string Value
-    {
-        get { return this.value; }
-    }
+    public string Value => value;
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -100,16 +87,16 @@ public sealed class RuleError : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.FieldURI:
-                this.ruleProperty = reader.ReadElementValue<RuleProperty>();
+                ruleProperty = reader.ReadElementValue<RuleProperty>();
                 return true;
             case XmlElementNames.ErrorCode:
-                this.errorCode = reader.ReadElementValue<RuleErrorCode>();
+                errorCode = reader.ReadElementValue<RuleErrorCode>();
                 return true;
             case XmlElementNames.ErrorMessage:
-                this.errorMessage = reader.ReadElementValue();
+                errorMessage = reader.ReadElementValue();
                 return true;
             case XmlElementNames.FieldValue:
-                this.value = reader.ReadElementValue();
+                value = reader.ReadElementValue();
                 return true;
             default:
                 return false;

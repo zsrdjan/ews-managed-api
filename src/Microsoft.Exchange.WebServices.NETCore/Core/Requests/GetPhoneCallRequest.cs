@@ -25,21 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a GetPhoneCall request.
+///     Represents a GetPhoneCall request.
 /// </summary>
 internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
 {
     private PhoneCallId id;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetPhoneCallRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetPhoneCallRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetPhoneCallRequest(ExchangeService service)
@@ -48,7 +42,7 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -57,16 +51,16 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.id.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
+        id.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -75,19 +69,19 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetPhoneCallResponse response = new GetPhoneCallResponse(Service);
+        var response = new GetPhoneCallResponse(Service);
         response.LoadFromXml(reader, XmlElementNames.GetPhoneCallResponse);
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -96,24 +90,23 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetPhoneCallResponse> Execute(CancellationToken token)
     {
-        GetPhoneCallResponse serviceResponse =
-            (GetPhoneCallResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (GetPhoneCallResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
 
     /// <summary>
-    /// Gets or sets the Id of the phone call.
+    ///     Gets or sets the Id of the phone call.
     /// </summary>
     internal PhoneCallId Id
     {
-        get { return this.id; }
+        get => id;
 
-        set { this.id = value; }
+        set => id = value;
     }
 }

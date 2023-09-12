@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schem for contacts.
+///     Represents the schem for contacts.
 /// </summary>
 [Schema]
 public class ContactSchema : ItemSchema
 {
     /// <summary>
-    /// FieldURIs for contacts.
+    ///     FieldURIs for contacts.
     /// </summary>
     private static class FieldUris
     {
@@ -91,7 +91,7 @@ public class ContactSchema : ItemSchema
     }
 
     /// <summary>
-    /// Defines the FileAs property.
+    ///     Defines the FileAs property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -109,7 +109,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the FileAsMapping property.
+    ///     Defines the FileAsMapping property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -127,7 +127,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DisplayName property.
+    ///     Defines the DisplayName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -145,7 +145,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the GivenName property.
+    ///     Defines the GivenName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -163,7 +163,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Initials property.
+    ///     Defines the Initials property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -181,7 +181,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the MiddleName property.
+    ///     Defines the MiddleName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -199,7 +199,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the NickName property.
+    ///     Defines the NickName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -217,7 +217,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the CompleteName property.
+    ///     Defines the CompleteName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -229,11 +229,11 @@ public class ContactSchema : ItemSchema
         FieldUris.CompleteName,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new CompleteName(); }
+        delegate { return new CompleteName(); }
     );
 
     /// <summary>
-    /// Defines the CompanyName property.
+    ///     Defines the CompanyName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -251,7 +251,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the EmailAddresses property.
+    ///     Defines the EmailAddresses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -265,11 +265,11 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddressDictionary(); }
+        delegate { return new EmailAddressDictionary(); }
     );
 
     /// <summary>
-    /// Defines the PhysicalAddresses property.
+    ///     Defines the PhysicalAddresses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -284,11 +284,11 @@ public class ContactSchema : ItemSchema
             PropertyDefinitionFlags.CanSet |
             PropertyDefinitionFlags.CanUpdate,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new PhysicalAddressDictionary(); }
+            delegate { return new PhysicalAddressDictionary(); }
         );
 
     /// <summary>
-    /// Defines the PhoneNumbers property.
+    ///     Defines the PhoneNumbers property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -302,11 +302,11 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new PhoneNumberDictionary(); }
+        delegate { return new PhoneNumberDictionary(); }
     );
 
     /// <summary>
-    /// Defines the AssistantName property.
+    ///     Defines the AssistantName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -324,7 +324,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Birthday property.
+    ///     Defines the Birthday property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -342,10 +342,10 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the BusinessHomePage property.
+    ///     Defines the BusinessHomePage property.
     /// </summary>
     /// <remarks>
-    /// Defined as anyURI in the EWS schema. String is fine here.
+    ///     Defined as anyURI in the EWS schema. String is fine here.
     /// </remarks>
     [SuppressMessage(
         "Microsoft.Security",
@@ -363,7 +363,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Children property.
+    ///     Defines the Children property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -379,11 +379,11 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the Companies property.
+    ///     Defines the Companies property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -399,11 +399,11 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the ContactSource property.
+    ///     Defines the ContactSource property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -418,7 +418,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Department property.
+    ///     Defines the Department property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -436,7 +436,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Generation property.
+    ///     Defines the Generation property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -454,7 +454,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ImAddresses property.
+    ///     Defines the ImAddresses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -468,11 +468,11 @@ public class ContactSchema : ItemSchema
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.CanUpdate,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new ImAddressDictionary(); }
+        delegate { return new ImAddressDictionary(); }
     );
 
     /// <summary>
-    /// Defines the JobTitle property.
+    ///     Defines the JobTitle property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -490,7 +490,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Manager property.
+    ///     Defines the Manager property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -508,7 +508,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Mileage property.
+    ///     Defines the Mileage property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -526,7 +526,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the OfficeLocation property.
+    ///     Defines the OfficeLocation property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -544,7 +544,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the PostalAddressIndex property.
+    ///     Defines the PostalAddressIndex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -562,7 +562,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Profession property.
+    ///     Defines the Profession property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -580,7 +580,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the SpouseName property.
+    ///     Defines the SpouseName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -598,7 +598,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Surname property.
+    ///     Defines the Surname property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -616,7 +616,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the WeddingAnniversary property.
+    ///     Defines the WeddingAnniversary property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -634,7 +634,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the HasPicture property.
+    ///     Defines the HasPicture property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -652,7 +652,7 @@ public class ContactSchema : ItemSchema
     #region Directory Only Properties
 
     /// <summary>
-    /// Defines the PhoneticFullName property.
+    ///     Defines the PhoneticFullName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -667,7 +667,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the PhoneticFirstName property.
+    ///     Defines the PhoneticFirstName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -682,7 +682,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the PhoneticLastName property.
+    ///     Defines the PhoneticLastName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -697,7 +697,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Alias property.
+    ///     Defines the Alias property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -712,7 +712,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Notes property.
+    ///     Defines the Notes property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -727,7 +727,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Photo property.
+    ///     Defines the Photo property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -742,7 +742,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the UserSMIMECertificate property.
+    ///     Defines the UserSMIMECertificate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -754,11 +754,11 @@ public class ContactSchema : ItemSchema
         FieldUris.UserSMIMECertificate,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new ByteArrayArray(); }
+        delegate { return new ByteArrayArray(); }
     );
 
     /// <summary>
-    /// Defines the MSExchangeCertificate property.
+    ///     Defines the MSExchangeCertificate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -770,11 +770,11 @@ public class ContactSchema : ItemSchema
         FieldUris.MSExchangeCertificate,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new ByteArrayArray(); }
+        delegate { return new ByteArrayArray(); }
     );
 
     /// <summary>
-    /// Defines the DirectoryId property.
+    ///     Defines the DirectoryId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -789,7 +789,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ManagerMailbox property.
+    ///     Defines the ManagerMailbox property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -802,11 +802,11 @@ public class ContactSchema : ItemSchema
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new EmailAddress(); }
+        delegate { return new EmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the DirectReports property.
+    ///     Defines the DirectReports property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -818,7 +818,7 @@ public class ContactSchema : ItemSchema
         FieldUris.DirectReports,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     #endregion
@@ -827,7 +827,7 @@ public class ContactSchema : ItemSchema
     #region Email addresses indexed properties
 
     /// <summary>
-    /// Defines the EmailAddress1 property.
+    ///     Defines the EmailAddress1 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -838,7 +838,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.EmailAddress, "EmailAddress1");
 
     /// <summary>
-    /// Defines the EmailAddress2 property.
+    ///     Defines the EmailAddress2 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -849,7 +849,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.EmailAddress, "EmailAddress2");
 
     /// <summary>
-    /// Defines the EmailAddress3 property.
+    ///     Defines the EmailAddress3 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -865,7 +865,7 @@ public class ContactSchema : ItemSchema
     #region IM addresses indexed properties
 
     /// <summary>
-    /// Defines the ImAddress1 property.
+    ///     Defines the ImAddress1 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -878,7 +878,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ImAddress2 property.
+    ///     Defines the ImAddress2 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -891,7 +891,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ImAddress3 property.
+    ///     Defines the ImAddress3 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -909,7 +909,7 @@ public class ContactSchema : ItemSchema
     #region Phone numbers indexed properties
 
     /// <summary>
-    /// Defines the AssistentPhone property.
+    ///     Defines the AssistentPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -920,7 +920,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "AssistantPhone");
 
     /// <summary>
-    /// Defines the BusinessFax property.
+    ///     Defines the BusinessFax property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -931,7 +931,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "BusinessFax");
 
     /// <summary>
-    /// Defines the BusinessPhone property.
+    ///     Defines the BusinessPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -942,7 +942,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "BusinessPhone");
 
     /// <summary>
-    /// Defines the BusinessPhone2 property.
+    ///     Defines the BusinessPhone2 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -953,7 +953,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "BusinessPhone2");
 
     /// <summary>
-    /// Defines the Callback property.
+    ///     Defines the Callback property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -966,7 +966,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the CarPhone property.
+    ///     Defines the CarPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -979,7 +979,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the CompanyMainPhone property.
+    ///     Defines the CompanyMainPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -990,7 +990,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "CompanyMainPhone");
 
     /// <summary>
-    /// Defines the HomeFax property.
+    ///     Defines the HomeFax property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1003,7 +1003,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the HomePhone property.
+    ///     Defines the HomePhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1016,7 +1016,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the HomePhone2 property.
+    ///     Defines the HomePhone2 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1029,7 +1029,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Isdn property.
+    ///     Defines the Isdn property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1040,7 +1040,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "Isdn");
 
     /// <summary>
-    /// Defines the MobilePhone property.
+    ///     Defines the MobilePhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1051,7 +1051,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "MobilePhone");
 
     /// <summary>
-    /// Defines the OtherFax property.
+    ///     Defines the OtherFax property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1064,7 +1064,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the OtherTelephone property.
+    ///     Defines the OtherTelephone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1075,7 +1075,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "OtherTelephone");
 
     /// <summary>
-    /// Defines the Pager property.
+    ///     Defines the Pager property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1088,7 +1088,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the PrimaryPhone property.
+    ///     Defines the PrimaryPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1099,7 +1099,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhoneNumber, "PrimaryPhone");
 
     /// <summary>
-    /// Defines the RadioPhone property.
+    ///     Defines the RadioPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1112,7 +1112,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Telex property.
+    ///     Defines the Telex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1125,7 +1125,7 @@ public class ContactSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the TtyTddPhone property.
+    ///     Defines the TtyTddPhone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1141,7 +1141,7 @@ public class ContactSchema : ItemSchema
     #region Business address indexed properties
 
     /// <summary>
-    /// Defines the BusinessAddressStreet property.
+    ///     Defines the BusinessAddressStreet property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1152,7 +1152,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressStreet, "Business");
 
     /// <summary>
-    /// Defines the BusinessAddressCity property.
+    ///     Defines the BusinessAddressCity property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1163,7 +1163,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressCity, "Business");
 
     /// <summary>
-    /// Defines the BusinessAddressState property.
+    ///     Defines the BusinessAddressState property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1174,7 +1174,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressState, "Business");
 
     /// <summary>
-    /// Defines the BusinessAddressCountryOrRegion property.
+    ///     Defines the BusinessAddressCountryOrRegion property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1185,7 +1185,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressCountryOrRegion, "Business");
 
     /// <summary>
-    /// Defines the BusinessAddressPostalCode property.
+    ///     Defines the BusinessAddressPostalCode property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1201,7 +1201,7 @@ public class ContactSchema : ItemSchema
     #region Home address indexed properties
 
     /// <summary>
-    /// Defines the HomeAddressStreet property.
+    ///     Defines the HomeAddressStreet property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1212,7 +1212,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressStreet, "Home");
 
     /// <summary>
-    /// Defines the HomeAddressCity property.
+    ///     Defines the HomeAddressCity property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1223,7 +1223,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressCity, "Home");
 
     /// <summary>
-    /// Defines the HomeAddressState property.
+    ///     Defines the HomeAddressState property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1234,7 +1234,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressState, "Home");
 
     /// <summary>
-    /// Defines the HomeAddressCountryOrRegion property.
+    ///     Defines the HomeAddressCountryOrRegion property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1245,7 +1245,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressCountryOrRegion, "Home");
 
     /// <summary>
-    /// Defines the HomeAddressPostalCode property.
+    ///     Defines the HomeAddressPostalCode property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1261,7 +1261,7 @@ public class ContactSchema : ItemSchema
     #region Other address indexed properties
 
     /// <summary>
-    /// Defines the OtherAddressStreet property.
+    ///     Defines the OtherAddressStreet property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1272,7 +1272,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressStreet, "Other");
 
     /// <summary>
-    /// Defines the OtherAddressCity property.
+    ///     Defines the OtherAddressCity property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1283,7 +1283,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressCity, "Other");
 
     /// <summary>
-    /// Defines the OtherAddressState property.
+    ///     Defines the OtherAddressState property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1294,7 +1294,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressState, "Other");
 
     /// <summary>
-    /// Defines the OtherAddressCountryOrRegion property.
+    ///     Defines the OtherAddressCountryOrRegion property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1305,7 +1305,7 @@ public class ContactSchema : ItemSchema
         new IndexedPropertyDefinition(FieldUris.PhysicalAddressCountryOrRegion, "Other");
 
     /// <summary>
-    /// Defines the OtherAddressPostalCode property.
+    ///     Defines the OtherAddressPostalCode property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -1322,102 +1322,102 @@ public class ContactSchema : ItemSchema
     internal static new readonly ContactSchema Instance = new ContactSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(FileAs);
-        this.RegisterProperty(FileAsMapping);
-        this.RegisterProperty(DisplayName);
-        this.RegisterProperty(GivenName);
-        this.RegisterProperty(Initials);
-        this.RegisterProperty(MiddleName);
-        this.RegisterProperty(NickName);
-        this.RegisterProperty(CompleteName);
-        this.RegisterProperty(CompanyName);
-        this.RegisterProperty(EmailAddresses);
-        this.RegisterProperty(PhysicalAddresses);
-        this.RegisterProperty(PhoneNumbers);
-        this.RegisterProperty(AssistantName);
-        this.RegisterProperty(Birthday);
-        this.RegisterProperty(BusinessHomePage);
-        this.RegisterProperty(Children);
-        this.RegisterProperty(Companies);
-        this.RegisterProperty(ContactSource);
-        this.RegisterProperty(Department);
-        this.RegisterProperty(Generation);
-        this.RegisterProperty(ImAddresses);
-        this.RegisterProperty(JobTitle);
-        this.RegisterProperty(Manager);
-        this.RegisterProperty(Mileage);
-        this.RegisterProperty(OfficeLocation);
-        this.RegisterProperty(PostalAddressIndex);
-        this.RegisterProperty(Profession);
-        this.RegisterProperty(SpouseName);
-        this.RegisterProperty(Surname);
-        this.RegisterProperty(WeddingAnniversary);
-        this.RegisterProperty(HasPicture);
-        this.RegisterProperty(PhoneticFullName);
-        this.RegisterProperty(PhoneticFirstName);
-        this.RegisterProperty(PhoneticLastName);
-        this.RegisterProperty(Alias);
-        this.RegisterProperty(Notes);
-        this.RegisterProperty(Photo);
-        this.RegisterProperty(UserSMIMECertificate);
-        this.RegisterProperty(MSExchangeCertificate);
-        this.RegisterProperty(DirectoryId);
-        this.RegisterProperty(ManagerMailbox);
-        this.RegisterProperty(DirectReports);
+        RegisterProperty(FileAs);
+        RegisterProperty(FileAsMapping);
+        RegisterProperty(DisplayName);
+        RegisterProperty(GivenName);
+        RegisterProperty(Initials);
+        RegisterProperty(MiddleName);
+        RegisterProperty(NickName);
+        RegisterProperty(CompleteName);
+        RegisterProperty(CompanyName);
+        RegisterProperty(EmailAddresses);
+        RegisterProperty(PhysicalAddresses);
+        RegisterProperty(PhoneNumbers);
+        RegisterProperty(AssistantName);
+        RegisterProperty(Birthday);
+        RegisterProperty(BusinessHomePage);
+        RegisterProperty(Children);
+        RegisterProperty(Companies);
+        RegisterProperty(ContactSource);
+        RegisterProperty(Department);
+        RegisterProperty(Generation);
+        RegisterProperty(ImAddresses);
+        RegisterProperty(JobTitle);
+        RegisterProperty(Manager);
+        RegisterProperty(Mileage);
+        RegisterProperty(OfficeLocation);
+        RegisterProperty(PostalAddressIndex);
+        RegisterProperty(Profession);
+        RegisterProperty(SpouseName);
+        RegisterProperty(Surname);
+        RegisterProperty(WeddingAnniversary);
+        RegisterProperty(HasPicture);
+        RegisterProperty(PhoneticFullName);
+        RegisterProperty(PhoneticFirstName);
+        RegisterProperty(PhoneticLastName);
+        RegisterProperty(Alias);
+        RegisterProperty(Notes);
+        RegisterProperty(Photo);
+        RegisterProperty(UserSMIMECertificate);
+        RegisterProperty(MSExchangeCertificate);
+        RegisterProperty(DirectoryId);
+        RegisterProperty(ManagerMailbox);
+        RegisterProperty(DirectReports);
 
-        this.RegisterIndexedProperty(EmailAddress1);
-        this.RegisterIndexedProperty(EmailAddress2);
-        this.RegisterIndexedProperty(EmailAddress3);
-        this.RegisterIndexedProperty(ImAddress1);
-        this.RegisterIndexedProperty(ImAddress2);
-        this.RegisterIndexedProperty(ImAddress3);
-        this.RegisterIndexedProperty(AssistantPhone);
-        this.RegisterIndexedProperty(BusinessFax);
-        this.RegisterIndexedProperty(BusinessPhone);
-        this.RegisterIndexedProperty(BusinessPhone2);
-        this.RegisterIndexedProperty(Callback);
-        this.RegisterIndexedProperty(CarPhone);
-        this.RegisterIndexedProperty(CompanyMainPhone);
-        this.RegisterIndexedProperty(HomeFax);
-        this.RegisterIndexedProperty(HomePhone);
-        this.RegisterIndexedProperty(HomePhone2);
-        this.RegisterIndexedProperty(Isdn);
-        this.RegisterIndexedProperty(MobilePhone);
-        this.RegisterIndexedProperty(OtherFax);
-        this.RegisterIndexedProperty(OtherTelephone);
-        this.RegisterIndexedProperty(Pager);
-        this.RegisterIndexedProperty(PrimaryPhone);
-        this.RegisterIndexedProperty(RadioPhone);
-        this.RegisterIndexedProperty(Telex);
-        this.RegisterIndexedProperty(TtyTddPhone);
-        this.RegisterIndexedProperty(BusinessAddressStreet);
-        this.RegisterIndexedProperty(BusinessAddressCity);
-        this.RegisterIndexedProperty(BusinessAddressState);
-        this.RegisterIndexedProperty(BusinessAddressCountryOrRegion);
-        this.RegisterIndexedProperty(BusinessAddressPostalCode);
-        this.RegisterIndexedProperty(HomeAddressStreet);
-        this.RegisterIndexedProperty(HomeAddressCity);
-        this.RegisterIndexedProperty(HomeAddressState);
-        this.RegisterIndexedProperty(HomeAddressCountryOrRegion);
-        this.RegisterIndexedProperty(HomeAddressPostalCode);
-        this.RegisterIndexedProperty(OtherAddressStreet);
-        this.RegisterIndexedProperty(OtherAddressCity);
-        this.RegisterIndexedProperty(OtherAddressState);
-        this.RegisterIndexedProperty(OtherAddressCountryOrRegion);
-        this.RegisterIndexedProperty(OtherAddressPostalCode);
+        RegisterIndexedProperty(EmailAddress1);
+        RegisterIndexedProperty(EmailAddress2);
+        RegisterIndexedProperty(EmailAddress3);
+        RegisterIndexedProperty(ImAddress1);
+        RegisterIndexedProperty(ImAddress2);
+        RegisterIndexedProperty(ImAddress3);
+        RegisterIndexedProperty(AssistantPhone);
+        RegisterIndexedProperty(BusinessFax);
+        RegisterIndexedProperty(BusinessPhone);
+        RegisterIndexedProperty(BusinessPhone2);
+        RegisterIndexedProperty(Callback);
+        RegisterIndexedProperty(CarPhone);
+        RegisterIndexedProperty(CompanyMainPhone);
+        RegisterIndexedProperty(HomeFax);
+        RegisterIndexedProperty(HomePhone);
+        RegisterIndexedProperty(HomePhone2);
+        RegisterIndexedProperty(Isdn);
+        RegisterIndexedProperty(MobilePhone);
+        RegisterIndexedProperty(OtherFax);
+        RegisterIndexedProperty(OtherTelephone);
+        RegisterIndexedProperty(Pager);
+        RegisterIndexedProperty(PrimaryPhone);
+        RegisterIndexedProperty(RadioPhone);
+        RegisterIndexedProperty(Telex);
+        RegisterIndexedProperty(TtyTddPhone);
+        RegisterIndexedProperty(BusinessAddressStreet);
+        RegisterIndexedProperty(BusinessAddressCity);
+        RegisterIndexedProperty(BusinessAddressState);
+        RegisterIndexedProperty(BusinessAddressCountryOrRegion);
+        RegisterIndexedProperty(BusinessAddressPostalCode);
+        RegisterIndexedProperty(HomeAddressStreet);
+        RegisterIndexedProperty(HomeAddressCity);
+        RegisterIndexedProperty(HomeAddressState);
+        RegisterIndexedProperty(HomeAddressCountryOrRegion);
+        RegisterIndexedProperty(HomeAddressPostalCode);
+        RegisterIndexedProperty(OtherAddressStreet);
+        RegisterIndexedProperty(OtherAddressCity);
+        RegisterIndexedProperty(OtherAddressState);
+        RegisterIndexedProperty(OtherAddressCountryOrRegion);
+        RegisterIndexedProperty(OtherAddressPostalCode);
     }
 
     internal ContactSchema()
-        : base()
     {
     }
 }

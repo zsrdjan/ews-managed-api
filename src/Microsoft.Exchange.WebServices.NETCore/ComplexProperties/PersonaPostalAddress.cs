@@ -23,12 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents PersonaPostalAddress.
+///     Represents PersonaPostalAddress.
 /// </summary>
 public sealed class PersonaPostalAddress : ComplexProperty
 {
@@ -49,15 +49,14 @@ public sealed class PersonaPostalAddress : ComplexProperty
     private LocationSource source;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PersonaPostalAddress"/> class.
+    ///     Initializes a new instance of the <see cref="PersonaPostalAddress" /> class.
     /// </summary>
     internal PersonaPostalAddress()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PersonaPostalAddress"/> class.
+    ///     Initializes a new instance of the <see cref="PersonaPostalAddress" /> class.
     /// </summary>
     /// <param name="street">The Street Address.</param>
     /// <param name="city">The City value.</param>
@@ -99,8 +98,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
         this.postOfficeBox = postOfficeBox;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.source = locationSource;
-        this.uri = locationUri;
+        source = locationSource;
+        uri = locationUri;
         this.formattedAddress = formattedAddress;
         this.accuracy = accuracy;
         this.altitude = altitude;
@@ -108,7 +107,7 @@ public sealed class PersonaPostalAddress : ComplexProperty
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -117,49 +116,49 @@ public sealed class PersonaPostalAddress : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Street:
-                this.street = reader.ReadValue<string>();
+                street = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.City:
-                this.city = reader.ReadValue<string>();
+                city = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.State:
-                this.state = reader.ReadValue<string>();
+                state = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.Country:
-                this.country = reader.ReadValue<string>();
+                country = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.PostalCode:
-                this.postalCode = reader.ReadValue<string>();
+                postalCode = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.PostOfficeBox:
-                this.postOfficeBox = reader.ReadValue<string>();
+                postOfficeBox = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.PostalAddressType:
-                this.type = reader.ReadValue<string>();
+                type = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.Latitude:
-                this.latitude = reader.ReadValue<double>();
+                latitude = reader.ReadValue<double>();
                 return true;
             case XmlElementNames.Longitude:
-                this.longitude = reader.ReadValue<double>();
+                longitude = reader.ReadValue<double>();
                 return true;
             case XmlElementNames.Accuracy:
-                this.accuracy = reader.ReadValue<double>();
+                accuracy = reader.ReadValue<double>();
                 return true;
             case XmlElementNames.Altitude:
-                this.altitude = reader.ReadValue<double>();
+                altitude = reader.ReadValue<double>();
                 return true;
             case XmlElementNames.AltitudeAccuracy:
-                this.altitudeAccuracy = reader.ReadValue<double>();
+                altitudeAccuracy = reader.ReadValue<double>();
                 return true;
             case XmlElementNames.FormattedAddress:
-                this.formattedAddress = reader.ReadValue<string>();
+                formattedAddress = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.LocationUri:
-                this.uri = reader.ReadValue<string>();
+                uri = reader.ReadValue<string>();
                 return true;
             case XmlElementNames.LocationSource:
-                this.source = reader.ReadValue<LocationSource>();
+                source = reader.ReadValue<LocationSource>();
                 return true;
             default:
                 return false;
@@ -167,7 +166,7 @@ public sealed class PersonaPostalAddress : ComplexProperty
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsServiceXmlReader reader)
@@ -178,178 +177,178 @@ public sealed class PersonaPostalAddress : ComplexProperty
 
             if (reader.NodeType == XmlNodeType.Element)
             {
-                this.TryReadElementFromXml(reader);
+                TryReadElementFromXml(reader);
             }
         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.PersonaPostalAddress));
     }
 
     /// <summary>
-    /// Gets or sets the street.
+    ///     Gets or sets the street.
     /// </summary>
     public string Street
     {
-        get { return this.street; }
-        set { this.SetFieldValue<string>(ref this.street, value); }
+        get => street;
+        set => SetFieldValue(ref street, value);
     }
 
     /// <summary>
-    /// Gets or sets the City.
+    ///     Gets or sets the City.
     /// </summary>
     public string City
     {
-        get { return this.city; }
-        set { this.SetFieldValue<string>(ref this.city, value); }
+        get => city;
+        set => SetFieldValue(ref city, value);
     }
 
     /// <summary>
-    /// Gets or sets the state.
+    ///     Gets or sets the state.
     /// </summary>
     public string State
     {
-        get { return this.state; }
-        set { this.SetFieldValue<string>(ref this.state, value); }
+        get => state;
+        set => SetFieldValue(ref state, value);
     }
 
     /// <summary>
-    /// Gets or sets the Country.
+    ///     Gets or sets the Country.
     /// </summary>
     public string Country
     {
-        get { return this.country; }
-        set { this.SetFieldValue<string>(ref this.country, value); }
+        get => country;
+        set => SetFieldValue(ref country, value);
     }
 
     /// <summary>
-    /// Gets or sets the postalCode.
+    ///     Gets or sets the postalCode.
     /// </summary>
     public string PostalCode
     {
-        get { return this.postalCode; }
-        set { this.SetFieldValue<string>(ref this.postalCode, value); }
+        get => postalCode;
+        set => SetFieldValue(ref postalCode, value);
     }
 
     /// <summary>
-    /// Gets or sets the postOfficeBox.
+    ///     Gets or sets the postOfficeBox.
     /// </summary>
     public string PostOfficeBox
     {
-        get { return this.postOfficeBox; }
-        set { this.SetFieldValue<string>(ref this.postOfficeBox, value); }
+        get => postOfficeBox;
+        set => SetFieldValue(ref postOfficeBox, value);
     }
 
     /// <summary>
-    /// Gets or sets the type.
+    ///     Gets or sets the type.
     /// </summary>
     public string Type
     {
-        get { return this.type; }
-        set { this.SetFieldValue<string>(ref this.type, value); }
+        get => type;
+        set => SetFieldValue(ref type, value);
     }
 
     /// <summary>
-    /// Gets or sets the location source type.
+    ///     Gets or sets the location source type.
     /// </summary>
     public LocationSource Source
     {
-        get { return this.source; }
-        set { this.SetFieldValue<LocationSource>(ref this.source, value); }
+        get => source;
+        set => SetFieldValue(ref source, value);
     }
 
     /// <summary>
-    /// Gets or sets the location Uri.
+    ///     Gets or sets the location Uri.
     /// </summary>
     public string Uri
     {
-        get { return this.uri; }
-        set { this.SetFieldValue<string>(ref this.uri, value); }
+        get => uri;
+        set => SetFieldValue(ref uri, value);
     }
 
     /// <summary>
-    /// Gets or sets a value indicating location latitude.
+    ///     Gets or sets a value indicating location latitude.
     /// </summary>
     public double? Latitude
     {
-        get { return this.latitude; }
-        set { this.SetFieldValue<double?>(ref this.latitude, value); }
+        get => latitude;
+        set => SetFieldValue(ref latitude, value);
     }
 
     /// <summary>
-    /// Gets or sets a value indicating location longitude.
+    ///     Gets or sets a value indicating location longitude.
     /// </summary>
     public double? Longitude
     {
-        get { return this.longitude; }
-        set { this.SetFieldValue<double?>(ref this.longitude, value); }
+        get => longitude;
+        set => SetFieldValue(ref longitude, value);
     }
 
     /// <summary>
-    /// Gets or sets the location accuracy.
+    ///     Gets or sets the location accuracy.
     /// </summary>
     public double? Accuracy
     {
-        get { return this.accuracy; }
-        set { this.SetFieldValue<double?>(ref this.accuracy, value); }
+        get => accuracy;
+        set => SetFieldValue(ref accuracy, value);
     }
 
     /// <summary>
-    /// Gets or sets the location altitude.
+    ///     Gets or sets the location altitude.
     /// </summary>
     public double? Altitude
     {
-        get { return this.altitude; }
-        set { this.SetFieldValue<double?>(ref this.altitude, value); }
+        get => altitude;
+        set => SetFieldValue(ref altitude, value);
     }
 
     /// <summary>
-    /// Gets or sets the location altitude accuracy.
+    ///     Gets or sets the location altitude accuracy.
     /// </summary>
     public double? AltitudeAccuracy
     {
-        get { return this.altitudeAccuracy; }
-        set { this.SetFieldValue<double?>(ref this.altitudeAccuracy, value); }
+        get => altitudeAccuracy;
+        set => SetFieldValue(ref altitudeAccuracy, value);
     }
 
     /// <summary>
-    /// Gets or sets the street address.
+    ///     Gets or sets the street address.
     /// </summary>
     public string FormattedAddress
     {
-        get { return this.formattedAddress; }
-        set { this.SetFieldValue<string>(ref this.formattedAddress, value); }
+        get => formattedAddress;
+        set => SetFieldValue(ref formattedAddress, value);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Street, this.street);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.City, this.city);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.State, this.state);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Country, this.country);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalCode, this.postalCode);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostOfficeBox, this.postOfficeBox);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalAddressType, this.type);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Latitude, this.latitude);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Longitude, this.longitude);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Accuracy, this.accuracy);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Altitude, this.altitude);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AltitudeAccuracy, this.altitudeAccuracy);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FormattedAddress, this.formattedAddress);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationUri, this.uri);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationSource, this.source);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Street, street);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.City, city);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.State, state);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Country, country);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalCode, postalCode);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostOfficeBox, postOfficeBox);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalAddressType, type);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Latitude, latitude);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Longitude, longitude);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Accuracy, accuracy);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Altitude, altitude);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AltitudeAccuracy, altitudeAccuracy);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FormattedAddress, formattedAddress);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationUri, uri);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationSource, source);
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.PersonaPostalAddress);
 
-        this.WriteElementsToXml(writer);
+        WriteElementsToXml(writer);
 
         writer.WriteEndElement(); // xmlElementName
     }

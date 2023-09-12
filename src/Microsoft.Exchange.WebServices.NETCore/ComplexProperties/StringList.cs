@@ -25,36 +25,32 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a list of strings.
+///     Represents a list of strings.
 /// </summary>
 public sealed class StringList : ComplexProperty, IEnumerable<string>
 {
-    private List<string> items = new List<string>();
-    private string itemXmlElementName = XmlElementNames.String;
+    private readonly List<string> items = new List<string>();
+    private readonly string itemXmlElementName = XmlElementNames.String;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StringList"/> class.
+    ///     Initializes a new instance of the <see cref="StringList" /> class.
     /// </summary>
     public StringList()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StringList"/> class.
+    ///     Initializes a new instance of the <see cref="StringList" /> class.
     /// </summary>
     /// <param name="strings">The strings.</param>
     public StringList(IEnumerable<string> strings)
     {
-        this.AddRange(strings);
+        AddRange(strings);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StringList"/> class.
+    ///     Initializes a new instance of the <see cref="StringList" /> class.
     /// </summary>
     /// <param name="itemXmlElementName">Name of the item XML element.</param>
     internal StringList(string itemXmlElementName)
@@ -63,142 +59,137 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
     internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        if (reader.LocalName == this.itemXmlElementName)
+        if (reader.LocalName == itemXmlElementName)
         {
-            this.Add(reader.ReadValue());
+            Add(reader.ReadValue());
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        foreach (string item in this)
+        foreach (var item in this)
         {
-            writer.WriteStartElement(XmlNamespace.Types, this.itemXmlElementName);
-            writer.WriteValue(item, this.itemXmlElementName);
+            writer.WriteStartElement(XmlNamespace.Types, itemXmlElementName);
+            writer.WriteValue(item, itemXmlElementName);
             writer.WriteEndElement();
         }
     }
 
     /// <summary>
-    /// Adds a string to the list.
+    ///     Adds a string to the list.
     /// </summary>
     /// <param name="s">The string to add.</param>
     public void Add(string s)
     {
-        this.items.Add(s);
-        this.Changed();
+        items.Add(s);
+        Changed();
     }
 
     /// <summary>
-    /// Adds multiple strings to the list.
+    ///     Adds multiple strings to the list.
     /// </summary>
     /// <param name="strings">The strings to add.</param>
     public void AddRange(IEnumerable<string> strings)
     {
-        bool changed = false;
+        var changed = false;
 
-        foreach (string s in strings)
+        foreach (var s in strings)
         {
-            if (!this.Contains(s))
+            if (!Contains(s))
             {
-                this.items.Add(s);
+                items.Add(s);
                 changed = true;
             }
         }
 
         if (changed)
         {
-            this.Changed();
+            Changed();
         }
     }
 
     /// <summary>
-    /// Determines whether the list contains a specific string.
+    ///     Determines whether the list contains a specific string.
     /// </summary>
     /// <param name="s">The string to check the presence of.</param>
     /// <returns>True if s is present in the list, false otherwise.</returns>
     public bool Contains(string s)
     {
-        return this.items.Contains(s);
+        return items.Contains(s);
     }
 
     /// <summary>
-    /// Removes a string from the list.
+    ///     Removes a string from the list.
     /// </summary>
     /// <param name="s">The string to remove.</param>
     /// <returns>True is s was removed, false otherwise.</returns>
     public bool Remove(string s)
     {
-        bool result = this.items.Remove(s);
+        var result = items.Remove(s);
 
         if (result)
         {
-            this.Changed();
+            Changed();
         }
 
         return result;
     }
 
     /// <summary>
-    /// Removes the string at the specified position from the list.
+    ///     Removes the string at the specified position from the list.
     /// </summary>
     /// <param name="index">The index of the string to remove.</param>
     public void RemoveAt(int index)
     {
-        if (index < 0 || index >= this.Count)
+        if (index < 0 || index >= Count)
         {
             throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
         }
 
-        this.items.RemoveAt(index);
+        items.RemoveAt(index);
 
-        this.Changed();
+        Changed();
     }
 
     /// <summary>
-    /// Clears the list.
+    ///     Clears the list.
     /// </summary>
     public void Clear()
     {
-        this.items.Clear();
-        this.Changed();
+        items.Clear();
+        Changed();
     }
 
     /// <summary>
-    /// Generates a string representation of all the items in the list.
+    ///     Generates a string representation of all the items in the list.
     /// </summary>
     /// <returns>A comma-separated list of the strings present in the list.</returns>
     public override string ToString()
     {
-        return string.Join(",", this.items.ToArray());
+        return string.Join(",", items.ToArray());
     }
 
     /// <summary>
-    /// Gets the number of strings in the list.
+    ///     Gets the number of strings in the list.
     /// </summary>
-    public int Count
-    {
-        get { return this.items.Count; }
-    }
+    public int Count => items.Count;
 
     /// <summary>
-    /// Gets or sets the string at the specified index.
+    ///     Gets or sets the string at the specified index.
     /// </summary>
     /// <param name="index">The index of the string to get or set.</param>
     /// <returns>The string at the specified index.</returns>
@@ -206,25 +197,25 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     {
         get
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
             }
 
-            return this.items[index];
+            return items[index];
         }
 
         set
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
             }
 
-            if (this.items[index] != value)
+            if (items[index] != value)
             {
-                this.items[index] = value;
-                this.Changed();
+                items[index] = value;
+                Changed();
             }
         }
     }
@@ -233,12 +224,12 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     #region IEnumerable<string> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<string> GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion
@@ -247,46 +238,46 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion
 
 
     /// <summary>
-    /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+    ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+    ///     <see cref="T:System.Object" />.
     /// </summary>
-    /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+    /// <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />.</param>
     /// <returns>
-    /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+    ///     true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+    ///     otherwise, false.
     /// </returns>
-    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
+    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
     public override bool Equals(object obj)
     {
-        StringList other = obj as StringList;
+        var other = obj as StringList;
         if (other != null)
         {
-            return this.ToString().Equals(other.ToString());
+            return ToString().Equals(other.ToString());
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Serves as a hash function for a particular type.
+    ///     Serves as a hash function for a particular type.
     /// </summary>
     /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
+    ///     A hash code for the current <see cref="T:System.Object" />.
     /// </returns>
     public override int GetHashCode()
     {
-        return this.ToString().GetHashCode();
+        return ToString().GetHashCode();
     }
 }

@@ -25,23 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents response to UpdateFolder request.
+///     Represents response to UpdateFolder request.
 /// </summary>
 internal sealed class UpdateFolderResponse : ServiceResponse
 {
-    private Folder folder;
+    private readonly Folder folder;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateFolderResponse"/> class.
+    ///     Initializes a new instance of the <see cref="UpdateFolderResponse" /> class.
     /// </summary>
     /// <param name="folder">The folder.</param>
     internal UpdateFolderResponse(Folder folder)
-        : base()
     {
         EwsUtilities.Assert(folder != null, "UpdateFolderResponse.ctor", "folder is null");
 
@@ -49,16 +44,16 @@ internal sealed class UpdateFolderResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        reader.ReadServiceObjectsCollectionFromXml<Folder>(
+        reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Folders,
-            this.GetObjectInstance,
+            GetObjectInstance,
             false, /* clearPropertyBag */
             null, /* requestedPropertySet */
             false
@@ -66,24 +61,24 @@ internal sealed class UpdateFolderResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Clears the change log of the updated folder if the update succeeded.
+    ///     Clears the change log of the updated folder if the update succeeded.
     /// </summary>
     internal override void Loaded()
     {
-        if (this.Result == ServiceResult.Success)
+        if (Result == ServiceResult.Success)
         {
-            this.folder.ClearChangeLog();
+            folder.ClearChangeLog();
         }
     }
 
     /// <summary>
-    /// Gets Folder instance.
+    ///     Gets Folder instance.
     /// </summary>
     /// <param name="session">The session.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Folder.</returns>
     private Folder GetObjectInstance(ExchangeService session, string xmlElementName)
     {
-        return this.folder;
+        return folder;
     }
 }

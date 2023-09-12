@@ -23,15 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 /// <summary>
-/// Represents the results of an item search operation.
+///     Represents the results of an item search operation.
 /// </summary>
 /// <typeparam name="TItem">The type of item returned by the search operation.</typeparam>
 public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem>>
@@ -42,65 +39,62 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     private bool moreAvailable;
 
     /// <summary>
-    /// List of ItemGroups.
+    ///     List of ItemGroups.
     /// </summary>
-    private Collection<ItemGroup<TItem>> itemGroups = new Collection<ItemGroup<TItem>>();
+    private readonly Collection<ItemGroup<TItem>> itemGroups = new Collection<ItemGroup<TItem>>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupedFindItemsResults&lt;TItem&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="GroupedFindItemsResults&lt;TItem&gt;" /> class.
     /// </summary>
     internal GroupedFindItemsResults()
     {
     }
 
     /// <summary>
-    /// Gets the total number of items matching the search criteria available in the searched folder.
+    ///     Gets the total number of items matching the search criteria available in the searched folder.
     /// </summary>
     public int TotalCount
     {
-        get { return this.totalCount; }
-        internal set { this.totalCount = value; }
+        get => totalCount;
+        internal set => totalCount = value;
     }
 
     /// <summary>
-    /// Gets the offset that should be used with ItemView to retrieve the next page of items in a FindItems operation.
+    ///     Gets the offset that should be used with ItemView to retrieve the next page of items in a FindItems operation.
     /// </summary>
     public int? NextPageOffset
     {
-        get { return this.nextPageOffset; }
-        internal set { this.nextPageOffset = value; }
+        get => nextPageOffset;
+        internal set => nextPageOffset = value;
     }
 
     /// <summary>
-    /// Gets a value indicating whether more items corresponding to the search criteria
-    /// are available in the searched folder. 
+    ///     Gets a value indicating whether more items corresponding to the search criteria
+    ///     are available in the searched folder.
     /// </summary>
     public bool MoreAvailable
     {
-        get { return this.moreAvailable; }
-        internal set { this.moreAvailable = value; }
+        get => moreAvailable;
+        internal set => moreAvailable = value;
     }
 
     /// <summary>
-    /// Gets the item groups returned by the search operation.
+    ///     Gets the item groups returned by the search operation.
     /// </summary>
-    public Collection<ItemGroup<TItem>> ItemGroups
-    {
-        get { return this.itemGroups; }
-    }
+    public Collection<ItemGroup<TItem>> ItemGroups => itemGroups;
 
 
     #region IEnumerable<ItemGroup<TItem>> Members
 
     /// <summary>
-    /// Returns an enumerator that iterates through the collection.
+    ///     Returns an enumerator that iterates through the collection.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+    ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
     /// </returns>
     public IEnumerator<ItemGroup<TItem>> GetEnumerator()
     {
-        return this.itemGroups.GetEnumerator();
+        return itemGroups.GetEnumerator();
     }
 
     #endregion
@@ -109,14 +103,14 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     #region IEnumerable Members
 
     /// <summary>
-    /// Returns an enumerator that iterates through a collection.
+    ///     Returns an enumerator that iterates through a collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+    ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
     /// </returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.itemGroups.GetEnumerator();
+        return itemGroups.GetEnumerator();
     }
 
     #endregion

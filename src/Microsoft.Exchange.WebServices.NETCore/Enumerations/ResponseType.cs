@@ -25,42 +25,38 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the types of response given to a meeting request.
+///     Defines the types of response given to a meeting request.
 /// </summary>
 public enum MeetingResponseType
 {
     /// <summary>
-    /// The response type is inknown.
+    ///     The response type is inknown.
     /// </summary>
     Unknown,
 
     /// <summary>
-    /// There was no response. The authenticated is the organizer of the meeting.
+    ///     There was no response. The authenticated is the organizer of the meeting.
     /// </summary>
     Organizer,
 
     /// <summary>
-    /// The meeting was tentatively accepted.
+    ///     The meeting was tentatively accepted.
     /// </summary>
     Tentative,
 
     /// <summary>
-    /// The meeting was accepted.
+    ///     The meeting was accepted.
     /// </summary>
     Accept,
 
     /// <summary>
-    /// The meeting was declined.
+    ///     The meeting was declined.
     /// </summary>
     Decline,
 
     /// <summary>
-    /// No response was received for the meeting.
+    ///     No response was received for the meeting.
     /// </summary>
     NoResponseReceived
 }

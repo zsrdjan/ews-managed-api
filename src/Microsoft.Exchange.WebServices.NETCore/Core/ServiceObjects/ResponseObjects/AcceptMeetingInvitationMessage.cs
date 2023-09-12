@@ -25,19 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a meeting acceptance message.
+///     Represents a meeting acceptance message.
 /// </summary>
 public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<MeetingResponse>
 {
-    private bool tentative;
+    private readonly bool tentative;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AcceptMeetingInvitationMessage"/> class.
+    ///     Initializes a new instance of the <see cref="AcceptMeetingInvitationMessage" /> class.
     /// </summary>
     /// <param name="referenceItem">The reference item.</param>
     /// <param name="tentative">if set to <c>true</c> accept invitation tentatively.</param>
@@ -48,33 +44,31 @@ public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<Mee
     }
 
     /// <summary>
-    /// This methods lets subclasses of ServiceObject override the default mechanism
-    /// by which the XML element name associated with their type is retrieved.
+    ///     This methods lets subclasses of ServiceObject override the default mechanism
+    ///     by which the XML element name associated with their type is retrieved.
     /// </summary>
     /// <returns>
-    /// The XML element name associated with this type.
-    /// If this method returns null or empty, the XML element name associated with this
-    /// type is determined by the EwsObjectDefinition attribute that decorates the type,
-    /// if present.
+    ///     The XML element name associated with this type.
+    ///     If this method returns null or empty, the XML element name associated with this
+    ///     type is determined by the EwsObjectDefinition attribute that decorates the type,
+    ///     if present.
     /// </returns>
     /// <remarks>
-    /// Item and folder classes that can be returned by EWS MUST rely on the EwsObjectDefinition
-    /// attribute for XML element name determination.
+    ///     Item and folder classes that can be returned by EWS MUST rely on the EwsObjectDefinition
+    ///     attribute for XML element name determination.
     /// </remarks>
     internal override string GetXmlElementNameOverride()
     {
-        if (this.tentative)
+        if (tentative)
         {
             return XmlElementNames.TentativelyAcceptItem;
         }
-        else
-        {
-            return XmlElementNames.AcceptItem;
-        }
+
+        return XmlElementNames.AcceptItem;
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -83,10 +77,7 @@ public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<Mee
     }
 
     /// <summary>
-    /// Gets a value indicating whether the associated meeting is tentatively accepted.
+    ///     Gets a value indicating whether the associated meeting is tentatively accepted.
     /// </summary>
-    public bool Tentative
-    {
-        get { return this.tentative; }
-    }
+    public bool Tentative => tentative;
 }

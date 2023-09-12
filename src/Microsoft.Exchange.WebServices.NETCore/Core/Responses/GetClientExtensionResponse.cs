@@ -23,52 +23,43 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Xml;
-
 /// <summary>
-/// Represents the response to a GetClientExtension operation.
+///     Represents the response to a GetClientExtension operation.
 /// </summary>
 public sealed class GetClientExtensionResponse : ServiceResponse
 {
-    private Collection<ClientExtension> clientExtension = new Collection<ClientExtension>();
+    private readonly Collection<ClientExtension> clientExtension = new Collection<ClientExtension>();
 
     private string rawMasterTableXml;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetClientExtensionResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetClientExtensionResponse" /> class.
     /// </summary>
     internal GetClientExtensionResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets all ClientExtension returned
+    ///     Gets all ClientExtension returned
     /// </summary>
-    public Collection<ClientExtension> ClientExtensions
-    {
-        get { return this.clientExtension; }
-    }
+    public Collection<ClientExtension> ClientExtensions => clientExtension;
 
     /// <summary>
-    /// Gets org raw master table xml
+    ///     Gets org raw master table xml
     /// </summary>
-    public string RawMasterTableXml
-    {
-        get { return this.rawMasterTableXml; }
-    }
+    public string RawMasterTableXml => rawMasterTableXml;
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.ClientExtensions.Clear();
+        ClientExtensions.Clear();
         base.ReadElementsFromXml(reader);
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ClientExtensions);
@@ -81,9 +72,9 @@ public sealed class GetClientExtensionResponse : ServiceResponse
 
             while (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ClientExtension))
             {
-                ClientExtension clientExtension = new ClientExtension();
+                var clientExtension = new ClientExtension();
                 clientExtension.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ClientExtension);
-                this.ClientExtensions.Add(clientExtension);
+                ClientExtensions.Add(clientExtension);
 
                 reader.EnsureCurrentNodeIsEndElement(XmlNamespace.Types, XmlElementNames.ClientExtension);
                 reader.Read();
@@ -95,7 +86,7 @@ public sealed class GetClientExtensionResponse : ServiceResponse
         reader.Read();
         if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.ClientExtensionRawMasterTableXml))
         {
-            this.rawMasterTableXml = reader.ReadElementValue();
+            rawMasterTableXml = reader.ReadElementValue();
         }
     }
 }

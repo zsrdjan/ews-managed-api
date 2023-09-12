@@ -25,25 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data.Enumerations;
 
-using System;
-
 /// <summary>
-/// The consent states enumeration
+///     The consent states enumeration
 /// </summary>
 public enum ConsentState
 {
     /// <summary>
-    /// User has closed the consent page or has not responded yet.
+    ///     User has closed the consent page or has not responded yet.
     /// </summary>
     NotResponded = 0,
 
     /// <summary>
-    /// User has requested to disable the extension.
+    ///     User has requested to disable the extension.
     /// </summary>
     NotConsented = 1,
 
     /// <summary>
-    /// User has requested to enable the extension.
+    ///     User has requested to enable the extension.
     /// </summary>
     Consented = 2
 }

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents PostReply schema definition.
+///     Represents PostReply schema definition.
 /// </summary>
 internal sealed class PostReplySchema : ServiceObjectSchema
 {
@@ -38,18 +34,19 @@ internal sealed class PostReplySchema : ServiceObjectSchema
     internal static readonly PostReplySchema Instance = new PostReplySchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(ItemSchema.Subject);
-        this.RegisterProperty(ItemSchema.Body);
-        this.RegisterProperty(ResponseObjectSchema.ReferenceItemId);
-        this.RegisterProperty(ResponseObjectSchema.BodyPrefix);
+        RegisterProperty(ItemSchema.Subject);
+        RegisterProperty(ItemSchema.Body);
+        RegisterProperty(ResponseObjectSchema.ReferenceItemId);
+        RegisterProperty(ResponseObjectSchema.BodyPrefix);
     }
 }

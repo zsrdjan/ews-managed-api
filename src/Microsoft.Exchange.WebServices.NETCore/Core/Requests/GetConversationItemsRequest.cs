@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a request to a GetConversationItems operation
+///     Represents a request to a GetConversationItems operation
 /// </summary>
 internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<GetConversationItemsResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetConversationItemsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetConversationItemsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode">Error handling mode.</param>
@@ -45,34 +41,34 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Gets or sets the conversations.
+    ///     Gets or sets the conversations.
     /// </summary>
     internal List<ConversationRequest> Conversations { get; set; }
 
     /// <summary>
-    /// Gets or sets the item properties.
+    ///     Gets or sets the item properties.
     /// </summary>
     internal PropertySet ItemProperties { get; set; }
 
     /// <summary>
-    /// Gets or sets the folders to ignore.
+    ///     Gets or sets the folders to ignore.
     /// </summary>
     internal FolderIdCollection FoldersToIgnore { get; set; }
 
     /// <summary>
-    /// Gets or sets the maximum number of items to return.
+    ///     Gets or sets the maximum number of items to return.
     /// </summary>
     internal int? MaxItemsToReturn { get; set; }
 
     internal ConversationSortOrder? SortOrder { get; set; }
 
     /// <summary>
-    /// Gets or sets the mailbox search location to include in the search.
+    ///     Gets or sets the mailbox search location to include in the search.
     /// </summary>
     internal MailboxSearchLocation? MailboxScope { get; set; }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
@@ -80,7 +76,7 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
 
         // SearchScope is only valid for Exchange2013 or higher
         //
-        if (this.MailboxScope.HasValue && this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (MailboxScope.HasValue && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -93,7 +89,7 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Writes XML attributes.
+    ///     Writes XML attributes.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
@@ -102,52 +98,48 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.ItemProperties.WriteToXml(writer, ServiceObjectType.Item);
+        ItemProperties.WriteToXml(writer, ServiceObjectType.Item);
 
-        this.FoldersToIgnore.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FoldersToIgnore);
+        FoldersToIgnore.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FoldersToIgnore);
 
-        if (this.MaxItemsToReturn.HasValue)
+        if (MaxItemsToReturn.HasValue)
         {
-            writer.WriteElementValue(
-                XmlNamespace.Messages,
-                XmlElementNames.MaxItemsToReturn,
-                this.MaxItemsToReturn.Value
-            );
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MaxItemsToReturn, MaxItemsToReturn.Value);
         }
 
-        if (this.SortOrder.HasValue)
+        if (SortOrder.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SortOrder, this.SortOrder.Value);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SortOrder, SortOrder.Value);
         }
 
-        if (this.MailboxScope.HasValue)
+        if (MailboxScope.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxScope, this.MailboxScope.Value);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxScope, MailboxScope.Value);
         }
 
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Conversations);
-        this.Conversations.ForEach((conversation) => conversation.WriteToXml(writer, XmlElementNames.Conversation));
+        Conversations.ForEach(conversation => conversation.WriteToXml(writer, XmlElementNames.Conversation));
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override GetConversationItemsResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new GetConversationItemsResponse(this.ItemProperties);
+        return new GetConversationItemsResponse(ItemProperties);
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -156,7 +148,7 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -165,7 +157,7 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -174,7 +166,7 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -183,11 +175,11 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.Conversations.Count;
+        return Conversations.Count;
     }
 }

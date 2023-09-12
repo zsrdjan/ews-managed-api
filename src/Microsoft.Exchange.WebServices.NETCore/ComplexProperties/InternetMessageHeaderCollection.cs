@@ -23,29 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents a collection of Internet message headers.
+///     Represents a collection of Internet message headers.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class InternetMessageHeaderCollection : ComplexPropertyCollection<InternetMessageHeader>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternetMessageHeaderCollection"/> class.
+    ///     Initializes a new instance of the <see cref="InternetMessageHeaderCollection" /> class.
     /// </summary>
     internal InternetMessageHeaderCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>InternetMessageHeader instance.</returns>
@@ -55,7 +51,7 @@ public sealed class InternetMessageHeaderCollection : ComplexPropertyCollection<
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>
@@ -65,13 +61,16 @@ public sealed class InternetMessageHeaderCollection : ComplexPropertyCollection<
     }
 
     /// <summary>
-    /// Find a specific header in the collection.
+    ///     Find a specific header in the collection.
     /// </summary>
     /// <param name="name">The name of the header to locate.</param>
-    /// <returns>An InternetMessageHeader representing the header with the specified name; null if no header with the specified name was found.</returns>
+    /// <returns>
+    ///     An InternetMessageHeader representing the header with the specified name; null if no header with the specified
+    ///     name was found.
+    /// </returns>
     public InternetMessageHeader Find(string name)
     {
-        foreach (InternetMessageHeader internetMessageHeader in this)
+        foreach (var internetMessageHeader in this)
         {
             if (string.Compare(name, internetMessageHeader.Name, StringComparison.OrdinalIgnoreCase) == 0)
             {

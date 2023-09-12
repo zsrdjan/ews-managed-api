@@ -23,26 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of item Ids.
+///     Represents a collection of item Ids.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ItemIdCollection : ComplexPropertyCollection<ItemId>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ItemIdCollection"/> class.
+    ///     Initializes a new instance of the <see cref="ItemIdCollection" /> class.
     /// </summary>
     internal ItemIdCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>ItemId.</returns>
@@ -52,7 +51,7 @@ public sealed class ItemIdCollection : ComplexPropertyCollection<ItemId>
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

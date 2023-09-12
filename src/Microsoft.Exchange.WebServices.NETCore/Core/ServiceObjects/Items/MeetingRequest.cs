@@ -25,20 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a meeting request that an attendee can accept or decline. Properties available on meeting requests are defined in the MeetingRequestSchema class.
+///     Represents a meeting request that an attendee can accept or decline. Properties available on meeting requests are
+///     defined in the MeetingRequestSchema class.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.MeetingRequest)]
 public class MeetingRequest : MeetingMessage, ICalendarActionProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingRequest"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingRequest" /> class.
     /// </summary>
     /// <param name="parentAttachment">The parent attachment.</param>
     internal MeetingRequest(ItemAttachment parentAttachment)
@@ -47,7 +42,7 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingRequest"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingRequest" /> class.
     /// </summary>
     /// <param name="service">EWS service to which this object belongs.</param>
     internal MeetingRequest(ExchangeService service)
@@ -56,8 +51,8 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    /// Binds to an existing meeting request and loads the specified set of properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing meeting request and loads the specified set of properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the meeting request.</param>
     /// <param name="id">The Id of the meeting request to bind to.</param>
@@ -67,26 +62,26 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return service.BindToItem<MeetingRequest>(id, propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing meeting request and loads its first class properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing meeting request and loads its first class properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the meeting request.</param>
     /// <param name="id">The Id of the meeting request to bind to.</param>
     /// <returns>A MeetingRequest instance representing the meeting request corresponding to the specified Id.</returns>
     public static new Task<MeetingRequest> Bind(ExchangeService service, ItemId id)
     {
-        return MeetingRequest.Bind(service, id, PropertySet.FirstClassProperties);
+        return Bind(service, id, PropertySet.FirstClassProperties);
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -95,7 +90,7 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -104,7 +99,7 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    /// Creates a local meeting acceptance message that can be customized and sent.
+    ///     Creates a local meeting acceptance message that can be customized and sent.
     /// </summary>
     /// <param name="tentative">Specifies whether the meeting will be tentatively accepted.</param>
     /// <returns>An AcceptMeetingInvitationMessage representing the meeting acceptance message. </returns>
@@ -114,7 +109,7 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    /// Creates a local meeting declination message that can be customized and sent.
+    ///     Creates a local meeting declination message that can be customized and sent.
     /// </summary>
     /// <returns>A DeclineMeetingInvitation representing the meeting declination message. </returns>
     public DeclineMeetingInvitationMessage CreateDeclineMessage()
@@ -123,414 +118,294 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    /// Accepts the meeting. Calling this method results in a call to EWS. 
+    ///     Accepts the meeting. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     public Task<CalendarActionResults> Accept(bool sendResponse)
     {
-        return this.InternalAccept(false, sendResponse);
+        return InternalAccept(false, sendResponse);
     }
 
     /// <summary>
-    /// Tentatively accepts the meeting. Calling this method results in a call to EWS. 
+    ///     Tentatively accepts the meeting. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     public Task<CalendarActionResults> AcceptTentatively(bool sendResponse)
     {
-        return this.InternalAccept(true, sendResponse);
+        return InternalAccept(true, sendResponse);
     }
 
     /// <summary>
-    /// Accepts the meeting.
+    ///     Accepts the meeting.
     /// </summary>
     /// <param name="tentative">True if tentative accept.</param>
     /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     internal Task<CalendarActionResults> InternalAccept(bool tentative, bool sendResponse)
     {
-        AcceptMeetingInvitationMessage accept = this.CreateAcceptMessage(tentative);
+        var accept = CreateAcceptMessage(tentative);
 
         if (sendResponse)
         {
             return accept.SendAndSaveCopy();
         }
-        else
-        {
-            return accept.Save();
-        }
+
+        return accept.Save();
     }
 
     /// <summary>
-    /// Declines the meeting invitation. Calling this method results in a call to EWS.
+    ///     Declines the meeting invitation. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     public Task<CalendarActionResults> Decline(bool sendResponse)
     {
-        DeclineMeetingInvitationMessage decline = this.CreateDeclineMessage();
+        var decline = CreateDeclineMessage();
 
         if (sendResponse)
         {
             return decline.SendAndSaveCopy();
         }
-        else
-        {
-            return decline.Save();
-        }
+
+        return decline.Save();
     }
 
 
     #region Properties
 
     /// <summary>
-    /// Gets the type of this meeting request.
+    ///     Gets the type of this meeting request.
     /// </summary>
-    public MeetingRequestType MeetingRequestType
-    {
-        get { return (MeetingRequestType)this.PropertyBag[MeetingRequestSchema.MeetingRequestType]; }
-    }
+    public MeetingRequestType MeetingRequestType =>
+        (MeetingRequestType)PropertyBag[MeetingRequestSchema.MeetingRequestType];
 
     /// <summary>
-    /// Gets the a value representing the intended free/busy status of the meeting.
+    ///     Gets the a value representing the intended free/busy status of the meeting.
     /// </summary>
-    public LegacyFreeBusyStatus IntendedFreeBusyStatus
-    {
-        get { return (LegacyFreeBusyStatus)this.PropertyBag[MeetingRequestSchema.IntendedFreeBusyStatus]; }
-    }
+    public LegacyFreeBusyStatus IntendedFreeBusyStatus =>
+        (LegacyFreeBusyStatus)PropertyBag[MeetingRequestSchema.IntendedFreeBusyStatus];
 
     /// <summary>
-    /// Gets the change highlights of the meeting request.
+    ///     Gets the change highlights of the meeting request.
     /// </summary>
-    public ChangeHighlights ChangeHighlights
-    {
-        get { return (ChangeHighlights)this.PropertyBag[MeetingRequestSchema.ChangeHighlights]; }
-    }
+    public ChangeHighlights ChangeHighlights => (ChangeHighlights)PropertyBag[MeetingRequestSchema.ChangeHighlights];
 
     /// <summary>
-    /// Gets the Enhanced location object.
+    ///     Gets the Enhanced location object.
     /// </summary>
-    public EnhancedLocation EnhancedLocation
-    {
-        get { return (EnhancedLocation)this.PropertyBag[MeetingRequestSchema.EnhancedLocation]; }
-    }
+    public EnhancedLocation EnhancedLocation => (EnhancedLocation)PropertyBag[MeetingRequestSchema.EnhancedLocation];
 
     /// <summary>
-    /// Gets the start time of the appointment.
+    ///     Gets the start time of the appointment.
     /// </summary>
-    public DateTime Start
-    {
-        get { return (DateTime)this.PropertyBag[AppointmentSchema.Start]; }
-    }
+    public DateTime Start => (DateTime)PropertyBag[AppointmentSchema.Start];
 
     /// <summary>
-    /// Gets the end time of the appointment.
+    ///     Gets the end time of the appointment.
     /// </summary>
-    public DateTime End
-    {
-        get { return (DateTime)this.PropertyBag[AppointmentSchema.End]; }
-    }
+    public DateTime End => (DateTime)PropertyBag[AppointmentSchema.End];
 
     /// <summary>
-    /// Gets the original start time of this appointment.
+    ///     Gets the original start time of this appointment.
     /// </summary>
-    public DateTime OriginalStart
-    {
-        get { return (DateTime)this.PropertyBag[AppointmentSchema.OriginalStart]; }
-    }
+    public DateTime OriginalStart => (DateTime)PropertyBag[AppointmentSchema.OriginalStart];
 
     /// <summary>
-    /// Gets a value indicating whether this appointment is an all day event.
+    ///     Gets a value indicating whether this appointment is an all day event.
     /// </summary>
-    public bool IsAllDayEvent
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.IsAllDayEvent]; }
-    }
+    public bool IsAllDayEvent => (bool)PropertyBag[AppointmentSchema.IsAllDayEvent];
 
     /// <summary>
-    /// Gets a value indicating the free/busy status of the owner of this appointment. 
+    ///     Gets a value indicating the free/busy status of the owner of this appointment.
     /// </summary>
-    public LegacyFreeBusyStatus LegacyFreeBusyStatus
-    {
-        get { return (LegacyFreeBusyStatus)this.PropertyBag[AppointmentSchema.LegacyFreeBusyStatus]; }
-    }
+    public LegacyFreeBusyStatus LegacyFreeBusyStatus =>
+        (LegacyFreeBusyStatus)PropertyBag[AppointmentSchema.LegacyFreeBusyStatus];
 
     /// <summary>
-    /// Gets the location of this appointment.
+    ///     Gets the location of this appointment.
     /// </summary>
-    public string Location
-    {
-        get { return (string)this.PropertyBag[AppointmentSchema.Location]; }
-    }
+    public string Location => (string)PropertyBag[AppointmentSchema.Location];
 
     /// <summary>
-    /// Gets a text indicating when this appointment occurs. The text returned by When is localized using the Exchange Server culture or using the culture specified in the PreferredCulture property of the ExchangeService object this appointment is bound to.
+    ///     Gets a text indicating when this appointment occurs. The text returned by When is localized using the Exchange
+    ///     Server culture or using the culture specified in the PreferredCulture property of the ExchangeService object this
+    ///     appointment is bound to.
     /// </summary>
-    public string When
-    {
-        get { return (string)this.PropertyBag[AppointmentSchema.When]; }
-    }
+    public string When => (string)PropertyBag[AppointmentSchema.When];
 
     /// <summary>
-    /// Gets a value indicating whether the appointment is a meeting.
+    ///     Gets a value indicating whether the appointment is a meeting.
     /// </summary>
-    public bool IsMeeting
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.IsMeeting]; }
-    }
+    public bool IsMeeting => (bool)PropertyBag[AppointmentSchema.IsMeeting];
 
     /// <summary>
-    ///  Gets a value indicating whether the appointment has been cancelled.
+    ///     Gets a value indicating whether the appointment has been cancelled.
     /// </summary>
-    public bool IsCancelled
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.IsCancelled]; }
-    }
+    public bool IsCancelled => (bool)PropertyBag[AppointmentSchema.IsCancelled];
 
     /// <summary>
-    ///  Gets a value indicating whether the appointment is recurring.
+    ///     Gets a value indicating whether the appointment is recurring.
     /// </summary>
-    public bool IsRecurring
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.IsRecurring]; }
-    }
+    public bool IsRecurring => (bool)PropertyBag[AppointmentSchema.IsRecurring];
 
     /// <summary>
-    ///  Gets a value indicating whether the meeting request has already been sent.
+    ///     Gets a value indicating whether the meeting request has already been sent.
     /// </summary>
-    public bool MeetingRequestWasSent
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.MeetingRequestWasSent]; }
-    }
+    public bool MeetingRequestWasSent => (bool)PropertyBag[AppointmentSchema.MeetingRequestWasSent];
 
     /// <summary>
-    /// Gets a value indicating the type of this appointment.
+    ///     Gets a value indicating the type of this appointment.
     /// </summary>
-    public AppointmentType AppointmentType
-    {
-        get { return (AppointmentType)this.PropertyBag[AppointmentSchema.AppointmentType]; }
-    }
+    public AppointmentType AppointmentType => (AppointmentType)PropertyBag[AppointmentSchema.AppointmentType];
 
     /// <summary>
-    /// Gets a value indicating what was the last response of the user that loaded this meeting.
+    ///     Gets a value indicating what was the last response of the user that loaded this meeting.
     /// </summary>
-    public MeetingResponseType MyResponseType
-    {
-        get { return (MeetingResponseType)this.PropertyBag[AppointmentSchema.MyResponseType]; }
-    }
+    public MeetingResponseType MyResponseType => (MeetingResponseType)PropertyBag[AppointmentSchema.MyResponseType];
 
     /// <summary>
-    /// Gets the organizer of this meeting.
+    ///     Gets the organizer of this meeting.
     /// </summary>
-    public EmailAddress Organizer
-    {
-        get { return (EmailAddress)this.PropertyBag[AppointmentSchema.Organizer]; }
-    }
+    public EmailAddress Organizer => (EmailAddress)PropertyBag[AppointmentSchema.Organizer];
 
     /// <summary>
-    /// Gets a list of required attendees for this meeting.
+    ///     Gets a list of required attendees for this meeting.
     /// </summary>
-    public AttendeeCollection RequiredAttendees
-    {
-        get { return (AttendeeCollection)this.PropertyBag[AppointmentSchema.RequiredAttendees]; }
-    }
+    public AttendeeCollection RequiredAttendees => (AttendeeCollection)PropertyBag[AppointmentSchema.RequiredAttendees];
 
     /// <summary>
-    /// Gets a list of optional attendeed for this meeting.
+    ///     Gets a list of optional attendeed for this meeting.
     /// </summary>
-    public AttendeeCollection OptionalAttendees
-    {
-        get { return (AttendeeCollection)this.PropertyBag[AppointmentSchema.OptionalAttendees]; }
-    }
+    public AttendeeCollection OptionalAttendees => (AttendeeCollection)PropertyBag[AppointmentSchema.OptionalAttendees];
 
     /// <summary>
-    /// Gets a list of resources for this meeting.
+    ///     Gets a list of resources for this meeting.
     /// </summary>
-    public AttendeeCollection Resources
-    {
-        get { return (AttendeeCollection)this.PropertyBag[AppointmentSchema.Resources]; }
-    }
+    public AttendeeCollection Resources => (AttendeeCollection)PropertyBag[AppointmentSchema.Resources];
 
     /// <summary>
-    /// Gets the number of calendar entries that conflict with this appointment in the authenticated user's calendar.
+    ///     Gets the number of calendar entries that conflict with this appointment in the authenticated user's calendar.
     /// </summary>
-    public int ConflictingMeetingCount
-    {
-        get { return (int)this.PropertyBag[AppointmentSchema.ConflictingMeetingCount]; }
-    }
+    public int ConflictingMeetingCount => (int)PropertyBag[AppointmentSchema.ConflictingMeetingCount];
 
     /// <summary>
-    /// Gets the number of calendar entries that are adjacent to this appointment in the authenticated user's calendar.
+    ///     Gets the number of calendar entries that are adjacent to this appointment in the authenticated user's calendar.
     /// </summary>
-    public int AdjacentMeetingCount
-    {
-        get { return (int)this.PropertyBag[AppointmentSchema.AdjacentMeetingCount]; }
-    }
+    public int AdjacentMeetingCount => (int)PropertyBag[AppointmentSchema.AdjacentMeetingCount];
 
     /// <summary>
-    /// Gets a list of meetings that conflict with this appointment in the authenticated user's calendar.
+    ///     Gets a list of meetings that conflict with this appointment in the authenticated user's calendar.
     /// </summary>
-    public ItemCollection<Appointment> ConflictingMeetings
-    {
-        get { return (ItemCollection<Appointment>)this.PropertyBag[AppointmentSchema.ConflictingMeetings]; }
-    }
+    public ItemCollection<Appointment> ConflictingMeetings =>
+        (ItemCollection<Appointment>)PropertyBag[AppointmentSchema.ConflictingMeetings];
 
     /// <summary>
-    /// Gets a list of meetings that conflict with this appointment in the authenticated user's calendar.
+    ///     Gets a list of meetings that conflict with this appointment in the authenticated user's calendar.
     /// </summary>
-    public ItemCollection<Appointment> AdjacentMeetings
-    {
-        get { return (ItemCollection<Appointment>)this.PropertyBag[AppointmentSchema.AdjacentMeetings]; }
-    }
+    public ItemCollection<Appointment> AdjacentMeetings =>
+        (ItemCollection<Appointment>)PropertyBag[AppointmentSchema.AdjacentMeetings];
 
     /// <summary>
-    /// Gets the duration of this appointment.
+    ///     Gets the duration of this appointment.
     /// </summary>
-    public TimeSpan Duration
-    {
-        get { return (TimeSpan)this.PropertyBag[AppointmentSchema.Duration]; }
-    }
+    public TimeSpan Duration => (TimeSpan)PropertyBag[AppointmentSchema.Duration];
 
     /// <summary>
-    /// Gets the name of the time zone this appointment is defined in.
+    ///     Gets the name of the time zone this appointment is defined in.
     /// </summary>
-    public string TimeZone
-    {
-        get { return (string)this.PropertyBag[AppointmentSchema.TimeZone]; }
-    }
+    public string TimeZone => (string)PropertyBag[AppointmentSchema.TimeZone];
 
     /// <summary>
-    /// Gets the time when the attendee replied to the meeting request.
+    ///     Gets the time when the attendee replied to the meeting request.
     /// </summary>
-    public DateTime AppointmentReplyTime
-    {
-        get { return (DateTime)this.PropertyBag[AppointmentSchema.AppointmentReplyTime]; }
-    }
+    public DateTime AppointmentReplyTime => (DateTime)PropertyBag[AppointmentSchema.AppointmentReplyTime];
 
     /// <summary>
-    /// Gets the sequence number of this appointment.
+    ///     Gets the sequence number of this appointment.
     /// </summary>
-    public int AppointmentSequenceNumber
-    {
-        get { return (int)this.PropertyBag[AppointmentSchema.AppointmentSequenceNumber]; }
-    }
+    public int AppointmentSequenceNumber => (int)PropertyBag[AppointmentSchema.AppointmentSequenceNumber];
 
     /// <summary>
-    /// Gets the state of this appointment.
+    ///     Gets the state of this appointment.
     /// </summary>
-    public int AppointmentState
-    {
-        get { return (int)this.PropertyBag[AppointmentSchema.AppointmentState]; }
-    }
+    public int AppointmentState => (int)PropertyBag[AppointmentSchema.AppointmentState];
 
     /// <summary>
-    /// Gets the recurrence pattern for this meeting request.
+    ///     Gets the recurrence pattern for this meeting request.
     /// </summary>
-    public Recurrence Recurrence
-    {
-        get { return (Recurrence)this.PropertyBag[AppointmentSchema.Recurrence]; }
-    }
+    public Recurrence Recurrence => (Recurrence)PropertyBag[AppointmentSchema.Recurrence];
 
     /// <summary>
-    /// Gets an OccurrenceInfo identifying the first occurrence of this meeting.
+    ///     Gets an OccurrenceInfo identifying the first occurrence of this meeting.
     /// </summary>
-    public OccurrenceInfo FirstOccurrence
-    {
-        get { return (OccurrenceInfo)this.PropertyBag[AppointmentSchema.FirstOccurrence]; }
-    }
+    public OccurrenceInfo FirstOccurrence => (OccurrenceInfo)PropertyBag[AppointmentSchema.FirstOccurrence];
 
     /// <summary>
-    /// Gets an OccurrenceInfo identifying the last occurrence of this meeting.
+    ///     Gets an OccurrenceInfo identifying the last occurrence of this meeting.
     /// </summary>
-    public OccurrenceInfo LastOccurrence
-    {
-        get { return (OccurrenceInfo)this.PropertyBag[AppointmentSchema.LastOccurrence]; }
-    }
+    public OccurrenceInfo LastOccurrence => (OccurrenceInfo)PropertyBag[AppointmentSchema.LastOccurrence];
 
     /// <summary>
-    /// Gets a list of modified occurrences for this meeting.
+    ///     Gets a list of modified occurrences for this meeting.
     /// </summary>
-    public OccurrenceInfoCollection ModifiedOccurrences
-    {
-        get { return (OccurrenceInfoCollection)this.PropertyBag[AppointmentSchema.ModifiedOccurrences]; }
-    }
+    public OccurrenceInfoCollection ModifiedOccurrences =>
+        (OccurrenceInfoCollection)PropertyBag[AppointmentSchema.ModifiedOccurrences];
 
     /// <summary>
-    /// Gets a list of deleted occurrences for this meeting.
+    ///     Gets a list of deleted occurrences for this meeting.
     /// </summary>
-    public DeletedOccurrenceInfoCollection DeletedOccurrences
-    {
-        get { return (DeletedOccurrenceInfoCollection)this.PropertyBag[AppointmentSchema.DeletedOccurrences]; }
-    }
+    public DeletedOccurrenceInfoCollection DeletedOccurrences =>
+        (DeletedOccurrenceInfoCollection)PropertyBag[AppointmentSchema.DeletedOccurrences];
 
     /// <summary>
-    /// Gets time zone of the start property of this meeting request.
+    ///     Gets time zone of the start property of this meeting request.
     /// </summary>
-    public TimeZoneInfo StartTimeZone
-    {
-        get { return (TimeZoneInfo)this.PropertyBag[AppointmentSchema.StartTimeZone]; }
-    }
+    public TimeZoneInfo StartTimeZone => (TimeZoneInfo)PropertyBag[AppointmentSchema.StartTimeZone];
 
     /// <summary>
-    /// Gets time zone of the end property of this meeting request.
+    ///     Gets time zone of the end property of this meeting request.
     /// </summary>
-    public TimeZoneInfo EndTimeZone
-    {
-        get { return (TimeZoneInfo)this.PropertyBag[AppointmentSchema.EndTimeZone]; }
-    }
+    public TimeZoneInfo EndTimeZone => (TimeZoneInfo)PropertyBag[AppointmentSchema.EndTimeZone];
 
     /// <summary>
-    /// Gets the type of conferencing that will be used during the meeting.
+    ///     Gets the type of conferencing that will be used during the meeting.
     /// </summary>
-    public int ConferenceType
-    {
-        get { return (int)this.PropertyBag[AppointmentSchema.ConferenceType]; }
-    }
+    public int ConferenceType => (int)PropertyBag[AppointmentSchema.ConferenceType];
 
     /// <summary>
-    /// Gets a value indicating whether new time proposals are allowed for attendees of this meeting.
+    ///     Gets a value indicating whether new time proposals are allowed for attendees of this meeting.
     /// </summary>
-    public bool AllowNewTimeProposal
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.AllowNewTimeProposal]; }
-    }
+    public bool AllowNewTimeProposal => (bool)PropertyBag[AppointmentSchema.AllowNewTimeProposal];
 
     /// <summary>
-    /// Gets a value indicating whether this is an online meeting.
+    ///     Gets a value indicating whether this is an online meeting.
     /// </summary>
-    public bool IsOnlineMeeting
-    {
-        get { return (bool)this.PropertyBag[AppointmentSchema.IsOnlineMeeting]; }
-    }
+    public bool IsOnlineMeeting => (bool)PropertyBag[AppointmentSchema.IsOnlineMeeting];
 
     /// <summary>
-    /// Gets the URL of the meeting workspace. A meeting workspace is a shared Web site for planning meetings and tracking results.
+    ///     Gets the URL of the meeting workspace. A meeting workspace is a shared Web site for planning meetings and tracking
+    ///     results.
     /// </summary>
-    public string MeetingWorkspaceUrl
-    {
-        get { return (string)this.PropertyBag[AppointmentSchema.MeetingWorkspaceUrl]; }
-    }
+    public string MeetingWorkspaceUrl => (string)PropertyBag[AppointmentSchema.MeetingWorkspaceUrl];
 
     /// <summary>
-    /// Gets the URL of the Microsoft NetShow online meeting.
+    ///     Gets the URL of the Microsoft NetShow online meeting.
     /// </summary>
-    public string NetShowUrl
-    {
-        get { return (string)this.PropertyBag[AppointmentSchema.NetShowUrl]; }
-    }
+    public string NetShowUrl => (string)PropertyBag[AppointmentSchema.NetShowUrl];
 
     #endregion
 }

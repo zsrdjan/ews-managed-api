@@ -25,22 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Microsoft.Exchange.WebServices.Data.Groups;
-
-using System.Threading.Tasks;
-using System.Threading;
-
 /// <summary>
-/// Represents a request to a GetUserUnifiedGroupsRequest operation
+///     Represents a request to a GetUserUnifiedGroupsRequest operation
 /// </summary>
 internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserUnifiedGroupsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserUnifiedGroupsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetUserUnifiedGroupsRequest(ExchangeService service)
@@ -49,17 +40,17 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets or sets the RequestedUnifiedGroupsSet
+    ///     Gets or sets the RequestedUnifiedGroupsSet
     /// </summary>
     public IEnumerable<RequestedUnifiedGroupsSet> RequestedUnifiedGroupsSets { get; set; }
 
     /// <summary>
-    /// Gets or sets the UserSmptAddress
+    ///     Gets or sets the UserSmptAddress
     /// </summary>
     public string UserSmtpAddress { get; set; }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -68,7 +59,7 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -77,42 +68,42 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetUserUnifiedGroupsResponse response = new GetUserUnifiedGroupsResponse();
+        var response = new GetUserUnifiedGroupsResponse();
         response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.RequestedGroupsSets);
 
-        if (this.RequestedUnifiedGroupsSets != null)
+        if (RequestedUnifiedGroupsSets != null)
         {
-            this.RequestedUnifiedGroupsSets.ForEach(
-                (unifiedGroupsSet) => unifiedGroupsSet.WriteToXml(writer, XmlElementNames.RequestedUnifiedGroupsSetItem)
+            RequestedUnifiedGroupsSets.ForEach(
+                unifiedGroupsSet => unifiedGroupsSet.WriteToXml(writer, XmlElementNames.RequestedUnifiedGroupsSetItem)
             );
         }
 
         writer.WriteEndElement();
 
-        if (!string.IsNullOrEmpty(this.UserSmtpAddress))
+        if (!string.IsNullOrEmpty(UserSmtpAddress))
         {
-            writer.WriteElementValue(XmlNamespace.NotSpecified, XmlElementNames.UserSmtpAddress, this.UserSmtpAddress);
+            writer.WriteElementValue(XmlNamespace.NotSpecified, XmlElementNames.UserSmtpAddress, UserSmtpAddress);
         }
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -121,11 +112,11 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetUserUnifiedGroupsResponse> Execute(CancellationToken token)
     {
-        return (GetUserUnifiedGroupsResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        return (GetUserUnifiedGroupsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
     }
 }

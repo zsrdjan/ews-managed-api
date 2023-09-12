@@ -25,14 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Xml;
-
 /// <summary>
-/// Represents a time zone in which a meeting is defined.
+///     Represents a time zone in which a meeting is defined.
 /// </summary>
 internal sealed class MeetingTimeZone : ComplexProperty
 {
@@ -42,7 +36,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
     private TimeChange daylight;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingTimeZone"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingTimeZone" /> class.
     /// </summary>
     /// <param name="timeZone">The time zone used to initialize this instance.</param>
     internal MeetingTimeZone(TimeZoneInfo timeZone)
@@ -51,19 +45,18 @@ internal sealed class MeetingTimeZone : ComplexProperty
         // supported by TimeZoneInfo. That leaves us unable to accurately convert TimeZoneInfo
         // into MeetingTimeZone. So we don't... Instead, we emit the time zone's Id and
         // hope the server will find a match (which it should).
-        this.Name = timeZone.Id;
+        Name = timeZone.Id;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingTimeZone"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingTimeZone" /> class.
     /// </summary>
     public MeetingTimeZone()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingTimeZone"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingTimeZone" /> class.
     /// </summary>
     /// <param name="name">The name of the time zone.</param>
     public MeetingTimeZone(string name)
@@ -73,7 +66,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -82,15 +75,15 @@ internal sealed class MeetingTimeZone : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.BaseOffset:
-                this.baseOffset = EwsUtilities.XSDurationToTimeSpan(reader.ReadElementValue());
+                baseOffset = EwsUtilities.XSDurationToTimeSpan(reader.ReadElementValue());
                 return true;
             case XmlElementNames.Standard:
-                this.standard = new TimeChange();
-                this.standard.LoadFromXml(reader, reader.LocalName);
+                standard = new TimeChange();
+                standard.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.Daylight:
-                this.daylight = new TimeChange();
-                this.daylight.LoadFromXml(reader, reader.LocalName);
+                daylight = new TimeChange();
+                daylight.LoadFromXml(reader, reader.LocalName);
                 return true;
             default:
                 return false;
@@ -98,58 +91,58 @@ internal sealed class MeetingTimeZone : ComplexProperty
     }
 
     /// <summary>
-    /// Reads the attributes from XML.
+    ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.name = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
+        name = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.TimeZoneName, this.Name);
+        writer.WriteAttributeValue(XmlAttributeNames.TimeZoneName, Name);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.BaseOffset.HasValue)
+        if (BaseOffset.HasValue)
         {
             writer.WriteElementValue(
                 XmlNamespace.Types,
                 XmlElementNames.BaseOffset,
-                EwsUtilities.TimeSpanToXSDuration(this.BaseOffset.Value)
+                EwsUtilities.TimeSpanToXSDuration(BaseOffset.Value)
             );
         }
 
-        if (this.Standard != null)
+        if (Standard != null)
         {
-            this.Standard.WriteToXml(writer, XmlElementNames.Standard);
+            Standard.WriteToXml(writer, XmlElementNames.Standard);
         }
 
-        if (this.Daylight != null)
+        if (Daylight != null)
         {
-            this.Daylight.WriteToXml(writer, XmlElementNames.Daylight);
+            Daylight.WriteToXml(writer, XmlElementNames.Daylight);
         }
     }
 
     /// <summary>
-    /// Converts this meeting time zone into a TimeZoneInfo structure.
+    ///     Converts this meeting time zone into a TimeZoneInfo structure.
     /// </summary>
     /// <returns></returns>
     internal TimeZoneInfo ToTimeZoneInfo()
     {
         // MeetingTimeZone.ToTimeZoneInfo throws ArgumentNullException if name is null
         // TimeZoneName is optional, may not show in the response.
-        if (string.IsNullOrEmpty(this.Name))
+        if (string.IsNullOrEmpty(Name))
         {
             return null;
         }
@@ -158,7 +151,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
 
         try
         {
-            result = TimeZoneInfo.FindSystemTimeZoneById(this.Name);
+            result = TimeZoneInfo.FindSystemTimeZoneById(Name);
         }
         catch (InvalidTimeZoneException)
         {
@@ -172,38 +165,38 @@ internal sealed class MeetingTimeZone : ComplexProperty
     }
 
     /// <summary>
-    /// Gets or sets the name of the time zone.
+    ///     Gets or sets the name of the time zone.
     /// </summary>
     public string Name
     {
-        get { return this.name; }
-        set { this.SetFieldValue<string>(ref this.name, value); }
+        get => name;
+        set => SetFieldValue(ref name, value);
     }
 
     /// <summary>
-    /// Gets or sets the base offset of the time zone from the UTC time zone.
+    ///     Gets or sets the base offset of the time zone from the UTC time zone.
     /// </summary>
     public TimeSpan? BaseOffset
     {
-        get { return this.baseOffset; }
-        set { this.SetFieldValue<TimeSpan?>(ref this.baseOffset, value); }
+        get => baseOffset;
+        set => SetFieldValue(ref baseOffset, value);
     }
 
     /// <summary>
-    /// Gets or sets a TimeChange defining when the time changes to Standard Time.
+    ///     Gets or sets a TimeChange defining when the time changes to Standard Time.
     /// </summary>
     public TimeChange Standard
     {
-        get { return this.standard; }
-        set { this.SetFieldValue<TimeChange>(ref this.standard, value); }
+        get => standard;
+        set => SetFieldValue(ref standard, value);
     }
 
     /// <summary>
-    /// Gets or sets a TimeChange defining when the time changes to Daylight Saving Time.
+    ///     Gets or sets a TimeChange defining when the time changes to Daylight Saving Time.
     /// </summary>
     public TimeChange Daylight
     {
-        get { return this.daylight; }
-        set { this.SetFieldValue<TimeChange>(ref this.daylight, value); }
+        get => daylight;
+        set => SetFieldValue(ref daylight, value);
     }
 }

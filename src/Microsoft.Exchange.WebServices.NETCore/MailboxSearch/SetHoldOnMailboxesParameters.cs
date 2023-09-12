@@ -25,40 +25,38 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents set hold on mailboxes parameters.
+///     Represents set hold on mailboxes parameters.
 /// </summary>
 public sealed class SetHoldOnMailboxesParameters
 {
     /// <summary>
-    /// Action type
+    ///     Action type
     /// </summary>
     public HoldAction ActionType { get; set; }
 
     /// <summary>
-    /// Hold id
+    ///     Hold id
     /// </summary>
     public string HoldId { get; set; }
 
     /// <summary>
-    /// Query
+    ///     Query
     /// </summary>
     public string Query { get; set; }
 
     /// <summary>
-    /// Collection of mailboxes
+    ///     Collection of mailboxes
     /// </summary>
     public string[] Mailboxes { get; set; }
 
     /// <summary>
-    /// Query language
+    ///     Query language
     /// </summary>
     public string Language { get; set; }
 
     /// <summary>
-    /// In-place hold identity
+    ///     In-place hold identity
     /// </summary>
     public string InPlaceHoldIdentity { get; set; }
 }

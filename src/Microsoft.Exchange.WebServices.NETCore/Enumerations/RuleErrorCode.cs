@@ -26,130 +26,130 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the error codes identifying why a rule failed validation.
+///     Defines the error codes identifying why a rule failed validation.
 /// </summary>
 public enum RuleErrorCode
 {
     /// <summary>
-    /// Active Directory operation failed.
+    ///     Active Directory operation failed.
     /// </summary>
     ADOperationFailure,
 
     /// <summary>
-    /// The e-mail account specified in the FromConnectedAccounts predicate
-    /// was not found.
+    ///     The e-mail account specified in the FromConnectedAccounts predicate
+    ///     was not found.
     /// </summary>
     ConnectedAccountNotFound,
 
     /// <summary>
-    /// The Rule object in a CreateInboxRuleOperation has an Id. The Ids of new 
-    /// rules are generated server side and should not be provided by the client.
+    ///     The Rule object in a CreateInboxRuleOperation has an Id. The Ids of new
+    ///     rules are generated server side and should not be provided by the client.
     /// </summary>
     CreateWithRuleId,
 
     /// <summary>
-    /// The value is empty. An empty value is not allowed for the property.
+    ///     The value is empty. An empty value is not allowed for the property.
     /// </summary>
     EmptyValueFound,
 
     /// <summary>
-    /// There already is a rule with the same priority. 
+    ///     There already is a rule with the same priority.
     /// </summary>
     DuplicatedPriority,
 
     /// <summary>
-    /// There are multiple operations against the same rule. Only one 
-    /// operation per rule is allowed.
+    ///     There are multiple operations against the same rule. Only one
+    ///     operation per rule is allowed.
     /// </summary>
     DuplicatedOperationOnTheSameRule,
 
     /// <summary>
-    /// The folder does not exist in the user's mailbox.
+    ///     The folder does not exist in the user's mailbox.
     /// </summary>
     FolderDoesNotExist,
 
     /// <summary>
-    /// The e-mail address is invalid.
+    ///     The e-mail address is invalid.
     /// </summary>
     InvalidAddress,
 
     /// <summary>
-    /// The date range is invalid.
+    ///     The date range is invalid.
     /// </summary>
     InvalidDateRange,
 
     /// <summary>
-    /// The folder Id is invalid.
+    ///     The folder Id is invalid.
     /// </summary>
     InvalidFolderId,
 
     /// <summary>
-    /// The size range is invalid.
+    ///     The size range is invalid.
     /// </summary>
     InvalidSizeRange,
 
     /// <summary>
-    /// The value is invalid.
+    ///     The value is invalid.
     /// </summary>
     InvalidValue,
 
     /// <summary>
-    /// The message classification was not found.
+    ///     The message classification was not found.
     /// </summary>
     MessageClassificationNotFound,
 
     /// <summary>
-    /// No action was specified. At least one action must be specified.
+    ///     No action was specified. At least one action must be specified.
     /// </summary>
     MissingAction,
 
     /// <summary>
-    /// The required parameter is missing.
+    ///     The required parameter is missing.
     /// </summary>
     MissingParameter,
 
     /// <summary>
-    /// The range value is missing.
+    ///     The range value is missing.
     /// </summary>
     MissingRangeValue,
 
     /// <summary>
-    /// The property cannot be modified.
+    ///     The property cannot be modified.
     /// </summary>
     NotSettable,
 
     /// <summary>
-    /// The recipient does not exist.
+    ///     The recipient does not exist.
     /// </summary>
     RecipientDoesNotExist,
 
     /// <summary>
-    /// The rule was not found.
+    ///     The rule was not found.
     /// </summary>
     RuleNotFound,
 
     /// <summary>
-    /// The size is less than zero.
+    ///     The size is less than zero.
     /// </summary>
     SizeLessThanZero,
 
     /// <summary>
-    /// The string value is too big.
+    ///     The string value is too big.
     /// </summary>
     StringValueTooBig,
 
     /// <summary>
-    /// The address is unsupported.
+    ///     The address is unsupported.
     /// </summary>
     UnsupportedAddress,
 
     /// <summary>
-    /// An unexpected error occured.
+    ///     An unexpected error occured.
     /// </summary>
     UnexpectedError,
 
     /// <summary>
-    /// The rule is not supported.
+    ///     The rule is not supported.
     /// </summary>
     UnsupportedRule
 }

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a GetUserConfiguration request.
+///     Represents a GetUserConfiguration request.
 /// </summary>
 internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUserConfigurationResponse>
 {
@@ -41,19 +37,19 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     private UserConfiguration userConfiguration;
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(this.name, "name");
-        EwsUtilities.ValidateParam(this.parentFolderId, "parentFolderId");
-        this.ParentFolderId.Validate(this.Service.RequestedServerVersion);
+        EwsUtilities.ValidateParam(name, "name");
+        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+        ParentFolderId.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -61,18 +57,18 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     internal override GetUserConfigurationResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         // In the case of UserConfiguration.Load(), this.userConfiguration is set.
-        if (this.userConfiguration == null)
+        if (userConfiguration == null)
         {
-            this.userConfiguration = new UserConfiguration(service, this.properties);
-            this.userConfiguration.Name = this.name;
-            this.userConfiguration.ParentFolderId = this.parentFolderId;
+            userConfiguration = new UserConfiguration(service, properties);
+            userConfiguration.Name = name;
+            userConfiguration.ParentFolderId = parentFolderId;
         }
 
-        return new GetUserConfigurationResponse(this.userConfiguration);
+        return new GetUserConfigurationResponse(userConfiguration);
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -81,7 +77,7 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -90,7 +86,7 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -99,7 +95,7 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -108,7 +104,7 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -117,29 +113,24 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // Write UserConfiguationName element
-        UserConfiguration.WriteUserConfigurationNameToXml(
-            writer,
-            XmlNamespace.Messages,
-            this.name,
-            this.parentFolderId
-        );
+        UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, name, parentFolderId);
 
         // Write UserConfigurationProperties element
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.UserConfigurationProperties,
-            this.properties.ToString().Replace(EnumDelimiter, string.Empty)
+            properties.ToString().Replace(EnumDelimiter, string.Empty)
         );
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserConfigurationRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserConfigurationRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetUserConfigurationRequest(ExchangeService service)
@@ -148,49 +139,49 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     }
 
     /// <summary>
-    /// Gets or sets the name.
+    ///     Gets or sets the name.
     /// </summary>
     /// <value>The name.</value>
     internal string Name
     {
-        get { return this.name; }
-        set { this.name = value; }
+        get => name;
+        set => name = value;
     }
 
     /// <summary>
-    /// Gets or sets the parent folder Id.
+    ///     Gets or sets the parent folder Id.
     /// </summary>
     /// <value>The parent folder Id.</value>
     internal FolderId ParentFolderId
     {
-        get { return this.parentFolderId; }
-        set { this.parentFolderId = value; }
+        get => parentFolderId;
+        set => parentFolderId = value;
     }
 
     /// <summary>
-    /// Gets or sets the user configuration.
+    ///     Gets or sets the user configuration.
     /// </summary>
     /// <value>The user configuration.</value>
     internal UserConfiguration UserConfiguration
     {
-        get { return this.userConfiguration; }
+        get => userConfiguration;
 
         set
         {
-            this.userConfiguration = value;
+            userConfiguration = value;
 
-            this.name = this.userConfiguration.Name;
-            this.parentFolderId = this.userConfiguration.ParentFolderId;
+            name = userConfiguration.Name;
+            parentFolderId = userConfiguration.ParentFolderId;
         }
     }
 
     /// <summary>
-    /// Gets or sets the properties.
+    ///     Gets or sets the properties.
     /// </summary>
     /// <value>The properties.</value>
     internal UserConfigurationProperties Properties
     {
-        get { return this.properties; }
-        set { this.properties = value; }
+        get => properties;
+        set => properties = value;
     }
 }

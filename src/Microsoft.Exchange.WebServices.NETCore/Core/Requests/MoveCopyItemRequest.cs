@@ -25,30 +25,26 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract Move/Copy Item request.
+///     Represents an abstract Move/Copy Item request.
 /// </summary>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
 internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, TResponse>
     where TResponse : ServiceResponse
 {
-    private ItemIdWrapperList itemIds = new ItemIdWrapperList();
+    private readonly ItemIdWrapperList itemIds = new ItemIdWrapperList();
 
     /// <summary>
-    /// Validates request.
+    ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.ItemIds, "ItemIds");
+        EwsUtilities.ValidateParam(ItemIds, "ItemIds");
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoveCopyItemRequest&lt;TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="MoveCopyItemRequest&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -58,43 +54,36 @@ internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, T
     }
 
     /// <summary>
-    /// Writes the ids and returnNewItemIds flag as XML.
+    ///     Writes the ids and returnNewItemIds flag as XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteIdsToXml(EwsServiceXmlWriter writer)
     {
-        this.ItemIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
+        ItemIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
 
-        if (this.ReturnNewItemIds.HasValue)
+        if (ReturnNewItemIds.HasValue)
         {
-            writer.WriteElementValue(
-                XmlNamespace.Messages,
-                XmlElementNames.ReturnNewItemIds,
-                this.ReturnNewItemIds.Value
-            );
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ReturnNewItemIds, ReturnNewItemIds.Value);
         }
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.ItemIds.Count;
+        return ItemIds.Count;
     }
 
     /// <summary>
-    /// Gets the item ids.
+    ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds
-    {
-        get { return this.itemIds; }
-    }
+    internal ItemIdWrapperList ItemIds => itemIds;
 
     /// <summary>
-    /// Gets or sets flag indicating whether we require that the service return new item ids.
+    ///     Gets or sets flag indicating whether we require that the service return new item ids.
     /// </summary>
     internal bool? ReturnNewItemIds { get; set; }
 }

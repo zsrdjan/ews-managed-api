@@ -23,20 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <content>
-/// Contains nested type SearchFilter.RelationalFilter.
+///     Contains nested type SearchFilter.RelationalFilter.
 /// </content>
 public abstract partial class SearchFilter
 {
     /// <summary>
-    /// Represents the base class for relational filters (for example, IsEqualTo, IsGreaterThan or IsLessThanOrEqualTo).
+    ///     Represents the base class for relational filters (for example, IsEqualTo, IsGreaterThan or IsLessThanOrEqualTo).
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class RelationalFilter : PropertyBasedFilter
@@ -45,18 +42,24 @@ public abstract partial class SearchFilter
         private object value;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelationalFilter"/> class.
+        ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
         /// </summary>
         internal RelationalFilter()
-            : base()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelationalFilter"/> class.
+        ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
         /// </summary>
-        /// <param name="propertyDefinition">The definition of the property that is being compared. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)</param>
-        /// <param name="otherPropertyDefinition">The definition of the property to compare with. Property definitions are available as static members from schema classes (for example, EmailMessageSchema, AppointmentSchema, etc.)</param>
+        /// <param name="propertyDefinition">
+        ///     The definition of the property that is being compared. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+        ///     ContactSchema.GivenName, etc.)
+        /// </param>
+        /// <param name="otherPropertyDefinition">
+        ///     The definition of the property to compare with. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema, AppointmentSchema, etc.)
+        /// </param>
         internal RelationalFilter(
             PropertyDefinitionBase propertyDefinition,
             PropertyDefinitionBase otherPropertyDefinition
@@ -67,9 +70,13 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RelationalFilter"/> class.
+        ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
         /// </summary>
-        /// <param name="propertyDefinition">The definition of the property that is being compared. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)</param>
+        /// <param name="propertyDefinition">
+        ///     The definition of the property that is being compared. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+        ///     ContactSchema.GivenName, etc.)
+        /// </param>
         /// <param name="value">The value to compare with.</param>
         internal RelationalFilter(PropertyDefinitionBase propertyDefinition, object value)
             : base(propertyDefinition)
@@ -78,17 +85,18 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        /// Validate instance.
+        ///     Validate instance.
         /// </summary>
         internal override void InternalValidate()
         {
             base.InternalValidate();
 
-            if (this.otherPropertyDefinition == null && this.value == null)
+            if (otherPropertyDefinition == null && value == null)
             {
                 throw new ServiceValidationException(Strings.EqualityComparisonFilterIsInvalid);
             }
-            else if (value != null)
+
+            if (value != null)
             {
                 // All common value types (String, Int32, DateTime, ...) implement IConvertible.
                 // Value types that don't implement IConvertible must implement ISearchStringProvider 
@@ -103,13 +111,13 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        /// Tries to read element from XML.
+        ///     Tries to read element from XML.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <returns>True if element was read.</returns>
         internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
         {
-            bool result = base.TryReadElementFromXml(reader);
+            var result = base.TryReadElementFromXml(reader);
 
             if (!result)
             {
@@ -120,13 +128,13 @@ public abstract partial class SearchFilter
 
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Constant))
                     {
-                        this.value = reader.ReadAttributeValue(XmlAttributeNames.Value);
+                        value = reader.ReadAttributeValue(XmlAttributeNames.Value);
 
                         result = true;
                     }
                     else
                     {
-                        result = PropertyDefinitionBase.TryLoadFromXml(reader, ref this.otherPropertyDefinition);
+                        result = PropertyDefinitionBase.TryLoadFromXml(reader, ref otherPropertyDefinition);
                     }
                 }
             }
@@ -135,7 +143,7 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        /// Writes the elements to XML.
+        ///     Writes the elements to XML.
         /// </summary>
         /// <param name="writer">The writer.</param>
         internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -144,48 +152,49 @@ public abstract partial class SearchFilter
 
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldURIOrConstant);
 
-            if (this.Value != null)
+            if (Value != null)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Constant);
-                writer.WriteAttributeValue(XmlAttributeNames.Value, true /* alwaysWriteEmptyString */, this.Value);
+                writer.WriteAttributeValue(XmlAttributeNames.Value, true /* alwaysWriteEmptyString */, Value);
                 writer.WriteEndElement(); // Constant
             }
             else
             {
-                this.OtherPropertyDefinition.WriteToXml(writer);
+                OtherPropertyDefinition.WriteToXml(writer);
             }
 
             writer.WriteEndElement(); // FieldURIOrConstant
         }
 
         /// <summary>
-        /// Gets or sets the definition of the property to compare with. Property definitions are available as static members
-        /// from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)
-        /// The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
+        ///     Gets or sets the definition of the property to compare with. Property definitions are available as static members
+        ///     from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName,
+        ///     etc.)
+        ///     The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
         /// </summary>
         public PropertyDefinitionBase OtherPropertyDefinition
         {
-            get { return this.otherPropertyDefinition; }
+            get => otherPropertyDefinition;
 
             set
             {
-                this.SetFieldValue<PropertyDefinitionBase>(ref this.otherPropertyDefinition, value);
+                SetFieldValue(ref otherPropertyDefinition, value);
                 this.value = null;
             }
         }
 
         /// <summary>
-        /// Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
-        /// are mutually exclusive; setting one resets the other to null.
+        ///     Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
+        ///     are mutually exclusive; setting one resets the other to null.
         /// </summary>
         public object Value
         {
-            get { return this.value; }
+            get => value;
 
             set
             {
-                this.SetFieldValue<object>(ref this.value, value);
-                this.otherPropertyDefinition = null;
+                SetFieldValue(ref this.value, value);
+                otherPropertyDefinition = null;
             }
         }
     }

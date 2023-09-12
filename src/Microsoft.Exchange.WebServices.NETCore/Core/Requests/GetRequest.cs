@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract Get request.
+///     Represents an abstract Get request.
 /// </summary>
 /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -41,7 +37,7 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     private PropertySet propertySet;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetRequest&lt;TServiceObject, TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="GetRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -51,37 +47,37 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.PropertySet, "PropertySet");
-        this.PropertySet.ValidateForRequest(this, false /*summaryPropertiesOnly*/);
+        EwsUtilities.ValidateParam(PropertySet, "PropertySet");
+        PropertySet.ValidateForRequest(this, false /*summaryPropertiesOnly*/);
     }
 
     /// <summary>
-    /// Gets the type of the service object this request applies to.
+    ///     Gets the type of the service object this request applies to.
     /// </summary>
     /// <returns>The type of service object the request applies to.</returns>
     internal abstract ServiceObjectType GetServiceObjectType();
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.propertySet.WriteToXml(writer, this.GetServiceObjectType());
+        propertySet.WriteToXml(writer, GetServiceObjectType());
     }
 
     /// <summary>
-    /// Gets or sets the property set.
+    ///     Gets or sets the property set.
     /// </summary>
     /// <value>The property set.</value>
     public PropertySet PropertySet
     {
-        get { return this.propertySet; }
-        set { this.propertySet = value; }
+        get => propertySet;
+        set => propertySet = value;
     }
 }

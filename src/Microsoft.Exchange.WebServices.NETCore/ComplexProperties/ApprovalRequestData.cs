@@ -25,10 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents approval request information.
+///     Represents approval request information.
 /// </summary>
 public sealed class ApprovalRequestData : ComplexProperty
 {
@@ -38,14 +36,14 @@ public sealed class ApprovalRequestData : ComplexProperty
     private DateTime approvalDecisionTime;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ApprovalRequestData"/> class.
+    ///     Initializes a new instance of the <see cref="ApprovalRequestData" /> class.
     /// </summary>
     internal ApprovalRequestData()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -54,16 +52,16 @@ public sealed class ApprovalRequestData : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.IsUndecidedApprovalRequest:
-                this.isUndecidedApprovalRequest = reader.ReadElementValue<bool>();
+                isUndecidedApprovalRequest = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.ApprovalDecision:
-                this.approvalDecision = reader.ReadElementValue<int>();
+                approvalDecision = reader.ReadElementValue<int>();
                 return true;
             case XmlElementNames.ApprovalDecisionMaker:
-                this.approvalDecisionMaker = reader.ReadElementValue<string>();
+                approvalDecisionMaker = reader.ReadElementValue<string>();
                 return true;
             case XmlElementNames.ApprovalDecisionTime:
-                this.approvalDecisionTime = reader.ReadElementValueAsDateTime().Value;
+                approvalDecisionTime = reader.ReadElementValueAsDateTime().Value;
                 return true;
             default:
                 return false;
@@ -71,34 +69,22 @@ public sealed class ApprovalRequestData : ComplexProperty
     }
 
     /// <summary>
-    /// Gets a value indicating whether this is an undecided approval request.
+    ///     Gets a value indicating whether this is an undecided approval request.
     /// </summary>
-    public bool IsUndecidedApprovalRequest
-    {
-        get { return this.isUndecidedApprovalRequest; }
-    }
+    public bool IsUndecidedApprovalRequest => isUndecidedApprovalRequest;
 
     /// <summary>
-    /// Gets the approval decision on the request.
+    ///     Gets the approval decision on the request.
     /// </summary>
-    public int ApprovalDecision
-    {
-        get { return this.approvalDecision; }
-    }
+    public int ApprovalDecision => approvalDecision;
 
     /// <summary>
-    /// Gets the name of the user who made the decision.
+    ///     Gets the name of the user who made the decision.
     /// </summary>
-    public string ApprovalDecisionMaker
-    {
-        get { return this.approvalDecisionMaker; }
-    }
+    public string ApprovalDecisionMaker => approvalDecisionMaker;
 
     /// <summary>
-    /// Gets the time at which the decision was made.
+    ///     Gets the time at which the decision was made.
     /// </summary>
-    public DateTime ApprovalDecisionTime
-    {
-        get { return this.approvalDecisionTime; }
-    }
+    public DateTime ApprovalDecisionTime => approvalDecisionTime;
 }

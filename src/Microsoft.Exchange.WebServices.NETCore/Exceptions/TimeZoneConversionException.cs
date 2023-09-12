@@ -23,27 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a date and time cannot be converted from one time zone
-/// to another.
+///     Represents an error that occurs when a date and time cannot be converted from one time zone
+///     to another.
 /// </summary>
 public class TimeZoneConversionException : ServiceLocalException
 {
     /// <summary>
-    /// ServiceLocalException Constructor.
+    ///     ServiceLocalException Constructor.
     /// </summary>
     public TimeZoneConversionException()
-        : base()
     {
     }
 
     /// <summary>
-    /// ServiceLocalException Constructor.
+    ///     ServiceLocalException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     public TimeZoneConversionException(string message)
@@ -52,7 +50,7 @@ public class TimeZoneConversionException : ServiceLocalException
     }
 
     /// <summary>
-    /// ServiceLocalException Constructor.
+    ///     ServiceLocalException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     /// <param name="innerException">Inner exception.</param>
@@ -62,7 +60,8 @@ public class TimeZoneConversionException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.TimeZoneConversionException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.TimeZoneConversionException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

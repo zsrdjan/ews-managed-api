@@ -23,20 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <content>
-/// Contains nested type Recurrence.IntervalPattern.
+///     Contains nested type Recurrence.IntervalPattern.
 /// </content>
 public abstract partial class Recurrence
 {
     /// <summary>
-    /// Represents a recurrence pattern where each occurrence happens at a specific interval after the previous one.
+    ///     Represents a recurrence pattern where each occurrence happens at a specific interval after the previous one.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class IntervalPattern : Recurrence
@@ -44,14 +41,14 @@ public abstract partial class Recurrence
         private int interval = 1;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IntervalPattern"/> class.
+        ///     Initializes a new instance of the <see cref="IntervalPattern" /> class.
         /// </summary>
         internal IntervalPattern()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IntervalPattern"/> class.
+        ///     Initializes a new instance of the <see cref="IntervalPattern" /> class.
         /// </summary>
         /// <param name="startDate">The start date.</param>
         /// <param name="interval">The interval.</param>
@@ -63,22 +60,22 @@ public abstract partial class Recurrence
                 throw new ArgumentOutOfRangeException("interval", Strings.IntervalMustBeGreaterOrEqualToOne);
             }
 
-            this.Interval = interval;
+            Interval = interval;
         }
 
         /// <summary>
-        /// Write properties to XML.
+        ///     Write properties to XML.
         /// </summary>
         /// <param name="writer">The writer.</param>
         internal override void InternalWritePropertiesToXml(EwsServiceXmlWriter writer)
         {
             base.InternalWritePropertiesToXml(writer);
 
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Interval, this.Interval);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Interval, Interval);
         }
 
         /// <summary>
-        /// Tries to read element from XML.
+        ///     Tries to read element from XML.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <returns>True if appropriate element was read.</returns>
@@ -88,25 +85,23 @@ public abstract partial class Recurrence
             {
                 return true;
             }
-            else
+
+            switch (reader.LocalName)
             {
-                switch (reader.LocalName)
-                {
-                    case XmlElementNames.Interval:
-                        this.interval = reader.ReadElementValue<int>();
-                        return true;
-                    default:
-                        return false;
-                }
+                case XmlElementNames.Interval:
+                    interval = reader.ReadElementValue<int>();
+                    return true;
+                default:
+                    return false;
             }
         }
 
         /// <summary>
-        /// Gets or sets the interval between occurrences. 
+        ///     Gets or sets the interval between occurrences.
         /// </summary>
         public int Interval
         {
-            get { return this.interval; }
+            get => interval;
 
             set
             {
@@ -115,18 +110,18 @@ public abstract partial class Recurrence
                     throw new ArgumentOutOfRangeException("value", Strings.IntervalMustBeGreaterOrEqualToOne);
                 }
 
-                this.SetFieldValue<int>(ref this.interval, value);
+                SetFieldValue(ref interval, value);
             }
         }
 
         /// <summary>
-        /// Checks if two recurrence objects are identical. 
+        ///     Checks if two recurrence objects are identical.
         /// </summary>
         /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
         /// <returns>true if the two recurrences are identical, false otherwise.</returns>
         public override bool IsSame(Recurrence otherRecurrence)
         {
-            return base.IsSame(otherRecurrence) && this.interval == ((IntervalPattern)otherRecurrence).interval;
+            return base.IsSame(otherRecurrence) && interval == ((IntervalPattern)otherRecurrence).interval;
         }
     }
 }

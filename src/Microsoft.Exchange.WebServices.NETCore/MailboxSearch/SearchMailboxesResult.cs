@@ -25,43 +25,39 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents search mailbox result.
+///     Represents search mailbox result.
 /// </summary>
 public sealed class SearchMailboxesResult
 {
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Search result object</returns>
     internal static SearchMailboxesResult LoadFromXml(EwsServiceXmlReader reader)
     {
-        SearchMailboxesResult searchResult = new SearchMailboxesResult();
+        var searchResult = new SearchMailboxesResult();
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.SearchMailboxesResult);
 
-        List<MailboxQuery> searchQueries = new List<MailboxQuery>();
+        var searchQueries = new List<MailboxQuery>();
         do
         {
             reader.Read();
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SearchQueries))
             {
                 reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.MailboxQuery);
-                string query = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Query);
+                var query = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Query);
                 reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScopes);
-                List<MailboxSearchScope> mailboxSearchScopes = new List<MailboxSearchScope>();
+                var mailboxSearchScopes = new List<MailboxSearchScope>();
                 do
                 {
                     reader.Read();
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScope))
                     {
-                        string mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
+                        var mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
                         reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.SearchScope);
-                        string searchScope = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SearchScope);
+                        var searchScope = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SearchScope);
                         reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScope);
                         mailboxSearchScopes.Add(
                             new MailboxSearchScope(
@@ -111,7 +107,7 @@ public sealed class SearchMailboxesResult
 
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Refiners))
             {
-                List<SearchRefinerItem> refiners = new List<SearchRefinerItem>();
+                var refiners = new List<SearchRefinerItem>();
                 do
                 {
                     reader.Read();
@@ -129,7 +125,7 @@ public sealed class SearchMailboxesResult
 
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.MailboxStats))
             {
-                List<MailboxStatisticsItem> mailboxStats = new List<MailboxStatisticsItem>();
+                var mailboxStats = new List<MailboxStatisticsItem>();
                 do
                 {
                     reader.Read();
@@ -150,13 +146,13 @@ public sealed class SearchMailboxesResult
     }
 
     /// <summary>
-    /// Load keyword stats xml
+    ///     Load keyword stats xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Array of keyword statistics</returns>
     private static KeywordStatisticsSearchResult[] LoadKeywordStatsXml(EwsServiceXmlReader reader)
     {
-        List<KeywordStatisticsSearchResult> keywordStats = new List<KeywordStatisticsSearchResult>();
+        var keywordStats = new List<KeywordStatisticsSearchResult>();
 
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.KeywordStats);
         do
@@ -164,7 +160,7 @@ public sealed class SearchMailboxesResult
             reader.Read();
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.KeywordStat))
             {
-                KeywordStatisticsSearchResult keywordStat = new KeywordStatisticsSearchResult();
+                var keywordStat = new KeywordStatisticsSearchResult();
                 keywordStat.Keyword = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Keyword);
                 keywordStat.ItemHits = int.Parse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ItemHits));
                 keywordStat.Size = ulong.Parse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Size));
@@ -176,13 +172,13 @@ public sealed class SearchMailboxesResult
     }
 
     /// <summary>
-    /// Load preview items xml
+    ///     Load preview items xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Array of preview items</returns>
     private static SearchPreviewItem[] LoadPreviewItemsXml(EwsServiceXmlReader reader)
     {
-        List<SearchPreviewItem> previewItems = new List<SearchPreviewItem>();
+        var previewItems = new List<SearchPreviewItem>();
 
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.Items);
         do
@@ -190,7 +186,7 @@ public sealed class SearchMailboxesResult
             reader.Read();
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SearchPreviewItem))
             {
-                SearchPreviewItem previewItem = new SearchPreviewItem();
+                var previewItem = new SearchPreviewItem();
                 do
                 {
                     reader.Read();
@@ -311,14 +307,14 @@ public sealed class SearchMailboxesResult
     }
 
     /// <summary>
-    /// Get collection of recipients
+    ///     Get collection of recipients
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <param name="elementName">Element name</param>
     /// <returns>Array of recipients</returns>
     private static string[] GetRecipients(EwsServiceXmlReader reader, string elementName)
     {
-        List<string> toRecipients = new List<string>();
+        var toRecipients = new List<string>();
         do
         {
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SmtpAddress))
@@ -333,13 +329,13 @@ public sealed class SearchMailboxesResult
     }
 
     /// <summary>
-    /// Load extended properties xml
+    ///     Load extended properties xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Extended properties collection</returns>
     private static ExtendedPropertyCollection LoadExtendedPropertiesXml(EwsServiceXmlReader reader)
     {
-        ExtendedPropertyCollection extendedProperties = new ExtendedPropertyCollection();
+        var extendedProperties = new ExtendedPropertyCollection();
 
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.ExtendedProperties);
         do
@@ -355,59 +351,59 @@ public sealed class SearchMailboxesResult
     }
 
     /// <summary>
-    /// Search queries
+    ///     Search queries
     /// </summary>
     public MailboxQuery[] SearchQueries { get; set; }
 
     /// <summary>
-    /// Result type
+    ///     Result type
     /// </summary>
     public SearchResultType ResultType { get; set; }
 
     /// <summary>
-    /// Item count
+    ///     Item count
     /// </summary>
     public long ItemCount { get; set; }
 
     /// <summary>
-    /// Total size
+    ///     Total size
     /// </summary>
     [CLSCompliant(false)]
     public ulong Size { get; set; }
 
     /// <summary>
-    /// Page item count
+    ///     Page item count
     /// </summary>
     public int PageItemCount { get; set; }
 
     /// <summary>
-    /// Total page item size
+    ///     Total page item size
     /// </summary>
     [CLSCompliant(false)]
     public ulong PageItemSize { get; set; }
 
     /// <summary>
-    /// Keyword statistics search result
+    ///     Keyword statistics search result
     /// </summary>
     public KeywordStatisticsSearchResult[] KeywordStats { get; set; }
 
     /// <summary>
-    /// Search preview items
+    ///     Search preview items
     /// </summary>
     public SearchPreviewItem[] PreviewItems { get; set; }
 
     /// <summary>
-    /// Failed mailboxes
+    ///     Failed mailboxes
     /// </summary>
     public FailedSearchMailbox[] FailedMailboxes { get; set; }
 
     /// <summary>
-    /// Refiners
+    ///     Refiners
     /// </summary>
     public SearchRefinerItem[] Refiners { get; set; }
 
     /// <summary>
-    /// Mailbox statistics
+    ///     Mailbox statistics
     /// </summary>
     public MailboxStatisticsItem[] MailboxStats { get; set; }
 }
@@ -416,39 +412,39 @@ public sealed class SearchMailboxesResult
 #region Search Refiner
 
 /// <summary>
-/// Search refiner item
+///     Search refiner item
 /// </summary>
 public sealed class SearchRefinerItem
 {
     /// <summary>
-    /// Refiner name
+    ///     Refiner name
     /// </summary>
     public string Name { get; set; }
 
     /// <summary>
-    /// Refiner value
+    ///     Refiner value
     /// </summary>
     public string Value { get; set; }
 
     /// <summary>
-    /// Refiner count
+    ///     Refiner count
     /// </summary>
     public long Count { get; set; }
 
     /// <summary>
-    /// Refiner token, essentially comprises of an operator (i.e. ':' or '>') plus the refiner value
-    /// The caller such as Sharepoint can simply append this to refiner name for query refinement
+    ///     Refiner token, essentially comprises of an operator (i.e. ':' or '>') plus the refiner value
+    ///     The caller such as Sharepoint can simply append this to refiner name for query refinement
     /// </summary>
     public string Token { get; set; }
 
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader"></param>
     /// <returns></returns>
     internal static SearchRefinerItem LoadFromXml(EwsServiceXmlReader reader)
     {
-        SearchRefinerItem sri = new SearchRefinerItem();
+        var sri = new SearchRefinerItem();
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.Refiner);
         sri.Name = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Name);
         sri.Value = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Value);
@@ -464,39 +460,39 @@ public sealed class SearchRefinerItem
 #region Mailbox Statistics
 
 /// <summary>
-/// Mailbox statistics item
+///     Mailbox statistics item
 /// </summary>
 public sealed class MailboxStatisticsItem
 {
     /// <summary>
-    /// Mailbox id
+    ///     Mailbox id
     /// </summary>
     public string MailboxId { get; set; }
 
     /// <summary>
-    /// Display name
+    ///     Display name
     /// </summary>
     public string DisplayName { get; set; }
 
     /// <summary>
-    /// Item count
+    ///     Item count
     /// </summary>
     public long ItemCount { get; set; }
 
     /// <summary>
-    /// Total size
+    ///     Total size
     /// </summary>
     [CLSCompliant(false)]
     public ulong Size { get; set; }
 
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader"></param>
     /// <returns></returns>
     internal static MailboxStatisticsItem LoadFromXml(EwsServiceXmlReader reader)
     {
-        MailboxStatisticsItem msi = new MailboxStatisticsItem();
+        var msi = new MailboxStatisticsItem();
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.MailboxStat);
         msi.MailboxId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.MailboxId);
         msi.DisplayName = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.DisplayName);

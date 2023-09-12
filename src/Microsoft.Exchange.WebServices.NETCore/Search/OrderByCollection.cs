@@ -23,105 +23,99 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-using PropertyDefinitionSortDirectionPair =
-    System.Collections.Generic.KeyValuePair<PropertyDefinitionBase, SortDirection>;
+using PropertyDefinitionSortDirectionPair = KeyValuePair<PropertyDefinitionBase, SortDirection>;
 
 /// <summary>
-/// Represents an ordered collection of property definitions qualified with a sort direction.
+///     Represents an ordered collection of property definitions qualified with a sort direction.
 /// </summary>
 public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirectionPair>
 {
-    private List<PropertyDefinitionSortDirectionPair> propDefSortOrderPairList;
+    private readonly List<PropertyDefinitionSortDirectionPair> propDefSortOrderPairList;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OrderByCollection"/> class.
+    ///     Initializes a new instance of the <see cref="OrderByCollection" /> class.
     /// </summary>
     internal OrderByCollection()
     {
-        this.propDefSortOrderPairList = new List<PropertyDefinitionSortDirectionPair>();
+        propDefSortOrderPairList = new List<PropertyDefinitionSortDirectionPair>();
     }
 
     /// <summary>
-    /// Adds the specified property definition / sort direction pair to the collection.
+    ///     Adds the specified property definition / sort direction pair to the collection.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <param name="sortDirection">The sort direction.</param>
     public void Add(PropertyDefinitionBase propertyDefinition, SortDirection sortDirection)
     {
-        if (this.Contains(propertyDefinition))
+        if (Contains(propertyDefinition))
         {
             throw new ServiceLocalException(
                 string.Format(Strings.PropertyAlreadyExistsInOrderByCollection, propertyDefinition.GetPrintableName())
             );
         }
 
-        this.propDefSortOrderPairList.Add(new PropertyDefinitionSortDirectionPair(propertyDefinition, sortDirection));
+        propDefSortOrderPairList.Add(new PropertyDefinitionSortDirectionPair(propertyDefinition, sortDirection));
     }
 
     /// <summary>
-    /// Removes all elements from the collection.
+    ///     Removes all elements from the collection.
     /// </summary>
     public void Clear()
     {
-        this.propDefSortOrderPairList.Clear();
+        propDefSortOrderPairList.Clear();
     }
 
     /// <summary>
-    /// Determines whether the collection contains the specified property definition.
+    ///     Determines whether the collection contains the specified property definition.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <returns>True if the collection contains the specified property definition; otherwise, false.</returns>
     internal bool Contains(PropertyDefinitionBase propertyDefinition)
     {
-        return this.propDefSortOrderPairList.Exists((pair) => pair.Key.Equals(propertyDefinition));
+        return propDefSortOrderPairList.Exists(pair => pair.Key.Equals(propertyDefinition));
     }
 
     /// <summary>
-    /// Gets the number of elements contained in the collection.
+    ///     Gets the number of elements contained in the collection.
     /// </summary>
-    public int Count
-    {
-        get { return this.propDefSortOrderPairList.Count; }
-    }
+    public int Count => propDefSortOrderPairList.Count;
 
     /// <summary>
-    /// Removes the specified property definition from the collection.
+    ///     Removes the specified property definition from the collection.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <returns>True if the property definition is successfully removed; otherwise, false</returns>
     public bool Remove(PropertyDefinitionBase propertyDefinition)
     {
-        int count = this.propDefSortOrderPairList.RemoveAll((pair) => pair.Key.Equals(propertyDefinition));
+        var count = propDefSortOrderPairList.RemoveAll(pair => pair.Key.Equals(propertyDefinition));
         return count > 0;
     }
 
     /// <summary>
-    /// Removes the element at the specified index from the collection.
+    ///     Removes the element at the specified index from the collection.
     /// </summary>
     /// <param name="index">The index.</param>
     /// <exception cref="System.ArgumentOutOfRangeException">
-    /// Index is less than 0 or index is equal to or greater than Count.
+    ///     Index is less than 0 or index is equal to or greater than Count.
     /// </exception>
     public void RemoveAt(int index)
     {
-        this.propDefSortOrderPairList.RemoveAt(index);
+        propDefSortOrderPairList.RemoveAt(index);
     }
 
     /// <summary>
-    /// Tries to get the value for a property definition in the collection.
+    ///     Tries to get the value for a property definition in the collection.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <param name="sortDirection">The sort direction.</param>
     /// <returns>True if collection contains property definition, otherwise false.</returns>
     public bool TryGetValue(PropertyDefinitionBase propertyDefinition, out SortDirection sortDirection)
     {
-        foreach (PropertyDefinitionSortDirectionPair pair in this.propDefSortOrderPairList)
+        foreach (var pair in propDefSortOrderPairList)
         {
             if (pair.Value.Equals(propertyDefinition))
             {
@@ -135,17 +129,17 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer, string xmlElementName)
     {
-        if (this.Count > 0)
+        if (Count > 0)
         {
             writer.WriteStartElement(XmlNamespace.Messages, xmlElementName);
 
-            foreach (PropertyDefinitionSortDirectionPair keyValuePair in this)
+            foreach (var keyValuePair in this)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldOrder);
 
@@ -160,26 +154,23 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     }
 
     /// <summary>
-    /// Gets the element at the specified index from the collection.
+    ///     Gets the element at the specified index from the collection.
     /// </summary>
     /// <param name="index">Index.</param>
-    public PropertyDefinitionSortDirectionPair this[int index]
-    {
-        get { return this.propDefSortOrderPairList[index]; }
-    }
+    public PropertyDefinitionSortDirectionPair this[int index] => propDefSortOrderPairList[index];
 
 
     #region IEnumerable<KeyValuePair<PropertyDefinitionBase,SortDirection>> Members
 
     /// <summary>
-    /// Returns an enumerator that iterates through the collection.
+    ///     Returns an enumerator that iterates through the collection.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+    ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
     /// </returns>
     public IEnumerator<KeyValuePair<PropertyDefinitionBase, SortDirection>> GetEnumerator()
     {
-        return this.propDefSortOrderPairList.GetEnumerator();
+        return propDefSortOrderPairList.GetEnumerator();
     }
 
     #endregion
@@ -188,14 +179,14 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     #region IEnumerable Members
 
     /// <summary>
-    /// Returns an enumerator that iterates through a collection.
+    ///     Returns an enumerator that iterates through a collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+    ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
     /// </returns>
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return this.propDefSortOrderPairList.GetEnumerator();
+        return propDefSortOrderPairList.GetEnumerator();
     }
 
     #endregion

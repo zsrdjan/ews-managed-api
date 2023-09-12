@@ -25,53 +25,48 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 /// <summary>
-/// Enum MailboxSearchScopeType
+///     Enum MailboxSearchScopeType
 /// </summary>
 internal enum MailboxSearchScopeType
 {
     /// <summary>
-    /// The legacy exchange DN
+    ///     The legacy exchange DN
     /// </summary>
     LegacyExchangeDN = 0,
 
     /// <summary>
-    /// The public folder
+    ///     The public folder
     /// </summary>
     PublicFolder = 1,
 
     /// <summary>
-    /// The recipient
+    ///     The recipient
     /// </summary>
     Recipient = 2,
 
     /// <summary>
-    /// The mailbox GUID
+    ///     The mailbox GUID
     /// </summary>
     MailboxGuid = 3,
 
     /// <summary>
-    /// All public folders
+    ///     All public folders
     /// </summary>
     AllPublicFolders = 4,
 
     /// <summary>
-    /// All mailboxes
+    ///     All mailboxes
     /// </summary>
     AllMailboxes = 5,
 
     /// <summary>
-    /// The saved search id
+    ///     The saved search id
     /// </summary>
     SavedSearchId = 6,
 
     /// <summary>
-    /// The auto detect
+    ///     The auto detect
     /// </summary>
     AutoDetect = 7,
 }

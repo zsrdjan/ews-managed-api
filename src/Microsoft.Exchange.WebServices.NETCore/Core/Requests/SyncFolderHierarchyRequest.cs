@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a SyncFolderHierarchy request.
+///     Represents a SyncFolderHierarchy request.
 /// </summary>
 internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFolderHierarchyResponse>
 {
@@ -35,7 +35,7 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     private string syncState;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SyncFolderHierarchyRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SyncFolderHierarchyRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SyncFolderHierarchyRequest(ExchangeService service)
@@ -44,18 +44,18 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override SyncFolderHierarchyResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new SyncFolderHierarchyResponse(this.PropertySet);
+        return new SyncFolderHierarchyResponse(PropertySet);
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected responses.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -64,7 +64,7 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -73,7 +73,7 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -82,7 +82,7 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -91,40 +91,40 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     }
 
     /// <summary>
-    /// Validates request.
+    ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.PropertySet, "PropertySet");
-        if (this.SyncFolderId != null)
+        EwsUtilities.ValidateParam(PropertySet, "PropertySet");
+        if (SyncFolderId != null)
         {
-            this.SyncFolderId.Validate(this.Service.RequestedServerVersion);
+            SyncFolderId.Validate(Service.RequestedServerVersion);
         }
 
-        this.PropertySet.ValidateForRequest(this, false /*summaryPropertiesOnly*/);
+        PropertySet.ValidateForRequest(this, false /*summaryPropertiesOnly*/);
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.PropertySet.WriteToXml(writer, ServiceObjectType.Folder);
+        PropertySet.WriteToXml(writer, ServiceObjectType.Folder);
 
-        if (this.SyncFolderId != null)
+        if (SyncFolderId != null)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SyncFolderId);
-            this.SyncFolderId.WriteToXml(writer);
+            SyncFolderId.WriteToXml(writer);
             writer.WriteEndElement();
         }
 
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SyncState, this.SyncState);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SyncState, SyncState);
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -133,32 +133,32 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     }
 
     /// <summary>
-    /// Gets or sets the property set.
+    ///     Gets or sets the property set.
     /// </summary>
     /// <value>The property set.</value>
     public PropertySet PropertySet
     {
-        get { return this.propertySet; }
-        set { this.propertySet = value; }
+        get => propertySet;
+        set => propertySet = value;
     }
 
     /// <summary>
-    /// Gets or sets the sync folder id.
+    ///     Gets or sets the sync folder id.
     /// </summary>
     /// <value>The sync folder id.</value>
     public FolderId SyncFolderId
     {
-        get { return this.syncFolderId; }
-        set { this.syncFolderId = value; }
+        get => syncFolderId;
+        set => syncFolderId = value;
     }
 
     /// <summary>
-    /// Gets or sets the state of the sync.
+    ///     Gets or sets the state of the sync.
     /// </summary>
     /// <value>The state of the sync.</value>
     public string SyncState
     {
-        get { return this.syncState; }
-        set { this.syncState = value; }
+        get => syncState;
+        set => syncState = value;
     }
 }

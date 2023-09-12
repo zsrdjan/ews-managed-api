@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a SendItem request.
+///     Represents a SendItem request.
 /// </summary>
 internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceResponse>
 {
@@ -38,21 +34,21 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     private FolderId savedCopyDestinationFolderId;
 
     /// <summary>
-    /// Asserts the valid.
+    ///     Asserts the valid.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.Items, "Items");
+        EwsUtilities.ValidateParam(Items, "Items");
 
-        if (this.SavedCopyDestinationFolderId != null)
+        if (SavedCopyDestinationFolderId != null)
         {
-            this.SavedCopyDestinationFolderId.Validate(this.Service.RequestedServerVersion);
+            SavedCopyDestinationFolderId.Validate(Service.RequestedServerVersion);
         }
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -63,16 +59,16 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return EwsUtilities.GetEnumeratedObjectCount(this.Items);
+        return EwsUtilities.GetEnumeratedObjectCount(Items);
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -81,7 +77,7 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -90,7 +86,7 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -99,41 +95,41 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         base.WriteAttributesToXml(writer);
 
-        writer.WriteAttributeValue(XmlAttributeNames.SaveItemToFolder, this.SavedCopyDestinationFolderId != null);
+        writer.WriteAttributeValue(XmlAttributeNames.SaveItemToFolder, SavedCopyDestinationFolderId != null);
     }
 
     /// <summary>
-    /// Writes the elements to XML.
+    ///     Writes the elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ItemIds);
 
-        foreach (Item item in this.Items)
+        foreach (var item in Items)
         {
             item.Id.WriteToXml(writer, XmlElementNames.ItemId);
         }
 
         writer.WriteEndElement(); // ItemIds
 
-        if (this.SavedCopyDestinationFolderId != null)
+        if (SavedCopyDestinationFolderId != null)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SavedItemFolderId);
-            this.SavedCopyDestinationFolderId.WriteToXml(writer);
+            SavedCopyDestinationFolderId.WriteToXml(writer);
             writer.WriteEndElement();
         }
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -142,7 +138,7 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SendItemRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SendItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -152,22 +148,22 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     }
 
     /// <summary>
-    /// Gets or sets the items.
+    ///     Gets or sets the items.
     /// </summary>
     /// <value>The items.</value>
     public IEnumerable<Item> Items
     {
-        get { return this.items; }
-        set { this.items = value; }
+        get => items;
+        set => items = value;
     }
 
     /// <summary>
-    /// Gets or sets the saved copy destination folder id.
+    ///     Gets or sets the saved copy destination folder id.
     /// </summary>
     /// <value>The saved copy destination folder id.</value>
     public FolderId SavedCopyDestinationFolderId
     {
-        get { return this.savedCopyDestinationFolderId; }
-        set { this.savedCopyDestinationFolderId = value; }
+        get => savedCopyDestinationFolderId;
+        set => savedCopyDestinationFolderId = value;
     }
 }

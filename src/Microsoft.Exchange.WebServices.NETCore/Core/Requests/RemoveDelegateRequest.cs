@@ -25,17 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents a RemoveDelete request.
+///     Represents a RemoveDelete request.
 /// </summary>
 internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateManagementResponse>
 {
-    private List<UserId> userIds = new List<UserId>();
+    private readonly List<UserId> userIds = new List<UserId>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RemoveDelegateRequest"/> class.
+    ///     Initializes a new instance of the <see cref="RemoveDelegateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal RemoveDelegateRequest(ExchangeService service)
@@ -44,16 +42,16 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Asserts the valid.
+    ///     Asserts the valid.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(this.UserIds, "UserIds");
+        EwsUtilities.ValidateParamCollection(UserIds, "UserIds");
     }
 
     /// <summary>
-    /// Writes the elements to XML.
+    ///     Writes the elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -62,7 +60,7 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
 
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.UserIds);
 
-        foreach (UserId userId in this.UserIds)
+        foreach (var userId in UserIds)
         {
             userId.WriteToXml(writer, XmlElementNames.UserId);
         }
@@ -71,7 +69,7 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -80,7 +78,7 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -89,7 +87,7 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Creates the response.
+    ///     Creates the response.
     /// </summary>
     /// <returns>Service response.</returns>
     internal override DelegateManagementResponse CreateResponse()
@@ -98,7 +96,7 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -107,11 +105,8 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     }
 
     /// <summary>
-    /// Gets the user ids.
+    ///     Gets the user ids.
     /// </summary>
     /// <value>The user ids.</value>
-    public List<UserId> UserIds
-    {
-        get { return this.userIds; }
-    }
+    public List<UserId> UserIds => userIds;
 }

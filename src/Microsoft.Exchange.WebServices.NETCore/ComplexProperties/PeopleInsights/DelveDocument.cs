@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the DelveDocument.
+///     Represents the DelveDocument.
 /// </summary>
 public sealed class DelveDocument : InsightValue
 {
@@ -45,107 +42,107 @@ public sealed class DelveDocument : InsightValue
     private string previewURL;
 
     /// <summary>
-    /// Gets the Rank
+    ///     Gets the Rank
     /// </summary>
     public double Rank
     {
-        get { return this.rank; }
+        get => rank;
 
-        set { this.SetFieldValue<double>(ref this.rank, value); }
+        set => SetFieldValue(ref rank, value);
     }
 
     /// <summary>
-    /// Gets the Author
+    ///     Gets the Author
     /// </summary>
     public string Author
     {
-        get { return this.author; }
+        get => author;
 
-        set { this.SetFieldValue<string>(ref this.author, value); }
+        set => SetFieldValue(ref author, value);
     }
 
     /// <summary>
-    /// Gets the Created
+    ///     Gets the Created
     /// </summary>
     public string Created
     {
-        get { return this.created; }
+        get => created;
 
-        set { this.SetFieldValue<string>(ref this.created, value); }
+        set => SetFieldValue(ref created, value);
     }
 
     /// <summary>
-    /// Gets the LastModifiedTime
+    ///     Gets the LastModifiedTime
     /// </summary>
     public string LastModifiedTime
     {
-        get { return this.lastModifiedTime; }
+        get => lastModifiedTime;
 
-        set { this.SetFieldValue<string>(ref this.lastModifiedTime, value); }
+        set => SetFieldValue(ref lastModifiedTime, value);
     }
 
     /// <summary>
-    /// Gets the DefaultEncodingURL
+    ///     Gets the DefaultEncodingURL
     /// </summary>
     public string DefaultEncodingURL
     {
-        get { return this.defaultEncodingURL; }
+        get => defaultEncodingURL;
 
-        set { this.SetFieldValue<string>(ref this.defaultEncodingURL, value); }
+        set => SetFieldValue(ref defaultEncodingURL, value);
     }
 
     /// <summary>
-    /// Gets the FileType
+    ///     Gets the FileType
     /// </summary>
     public string FileType
     {
-        get { return this.fileType; }
+        get => fileType;
 
-        set { this.SetFieldValue<string>(ref this.fileType, value); }
+        set => SetFieldValue(ref fileType, value);
     }
 
     /// <summary>
-    /// Gets the Title
+    ///     Gets the Title
     /// </summary>
     public string Title
     {
-        get { return this.title; }
+        get => title;
 
-        set { this.SetFieldValue<string>(ref this.title, value); }
+        set => SetFieldValue(ref title, value);
     }
 
     /// <summary>
-    /// Gets the DocumentId
+    ///     Gets the DocumentId
     /// </summary>
     public string DocumentId
     {
-        get { return this.documentId; }
+        get => documentId;
 
-        set { this.SetFieldValue<string>(ref this.documentId, value); }
+        set => SetFieldValue(ref documentId, value);
     }
 
     /// <summary>
-    /// Gets the PreviewURL
+    ///     Gets the PreviewURL
     /// </summary>
     public string PreviewURL
     {
-        get { return this.previewURL; }
+        get => previewURL;
 
-        set { this.SetFieldValue<string>(ref this.previewURL, value); }
+        set => SetFieldValue(ref previewURL, value);
     }
 
     /// <summary>
-    /// Gets the LastEditor
+    ///     Gets the LastEditor
     /// </summary>
     public string LastEditor
     {
-        get { return this.lastEditor; }
+        get => lastEditor;
 
-        set { this.SetFieldValue<string>(ref this.lastEditor, value); }
+        set => SetFieldValue(ref lastEditor, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -154,40 +151,40 @@ public sealed class DelveDocument : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.Rank:
-                this.Rank = reader.ReadElementValue<double>();
+                Rank = reader.ReadElementValue<double>();
                 break;
             case XmlElementNames.Author:
-                this.Author = reader.ReadElementValue();
+                Author = reader.ReadElementValue();
                 break;
             case XmlElementNames.Created:
-                this.Created = reader.ReadElementValue();
+                Created = reader.ReadElementValue();
                 break;
             case XmlElementNames.LastModifiedTime:
-                this.LastModifiedTime = reader.ReadElementValue();
+                LastModifiedTime = reader.ReadElementValue();
                 break;
             case XmlElementNames.DefaultEncodingURL:
-                this.DefaultEncodingURL = reader.ReadElementValue();
+                DefaultEncodingURL = reader.ReadElementValue();
                 break;
             case XmlElementNames.FileType:
-                this.FileType = reader.ReadElementValue();
+                FileType = reader.ReadElementValue();
                 break;
             case XmlElementNames.Title:
-                this.Title = reader.ReadElementValue();
+                Title = reader.ReadElementValue();
                 break;
             case XmlElementNames.DocumentId:
-                this.DocumentId = reader.ReadElementValue();
+                DocumentId = reader.ReadElementValue();
                 break;
             case XmlElementNames.PreviewURL:
-                this.PreviewURL = reader.ReadElementValue();
+                PreviewURL = reader.ReadElementValue();
                 break;
             case XmlElementNames.LastEditor:
-                this.LastEditor = reader.ReadElementValue();
+                LastEditor = reader.ReadElementValue();
                 break;
             default:
                 return false;

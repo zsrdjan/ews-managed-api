@@ -23,15 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents the base response class for item creation operations.
+///     Represents the base response class for item creation operations.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal abstract class CreateItemResponseBase : ServiceResponse
@@ -39,7 +36,7 @@ internal abstract class CreateItemResponseBase : ServiceResponse
     private List<Item> items;
 
     /// <summary>
-    /// Gets Item instance.
+    ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -47,24 +44,23 @@ internal abstract class CreateItemResponseBase : ServiceResponse
     internal abstract Item GetObjectInstance(ExchangeService service, string xmlElementName);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateItemResponseBase"/> class.
+    ///     Initializes a new instance of the <see cref="CreateItemResponseBase" /> class.
     /// </summary>
     internal CreateItemResponseBase()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        this.items = reader.ReadServiceObjectsCollectionFromXml<Item>(
+        items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
-            this.GetObjectInstance,
+            GetObjectInstance,
             false, /* clearPropertyBag */
             null, /* requestedPropertySet */
             false
@@ -72,10 +68,7 @@ internal abstract class CreateItemResponseBase : ServiceResponse
     }
 
     /// <summary>
-    /// Gets the items.
+    ///     Gets the items.
     /// </summary>
-    public List<Item> Items
-    {
-        get { return this.items; }
-    }
+    public List<Item> Items => items;
 }

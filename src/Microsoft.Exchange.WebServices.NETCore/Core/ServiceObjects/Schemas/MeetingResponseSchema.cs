@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for meeting messages.
+///     Represents the schema for meeting messages.
 /// </summary>
 [Schema]
 public class MeetingResponseSchema : MeetingMessageSchema
 {
     /// <summary>
-    /// Field URIs for MeetingMessage.
+    ///     Field URIs for MeetingMessage.
     /// </summary>
     private static class FieldUris
     {
@@ -43,7 +43,7 @@ public class MeetingResponseSchema : MeetingMessageSchema
     }
 
     /// <summary>
-    /// Defines the Start property.
+    ///     Defines the Start property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -53,7 +53,7 @@ public class MeetingResponseSchema : MeetingMessageSchema
     public static readonly PropertyDefinition Start = AppointmentSchema.Start;
 
     /// <summary>
-    /// Defines the End property.
+    ///     Defines the End property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -63,7 +63,7 @@ public class MeetingResponseSchema : MeetingMessageSchema
     public static readonly PropertyDefinition End = AppointmentSchema.End;
 
     /// <summary>
-    /// Defines the Location property.
+    ///     Defines the Location property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -73,7 +73,7 @@ public class MeetingResponseSchema : MeetingMessageSchema
     public static readonly PropertyDefinition Location = AppointmentSchema.Location;
 
     /// <summary>
-    /// Defines the AppointmentType property.
+    ///     Defines the AppointmentType property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -83,7 +83,7 @@ public class MeetingResponseSchema : MeetingMessageSchema
     public static readonly PropertyDefinition AppointmentType = AppointmentSchema.AppointmentType;
 
     /// <summary>
-    /// Defines the Recurrence property.
+    ///     Defines the Recurrence property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -93,7 +93,7 @@ public class MeetingResponseSchema : MeetingMessageSchema
     public static readonly PropertyDefinition Recurrence = AppointmentSchema.Recurrence;
 
     /// <summary>
-    /// Defines the Proposed Start property.
+    ///     Defines the Proposed Start property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -105,11 +105,11 @@ public class MeetingResponseSchema : MeetingMessageSchema
         FieldUris.ProposedStart,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate(ExchangeVersion version) { return AppointmentSchema.StartTimeZone; }
+        delegate { return AppointmentSchema.StartTimeZone; }
     );
 
     /// <summary>
-    /// Defines the Proposed End property.
+    ///     Defines the Proposed End property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -121,11 +121,11 @@ public class MeetingResponseSchema : MeetingMessageSchema
         FieldUris.ProposedEnd,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate(ExchangeVersion version) { return AppointmentSchema.EndTimeZone; }
+        delegate { return AppointmentSchema.EndTimeZone; }
     );
 
     /// <summary>
-    /// Enhanced Location property.
+    ///     Enhanced Location property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -138,30 +138,30 @@ public class MeetingResponseSchema : MeetingMessageSchema
     internal static new readonly MeetingResponseSchema Instance = new MeetingResponseSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(Start);
-        this.RegisterProperty(End);
-        this.RegisterProperty(Location);
-        this.RegisterProperty(Recurrence);
-        this.RegisterProperty(AppointmentType);
-        this.RegisterProperty(ProposedStart);
-        this.RegisterProperty(ProposedEnd);
-        this.RegisterProperty(EnhancedLocation);
+        RegisterProperty(Start);
+        RegisterProperty(End);
+        RegisterProperty(Location);
+        RegisterProperty(Recurrence);
+        RegisterProperty(AppointmentType);
+        RegisterProperty(ProposedStart);
+        RegisterProperty(ProposedEnd);
+        RegisterProperty(EnhancedLocation);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingMessageSchema"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
     /// </summary>
     internal MeetingResponseSchema()
-        : base()
     {
     }
 }

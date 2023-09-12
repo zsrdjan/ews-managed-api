@@ -23,243 +23,227 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the set of actions available for a rule.
+///     Represents the set of actions available for a rule.
 /// </summary>
 public sealed class RuleActions : ComplexProperty
 {
     /// <summary>
-    /// SMS recipient address type.
+    ///     SMS recipient address type.
     /// </summary>
     private const string MobileType = "MOBILE";
 
     /// <summary>
-    /// The AssignCategories action.
+    ///     The AssignCategories action.
     /// </summary>
-    private StringList assignCategories;
+    private readonly StringList assignCategories;
 
     /// <summary>
-    /// The CopyToFolder action.
+    ///     The CopyToFolder action.
     /// </summary>
     private FolderId copyToFolder;
 
     /// <summary>
-    /// The Delete action.
+    ///     The Delete action.
     /// </summary>
     private bool delete;
 
     /// <summary>
-    /// The ForwardAsAttachmentToRecipients action.
+    ///     The ForwardAsAttachmentToRecipients action.
     /// </summary>
-    private EmailAddressCollection forwardAsAttachmentToRecipients;
+    private readonly EmailAddressCollection forwardAsAttachmentToRecipients;
 
     /// <summary>
-    /// The ForwardToRecipients action.
+    ///     The ForwardToRecipients action.
     /// </summary>
-    private EmailAddressCollection forwardToRecipients;
+    private readonly EmailAddressCollection forwardToRecipients;
 
     /// <summary>
-    /// The MarkImportance action.
+    ///     The MarkImportance action.
     /// </summary>
     private Importance? markImportance;
 
     /// <summary>
-    /// The MarkAsRead action.
+    ///     The MarkAsRead action.
     /// </summary>
     private bool markAsRead;
 
     /// <summary>
-    /// The MoveToFolder action.
+    ///     The MoveToFolder action.
     /// </summary>
     private FolderId moveToFolder;
 
     /// <summary>
-    /// The PermanentDelete action.
+    ///     The PermanentDelete action.
     /// </summary>
     private bool permanentDelete;
 
     /// <summary>
-    /// The RedirectToRecipients action.
+    ///     The RedirectToRecipients action.
     /// </summary>
-    private EmailAddressCollection redirectToRecipients;
+    private readonly EmailAddressCollection redirectToRecipients;
 
     /// <summary>
-    /// The SendSMSAlertToRecipients action.
+    ///     The SendSMSAlertToRecipients action.
     /// </summary>
     private Collection<MobilePhone> sendSMSAlertToRecipients;
 
     /// <summary>
-    /// The ServerReplyWithMessage action.
+    ///     The ServerReplyWithMessage action.
     /// </summary>
     private ItemId serverReplyWithMessage;
 
     /// <summary>
-    /// The StopProcessingRules action.
+    ///     The StopProcessingRules action.
     /// </summary>
     private bool stopProcessingRules;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RulePredicates"/> class.
+    ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
     /// </summary>
     internal RuleActions()
-        : base()
     {
-        this.assignCategories = new StringList();
-        this.forwardAsAttachmentToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        this.forwardToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        this.redirectToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        this.sendSMSAlertToRecipients = new Collection<MobilePhone>();
+        assignCategories = new StringList();
+        forwardAsAttachmentToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        forwardToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        redirectToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        sendSMSAlertToRecipients = new Collection<MobilePhone>();
     }
 
     /// <summary>
-    /// Gets the categories that should be stamped on incoming messages. 
-    /// To disable stamping incoming messages with categories, set 
-    /// AssignCategories to null.
+    ///     Gets the categories that should be stamped on incoming messages.
+    ///     To disable stamping incoming messages with categories, set
+    ///     AssignCategories to null.
     /// </summary>
-    public StringList AssignCategories
-    {
-        get { return this.assignCategories; }
-    }
+    public StringList AssignCategories => assignCategories;
 
     /// <summary>
-    /// Gets or sets the Id of the folder incoming messages should be copied to.
-    /// To disable copying incoming messages to a folder, set CopyToFolder to null.
+    ///     Gets or sets the Id of the folder incoming messages should be copied to.
+    ///     To disable copying incoming messages to a folder, set CopyToFolder to null.
     /// </summary>
     public FolderId CopyToFolder
     {
-        get { return this.copyToFolder; }
+        get => copyToFolder;
 
-        set { this.SetFieldValue<FolderId>(ref this.copyToFolder, value); }
+        set => SetFieldValue(ref copyToFolder, value);
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether incoming messages should be
-    /// automatically moved to the Deleted Items folder.
+    ///     Gets or sets a value indicating whether incoming messages should be
+    ///     automatically moved to the Deleted Items folder.
     /// </summary>
     public bool Delete
     {
-        get { return this.delete; }
+        get => delete;
 
-        set { this.SetFieldValue<bool>(ref this.delete, value); }
+        set => SetFieldValue(ref delete, value);
     }
 
     /// <summary>
-    /// Gets the e-mail addresses to which incoming messages should be 
-    /// forwarded as attachments. To disable forwarding incoming messages
-    /// as attachments, empty the ForwardAsAttachmentToRecipients list.
+    ///     Gets the e-mail addresses to which incoming messages should be
+    ///     forwarded as attachments. To disable forwarding incoming messages
+    ///     as attachments, empty the ForwardAsAttachmentToRecipients list.
     /// </summary>
-    public EmailAddressCollection ForwardAsAttachmentToRecipients
-    {
-        get { return this.forwardAsAttachmentToRecipients; }
-    }
+    public EmailAddressCollection ForwardAsAttachmentToRecipients => forwardAsAttachmentToRecipients;
 
     /// <summary>
-    /// Gets the e-mail addresses to which incoming messages should be forwarded. 
-    /// To disable forwarding incoming messages, empty the ForwardToRecipients list.
+    ///     Gets the e-mail addresses to which incoming messages should be forwarded.
+    ///     To disable forwarding incoming messages, empty the ForwardToRecipients list.
     /// </summary>
-    public EmailAddressCollection ForwardToRecipients
-    {
-        get { return this.forwardToRecipients; }
-    }
+    public EmailAddressCollection ForwardToRecipients => forwardToRecipients;
 
     /// <summary>
-    /// Gets or sets the importance that should be stamped on incoming 
-    /// messages. To disable the stamping of incoming messages with an 
-    /// importance, set MarkImportance to null.
+    ///     Gets or sets the importance that should be stamped on incoming
+    ///     messages. To disable the stamping of incoming messages with an
+    ///     importance, set MarkImportance to null.
     /// </summary>
     public Importance? MarkImportance
     {
-        get { return this.markImportance; }
+        get => markImportance;
 
-        set { this.SetFieldValue<Importance?>(ref this.markImportance, value); }
+        set => SetFieldValue(ref markImportance, value);
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether incoming messages should be 
-    /// marked as read.
+    ///     Gets or sets a value indicating whether incoming messages should be
+    ///     marked as read.
     /// </summary>
     public bool MarkAsRead
     {
-        get { return this.markAsRead; }
+        get => markAsRead;
 
-        set { this.SetFieldValue<bool>(ref this.markAsRead, value); }
+        set => SetFieldValue(ref markAsRead, value);
     }
 
     /// <summary>
-    /// Gets or sets the Id of the folder to which incoming messages should be
-    /// moved. To disable the moving of incoming messages to a folder, set
-    /// CopyToFolder to null.
+    ///     Gets or sets the Id of the folder to which incoming messages should be
+    ///     moved. To disable the moving of incoming messages to a folder, set
+    ///     CopyToFolder to null.
     /// </summary>
     public FolderId MoveToFolder
     {
-        get { return this.moveToFolder; }
+        get => moveToFolder;
 
-        set { this.SetFieldValue<FolderId>(ref this.moveToFolder, value); }
+        set => SetFieldValue(ref moveToFolder, value);
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether incoming messages should be 
-    /// permanently deleted. When a message is permanently deleted, it is never 
-    /// saved into the recipient's mailbox. To delete a message after it has 
-    /// been saved into the recipient's mailbox, use the Delete action.
+    ///     Gets or sets a value indicating whether incoming messages should be
+    ///     permanently deleted. When a message is permanently deleted, it is never
+    ///     saved into the recipient's mailbox. To delete a message after it has
+    ///     been saved into the recipient's mailbox, use the Delete action.
     /// </summary>
     public bool PermanentDelete
     {
-        get { return this.permanentDelete; }
+        get => permanentDelete;
 
-        set { this.SetFieldValue<bool>(ref this.permanentDelete, value); }
+        set => SetFieldValue(ref permanentDelete, value);
     }
 
     /// <summary>
-    /// Gets the e-mail addresses to which incoming messages should be 
-    /// redirecteded. To disable redirection of incoming messages, empty
-    /// the RedirectToRecipients list. Unlike forwarded mail, redirected mail
-    /// maintains the original sender and recipients. 
+    ///     Gets the e-mail addresses to which incoming messages should be
+    ///     redirecteded. To disable redirection of incoming messages, empty
+    ///     the RedirectToRecipients list. Unlike forwarded mail, redirected mail
+    ///     maintains the original sender and recipients.
     /// </summary>
-    public EmailAddressCollection RedirectToRecipients
-    {
-        get { return this.redirectToRecipients; }
-    }
+    public EmailAddressCollection RedirectToRecipients => redirectToRecipients;
 
     /// <summary>
-    /// Gets the phone numbers to which an SMS alert should be sent. To disable
-    /// sending SMS alerts for incoming messages, empty the 
-    /// SendSMSAlertToRecipients list.
+    ///     Gets the phone numbers to which an SMS alert should be sent. To disable
+    ///     sending SMS alerts for incoming messages, empty the
+    ///     SendSMSAlertToRecipients list.
     /// </summary>
-    public Collection<MobilePhone> SendSMSAlertToRecipients
-    {
-        get { return this.sendSMSAlertToRecipients; }
-    }
+    public Collection<MobilePhone> SendSMSAlertToRecipients => sendSMSAlertToRecipients;
 
     /// <summary>
-    /// Gets or sets the Id of the template message that should be sent
-    /// as a reply to incoming messages. To disable automatic replies, set 
-    /// ServerReplyWithMessage to null. 
+    ///     Gets or sets the Id of the template message that should be sent
+    ///     as a reply to incoming messages. To disable automatic replies, set
+    ///     ServerReplyWithMessage to null.
     /// </summary>
     public ItemId ServerReplyWithMessage
     {
-        get { return this.serverReplyWithMessage; }
+        get => serverReplyWithMessage;
 
-        set { this.SetFieldValue<ItemId>(ref this.serverReplyWithMessage, value); }
+        set => SetFieldValue(ref serverReplyWithMessage, value);
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether subsequent rules should be
-    /// evaluated. 
+    ///     Gets or sets a value indicating whether subsequent rules should be
+    ///     evaluated.
     /// </summary>
     public bool StopProcessingRules
     {
-        get { return this.stopProcessingRules; }
+        get => stopProcessingRules;
 
-        set { this.SetFieldValue<bool>(ref this.stopProcessingRules, value); }
+        set => SetFieldValue(ref stopProcessingRules, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -268,53 +252,53 @@ public sealed class RuleActions : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.AssignCategories:
-                this.assignCategories.LoadFromXml(reader, reader.LocalName);
+                assignCategories.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.CopyToFolder:
                 reader.ReadStartElement(XmlNamespace.NotSpecified, XmlElementNames.FolderId);
-                this.copyToFolder = new FolderId();
-                this.copyToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
+                copyToFolder = new FolderId();
+                copyToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
                 reader.ReadEndElement(XmlNamespace.NotSpecified, XmlElementNames.CopyToFolder);
                 return true;
             case XmlElementNames.Delete:
-                this.delete = reader.ReadElementValue<bool>();
+                delete = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.ForwardAsAttachmentToRecipients:
-                this.forwardAsAttachmentToRecipients.LoadFromXml(reader, reader.LocalName);
+                forwardAsAttachmentToRecipients.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.ForwardToRecipients:
-                this.forwardToRecipients.LoadFromXml(reader, reader.LocalName);
+                forwardToRecipients.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.MarkImportance:
-                this.markImportance = reader.ReadElementValue<Importance>();
+                markImportance = reader.ReadElementValue<Importance>();
                 return true;
             case XmlElementNames.MarkAsRead:
-                this.markAsRead = reader.ReadElementValue<bool>();
+                markAsRead = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.MoveToFolder:
                 reader.ReadStartElement(XmlNamespace.NotSpecified, XmlElementNames.FolderId);
-                this.moveToFolder = new FolderId();
-                this.moveToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
+                moveToFolder = new FolderId();
+                moveToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
                 reader.ReadEndElement(XmlNamespace.NotSpecified, XmlElementNames.MoveToFolder);
                 return true;
             case XmlElementNames.PermanentDelete:
-                this.permanentDelete = reader.ReadElementValue<bool>();
+                permanentDelete = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.RedirectToRecipients:
-                this.redirectToRecipients.LoadFromXml(reader, reader.LocalName);
+                redirectToRecipients.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.SendSMSAlertToRecipients:
-                EmailAddressCollection smsRecipientCollection = new EmailAddressCollection(XmlElementNames.Address);
+                var smsRecipientCollection = new EmailAddressCollection(XmlElementNames.Address);
                 smsRecipientCollection.LoadFromXml(reader, reader.LocalName);
-                this.sendSMSAlertToRecipients =
+                sendSMSAlertToRecipients =
                     ConvertSMSRecipientsFromEmailAddressCollectionToMobilePhoneCollection(smsRecipientCollection);
                 return true;
             case XmlElementNames.ServerReplyWithMessage:
-                this.serverReplyWithMessage = new ItemId();
-                this.serverReplyWithMessage.LoadFromXml(reader, reader.LocalName);
+                serverReplyWithMessage = new ItemId();
+                serverReplyWithMessage.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.StopProcessingRules:
-                this.stopProcessingRules = reader.ReadElementValue<bool>();
+                stopProcessingRules = reader.ReadElementValue<bool>();
                 return true;
             default:
                 return false;
@@ -322,100 +306,100 @@ public sealed class RuleActions : ComplexProperty
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.AssignCategories.Count > 0)
+        if (AssignCategories.Count > 0)
         {
-            this.AssignCategories.WriteToXml(writer, XmlElementNames.AssignCategories);
+            AssignCategories.WriteToXml(writer, XmlElementNames.AssignCategories);
         }
 
-        if (this.CopyToFolder != null)
+        if (CopyToFolder != null)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.CopyToFolder);
-            this.CopyToFolder.WriteToXml(writer);
+            CopyToFolder.WriteToXml(writer);
             writer.WriteEndElement();
         }
 
-        if (this.Delete != false)
+        if (Delete)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Delete, this.Delete);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Delete, Delete);
         }
 
-        if (this.ForwardAsAttachmentToRecipients.Count > 0)
+        if (ForwardAsAttachmentToRecipients.Count > 0)
         {
-            this.ForwardAsAttachmentToRecipients.WriteToXml(writer, XmlElementNames.ForwardAsAttachmentToRecipients);
+            ForwardAsAttachmentToRecipients.WriteToXml(writer, XmlElementNames.ForwardAsAttachmentToRecipients);
         }
 
-        if (this.ForwardToRecipients.Count > 0)
+        if (ForwardToRecipients.Count > 0)
         {
-            this.ForwardToRecipients.WriteToXml(writer, XmlElementNames.ForwardToRecipients);
+            ForwardToRecipients.WriteToXml(writer, XmlElementNames.ForwardToRecipients);
         }
 
-        if (this.MarkImportance.HasValue)
+        if (MarkImportance.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MarkImportance, this.MarkImportance.Value);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MarkImportance, MarkImportance.Value);
         }
 
-        if (this.MarkAsRead != false)
+        if (MarkAsRead)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MarkAsRead, this.MarkAsRead);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MarkAsRead, MarkAsRead);
         }
 
-        if (this.MoveToFolder != null)
+        if (MoveToFolder != null)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.MoveToFolder);
-            this.MoveToFolder.WriteToXml(writer);
+            MoveToFolder.WriteToXml(writer);
             writer.WriteEndElement();
         }
 
-        if (this.PermanentDelete != false)
+        if (PermanentDelete)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PermanentDelete, this.PermanentDelete);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PermanentDelete, PermanentDelete);
         }
 
-        if (this.RedirectToRecipients.Count > 0)
+        if (RedirectToRecipients.Count > 0)
         {
-            this.RedirectToRecipients.WriteToXml(writer, XmlElementNames.RedirectToRecipients);
+            RedirectToRecipients.WriteToXml(writer, XmlElementNames.RedirectToRecipients);
         }
 
-        if (this.SendSMSAlertToRecipients.Count > 0)
+        if (SendSMSAlertToRecipients.Count > 0)
         {
-            EmailAddressCollection emailCollection =
-                ConvertSMSRecipientsFromMobilePhoneCollectionToEmailAddressCollection(this.SendSMSAlertToRecipients);
+            var emailCollection =
+                ConvertSMSRecipientsFromMobilePhoneCollectionToEmailAddressCollection(SendSMSAlertToRecipients);
             emailCollection.WriteToXml(writer, XmlElementNames.SendSMSAlertToRecipients);
         }
 
-        if (this.ServerReplyWithMessage != null)
+        if (ServerReplyWithMessage != null)
         {
-            this.ServerReplyWithMessage.WriteToXml(writer, XmlElementNames.ServerReplyWithMessage);
+            ServerReplyWithMessage.WriteToXml(writer, XmlElementNames.ServerReplyWithMessage);
         }
 
-        if (this.StopProcessingRules != false)
+        if (StopProcessingRules)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.StopProcessingRules, this.StopProcessingRules);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.StopProcessingRules, StopProcessingRules);
         }
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        EwsUtilities.ValidateParam(this.forwardAsAttachmentToRecipients, "ForwardAsAttachmentToRecipients");
-        EwsUtilities.ValidateParam(this.forwardToRecipients, "ForwardToRecipients");
-        EwsUtilities.ValidateParam(this.redirectToRecipients, "RedirectToRecipients");
-        foreach (MobilePhone sendSMSAlertToRecipient in this.sendSMSAlertToRecipients)
+        EwsUtilities.ValidateParam(forwardAsAttachmentToRecipients, "ForwardAsAttachmentToRecipients");
+        EwsUtilities.ValidateParam(forwardToRecipients, "ForwardToRecipients");
+        EwsUtilities.ValidateParam(redirectToRecipients, "RedirectToRecipients");
+        foreach (var sendSMSAlertToRecipient in sendSMSAlertToRecipients)
         {
             EwsUtilities.ValidateParam(sendSMSAlertToRecipient, "SendSMSAlertToRecipient");
         }
     }
 
     /// <summary>
-    /// Convert the SMS recipient list from EmailAddressCollection type to MobilePhone collection type.
+    ///     Convert the SMS recipient list from EmailAddressCollection type to MobilePhone collection type.
     /// </summary>
     /// <param name="emailCollection">Recipient list in EmailAddressCollection type.</param>
     /// <returns>A MobilePhone collection object containing all SMS recipient in MobilePhone type. </returns>
@@ -423,8 +407,8 @@ public sealed class RuleActions : ComplexProperty
         EmailAddressCollection emailCollection
     )
     {
-        Collection<MobilePhone> mobilePhoneCollection = new Collection<MobilePhone>();
-        foreach (EmailAddress emailAddress in emailCollection)
+        var mobilePhoneCollection = new Collection<MobilePhone>();
+        foreach (var emailAddress in emailCollection)
         {
             mobilePhoneCollection.Add(new MobilePhone(emailAddress.Name, emailAddress.Address));
         }
@@ -433,7 +417,7 @@ public sealed class RuleActions : ComplexProperty
     }
 
     /// <summary>
-    /// Convert the SMS recipient list from MobilePhone collection type to EmailAddressCollection type.
+    ///     Convert the SMS recipient list from MobilePhone collection type to EmailAddressCollection type.
     /// </summary>
     /// <param name="recipientCollection">Recipient list in a MobilePhone collection type.</param>
     /// <returns>An EmailAddressCollection object containing recipients with "MOBILE" address type. </returns>
@@ -441,10 +425,10 @@ public sealed class RuleActions : ComplexProperty
         Collection<MobilePhone> recipientCollection
     )
     {
-        EmailAddressCollection emailCollection = new EmailAddressCollection(XmlElementNames.Address);
-        foreach (MobilePhone recipient in recipientCollection)
+        var emailCollection = new EmailAddressCollection(XmlElementNames.Address);
+        foreach (var recipient in recipientCollection)
         {
-            EmailAddress emailAddress = new EmailAddress(recipient.Name, recipient.PhoneNumber, RuleActions.MobileType);
+            var emailAddress = new EmailAddress(recipient.Name, recipient.PhoneNumber, MobileType);
             emailCollection.Add(emailAddress);
         }
 

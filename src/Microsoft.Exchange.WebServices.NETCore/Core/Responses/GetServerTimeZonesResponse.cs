@@ -23,28 +23,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a GetServerTimeZones request.
+///     Represents the response to a GetServerTimeZones request.
 /// </summary>
 internal class GetServerTimeZonesResponse : ServiceResponse
 {
-    private Collection<TimeZoneInfo> timeZones = new Collection<TimeZoneInfo>();
+    private readonly Collection<TimeZoneInfo> timeZones = new Collection<TimeZoneInfo>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetServerTimeZonesResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetServerTimeZonesResponse" /> class.
     /// </summary>
     internal GetServerTimeZonesResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -61,21 +59,18 @@ internal class GetServerTimeZonesResponse : ServiceResponse
 
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.TimeZoneDefinition))
                 {
-                    TimeZoneDefinition timeZoneDefinition = new TimeZoneDefinition();
+                    var timeZoneDefinition = new TimeZoneDefinition();
                     timeZoneDefinition.LoadFromXml(reader);
 
-                    this.timeZones.Add(timeZoneDefinition.ToTimeZoneInfo(reader.Service));
+                    timeZones.Add(timeZoneDefinition.ToTimeZoneInfo(reader.Service));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.TimeZoneDefinitions));
         }
     }
 
     /// <summary>
-    /// Gets the time zones returned by the associated GetServerTimeZones request.
+    ///     Gets the time zones returned by the associated GetServerTimeZones request.
     /// </summary>
     /// <value>The time zones.</value>
-    public Collection<TimeZoneInfo> TimeZones
-    {
-        get { return this.timeZones; }
-    }
+    public Collection<TimeZoneInfo> TimeZones => timeZones;
 }

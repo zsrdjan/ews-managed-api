@@ -25,21 +25,17 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a list of suggested name resolutions.
+///     Represents a list of suggested name resolutions.
 /// </summary>
 public sealed class NameResolutionCollection : IEnumerable<NameResolution>
 {
-    private ExchangeService service;
+    private readonly ExchangeService service;
     private bool includesAllResolutions;
-    private List<NameResolution> items = new List<NameResolution>();
+    private readonly List<NameResolution> items = new List<NameResolution>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NameResolutionCollection"/> class.
+    ///     Initializes a new instance of the <see cref="NameResolutionCollection" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal NameResolutionCollection(ExchangeService service)
@@ -50,57 +46,48 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsServiceXmlReader reader)
     {
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
 
-        int totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-        this.includesAllResolutions = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+        var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
+        includesAllResolutions = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
-        for (int i = 0; i < totalItemsInView; i++)
+        for (var i = 0; i < totalItemsInView; i++)
         {
-            NameResolution nameResolution = new NameResolution(this);
+            var nameResolution = new NameResolution(this);
 
             nameResolution.LoadFromXml(reader);
 
-            this.items.Add(nameResolution);
+            items.Add(nameResolution);
         }
 
         reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
     }
 
     /// <summary>
-    /// Gets the session.
+    ///     Gets the session.
     /// </summary>
     /// <value>The session.</value>
-    internal ExchangeService Session
-    {
-        get { return this.service; }
-    }
+    internal ExchangeService Session => service;
 
     /// <summary>
-    /// Gets the total number of elements in the list.
+    ///     Gets the total number of elements in the list.
     /// </summary>
-    public int Count
-    {
-        get { return this.items.Count; }
-    }
+    public int Count => items.Count;
 
     /// <summary>
-    /// Gets a value indicating whether more suggested resolutions are available. ResolveName only returns
-    /// a maximum of 100 name resolutions. When IncludesAllResolutions is false, there were more than 100
-    /// matching names on the server. To narrow the search, provide a more precise name to ResolveName.
+    ///     Gets a value indicating whether more suggested resolutions are available. ResolveName only returns
+    ///     a maximum of 100 name resolutions. When IncludesAllResolutions is false, there were more than 100
+    ///     matching names on the server. To narrow the search, provide a more precise name to ResolveName.
     /// </summary>
-    public bool IncludesAllResolutions
-    {
-        get { return this.includesAllResolutions; }
-    }
+    public bool IncludesAllResolutions => includesAllResolutions;
 
     /// <summary>
-    /// Gets the name resolution at the specified index.
+    ///     Gets the name resolution at the specified index.
     /// </summary>
     /// <param name="index">The index of the name resolution to get.</param>
     /// <returns>The name resolution at the speicfied index.</returns>
@@ -108,12 +95,12 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     {
         get
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
             }
 
-            return this.items[index];
+            return items[index];
         }
     }
 
@@ -121,12 +108,12 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     #region IEnumerable<NameResolution> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<NameResolution> GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion
@@ -135,12 +122,12 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion

@@ -25,36 +25,32 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the collection of InsightValue.
+///     Represents the collection of InsightValue.
 /// </summary>
 public class InsightValueCollection : ComplexPropertyCollection<InsightValue>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="InsightValueCollection"/> class.
+    ///     Initializes a new instance of the <see cref="InsightValueCollection" /> class.
     /// </summary>
     internal InsightValueCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InsightValueCollection"/> class.
+    ///     Initializes a new instance of the <see cref="InsightValueCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
     internal InsightValueCollection(IEnumerable<InsightValue> collection)
     {
         if (collection != null)
         {
-            collection.ForEach(this.InternalAdd);
+            collection.ForEach(InternalAdd);
         }
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>InsightValue.</returns>
@@ -64,7 +60,7 @@ public class InsightValueCollection : ComplexPropertyCollection<InsightValue>
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

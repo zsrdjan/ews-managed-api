@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents grouping options in item search operations.
+///     Represents grouping options in item search operations.
 /// </summary>
 public sealed class Grouping : ISelfValidate
 {
@@ -40,23 +36,23 @@ public sealed class Grouping : ISelfValidate
     private AggregateType aggregateType;
 
     /// <summary>
-    /// Validates this grouping.
+    ///     Validates this grouping.
     /// </summary>
     private void InternalValidate()
     {
-        EwsUtilities.ValidateParam(this.GroupOn, "GroupOn");
-        EwsUtilities.ValidateParam(this.AggregateOn, "AggregateOn");
+        EwsUtilities.ValidateParam(GroupOn, "GroupOn");
+        EwsUtilities.ValidateParam(AggregateOn, "AggregateOn");
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Grouping"/> class.
+    ///     Initializes a new instance of the <see cref="Grouping" /> class.
     /// </summary>
     public Grouping()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Grouping"/> class.
+    ///     Initializes a new instance of the <see cref="Grouping" /> class.
     /// </summary>
     /// <param name="groupOn">The property to group on.</param>
     /// <param name="sortDirection">The sort direction.</param>
@@ -80,20 +76,20 @@ public sealed class Grouping : ISelfValidate
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.GroupBy);
-        writer.WriteAttributeValue(XmlAttributeNames.Order, this.SortDirection);
+        writer.WriteAttributeValue(XmlAttributeNames.Order, SortDirection);
 
-        this.GroupOn.WriteToXml(writer);
+        GroupOn.WriteToXml(writer);
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.AggregateOn);
-        writer.WriteAttributeValue(XmlAttributeNames.Aggregate, this.AggregateType);
+        writer.WriteAttributeValue(XmlAttributeNames.Aggregate, AggregateType);
 
-        this.AggregateOn.WriteToXml(writer);
+        AggregateOn.WriteToXml(writer);
 
         writer.WriteEndElement(); // AggregateOn
 
@@ -101,50 +97,50 @@ public sealed class Grouping : ISelfValidate
     }
 
     /// <summary>
-    /// Gets or sets the sort direction.
+    ///     Gets or sets the sort direction.
     /// </summary>
     public SortDirection SortDirection
     {
-        get { return this.sortDirection; }
-        set { this.sortDirection = value; }
+        get => sortDirection;
+        set => sortDirection = value;
     }
 
     /// <summary>
-    /// Gets or sets the property to group on.
+    ///     Gets or sets the property to group on.
     /// </summary>
     public PropertyDefinitionBase GroupOn
     {
-        get { return this.groupOn; }
-        set { this.groupOn = value; }
+        get => groupOn;
+        set => groupOn = value;
     }
 
     /// <summary>
-    /// Gets or sets the property to aggregate on.
+    ///     Gets or sets the property to aggregate on.
     /// </summary>
     public PropertyDefinitionBase AggregateOn
     {
-        get { return this.aggregateOn; }
-        set { this.aggregateOn = value; }
+        get => aggregateOn;
+        set => aggregateOn = value;
     }
 
     /// <summary>
-    /// Gets or sets the types of aggregate to calculate.
+    ///     Gets or sets the types of aggregate to calculate.
     /// </summary>
     public AggregateType AggregateType
     {
-        get { return this.aggregateType; }
-        set { this.aggregateType = value; }
+        get => aggregateType;
+        set => aggregateType = value;
     }
 
 
     #region ISelfValidate Members
 
     /// <summary>
-    /// Implements ISelfValidate.Validate. Validates this grouping.
+    ///     Implements ISelfValidate.Validate. Validates this grouping.
     /// </summary>
     void ISelfValidate.Validate()
     {
-        this.InternalValidate();
+        InternalValidate();
     }
 
     #endregion

@@ -25,19 +25,16 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents an e-mail message. Properties available on e-mail messages are defined in the EmailMessageSchema class.
+///     Represents an e-mail message. Properties available on e-mail messages are defined in the EmailMessageSchema class.
 /// </summary>
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.Message)]
 public class EmailMessage : Item
 {
     /// <summary>
-    /// Initializes an unsaved local instance of <see cref="EmailMessage"/>. To bind to an existing e-mail message, use EmailMessage.Bind() instead.
+    ///     Initializes an unsaved local instance of <see cref="EmailMessage" />. To bind to an existing e-mail message, use
+    ///     EmailMessage.Bind() instead.
     /// </summary>
     /// <param name="service">The ExchangeService object to which the e-mail message will be bound.</param>
     public EmailMessage(ExchangeService service)
@@ -46,7 +43,7 @@ public class EmailMessage : Item
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailMessage"/> class.
+    ///     Initializes a new instance of the <see cref="EmailMessage" /> class.
     /// </summary>
     /// <param name="parentAttachment">The parent attachment.</param>
     internal EmailMessage(ItemAttachment parentAttachment)
@@ -55,8 +52,8 @@ public class EmailMessage : Item
     }
 
     /// <summary>
-    /// Binds to an existing e-mail message and loads the specified set of properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing e-mail message and loads the specified set of properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the e-mail message.</param>
     /// <param name="id">The Id of the e-mail message to bind to.</param>
@@ -66,26 +63,26 @@ public class EmailMessage : Item
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return service.BindToItem<EmailMessage>(id, propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing e-mail message and loads its first class properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing e-mail message and loads its first class properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the e-mail message.</param>
     /// <param name="id">The Id of the e-mail message to bind to.</param>
     /// <returns>An EmailMessage instance representing the e-mail message corresponding to the specified Id.</returns>
     public static new Task<EmailMessage> Bind(ExchangeService service, ItemId id)
     {
-        return EmailMessage.Bind(service, id, PropertySet.FirstClassProperties);
+        return Bind(service, id, PropertySet.FirstClassProperties);
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -94,7 +91,7 @@ public class EmailMessage : Item
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -103,7 +100,7 @@ public class EmailMessage : Item
     }
 
     /// <summary>
-    /// Send message.
+    ///     Send message.
     /// </summary>
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
@@ -113,25 +110,25 @@ public class EmailMessage : Item
         CancellationToken token
     )
     {
-        this.ThrowIfThisIsAttachment();
+        ThrowIfThisIsAttachment();
 
-        if (this.IsNew)
+        if (IsNew)
         {
-            if ((this.Attachments.Count == 0) || (messageDisposition == MessageDisposition.SaveOnly))
+            if ((Attachments.Count == 0) || (messageDisposition == MessageDisposition.SaveOnly))
             {
-                await this.InternalCreate(parentFolderId, messageDisposition, null, token);
+                await InternalCreate(parentFolderId, messageDisposition, null, token);
             }
             else
             {
                 // If the message has attachments, save as a draft (and add attachments) before sending.
-                await this.InternalCreate(
+                await InternalCreate(
                     null, // null means use the Drafts folder in the mailbox of the authenticated user.
                     MessageDisposition.SaveOnly,
                     null,
                     token
                 );
 
-                await this.Service.SendItem(this, parentFolderId, token);
+                await Service.SendItem(this, parentFolderId, token);
             }
         }
         else
@@ -140,15 +137,15 @@ public class EmailMessage : Item
             // attachment changes, process them now.
 
             // Validate and save attachments before sending.
-            if (this.HasUnprocessedAttachmentChanges())
+            if (HasUnprocessedAttachmentChanges())
             {
-                this.Attachments.Validate();
-                await this.Attachments.Save();
+                Attachments.Validate();
+                await Attachments.Save();
             }
 
-            if (this.PropertyBag.GetIsUpdateCallNecessary())
+            if (PropertyBag.GetIsUpdateCallNecessary())
             {
-                await this.InternalUpdate(
+                await InternalUpdate(
                     parentFolderId,
                     ConflictResolutionMode.AutoResolve,
                     messageDisposition,
@@ -158,42 +155,42 @@ public class EmailMessage : Item
             }
             else
             {
-                await this.Service.SendItem(this, parentFolderId, token);
+                await Service.SendItem(this, parentFolderId, token);
             }
         }
     }
 
     /// <summary>
-    /// Creates a reply response to the message.
+    ///     Creates a reply response to the message.
     /// </summary>
     /// <param name="replyAll">Indicates whether the reply should go to all of the original recipients of the message.</param>
     /// <returns>A ResponseMessage representing the reply response that can subsequently be modified and sent.</returns>
     public ResponseMessage CreateReply(bool replyAll)
     {
-        this.ThrowIfThisIsNew();
+        ThrowIfThisIsNew();
 
         return new ResponseMessage(this, replyAll ? ResponseMessageType.ReplyAll : ResponseMessageType.Reply);
     }
 
     /// <summary>
-    /// Creates a forward response to the message.
+    ///     Creates a forward response to the message.
     /// </summary>
     /// <returns>A ResponseMessage representing the forward response that can subsequently be modified and sent.</returns>
     public ResponseMessage CreateForward()
     {
-        this.ThrowIfThisIsNew();
+        ThrowIfThisIsNew();
 
         return new ResponseMessage(this, ResponseMessageType.Forward);
     }
 
     /// <summary>
-    /// Replies to the message. Calling this method results in a call to EWS.
+    ///     Replies to the message. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="bodyPrefix">The prefix to prepend to the original body of the message.</param>
     /// <param name="replyAll">Indicates whether the reply should be sent to all of the original recipients of the message.</param>
     public System.Threading.Tasks.Task Reply(MessageBody bodyPrefix, bool replyAll)
     {
-        ResponseMessage responseMessage = this.CreateReply(replyAll);
+        var responseMessage = CreateReply(replyAll);
 
         responseMessage.BodyPrefix = bodyPrefix;
 
@@ -201,23 +198,23 @@ public class EmailMessage : Item
     }
 
     /// <summary>
-    /// Forwards the message. Calling this method results in a call to EWS.
+    ///     Forwards the message. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="bodyPrefix">The prefix to prepend to the original body of the message.</param>
     /// <param name="toRecipients">The recipients to forward the message to.</param>
     public System.Threading.Tasks.Task Forward(MessageBody bodyPrefix, params EmailAddress[] toRecipients)
     {
-        return this.Forward(bodyPrefix, (IEnumerable<EmailAddress>)toRecipients);
+        return Forward(bodyPrefix, (IEnumerable<EmailAddress>)toRecipients);
     }
 
     /// <summary>
-    /// Forwards the message. Calling this method results in a call to EWS.
+    ///     Forwards the message. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="bodyPrefix">The prefix to prepend to the original body of the message.</param>
     /// <param name="toRecipients">The recipients to forward the message to.</param>
     public System.Threading.Tasks.Task Forward(MessageBody bodyPrefix, IEnumerable<EmailAddress> toRecipients)
     {
-        ResponseMessage responseMessage = this.CreateForward();
+        var responseMessage = CreateForward();
 
         responseMessage.BodyPrefix = bodyPrefix;
         responseMessage.ToRecipients.AddRange(toRecipients);
@@ -226,63 +223,56 @@ public class EmailMessage : Item
     }
 
     /// <summary>
-    /// Sends this e-mail message. Calling this method results in at least one call to EWS.
+    ///     Sends this e-mail message. Calling this method results in at least one call to EWS.
     /// </summary>
-    public System.Threading.Tasks.Task Send(CancellationToken token = default(CancellationToken))
+    public System.Threading.Tasks.Task Send(CancellationToken token = default)
     {
-        return this.InternalSend(null, MessageDisposition.SendOnly, token);
+        return InternalSend(null, MessageDisposition.SendOnly, token);
     }
 
     /// <summary>
-    /// Sends this e-mail message and saves a copy of it in the specified folder. SendAndSaveCopy does not work if the
-    /// message has unsaved attachments. In that case, the message must first be saved and then sent. Calling this method
-    /// results in a call to EWS.
+    ///     Sends this e-mail message and saves a copy of it in the specified folder. SendAndSaveCopy does not work if the
+    ///     message has unsaved attachments. In that case, the message must first be saved and then sent. Calling this method
+    ///     results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save the copy.</param>
-    public System.Threading.Tasks.Task SendAndSaveCopy(
-        FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
-    )
+    public System.Threading.Tasks.Task SendAndSaveCopy(FolderId destinationFolderId, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
 
-        return this.InternalSend(destinationFolderId, MessageDisposition.SendAndSaveCopy, token);
+        return InternalSend(destinationFolderId, MessageDisposition.SendAndSaveCopy, token);
     }
 
     /// <summary>
-    /// Sends this e-mail message and saves a copy of it in the specified folder. SendAndSaveCopy does not work if the
-    /// message has unsaved attachments. In that case, the message must first be saved and then sent. Calling this method
-    /// results in a call to EWS.
+    ///     Sends this e-mail message and saves a copy of it in the specified folder. SendAndSaveCopy does not work if the
+    ///     message has unsaved attachments. In that case, the message must first be saved and then sent. Calling this method
+    ///     results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save the copy.</param>
     public System.Threading.Tasks.Task SendAndSaveCopy(
         WellKnownFolderName destinationFolderName,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.InternalSend(new FolderId(destinationFolderName), MessageDisposition.SendAndSaveCopy, token);
+        return InternalSend(new FolderId(destinationFolderName), MessageDisposition.SendAndSaveCopy, token);
     }
 
     /// <summary>
-    /// Sends this e-mail message and saves a copy of it in the Sent Items folder. SendAndSaveCopy does not work if the
-    /// message has unsaved attachments. In that case, the message must first be saved and then sent. Calling this method
-    /// results in a call to EWS.
+    ///     Sends this e-mail message and saves a copy of it in the Sent Items folder. SendAndSaveCopy does not work if the
+    ///     message has unsaved attachments. In that case, the message must first be saved and then sent. Calling this method
+    ///     results in a call to EWS.
     /// </summary>
-    public System.Threading.Tasks.Task SendAndSaveCopy(CancellationToken token = default(CancellationToken))
+    public System.Threading.Tasks.Task SendAndSaveCopy(CancellationToken token = default)
     {
-        return this.InternalSend(
-            new FolderId(WellKnownFolderName.SentItems),
-            MessageDisposition.SendAndSaveCopy,
-            token
-        );
+        return InternalSend(new FolderId(WellKnownFolderName.SentItems), MessageDisposition.SendAndSaveCopy, token);
     }
 
     /// <summary>
-    /// Suppresses the read receipt on the message. Calling this method results in a call to EWS.
+    ///     Suppresses the read receipt on the message. Calling this method results in a call to EWS.
     /// </summary>
-    public System.Threading.Tasks.Task SuppressReadReceipt(CancellationToken token = default(CancellationToken))
+    public System.Threading.Tasks.Task SuppressReadReceipt(CancellationToken token = default)
     {
-        this.ThrowIfThisIsNew();
+        ThrowIfThisIsNew();
 
         return new SuppressReadReceipt(this).InternalCreate(null, null, token);
     }
@@ -291,177 +281,143 @@ public class EmailMessage : Item
     #region Properties
 
     /// <summary>
-    /// Gets the list of To recipients for the e-mail message.
+    ///     Gets the list of To recipients for the e-mail message.
     /// </summary>
-    public EmailAddressCollection ToRecipients
-    {
-        get { return (EmailAddressCollection)this.PropertyBag[EmailMessageSchema.ToRecipients]; }
-    }
+    public EmailAddressCollection ToRecipients => (EmailAddressCollection)PropertyBag[EmailMessageSchema.ToRecipients];
 
     /// <summary>
-    /// Gets the list of Bcc recipients for the e-mail message.
+    ///     Gets the list of Bcc recipients for the e-mail message.
     /// </summary>
-    public EmailAddressCollection BccRecipients
-    {
-        get { return (EmailAddressCollection)this.PropertyBag[EmailMessageSchema.BccRecipients]; }
-    }
+    public EmailAddressCollection BccRecipients =>
+        (EmailAddressCollection)PropertyBag[EmailMessageSchema.BccRecipients];
 
     /// <summary>
-    /// Gets the Likers associated with the message.
+    ///     Gets the Likers associated with the message.
     /// </summary>
-    public EmailAddressCollection Likers
-    {
-        get { return (EmailAddressCollection)this.PropertyBag[EmailMessageSchema.Likers]; }
-    }
+    public EmailAddressCollection Likers => (EmailAddressCollection)PropertyBag[EmailMessageSchema.Likers];
 
     /// <summary>
-    /// Gets the list of Cc recipients for the e-mail message.
+    ///     Gets the list of Cc recipients for the e-mail message.
     /// </summary>
-    public EmailAddressCollection CcRecipients
-    {
-        get { return (EmailAddressCollection)this.PropertyBag[EmailMessageSchema.CcRecipients]; }
-    }
+    public EmailAddressCollection CcRecipients => (EmailAddressCollection)PropertyBag[EmailMessageSchema.CcRecipients];
 
     /// <summary>
-    /// Gets the conversation topic of the e-mail message.
+    ///     Gets the conversation topic of the e-mail message.
     /// </summary>
-    public string ConversationTopic
-    {
-        get { return (string)this.PropertyBag[EmailMessageSchema.ConversationTopic]; }
-    }
+    public string ConversationTopic => (string)PropertyBag[EmailMessageSchema.ConversationTopic];
 
     /// <summary>
-    /// Gets the conversation index of the e-mail message.
+    ///     Gets the conversation index of the e-mail message.
     /// </summary>
-    public byte[] ConversationIndex
-    {
-        get { return (byte[])this.PropertyBag[EmailMessageSchema.ConversationIndex]; }
-    }
+    public byte[] ConversationIndex => (byte[])PropertyBag[EmailMessageSchema.ConversationIndex];
 
     /// <summary>
-    /// Gets or sets the "on behalf" sender of the e-mail message.
+    ///     Gets or sets the "on behalf" sender of the e-mail message.
     /// </summary>
     public EmailAddress From
     {
-        get { return (EmailAddress)this.PropertyBag[EmailMessageSchema.From]; }
-        set { this.PropertyBag[EmailMessageSchema.From] = value; }
+        get => (EmailAddress)PropertyBag[EmailMessageSchema.From];
+        set => PropertyBag[EmailMessageSchema.From] = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this is an associated message.
+    ///     Gets or sets a value indicating whether this is an associated message.
     /// </summary>
     public new bool IsAssociated
     {
-        get { return base.IsAssociated; }
+        get => base.IsAssociated;
 
         // The "new" keyword is used to expose the setter only on Message types, because
         // EWS only supports creation of FAI Message types.  IsAssociated is a readonly
         // property of the Item type but it is used by the CreateItem web method for creating
         // associated messages.
-        set { this.PropertyBag[EmailMessageSchema.IsAssociated] = value; }
+        set => PropertyBag[ItemSchema.IsAssociated] = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a read receipt is requested for the e-mail message.
+    ///     Gets or sets a value indicating whether a read receipt is requested for the e-mail message.
     /// </summary>
     public bool IsDeliveryReceiptRequested
     {
-        get { return (bool)this.PropertyBag[EmailMessageSchema.IsDeliveryReceiptRequested]; }
-        set { this.PropertyBag[EmailMessageSchema.IsDeliveryReceiptRequested] = value; }
+        get => (bool)PropertyBag[EmailMessageSchema.IsDeliveryReceiptRequested];
+        set => PropertyBag[EmailMessageSchema.IsDeliveryReceiptRequested] = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the e-mail message is read.
+    ///     Gets or sets a value indicating whether the e-mail message is read.
     /// </summary>
     public bool IsRead
     {
-        get { return (bool)this.PropertyBag[EmailMessageSchema.IsRead]; }
-        set { this.PropertyBag[EmailMessageSchema.IsRead] = value; }
+        get => (bool)PropertyBag[EmailMessageSchema.IsRead];
+        set => PropertyBag[EmailMessageSchema.IsRead] = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a read receipt is requested for the e-mail message.
+    ///     Gets or sets a value indicating whether a read receipt is requested for the e-mail message.
     /// </summary>
     public bool IsReadReceiptRequested
     {
-        get { return (bool)this.PropertyBag[EmailMessageSchema.IsReadReceiptRequested]; }
-        set { this.PropertyBag[EmailMessageSchema.IsReadReceiptRequested] = value; }
+        get => (bool)PropertyBag[EmailMessageSchema.IsReadReceiptRequested];
+        set => PropertyBag[EmailMessageSchema.IsReadReceiptRequested] = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a response is requested for the e-mail message.
+    ///     Gets or sets a value indicating whether a response is requested for the e-mail message.
     /// </summary>
     public bool? IsResponseRequested
     {
-        get { return (bool?)this.PropertyBag[EmailMessageSchema.IsResponseRequested]; }
-        set { this.PropertyBag[EmailMessageSchema.IsResponseRequested] = value; }
+        get => (bool?)PropertyBag[EmailMessageSchema.IsResponseRequested];
+        set => PropertyBag[EmailMessageSchema.IsResponseRequested] = value;
     }
 
     /// <summary>
-    /// Gets the Internet Message Id of the e-mail message.
+    ///     Gets the Internet Message Id of the e-mail message.
     /// </summary>
-    public string InternetMessageId
-    {
-        get { return (string)this.PropertyBag[EmailMessageSchema.InternetMessageId]; }
-    }
+    public string InternetMessageId => (string)PropertyBag[EmailMessageSchema.InternetMessageId];
 
     /// <summary>
-    /// Gets or sets the references of the e-mail message.
+    ///     Gets or sets the references of the e-mail message.
     /// </summary>
     public string References
     {
-        get { return (string)this.PropertyBag[EmailMessageSchema.References]; }
-        set { this.PropertyBag[EmailMessageSchema.References] = value; }
+        get => (string)PropertyBag[EmailMessageSchema.References];
+        set => PropertyBag[EmailMessageSchema.References] = value;
     }
 
     /// <summary>
-    /// Gets a list of e-mail addresses to which replies should be addressed.
+    ///     Gets a list of e-mail addresses to which replies should be addressed.
     /// </summary>
-    public EmailAddressCollection ReplyTo
-    {
-        get { return (EmailAddressCollection)this.PropertyBag[EmailMessageSchema.ReplyTo]; }
-    }
+    public EmailAddressCollection ReplyTo => (EmailAddressCollection)PropertyBag[EmailMessageSchema.ReplyTo];
 
     /// <summary>
-    /// Gets or sets the sender of the e-mail message.
+    ///     Gets or sets the sender of the e-mail message.
     /// </summary>
     public EmailAddress Sender
     {
-        get { return (EmailAddress)this.PropertyBag[EmailMessageSchema.Sender]; }
-        set { this.PropertyBag[EmailMessageSchema.Sender] = value; }
+        get => (EmailAddress)PropertyBag[EmailMessageSchema.Sender];
+        set => PropertyBag[EmailMessageSchema.Sender] = value;
     }
 
     /// <summary>
-    /// Gets the ReceivedBy property of the e-mail message.
+    ///     Gets the ReceivedBy property of the e-mail message.
     /// </summary>
-    public EmailAddress ReceivedBy
-    {
-        get { return (EmailAddress)this.PropertyBag[EmailMessageSchema.ReceivedBy]; }
-    }
+    public EmailAddress ReceivedBy => (EmailAddress)PropertyBag[EmailMessageSchema.ReceivedBy];
 
     /// <summary>
-    /// Gets the ReceivedRepresenting property of the e-mail message.
+    ///     Gets the ReceivedRepresenting property of the e-mail message.
     /// </summary>
-    public EmailAddress ReceivedRepresenting
-    {
-        get { return (EmailAddress)this.PropertyBag[EmailMessageSchema.ReceivedRepresenting]; }
-    }
+    public EmailAddress ReceivedRepresenting => (EmailAddress)PropertyBag[EmailMessageSchema.ReceivedRepresenting];
 
     /// <summary>
-    /// Gets the ApprovalRequestData property of the e-mail message.
+    ///     Gets the ApprovalRequestData property of the e-mail message.
     /// </summary>
-    public ApprovalRequestData ApprovalRequestData
-    {
-        get { return (ApprovalRequestData)this.PropertyBag[EmailMessageSchema.ApprovalRequestData]; }
-    }
+    public ApprovalRequestData ApprovalRequestData =>
+        (ApprovalRequestData)PropertyBag[EmailMessageSchema.ApprovalRequestData];
 
     /// <summary>
-    /// Gets the VotingInformation property of the e-mail message.
+    ///     Gets the VotingInformation property of the e-mail message.
     /// </summary>
-    public VotingInformation VotingInformation
-    {
-        get { return (VotingInformation)this.PropertyBag[EmailMessageSchema.VotingInformation]; }
-    }
+    public VotingInformation VotingInformation => (VotingInformation)PropertyBag[EmailMessageSchema.VotingInformation];
 
     #endregion
 }

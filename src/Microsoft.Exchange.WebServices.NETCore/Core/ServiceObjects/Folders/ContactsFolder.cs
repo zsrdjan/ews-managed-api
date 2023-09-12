@@ -25,20 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a folder containing contacts.
+///     Represents a folder containing contacts.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.ContactsFolder)]
 public class ContactsFolder : Folder
 {
     /// <summary>
-    /// Initializes an unsaved local instance of <see cref="ContactsFolder"/>. To bind to an existing contacts folder, use ContactsFolder.Bind() instead.
+    ///     Initializes an unsaved local instance of <see cref="ContactsFolder" />. To bind to an existing contacts folder, use
+    ///     ContactsFolder.Bind() instead.
     /// </summary>
     /// <param name="service">The ExchangeService object to which the contacts folder will be bound.</param>
     public ContactsFolder(ExchangeService service)
@@ -47,7 +42,7 @@ public class ContactsFolder : Folder
     }
 
     /// <summary>
-    /// Binds to an existing contacts folder and loads the specified set of properties.
+    ///     Binds to an existing contacts folder and loads the specified set of properties.
     /// </summary>
     /// <param name="service">The service to use to bind to the contacts folder.</param>
     /// <param name="id">The Id of the contacts folder to bind to.</param>
@@ -57,29 +52,25 @@ public class ContactsFolder : Folder
         ExchangeService service,
         FolderId id,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return service.BindToFolder<ContactsFolder>(id, propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing contacts folder and loads its first class properties.
+    ///     Binds to an existing contacts folder and loads its first class properties.
     /// </summary>
     /// <param name="service">The service to use to bind to the contacts folder.</param>
     /// <param name="id">The Id of the contacts folder to bind to.</param>
     /// <returns>A ContactsFolder instance representing the contacts folder corresponding to the specified Id.</returns>
-    public static new Task<ContactsFolder> Bind(
-        ExchangeService service,
-        FolderId id,
-        CancellationToken token = default(CancellationToken)
-    )
+    public static new Task<ContactsFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
     {
-        return ContactsFolder.Bind(service, id, PropertySet.FirstClassProperties, token);
+        return Bind(service, id, PropertySet.FirstClassProperties, token);
     }
 
     /// <summary>
-    /// Binds to an existing contacts folder and loads the specified set of properties.
+    ///     Binds to an existing contacts folder and loads the specified set of properties.
     /// </summary>
     /// <param name="service">The service to use to bind to the contacts folder.</param>
     /// <param name="name">The name of the contacts folder to bind to.</param>
@@ -89,14 +80,14 @@ public class ContactsFolder : Folder
         ExchangeService service,
         WellKnownFolderName name,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return ContactsFolder.Bind(service, new FolderId(name), propertySet, token);
+        return Bind(service, new FolderId(name), propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing contacts folder and loads its first class properties.
+    ///     Binds to an existing contacts folder and loads its first class properties.
     /// </summary>
     /// <param name="service">The service to use to bind to the contacts folder.</param>
     /// <param name="name">The name of the contacts folder to bind to.</param>
@@ -104,14 +95,14 @@ public class ContactsFolder : Folder
     public static new Task<ContactsFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return ContactsFolder.Bind(service, new FolderId(name), PropertySet.FirstClassProperties, token);
+        return Bind(service, new FolderId(name), PropertySet.FirstClassProperties, token);
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()

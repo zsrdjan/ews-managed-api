@@ -23,47 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a delegate managent-related operation.
+///     Represents the response to a delegate managent-related operation.
 /// </summary>
 internal class DelegateManagementResponse : ServiceResponse
 {
-    private bool readDelegateUsers;
-    private List<DelegateUser> delegateUsers;
+    private readonly bool readDelegateUsers;
+    private readonly List<DelegateUser> delegateUsers;
     private Collection<DelegateUserResponse> delegateUserResponses;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DelegateManagementResponse"/> class.
+    ///     Initializes a new instance of the <see cref="DelegateManagementResponse" /> class.
     /// </summary>
     /// <param name="readDelegateUsers">if set to <c>true</c> [read delegate users].</param>
     /// <param name="delegateUsers">List of existing delegate users to load.</param>
     internal DelegateManagementResponse(bool readDelegateUsers, List<DelegateUser> delegateUsers)
-        : base()
     {
         this.readDelegateUsers = readDelegateUsers;
         this.delegateUsers = delegateUsers;
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        if (this.ErrorCode == ServiceError.NoError)
+        if (ErrorCode == ServiceError.NoError)
         {
-            this.delegateUserResponses = new Collection<DelegateUserResponse>();
+            delegateUserResponses = new Collection<DelegateUserResponse>();
 
             reader.Read();
 
             if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.ResponseMessages))
             {
-                int delegateUserIndex = 0;
+                var delegateUserIndex = 0;
                 do
                 {
                     reader.Read();
@@ -71,17 +69,16 @@ internal class DelegateManagementResponse : ServiceResponse
                     if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.DelegateUserResponseMessageType))
                     {
                         DelegateUser delegateUser = null;
-                        if (this.readDelegateUsers && (this.delegateUsers != null))
+                        if (readDelegateUsers && (delegateUsers != null))
                         {
-                            delegateUser = this.delegateUsers[delegateUserIndex];
+                            delegateUser = delegateUsers[delegateUserIndex];
                         }
 
-                        DelegateUserResponse delegateUserResponse =
-                            new DelegateUserResponse(readDelegateUsers, delegateUser);
+                        var delegateUserResponse = new DelegateUserResponse(readDelegateUsers, delegateUser);
 
                         delegateUserResponse.LoadFromXml(reader, XmlElementNames.DelegateUserResponseMessageType);
 
-                        this.delegateUserResponses.Add(delegateUserResponse);
+                        delegateUserResponses.Add(delegateUserResponse);
 
                         delegateUserIndex++;
                     }
@@ -91,10 +88,7 @@ internal class DelegateManagementResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Gets a collection of responses for each of the delegate users concerned by the operation.
+    ///     Gets a collection of responses for each of the delegate users concerned by the operation.
     /// </summary>
-    internal Collection<DelegateUserResponse> DelegateUserResponses
-    {
-        get { return this.delegateUserResponses; }
-    }
+    internal Collection<DelegateUserResponse> DelegateUserResponses => delegateUserResponses;
 }

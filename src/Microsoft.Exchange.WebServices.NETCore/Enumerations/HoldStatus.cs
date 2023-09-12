@@ -25,37 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the hold status.
+///     Defines the hold status.
 /// </summary>
 public enum HoldStatus
 {
     /// <summary>
-    /// Not on hold
+    ///     Not on hold
     /// </summary>
     NotOnHold,
 
     /// <summary>
-    /// Placing/removing hold is in-progress
+    ///     Placing/removing hold is in-progress
     /// </summary>
     Pending,
 
     /// <summary>
-    /// On hold
+    ///     On hold
     /// </summary>
     OnHold,
 
     /// <summary>
-    /// Some mailboxes are on hold and some are not
+    ///     Some mailboxes are on hold and some are not
     /// </summary>
     PartialHold,
 
     /// <summary>
-    /// The hold operation failed
+    ///     The hold operation failed
     /// </summary>
     Failed,
 }

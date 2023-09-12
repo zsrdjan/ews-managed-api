@@ -23,176 +23,175 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System.Collections.Generic;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents a sharing location.
+///     Represents a sharing location.
 /// </summary>
 public sealed class DocumentSharingLocation
 {
     /// <summary>
-    /// The URL of the web service to use to manipulate documents at the 
-    /// sharing location.
+    ///     The URL of the web service to use to manipulate documents at the
+    ///     sharing location.
     /// </summary>
     private string serviceUrl;
 
     /// <summary>
-    /// The URL of the sharing location (for viewing the contents in a web 
-    /// browser).
+    ///     The URL of the sharing location (for viewing the contents in a web
+    ///     browser).
     /// </summary>
     private string locationUrl;
 
     /// <summary>
-    /// The display name of the location.
+    ///     The display name of the location.
     /// </summary>
     private string displayName;
 
     /// <summary>
-    /// The set of file extensions that are allowed at the location.
+    ///     The set of file extensions that are allowed at the location.
     /// </summary>
     private IEnumerable<string> supportedFileExtensions;
 
     /// <summary>
-    /// Indicates whether external users (outside the enterprise/tenant) 
-    /// can view documents at the location.
+    ///     Indicates whether external users (outside the enterprise/tenant)
+    ///     can view documents at the location.
     /// </summary>
     private bool externalAccessAllowed;
 
     /// <summary>
-    /// Indicates whether anonymous users can view documents at the location.
+    ///     Indicates whether anonymous users can view documents at the location.
     /// </summary>
     private bool anonymousAccessAllowed;
 
     /// <summary>
-    /// Indicates whether the user can modify permissions for documents at
-    /// the location.
+    ///     Indicates whether the user can modify permissions for documents at
+    ///     the location.
     /// </summary>
     private bool canModifyPermissions;
 
     /// <summary>
-    /// Indicates whether this location is the user's default location.  
-    /// This will generally be their My Site.
+    ///     Indicates whether this location is the user's default location.
+    ///     This will generally be their My Site.
     /// </summary>
     private bool isDefault;
 
     /// <summary>
-    /// Gets the URL of the web service to use to manipulate 
-    /// documents at the sharing location.
+    ///     Gets the URL of the web service to use to manipulate
+    ///     documents at the sharing location.
     /// </summary>
     public string ServiceUrl
     {
-        get { return this.serviceUrl; }
+        get => serviceUrl;
 
-        private set { this.serviceUrl = value; }
+        private set => serviceUrl = value;
     }
 
     /// <summary>
-    /// Gets the URL of the sharing location (for viewing the 
-    /// contents in a web browser).
+    ///     Gets the URL of the sharing location (for viewing the
+    ///     contents in a web browser).
     /// </summary>
     public string LocationUrl
     {
-        get { return this.locationUrl; }
+        get => locationUrl;
 
-        private set { this.locationUrl = value; }
+        private set => locationUrl = value;
     }
 
     /// <summary>
-    /// Gets the display name of the location.
+    ///     Gets the display name of the location.
     /// </summary>
     public string DisplayName
     {
-        get { return this.displayName; }
+        get => displayName;
 
-        private set { this.displayName = value; }
+        private set => displayName = value;
     }
 
     /// <summary>
-    /// Gets the space-separated list of file extensions that are 
-    /// allowed at the location.
+    ///     Gets the space-separated list of file extensions that are
+    ///     allowed at the location.
     /// </summary>
     /// <remarks>
-    /// Example:  "docx pptx xlsx"
+    ///     Example:  "docx pptx xlsx"
     /// </remarks>
     public IEnumerable<string> SupportedFileExtensions
     {
-        get { return this.supportedFileExtensions; }
+        get => supportedFileExtensions;
 
-        private set { this.supportedFileExtensions = value; }
+        private set => supportedFileExtensions = value;
     }
 
     /// <summary>
-    /// Gets a flag indicating whether external users (outside the 
-    /// enterprise/tenant) can view documents at the location.
+    ///     Gets a flag indicating whether external users (outside the
+    ///     enterprise/tenant) can view documents at the location.
     /// </summary>
     public bool ExternalAccessAllowed
     {
-        get { return this.externalAccessAllowed; }
+        get => externalAccessAllowed;
 
-        private set { this.externalAccessAllowed = value; }
+        private set => externalAccessAllowed = value;
     }
 
     /// <summary>
-    /// Gets a flag indicating whether anonymous users can view
-    /// documents at the location.
+    ///     Gets a flag indicating whether anonymous users can view
+    ///     documents at the location.
     /// </summary>
     public bool AnonymousAccessAllowed
     {
-        get { return this.anonymousAccessAllowed; }
+        get => anonymousAccessAllowed;
 
-        private set { this.anonymousAccessAllowed = value; }
+        private set => anonymousAccessAllowed = value;
     }
 
     /// <summary>
-    /// Gets a flag indicating whether the user can modify 
-    /// permissions for documents at the location.
+    ///     Gets a flag indicating whether the user can modify
+    ///     permissions for documents at the location.
     /// </summary>
     /// <remarks>
-    /// This will be true for the user's "My Site," for example. However,
-    /// documents at team and project sites will typically be ACLed by the
-    /// site owner, so the user will not be able to modify permissions. 
-    /// This will most likely by false even if the caller is the owner,
-    /// to avoid surprises.  They should go to SharePoint to modify
-    /// permissions for team and project sites.
+    ///     This will be true for the user's "My Site," for example. However,
+    ///     documents at team and project sites will typically be ACLed by the
+    ///     site owner, so the user will not be able to modify permissions.
+    ///     This will most likely by false even if the caller is the owner,
+    ///     to avoid surprises.  They should go to SharePoint to modify
+    ///     permissions for team and project sites.
     /// </remarks>
     public bool CanModifyPermissions
     {
-        get { return this.canModifyPermissions; }
+        get => canModifyPermissions;
 
-        private set { this.canModifyPermissions = value; }
+        private set => canModifyPermissions = value;
     }
 
     /// <summary>
-    /// Gets a flag indicating whether this location is the user's
-    /// default location.  This will generally be their My Site.
+    ///     Gets a flag indicating whether this location is the user's
+    ///     default location.  This will generally be their My Site.
     /// </summary>
     public bool IsDefault
     {
-        get { return this.isDefault; }
+        get => isDefault;
 
-        private set { this.isDefault = value; }
+        private set => isDefault = value;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DocumentSharingLocation"/> class.
+    ///     Initializes a new instance of the <see cref="DocumentSharingLocation" /> class.
     /// </summary>
     private DocumentSharingLocation()
     {
     }
 
     /// <summary>
-    /// Loads DocumentSharingLocation instance from XML.
+    ///     Loads DocumentSharingLocation instance from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>DocumentSharingLocation.</returns>
     internal static DocumentSharingLocation LoadFromXml(EwsXmlReader reader)
     {
-        DocumentSharingLocation location = new DocumentSharingLocation();
+        var location = new DocumentSharingLocation();
 
         do
         {
@@ -215,11 +214,11 @@ public sealed class DocumentSharingLocation
                         break;
 
                     case XmlElementNames.SupportedFileExtensions:
-                        List<string> fileExtensions = new List<string>();
+                        var fileExtensions = new List<string>();
                         reader.Read();
                         while (reader.IsStartElement(XmlNamespace.Autodiscover, XmlElementNames.FileExtension))
                         {
-                            string extension = reader.ReadElementValue<string>();
+                            var extension = reader.ReadElementValue<string>();
                             fileExtensions.Add(extension);
                             reader.Read();
                         }
@@ -241,9 +240,6 @@ public sealed class DocumentSharingLocation
 
                     case XmlElementNames.IsDefault:
                         location.IsDefault = reader.ReadElementValue<bool>();
-                        break;
-
-                    default:
                         break;
                 }
             }

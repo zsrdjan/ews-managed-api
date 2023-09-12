@@ -23,23 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a GetInboxRules request.
+///     Represents a GetInboxRules request.
 /// </summary>
 internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// The smtp address of the mailbox from which to get the inbox rules.
+    ///     The smtp address of the mailbox from which to get the inbox rules.
     /// </summary>
     private string mailboxSmtpAddress;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetInboxRulesRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetInboxRulesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetInboxRulesRequest(ExchangeService service)
@@ -48,16 +45,16 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets or sets the address of the mailbox from which to get the inbox rules.
+    ///     Gets or sets the address of the mailbox from which to get the inbox rules.
     /// </summary>
     internal string MailboxSmtpAddress
     {
-        get { return this.mailboxSmtpAddress; }
-        set { this.mailboxSmtpAddress = value; }
+        get => mailboxSmtpAddress;
+        set => mailboxSmtpAddress = value;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -66,23 +63,19 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (!string.IsNullOrEmpty(this.mailboxSmtpAddress))
+        if (!string.IsNullOrEmpty(mailboxSmtpAddress))
         {
-            writer.WriteElementValue(
-                XmlNamespace.Messages,
-                XmlElementNames.MailboxSmtpAddress,
-                this.mailboxSmtpAddress
-            );
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxSmtpAddress, mailboxSmtpAddress);
         }
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -91,19 +84,19 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetInboxRulesResponse response = new GetInboxRulesResponse();
+        var response = new GetInboxRulesResponse();
         response.LoadFromXml(reader, XmlElementNames.GetInboxRulesResponse);
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -112,13 +105,12 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetInboxRulesResponse> Execute(CancellationToken token)
     {
-        GetInboxRulesResponse serviceResponse =
-            (GetInboxRulesResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (GetInboxRulesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

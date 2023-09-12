@@ -25,19 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a DeleteAttachment request.
+///     Represents a DeleteAttachment request.
 /// </summary>
 internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<DeleteAttachmentResponse>
 {
-    private List<Attachment> attachments = new List<Attachment>();
+    private readonly List<Attachment> attachments = new List<Attachment>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeleteAttachmentRequest"/> class.
+    ///     Initializes a new instance of the <see cref="DeleteAttachmentRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -47,40 +43,40 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(this.Attachments, "Attachments");
-        for (int i = 0; i < this.Attachments.Count; i++)
+        EwsUtilities.ValidateParamCollection(Attachments, "Attachments");
+        for (var i = 0; i < Attachments.Count; i++)
         {
-            EwsUtilities.ValidateParam(this.Attachments[i].Id, string.Format("Attachment[{0}].Id", i));
+            EwsUtilities.ValidateParam(Attachments[i].Id, string.Format("Attachment[{0}].Id", i));
         }
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service object.</returns>
     internal override DeleteAttachmentResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new DeleteAttachmentResponse(this.Attachments[responseIndex]);
+        return new DeleteAttachmentResponse(Attachments[responseIndex]);
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.Attachments.Count;
+        return Attachments.Count;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -89,7 +85,7 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -98,7 +94,7 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -107,14 +103,14 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.AttachmentIds);
 
-        foreach (Attachment attachment in this.Attachments)
+        foreach (var attachment in Attachments)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.AttachmentId);
             writer.WriteAttributeValue(XmlAttributeNames.Id, attachment.Id);
@@ -125,7 +121,7 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -134,11 +130,8 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     }
 
     /// <summary>
-    /// Gets the attachments.
+    ///     Gets the attachments.
     /// </summary>
     /// <value>The attachments.</value>
-    public List<Attachment> Attachments
-    {
-        get { return this.attachments; }
-    }
+    public List<Attachment> Attachments => attachments;
 }

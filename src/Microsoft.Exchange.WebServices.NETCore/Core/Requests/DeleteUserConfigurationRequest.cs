@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a DeleteUserConfiguration request.
+///     Represents a DeleteUserConfiguration request.
 /// </summary>
 internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<ServiceResponse>
 {
@@ -38,18 +34,18 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     private FolderId parentFolderId;
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.name, "name");
-        EwsUtilities.ValidateParam(this.parentFolderId, "parentFolderId");
-        this.ParentFolderId.Validate(this.Service.RequestedServerVersion);
+        EwsUtilities.ValidateParam(name, "name");
+        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+        ParentFolderId.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -60,7 +56,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -69,7 +65,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -78,7 +74,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -87,7 +83,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -96,7 +92,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -105,22 +101,17 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // Write UserConfigurationName element
-        UserConfiguration.WriteUserConfigurationNameToXml(
-            writer,
-            XmlNamespace.Messages,
-            this.name,
-            this.parentFolderId
-        );
+        UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, name, parentFolderId);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeleteUserConfigurationRequest"/> class.
+    ///     Initializes a new instance of the <see cref="DeleteUserConfigurationRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal DeleteUserConfigurationRequest(ExchangeService service)
@@ -129,22 +120,22 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     }
 
     /// <summary>
-    /// Gets or sets the name.
+    ///     Gets or sets the name.
     /// </summary>
     /// <value>The name.</value>
     internal string Name
     {
-        get { return this.name; }
-        set { this.name = value; }
+        get => name;
+        set => name = value;
     }
 
     /// <summary>
-    /// Gets or sets the parent folder Id.
+    ///     Gets or sets the parent folder Id.
     /// </summary>
     /// <value>The parent folder Id.</value>
     internal FolderId ParentFolderId
     {
-        get { return this.parentFolderId; }
-        set { this.parentFolderId = value; }
+        get => parentFolderId;
+        set => parentFolderId = value;
     }
 }

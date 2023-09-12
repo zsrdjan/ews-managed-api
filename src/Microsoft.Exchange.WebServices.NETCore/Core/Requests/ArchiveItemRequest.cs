@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a ArchiveItem request.
+///     Represents a ArchiveItem request.
 /// </summary>
 internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemResponse>
 {
     /// <summary>
-    /// Source folder id
+    ///     Source folder id
     /// </summary>
     private FolderId sourceFolderId;
 
     /// <summary>
-    /// Items
+    ///     Items
     /// </summary>
-    private ItemIdWrapperList ids = new ItemIdWrapperList();
+    private readonly ItemIdWrapperList ids = new ItemIdWrapperList();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ArchiveItemRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ArchiveItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -55,16 +51,16 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     }
 
     /// <summary>
-    /// Validates request.
+    ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
-        EwsUtilities.ValidateParam(this.sourceFolderId, "SourceFolderId");
-        this.sourceFolderId.Validate(this.Service.RequestedServerVersion);
+        EwsUtilities.ValidateParam(sourceFolderId, "SourceFolderId");
+        sourceFolderId.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -75,35 +71,32 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     }
 
     /// <summary>
-    /// Gets or sets the Archive source folder id.
+    ///     Gets or sets the Archive source folder id.
     /// </summary>
     /// <value>The archive source folder id.</value>
     public FolderId SourceFolderId
     {
-        get { return this.sourceFolderId; }
-        set { this.sourceFolderId = value; }
+        get => sourceFolderId;
+        set => sourceFolderId = value;
     }
 
     /// <summary>
-    /// Gets the item ids.
+    ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    internal ItemIdWrapperList Ids
-    {
-        get { return this.ids; }
-    }
+    internal ItemIdWrapperList Ids => ids;
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.ids.Count;
+        return ids.Count;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -112,7 +105,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -121,7 +114,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -130,7 +123,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -139,24 +132,24 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ArchiveSourceFolderId);
-        this.SourceFolderId.WriteToXml(writer);
+        SourceFolderId.WriteToXml(writer);
         writer.WriteEndElement();
 
-        this.WriteIdsToXml(writer);
+        WriteIdsToXml(writer);
     }
 
     /// <summary>
-    /// Writes the ids as XML.
+    ///     Writes the ids as XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal void WriteIdsToXml(EwsServiceXmlWriter writer)
     {
-        this.Ids.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
+        Ids.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
     }
 }

@@ -23,18 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represenrs recurrence property definition.
+///     Represenrs recurrence property definition.
 /// </summary>
 internal sealed class RecurrencePropertyDefinition : PropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecurrencePropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="RecurrencePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -51,7 +50,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -69,7 +68,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
 
         reader.Read(XmlNodeType.Element); // This is the range element
 
-        RecurrenceRange range = GetRecurrenceRange(reader.LocalName);
+        var range = GetRecurrenceRange(reader.LocalName);
 
         range.LoadFromXml(reader, reader.LocalName);
         range.SetupRecurrence(recurrence);
@@ -80,7 +79,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Gets the recurrence range.
+    ///     Gets the recurrence range.
     /// </summary>
     /// <param name="recurrenceRangeString">The recurrence range string.</param>
     /// <returns></returns>
@@ -109,7 +108,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Gets the recurrence from string.
+    ///     Gets the recurrence from string.
     /// </summary>
     /// <param name="recurranceString">The recurrance string.</param>
     /// <returns></returns>
@@ -159,7 +158,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -170,7 +169,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        Recurrence value = (Recurrence)propertyBag[this];
+        var value = (Recurrence)propertyBag[this];
 
         if (value != null)
         {
@@ -179,10 +178,7 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(Recurrence); }
-    }
+    public override Type Type => typeof(Recurrence);
 }

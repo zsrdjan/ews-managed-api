@@ -23,40 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of ContactPhoneEntity objects.
+///     Represents a collection of ContactPhoneEntity objects.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ContactPhoneEntityCollection : ComplexPropertyCollection<ContactPhoneEntity>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ContactPhoneEntityCollection"/> class.
+    ///     Initializes a new instance of the <see cref="ContactPhoneEntityCollection" /> class.
     /// </summary>
     internal ContactPhoneEntityCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ContactPhoneEntityCollection"/> class.
+    ///     Initializes a new instance of the <see cref="ContactPhoneEntityCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
     internal ContactPhoneEntityCollection(IEnumerable<ContactPhoneEntity> collection)
     {
         if (collection != null)
         {
-            collection.ForEach(this.InternalAdd);
+            collection.ForEach(InternalAdd);
         }
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>ContactPhoneEntity.</returns>
@@ -66,7 +63,7 @@ public sealed class ContactPhoneEntityCollection : ComplexPropertyCollection<Con
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

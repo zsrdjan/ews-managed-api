@@ -23,40 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of TaskSuggestion objects.
+///     Represents a collection of TaskSuggestion objects.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class TaskSuggestionCollection : ComplexPropertyCollection<TaskSuggestion>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskSuggestionCollection"/> class.
+    ///     Initializes a new instance of the <see cref="TaskSuggestionCollection" /> class.
     /// </summary>
     internal TaskSuggestionCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskSuggestionCollection"/> class.
+    ///     Initializes a new instance of the <see cref="TaskSuggestionCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
     internal TaskSuggestionCollection(IEnumerable<TaskSuggestion> collection)
     {
         if (collection != null)
         {
-            collection.ForEach(this.InternalAdd);
+            collection.ForEach(InternalAdd);
         }
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>TaskSuggestion.</returns>
@@ -66,7 +63,7 @@ public sealed class TaskSuggestionCollection : ComplexPropertyCollection<TaskSug
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

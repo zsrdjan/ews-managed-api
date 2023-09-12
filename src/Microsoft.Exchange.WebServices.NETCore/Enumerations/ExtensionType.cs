@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the type of ExtensionType.
+///     Defines the type of ExtensionType.
 /// </summary>
 public enum ExtensionType
 {
     /// <summary>
-    /// Default
+    ///     Default
     /// </summary>
     Default = 0,
 
     /// <summary>
-    /// Private
+    ///     Private
     /// </summary>
     Private = 1,
 
     /// <summary>
-    /// MarketPlace
+    ///     MarketPlace
     /// </summary>
     MarketPlace = 2,
 }

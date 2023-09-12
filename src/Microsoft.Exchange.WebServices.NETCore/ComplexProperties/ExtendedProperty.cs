@@ -23,14 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Text;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an extended property.
+///     Represents an extended property.
 /// </summary>
 public sealed class ExtendedProperty : ComplexProperty
 {
@@ -38,14 +36,14 @@ public sealed class ExtendedProperty : ComplexProperty
     private object value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExtendedProperty"/> class.
+    ///     Initializes a new instance of the <see cref="ExtendedProperty" /> class.
     /// </summary>
     internal ExtendedProperty()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExtendedProperty"/> class.
+    ///     Initializes a new instance of the <see cref="ExtendedProperty" /> class.
     /// </summary>
     /// <param name="propertyDefinition">The definition of the extended property.</param>
     internal ExtendedProperty(ExtendedPropertyDefinition propertyDefinition)
@@ -57,7 +55,7 @@ public sealed class ExtendedProperty : ComplexProperty
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -66,29 +64,29 @@ public sealed class ExtendedProperty : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ExtendedFieldURI:
-                this.propertyDefinition = new ExtendedPropertyDefinition();
-                this.propertyDefinition.LoadFromXml(reader);
+                propertyDefinition = new ExtendedPropertyDefinition();
+                propertyDefinition.LoadFromXml(reader);
                 return true;
             case XmlElementNames.Value:
                 EwsUtilities.Assert(
-                    this.PropertyDefinition != null,
+                    PropertyDefinition != null,
                     "ExtendedProperty.TryReadElementFromXml",
                     "PropertyDefintion is missing"
                 );
 
-                string stringValue = reader.ReadElementValue();
-                this.value = MapiTypeConverter.ConvertToValue(this.PropertyDefinition.MapiType, stringValue);
+                var stringValue = reader.ReadElementValue();
+                value = MapiTypeConverter.ConvertToValue(PropertyDefinition.MapiType, stringValue);
                 return true;
             case XmlElementNames.Values:
                 EwsUtilities.Assert(
-                    this.PropertyDefinition != null,
+                    PropertyDefinition != null,
                     "ExtendedProperty.TryReadElementFromXml",
                     "PropertyDefintion is missing"
                 );
 
-                StringList stringList = new StringList(XmlElementNames.Value);
+                var stringList = new StringList(XmlElementNames.Value);
                 stringList.LoadFromXml(reader, reader.LocalName);
-                this.value = MapiTypeConverter.ConvertToValue(this.PropertyDefinition.MapiType, stringList);
+                value = MapiTypeConverter.ConvertToValue(PropertyDefinition.MapiType, stringList);
                 return true;
             default:
                 return false;
@@ -96,23 +94,23 @@ public sealed class ExtendedProperty : ComplexProperty
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.PropertyDefinition.WriteToXml(writer);
+        PropertyDefinition.WriteToXml(writer);
 
-        if (MapiTypeConverter.IsArrayType(this.PropertyDefinition.MapiType))
+        if (MapiTypeConverter.IsArrayType(PropertyDefinition.MapiType))
         {
-            Array array = this.Value as Array;
+            var array = Value as Array;
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Values);
-            for (int index = array.GetLowerBound(0); index <= array.GetUpperBound(0); index++)
+            for (var index = array.GetLowerBound(0); index <= array.GetUpperBound(0); index++)
             {
                 writer.WriteElementValue(
                     XmlNamespace.Types,
                     XmlElementNames.Value,
-                    MapiTypeConverter.ConvertToString(this.PropertyDefinition.MapiType, array.GetValue(index))
+                    MapiTypeConverter.ConvertToString(PropertyDefinition.MapiType, array.GetValue(index))
                 );
             }
 
@@ -123,104 +121,92 @@ public sealed class ExtendedProperty : ComplexProperty
             writer.WriteElementValue(
                 XmlNamespace.Types,
                 XmlElementNames.Value,
-                MapiTypeConverter.ConvertToString(this.PropertyDefinition.MapiType, this.Value)
+                MapiTypeConverter.ConvertToString(PropertyDefinition.MapiType, Value)
             );
         }
     }
 
     /// <summary>
-    /// Gets the definition of the extended property.
+    ///     Gets the definition of the extended property.
     /// </summary>
-    public ExtendedPropertyDefinition PropertyDefinition
-    {
-        get { return this.propertyDefinition; }
-    }
+    public ExtendedPropertyDefinition PropertyDefinition => propertyDefinition;
 
     /// <summary>
-    /// Gets or sets the value of the extended property.
+    ///     Gets or sets the value of the extended property.
     /// </summary>
     public object Value
     {
-        get { return this.value; }
+        get => value;
 
         set
         {
             EwsUtilities.ValidateParam(value, "value");
-            this.SetFieldValue<object>(
-                ref this.value,
-                MapiTypeConverter.ChangeType(this.PropertyDefinition.MapiType, value)
-            );
+            SetFieldValue(ref this.value, MapiTypeConverter.ChangeType(PropertyDefinition.MapiType, value));
         }
     }
 
     /// <summary>
-    /// Gets the string value.
+    ///     Gets the string value.
     /// </summary>
     /// <returns>Value as string.</returns>
     private string GetStringValue()
     {
-        if (MapiTypeConverter.IsArrayType(this.PropertyDefinition.MapiType))
+        if (MapiTypeConverter.IsArrayType(PropertyDefinition.MapiType))
         {
-            Array array = this.Value as Array;
+            var array = Value as Array;
             if (array == null)
             {
                 return string.Empty;
             }
-            else
+
+            var sb = new StringBuilder();
+            sb.Append("[");
+            for (var index = array.GetLowerBound(0); index <= array.GetUpperBound(0); index++)
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("[");
-                for (int index = array.GetLowerBound(0); index <= array.GetUpperBound(0); index++)
-                {
-                    sb.Append(
-                        MapiTypeConverter.ConvertToString(this.PropertyDefinition.MapiType, array.GetValue(index))
-                    );
-                    sb.Append(",");
-                }
-
-                sb.Append("]");
-
-                return sb.ToString();
+                sb.Append(MapiTypeConverter.ConvertToString(PropertyDefinition.MapiType, array.GetValue(index)));
+                sb.Append(",");
             }
+
+            sb.Append("]");
+
+            return sb.ToString();
         }
-        else
-        {
-            return MapiTypeConverter.ConvertToString(this.PropertyDefinition.MapiType, this.Value);
-        }
+
+        return MapiTypeConverter.ConvertToString(PropertyDefinition.MapiType, Value);
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+    ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+    ///     <see cref="T:System.Object" />.
     /// </summary>
-    /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+    /// <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />.</param>
     /// <returns>
-    /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+    ///     true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+    ///     otherwise, false.
     /// </returns>
-    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
+    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
     public override bool Equals(object obj)
     {
-        ExtendedProperty other = obj as ExtendedProperty;
-        if ((other != null) && other.PropertyDefinition.Equals(this.PropertyDefinition))
+        var other = obj as ExtendedProperty;
+        if ((other != null) && other.PropertyDefinition.Equals(PropertyDefinition))
         {
-            return this.GetStringValue().Equals(other.GetStringValue());
+            return GetStringValue().Equals(other.GetStringValue());
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Serves as a hash function for a particular type.
+    ///     Serves as a hash function for a particular type.
     /// </summary>
     /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
+    ///     A hash code for the current <see cref="T:System.Object" />.
     /// </returns>
     public override int GetHashCode()
     {
         return string.Concat(
-                (this.PropertyDefinition != null) ? this.PropertyDefinition.GetPrintableName() : string.Empty,
-                this.GetStringValue()
+                (PropertyDefinition != null) ? PropertyDefinition.GetPrintableName() : string.Empty,
+                GetStringValue()
             )
             .GetHashCode();
     }

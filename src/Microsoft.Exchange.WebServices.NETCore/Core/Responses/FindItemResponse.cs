@@ -23,33 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a item search operation.
+///     Represents the response to a item search operation.
 /// </summary>
 /// <typeparam name="TItem">The type of items that the opeartion returned.</typeparam>
 internal sealed class FindItemResponse<TItem> : ServiceResponse
     where TItem : Item
 {
     private FindItemsResults<TItem> results;
-    private bool isGrouped;
+    private readonly bool isGrouped;
     private GroupedFindItemsResults<TItem> groupedFindResults;
-    private PropertySet propertySet;
+    private readonly PropertySet propertySet;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindItemResponse&lt;TItem&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="FindItemResponse&lt;TItem&gt;" /> class.
     /// </summary>
     /// <param name="isGrouped">if set to <c>true</c> if grouped.</param>
     /// <param name="propertySet">The property set.</param>
     internal FindItemResponse(bool isGrouped, PropertySet propertySet)
-        : base()
     {
         this.isGrouped = isGrouped;
         this.propertySet = propertySet;
@@ -58,34 +53,34 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootFolder);
 
-        int totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-        bool moreItemsAvailable = !reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+        var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
+        var moreItemsAvailable = !reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
         // Ignore IndexedPagingOffset attribute if moreItemsAvailable is false.
-        int? nextPageOffset = moreItemsAvailable
+        var nextPageOffset = moreItemsAvailable
             ? reader.ReadNullableAttributeValue<int>(XmlAttributeNames.IndexedPagingOffset) : null;
 
-        if (!this.isGrouped)
+        if (!isGrouped)
         {
-            this.results = new FindItemsResults<TItem>();
-            this.results.TotalCount = totalItemsInView;
-            this.results.NextPageOffset = nextPageOffset;
-            this.results.MoreAvailable = moreItemsAvailable;
-            InternalReadItemsFromXml(reader, this.propertySet, this.results.Items);
+            results = new FindItemsResults<TItem>();
+            results.TotalCount = totalItemsInView;
+            results.NextPageOffset = nextPageOffset;
+            results.MoreAvailable = moreItemsAvailable;
+            InternalReadItemsFromXml(reader, propertySet, results.Items);
         }
         else
         {
-            this.groupedFindResults = new GroupedFindItemsResults<TItem>();
-            this.groupedFindResults.TotalCount = totalItemsInView;
-            this.groupedFindResults.NextPageOffset = nextPageOffset;
-            this.groupedFindResults.MoreAvailable = moreItemsAvailable;
+            groupedFindResults = new GroupedFindItemsResults<TItem>();
+            groupedFindResults.TotalCount = totalItemsInView;
+            groupedFindResults.NextPageOffset = nextPageOffset;
+            groupedFindResults.MoreAvailable = moreItemsAvailable;
 
             reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Groups);
 
@@ -97,14 +92,14 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
 
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.GroupedItems))
                     {
-                        string groupIndex = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.GroupIndex);
+                        var groupIndex = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.GroupIndex);
 
-                        List<TItem> itemList = new List<TItem>();
-                        InternalReadItemsFromXml(reader, this.propertySet, itemList);
+                        var itemList = new List<TItem>();
+                        InternalReadItemsFromXml(reader, propertySet, itemList);
 
                         reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.GroupedItems);
 
-                        this.groupedFindResults.ItemGroups.Add(new ItemGroup<TItem>(groupIndex, itemList));
+                        groupedFindResults.ItemGroups.Add(new ItemGroup<TItem>(groupIndex, itemList));
                     }
                 } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.Groups));
             }
@@ -122,17 +117,17 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    HighlightTerm term = new HighlightTerm();
+                    var term = new HighlightTerm();
 
                     term.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.HighlightTerm);
-                    this.results.HighlightTerms.Add(term);
+                    results.HighlightTerms.Add(term);
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.HighlightTerms));
         }
     }
 
     /// <summary>
-    /// Read items from XML.
+    ///     Read items from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertySet">The property set.</param>
@@ -158,10 +153,7 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    TItem item = EwsUtilities.CreateEwsObjectFromXmlElementName<TItem>(
-                        reader.Service,
-                        reader.LocalName
-                    );
+                    var item = EwsUtilities.CreateEwsObjectFromXmlElementName<TItem>(reader.Service, reader.LocalName);
 
                     if (item == null)
                     {
@@ -184,7 +176,7 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     }
 
     /// <summary>
-    /// Creates an item instance.
+    ///     Creates an item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -195,19 +187,13 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     }
 
     /// <summary>
-    /// Gets a grouped list of items matching the specified search criteria that were found in Exchange. ItemGroups is
-    /// null if the search operation did not specify grouping options.
+    ///     Gets a grouped list of items matching the specified search criteria that were found in Exchange. ItemGroups is
+    ///     null if the search operation did not specify grouping options.
     /// </summary>
-    public GroupedFindItemsResults<TItem> GroupedFindResults
-    {
-        get { return this.groupedFindResults; }
-    }
+    public GroupedFindItemsResults<TItem> GroupedFindResults => groupedFindResults;
 
     /// <summary>
-    /// Gets the results of the search operation.
+    ///     Gets the results of the search operation.
     /// </summary>
-    public FindItemsResults<TItem> Results
-    {
-        get { return this.results; }
-    }
+    public FindItemsResults<TItem> Results => results;
 }

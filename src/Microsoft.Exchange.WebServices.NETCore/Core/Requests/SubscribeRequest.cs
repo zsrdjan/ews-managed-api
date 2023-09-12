@@ -25,51 +25,48 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Linq;
-
 /// <summary>
-/// Represents an abstract Subscribe request.
+///     Represents an abstract Subscribe request.
 /// </summary>
 /// <typeparam name="TSubscription">The type of the subscription.</typeparam>
 internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRequest<SubscribeResponse<TSubscription>>
     where TSubscription : SubscriptionBase
 {
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.FolderIds, "FolderIds");
-        EwsUtilities.ValidateParamCollection(this.EventTypes, "EventTypes");
-        this.FolderIds.Validate(this.Service.RequestedServerVersion);
+        EwsUtilities.ValidateParam(FolderIds, "FolderIds");
+        EwsUtilities.ValidateParamCollection(EventTypes, "EventTypes");
+        FolderIds.Validate(Service.RequestedServerVersion);
 
         // Check that caller isn't trying to subscribe to Status events.
-        if (this.EventTypes.Count<EventType>(eventType => (eventType == EventType.Status)) > 0)
+        if (EventTypes.Count(eventType => (eventType == EventType.Status)) > 0)
         {
             throw new ServiceValidationException(Strings.CannotSubscribeToStatusEvents);
         }
 
         // If Watermark was specified, make sure it's not a blank string.
-        if (!string.IsNullOrEmpty(this.Watermark))
+        if (!string.IsNullOrEmpty(Watermark))
         {
-            EwsUtilities.ValidateNonBlankStringParam(this.Watermark, "Watermark");
+            EwsUtilities.ValidateNonBlankStringParam(Watermark, "Watermark");
         }
 
-        this.EventTypes.ForEach(
-            eventType => EwsUtilities.ValidateEnumVersionValue(eventType, this.Service.RequestedServerVersion)
+        EventTypes.ForEach(
+            eventType => EwsUtilities.ValidateEnumVersionValue(eventType, Service.RequestedServerVersion)
         );
     }
 
     /// <summary>
-    /// Gets the name of the subscription XML element.
+    ///     Gets the name of the subscription XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal abstract string GetSubscriptionXmlElementName();
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -78,7 +75,7 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -87,7 +84,7 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -96,7 +93,7 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -105,67 +102,67 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     }
 
     /// <summary>
-    /// Internal method to write XML elements.
+    ///     Internal method to write XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal abstract void InternalWriteElementsToXml(EwsServiceXmlWriter writer);
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteStartElement(XmlNamespace.Messages, this.GetSubscriptionXmlElementName());
+        writer.WriteStartElement(XmlNamespace.Messages, GetSubscriptionXmlElementName());
 
-        if (this.FolderIds.Count == 0)
+        if (FolderIds.Count == 0)
         {
             writer.WriteAttributeValue(XmlAttributeNames.SubscribeToAllFolders, true);
         }
 
-        this.FolderIds.WriteToXml(writer, XmlNamespace.Types, XmlElementNames.FolderIds);
+        FolderIds.WriteToXml(writer, XmlNamespace.Types, XmlElementNames.FolderIds);
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.EventTypes);
-        foreach (EventType eventType in this.EventTypes)
+        foreach (var eventType in EventTypes)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EventType, eventType);
         }
 
         writer.WriteEndElement();
 
-        if (!string.IsNullOrEmpty(this.Watermark))
+        if (!string.IsNullOrEmpty(Watermark))
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Watermark, this.Watermark);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Watermark, Watermark);
         }
 
-        this.InternalWriteElementsToXml(writer);
+        InternalWriteElementsToXml(writer);
 
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscribeRequest&lt;TSubscription&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="SubscribeRequest&lt;TSubscription&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SubscribeRequest(ExchangeService service)
         : base(service, ServiceErrorHandling.ThrowOnError)
     {
-        this.FolderIds = new FolderIdWrapperList();
-        this.EventTypes = new List<EventType>();
+        FolderIds = new FolderIdWrapperList();
+        EventTypes = new List<EventType>();
     }
 
     /// <summary>
-    /// Gets the folder ids.
+    ///     Gets the folder ids.
     /// </summary>
     public FolderIdWrapperList FolderIds { get; private set; }
 
     /// <summary>
-    /// Gets the event types.
+    ///     Gets the event types.
     /// </summary>
     public List<EventType> EventTypes { get; private set; }
 
     /// <summary>
-    /// Gets or sets the watermark.
+    ///     Gets or sets the watermark.
     /// </summary>
     public string Watermark { get; set; }
 }

@@ -23,40 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of AddressEntity objects.
+///     Represents a collection of AddressEntity objects.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class AddressEntityCollection : ComplexPropertyCollection<AddressEntity>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AddressEntityCollection"/> class.
+    ///     Initializes a new instance of the <see cref="AddressEntityCollection" /> class.
     /// </summary>
     internal AddressEntityCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AddressEntityCollection"/> class.
+    ///     Initializes a new instance of the <see cref="AddressEntityCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
     internal AddressEntityCollection(IEnumerable<AddressEntity> collection)
     {
         if (collection != null)
         {
-            collection.ForEach(this.InternalAdd);
+            collection.ForEach(InternalAdd);
         }
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>AddressEntity.</returns>
@@ -66,7 +63,7 @@ public sealed class AddressEntityCollection : ComplexPropertyCollection<AddressE
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

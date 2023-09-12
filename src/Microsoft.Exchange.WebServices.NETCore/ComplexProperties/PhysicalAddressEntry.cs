@@ -25,18 +25,14 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an entry of an PhysicalAddressDictionary.
+///     Represents an entry of an PhysicalAddressDictionary.
 /// </summary>
 public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddressKey>
 {
     #region Fields
 
-    private SimplePropertyBag<string> propertyBag;
+    private readonly SimplePropertyBag<string> propertyBag;
 
     #endregion
 
@@ -44,13 +40,12 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of PhysicalAddressEntry
+    ///     Initializes a new instance of PhysicalAddressEntry
     /// </summary>
     public PhysicalAddressEntry()
-        : base()
     {
-        this.propertyBag = new SimplePropertyBag<string>();
-        this.propertyBag.OnChange += this.PropertyBagChanged;
+        propertyBag = new SimplePropertyBag<string>();
+        propertyBag.OnChange += PropertyBagChanged;
     }
 
     #endregion
@@ -59,48 +54,48 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     #region Properties
 
     /// <summary>
-    /// Gets or sets the street.
+    ///     Gets or sets the street.
     /// </summary>
     public string Street
     {
-        get { return (string)this.propertyBag[PhysicalAddressSchema.Street]; }
-        set { this.propertyBag[PhysicalAddressSchema.Street] = value; }
+        get => (string)propertyBag[PhysicalAddressSchema.Street];
+        set => propertyBag[PhysicalAddressSchema.Street] = value;
     }
 
     /// <summary>
-    /// Gets or sets the city.
+    ///     Gets or sets the city.
     /// </summary>
     public string City
     {
-        get { return (string)this.propertyBag[PhysicalAddressSchema.City]; }
-        set { this.propertyBag[PhysicalAddressSchema.City] = value; }
+        get => (string)propertyBag[PhysicalAddressSchema.City];
+        set => propertyBag[PhysicalAddressSchema.City] = value;
     }
 
     /// <summary>
-    /// Gets or sets the state.
+    ///     Gets or sets the state.
     /// </summary>
     public string State
     {
-        get { return (string)this.propertyBag[PhysicalAddressSchema.State]; }
-        set { this.propertyBag[PhysicalAddressSchema.State] = value; }
+        get => (string)propertyBag[PhysicalAddressSchema.State];
+        set => propertyBag[PhysicalAddressSchema.State] = value;
     }
 
     /// <summary>
-    /// Gets or sets the country or region.
+    ///     Gets or sets the country or region.
     /// </summary>
     public string CountryOrRegion
     {
-        get { return (string)this.propertyBag[PhysicalAddressSchema.CountryOrRegion]; }
-        set { this.propertyBag[PhysicalAddressSchema.CountryOrRegion] = value; }
+        get => (string)propertyBag[PhysicalAddressSchema.CountryOrRegion];
+        set => propertyBag[PhysicalAddressSchema.CountryOrRegion] = value;
     }
 
     /// <summary>
-    /// Gets or sets the postal code.
+    ///     Gets or sets the postal code.
     /// </summary>
     public string PostalCode
     {
-        get { return (string)this.propertyBag[PhysicalAddressSchema.PostalCode]; }
-        set { this.propertyBag[PhysicalAddressSchema.PostalCode] = value; }
+        get => (string)propertyBag[PhysicalAddressSchema.PostalCode];
+        set => propertyBag[PhysicalAddressSchema.PostalCode] = value;
     }
 
     #endregion
@@ -109,15 +104,15 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     #region Internal methods
 
     /// <summary>
-    /// Clears the change log.
+    ///     Clears the change log.
     /// </summary>
     internal override void ClearChangeLog()
     {
-        this.propertyBag.ClearChangeLog();
+        propertyBag.ClearChangeLog();
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -125,30 +120,28 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     {
         if (PhysicalAddressSchema.XmlElementNames.Contains(reader.LocalName))
         {
-            this.propertyBag[reader.LocalName] = reader.ReadElementValue();
+            propertyBag[reader.LocalName] = reader.ReadElementValue();
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        foreach (string xmlElementName in PhysicalAddressSchema.XmlElementNames)
+        foreach (var xmlElementName in PhysicalAddressSchema.XmlElementNames)
         {
-            writer.WriteElementValue(XmlNamespace.Types, xmlElementName, this.propertyBag[xmlElementName]);
+            writer.WriteElementValue(XmlNamespace.Types, xmlElementName, propertyBag[xmlElementName]);
         }
     }
 
     /// <summary>
-    /// Writes the update to XML.
+    ///     Writes the update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>
@@ -160,32 +153,32 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         string ownerDictionaryXmlElementName
     )
     {
-        List<string> fieldsToSet = new List<string>();
+        var fieldsToSet = new List<string>();
 
-        foreach (string xmlElementName in this.propertyBag.AddedItems)
+        foreach (var xmlElementName in propertyBag.AddedItems)
         {
             fieldsToSet.Add(xmlElementName);
         }
 
-        foreach (string xmlElementName in this.propertyBag.ModifiedItems)
+        foreach (var xmlElementName in propertyBag.ModifiedItems)
         {
             fieldsToSet.Add(xmlElementName);
         }
 
-        foreach (string xmlElementName in fieldsToSet)
+        foreach (var xmlElementName in fieldsToSet)
         {
             writer.WriteStartElement(XmlNamespace.Types, ewsObject.GetSetFieldXmlElementName());
 
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.IndexedFieldURI);
             writer.WriteAttributeValue(XmlAttributeNames.FieldURI, GetFieldUri(xmlElementName));
-            writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, this.Key.ToString());
+            writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, Key.ToString());
             writer.WriteEndElement(); // IndexedFieldURI
 
             writer.WriteStartElement(XmlNamespace.Types, ewsObject.GetXmlElementName());
             writer.WriteStartElement(XmlNamespace.Types, ownerDictionaryXmlElementName);
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Entry);
-            this.WriteAttributesToXml(writer);
-            writer.WriteElementValue(XmlNamespace.Types, xmlElementName, this.propertyBag[xmlElementName]);
+            WriteAttributesToXml(writer);
+            writer.WriteElementValue(XmlNamespace.Types, xmlElementName, propertyBag[xmlElementName]);
             writer.WriteEndElement(); // Entry
             writer.WriteEndElement(); // ownerDictionaryXmlElementName
             writer.WriteEndElement(); // ewsObject.GetXmlElementName()
@@ -193,25 +186,25 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
             writer.WriteEndElement(); // ewsObject.GetSetFieldXmlElementName()
         }
 
-        foreach (string xmlElementName in this.propertyBag.RemovedItems)
+        foreach (var xmlElementName in propertyBag.RemovedItems)
         {
-            this.InternalWriteDeleteFieldToXml(writer, ewsObject, xmlElementName);
+            InternalWriteDeleteFieldToXml(writer, ewsObject, xmlElementName);
         }
 
         return true;
     }
 
     /// <summary>
-    /// Writes the delete update to XML.
+    ///     Writes the delete update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>
     /// <returns>True if update XML was written.</returns>
     internal override bool WriteDeleteUpdateToXml(EwsServiceXmlWriter writer, ServiceObject ewsObject)
     {
-        foreach (string xmlElementName in PhysicalAddressSchema.XmlElementNames)
+        foreach (var xmlElementName in PhysicalAddressSchema.XmlElementNames)
         {
-            this.InternalWriteDeleteFieldToXml(writer, ewsObject, xmlElementName);
+            InternalWriteDeleteFieldToXml(writer, ewsObject, xmlElementName);
         }
 
         return true;
@@ -223,7 +216,7 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     #region Private methods
 
     /// <summary>
-    /// Gets the field URI.
+    ///     Gets the field URI.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Field URI.</returns>
@@ -233,15 +226,15 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     }
 
     /// <summary>
-    /// Property bag was changed.
+    ///     Property bag was changed.
     /// </summary>
     private void PropertyBagChanged()
     {
-        this.Changed();
+        Changed();
     }
 
     /// <summary>
-    /// Write field deletion to XML.
+    ///     Write field deletion to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>
@@ -255,7 +248,7 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         writer.WriteStartElement(XmlNamespace.Types, ewsObject.GetDeleteFieldXmlElementName());
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.IndexedFieldURI);
         writer.WriteAttributeValue(XmlAttributeNames.FieldURI, GetFieldUri(fieldXmlElementName));
-        writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, this.Key.ToString());
+        writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, Key.ToString());
         writer.WriteEndElement(); // IndexedFieldURI
         writer.WriteEndElement(); // ewsObject.GetDeleteFieldXmlElementName()
     }
@@ -266,7 +259,7 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     #region Classes
 
     /// <summary>
-    /// Schema definition for PhysicalAddress
+    ///     Schema definition for PhysicalAddress
     /// </summary>
     private static class PhysicalAddressSchema
     {
@@ -277,12 +270,12 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         public const string PostalCode = "PostalCode";
 
         /// <summary>
-        /// List of XML element names.
+        ///     List of XML element names.
         /// </summary>
-        private static LazyMember<List<string>> xmlElementNames = new LazyMember<List<string>>(
-            delegate()
+        private static readonly LazyMember<List<string>> xmlElementNames = new LazyMember<List<string>>(
+            delegate
             {
-                List<string> result = new List<string>();
+                var result = new List<string>();
                 result.Add(Street);
                 result.Add(City);
                 result.Add(State);
@@ -293,13 +286,10 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         );
 
         /// <summary>
-        /// Gets the XML element names.
+        ///     Gets the XML element names.
         /// </summary>
         /// <value>The XML element names.</value>
-        public static List<string> XmlElementNames
-        {
-            get { return xmlElementNames.Member; }
-        }
+        public static List<string> XmlElementNames => xmlElementNames.Member;
     }
 
     #endregion

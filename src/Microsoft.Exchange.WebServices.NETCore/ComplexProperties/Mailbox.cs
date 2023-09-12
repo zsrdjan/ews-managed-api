@@ -26,39 +26,38 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a mailbox reference.
+///     Represents a mailbox reference.
 /// </summary>
 public class Mailbox : ComplexProperty, ISearchStringProvider
 {
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Mailbox"/> class.
+    ///     Initializes a new instance of the <see cref="Mailbox" /> class.
     /// </summary>
     public Mailbox()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Mailbox"/> class.
+    ///     Initializes a new instance of the <see cref="Mailbox" /> class.
     /// </summary>
     /// <param name="smtpAddress">The primary SMTP address of the mailbox.</param>
     public Mailbox(string smtpAddress)
         : this()
     {
-        this.Address = smtpAddress;
+        Address = smtpAddress;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Mailbox"/> class.
+    ///     Initializes a new instance of the <see cref="Mailbox" /> class.
     /// </summary>
     /// <param name="address">The address used to reference the user mailbox.</param>
     /// <param name="routingType">The routing type of the address used to reference the user mailbox.</param>
     public Mailbox(string address, string routingType)
         : this(address)
     {
-        this.RoutingType = routingType;
+        RoutingType = routingType;
     }
 
     #endregion
@@ -67,21 +66,18 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     #region Public Properties
 
     /// <summary>
-    /// True if this instance is valid, false otherthise.
+    ///     True if this instance is valid, false otherthise.
     /// </summary>
     /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
-    public bool IsValid
-    {
-        get { return !string.IsNullOrEmpty(this.Address); }
-    }
+    public bool IsValid => !string.IsNullOrEmpty(Address);
 
     /// <summary>
-    /// Gets or sets the address used to refer to the user mailbox.
+    ///     Gets or sets the address used to refer to the user mailbox.
     /// </summary>
     public string Address { get; set; }
 
     /// <summary>
-    /// Gets or sets the routing type of the address used to refer to the user mailbox.
+    ///     Gets or sets the routing type of the address used to refer to the user mailbox.
     /// </summary>
     public string RoutingType { get; set; }
 
@@ -91,7 +87,7 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     #region Operator overloads
 
     /// <summary>
-    /// Defines an implicit conversion between a string representing an SMTP address and Mailbox.
+    ///     Defines an implicit conversion between a string representing an SMTP address and Mailbox.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address to convert to EmailAddress.</param>
     /// <returns>A Mailbox initialized with the specified SMTP address.</returns>
@@ -106,7 +102,7 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     #region Xml Methods
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -115,10 +111,10 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
         switch (reader.LocalName)
         {
             case XmlElementNames.EmailAddress:
-                this.Address = reader.ReadElementValue();
+                Address = reader.ReadElementValue();
                 return true;
             case XmlElementNames.RoutingType:
-                this.RoutingType = reader.ReadElementValue();
+                RoutingType = reader.ReadElementValue();
                 return true;
             default:
                 return false;
@@ -126,13 +122,13 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EmailAddress, this.Address);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RoutingType, this.RoutingType);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EmailAddress, Address);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RoutingType, RoutingType);
     }
 
     #endregion
@@ -141,111 +137,106 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     #region ISearchStringProvider methods
 
     /// <summary>
-    /// Get a string representation for using this instance in a search filter.
+    ///     Get a string representation for using this instance in a search filter.
     /// </summary>
     /// <returns>String representation of instance.</returns>
     string ISearchStringProvider.GetSearchString()
     {
-        return this.Address;
+        return Address;
     }
 
     #endregion
 
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
         base.InternalValidate();
 
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(this.Address, "address");
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(this.RoutingType, "routingType");
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(Address, "address");
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(RoutingType, "routingType");
     }
 
 
     #region Object method overrides
 
     /// <summary>
-    /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+    ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+    ///     <see cref="T:System.Object" />.
     /// </summary>
-    /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+    /// <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />.</param>
     /// <returns>
-    /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+    ///     true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+    ///     otherwise, false.
     /// </returns>
-    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
+    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
     public override bool Equals(object obj)
     {
-        if (object.ReferenceEquals(this, obj))
+        if (ReferenceEquals(this, obj))
         {
             return true;
         }
-        else
-        {
-            Mailbox other = obj as Mailbox;
 
-            if (other == null)
-            {
-                return false;
-            }
-            else if (((this.Address == null) && (other.Address == null)) ||
-                     ((this.Address != null) && this.Address.Equals(other.Address)))
-            {
-                return ((this.RoutingType == null) && (other.RoutingType == null)) ||
-                       ((this.RoutingType != null) && this.RoutingType.Equals(other.RoutingType));
-            }
-            else
-            {
-                return false;
-            }
+        var other = obj as Mailbox;
+
+        if (other == null)
+        {
+            return false;
         }
+
+        if (((Address == null) && (other.Address == null)) || ((Address != null) && Address.Equals(other.Address)))
+        {
+            return ((RoutingType == null) && (other.RoutingType == null)) ||
+                   ((RoutingType != null) && RoutingType.Equals(other.RoutingType));
+        }
+
+        return false;
     }
 
     /// <summary>
-    /// Serves as a hash function for a particular type.
+    ///     Serves as a hash function for a particular type.
     /// </summary>
     /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
+    ///     A hash code for the current <see cref="T:System.Object" />.
     /// </returns>
     public override int GetHashCode()
     {
-        if (!string.IsNullOrEmpty(this.Address))
+        if (!string.IsNullOrEmpty(Address))
         {
-            int hashCode = this.Address.GetHashCode();
+            var hashCode = Address.GetHashCode();
 
-            if (!string.IsNullOrEmpty(this.RoutingType))
+            if (!string.IsNullOrEmpty(RoutingType))
             {
-                hashCode ^= this.RoutingType.GetHashCode();
+                hashCode ^= RoutingType.GetHashCode();
             }
 
             return hashCode;
         }
-        else
-        {
-            return base.GetHashCode();
-        }
+
+        return base.GetHashCode();
     }
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
-        if (!this.IsValid)
+        if (!IsValid)
         {
             return string.Empty;
         }
-        else if (!string.IsNullOrEmpty(this.RoutingType))
+
+        if (!string.IsNullOrEmpty(RoutingType))
         {
-            return this.RoutingType + ":" + this.Address;
+            return RoutingType + ":" + Address;
         }
-        else
-        {
-            return this.Address;
-        }
+
+        return Address;
     }
 
     #endregion

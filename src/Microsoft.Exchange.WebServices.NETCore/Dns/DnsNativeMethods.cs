@@ -23,56 +23,55 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Dns;
-
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
+namespace Microsoft.Exchange.WebServices.Dns;
+
 /// <summary>
-/// Class that defined native Win32 DNS API methods
+///     Class that defined native Win32 DNS API methods
 /// </summary>
 [ComVisible(false)]
 internal static class DnsNativeMethods
 {
     /// <summary>
-    /// The Win32 dll from which to load DNS APIs.
+    ///     The Win32 dll from which to load DNS APIs.
     /// </summary>
     /// <remarks>
-    /// DNSAPI.DLL has been part of the Win32 API since Win2K. Don't need to verify that the DLL exists.
+    ///     DNSAPI.DLL has been part of the Win32 API since Win2K. Don't need to verify that the DLL exists.
     /// </remarks>
     private const string DNSAPI = "dnsapi.dll";
 
     /// <summary>
-    /// Win32 memory free type enumeration.
+    ///     Win32 memory free type enumeration.
     /// </summary>
     /// <remarks>Win32 defines other values for this enum but we don't uses them.</remarks>
     private enum FreeType
     {
         /// <summary>
-        /// The data freed is a Resource Record list, and includes subfields of the DNS_RECORD
-        /// structure. Resources freed include structures returned by the DnsQuery and DnsRecordSetCopyEx functions.
+        ///     The data freed is a Resource Record list, and includes subfields of the DNS_RECORD
+        ///     structure. Resources freed include structures returned by the DnsQuery and DnsRecordSetCopyEx functions.
         /// </summary>
         RecordList = 1,
     }
 
     /// <summary>
-    /// DNS Query options.
+    ///     DNS Query options.
     /// </summary>
     /// <remarks>Win32 defines other values for this enum but we don't uses them.</remarks>
     private enum DnsQueryOptions
     {
         /// <summary>
-        /// Default option.
+        ///     Default option.
         /// </summary>
         DNS_QUERY_STANDARD = 0,
     }
 
     /// <summary>
-    /// Represents the native format of a DNS record returned by the Win32 DNS API
+    ///     Represents the native format of a DNS record returned by the Win32 DNS API
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     private struct DnsServerList
@@ -82,7 +81,7 @@ internal static class DnsNativeMethods
     }
 
     /// <summary>
-    /// Call Win32 DNS API DnsQuery.
+    ///     Call Win32 DNS API DnsQuery.
     /// </summary>
     /// <param name="pszName">Host name.</param>
     /// <param name="wType">DNS Record type.</param>
@@ -115,7 +114,7 @@ internal static class DnsNativeMethods
     );
 
     /// <summary>
-    /// Call Win32 DNS API DnsRecordListFree.
+    ///     Call Win32 DNS API DnsRecordListFree.
     /// </summary>
     /// <param name="ptrRecords">DNS records pointer</param>
     /// <param name="freeType">Record List Free type</param>
@@ -133,13 +132,13 @@ internal static class DnsNativeMethods
     private static extern void DnsRecordListFree([In] IntPtr ptrRecords, [In] FreeType freeType);
 
     /// <summary>
-    /// Allocate the DNS server list.
+    ///     Allocate the DNS server list.
     /// </summary>
     /// <param name="dnsServerAddress">The DNS server address (may be null).</param>
     /// <returns>Pointer to DNS server list (may be IntPtr.Zero).</returns>
     private static IntPtr AllocDnsServerList(IPAddress dnsServerAddress)
     {
-        IntPtr pServerList = IntPtr.Zero;
+        var pServerList = IntPtr.Zero;
 
         // Build DNS server list arg if DNS server address was passed in.
         // Note: DnsQuery only supports a single IP address and it has to 
@@ -152,7 +151,7 @@ internal static class DnsNativeMethods
                 "Only Ipv4 DNS server addresses are supported by DnsQuery"
             );
 
-            Int32 serverAddress = BitConverter.ToInt32(dnsServerAddress.GetAddressBytes(), 0);
+            var serverAddress = BitConverter.ToInt32(dnsServerAddress.GetAddressBytes(), 0);
             DnsServerList serverList;
             serverList.AddressCount = 1;
             serverList.ServerAddress = serverAddress;
@@ -165,7 +164,7 @@ internal static class DnsNativeMethods
     }
 
     /// <summary>
-    /// Wrapper method to perform DNS Query.
+    ///     Wrapper method to perform DNS Query.
     /// </summary>
     /// <remarks>Makes DnsQuery a little more palatable.</remarks>
     /// <param name="domain">The domain.</param>
@@ -182,20 +181,13 @@ internal static class DnsNativeMethods
     {
         Debug.Assert(!string.IsNullOrEmpty(domain), "domain cannot be null.");
 
-        IntPtr pServerList = IntPtr.Zero;
+        var pServerList = IntPtr.Zero;
 
         try
         {
-            pServerList = DnsNativeMethods.AllocDnsServerList(dnsServerAddress);
+            pServerList = AllocDnsServerList(dnsServerAddress);
 
-            return DnsNativeMethods.DnsQuery(
-                domain,
-                recordType,
-                DnsQueryOptions.DNS_QUERY_STANDARD,
-                pServerList,
-                ref ppQueryResults,
-                0
-            );
+            return DnsQuery(domain, recordType, DnsQueryOptions.DNS_QUERY_STANDARD, pServerList, ref ppQueryResults, 0);
         }
         finally
         {
@@ -205,7 +197,7 @@ internal static class DnsNativeMethods
     }
 
     /// <summary>
-    /// Free results from DnsQuery call.
+    ///     Free results from DnsQuery call.
     /// </summary>
     /// <remarks>Makes DnsRecordListFree a little more palatable.</remarks>
     /// <param name="ptrRecords">Pointer to records.</param>
@@ -213,6 +205,6 @@ internal static class DnsNativeMethods
     {
         Debug.Assert(!ptrRecords.Equals(IntPtr.Zero), "ptrRecords cannot be null.");
 
-        DnsNativeMethods.DnsRecordListFree(ptrRecords, FreeType.RecordList);
+        DnsRecordListFree(ptrRecords, FreeType.RecordList);
     }
 }

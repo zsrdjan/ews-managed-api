@@ -25,35 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents the Id of an occurrence of a recurring appointment.
+///     Represents the Id of an occurrence of a recurring appointment.
 /// </summary>
 public sealed class AppointmentOccurrenceId : ItemId
 {
     /// <summary>
-    /// Index of the occurrence.
+    ///     Index of the occurrence.
     /// </summary>
     private int occurrenceIndex;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AppointmentOccurrenceId"/> class.
+    ///     Initializes a new instance of the <see cref="AppointmentOccurrenceId" /> class.
     /// </summary>
     /// <param name="recurringMasterUniqueId">The Id of the recurring master the Id represents an occurrence of.</param>
     /// <param name="occurrenceIndex">The index of the occurrence.</param>
     public AppointmentOccurrenceId(string recurringMasterUniqueId, int occurrenceIndex)
         : base(recurringMasterUniqueId)
     {
-        this.OccurrenceIndex = occurrenceIndex;
+        OccurrenceIndex = occurrenceIndex;
     }
 
     /// <summary>
-    /// Gets or sets the index of the occurrence. Note that the occurrence index starts at one not zero.
+    ///     Gets or sets the index of the occurrence. Note that the occurrence index starts at one not zero.
     /// </summary>
     public int OccurrenceIndex
     {
-        get { return this.occurrenceIndex; }
+        get => occurrenceIndex;
 
         set
         {
@@ -63,12 +61,12 @@ public sealed class AppointmentOccurrenceId : ItemId
                 throw new ArgumentException(Strings.OccurrenceIndexMustBeGreaterThanZero);
             }
 
-            this.occurrenceIndex = value;
+            occurrenceIndex = value;
         }
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -77,12 +75,12 @@ public sealed class AppointmentOccurrenceId : ItemId
     }
 
     /// <summary>
-    /// Writes attributes to XML.
+    ///     Writes attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.RecurringMasterId, this.UniqueId);
-        writer.WriteAttributeValue(XmlAttributeNames.InstanceIndex, this.OccurrenceIndex);
+        writer.WriteAttributeValue(XmlAttributeNames.RecurringMasterId, UniqueId);
+        writer.WriteAttributeValue(XmlAttributeNames.InstanceIndex, OccurrenceIndex);
     }
 }

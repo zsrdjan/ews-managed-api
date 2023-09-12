@@ -23,34 +23,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of items.
+///     Represents a collection of items.
 /// </summary>
 /// <typeparam name="TItem">The type of item the collection contains.</typeparam>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     where TItem : Item
 {
-    private List<TItem> items = new List<TItem>();
+    private readonly List<TItem> items = new List<TItem>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ItemCollection&lt;TItem&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ItemCollection&lt;TItem&gt;" /> class.
     /// </summary>
     internal ItemCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="localElementName">Name of the local element.</param>
@@ -65,7 +61,7 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    TItem item =
+                    var item =
                         EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(reader.Service, reader.LocalName) as TItem;
 
                     if (item == null)
@@ -76,7 +72,7 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
                     {
                         item.LoadFromXml(reader, true /* clearPropertyBag */);
 
-                        this.items.Add(item);
+                        items.Add(item);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, localElementName));
@@ -84,15 +80,12 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     }
 
     /// <summary>
-    /// Gets the total number of items in the collection.
+    ///     Gets the total number of items in the collection.
     /// </summary>
-    public int Count
-    {
-        get { return this.items.Count; }
-    }
+    public int Count => items.Count;
 
     /// <summary>
-    /// Gets the item at the specified index.
+    ///     Gets the item at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index of the item to get.</param>
     /// <returns>The item at the specified index.</returns>
@@ -100,12 +93,12 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     {
         get
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
             }
 
-            return this.items[index];
+            return items[index];
         }
     }
 
@@ -113,12 +106,12 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     #region IEnumerable<TItem> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TItem> GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion
@@ -127,12 +120,12 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion

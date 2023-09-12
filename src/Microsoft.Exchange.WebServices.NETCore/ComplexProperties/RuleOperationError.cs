@@ -25,55 +25,45 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents an error that occurred while processing a rule operation.
+///     Represents an error that occurred while processing a rule operation.
 /// </summary>
 public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
 {
     /// <summary>
-    /// Index of the operation mapping to the error.
+    ///     Index of the operation mapping to the error.
     /// </summary>
     private int operationIndex;
 
     /// <summary>
-    /// RuleOperation object mapping to the error.
+    ///     RuleOperation object mapping to the error.
     /// </summary>
     private RuleOperation operation;
 
     /// <summary>
-    /// RuleError Collection.
+    ///     RuleError Collection.
     /// </summary>
     private RuleErrorCollection ruleErrors;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RuleOperationError"/> class.
+    ///     Initializes a new instance of the <see cref="RuleOperationError" /> class.
     /// </summary>
     internal RuleOperationError()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets the operation that resulted in an error.
+    ///     Gets the operation that resulted in an error.
     /// </summary>
-    public RuleOperation Operation
-    {
-        get { return this.operation; }
-    }
+    public RuleOperation Operation => operation;
 
     /// <summary>
-    /// Gets the number of rule errors in the list.
+    ///     Gets the number of rule errors in the list.
     /// </summary>
-    public int Count
-    {
-        get { return this.ruleErrors.Count; }
-    }
+    public int Count => ruleErrors.Count;
 
     /// <summary>
-    /// Gets the rule error at the specified index.
+    ///     Gets the rule error at the specified index.
     /// </summary>
     /// <param name="index">The index of the rule error to get.</param>
     /// <returns>The rule error at the specified index.</returns>
@@ -81,17 +71,17 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     {
         get
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            return this.ruleErrors[index];
+            return ruleErrors[index];
         }
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -100,11 +90,11 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
         switch (reader.LocalName)
         {
             case XmlElementNames.OperationIndex:
-                this.operationIndex = reader.ReadElementValue<int>();
+                operationIndex = reader.ReadElementValue<int>();
                 return true;
             case XmlElementNames.ValidationErrors:
-                this.ruleErrors = new RuleErrorCollection();
-                this.ruleErrors.LoadFromXml(reader, reader.LocalName);
+                ruleErrors = new RuleErrorCollection();
+                ruleErrors.LoadFromXml(reader, reader.LocalName);
                 return true;
             default:
                 return false;
@@ -112,30 +102,30 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     }
 
     /// <summary>
-    /// Set operation property by the index of a given opeation enumerator.
+    ///     Set operation property by the index of a given opeation enumerator.
     /// </summary>
     /// <param name="operations">Operation enumerator.</param>
     internal void SetOperationByIndex(IEnumerator<RuleOperation> operations)
     {
         operations.Reset();
-        for (int i = 0; i <= this.operationIndex; i++)
+        for (var i = 0; i <= operationIndex; i++)
         {
             operations.MoveNext();
         }
 
-        this.operation = operations.Current;
+        operation = operations.Current;
     }
 
 
     #region IEnumerable<RuleError> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<RuleError> GetEnumerator()
     {
-        return this.ruleErrors.GetEnumerator();
+        return ruleErrors.GetEnumerator();
     }
 
     #endregion
@@ -144,12 +134,12 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.ruleErrors.GetEnumerator();
+        return ruleErrors.GetEnumerator();
     }
 
     #endregion

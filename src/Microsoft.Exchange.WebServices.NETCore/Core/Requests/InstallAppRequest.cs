@@ -25,20 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a InstallApp request.
+///     Represents a InstallApp request.
 /// </summary>
 internal sealed class InstallAppRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="InstallAppRequest"/> class.
+    ///     Initializes a new instance of the <see cref="InstallAppRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="manifestStream">The manifest's plain text XML stream. </param>
@@ -61,7 +54,7 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -70,7 +63,7 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -79,31 +72,27 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
 
         writer.WriteBase64ElementValue(manifestStream);
 
-        if (!string.IsNullOrEmpty(this.marketplaceAssetId))
+        if (!string.IsNullOrEmpty(marketplaceAssetId))
         {
-            writer.WriteElementValue(
-                XmlNamespace.Messages,
-                XmlElementNames.MarketplaceAssetId,
-                this.marketplaceAssetId
-            );
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MarketplaceAssetId, marketplaceAssetId);
 
-            if (!string.IsNullOrEmpty(this.marketplaceContentMarket))
+            if (!string.IsNullOrEmpty(marketplaceContentMarket))
             {
                 writer.WriteElementValue(
                     XmlNamespace.Messages,
                     XmlElementNames.MarketplaceContentMarket,
-                    this.marketplaceContentMarket
+                    marketplaceContentMarket
                 );
             }
 
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SendWelcomeEmail, this.sendWelcomeEmail);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SendWelcomeEmail, sendWelcomeEmail);
         }
 
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -112,19 +101,19 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        InstallAppResponse response = new InstallAppResponse();
+        var response = new InstallAppResponse();
         response.LoadFromXml(reader, XmlElementNames.InstallAppResponse);
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -133,34 +122,33 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<InstallAppResponse> Execute(CancellationToken token)
     {
-        InstallAppResponse serviceResponse =
-            (InstallAppResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (InstallAppResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
 
     /// <summary>
-    /// The plain text manifest stream. 
+    ///     The plain text manifest stream.
     /// </summary>
     private readonly Stream manifestStream;
 
     /// <summary>
-    /// The asset id of the addin in marketplace
+    ///     The asset id of the addin in marketplace
     /// </summary>
     private readonly string marketplaceAssetId;
 
     /// <summary>
-    /// The target market for content
+    ///     The target market for content
     /// </summary>
     private readonly string marketplaceContentMarket;
 
     /// <summary>
-    /// Whether to send welcome email or not
+    ///     Whether to send welcome email or not
     /// </summary>
     private readonly bool sendWelcomeEmail;
 }

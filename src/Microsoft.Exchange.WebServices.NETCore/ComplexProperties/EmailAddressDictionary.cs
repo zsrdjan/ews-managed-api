@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a dictionary of e-mail addresses.
+///     Represents a dictionary of e-mail addresses.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey, EmailAddressEntry>
 {
     /// <summary>
-    /// Gets the field URI.
+    ///     Gets the field URI.
     /// </summary>
     /// <returns>Field URI.</returns>
     internal override string GetFieldURI()
@@ -43,7 +43,7 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
     }
 
     /// <summary>
-    /// Creates instance of dictionary entry.
+    ///     Creates instance of dictionary entry.
     /// </summary>
     /// <returns>New instance.</returns>
     internal override EmailAddressEntry CreateEntryInstance()
@@ -52,64 +52,62 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
     }
 
     /// <summary>
-    /// Gets or sets the e-mail address at the specified key.
+    ///     Gets or sets the e-mail address at the specified key.
     /// </summary>
     /// <param name="key">The key of the e-mail address to get or set.</param>
     /// <returns>The e-mail address at the specified key.</returns>
     public EmailAddress this[EmailAddressKey key]
     {
-        get { return this.Entries[key].EmailAddress; }
+        get => Entries[key].EmailAddress;
 
         set
         {
             if (value == null)
             {
-                this.InternalRemove(key);
+                InternalRemove(key);
             }
             else
             {
                 EmailAddressEntry entry;
 
-                if (this.Entries.TryGetValue(key, out entry))
+                if (Entries.TryGetValue(key, out entry))
                 {
                     entry.EmailAddress = value;
-                    this.Changed();
+                    Changed();
                 }
                 else
                 {
                     entry = new EmailAddressEntry(key, value);
-                    this.InternalAdd(entry);
+                    InternalAdd(entry);
                 }
             }
         }
     }
 
     /// <summary>
-    /// Tries to get the e-mail address associated with the specified key.
+    ///     Tries to get the e-mail address associated with the specified key.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="emailAddress">
-    /// When this method returns, contains the e-mail address associated with the specified key,
-    /// if the key is found; otherwise, null. This parameter is passed uninitialized.
+    ///     When this method returns, contains the e-mail address associated with the specified key,
+    ///     if the key is found; otherwise, null. This parameter is passed uninitialized.
     /// </param>
     /// <returns>
-    /// true if the Dictionary contains an e-mail address associated with the specified key; otherwise, false.
+    ///     true if the Dictionary contains an e-mail address associated with the specified key; otherwise, false.
     /// </returns>
     public bool TryGetValue(EmailAddressKey key, out EmailAddress emailAddress)
     {
         EmailAddressEntry entry = null;
 
-        if (this.Entries.TryGetValue(key, out entry))
+        if (Entries.TryGetValue(key, out entry))
         {
             emailAddress = entry.EmailAddress;
 
             return true;
         }
-        else
-        {
-            emailAddress = null;
 
-            return false;
-        }
+        emailAddress = null;
+
+        return false;
     }
 }

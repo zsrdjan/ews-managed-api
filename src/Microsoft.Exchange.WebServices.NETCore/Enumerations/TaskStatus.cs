@@ -25,37 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the execution status of a task.
+///     Defines the execution status of a task.
 /// </summary>
 public enum TaskStatus
 {
     /// <summary>
-    /// The execution of the task is not started.
+    ///     The execution of the task is not started.
     /// </summary>
     NotStarted,
 
     /// <summary>
-    /// The execution of the task is in progress.
+    ///     The execution of the task is in progress.
     /// </summary>
     InProgress,
 
     /// <summary>
-    /// The execution of the task is completed.
+    ///     The execution of the task is completed.
     /// </summary>
     Completed,
 
     /// <summary>
-    /// The execution of the task is waiting on others.
+    ///     The execution of the task is waiting on others.
     /// </summary>
     WaitingOnOthers,
 
     /// <summary>
-    /// The execution of the task is deferred.
+    ///     The execution of the task is deferred.
     /// </summary>
     Deferred
 }

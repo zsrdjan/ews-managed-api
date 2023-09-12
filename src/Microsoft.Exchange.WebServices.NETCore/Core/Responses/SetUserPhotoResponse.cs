@@ -23,37 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Net.Http.Headers;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Xml;
-
 /// <summary>
-/// Represents the response to GetUserPhoto operation.
+///     Represents the response to GetUserPhoto operation.
 /// </summary>
 internal sealed class SetUserPhotoResponse : ServiceResponse
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserPhotoResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserPhotoResponse" /> class.
     /// </summary>
     internal SetUserPhotoResponse()
     {
-        this.Results = new SetUserPhotoResults();
+        Results = new SetUserPhotoResults();
     }
 
     /// <summary>
-    /// Gets GetUserPhoto results.
+    ///     Gets GetUserPhoto results.
     /// </summary>
     /// <returns>GetUserPhoto results.</returns>
     internal SetUserPhotoResults Results { get; private set; }
 
     /// <summary>
-    /// Read Photo results from XML.
+    ///     Read Photo results from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -61,7 +55,7 @@ internal sealed class SetUserPhotoResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Read Photo response headers
+    ///     Read Photo response headers
     /// </summary>
     /// <param name="responseHeaders">The response header.</param>
     internal override void ReadHeader(HttpResponseHeaders responseHeaders)

@@ -25,19 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a GetNonIndexableItemDetailsRequest request.
+///     Represents a GetNonIndexableItemDetailsRequest request.
 /// </summary>
 internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetNonIndexableItemDetailsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetNonIndexableItemDetailsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetNonIndexableItemDetailsRequest(ExchangeService service)
@@ -46,7 +40,7 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -55,7 +49,7 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -64,68 +58,68 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (this.Mailboxes == null || this.Mailboxes.Length == 0)
+        if (Mailboxes == null || Mailboxes.Length == 0)
         {
             throw new ServiceValidationException(Strings.MailboxesParameterIsNotSpecified);
         }
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetNonIndexableItemDetailsResponse response = new GetNonIndexableItemDetailsResponse();
+        var response = new GetNonIndexableItemDetailsResponse();
         response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Mailboxes);
-        foreach (string mailbox in this.Mailboxes)
+        foreach (var mailbox in Mailboxes)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LegacyDN, mailbox);
         }
 
         writer.WriteEndElement();
 
-        if (this.PageSize != null && this.PageSize.HasValue)
+        if (PageSize != null && PageSize.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageSize, this.PageSize.Value.ToString());
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageSize, PageSize.Value.ToString());
         }
 
-        if (!string.IsNullOrEmpty(this.PageItemReference))
+        if (!string.IsNullOrEmpty(PageItemReference))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageItemReference, this.PageItemReference);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageItemReference, PageItemReference);
         }
 
-        if (this.PageDirection != null && this.PageDirection.HasValue)
+        if (PageDirection != null && PageDirection.HasValue)
         {
             writer.WriteElementValue(
                 XmlNamespace.Messages,
                 XmlElementNames.PageDirection,
-                this.PageDirection.Value.ToString()
+                PageDirection.Value.ToString()
             );
         }
 
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SearchArchiveOnly, this.SearchArchiveOnly);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SearchArchiveOnly, SearchArchiveOnly);
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -134,38 +128,38 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetNonIndexableItemDetailsResponse> Execute(CancellationToken token)
     {
-        GetNonIndexableItemDetailsResponse serviceResponse =
-            (GetNonIndexableItemDetailsResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse =
+            (GetNonIndexableItemDetailsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         return serviceResponse;
     }
 
     /// <summary>
-    /// Mailboxes
+    ///     Mailboxes
     /// </summary>
     public string[] Mailboxes { get; set; }
 
     /// <summary>
-    /// Page size
+    ///     Page size
     /// </summary>
     public int? PageSize { get; set; }
 
     /// <summary>
-    /// Page item reference
+    ///     Page item reference
     /// </summary>
     public string PageItemReference { get; set; }
 
     /// <summary>
-    /// Page direction
+    ///     Page direction
     /// </summary>
     public SearchPageDirection? PageDirection { get; set; }
 
     /// <summary>
-    /// Whether to search archive only
+    ///     Whether to search archive only
     /// </summary>
     public bool SearchArchiveOnly { get; set; }
 }

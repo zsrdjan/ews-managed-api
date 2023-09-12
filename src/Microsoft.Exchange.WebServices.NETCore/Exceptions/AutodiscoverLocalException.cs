@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an exception that is thrown when the Autodiscover service could not be contacted.
+///     Represents an exception that is thrown when the Autodiscover service could not be contacted.
 /// </summary>
 public class AutodiscoverLocalException : ServiceLocalException
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutodiscoverLocalException"/> class.
+    ///     Initializes a new instance of the <see cref="AutodiscoverLocalException" /> class.
     /// </summary>
     public AutodiscoverLocalException()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutodiscoverLocalException"/> class.
+    ///     Initializes a new instance of the <see cref="AutodiscoverLocalException" /> class.
     /// </summary>
     /// <param name="message">The message.</param>
     public AutodiscoverLocalException(string message)
@@ -51,7 +49,7 @@ public class AutodiscoverLocalException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutodiscoverLocalException"/> class.
+    ///     Initializes a new instance of the <see cref="AutodiscoverLocalException" /> class.
     /// </summary>
     /// <param name="message">The message.</param>
     /// <param name="innerException">The inner exception.</param>
@@ -61,7 +59,8 @@ public class AutodiscoverLocalException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.AutodiscoverLocalException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.AutodiscoverLocalException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

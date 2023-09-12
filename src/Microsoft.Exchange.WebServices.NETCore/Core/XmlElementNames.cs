@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// XML element names.
+///     XML element names.
 /// </summary>
 internal static class XmlElementNames
 {

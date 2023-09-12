@@ -25,37 +25,35 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines if/how meeting invitations or cancellations should be sent to attendees when an appointment is updated.
+///     Defines if/how meeting invitations or cancellations should be sent to attendees when an appointment is updated.
 /// </summary>
 public enum SendInvitationsOrCancellationsMode
 {
     /// <summary>
-    /// No meeting invitation/cancellation is sent.
+    ///     No meeting invitation/cancellation is sent.
     /// </summary>
     SendToNone,
 
     /// <summary>
-    /// Meeting invitations/cancellations are sent to all attendees.
+    ///     Meeting invitations/cancellations are sent to all attendees.
     /// </summary>
     SendOnlyToAll,
 
     /// <summary>
-    /// Meeting invitations/cancellations are sent only to attendees that have been added or modified.
+    ///     Meeting invitations/cancellations are sent only to attendees that have been added or modified.
     /// </summary>
     SendOnlyToChanged,
 
     /// <summary>
-    /// Meeting invitations/cancellations are sent to all attendees and a copy is saved in the organizer's Sent Items folder.
+    ///     Meeting invitations/cancellations are sent to all attendees and a copy is saved in the organizer's Sent Items
+    ///     folder.
     /// </summary>
     SendToAllAndSaveCopy,
 
     /// <summary>
-    /// Meeting invitations/cancellations are sent only to attendees that have been added or modified and a copy is saved in the organizer's Sent Items folder.
+    ///     Meeting invitations/cancellations are sent only to attendees that have been added or modified and a copy is saved
+    ///     in the organizer's Sent Items folder.
     /// </summary>
     SendToChangedAndSaveCopy
 }

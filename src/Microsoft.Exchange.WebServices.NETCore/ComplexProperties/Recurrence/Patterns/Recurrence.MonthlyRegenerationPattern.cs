@@ -25,31 +25,26 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <content>
-/// Contains nested type Recurrence.MonthlyRegenerationPattern.
+///     Contains nested type Recurrence.MonthlyRegenerationPattern.
 /// </content>
 public abstract partial class Recurrence
 {
     /// <summary>
-    /// Represents a regeneration pattern, as used with recurring tasks, where each occurrence happens
-    /// a specified number of months after the previous one is completed.
+    ///     Represents a regeneration pattern, as used with recurring tasks, where each occurrence happens
+    ///     a specified number of months after the previous one is completed.
     /// </summary>
     public sealed class MonthlyRegenerationPattern : IntervalPattern
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MonthlyRegenerationPattern"/> class.
+        ///     Initializes a new instance of the <see cref="MonthlyRegenerationPattern" /> class.
         /// </summary>
         public MonthlyRegenerationPattern()
-            : base()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MonthlyRegenerationPattern"/> class.
+        ///     Initializes a new instance of the <see cref="MonthlyRegenerationPattern" /> class.
         /// </summary>
         /// <param name="startDate">The date and time when the recurrence starts.</param>
         /// <param name="interval">The number of months between previous and next occurrences.</param>
@@ -59,23 +54,17 @@ public abstract partial class Recurrence
         }
 
         /// <summary>
-        /// Gets the name of the XML element.
+        ///     Gets the name of the XML element.
         /// </summary>
         /// <value>The name of the XML element.</value>
-        internal override string XmlElementName
-        {
-            get { return XmlElementNames.MonthlyRegeneration; }
-        }
+        internal override string XmlElementName => XmlElementNames.MonthlyRegeneration;
 
         /// <summary>
-        /// Gets a value indicating whether this instance is regeneration pattern.
+        ///     Gets a value indicating whether this instance is regeneration pattern.
         /// </summary>
         /// <value>
         ///     <c>true</c> if this instance is regeneration pattern; otherwise, <c>false</c>.
         /// </value>
-        internal override bool IsRegenerationPattern
-        {
-            get { return true; }
-        }
+        internal override bool IsRegenerationPattern => true;
     }
 }

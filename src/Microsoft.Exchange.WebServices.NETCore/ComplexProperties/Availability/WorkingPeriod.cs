@@ -23,32 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 /// <summary>
-/// Represents a working period.
+///     Represents a working period.
 /// </summary>
 internal sealed class WorkingPeriod : ComplexProperty
 {
-    private Collection<DayOfTheWeek> daysOfWeek = new Collection<DayOfTheWeek>();
+    private readonly Collection<DayOfTheWeek> daysOfWeek = new Collection<DayOfTheWeek>();
     private TimeSpan startTime;
     private TimeSpan endTime;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WorkingPeriod"/> class.
+    ///     Initializes a new instance of the <see cref="WorkingPeriod" /> class.
     /// </summary>
     internal WorkingPeriod()
-        : base()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if appropriate element was read.</returns>
@@ -57,13 +53,13 @@ internal sealed class WorkingPeriod : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.DayOfWeek:
-                EwsUtilities.ParseEnumValueList<DayOfTheWeek>(this.daysOfWeek, reader.ReadElementValue(), ' ');
+                EwsUtilities.ParseEnumValueList(daysOfWeek, reader.ReadElementValue(), ' ');
                 return true;
             case XmlElementNames.StartTimeInMinutes:
-                this.startTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
+                startTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
                 return true;
             case XmlElementNames.EndTimeInMinutes:
-                this.endTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
+                endTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
                 return true;
             default:
                 return false;
@@ -71,26 +67,17 @@ internal sealed class WorkingPeriod : ComplexProperty
     }
 
     /// <summary>
-    /// Gets a collection of work days.
+    ///     Gets a collection of work days.
     /// </summary>
-    internal Collection<DayOfTheWeek> DaysOfWeek
-    {
-        get { return this.daysOfWeek; }
-    }
+    internal Collection<DayOfTheWeek> DaysOfWeek => daysOfWeek;
 
     /// <summary>
-    /// Gets the start time of the period.
+    ///     Gets the start time of the period.
     /// </summary>
-    internal TimeSpan StartTime
-    {
-        get { return this.startTime; }
-    }
+    internal TimeSpan StartTime => startTime;
 
     /// <summary>
-    /// Gets the end time of the period.
+    ///     Gets the end time of the period.
     /// </summary>
-    internal TimeSpan EndTime
-    {
-        get { return this.endTime; }
-    }
+    internal TimeSpan EndTime => endTime;
 }

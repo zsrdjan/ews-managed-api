@@ -23,16 +23,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a property that can be sent to or retrieved from EWS.
+///     Represents a property that can be sent to or retrieved from EWS.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class ComplexProperty : ISelfValidate
@@ -40,35 +37,35 @@ public abstract class ComplexProperty : ISelfValidate
     private XmlNamespace xmlNamespace = XmlNamespace.Types;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexProperty"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexProperty" /> class.
     /// </summary>
     internal ComplexProperty()
     {
     }
 
     /// <summary>
-    /// Gets or sets the namespace.
+    ///     Gets or sets the namespace.
     /// </summary>
     /// <value>The namespace.</value>
     internal XmlNamespace Namespace
     {
-        get { return this.xmlNamespace; }
-        set { this.xmlNamespace = value; }
+        get => xmlNamespace;
+        set => xmlNamespace = value;
     }
 
     /// <summary>
-    /// Instance was changed.
+    ///     Instance was changed.
     /// </summary>
     internal virtual void Changed()
     {
-        if (this.OnChange != null)
+        if (OnChange != null)
         {
-            this.OnChange(this);
+            OnChange(this);
         }
     }
 
     /// <summary>
-    /// Sets value of field.
+    ///     Sets value of field.
     /// </summary>
     /// <typeparam name="T">Field type.</typeparam>
     /// <param name="field">The field.</param>
@@ -96,19 +93,19 @@ public abstract class ComplexProperty : ISelfValidate
         if (applyChange)
         {
             field = value;
-            this.Changed();
+            Changed();
         }
     }
 
     /// <summary>
-    /// Clears the change log.
+    ///     Clears the change log.
     /// </summary>
     internal virtual void ClearChangeLog()
     {
     }
 
     /// <summary>
-    /// Reads the attributes from XML.
+    ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal virtual void ReadAttributesFromXml(EwsServiceXmlReader reader)
@@ -116,7 +113,7 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Reads the text value from XML.
+    ///     Reads the text value from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal virtual void ReadTextValueFromXml(EwsServiceXmlReader reader)
@@ -124,7 +121,7 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -134,7 +131,7 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Tries to read element from XML to patch this property.
+    ///     Tries to read element from XML to patch this property.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -144,7 +141,7 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal virtual void WriteAttributesToXml(EwsServiceXmlWriter writer)
@@ -152,7 +149,7 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal virtual void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -160,29 +157,29 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal virtual void LoadFromXml(EwsServiceXmlReader reader, XmlNamespace xmlNamespace, string xmlElementName)
     {
-        this.InternalLoadFromXml(reader, xmlNamespace, xmlElementName, this.TryReadElementFromXml);
+        InternalLoadFromXml(reader, xmlNamespace, xmlElementName, TryReadElementFromXml);
     }
 
     /// <summary>
-    /// Loads from XML to update itself.
+    ///     Loads from XML to update itself.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal virtual void UpdateFromXml(EwsServiceXmlReader reader, XmlNamespace xmlNamespace, string xmlElementName)
     {
-        this.InternalLoadFromXml(reader, xmlNamespace, xmlElementName, this.TryReadElementFromXmlToPatch);
+        InternalLoadFromXml(reader, xmlNamespace, xmlElementName, TryReadElementFromXmlToPatch);
     }
 
     /// <summary>
-    /// Loads from XML
+    ///     Loads from XML
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
@@ -197,7 +194,7 @@ public abstract class ComplexProperty : ISelfValidate
     {
         reader.EnsureCurrentNodeIsStartElement(xmlNamespace, xmlElementName);
 
-        this.ReadAttributesFromXml(reader);
+        ReadAttributesFromXml(reader);
 
         if (!reader.IsEmptyElement)
         {
@@ -215,7 +212,7 @@ public abstract class ComplexProperty : ISelfValidate
 
                         break;
                     case XmlNodeType.Text:
-                        this.ReadTextValueFromXml(reader);
+                        ReadTextValueFromXml(reader);
                         break;
                 }
             } while (!reader.IsEndElement(xmlNamespace, xmlElementName));
@@ -223,27 +220,27 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal virtual void LoadFromXml(EwsServiceXmlReader reader, string xmlElementName)
     {
-        this.LoadFromXml(reader, this.Namespace, xmlElementName);
+        LoadFromXml(reader, Namespace, xmlElementName);
     }
 
     /// <summary>
-    /// Loads from XML to update this property.
+    ///     Loads from XML to update this property.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal virtual void UpdateFromXml(EwsServiceXmlReader reader, string xmlElementName)
     {
-        this.UpdateFromXml(reader, this.Namespace, xmlElementName);
+        UpdateFromXml(reader, Namespace, xmlElementName);
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
@@ -251,36 +248,36 @@ public abstract class ComplexProperty : ISelfValidate
     internal virtual void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace xmlNamespace, string xmlElementName)
     {
         writer.WriteStartElement(xmlNamespace, xmlElementName);
-        this.WriteAttributesToXml(writer);
-        this.WriteElementsToXml(writer);
+        WriteAttributesToXml(writer);
+        WriteElementsToXml(writer);
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal virtual void WriteToXml(EwsServiceXmlWriter writer, string xmlElementName)
     {
-        this.WriteToXml(writer, this.Namespace, xmlElementName);
+        WriteToXml(writer, Namespace, xmlElementName);
     }
 
     /// <summary>
-    /// Occurs when property changed.
+    ///     Occurs when property changed.
     /// </summary>
     internal event ComplexPropertyChangedDelegate OnChange;
 
     /// <summary>
-    /// Implements ISelfValidate.Validate. Validates this instance.
+    ///     Implements ISelfValidate.Validate. Validates this instance.
     /// </summary>
     void ISelfValidate.Validate()
     {
-        this.InternalValidate();
+        InternalValidate();
     }
 
     /// <summary>
-    ///  Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal virtual void InternalValidate()
     {

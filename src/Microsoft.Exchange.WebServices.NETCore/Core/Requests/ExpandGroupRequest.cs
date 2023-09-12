@@ -26,23 +26,23 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an ExpandGroup request.
+///     Represents an ExpandGroup request.
 /// </summary>
 internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupResponse>
 {
     private EmailAddress emailAddress;
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(this.EmailAddress, "EmailAddress");
+        EwsUtilities.ValidateParam(EmailAddress, "EmailAddress");
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -53,7 +53,7 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -62,7 +62,7 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -71,7 +71,7 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -80,7 +80,7 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -89,19 +89,19 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.EmailAddress != null)
+        if (EmailAddress != null)
         {
-            this.EmailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.Mailbox);
+            EmailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.Mailbox);
         }
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -110,7 +110,7 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExpandGroupRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ExpandGroupRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal ExpandGroupRequest(ExchangeService service)
@@ -119,12 +119,12 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     }
 
     /// <summary>
-    /// Gets or sets the email address.
+    ///     Gets or sets the email address.
     /// </summary>
     /// <value>The email address.</value>
     public EmailAddress EmailAddress
     {
-        get { return this.emailAddress; }
-        set { this.emailAddress = value; }
+        get => emailAddress;
+        set => emailAddress = value;
     }
 }

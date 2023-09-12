@@ -25,41 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the response to a subscription event retrieval operation.
+///     Represents the response to a subscription event retrieval operation.
 /// </summary>
 internal sealed class GetEventsResponse : ServiceResponse
 {
-    private GetEventsResults results = new GetEventsResults();
+    private readonly GetEventsResults results = new GetEventsResults();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetEventsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetEventsResponse" /> class.
     /// </summary>
     internal GetEventsResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        this.results.LoadFromXml(reader);
+        results.LoadFromXml(reader);
     }
 
     /// <summary>
-    /// Gets event results from subscription.
+    ///     Gets event results from subscription.
     /// </summary>
-    internal GetEventsResults Results
-    {
-        get { return this.results; }
-    }
+    internal GetEventsResults Results => results;
 }

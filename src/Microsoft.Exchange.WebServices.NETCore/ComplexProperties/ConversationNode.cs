@@ -25,43 +25,39 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 /// <summary>
-/// Represents the response to a GetConversationItems operation.
+///     Represents the response to a GetConversationItems operation.
 /// </summary>
 public sealed class ConversationNode : ComplexProperty
 {
-    private PropertySet propertySet;
+    private readonly PropertySet propertySet;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConversationNode"/> class.
+    ///     Initializes a new instance of the <see cref="ConversationNode" /> class.
     /// </summary>
     /// <param name="propertySet">The property set.</param>
     internal ConversationNode(PropertySet propertySet)
-        : base()
     {
         this.propertySet = propertySet;
     }
 
     /// <summary>
-    /// Gets or sets the Internet message id of the node.
+    ///     Gets or sets the Internet message id of the node.
     /// </summary>
     public string InternetMessageId { get; set; }
 
     /// <summary>
-    /// Gets or sets the Internet message id of the parent node.
+    ///     Gets or sets the Internet message id of the parent node.
     /// </summary>
     public string ParentInternetMessageId { get; set; }
 
     /// <summary>
-    /// Gets or sets the items.
+    ///     Gets or sets the items.
     /// </summary>
     public List<Item> Items { get; set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -70,20 +66,20 @@ public sealed class ConversationNode : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.InternetMessageId:
-                this.InternetMessageId = reader.ReadElementValue();
+                InternetMessageId = reader.ReadElementValue();
                 return true;
 
             case XmlElementNames.ParentInternetMessageId:
-                this.ParentInternetMessageId = reader.ReadElementValue();
+                ParentInternetMessageId = reader.ReadElementValue();
                 return true;
 
             case XmlElementNames.Items:
-                this.Items = reader.ReadServiceObjectsCollectionFromXml<Item>(
+                Items = reader.ReadServiceObjectsCollectionFromXml(
                     XmlNamespace.Types,
                     XmlElementNames.Items,
-                    this.GetObjectInstance,
+                    GetObjectInstance,
                     true, /* clearPropertyBag */
-                    this.propertySet, /* requestedPropertySet */
+                    propertySet, /* requestedPropertySet */
                     false
                 ); /* summaryPropertiesOnly */
                 return true;
@@ -94,7 +90,7 @@ public sealed class ConversationNode : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the item instance.
+    ///     Gets the item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -105,7 +101,7 @@ public sealed class ConversationNode : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal string GetXmlElementName()

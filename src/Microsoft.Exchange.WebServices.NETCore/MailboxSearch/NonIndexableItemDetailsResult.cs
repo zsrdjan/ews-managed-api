@@ -25,23 +25,19 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents non indexable item details result.
+///     Represents non indexable item details result.
 /// </summary>
 public sealed class NonIndexableItemDetailsResult
 {
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Non indexable item details result object</returns>
     internal static NonIndexableItemDetailsResult LoadFromXml(EwsServiceXmlReader reader)
     {
-        NonIndexableItemDetailsResult nonIndexableItemDetailsResult = new NonIndexableItemDetailsResult();
+        var nonIndexableItemDetailsResult = new NonIndexableItemDetailsResult();
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.NonIndexableItemDetailsResult);
 
         do
@@ -50,13 +46,13 @@ public sealed class NonIndexableItemDetailsResult
 
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Items))
             {
-                List<NonIndexableItem> nonIndexableItems = new List<NonIndexableItem>();
+                var nonIndexableItems = new List<NonIndexableItem>();
                 if (!reader.IsEmptyElement)
                 {
                     do
                     {
                         reader.Read();
-                        NonIndexableItem nonIndexableItem = NonIndexableItem.LoadFromXml(reader);
+                        var nonIndexableItem = NonIndexableItem.LoadFromXml(reader);
                         if (nonIndexableItem != null)
                         {
                             nonIndexableItems.Add(nonIndexableItem);
@@ -78,12 +74,12 @@ public sealed class NonIndexableItemDetailsResult
     }
 
     /// <summary>
-    /// Collection of items
+    ///     Collection of items
     /// </summary>
     public NonIndexableItem[] Items { get; set; }
 
     /// <summary>
-    /// Failed mailboxes
+    ///     Failed mailboxes
     /// </summary>
     public FailedSearchMailbox[] FailedMailboxes { get; set; }
 }

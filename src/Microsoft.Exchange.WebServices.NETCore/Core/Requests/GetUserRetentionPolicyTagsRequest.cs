@@ -25,18 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a GetUserRetentionPolicyTagsRequest request.
+///     Represents a GetUserRetentionPolicyTagsRequest request.
 /// </summary>
 internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetUserRetentionPolicyTagsRequest(ExchangeService service)
@@ -45,7 +40,7 @@ internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -54,7 +49,7 @@ internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -63,19 +58,19 @@ internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetUserRetentionPolicyTagsResponse response = new GetUserRetentionPolicyTagsResponse();
-        response.LoadFromXml(reader, this.GetResponseXmlElementName());
+        var response = new GetUserRetentionPolicyTagsResponse();
+        response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -84,7 +79,7 @@ internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -93,13 +88,13 @@ internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetUserRetentionPolicyTagsResponse> Execute(CancellationToken token)
     {
-        GetUserRetentionPolicyTagsResponse serviceResponse =
-            (GetUserRetentionPolicyTagsResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse =
+            (GetUserRetentionPolicyTagsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         return serviceResponse;
     }
 }

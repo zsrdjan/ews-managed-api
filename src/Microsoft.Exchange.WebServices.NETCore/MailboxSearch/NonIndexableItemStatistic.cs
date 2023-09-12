@@ -25,38 +25,34 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents non indexable item statistic.
+///     Represents non indexable item statistic.
 /// </summary>
 public sealed class NonIndexableItemStatistic
 {
     /// <summary>
-    /// Mailbox legacy DN
+    ///     Mailbox legacy DN
     /// </summary>
     public string Mailbox { get; set; }
 
     /// <summary>
-    /// Item count
+    ///     Item count
     /// </summary>
     public long ItemCount { get; set; }
 
     /// <summary>
-    /// Error message
+    ///     Error message
     /// </summary>
     public string ErrorMessage { get; set; }
 
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>List of non indexable item statistic object</returns>
     internal static List<NonIndexableItemStatistic> LoadFromXml(EwsServiceXmlReader reader)
     {
-        List<NonIndexableItemStatistic> results = new List<NonIndexableItemStatistic>();
+        var results = new List<NonIndexableItemStatistic>();
 
         reader.Read();
         if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.NonIndexableItemStatistics))
@@ -66,8 +62,8 @@ public sealed class NonIndexableItemStatistic
                 reader.Read();
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.NonIndexableItemStatistic))
                 {
-                    string mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
-                    int itemCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.ItemCount);
+                    var mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
+                    var itemCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.ItemCount);
                     string errorMessage = null;
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ErrorMessage))
                     {

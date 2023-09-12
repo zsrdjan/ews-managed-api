@@ -25,19 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a "pull" Subscribe request.
+///     Represents a "pull" Subscribe request.
 /// </summary>
 internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscription>
 {
     private int timeout = 30;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscribeToPullNotificationsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SubscribeToPullNotificationsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SubscribeToPullNotificationsRequest(ExchangeService service)
@@ -46,19 +42,19 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        if ((this.Timeout < 1) || (this.Timeout > 1440))
+        if ((Timeout < 1) || (Timeout > 1440))
         {
-            throw new ArgumentException(string.Format(Strings.InvalidTimeoutValue, this.Timeout));
+            throw new ArgumentException(string.Format(Strings.InvalidTimeoutValue, Timeout));
         }
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -72,7 +68,7 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     }
 
     /// <summary>
-    /// Gets the name of the subscription XML element.
+    ///     Gets the name of the subscription XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetSubscriptionXmlElementName()
@@ -81,16 +77,16 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     }
 
     /// <summary>
-    /// Internal method to write XML elements.
+    ///     Internal method to write XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void InternalWriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Timeout, this.Timeout);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Timeout, Timeout);
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -99,12 +95,12 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     }
 
     /// <summary>
-    /// Gets or sets the timeout.
+    ///     Gets or sets the timeout.
     /// </summary>
     /// <value>The timeout.</value>
     public int Timeout
     {
-        get { return this.timeout; }
-        set { this.timeout = value; }
+        get => timeout;
+        set => timeout = value;
     }
 }

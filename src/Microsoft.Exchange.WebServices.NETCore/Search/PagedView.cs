@@ -23,15 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents a view settings that support paging in a search operation.
+///     Represents a view settings that support paging in a search operation.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class PagedView : ViewBase
@@ -41,28 +38,28 @@ public abstract class PagedView : ViewBase
     private int offset;
 
     /// <summary>
-    /// Write to XML.
+    ///     Write to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void InternalWriteViewToXml(EwsServiceXmlWriter writer)
     {
         base.InternalWriteViewToXml(writer);
 
-        writer.WriteAttributeValue(XmlAttributeNames.Offset, this.Offset);
-        writer.WriteAttributeValue(XmlAttributeNames.BasePoint, this.OffsetBasePoint);
+        writer.WriteAttributeValue(XmlAttributeNames.Offset, Offset);
+        writer.WriteAttributeValue(XmlAttributeNames.BasePoint, OffsetBasePoint);
     }
 
     /// <summary>
-    /// Gets the maximum number of items or folders the search operation should return.
+    ///     Gets the maximum number of items or folders the search operation should return.
     /// </summary>
     /// <returns>The maximum number of items or folders that should be returned by the search operation.</returns>
     internal override int? GetMaxEntriesReturned()
     {
-        return this.PageSize;
+        return PageSize;
     }
 
     /// <summary>
-    /// Internals the write search settings to XML.
+    ///     Internals the write search settings to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="groupBy">The group by clause.</param>
@@ -75,7 +72,7 @@ public abstract class PagedView : ViewBase
     }
 
     /// <summary>
-    /// Writes OrderBy property to XML.
+    ///     Writes OrderBy property to XML.
     /// </summary>
     /// <param name="writer">The writer</param>
     internal override void WriteOrderByToXml(EwsServiceXmlWriter writer)
@@ -84,7 +81,7 @@ public abstract class PagedView : ViewBase
     }
 
     /// <summary>
-    /// Validates this view.
+    ///     Validates this view.
     /// </summary>
     /// <param name="request">The request using this view.</param>
     internal override void InternalValidate(ServiceRequestBase request)
@@ -93,28 +90,27 @@ public abstract class PagedView : ViewBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PagedView"/> class.
+    ///     Initializes a new instance of the <see cref="PagedView" /> class.
     /// </summary>
     /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
     internal PagedView(int pageSize)
-        : base()
     {
-        this.PageSize = pageSize;
+        PageSize = pageSize;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PagedView"/> class.
+    ///     Initializes a new instance of the <see cref="PagedView" /> class.
     /// </summary>
     /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
     /// <param name="offset">The offset of the view from the base point.</param>
     internal PagedView(int pageSize, int offset)
         : this(pageSize)
     {
-        this.Offset = offset;
+        Offset = offset;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PagedView"/> class.
+    ///     Initializes a new instance of the <see cref="PagedView" /> class.
     /// </summary>
     /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
     /// <param name="offset">The offset of the view from the base point.</param>
@@ -122,15 +118,15 @@ public abstract class PagedView : ViewBase
     internal PagedView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
         : this(pageSize, offset)
     {
-        this.OffsetBasePoint = offsetBasePoint;
+        OffsetBasePoint = offsetBasePoint;
     }
 
     /// <summary>
-    /// The maximum number of items or folders the search operation should return.
+    ///     The maximum number of items or folders the search operation should return.
     /// </summary>
     public int PageSize
     {
-        get { return this.pageSize; }
+        get => pageSize;
 
         set
         {
@@ -139,31 +135,31 @@ public abstract class PagedView : ViewBase
                 throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
             }
 
-            this.pageSize = value;
+            pageSize = value;
         }
     }
 
     /// <summary>
-    /// Gets or sets the base point of the offset.
+    ///     Gets or sets the base point of the offset.
     /// </summary>
     public OffsetBasePoint OffsetBasePoint
     {
-        get { return this.offsetBasePoint; }
-        set { this.offsetBasePoint = value; }
+        get => offsetBasePoint;
+        set => offsetBasePoint = value;
     }
 
     /// <summary>
-    /// Gets or sets the offset.
+    ///     Gets or sets the offset.
     /// </summary>
     public int Offset
     {
-        get { return this.offset; }
+        get => offset;
 
         set
         {
             if (value >= 0)
             {
-                this.offset = value;
+                offset = value;
             }
             else
             {

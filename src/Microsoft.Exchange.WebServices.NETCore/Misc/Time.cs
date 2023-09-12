@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a time.
+///     Represents a time.
 /// </summary>
 internal sealed class Time
 {
@@ -39,14 +35,14 @@ internal sealed class Time
     private int seconds;
 
     /// <summary>
-    /// Initializes a new instance of Time.
+    ///     Initializes a new instance of Time.
     /// </summary>
     internal Time()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of Time.
+    ///     Initializes a new instance of Time.
     /// </summary>
     /// <param name="minutes">The number of minutes since 12:00AM.</param>
     internal Time(int minutes)
@@ -57,24 +53,24 @@ internal sealed class Time
             throw new ArgumentException(Strings.MinutesMustBeBetween0And1439, "minutes");
         }
 
-        this.Hours = minutes / 60;
-        this.Minutes = minutes % 60;
-        this.Seconds = 0;
+        Hours = minutes / 60;
+        Minutes = minutes % 60;
+        Seconds = 0;
     }
 
     /// <summary>
-    /// Initializes a new instance of Time.
+    ///     Initializes a new instance of Time.
     /// </summary>
     /// <param name="dateTime">The DateTime to extract the time part of.</param>
     internal Time(DateTime dateTime)
     {
-        this.Hours = dateTime.Hour;
-        this.Minutes = dateTime.Minute;
-        this.Seconds = dateTime.Second;
+        Hours = dateTime.Hour;
+        Minutes = dateTime.Minute;
+        Seconds = dateTime.Second;
     }
 
     /// <summary>
-    /// Initializes a new instance of Time.
+    ///     Initializes a new instance of Time.
     /// </summary>
     /// <param name="hours">The hours.</param>
     /// <param name="minutes">The minutes.</param>
@@ -82,41 +78,41 @@ internal sealed class Time
     internal Time(int hours, int minutes, int seconds)
         : this()
     {
-        this.Hours = hours;
-        this.Minutes = minutes;
-        this.Seconds = seconds;
+        Hours = hours;
+        Minutes = minutes;
+        Seconds = seconds;
     }
 
     /// <summary>
-    /// Convert Time to XML Schema time.
+    ///     Convert Time to XML Schema time.
     /// </summary>
     /// <returns>String in XML Schema time format.</returns>
     internal string ToXSTime()
     {
-        return string.Format("{0:00}:{1:00}:{2:00}", this.Hours, this.Minutes, this.Seconds);
+        return string.Format("{0:00}:{1:00}:{2:00}", Hours, Minutes, Seconds);
     }
 
     /// <summary>
-    /// Converts the time into a number of minutes since 12:00AM.
+    ///     Converts the time into a number of minutes since 12:00AM.
     /// </summary>
     /// <returns>The number of minutes since 12:00AM the time represents.</returns>
     internal int ConvertToMinutes()
     {
-        return this.Minutes + (this.Hours * 60);
+        return Minutes + (Hours * 60);
     }
 
     /// <summary>
-    /// Gets or sets the hours.
+    ///     Gets or sets the hours.
     /// </summary>
     internal int Hours
     {
-        get { return this.hours; }
+        get => hours;
 
         set
         {
             if (value >= 0 && value < 24)
             {
-                this.hours = value;
+                hours = value;
             }
             else
             {
@@ -126,17 +122,17 @@ internal sealed class Time
     }
 
     /// <summary>
-    /// Gets or sets the minutes.
+    ///     Gets or sets the minutes.
     /// </summary>
     internal int Minutes
     {
-        get { return this.minutes; }
+        get => minutes;
 
         set
         {
             if (value >= 0 && value < 60)
             {
-                this.minutes = value;
+                minutes = value;
             }
             else
             {
@@ -146,17 +142,17 @@ internal sealed class Time
     }
 
     /// <summary>
-    /// Gets or sets the seconds.
+    ///     Gets or sets the seconds.
     /// </summary>
     internal int Seconds
     {
-        get { return this.seconds; }
+        get => seconds;
 
         set
         {
             if (value >= 0 && value < 60)
             {
-                this.seconds = value;
+                seconds = value;
             }
             else
             {

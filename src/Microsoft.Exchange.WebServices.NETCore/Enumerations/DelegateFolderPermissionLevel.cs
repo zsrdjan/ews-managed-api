@@ -25,37 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines a delegate user's permission level on a specific folder.
+///     Defines a delegate user's permission level on a specific folder.
 /// </summary>
 public enum DelegateFolderPermissionLevel
 {
     /// <summary>
-    /// The delegate has no permission.
+    ///     The delegate has no permission.
     /// </summary>
     None,
 
     /// <summary>
-    /// The delegate has Editor permissions.
+    ///     The delegate has Editor permissions.
     /// </summary>
     Editor,
 
     /// <summary>
-    /// The delegate has Reviewer permissions.
+    ///     The delegate has Reviewer permissions.
     /// </summary>
     Reviewer,
 
     /// <summary>
-    /// The delegate has Author permissions.
+    ///     The delegate has Author permissions.
     /// </summary>
     Author,
 
     /// <summary>
-    /// The delegate has custom permissions.
+    ///     The delegate has custom permissions.
     /// </summary>
     Custom
 }

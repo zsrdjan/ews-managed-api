@@ -23,42 +23,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// EWS utilities
+///     EWS utilities
 /// </summary>
 internal static class EwsUtilities
 {
     #region Private members
 
     /// <summary>
-    /// Map from XML element names to ServiceObject type and constructors. 
+    ///     Map from XML element names to ServiceObject type and constructors.
     /// </summary>
-    private static LazyMember<ServiceObjectInfo> serviceObjectInfo = new LazyMember<ServiceObjectInfo>(
-        delegate() { return new ServiceObjectInfo(); }
+    private static readonly LazyMember<ServiceObjectInfo> serviceObjectInfo = new LazyMember<ServiceObjectInfo>(
+        delegate { return new ServiceObjectInfo(); }
     );
 
     /// <summary>
-    /// Version of API binary.
+    ///     Version of API binary.
     /// </summary>
-    private static LazyMember<string> buildVersion = new LazyMember<string>(
-        delegate()
+    private static readonly LazyMember<string> buildVersion = new LazyMember<string>(
+        delegate
         {
             try
             {
@@ -76,11 +70,11 @@ internal static class EwsUtilities
     );
 
     /// <summary>
-    /// Dictionary of enum type to ExchangeVersion maps. 
+    ///     Dictionary of enum type to ExchangeVersion maps.
     /// </summary>
-    private static LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>> enumVersionDictionaries =
+    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>> enumVersionDictionaries =
         new LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>>(
-            () => new Dictionary<Type, Dictionary<Enum, ExchangeVersion>>()
+            () => new Dictionary<Type, Dictionary<Enum, ExchangeVersion>>
             {
                 {
                     typeof(WellKnownFolderName), BuildEnumDict(typeof(WellKnownFolderName))
@@ -107,9 +101,9 @@ internal static class EwsUtilities
         );
 
     /// <summary>
-    /// Dictionary of enum type to schema-name-to-enum-value maps.
+    ///     Dictionary of enum type to schema-name-to-enum-value maps.
     /// </summary>
-    private static LazyMember<Dictionary<Type, Dictionary<string, Enum>>> schemaToEnumDictionaries =
+    private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> schemaToEnumDictionaries =
         new LazyMember<Dictionary<Type, Dictionary<string, Enum>>>(
             () => new Dictionary<Type, Dictionary<string, Enum>>
             {
@@ -132,9 +126,9 @@ internal static class EwsUtilities
         );
 
     /// <summary>
-    /// Dictionary of enum type to enum-value-to-schema-name maps.
+    ///     Dictionary of enum type to enum-value-to-schema-name maps.
     /// </summary>
-    private static LazyMember<Dictionary<Type, Dictionary<Enum, string>>> enumToSchemaDictionaries =
+    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> enumToSchemaDictionaries =
         new LazyMember<Dictionary<Type, Dictionary<Enum, string>>>(
             () => new Dictionary<Type, Dictionary<Enum, string>>
             {
@@ -157,9 +151,9 @@ internal static class EwsUtilities
         );
 
     /// <summary>
-    /// Dictionary to map from special CLR type names to their "short" names.
+    ///     Dictionary to map from special CLR type names to their "short" names.
     /// </summary>
-    private static LazyMember<Dictionary<string, string>> typeNameToShortNameMap =
+    private static readonly LazyMember<Dictionary<string, string>> typeNameToShortNameMap =
         new LazyMember<Dictionary<string, string>>(
             () => new Dictionary<string, string>
             {
@@ -220,7 +214,7 @@ internal static class EwsUtilities
         "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
 
     /// <summary>
-    /// Regular expression for legal domain names.
+    ///     Regular expression for legal domain names.
     /// </summary>
     internal const string DomainRegex = "^[-a-zA-Z0-9_.]+$";
 
@@ -228,7 +222,7 @@ internal static class EwsUtilities
 
 
     /// <summary>
-    /// Asserts that the specified condition if true.
+    ///     Asserts that the specified condition if true.
     /// </summary>
     /// <param name="condition">Assertion.</param>
     /// <param name="caller">The caller.</param>
@@ -239,7 +233,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Gets the namespace prefix from an XmlNamespace enum value.
+    ///     Gets the namespace prefix from an XmlNamespace enum value.
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <returns>Namespace prefix string.</returns>
@@ -272,7 +266,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Gets the namespace URI from an XmlNamespace enum value.
+    ///     Gets the namespace URI from an XmlNamespace enum value.
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <returns>Uri as string</returns>
@@ -306,7 +300,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Gets the XmlNamespace enum value from a namespace Uri.
+    ///     Gets the XmlNamespace enum value from a namespace Uri.
     /// </summary>
     /// <param name="namespaceUri">XML namespace Uri.</param>
     /// <returns>XmlNamespace enum value.</returns>
@@ -338,7 +332,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Creates EWS object based on XML element name.
+    ///     Creates EWS object based on XML element name.
     /// </summary>
     /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
     /// <param name="service">The service.</param>
@@ -352,33 +346,26 @@ internal static class EwsUtilities
     {
         Type itemClass;
 
-        if (EwsUtilities.serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
-                xmlElementName,
-                out itemClass
-            ))
+        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out itemClass))
         {
             CreateServiceObjectWithServiceParam creationDelegate;
 
-            if (EwsUtilities.serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(
+            if (serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(
                     itemClass,
                     out creationDelegate
                 ))
             {
                 return (TServiceObject)creationDelegate(service);
             }
-            else
-            {
-                throw new ArgumentException(Strings.NoAppropriateConstructorForItemClass);
-            }
+
+            throw new ArgumentException(Strings.NoAppropriateConstructorForItemClass);
         }
-        else
-        {
-            return default(TServiceObject);
-        }
+
+        return default;
     }
 
     /// <summary>
-    /// Creates Item from Item class.
+    ///     Creates Item from Item class.
     /// </summary>
     /// <param name="itemAttachment">The item attachment.</param>
     /// <param name="itemClass">The item class.</param>
@@ -388,21 +375,19 @@ internal static class EwsUtilities
     {
         CreateServiceObjectWithAttachmentParam creationDelegate;
 
-        if (EwsUtilities.serviceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
+        if (serviceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
                 itemClass,
                 out creationDelegate
             ))
         {
             return (Item)creationDelegate(itemAttachment, isNew);
         }
-        else
-        {
-            throw new ArgumentException(Strings.NoAppropriateConstructorForItemClass);
-        }
+
+        throw new ArgumentException(Strings.NoAppropriateConstructorForItemClass);
     }
 
     /// <summary>
-    /// Creates Item based on XML element name.
+    ///     Creates Item based on XML element name.
     /// </summary>
     /// <param name="itemAttachment">The item attachment.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -411,36 +396,28 @@ internal static class EwsUtilities
     {
         Type itemClass;
 
-        if (EwsUtilities.serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
-                xmlElementName,
-                out itemClass
-            ))
+        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out itemClass))
         {
             return CreateItemFromItemClass(itemAttachment, itemClass, false);
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     /// <summary>
-    /// Gets the expected item type based on the local name.
+    ///     Gets the expected item type based on the local name.
     /// </summary>
     /// <param name="xmlElementName"></param>
     /// <returns></returns>
     internal static Type GetItemTypeFromXmlElementName(string xmlElementName)
     {
         Type itemClass = null;
-        EwsUtilities.serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
-            xmlElementName,
-            out itemClass
-        );
+        serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out itemClass);
         return itemClass;
     }
 
     /// <summary>
-    /// Finds the first item of type TItem (not a descendant type) in the specified collection.
+    ///     Finds the first item of type TItem (not a descendant type) in the specified collection.
     /// </summary>
     /// <typeparam name="TItem">The type of the item to find.</typeparam>
     /// <param name="items">The collection.</param>
@@ -448,9 +425,9 @@ internal static class EwsUtilities
     internal static TItem FindFirstItemOfType<TItem>(IEnumerable<Item> items)
         where TItem : Item
     {
-        Type itemType = typeof(TItem);
+        var itemType = typeof(TItem);
 
-        foreach (Item item in items)
+        foreach (var item in items)
         {
             // We're looking for an exact class match here.
             if (item.GetType() == itemType)
@@ -466,7 +443,7 @@ internal static class EwsUtilities
     #region Tracing routines
 
     /// <summary>
-    /// Write trace start element.
+    ///     Write trace start element.
     /// </summary>
     /// <param name="writer">The writer to write the start element to.</param>
     /// <param name="traceTag">The trace tag.</param>
@@ -485,30 +462,30 @@ internal static class EwsUtilities
 
         if (includeVersion)
         {
-            writer.WriteAttributeString("Version", EwsUtilities.BuildVersion);
+            writer.WriteAttributeString("Version", BuildVersion);
         }
     }
 
     /// <summary>
-    /// Format log message.
+    ///     Format log message.
     /// </summary>
     /// <param name="entryKind">Kind of the entry.</param>
     /// <param name="logEntry">The log entry.</param>
     /// <returns>XML log entry as a string.</returns>
     internal static string FormatLogMessage(string entryKind, string logEntry)
     {
-        StringBuilder sb = new StringBuilder();
-        using (StringWriter writer = new StringWriter(sb))
+        var sb = new StringBuilder();
+        using (var writer = new StringWriter(sb))
         {
             using (var xmlWriter = XmlWriter.Create(
                        writer,
-                       new XmlWriterSettings()
+                       new XmlWriterSettings
                        {
                            Indent = true
                        }
                    ))
             {
-                EwsUtilities.WriteTraceStartElement(xmlWriter, entryKind, false);
+                WriteTraceStartElement(xmlWriter, entryKind, false);
 
                 xmlWriter.WriteWhitespace(Environment.NewLine);
                 xmlWriter.WriteValue(logEntry);
@@ -523,7 +500,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Format the HTTP headers.
+    ///     Format the HTTP headers.
     /// </summary>
     /// <param name="sb">StringBuilder.</param>
     /// <param name="headers">The HTTP headers.</param>
@@ -537,26 +514,26 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Format request HTTP headers.
+    ///     Format request HTTP headers.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
     internal static string FormatHttpRequestHeaders(IEwsHttpWebRequest request)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.Append(string.Format("{0} {1} HTTP/1.1\n", request.Method, request.RequestUri.AbsolutePath));
-        EwsUtilities.FormatHttpHeaders(sb, request.Headers);
+        FormatHttpHeaders(sb, request.Headers);
         sb.Append("\n");
 
         return sb.ToString();
     }
 
     /// <summary>
-    /// Format response HTTP headers.
+    ///     Format response HTTP headers.
     /// </summary>
     /// <param name="response">The HTTP response.</param>
     internal static string FormatHttpResponseHeaders(IEwsHttpWebResponse response)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.Append(
             string.Format(
                 "HTTP/{0} {1} {2}\n",
@@ -566,19 +543,19 @@ internal static class EwsUtilities
             )
         );
 
-        sb.Append(EwsUtilities.FormatHttpHeaders(response.Headers));
+        sb.Append(FormatHttpHeaders(response.Headers));
         sb.Append("\n");
         return sb.ToString();
     }
 
     /// <summary>
-    /// Formats HTTP headers.
+    ///     Formats HTTP headers.
     /// </summary>
     /// <param name="headers">The headers.</param>
     /// <returns>Headers as a string</returns>
     private static string FormatHttpHeaders(HttpHeaders headers)
     {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         foreach (var item in headers)
         foreach (var value in item.Value)
         {
@@ -589,15 +566,15 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Format XML content in a MemoryStream for message.
+    ///     Format XML content in a MemoryStream for message.
     /// </summary>
     /// <param name="entryKind">Kind of the entry.</param>
     /// <param name="memoryStream">The memory stream.</param>
     /// <returns>XML log entry as a string.</returns>
     internal static string FormatLogMessageWithXmlContent(string entryKind, MemoryStream memoryStream)
     {
-        StringBuilder sb = new StringBuilder();
-        XmlReaderSettings settings = new XmlReaderSettings();
+        var sb = new StringBuilder();
+        var settings = new XmlReaderSettings();
         settings.ConformanceLevel = ConformanceLevel.Fragment;
         settings.IgnoreComments = true;
         settings.IgnoreWhitespace = true;
@@ -605,14 +582,14 @@ internal static class EwsUtilities
 
 
         // Remember the current location in the MemoryStream.
-        long lastPosition = memoryStream.Position;
+        var lastPosition = memoryStream.Position;
 
         // Rewind the position since we want to format the entire contents.
         memoryStream.Position = 0;
 
         try
         {
-            using (XmlReader reader = XmlReader.Create(memoryStream, settings))
+            using (var reader = XmlReader.Create(memoryStream, settings))
             {
                 reader.Read();
                 if (reader.NodeType == XmlNodeType.XmlDeclaration)
@@ -620,17 +597,17 @@ internal static class EwsUtilities
                     reader.Read();
                 }
 
-                using (StringWriter writer = new StringWriter(sb))
+                using (var writer = new StringWriter(sb))
                 {
                     using (var xmlWriter = XmlWriter.Create(
                                writer,
-                               new XmlWriterSettings()
+                               new XmlWriterSettings
                                {
                                    Indent = true
                                }
                            ))
                     {
-                        EwsUtilities.WriteTraceStartElement(xmlWriter, entryKind, true);
+                        WriteTraceStartElement(xmlWriter, entryKind, true);
 
                         while (!reader.EOF)
                         {
@@ -649,7 +626,7 @@ internal static class EwsUtilities
             // not well-formed XML or isn't XML at all. Fallback and treat it as plain text.
             sb.Length = 0;
             memoryStream.Position = 0;
-            sb.Append(memoryStream.ToString());
+            sb.Append(memoryStream);
         }
 
         // Restore Position in the stream.
@@ -664,14 +641,14 @@ internal static class EwsUtilities
     #region Stream routines
 
     /// <summary>
-    /// Copies source stream to target.
+    ///     Copies source stream to target.
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="target">The target.</param>
     internal static void CopyStream(Stream source, Stream target)
     {
         // See if this is a MemoryStream -- we can use WriteTo.
-        MemoryStream memContentStream = source as MemoryStream;
+        var memContentStream = source as MemoryStream;
         if (memContentStream != null)
         {
             memContentStream.WriteTo(target);
@@ -679,9 +656,9 @@ internal static class EwsUtilities
         else
         {
             // Otherwise, copy data through a buffer
-            byte[] buffer = new byte[4096];
-            int bufferSize = buffer.Length;
-            int bytesRead = source.Read(buffer, 0, bufferSize);
+            var buffer = new byte[4096];
+            var bufferSize = buffer.Length;
+            var bytesRead = source.Read(buffer, 0, bufferSize);
             while (bytesRead > 0)
             {
                 target.Write(buffer, 0, bytesRead);
@@ -694,29 +671,26 @@ internal static class EwsUtilities
 
 
     /// <summary>
-    /// Gets the build version.
+    ///     Gets the build version.
     /// </summary>
     /// <value>The build version.</value>
-    internal static string BuildVersion
-    {
-        get { return EwsUtilities.buildVersion.Member; }
-    }
+    internal static string BuildVersion => buildVersion.Member;
 
 
     #region Conversion routines
 
     /// <summary>
-    /// Convert bool to XML Schema bool.
+    ///     Convert bool to XML Schema bool.
     /// </summary>
     /// <param name="value">Bool value.</param>
     /// <returns>String representing bool value in XML Schema.</returns>
     internal static string BoolToXSBool(bool value)
     {
-        return value ? EwsUtilities.XSTrue : EwsUtilities.XSFalse;
+        return value ? XSTrue : XSFalse;
     }
 
     /// <summary>
-    /// Parses an enum value list.
+    ///     Parses an enum value list.
     /// </summary>
     /// <typeparam name="T">Type of value.</typeparam>
     /// <param name="list">The list.</param>
@@ -725,27 +699,23 @@ internal static class EwsUtilities
     internal static void ParseEnumValueList<T>(IList<T> list, string value, params char[] separators)
         where T : struct
     {
-        EwsUtilities.Assert(
-            typeof(T).GetTypeInfo().IsEnum,
-            "EwsUtilities.ParseEnumValueList",
-            "T is not an enum type."
-        );
+        Assert(typeof(T).GetTypeInfo().IsEnum, "EwsUtilities.ParseEnumValueList", "T is not an enum type.");
 
         if (string.IsNullOrEmpty(value))
         {
             return;
         }
 
-        string[] enumValues = value.Split(separators);
+        var enumValues = value.Split(separators);
 
-        foreach (string enumValue in enumValues)
+        foreach (var enumValue in enumValues)
         {
             list.Add((T)Enum.Parse(typeof(T), enumValue, false));
         }
     }
 
     /// <summary>
-    /// Converts an enum to a string, using the mapping dictionaries if appropriate.
+    ///     Converts an enum to a string, using the mapping dictionaries if appropriate.
     /// </summary>
     /// <param name="value">The enum value to be serialized</param>
     /// <returns>String representation of enum to be used in the protocol</returns>
@@ -758,14 +728,12 @@ internal static class EwsUtilities
         {
             return strValue;
         }
-        else
-        {
-            return value.ToString();
-        }
+
+        return value.ToString();
     }
 
     /// <summary>
-    /// Parses specified value based on type.
+    ///     Parses specified value based on type.
     /// </summary>
     /// <typeparam name="T">Type of value.</typeparam>
     /// <param name="value">The value.</param>
@@ -784,43 +752,42 @@ internal static class EwsUtilities
                 // up-cast before we can down-cast.
                 return (T)((object)enumValue);
             }
-            else
-            {
-                return (T)Enum.Parse(typeof(T), value, false);
-            }
+
+            return (T)Enum.Parse(typeof(T), value, false);
         }
-        else
-        {
-            return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
-        }
+
+        return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
     }
 
     /// <summary>
-    /// Tries to parses the specified value to the specified type.
+    ///     Tries to parses the specified value to the specified type.
     /// </summary>
     /// <typeparam name="T">The type into which to cast the provided value.</typeparam>
     /// <param name="value">The value to parse.</param>
-    /// <param name="result">The value cast to the specified type, if TryParse succeeds. Otherwise, the value of result is indeterminate.</param>
+    /// <param name="result">
+    ///     The value cast to the specified type, if TryParse succeeds. Otherwise, the value of result is
+    ///     indeterminate.
+    /// </param>
     /// <returns>True if value could be parsed; otherwise, false.</returns>
     internal static bool TryParse<T>(string value, out T result)
     {
         try
         {
-            result = EwsUtilities.Parse<T>(value);
+            result = Parse<T>(value);
 
             return true;
         }
         //// Catch all exceptions here, we're not interested in the reason why TryParse failed.
         catch (Exception)
         {
-            result = default(T);
+            result = default;
 
             return false;
         }
     }
 
     /// <summary>
-    /// Converts the specified date and time from one time zone to another.
+    ///     Converts the specified date and time from one time zone to another.
     /// </summary>
     /// <param name="dateTime">The date time to convert.</param>
     /// <param name="sourceTimeZone">The source time zone.</param>
@@ -841,7 +808,7 @@ internal static class EwsUtilities
             throw new TimeZoneConversionException(
                 string.Format(
                     Strings.CannotConvertBetweenTimeZones,
-                    EwsUtilities.DateTimeToXSDateTime(dateTime),
+                    DateTimeToXSDateTime(dateTime),
                     sourceTimeZone.DisplayName,
                     destinationTimeZone.DisplayName
                 ),
@@ -851,8 +818,8 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Reads the string as date time, assuming it is unbiased (e.g. 2009/01/01T08:00)
-    /// and scoped to service's time zone.
+    ///     Reads the string as date time, assuming it is unbiased (e.g. 2009/01/01T08:00)
+    ///     and scoped to service's time zone.
     /// </summary>
     /// <param name="dateString">The date string.</param>
     /// <param name="service">The service.</param>
@@ -860,25 +827,24 @@ internal static class EwsUtilities
     internal static DateTime ParseAsUnbiasedDatetimescopedToServicetimeZone(string dateString, ExchangeService service)
     {
         // Convert the element's value to a DateTime with no adjustment.
-        DateTime tempDate = DateTime.Parse(dateString, CultureInfo.InvariantCulture);
+        var tempDate = DateTime.Parse(dateString, CultureInfo.InvariantCulture);
 
         // Set the kind according to the service's time zone
         if (service.TimeZone == TimeZoneInfo.Utc)
         {
             return new DateTime(tempDate.Ticks, DateTimeKind.Utc);
         }
-        else if (EwsUtilities.IsLocalTimeZone(service.TimeZone))
+
+        if (IsLocalTimeZone(service.TimeZone))
         {
             return new DateTime(tempDate.Ticks, DateTimeKind.Local);
         }
-        else
-        {
-            return new DateTime(tempDate.Ticks, DateTimeKind.Unspecified);
-        }
+
+        return new DateTime(tempDate.Ticks, DateTimeKind.Unspecified);
     }
 
     /// <summary>
-    /// Determines whether the specified time zone is the same as the system's local time zone.
+    ///     Determines whether the specified time zone is the same as the system's local time zone.
     /// </summary>
     /// <param name="timeZone">The time zone to check.</param>
     /// <returns>
@@ -891,7 +857,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Convert DateTime to XML Schema date.
+    ///     Convert DateTime to XML Schema date.
     /// </summary>
     /// <param name="date">The date to be converted.</param>
     /// <returns>String representation of DateTime.</returns>
@@ -920,13 +886,13 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Dates the DateTime into an XML schema date time.
+    ///     Dates the DateTime into an XML schema date time.
     /// </summary>
     /// <param name="dateTime">The date time.</param>
     /// <returns>String representation of DateTime.</returns>
     internal static string DateTimeToXSDateTime(DateTime dateTime)
     {
-        string format = "yyyy-MM-ddTHH:mm:ss.fff";
+        var format = "yyyy-MM-ddTHH:mm:ss.fff";
 
         switch (dateTime.Kind)
         {
@@ -935,8 +901,6 @@ internal static class EwsUtilities
                 break;
             case DateTimeKind.Local:
                 format += "zzz";
-                break;
-            default:
                 break;
         }
 
@@ -947,7 +911,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Convert EWS DayOfTheWeek enum to System.DayOfWeek.
+    ///     Convert EWS DayOfTheWeek enum to System.DayOfWeek.
     /// </summary>
     /// <param name="dayOfTheWeek">The day of the week.</param>
     /// <returns>System.DayOfWeek value.</returns>
@@ -962,14 +926,12 @@ internal static class EwsUtilities
                 "dayOfTheWeek"
             );
         }
-        else
-        {
-            return (DayOfWeek)dayOfTheWeek;
-        }
+
+        return (DayOfWeek)dayOfTheWeek;
     }
 
     /// <summary>
-    /// Convert System.DayOfWeek type to EWS DayOfTheWeek.
+    ///     Convert System.DayOfWeek type to EWS DayOfTheWeek.
     /// </summary>
     /// <param name="dayOfWeek">The dayOfWeek.</param>
     /// <returns>EWS DayOfWeek value</returns>
@@ -979,17 +941,17 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Takes a System.TimeSpan structure and converts it into an 
-    /// xs:duration string as defined by the W3 Consortiums Recommendation
-    /// "XML Schema Part 2: Datatypes Second Edition", 
-    /// http://www.w3.org/TR/xmlschema-2/#duration
+    ///     Takes a System.TimeSpan structure and converts it into an
+    ///     xs:duration string as defined by the W3 Consortiums Recommendation
+    ///     "XML Schema Part 2: Datatypes Second Edition",
+    ///     http://www.w3.org/TR/xmlschema-2/#duration
     /// </summary>
     /// <param name="timeSpan">TimeSpan structure to convert</param>
     /// <returns>xs:duration formatted string</returns>
     internal static string TimeSpanToXSDuration(TimeSpan timeSpan)
     {
         // Optional '-' offset
-        string offsetStr = (timeSpan.TotalSeconds < 0) ? "-" : string.Empty;
+        var offsetStr = (timeSpan.TotalSeconds < 0) ? "-" : string.Empty;
 
         // The TimeSpan structure does not have a Year or Month 
         // property, therefore we wouldn't be able to return an xs:duration
@@ -1005,23 +967,23 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Takes an xs:duration string as defined by the W3 Consortiums
-    /// Recommendation "XML Schema Part 2: Datatypes Second Edition", 
-    /// http://www.w3.org/TR/xmlschema-2/#duration, and converts it
-    /// into a System.TimeSpan structure
+    ///     Takes an xs:duration string as defined by the W3 Consortiums
+    ///     Recommendation "XML Schema Part 2: Datatypes Second Edition",
+    ///     http://www.w3.org/TR/xmlschema-2/#duration, and converts it
+    ///     into a System.TimeSpan structure
     /// </summary>
     /// <remarks>
-    /// This method uses the following approximations:
+    ///     This method uses the following approximations:
     ///     1 year = 365 days
     ///     1 month = 30 days
-    /// Additionally, it only allows for four decimal points of
-    /// seconds precision.
+    ///     Additionally, it only allows for four decimal points of
+    ///     seconds precision.
     /// </remarks>
     /// <param name="xsDuration">xs:duration string to convert</param>
     /// <returns>System.TimeSpan structure</returns>
     internal static TimeSpan XSDurationToTimeSpan(string xsDuration)
     {
-        Regex timeSpanParser = new Regex(
+        var timeSpanParser = new Regex(
             "(?<pos>-)?" +
             "P" +
             "((?<year>[0-9]+)Y)?" +
@@ -1033,14 +995,14 @@ internal static class EwsUtilities
             "((?<seconds>[0-9]+)(\\.(?<precision>[0-9]+))?S)?)?"
         );
 
-        Match m = timeSpanParser.Match(xsDuration);
+        var m = timeSpanParser.Match(xsDuration);
         if (!m.Success)
         {
             throw new ArgumentException(Strings.XsDurationCouldNotBeParsed);
         }
 
-        string token = m.Result("${pos}");
-        bool negative = false;
+        var token = m.Result("${pos}");
+        var negative = false;
         if (!String.IsNullOrEmpty(token))
         {
             negative = true;
@@ -1048,7 +1010,7 @@ internal static class EwsUtilities
 
         // Year
         token = m.Result("${year}");
-        int year = 0;
+        var year = 0;
         if (!String.IsNullOrEmpty(token))
         {
             year = Int32.Parse(token);
@@ -1056,7 +1018,7 @@ internal static class EwsUtilities
 
         // Month
         token = m.Result("${month}");
-        int month = 0;
+        var month = 0;
         if (!String.IsNullOrEmpty(token))
         {
             month = Int32.Parse(token);
@@ -1064,7 +1026,7 @@ internal static class EwsUtilities
 
         // Day
         token = m.Result("${day}");
-        int day = 0;
+        var day = 0;
         if (!String.IsNullOrEmpty(token))
         {
             day = Int32.Parse(token);
@@ -1072,7 +1034,7 @@ internal static class EwsUtilities
 
         // Hour
         token = m.Result("${hour}");
-        int hour = 0;
+        var hour = 0;
         if (!String.IsNullOrEmpty(token))
         {
             hour = Int32.Parse(token);
@@ -1080,7 +1042,7 @@ internal static class EwsUtilities
 
         // Minute
         token = m.Result("${minute}");
-        int minute = 0;
+        var minute = 0;
         if (!String.IsNullOrEmpty(token))
         {
             minute = Int32.Parse(token);
@@ -1088,13 +1050,13 @@ internal static class EwsUtilities
 
         // Seconds
         token = m.Result("${seconds}");
-        int seconds = 0;
+        var seconds = 0;
         if (!String.IsNullOrEmpty(token))
         {
             seconds = Int32.Parse(token);
         }
 
-        int milliseconds = 0;
+        var milliseconds = 0;
         token = m.Result("${precision}");
 
         // Only allowed 4 digits of precision
@@ -1112,7 +1074,7 @@ internal static class EwsUtilities
         // Year = 365 days
         // Month = 30 days
         day = day + (year * 365) + (month * 30);
-        TimeSpan retval = new TimeSpan(day, hour, minute, seconds, milliseconds);
+        var retval = new TimeSpan(day, hour, minute, seconds, milliseconds);
 
         if (negative)
         {
@@ -1123,7 +1085,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Converts the specified time span to its XSD representation.
+    ///     Converts the specified time span to its XSD representation.
     /// </summary>
     /// <param name="timeSpan">The time span.</param>
     /// <returns>The XSD representation of the specified time span.</returns>
@@ -1138,7 +1100,7 @@ internal static class EwsUtilities
     #region Type Name utilities
 
     /// <summary>
-    /// Gets the printable name of a CLR type.
+    ///     Gets the printable name of a CLR type.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns>Printable name.</returns>
@@ -1147,40 +1109,36 @@ internal static class EwsUtilities
         if (type.GetTypeInfo().IsGenericType)
         {
             // Convert generic type to printable form (e.g. List<Item>)
-            string genericPrefix = type.Name.Substring(0, type.Name.IndexOf('`'));
-            StringBuilder nameBuilder = new StringBuilder(genericPrefix);
+            var genericPrefix = type.Name.Substring(0, type.Name.IndexOf('`'));
+            var nameBuilder = new StringBuilder(genericPrefix);
 
             // Note: building array of generic parameters is done recursively. Each parameter could be any type.
-            string[] genericArgs = type.GetGenericArguments()
-                .ToList<Type>()
-                .Select(t => GetPrintableTypeName(t))
-                .ToArray<string>();
+            var genericArgs = type.GetGenericArguments().ToList().Select(t => GetPrintableTypeName(t)).ToArray();
 
             nameBuilder.Append("<");
             nameBuilder.Append(string.Join(",", genericArgs));
             nameBuilder.Append(">");
             return nameBuilder.ToString();
         }
-        else if (type.IsArray)
+
+        if (type.IsArray)
         {
             // Convert array type to printable form.
-            string arrayPrefix = type.Name.Substring(0, type.Name.IndexOf('['));
-            StringBuilder nameBuilder = new StringBuilder(EwsUtilities.GetSimplifiedTypeName(arrayPrefix));
-            for (int rank = 0; rank < type.GetArrayRank(); rank++)
+            var arrayPrefix = type.Name.Substring(0, type.Name.IndexOf('['));
+            var nameBuilder = new StringBuilder(GetSimplifiedTypeName(arrayPrefix));
+            for (var rank = 0; rank < type.GetArrayRank(); rank++)
             {
                 nameBuilder.Append("[]");
             }
 
             return nameBuilder.ToString();
         }
-        else
-        {
-            return EwsUtilities.GetSimplifiedTypeName(type.Name);
-        }
+
+        return GetSimplifiedTypeName(type.Name);
     }
 
     /// <summary>
-    /// Gets the printable name of a simple CLR type.
+    ///     Gets the printable name of a simple CLR type.
     /// </summary>
     /// <param name="typeName">The type name.</param>
     /// <returns>Printable name.</returns>
@@ -1197,13 +1155,13 @@ internal static class EwsUtilities
     #region EmailAddress parsing
 
     /// <summary>
-    /// Gets the domain name from an email address.
+    ///     Gets the domain name from an email address.
     /// </summary>
     /// <param name="emailAddress">The email address.</param>
     /// <returns>Domain name.</returns>
     internal static string DomainFromEmailAddress(string emailAddress)
     {
-        string[] emailAddressParts = emailAddress.Split('@');
+        var emailAddressParts = emailAddress.Split('@');
 
         if (emailAddressParts.Length != 2 || string.IsNullOrEmpty(emailAddressParts[1]))
         {
@@ -1219,13 +1177,13 @@ internal static class EwsUtilities
     #region Method parameters validation routines
 
     /// <summary>
-    /// Validates parameter (and allows null value).
+    ///     Validates parameter (and allows null value).
     /// </summary>
     /// <param name="param">The param.</param>
     /// <param name="paramName">Name of the param.</param>
     internal static void ValidateParamAllowNull(object param, string paramName)
     {
-        ISelfValidate selfValidate = param as ISelfValidate;
+        var selfValidate = param as ISelfValidate;
 
         if (selfValidate != null)
         {
@@ -1239,7 +1197,7 @@ internal static class EwsUtilities
             }
         }
 
-        ServiceObject ewsObject = param as ServiceObject;
+        var ewsObject = param as ServiceObject;
 
         if (ewsObject != null)
         {
@@ -1251,7 +1209,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates parameter (null value not allowed).
+    ///     Validates parameter (null value not allowed).
     /// </summary>
     /// <param name="param">The param.</param>
     /// <param name="paramName">Name of the param.</param>
@@ -1259,7 +1217,7 @@ internal static class EwsUtilities
     {
         bool isValid;
 
-        string strParam = param as string;
+        var strParam = param as string;
         if (strParam != null)
         {
             isValid = !string.IsNullOrEmpty(strParam);
@@ -1278,7 +1236,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates parameter collection.
+    ///     Validates parameter collection.
     /// </summary>
     /// <param name="collection">The collection.</param>
     /// <param name="paramName">Name of the param.</param>
@@ -1286,9 +1244,9 @@ internal static class EwsUtilities
     {
         ValidateParam(collection, paramName);
 
-        int count = 0;
+        var count = 0;
 
-        foreach (object obj in collection)
+        foreach (var obj in collection)
         {
             try
             {
@@ -1313,7 +1271,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates string parameter to be non-empty string (null value allowed).
+    ///     Validates string parameter to be non-empty string (null value allowed).
     /// </summary>
     /// <param name="param">The string parameter.</param>
     /// <param name="paramName">Name of the parameter.</param>
@@ -1322,7 +1280,7 @@ internal static class EwsUtilities
         if (param != null)
         {
             // Non-empty string has at least one character which is *not* a whitespace character
-            if (param.Length == param.CountMatchingChars((c) => Char.IsWhiteSpace(c)))
+            if (param.Length == param.CountMatchingChars(c => Char.IsWhiteSpace(c)))
             {
                 throw new ArgumentException(Strings.ArgumentIsBlankString, paramName);
             }
@@ -1330,7 +1288,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates string parameter to be non-empty string (null value not allowed).
+    ///     Validates string parameter to be non-empty string (null value not allowed).
     /// </summary>
     /// <param name="param">The string parameter.</param>
     /// <param name="paramName">Name of the parameter.</param>
@@ -1345,16 +1303,16 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates the enum value against the request version.
+    ///     Validates the enum value against the request version.
     /// </summary>
     /// <param name="enumValue">The enum value.</param>
     /// <param name="requestVersion">The request version.</param>
     /// <exception cref="ServiceVersionException">Raised if this enum value requires a later version of Exchange.</exception>
     internal static void ValidateEnumVersionValue(Enum enumValue, ExchangeVersion requestVersion)
     {
-        Type enumType = enumValue.GetType();
-        Dictionary<Enum, ExchangeVersion> enumVersionDict = enumVersionDictionaries.Member[enumType];
-        ExchangeVersion enumVersion = enumVersionDict[enumValue];
+        var enumType = enumValue.GetType();
+        var enumVersionDict = enumVersionDictionaries.Member[enumType];
+        var enumVersion = enumVersionDict[enumValue];
         if (requestVersion < enumVersion)
         {
             throw new ServiceVersionException(
@@ -1369,14 +1327,14 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates service object version against the request version.
+    ///     Validates service object version against the request version.
     /// </summary>
     /// <param name="serviceObject">The service object.</param>
     /// <param name="requestVersion">The request version.</param>
     /// <exception cref="ServiceVersionException">Raised if this service object type requires a later version of Exchange.</exception>
     internal static void ValidateServiceObjectVersion(ServiceObject serviceObject, ExchangeVersion requestVersion)
     {
-        ExchangeVersion minimumRequiredServerVersion = serviceObject.GetMinimumRequiredServerVersion();
+        var minimumRequiredServerVersion = serviceObject.GetMinimumRequiredServerVersion();
 
         if (requestVersion < minimumRequiredServerVersion)
         {
@@ -1391,7 +1349,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates property version against the request version.
+    ///     Validates property version against the request version.
     /// </summary>
     /// <param name="service">The Exchange service.</param>
     /// <param name="minimumServerVersion">The minimum server version that supports the property.</param>
@@ -1411,7 +1369,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates method version against the request version.
+    ///     Validates method version against the request version.
     /// </summary>
     /// <param name="service">The Exchange service.</param>
     /// <param name="minimumServerVersion">The minimum server version that supports the method.</param>
@@ -1431,7 +1389,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates class version against the request version.
+    ///     Validates class version against the request version.
     /// </summary>
     /// <param name="service">The Exchange service.</param>
     /// <param name="minimumServerVersion">The minimum server version that supports the method.</param>
@@ -1451,7 +1409,7 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Validates domain name (null value allowed)
+    ///     Validates domain name (null value allowed)
     /// </summary>
     /// <param name="domainName">Domain name.</param>
     /// <param name="paramName">Parameter name.</param>
@@ -1459,7 +1417,7 @@ internal static class EwsUtilities
     {
         if (domainName != null)
         {
-            Regex regex = new Regex(DomainRegex);
+            var regex = new Regex(DomainRegex);
 
             if (!regex.IsMatch(domainName))
             {
@@ -1469,15 +1427,15 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Gets version for enum member.
+    ///     Gets version for enum member.
     /// </summary>
     /// <param name="enumType">Type of the enum.</param>
     /// <param name="enumName">The enum name.</param>
     /// <returns>Exchange version in which the enum value was first defined.</returns>
     private static ExchangeVersion GetEnumVersion(Type enumType, string enumName)
     {
-        MemberInfo[] memberInfo = enumType.GetMember(enumName);
-        EwsUtilities.Assert(
+        var memberInfo = enumType.GetMember(enumName);
+        Assert(
             (memberInfo != null) && (memberInfo.Length > 0),
             "EwsUtilities.GetEnumVersion",
             "Enum member " + enumName + " not found in " + enumType
@@ -1488,25 +1446,23 @@ internal static class EwsUtilities
         {
             return ((RequiredServerVersionAttribute)attrs[0]).Version;
         }
-        else
-        {
-            return ExchangeVersion.Exchange2007_SP1;
-        }
+
+        return ExchangeVersion.Exchange2007_SP1;
     }
 
     /// <summary>
-    /// Builds the enum to version mapping dictionary.
+    ///     Builds the enum to version mapping dictionary.
     /// </summary>
     /// <param name="enumType">Type of the enum.</param>
     /// <returns>Dictionary of enum values to versions.</returns>
     private static Dictionary<Enum, ExchangeVersion> BuildEnumDict(Type enumType)
     {
-        Dictionary<Enum, ExchangeVersion> dict = new Dictionary<Enum, ExchangeVersion>();
-        string[] names = Enum.GetNames(enumType);
-        foreach (string name in names)
+        var dict = new Dictionary<Enum, ExchangeVersion>();
+        var names = Enum.GetNames(enumType);
+        foreach (var name in names)
         {
-            Enum value = (Enum)Enum.Parse(enumType, name, false);
-            ExchangeVersion version = GetEnumVersion(enumType, name);
+            var value = (Enum)Enum.Parse(enumType, name, false);
+            var version = GetEnumVersion(enumType, name);
             dict.Add(value, version);
         }
 
@@ -1514,15 +1470,15 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Gets the schema name for enum member.
+    ///     Gets the schema name for enum member.
     /// </summary>
     /// <param name="enumType">Type of the enum.</param>
     /// <param name="enumName">The enum name.</param>
     /// <returns>The name for the enum used in the protocol, or null if it is the same as the enum's ToString().</returns>
     private static string GetEnumSchemaName(Type enumType, string enumName)
     {
-        MemberInfo[] memberInfo = enumType.GetMember(enumName);
-        EwsUtilities.Assert(
+        var memberInfo = enumType.GetMember(enumName);
+        Assert(
             (memberInfo != null) && (memberInfo.Length > 0),
             "EwsUtilities.GetEnumSchemaName",
             "Enum member " + enumName + " not found in " + enumType
@@ -1533,25 +1489,23 @@ internal static class EwsUtilities
         {
             return ((EwsEnumAttribute)attrs[0]).SchemaName;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     /// <summary>
-    /// Builds the schema to enum mapping dictionary.
+    ///     Builds the schema to enum mapping dictionary.
     /// </summary>
     /// <param name="enumType">Type of the enum.</param>
     /// <returns>The mapping from enum to schema name</returns>
     private static Dictionary<string, Enum> BuildSchemaToEnumDict(Type enumType)
     {
-        Dictionary<string, Enum> dict = new Dictionary<string, Enum>();
-        string[] names = Enum.GetNames(enumType);
-        foreach (string name in names)
+        var dict = new Dictionary<string, Enum>();
+        var names = Enum.GetNames(enumType);
+        foreach (var name in names)
         {
-            Enum value = (Enum)Enum.Parse(enumType, name, false);
-            string schemaName = EwsUtilities.GetEnumSchemaName(enumType, name);
+            var value = (Enum)Enum.Parse(enumType, name, false);
+            var schemaName = GetEnumSchemaName(enumType, name);
 
             if (!String.IsNullOrEmpty(schemaName))
             {
@@ -1563,18 +1517,18 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Builds the enum to schema mapping dictionary.
+    ///     Builds the enum to schema mapping dictionary.
     /// </summary>
     /// <param name="enumType">Type of the enum.</param>
     /// <returns>The mapping from enum to schema name</returns>
     private static Dictionary<Enum, string> BuildEnumToSchemaDict(Type enumType)
     {
-        Dictionary<Enum, string> dict = new Dictionary<Enum, string>();
-        string[] names = Enum.GetNames(enumType);
-        foreach (string name in names)
+        var dict = new Dictionary<Enum, string>();
+        var names = Enum.GetNames(enumType);
+        foreach (var name in names)
         {
-            Enum value = (Enum)Enum.Parse(enumType, name, false);
-            string schemaName = EwsUtilities.GetEnumSchemaName(enumType, name);
+            var value = (Enum)Enum.Parse(enumType, name, false);
+            var schemaName = GetEnumSchemaName(enumType, name);
 
             if (!String.IsNullOrEmpty(schemaName))
             {
@@ -1591,15 +1545,15 @@ internal static class EwsUtilities
     #region IEnumerable utility methods
 
     /// <summary>
-    /// Gets the enumerated object count.
+    ///     Gets the enumerated object count.
     /// </summary>
     /// <param name="objects">The objects.</param>
     /// <returns>Count of objects in IEnumerable.</returns>
     internal static int GetEnumeratedObjectCount(IEnumerable objects)
     {
-        int count = 0;
+        var count = 0;
 
-        foreach (object obj in objects)
+        foreach (var obj in objects)
         {
             count++;
         }
@@ -1608,16 +1562,16 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Gets enumerated object at index.
+    ///     Gets enumerated object at index.
     /// </summary>
     /// <param name="objects">The objects.</param>
     /// <param name="index">The index.</param>
     /// <returns>Object at index.</returns>
     internal static object GetEnumeratedObjectAt(IEnumerable objects, int index)
     {
-        int count = 0;
+        var count = 0;
 
-        foreach (object obj in objects)
+        foreach (var obj in objects)
         {
             if (count == index)
             {
@@ -1636,15 +1590,15 @@ internal static class EwsUtilities
     #region Extension methods
 
     /// <summary>
-    /// Count characters in string that match a condition.
+    ///     Count characters in string that match a condition.
     /// </summary>
     /// <param name="str">The string.</param>
     /// <param name="charPredicate">Predicate to evaluate for each character in the string.</param>
     /// <returns>Count of characters that match condition expressed by predicate.</returns>
     internal static int CountMatchingChars(this string str, Predicate<char> charPredicate)
     {
-        int count = 0;
-        foreach (char ch in str)
+        var count = 0;
+        foreach (var ch in str)
         {
             if (charPredicate(ch))
             {
@@ -1656,15 +1610,18 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Determines whether every element in the collection matches the conditions defined by the specified predicate.
+    ///     Determines whether every element in the collection matches the conditions defined by the specified predicate.
     /// </summary>
     /// <typeparam name="T">Entry type.</typeparam>
     /// <param name="collection">The collection.</param>
     /// <param name="predicate">Predicate that defines the conditions to check against the elements.</param>
-    /// <returns>True if every element in the collection matches the conditions defined by the specified predicate; otherwise, false.</returns>
+    /// <returns>
+    ///     True if every element in the collection matches the conditions defined by the specified predicate; otherwise,
+    ///     false.
+    /// </returns>
     internal static bool TrueForAll<T>(this IEnumerable<T> collection, Predicate<T> predicate)
     {
-        foreach (T entry in collection)
+        foreach (var entry in collection)
         {
             if (!predicate(entry))
             {
@@ -1676,14 +1633,14 @@ internal static class EwsUtilities
     }
 
     /// <summary>
-    /// Call an action for each member of a collection.
+    ///     Call an action for each member of a collection.
     /// </summary>
     /// <param name="collection">The collection.</param>
     /// <param name="action">The action to apply.</param>
     /// <typeparam name="T">Collection element type.</typeparam>
     internal static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
     {
-        foreach (T entry in collection)
+        foreach (var entry in collection)
         {
             action(entry);
         }

@@ -25,32 +25,27 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the GetUserRetentionPolicyTagsResponse response.
+///     Represents the GetUserRetentionPolicyTagsResponse response.
 /// </summary>
 public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
 {
-    List<RetentionPolicyTag> retentionPolicyTags = new List<RetentionPolicyTag>();
+    readonly List<RetentionPolicyTag> retentionPolicyTags = new List<RetentionPolicyTag>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsResponse" /> class.
     /// </summary>
     internal GetUserRetentionPolicyTagsResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.retentionPolicyTags.Clear();
+        retentionPolicyTags.Clear();
 
         base.ReadElementsFromXml(reader);
 
@@ -62,7 +57,7 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
                 reader.Read();
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.RetentionPolicyTag))
                 {
-                    this.retentionPolicyTags.Add(RetentionPolicyTag.LoadFromXml(reader));
+                    retentionPolicyTags.Add(RetentionPolicyTag.LoadFromXml(reader));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags));
 
@@ -71,10 +66,7 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Retention policy tags result.
+    ///     Retention policy tags result.
     /// </summary>
-    public RetentionPolicyTag[] RetentionPolicyTags
-    {
-        get { return this.retentionPolicyTags.ToArray(); }
-    }
+    public RetentionPolicyTag[] RetentionPolicyTags => retentionPolicyTags.ToArray();
 }

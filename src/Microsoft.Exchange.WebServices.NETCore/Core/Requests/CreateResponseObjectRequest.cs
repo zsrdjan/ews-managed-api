@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a CreateItem request for a response object.
+///     Represents a CreateItem request for a response object.
 /// </summary>
 internal sealed class CreateResponseObjectRequest : CreateItemRequestBase<ServiceObject, CreateResponseObjectResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateResponseObjectRequest"/> class.
+    ///     Initializes a new instance of the <see cref="CreateResponseObjectRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -45,7 +41,7 @@ internal sealed class CreateResponseObjectRequest : CreateItemRequestBase<Servic
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -56,7 +52,7 @@ internal sealed class CreateResponseObjectRequest : CreateItemRequestBase<Servic
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()

@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the sensitivity of an item.
+///     Defines the sensitivity of an item.
 /// </summary>
 public enum Sensitivity
 {
     /// <summary>
-    /// The item has a normal sensitivity.
+    ///     The item has a normal sensitivity.
     /// </summary>
     Normal,
 
     /// <summary>
-    /// The item is personal.
+    ///     The item is personal.
     /// </summary>
     Personal,
 
     /// <summary>
-    /// The item is private.
+    ///     The item is private.
     /// </summary>
     Private,
 
     /// <summary>
-    /// The item is confidential.
+    ///     The item is confidential.
     /// </summary>
     Confidential
 }

@@ -25,28 +25,25 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the InsightValue.
+///     Represents the InsightValue.
 /// </summary>
 public class InsightValue : ComplexProperty
 {
     private long updatedUtcTicks;
 
     /// <summary>
-    /// Gets the InsightSource
+    ///     Gets the InsightSource
     /// </summary>
     public string InsightSource { get; set; }
 
     /// <summary>
-    /// Gets the UpdatedUtcTicks
+    ///     Gets the UpdatedUtcTicks
     /// </summary>
     public long UpdatedUtcTicks
     {
-        get { return this.updatedUtcTicks; }
+        get => updatedUtcTicks;
 
-        set { this.SetFieldValue<long>(ref this.updatedUtcTicks, value); }
+        set => SetFieldValue(ref updatedUtcTicks, value);
     }
 }

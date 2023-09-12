@@ -25,32 +25,27 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the GetDiscoverySearchConfiguration response.
+///     Represents the GetDiscoverySearchConfiguration response.
 /// </summary>
 public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
 {
-    List<DiscoverySearchConfiguration> configurations = new List<DiscoverySearchConfiguration>();
+    readonly List<DiscoverySearchConfiguration> configurations = new List<DiscoverySearchConfiguration>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationResponse" /> class.
     /// </summary>
     internal GetDiscoverySearchConfigurationResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.configurations.Clear();
+        configurations.Clear();
 
         base.ReadElementsFromXml(reader);
 
@@ -62,7 +57,7 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
                 reader.Read();
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.DiscoverySearchConfiguration))
                 {
-                    this.configurations.Add(DiscoverySearchConfiguration.LoadFromXml(reader));
+                    configurations.Add(DiscoverySearchConfiguration.LoadFromXml(reader));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations));
         }
@@ -71,10 +66,7 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Searchable mailboxes result
+    ///     Searchable mailboxes result
     /// </summary>
-    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations
-    {
-        get { return this.configurations.ToArray(); }
-    }
+    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations => configurations.ToArray();
 }

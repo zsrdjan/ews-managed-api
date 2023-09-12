@@ -23,14 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents an alternate mailbox.
+///     Represents an alternate mailbox.
 /// </summary>
 public sealed class AlternateMailbox
 {
@@ -42,20 +42,20 @@ public sealed class AlternateMailbox
     private string ownerSmtpAddress;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AlternateMailbox"/> class.
+    ///     Initializes a new instance of the <see cref="AlternateMailbox" /> class.
     /// </summary>
     private AlternateMailbox()
     {
     }
 
     /// <summary>
-    /// Loads AlternateMailbox instance from XML.
+    ///     Loads AlternateMailbox instance from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>AlternateMailbox.</returns>
     internal static AlternateMailbox LoadFromXml(EwsXmlReader reader)
     {
-        AlternateMailbox altMailbox = new AlternateMailbox();
+        var altMailbox = new AlternateMailbox();
 
         do
         {
@@ -83,8 +83,6 @@ public sealed class AlternateMailbox
                     case XmlElementNames.OwnerSmtpAddress:
                         altMailbox.OwnerSmtpAddress = reader.ReadElementValue<string>();
                         break;
-                    default:
-                        break;
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.AlternateMailbox));
@@ -93,58 +91,58 @@ public sealed class AlternateMailbox
     }
 
     /// <summary>
-    /// Gets the alternate mailbox type.
+    ///     Gets the alternate mailbox type.
     /// </summary>
     /// <value>The type.</value>
     public string Type
     {
-        get { return this.type; }
-        internal set { this.type = value; }
+        get => type;
+        internal set => type = value;
     }
 
     /// <summary>
-    /// Gets the alternate mailbox display name.
+    ///     Gets the alternate mailbox display name.
     /// </summary>
     public string DisplayName
     {
-        get { return this.displayName; }
-        internal set { this.displayName = value; }
+        get => displayName;
+        internal set => displayName = value;
     }
 
     /// <summary>
-    /// Gets the alternate mailbox legacy DN.
+    ///     Gets the alternate mailbox legacy DN.
     /// </summary>
     public string LegacyDN
     {
-        get { return this.legacyDN; }
-        internal set { this.legacyDN = value; }
+        get => legacyDN;
+        internal set => legacyDN = value;
     }
 
     /// <summary>
-    /// Gets the alernate mailbox server.
+    ///     Gets the alernate mailbox server.
     /// </summary>
     public string Server
     {
-        get { return this.server; }
-        internal set { this.server = value; }
+        get => server;
+        internal set => server = value;
     }
 
     /// <summary>
-    /// Gets the alternate mailbox address.
-    /// It has value only when Server and LegacyDN is empty.
+    ///     Gets the alternate mailbox address.
+    ///     It has value only when Server and LegacyDN is empty.
     /// </summary>
     public string SmtpAddress
     {
-        get { return this.smtpAddress; }
-        internal set { this.smtpAddress = value; }
+        get => smtpAddress;
+        internal set => smtpAddress = value;
     }
 
     /// <summary>
-    /// Gets the alternate mailbox owner SmtpAddress.
+    ///     Gets the alternate mailbox owner SmtpAddress.
     /// </summary>
     public string OwnerSmtpAddress
     {
-        get { return this.ownerSmtpAddress; }
-        internal set { this.ownerSmtpAddress = value; }
+        get => ownerSmtpAddress;
+        internal set => ownerSmtpAddress = value;
     }
 }

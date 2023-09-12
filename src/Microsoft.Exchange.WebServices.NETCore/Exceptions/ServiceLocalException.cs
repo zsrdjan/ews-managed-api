@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a service operation fails locally (e.g. validation error).
+///     Represents an error that occurs when a service operation fails locally (e.g. validation error).
 /// </summary>
 public class ServiceLocalException : Exception
 {
     /// <summary>
-    /// ServiceLocalException Constructor.
+    ///     ServiceLocalException Constructor.
     /// </summary>
     public ServiceLocalException()
-        : base()
     {
     }
 
     /// <summary>
-    /// ServiceLocalException Constructor.
+    ///     ServiceLocalException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     public ServiceLocalException(string message)
@@ -51,7 +49,7 @@ public class ServiceLocalException : Exception
     }
 
     /// <summary>
-    /// ServiceLocalException Constructor.
+    ///     ServiceLocalException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     /// <param name="innerException">Inner exception.</param>
@@ -61,7 +59,8 @@ public class ServiceLocalException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceLocalException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceLocalException" /> class
+    ///     with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

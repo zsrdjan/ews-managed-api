@@ -25,49 +25,39 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-using Microsoft.Exchange.WebServices.Data.Enumerations;
-
-using System.Threading.Tasks;
-using System.Threading;
-
 /// <summary>
-/// Represents a GetPeopleInsights request.
+///     Represents a GetPeopleInsights request.
 /// </summary>
 internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetPeopleInsightsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetPeopleInsightsRequest" /> class.
     /// </summary>
     /// <param name="service">The service</param>
     internal GetPeopleInsightsRequest(ExchangeService service)
         : base(service)
     {
-        this.Emailaddresses = new List<string>();
+        Emailaddresses = new List<string>();
     }
 
     /// <summary>
-    /// Gets the collection of Emailaddress.
+    ///     Gets the collection of Emailaddress.
     /// </summary>
     internal List<string> Emailaddresses { get; set; }
 
     /// <summary>
-    /// Validate the request
+    ///     Validate the request
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
         // TODO - Validate each emailaddress
-        EwsUtilities.ValidateParamCollection(this.Emailaddresses, "EmailAddresses");
+        EwsUtilities.ValidateParamCollection(Emailaddresses, "EmailAddresses");
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -76,14 +66,14 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements for GetPeopleInsights request
+    ///     Writes XML elements for GetPeopleInsights request
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.EmailAddresses);
 
-        foreach (string emailAddress in this.Emailaddresses)
+        foreach (var emailAddress in Emailaddresses)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.String, emailAddress);
         }
@@ -92,7 +82,7 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -101,19 +91,19 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetPeopleInsightsResponse response = new GetPeopleInsightsResponse();
+        var response = new GetPeopleInsightsResponse();
         response.LoadFromXml(reader, XmlElementNames.GetPeopleInsightsResponse);
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -122,13 +112,12 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetPeopleInsightsResponse> Execute(CancellationToken token)
     {
-        GetPeopleInsightsResponse serviceResponse =
-            (GetPeopleInsightsResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (GetPeopleInsightsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

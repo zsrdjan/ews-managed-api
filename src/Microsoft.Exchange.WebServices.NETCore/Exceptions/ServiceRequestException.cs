@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a service operation request fails (e.g. connection error).
+///     Represents an error that occurs when a service operation request fails (e.g. connection error).
 /// </summary>
 public class ServiceRequestException : ServiceRemoteException
 {
     /// <summary>
-    /// ServiceRequestException Constructor.
+    ///     ServiceRequestException Constructor.
     /// </summary>
     public ServiceRequestException()
-        : base()
     {
     }
 
     /// <summary>
-    /// ServiceRequestException Constructor.
+    ///     ServiceRequestException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     public ServiceRequestException(string message)
@@ -51,7 +49,7 @@ public class ServiceRequestException : ServiceRemoteException
     }
 
     /// <summary>
-    /// ServiceRequestException Constructor.
+    ///     ServiceRequestException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     /// <param name="innerException">Inner exception.</param>
@@ -61,7 +59,8 @@ public class ServiceRequestException : ServiceRemoteException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceRequestException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceRequestException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a MoveItem request.
+///     Represents a MoveItem request.
 /// </summary>
 internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoveItemRequest"/> class.
+    ///     Initializes a new instance of the <see cref="MoveItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -45,7 +41,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -56,7 +52,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -65,7 +61,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -74,7 +70,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -83,7 +79,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()

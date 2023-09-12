@@ -23,38 +23,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a GetPeopleInsights operation.
+///     Represents the response to a GetPeopleInsights operation.
 /// </summary>
 internal sealed class GetPeopleInsightsResponse : ServiceResponse
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetPeopleInsightsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetPeopleInsightsResponse" /> class.
     /// </summary>
     public GetPeopleInsightsResponse()
-        : base()
     {
-        this.People = new Collection<Person>();
+        People = new Collection<Person>();
     }
 
     /// <summary>
-    /// Gets the People
+    ///     Gets the People
     /// </summary>
     internal Collection<Person> People { get; private set; }
 
     /// <summary>
-    /// Read Person from XML.
+    ///     Read Person from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        EwsUtilities.Assert(this.People != null, "GetPeopleInsightsResponse.ReadElementsFromXml", "People is null.");
+        EwsUtilities.Assert(People != null, "GetPeopleInsightsResponse.ReadElementsFromXml", "People is null.");
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.People);
         if (!reader.IsEmptyElement)
@@ -65,9 +63,9 @@ internal sealed class GetPeopleInsightsResponse : ServiceResponse
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    Person item = new Person();
+                    var item = new Person();
                     item.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Person);
-                    this.People.Add(item);
+                    People.Add(item);
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.People));
         }

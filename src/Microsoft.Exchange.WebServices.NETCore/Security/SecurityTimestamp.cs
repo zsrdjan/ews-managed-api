@@ -23,11 +23,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Globalization;
 using System.Xml;
+
+namespace Microsoft.Exchange.WebServices.Data;
 
 internal sealed class SecurityTimestamp
 {
@@ -87,55 +86,43 @@ internal sealed class SecurityTimestamp
         this.digest = digest;
     }
 
-    public DateTime CreationTimeUtc
-    {
-        get { return this.creationTimeUtc; }
-    }
+    public DateTime CreationTimeUtc => creationTimeUtc;
 
-    public DateTime ExpiryTimeUtc
-    {
-        get { return this.expiryTimeUtc; }
-    }
+    public DateTime ExpiryTimeUtc => expiryTimeUtc;
 
-    public string Id
-    {
-        get { return this.id; }
-    }
+    public string Id => id;
 
-    public string DigestAlgorithm
-    {
-        get { return this.digestAlgorithm; }
-    }
+    public string DigestAlgorithm => digestAlgorithm;
 
     internal byte[] GetDigest()
     {
-        return this.digest;
+        return digest;
     }
 
     internal char[] GetCreationTimeChars()
     {
-        if (this.computedCreationTimeUtc == null)
+        if (computedCreationTimeUtc == null)
         {
-            this.computedCreationTimeUtc = ToChars(ref this.creationTimeUtc);
+            computedCreationTimeUtc = ToChars(ref creationTimeUtc);
         }
 
-        return this.computedCreationTimeUtc;
+        return computedCreationTimeUtc;
     }
 
     internal char[] GetExpiryTimeChars()
     {
-        if (this.computedExpiryTimeUtc == null)
+        if (computedExpiryTimeUtc == null)
         {
-            this.computedExpiryTimeUtc = ToChars(ref this.expiryTimeUtc);
+            computedExpiryTimeUtc = ToChars(ref expiryTimeUtc);
         }
 
-        return this.computedExpiryTimeUtc;
+        return computedExpiryTimeUtc;
     }
 
     private static char[] ToChars(ref DateTime utcTime)
     {
-        char[] buffer = new char[DefaultFormat.Length];
-        int offset = 0;
+        var buffer = new char[DefaultFormat.Length];
+        var offset = 0;
 
         ToChars(utcTime.Year, buffer, ref offset, 4);
         buffer[offset++] = '-';
@@ -163,7 +150,7 @@ internal sealed class SecurityTimestamp
 
     private static void ToChars(int n, char[] buffer, ref int offset, int count)
     {
-        for (int i = offset + count - 1; i >= offset; i--)
+        for (var i = offset + count - 1; i >= offset; i--)
         {
             buffer[i] = (char)('0' + (n % 10));
             n /= 10;
@@ -178,9 +165,9 @@ internal sealed class SecurityTimestamp
         return string.Format(
             CultureInfo.InvariantCulture,
             "SecurityTimestamp: Id={0}, CreationTimeUtc={1}, ExpirationTimeUtc={2}",
-            this.Id,
-            XmlConvert.ToString(this.CreationTimeUtc, XmlDateTimeSerializationMode.RoundtripKind),
-            XmlConvert.ToString(this.ExpiryTimeUtc, XmlDateTimeSerializationMode.RoundtripKind)
+            Id,
+            XmlConvert.ToString(CreationTimeUtc, XmlDateTimeSerializationMode.RoundtripKind),
+            XmlConvert.ToString(ExpiryTimeUtc, XmlDateTimeSerializationMode.RoundtripKind)
         );
     }
 }

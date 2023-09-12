@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a validation check fails.
+///     Represents an error that occurs when a validation check fails.
 /// </summary>
 public sealed class ServiceValidationException : ServiceLocalException
 {
     /// <summary>
-    /// ServiceValidationException Constructor.
+    ///     ServiceValidationException Constructor.
     /// </summary>
     public ServiceValidationException()
-        : base()
     {
     }
 
     /// <summary>
-    /// ServiceValidationException Constructor.
+    ///     ServiceValidationException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     public ServiceValidationException(string message)
@@ -51,7 +49,7 @@ public sealed class ServiceValidationException : ServiceLocalException
     }
 
     /// <summary>
-    /// ServiceValidationException Constructor.
+    ///     ServiceValidationException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     /// <param name="innerException">Inner exception.</param>
@@ -61,7 +59,8 @@ public sealed class ServiceValidationException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceValidationException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceValidationException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

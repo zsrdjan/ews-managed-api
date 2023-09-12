@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents failed mailbox to be searched
+///     Represents failed mailbox to be searched
 /// </summary>
 public sealed class FailedSearchMailbox
 {
     /// <summary>
-    /// Constructor
+    ///     Constructor
     /// </summary>
     /// <param name="mailbox">Mailbox identifier</param>
     /// <param name="errorCode">Error code</param>
@@ -46,7 +42,7 @@ public sealed class FailedSearchMailbox
     }
 
     /// <summary>
-    /// Constructor
+    ///     Constructor
     /// </summary>
     /// <param name="mailbox">Mailbox identifier</param>
     /// <param name="errorCode">Error code</param>
@@ -61,27 +57,27 @@ public sealed class FailedSearchMailbox
     }
 
     /// <summary>
-    /// Mailbox identifier
+    ///     Mailbox identifier
     /// </summary>
     public string Mailbox { get; set; }
 
     /// <summary>
-    /// Error code
+    ///     Error code
     /// </summary>
     public int ErrorCode { get; set; }
 
     /// <summary>
-    /// Error message
+    ///     Error message
     /// </summary>
     public string ErrorMessage { get; set; }
 
     /// <summary>
-    /// Whether it is archive mailbox or not
+    ///     Whether it is archive mailbox or not
     /// </summary>
     public bool IsArchive { get; set; }
 
     /// <summary>
-    /// Load failed mailboxes xml
+    ///     Load failed mailboxes xml
     /// </summary>
     /// <param name="rootXmlNamespace">Root xml namespace</param>
     /// <param name="reader">The reader</param>
@@ -91,7 +87,7 @@ public sealed class FailedSearchMailbox
         EwsServiceXmlReader reader
     )
     {
-        List<FailedSearchMailbox> failedMailboxes = new List<FailedSearchMailbox>();
+        var failedMailboxes = new List<FailedSearchMailbox>();
 
         reader.EnsureCurrentNodeIsStartElement(rootXmlNamespace, XmlElementNames.FailedMailboxes);
         do
@@ -99,11 +95,11 @@ public sealed class FailedSearchMailbox
             reader.Read();
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.FailedMailbox))
             {
-                string mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
-                int errorCode = 0;
+                var mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
+                var errorCode = 0;
                 int.TryParse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorCode), out errorCode);
-                string errorMessage = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorMessage);
-                bool isArchive = false;
+                var errorMessage = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorMessage);
+                var isArchive = false;
                 bool.TryParse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsArchive), out isArchive);
 
                 failedMailboxes.Add(new FailedSearchMailbox(mailbox, errorCode, errorMessage, isArchive));

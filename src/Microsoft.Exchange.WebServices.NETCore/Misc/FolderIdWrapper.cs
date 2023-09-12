@@ -25,22 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a folder Id provided by a FolderId object.
+///     Represents a folder Id provided by a FolderId object.
 /// </summary>
 internal class FolderIdWrapper : AbstractFolderIdWrapper
 {
     /// <summary>
-    /// The FolderId object providing the Id.
+    ///     The FolderId object providing the Id.
     /// </summary>
-    private FolderId folderId;
+    private readonly FolderId folderId;
 
     /// <summary>
-    /// Initializes a new instance of FolderIdWrapper.
+    ///     Initializes a new instance of FolderIdWrapper.
     /// </summary>
     /// <param name="folderId">The FolderId object providing the Id.</param>
     internal FolderIdWrapper(FolderId folderId)
@@ -51,20 +47,20 @@ internal class FolderIdWrapper : AbstractFolderIdWrapper
     }
 
     /// <summary>
-    /// Writes the Id encapsulated in the wrapper to XML.
+    ///     Writes the Id encapsulated in the wrapper to XML.
     /// </summary>
     /// <param name="writer">The writer to write the Id to.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer)
     {
-        this.folderId.WriteToXml(writer);
+        folderId.WriteToXml(writer);
     }
 
     /// <summary>
-    /// Validates folderId against specified version.
+    ///     Validates folderId against specified version.
     /// </summary>
     /// <param name="version">The version.</param>
     internal override void Validate(ExchangeVersion version)
     {
-        this.folderId.Validate(version);
+        folderId.Validate(version);
     }
 }

@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when the XML for a response cannot be deserialized.
+///     Represents an error that occurs when the XML for a response cannot be deserialized.
 /// </summary>
 public sealed class ServiceXmlDeserializationException : ServiceLocalException
 {
     /// <summary>
-    /// ServiceXmlDeserializationException Constructor.
+    ///     ServiceXmlDeserializationException Constructor.
     /// </summary>
     public ServiceXmlDeserializationException()
-        : base()
     {
     }
 
     /// <summary>
-    /// ServiceXmlDeserializationException Constructor.
+    ///     ServiceXmlDeserializationException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     public ServiceXmlDeserializationException(string message)
@@ -51,7 +49,7 @@ public sealed class ServiceXmlDeserializationException : ServiceLocalException
     }
 
     /// <summary>
-    /// ServiceXmlDeserializationException Constructor.
+    ///     ServiceXmlDeserializationException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     /// <param name="innerException">Inner exception.</param>
@@ -61,7 +59,8 @@ public sealed class ServiceXmlDeserializationException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceXmlDeserializationException"/> class with serialized data.
+    ///     Initializes a new instance of the
+    ///     <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceXmlDeserializationException" /> class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

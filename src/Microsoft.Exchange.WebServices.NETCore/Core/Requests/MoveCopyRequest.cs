@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract Move/Copy request.
+///     Represents an abstract Move/Copy request.
 /// </summary>
 /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -41,16 +37,16 @@ internal abstract class MoveCopyRequest<TServiceObject, TResponse> : MultiRespon
     private FolderId destinationFolderId;
 
     /// <summary>
-    /// Validates request.
+    ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
-        EwsUtilities.ValidateParam(this.DestinationFolderId, "DestinationFolderId");
-        this.DestinationFolderId.Validate(this.Service.RequestedServerVersion);
+        EwsUtilities.ValidateParam(DestinationFolderId, "DestinationFolderId");
+        DestinationFolderId.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoveCopyRequest&lt;TServiceObject, TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="MoveCopyRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -60,31 +56,31 @@ internal abstract class MoveCopyRequest<TServiceObject, TResponse> : MultiRespon
     }
 
     /// <summary>
-    /// Writes the ids as XML.
+    ///     Writes the ids as XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal abstract void WriteIdsToXml(EwsServiceXmlWriter writer);
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ToFolderId);
-        this.DestinationFolderId.WriteToXml(writer);
+        DestinationFolderId.WriteToXml(writer);
         writer.WriteEndElement();
 
-        this.WriteIdsToXml(writer);
+        WriteIdsToXml(writer);
     }
 
     /// <summary>
-    /// Gets or sets the destination folder id.
+    ///     Gets or sets the destination folder id.
     /// </summary>
     /// <value>The destination folder id.</value>
     public FolderId DestinationFolderId
     {
-        get { return this.destinationFolderId; }
-        set { this.destinationFolderId = value; }
+        get => destinationFolderId;
+        set => destinationFolderId = value;
     }
 }

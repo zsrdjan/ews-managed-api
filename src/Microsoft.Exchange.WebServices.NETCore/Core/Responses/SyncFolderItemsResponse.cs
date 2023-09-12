@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the response to a folder items synchronization operation.
+///     Represents the response to a folder items synchronization operation.
 /// </summary>
 public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SyncFolderItemsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="SyncFolderItemsResponse" /> class.
     /// </summary>
     /// <param name="propertySet">PropertySet from request.</param>
     internal SyncFolderItemsResponse(PropertySet propertySet)
@@ -44,7 +40,7 @@ public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
     }
 
     /// <summary>
-    /// Gets the name of the includes last in range XML element.
+    ///     Gets the name of the includes last in range XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetIncludesLastInRangeXmlElementName()
@@ -53,7 +49,7 @@ public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
     }
 
     /// <summary>
-    /// Creates an item change instance.
+    ///     Creates an item change instance.
     /// </summary>
     /// <returns>ItemChange instance</returns>
     internal override ItemChange CreateChangeInstance()
@@ -62,7 +58,7 @@ public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
     }
 
     /// <summary>
-    /// Gets the name of the change element.
+    ///     Gets the name of the change element.
     /// </summary>
     /// <returns>Change element name.</returns>
     internal override string GetChangeElementName()
@@ -71,7 +67,7 @@ public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
     }
 
     /// <summary>
-    /// Gets the name of the change id element.
+    ///     Gets the name of the change id element.
     /// </summary>
     /// <returns>Change id element name.</returns>
     internal override string GetChangeIdElementName()
@@ -80,13 +76,10 @@ public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
     }
 
     /// <summary>
-    /// Gets a value indicating whether this request returns full or summary properties.
+    ///     Gets a value indicating whether this request returns full or summary properties.
     /// </summary>
     /// <value>
-    /// <c>true</c> if summary properties only; otherwise, <c>false</c>.
+    ///     <c>true</c> if summary properties only; otherwise, <c>false</c>.
     /// </value>
-    internal override bool SummaryPropertiesOnly
-    {
-        get { return true; }
-    }
+    internal override bool SummaryPropertiesOnly => true;
 }

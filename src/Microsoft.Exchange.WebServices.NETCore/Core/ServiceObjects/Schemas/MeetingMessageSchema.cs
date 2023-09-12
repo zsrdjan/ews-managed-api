@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for meeting messages.
+///     Represents the schema for meeting messages.
 /// </summary>
 [Schema]
 public class MeetingMessageSchema : EmailMessageSchema
 {
     /// <summary>
-    /// Field URIs for MeetingMessage.
+    ///     Field URIs for MeetingMessage.
     /// </summary>
     private static class FieldUris
     {
@@ -47,7 +47,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     }
 
     /// <summary>
-    /// Defines the AssociatedAppointmentId property.
+    ///     Defines the AssociatedAppointmentId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -58,11 +58,11 @@ public class MeetingMessageSchema : EmailMessageSchema
         XmlElementNames.AssociatedCalendarItemId,
         FieldUris.AssociatedCalendarItemId,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new ItemId(); }
+        delegate { return new ItemId(); }
     );
 
     /// <summary>
-    /// Defines the IsDelegated property.
+    ///     Defines the IsDelegated property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -77,7 +77,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     );
 
     /// <summary>
-    /// Defines the IsOutOfDate property.
+    ///     Defines the IsOutOfDate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -91,7 +91,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     );
 
     /// <summary>
-    /// Defines the HasBeenProcessed property.
+    ///     Defines the HasBeenProcessed property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -106,7 +106,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     );
 
     /// <summary>
-    /// Defines the ResponseType property.
+    ///     Defines the ResponseType property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -121,7 +121,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     );
 
     /// <summary>
-    /// Defines the iCalendar Uid property.
+    ///     Defines the iCalendar Uid property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -131,7 +131,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     public static readonly PropertyDefinition ICalUid = AppointmentSchema.ICalUid;
 
     /// <summary>
-    /// Defines the iCalendar RecurrenceId property.
+    ///     Defines the iCalendar RecurrenceId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -141,7 +141,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     public static readonly PropertyDefinition ICalRecurrenceId = AppointmentSchema.ICalRecurrenceId;
 
     /// <summary>
-    /// Defines the iCalendar DateTimeStamp property.
+    ///     Defines the iCalendar DateTimeStamp property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -151,7 +151,7 @@ public class MeetingMessageSchema : EmailMessageSchema
     public static readonly PropertyDefinition ICalDateTimeStamp = AppointmentSchema.ICalDateTimeStamp;
 
     /// <summary>
-    /// Defines the IsOrganizer property.
+    ///     Defines the IsOrganizer property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -169,31 +169,31 @@ public class MeetingMessageSchema : EmailMessageSchema
     internal static new readonly MeetingMessageSchema Instance = new MeetingMessageSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(AssociatedAppointmentId);
-        this.RegisterProperty(IsDelegated);
-        this.RegisterProperty(IsOutOfDate);
-        this.RegisterProperty(HasBeenProcessed);
-        this.RegisterProperty(ResponseType);
-        this.RegisterProperty(ICalUid);
-        this.RegisterProperty(ICalRecurrenceId);
-        this.RegisterProperty(ICalDateTimeStamp);
-        this.RegisterProperty(IsOrganizer);
+        RegisterProperty(AssociatedAppointmentId);
+        RegisterProperty(IsDelegated);
+        RegisterProperty(IsOutOfDate);
+        RegisterProperty(HasBeenProcessed);
+        RegisterProperty(ResponseType);
+        RegisterProperty(ICalUid);
+        RegisterProperty(ICalRecurrenceId);
+        RegisterProperty(ICalDateTimeStamp);
+        RegisterProperty(IsOrganizer);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingMessageSchema"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
     /// </summary>
     internal MeetingMessageSchema()
-        : base()
     {
     }
 }

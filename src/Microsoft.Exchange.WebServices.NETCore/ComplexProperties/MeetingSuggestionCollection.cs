@@ -23,40 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of MeetingSuggestion objects.
+///     Represents a collection of MeetingSuggestion objects.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class MeetingSuggestionCollection : ComplexPropertyCollection<MeetingSuggestion>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingSuggestionCollection"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingSuggestionCollection" /> class.
     /// </summary>
     internal MeetingSuggestionCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingSuggestionCollection"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingSuggestionCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
     internal MeetingSuggestionCollection(IEnumerable<MeetingSuggestion> collection)
     {
         if (collection != null)
         {
-            collection.ForEach(this.InternalAdd);
+            collection.ForEach(InternalAdd);
         }
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>MeetingSuggestion.</returns>
@@ -66,7 +63,7 @@ public sealed class MeetingSuggestionCollection : ComplexPropertyCollection<Meet
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

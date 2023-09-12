@@ -23,15 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Globalization;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Xml;
-
 /// <summary>
-/// Represents the OutOfOfficeInsightValue.
+///     Represents the OutOfOfficeInsightValue.
 /// </summary>
 public sealed class OutOfOfficeInsightValue : InsightValue
 {
@@ -41,39 +38,27 @@ public sealed class OutOfOfficeInsightValue : InsightValue
     private string message;
 
     /// <summary>
-    /// Get the start date and time.
+    ///     Get the start date and time.
     /// </summary>
-    public DateTime StartTime
-    {
-        get { return this.startTime; }
-    }
+    public DateTime StartTime => startTime;
 
     /// <summary>
-    /// Get the end date and time.
+    ///     Get the end date and time.
     /// </summary>
-    public DateTime EndTime
-    {
-        get { return this.endTime; }
-    }
+    public DateTime EndTime => endTime;
 
     /// <summary>
-    /// Get the culture of the reply.
+    ///     Get the culture of the reply.
     /// </summary>
-    public string Culture
-    {
-        get { return this.culture; }
-    }
+    public string Culture => culture;
 
     /// <summary>
-    /// Get the reply message.
+    ///     Get the reply message.
     /// </summary>
-    public string Message
-    {
-        get { return this.message; }
-    }
+    public string Message => message;
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -82,19 +67,19 @@ public sealed class OutOfOfficeInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.StartTime:
-                this.startTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
+                startTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
                 break;
             case XmlElementNames.EndTime:
-                this.endTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
+                endTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
                 break;
             case XmlElementNames.Culture:
-                this.culture = reader.ReadElementValue();
+                culture = reader.ReadElementValue();
                 break;
             case XmlElementNames.Message:
-                this.message = reader.ReadElementValue();
+                message = reader.ReadElementValue();
                 break;
             default:
                 return false;

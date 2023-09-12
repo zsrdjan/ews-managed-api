@@ -23,17 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Collections.Generic;
-
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Interface defined for properties that produce their own update serialization.
+///     Interface defined for properties that produce their own update serialization.
 /// </summary>
 internal interface ICustomUpdateSerializer
 {
     /// <summary>
-    /// Writes the update to XML.
+    ///     Writes the update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>
@@ -46,7 +44,7 @@ internal interface ICustomUpdateSerializer
     );
 
     /// <summary>
-    /// Writes the deletion update to XML.
+    ///     Writes the deletion update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>

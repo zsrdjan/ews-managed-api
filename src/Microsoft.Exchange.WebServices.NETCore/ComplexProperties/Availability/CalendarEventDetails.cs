@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the details of a calendar event as returned by the GetUserAvailability operation.
+///     Represents the details of a calendar event as returned by the GetUserAvailability operation.
 /// </summary>
 public sealed class CalendarEventDetails : ComplexProperty
 {
@@ -44,15 +40,14 @@ public sealed class CalendarEventDetails : ComplexProperty
     private bool isPrivate;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarEventDetails"/> class.
+    ///     Initializes a new instance of the <see cref="CalendarEventDetails" /> class.
     /// </summary>
     internal CalendarEventDetails()
-        : base()
     {
     }
 
     /// <summary>
-    /// Attempts to read the element at the reader's current position.
+    ///     Attempts to read the element at the reader's current position.
     /// </summary>
     /// <param name="reader">The reader used to read the element.</param>
     /// <returns>True if the element was read, false otherwise.</returns>
@@ -61,28 +56,28 @@ public sealed class CalendarEventDetails : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ID:
-                this.storeId = reader.ReadElementValue();
+                storeId = reader.ReadElementValue();
                 return true;
             case XmlElementNames.Subject:
-                this.subject = reader.ReadElementValue();
+                subject = reader.ReadElementValue();
                 return true;
             case XmlElementNames.Location:
-                this.location = reader.ReadElementValue();
+                location = reader.ReadElementValue();
                 return true;
             case XmlElementNames.IsMeeting:
-                this.isMeeting = reader.ReadElementValue<bool>();
+                isMeeting = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.IsRecurring:
-                this.isRecurring = reader.ReadElementValue<bool>();
+                isRecurring = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.IsException:
-                this.isException = reader.ReadElementValue<bool>();
+                isException = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.IsReminderSet:
-                this.isReminderSet = reader.ReadElementValue<bool>();
+                isReminderSet = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.IsPrivate:
-                this.isPrivate = reader.ReadElementValue<bool>();
+                isPrivate = reader.ReadElementValue<bool>();
                 return true;
             default:
                 return false;
@@ -90,66 +85,42 @@ public sealed class CalendarEventDetails : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the store Id of the calendar event.
+    ///     Gets the store Id of the calendar event.
     /// </summary>
-    public string StoreId
-    {
-        get { return this.storeId; }
-    }
+    public string StoreId => storeId;
 
     /// <summary>
-    /// Gets the subject of the calendar event.
+    ///     Gets the subject of the calendar event.
     /// </summary>
-    public string Subject
-    {
-        get { return this.subject; }
-    }
+    public string Subject => subject;
 
     /// <summary>
-    /// Gets the location of the calendar event.
+    ///     Gets the location of the calendar event.
     /// </summary>
-    public string Location
-    {
-        get { return this.location; }
-    }
+    public string Location => location;
 
     /// <summary>
-    /// Gets a value indicating whether the calendar event is a meeting.
+    ///     Gets a value indicating whether the calendar event is a meeting.
     /// </summary>
-    public bool IsMeeting
-    {
-        get { return this.isMeeting; }
-    }
+    public bool IsMeeting => isMeeting;
 
     /// <summary>
-    /// Gets a value indicating whether the calendar event is recurring.
+    ///     Gets a value indicating whether the calendar event is recurring.
     /// </summary>
-    public bool IsRecurring
-    {
-        get { return this.isRecurring; }
-    }
+    public bool IsRecurring => isRecurring;
 
     /// <summary>
-    /// Gets a value indicating whether the calendar event is an exception in a recurring series.
+    ///     Gets a value indicating whether the calendar event is an exception in a recurring series.
     /// </summary>
-    public bool IsException
-    {
-        get { return this.isException; }
-    }
+    public bool IsException => isException;
 
     /// <summary>
-    /// Gets a value indicating whether the calendar event has a reminder set.
+    ///     Gets a value indicating whether the calendar event has a reminder set.
     /// </summary>
-    public bool IsReminderSet
-    {
-        get { return this.isReminderSet; }
-    }
+    public bool IsReminderSet => isReminderSet;
 
     /// <summary>
-    /// Gets a value indicating whether the calendar event is private.
+    ///     Gets a value indicating whether the calendar event is private.
     /// </summary>
-    public bool IsPrivate
-    {
-        get { return this.isPrivate; }
-    }
+    public bool IsPrivate => isPrivate;
 }

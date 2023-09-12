@@ -25,49 +25,42 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a collection of changes as returned by a synchronization operation.
+///     Represents a collection of changes as returned by a synchronization operation.
 /// </summary>
 /// <typeparam name="TChange">Type representing the type of change (e.g. FolderChange or ItemChange)</typeparam>
 public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     where TChange : Change
 {
-    private List<TChange> changes = new List<TChange>();
+    private readonly List<TChange> changes = new List<TChange>();
     private string syncState;
     private bool moreChangesAvailable;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ChangeCollection&lt;TChange&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ChangeCollection&lt;TChange&gt;" /> class.
     /// </summary>
     internal ChangeCollection()
     {
     }
 
     /// <summary>
-    /// Adds the specified change.
+    ///     Adds the specified change.
     /// </summary>
     /// <param name="change">The change.</param>
     internal void Add(TChange change)
     {
         EwsUtilities.Assert(change != null, "ChangeList.Add", "change is null");
 
-        this.changes.Add(change);
+        changes.Add(change);
     }
 
     /// <summary>
-    /// Gets the number of changes in the collection.
+    ///     Gets the number of changes in the collection.
     /// </summary>
-    public int Count
-    {
-        get { return this.changes.Count; }
-    }
+    public int Count => changes.Count;
 
     /// <summary>
-    /// Gets an individual change from the change collection.
+    ///     Gets an individual change from the change collection.
     /// </summary>
     /// <param name="index">Zero-based index.</param>
     /// <returns>An single change.</returns>
@@ -75,43 +68,43 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     {
         get
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
             }
 
-            return this.changes[index];
+            return changes[index];
         }
     }
 
     /// <summary>
-    /// Gets the SyncState blob returned by a synchronization operation.
+    ///     Gets the SyncState blob returned by a synchronization operation.
     /// </summary>
     public string SyncState
     {
-        get { return this.syncState; }
-        internal set { this.syncState = value; }
+        get => syncState;
+        internal set => syncState = value;
     }
 
     /// <summary>
-    /// Gets a value indicating whether the there are more changes to be synchronized from the server.
+    ///     Gets a value indicating whether the there are more changes to be synchronized from the server.
     /// </summary>
     public bool MoreChangesAvailable
     {
-        get { return this.moreChangesAvailable; }
-        internal set { this.moreChangesAvailable = value; }
+        get => moreChangesAvailable;
+        internal set => moreChangesAvailable = value;
     }
 
 
     #region IEnumerable<TChange> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TChange> GetEnumerator()
     {
-        return this.changes.GetEnumerator();
+        return changes.GetEnumerator();
     }
 
     #endregion
@@ -120,12 +113,12 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.changes.GetEnumerator();
+        return changes.GetEnumerator();
     }
 
     #endregion

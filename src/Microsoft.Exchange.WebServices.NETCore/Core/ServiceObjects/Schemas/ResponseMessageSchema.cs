@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents ResponseMessage schema definition.
+///     Represents ResponseMessage schema definition.
 /// </summary>
 internal class ResponseMessageSchema : ServiceObjectSchema
 {
@@ -38,23 +34,24 @@ internal class ResponseMessageSchema : ServiceObjectSchema
     internal static readonly ResponseMessageSchema Instance = new ResponseMessageSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(ItemSchema.Subject);
-        this.RegisterProperty(ItemSchema.Body);
-        this.RegisterProperty(EmailMessageSchema.ToRecipients);
-        this.RegisterProperty(EmailMessageSchema.CcRecipients);
-        this.RegisterProperty(EmailMessageSchema.BccRecipients);
-        this.RegisterProperty(EmailMessageSchema.IsReadReceiptRequested);
-        this.RegisterProperty(EmailMessageSchema.IsDeliveryReceiptRequested);
-        this.RegisterProperty(ResponseObjectSchema.ReferenceItemId);
-        this.RegisterProperty(ResponseObjectSchema.BodyPrefix);
+        RegisterProperty(ItemSchema.Subject);
+        RegisterProperty(ItemSchema.Body);
+        RegisterProperty(EmailMessageSchema.ToRecipients);
+        RegisterProperty(EmailMessageSchema.CcRecipients);
+        RegisterProperty(EmailMessageSchema.BccRecipients);
+        RegisterProperty(EmailMessageSchema.IsReadReceiptRequested);
+        RegisterProperty(EmailMessageSchema.IsDeliveryReceiptRequested);
+        RegisterProperty(ResponseObjectSchema.ReferenceItemId);
+        RegisterProperty(ResponseObjectSchema.BodyPrefix);
     }
 }

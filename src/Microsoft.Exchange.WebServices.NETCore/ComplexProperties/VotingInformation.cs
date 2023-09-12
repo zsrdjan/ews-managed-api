@@ -23,28 +23,27 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents voting information.
+///     Represents voting information.
 /// </summary>
 public sealed class VotingInformation : ComplexProperty
 {
-    private Collection<VotingOptionData> userOptions = new Collection<VotingOptionData>();
+    private readonly Collection<VotingOptionData> userOptions = new Collection<VotingOptionData>();
     private string votingResponse;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VotingInformation"/> class.
+    ///     Initializes a new instance of the <see cref="VotingInformation" /> class.
     /// </summary>
     internal VotingInformation()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -61,16 +60,16 @@ public sealed class VotingInformation : ComplexProperty
 
                         if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.VotingOptionData))
                         {
-                            VotingOptionData option = new VotingOptionData();
+                            var option = new VotingOptionData();
                             option.LoadFromXml(reader, reader.LocalName);
-                            this.userOptions.Add(option);
+                            userOptions.Add(option);
                         }
                     } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UserOptions));
                 }
 
                 return true;
             case XmlElementNames.VotingResponse:
-                this.votingResponse = reader.ReadElementValue<string>();
+                votingResponse = reader.ReadElementValue<string>();
                 return true;
             default:
                 return false;
@@ -78,18 +77,12 @@ public sealed class VotingInformation : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the list of user options.
+    ///     Gets the list of user options.
     /// </summary>
-    public Collection<VotingOptionData> UserOptions
-    {
-        get { return this.userOptions; }
-    }
+    public Collection<VotingOptionData> UserOptions => userOptions;
 
     /// <summary>
-    /// Gets the voting response.
+    ///     Gets the voting response.
     /// </summary>
-    public string VotingResponse
-    {
-        get { return this.votingResponse; }
-    }
+    public string VotingResponse => votingResponse;
 }

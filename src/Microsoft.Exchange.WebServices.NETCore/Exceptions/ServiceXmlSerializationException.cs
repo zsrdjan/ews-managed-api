@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when the XML for a request cannot be serialized.
+///     Represents an error that occurs when the XML for a request cannot be serialized.
 /// </summary>
 public class ServiceXmlSerializationException : ServiceLocalException
 {
     /// <summary>
-    /// ServiceXmlSerializationException Constructor.
+    ///     ServiceXmlSerializationException Constructor.
     /// </summary>
     public ServiceXmlSerializationException()
-        : base()
     {
     }
 
     /// <summary>
-    /// ServiceXmlSerializationException Constructor.
+    ///     ServiceXmlSerializationException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     public ServiceXmlSerializationException(string message)
@@ -51,7 +49,7 @@ public class ServiceXmlSerializationException : ServiceLocalException
     }
 
     /// <summary>
-    /// ServiceXmlSerializationException Constructor.
+    ///     ServiceXmlSerializationException Constructor.
     /// </summary>
     /// <param name="message">Error message text.</param>
     /// <param name="innerException">Inner exception.</param>
@@ -61,7 +59,8 @@ public class ServiceXmlSerializationException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceXmlSerializationException"/> class with serialized data.
+    ///     Initializes a new instance of the
+    ///     <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceXmlSerializationException" /> class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

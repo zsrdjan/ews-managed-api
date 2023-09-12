@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a "Streaming" Subscribe request.
+///     Represents a "Streaming" Subscribe request.
 /// </summary>
 internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<StreamingSubscription>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscribeToStreamingNotificationsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SubscribeToStreamingNotificationsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SubscribeToStreamingNotificationsRequest(ExchangeService service)
@@ -44,20 +40,20 @@ internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<Strea
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (!String.IsNullOrEmpty(this.Watermark))
+        if (!String.IsNullOrEmpty(Watermark))
         {
             throw new ArgumentException("Watermarks cannot be used with StreamingSubscriptions.", "Watermark");
         }
     }
 
     /// <summary>
-    /// Gets the name of the subscription XML element.
+    ///     Gets the name of the subscription XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetSubscriptionXmlElementName()
@@ -66,7 +62,7 @@ internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<Strea
     }
 
     /// <summary>
-    /// Internals the write elements to XML.
+    ///     Internals the write elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void InternalWriteElementsToXml(EwsServiceXmlWriter writer)
@@ -74,7 +70,7 @@ internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<Strea
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -88,7 +84,7 @@ internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<Strea
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()

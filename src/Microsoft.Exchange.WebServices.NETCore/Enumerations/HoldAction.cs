@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the hold action.
+///     Defines the hold action.
 /// </summary>
 public enum HoldAction
 {
     /// <summary>
-    /// Create new hold
+    ///     Create new hold
     /// </summary>
     Create,
 
     /// <summary>
-    /// Update query associated with a hold
+    ///     Update query associated with a hold
     /// </summary>
     Update,
 
     /// <summary>
-    /// Release the hold
+    ///     Release the hold
     /// </summary>
     Remove,
 }

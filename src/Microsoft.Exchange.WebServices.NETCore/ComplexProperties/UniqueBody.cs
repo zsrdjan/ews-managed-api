@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents the body part of an item that is unique to the conversation the item is part of. 
+///     Represents the body part of an item that is unique to the conversation the item is part of.
 /// </summary>
 public sealed class UniqueBody : ComplexProperty
 {
@@ -35,14 +35,14 @@ public sealed class UniqueBody : ComplexProperty
     private bool isTruncated;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UniqueBody"/> class.
+    ///     Initializes a new instance of the <see cref="UniqueBody" /> class.
     /// </summary>
     internal UniqueBody()
     {
     }
 
     /// <summary>
-    /// Defines an implicit conversion of UniqueBody into a string.
+    ///     Defines an implicit conversion of UniqueBody into a string.
     /// </summary>
     /// <param name="messageBody">The UniqueBody to convert to a string.</param>
     /// <returns>A string containing the text of the UniqueBody.</returns>
@@ -53,86 +53,77 @@ public sealed class UniqueBody : ComplexProperty
     }
 
     /// <summary>
-    /// Reads attributes from XML.
+    ///     Reads attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
+        bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
 
-        string attributeValue = reader.ReadAttributeValue(XmlAttributeNames.IsTruncated);
+        var attributeValue = reader.ReadAttributeValue(XmlAttributeNames.IsTruncated);
         if (!string.IsNullOrEmpty(attributeValue))
         {
-            this.isTruncated = bool.Parse(attributeValue);
+            isTruncated = bool.Parse(attributeValue);
         }
     }
 
     /// <summary>
-    /// Reads text value from XML.
+    ///     Reads text value from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        this.text = reader.ReadValue();
+        text = reader.ReadValue();
     }
 
     /// <summary>
-    /// Writes attributes to XML.
+    ///     Writes attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.BodyType, this.BodyType);
+        writer.WriteAttributeValue(XmlAttributeNames.BodyType, BodyType);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (!string.IsNullOrEmpty(this.Text))
+        if (!string.IsNullOrEmpty(Text))
         {
-            writer.WriteValue(this.Text, XmlElementNames.UniqueBody);
+            writer.WriteValue(Text, XmlElementNames.UniqueBody);
         }
     }
 
     /// <summary>
-    /// Gets the type of the unique body's text.
+    ///     Gets the type of the unique body's text.
     /// </summary>
-    public BodyType BodyType
-    {
-        get { return this.bodyType; }
-    }
+    public BodyType BodyType => bodyType;
 
     /// <summary>
-    /// Gets the text of the unique body.
+    ///     Gets the text of the unique body.
     /// </summary>
-    public string Text
-    {
-        get { return this.text; }
-    }
+    public string Text => text;
 
     /// <summary>
-    /// Gets whether the unique body is truncated.
+    ///     Gets whether the unique body is truncated.
     /// </summary>
-    public bool IsTruncated
-    {
-        get { return this.isTruncated; }
-    }
+    public bool IsTruncated => isTruncated;
 
 
     #region Object method overrides
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
-        return (this.Text == null) ? string.Empty : this.Text;
+        return (Text == null) ? string.Empty : Text;
     }
 
     #endregion

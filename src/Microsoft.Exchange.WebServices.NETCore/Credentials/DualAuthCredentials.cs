@@ -23,25 +23,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data.Credentials;
-
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
+namespace Microsoft.Exchange.WebServices.Data.Credentials;
+
 /// <summary>
-/// DualAuthCredentials wraps an instance of X509CertificateCollection and basic auth credentials used for client dual authentication.
+///     DualAuthCredentials wraps an instance of X509CertificateCollection and basic auth credentials used for client dual
+///     authentication.
 /// </summary>
 public sealed class DualAuthCredentials : ExchangeCredentials
 {
     /// <summary>
-    /// Collection of client certificates.
+    ///     Collection of client certificates.
     /// </summary>
-    private X509CertificateCollection clientCertificates;
+    private readonly X509CertificateCollection clientCertificates;
 
-    private ICredentials credentials;
+    private readonly ICredentials credentials;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DualAuthCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="DualAuthCredentials" /> class.
     /// </summary>
     /// <param name="clientCertificates">The client certificates.</param>
     /// <param name="userName">The username.</param>
@@ -51,24 +52,21 @@ public sealed class DualAuthCredentials : ExchangeCredentials
         EwsUtilities.ValidateParam(clientCertificates, "clientCertificates");
 
         this.clientCertificates = clientCertificates;
-        this.credentials = new NetworkCredential(userName, password);
+        credentials = new NetworkCredential(userName, password);
     }
 
     /// <summary>
-    /// This method is called to apply credentials to a service request before the request is made.
+    ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
     internal override void PrepareWebRequest(IEwsHttpWebRequest request)
     {
-        request.ClientCertificates = this.ClientCertificates;
-        request.Credentials = this.credentials;
+        request.ClientCertificates = ClientCertificates;
+        request.Credentials = credentials;
     }
 
     /// <summary>
-    /// Gets the client certificates collection.
+    ///     Gets the client certificates collection.
     /// </summary>
-    public X509CertificateCollection ClientCertificates
-    {
-        get { return this.clientCertificates; }
-    }
+    public X509CertificateCollection ClientCertificates => clientCertificates;
 }

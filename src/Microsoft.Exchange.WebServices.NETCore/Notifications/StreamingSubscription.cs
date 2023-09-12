@@ -25,16 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Threading;
-
 /// <summary>
-/// Represents a streaming subscription.
+///     Represents a streaming subscription.
 /// </summary>
 public sealed class StreamingSubscription : SubscriptionBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="StreamingSubscription"/> class.
+    ///     Initializes a new instance of the <see cref="StreamingSubscription" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal StreamingSubscription(ExchangeService service)
@@ -43,37 +40,31 @@ public sealed class StreamingSubscription : SubscriptionBase
     }
 
     /// <summary>
-    /// Initializes a new instance with the specified subscription id, for continuing an existing subscription.
+    ///     Initializes a new instance with the specified subscription id, for continuing an existing subscription.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="subscriptionId">The id of a previously created streaming subscription.</param>
     public StreamingSubscription(ExchangeService service, string subscriptionId)
         : base(service)
     {
-        this.Id = subscriptionId;
+        Id = subscriptionId;
     }
 
     /// <summary>
-    /// Unsubscribes from the streaming subscription.
+    ///     Unsubscribes from the streaming subscription.
     /// </summary>
-    public System.Threading.Tasks.Task Unsubscribe(CancellationToken token = default(CancellationToken))
+    public System.Threading.Tasks.Task Unsubscribe(CancellationToken token = default)
     {
-        return this.Service.Unsubscribe(this.Id, token);
+        return Service.Unsubscribe(Id, token);
     }
 
     /// <summary>
-    /// Gets the service used to create this subscription.
+    ///     Gets the service used to create this subscription.
     /// </summary>
-    public new ExchangeService Service
-    {
-        get { return base.Service; }
-    }
+    public new ExchangeService Service => base.Service;
 
     /// <summary>
-    /// Gets a value indicating whether this subscription uses watermarks.
+    ///     Gets a value indicating whether this subscription uses watermarks.
     /// </summary>
-    protected override bool UsesWatermark
-    {
-        get { return false; }
-    }
+    protected override bool UsesWatermark => false;
 }

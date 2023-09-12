@@ -25,22 +25,20 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents the base class for all property definitions.
+///     Represents the base class for all property definitions.
 /// </summary>
 public abstract class PropertyDefinitionBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PropertyDefinitionBase"/> class.
+    ///     Initializes a new instance of the <see cref="PropertyDefinitionBase" /> class.
     /// </summary>
     internal PropertyDefinitionBase()
     {
     }
 
     /// <summary>
-    /// Tries to load from XML.
+    ///     Tries to load from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyDefinition">The property definition.</param>
@@ -71,53 +69,53 @@ public abstract class PropertyDefinitionBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal abstract string GetXmlElementName();
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal abstract void WriteAttributesToXml(EwsServiceXmlWriter writer);
 
     /// <summary>
-    /// Gets the minimum Exchange version that supports this property.
+    ///     Gets the minimum Exchange version that supports this property.
     /// </summary>
     /// <value>The version.</value>
     public abstract ExchangeVersion Version { get; }
 
     /// <summary>
-    /// Gets the property definition's printable name.
+    ///     Gets the property definition's printable name.
     /// </summary>
     /// <returns>The property definition's printable name.</returns>
     internal abstract string GetPrintableName();
 
     /// <summary>
-    /// Gets the type of the property.
+    ///     Gets the type of the property.
     /// </summary>
     public abstract Type Type { get; }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal virtual void WriteToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteStartElement(XmlNamespace.Types, this.GetXmlElementName());
-        this.WriteAttributesToXml(writer);
+        writer.WriteStartElement(XmlNamespace.Types, GetXmlElementName());
+        WriteAttributesToXml(writer);
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
-        return this.GetPrintableName();
+        return GetPrintableName();
     }
 }

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 /// <summary>
-/// Lists different keys that can be passed to the people query context dictionary
+///     Lists different keys that can be passed to the people query context dictionary
 /// </summary>
 public sealed class PeopleQueryContextKeys
 {

@@ -23,18 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a call to the CreateAttachment web method fails.
+///     Represents an error that occurs when a call to the CreateAttachment web method fails.
 /// </summary>
 public sealed class CreateAttachmentException : BatchServiceResponseException<CreateAttachmentResponse>
 {
     /// <summary>
-    /// Initializes a new instance of CreateAttachmentException.
+    ///     Initializes a new instance of CreateAttachmentException.
     /// </summary>
     /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
     /// <param name="message">The message that describes the error.</param>
@@ -47,7 +46,7 @@ public sealed class CreateAttachmentException : BatchServiceResponseException<Cr
     }
 
     /// <summary>
-    /// Initializes a new instance of CreateAttachmentException.
+    ///     Initializes a new instance of CreateAttachmentException.
     /// </summary>
     /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
     /// <param name="message">The message that describes the error.</param>
@@ -62,7 +61,8 @@ public sealed class CreateAttachmentException : BatchServiceResponseException<Cr
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.CreateAttachmentException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.CreateAttachmentException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

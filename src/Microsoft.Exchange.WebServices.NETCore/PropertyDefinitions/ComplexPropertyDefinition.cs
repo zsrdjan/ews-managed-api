@@ -25,26 +25,24 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Delegate used to create instances of ComplexProperty
+///     Delegate used to create instances of ComplexProperty
 /// </summary>
 /// <typeparam name="TComplexProperty">Type of complex property.</typeparam>
 internal delegate TComplexProperty CreateComplexPropertyDelegate<TComplexProperty>()
     where TComplexProperty : ComplexProperty;
 
 /// <summary>
-/// Represents base complex property type.
+///     Represents base complex property type.
 /// </summary>
 /// <typeparam name="TComplexProperty">The type of the complex property.</typeparam>
 internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefinitionBase
     where TComplexProperty : ComplexProperty
 {
-    private CreateComplexPropertyDelegate<TComplexProperty> propertyCreationDelegate;
+    private readonly CreateComplexPropertyDelegate<TComplexProperty> propertyCreationDelegate;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="flags">The flags.</param>
@@ -68,7 +66,7 @@ internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefi
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -86,7 +84,7 @@ internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefi
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -106,14 +104,14 @@ internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefi
     }
 
     /// <summary>
-    /// Creates the property instance.
+    ///     Creates the property instance.
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <returns>ComplexProperty instance.</returns>
     internal override ComplexProperty CreatePropertyInstance(ServiceObject owner)
     {
-        TComplexProperty complexProperty = this.propertyCreationDelegate();
-        IOwnedProperty ownedProperty = complexProperty as IOwnedProperty;
+        var complexProperty = propertyCreationDelegate();
+        var ownedProperty = complexProperty as IOwnedProperty;
 
         if (ownedProperty != null)
         {
@@ -124,10 +122,7 @@ internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefi
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(TComplexProperty); }
-    }
+    public override Type Type => typeof(TComplexProperty);
 }

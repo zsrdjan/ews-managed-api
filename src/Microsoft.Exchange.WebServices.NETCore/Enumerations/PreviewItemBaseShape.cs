@@ -25,22 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Preview item base shape
+///     Preview item base shape
 /// </summary>
 public enum PreviewItemBaseShape
 {
     /// <summary>
-    /// Default (all properties required for showing preview by default)
+    ///     Default (all properties required for showing preview by default)
     /// </summary>
     Default,
 
     /// <summary>
-    /// Compact (only a set of core properties)
+    ///     Compact (only a set of core properties)
     /// </summary>
     Compact,
 }

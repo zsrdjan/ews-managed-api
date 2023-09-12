@@ -23,35 +23,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System.Collections.Generic;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents a user setting that is a collection of protocol connection.
+///     Represents a user setting that is a collection of protocol connection.
 /// </summary>
 public sealed class ProtocolConnectionCollection
 {
     private List<ProtocolConnection> connections;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ProtocolConnectionCollection"/> class.
+    ///     Initializes a new instance of the <see cref="ProtocolConnectionCollection" /> class.
     /// </summary>
     internal ProtocolConnectionCollection()
     {
-        this.connections = new List<ProtocolConnection>();
+        connections = new List<ProtocolConnection>();
     }
 
     /// <summary>
-    /// Read user setting with ProtocolConnectionCollection value.
+    ///     Read user setting with ProtocolConnectionCollection value.
     /// </summary>
     /// <param name="reader">EwsServiceXmlReader</param>
     internal static ProtocolConnectionCollection LoadFromXml(EwsXmlReader reader)
     {
-        ProtocolConnectionCollection value = new ProtocolConnectionCollection();
+        var value = new ProtocolConnectionCollection();
         ProtocolConnection connection = null;
 
         do
@@ -75,11 +74,11 @@ public sealed class ProtocolConnectionCollection
     }
 
     /// <summary>
-    /// Gets the Connections.
+    ///     Gets the Connections.
     /// </summary>
     public List<ProtocolConnection> Connections
     {
-        get { return this.connections; }
-        internal set { this.connections = value; }
+        get => connections;
+        internal set => connections = value;
     }
 }

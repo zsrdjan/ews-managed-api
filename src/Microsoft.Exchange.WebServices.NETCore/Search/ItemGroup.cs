@@ -23,20 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a group of items as returned by grouped item search operations.
+///     Represents a group of items as returned by grouped item search operations.
 /// </summary>
 /// <typeparam name="TItem">The type of item in the group.</typeparam>
 public sealed class ItemGroup<TItem>
     where TItem : Item
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ItemGroup&lt;TItem&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ItemGroup&lt;TItem&gt;" /> class.
     /// </summary>
     /// <param name="groupIndex">Index of the group.</param>
     /// <param name="items">The items.</param>
@@ -44,17 +43,17 @@ public sealed class ItemGroup<TItem>
     {
         EwsUtilities.Assert(items != null, "ItemGroup.ctor", "items is null");
 
-        this.GroupIndex = groupIndex;
-        this.Items = new Collection<TItem>(items);
+        GroupIndex = groupIndex;
+        Items = new Collection<TItem>(items);
     }
 
     /// <summary>
-    /// Gets an index identifying the group.
+    ///     Gets an index identifying the group.
     /// </summary>
     public string GroupIndex { get; private set; }
 
     /// <summary>
-    /// Gets a collection of the items in this group.
+    ///     Gets a collection of the items in this group.
     /// </summary>
     public Collection<TItem> Items { get; private set; }
 }

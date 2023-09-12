@@ -25,10 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Encapsulates information on the occurrence of a recurring appointment.
+///     Encapsulates information on the occurrence of a recurring appointment.
 /// </summary>
 public sealed class Flag : ComplexProperty
 {
@@ -38,14 +36,14 @@ public sealed class Flag : ComplexProperty
     private DateTime completeDate;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Flag"/> class.
+    ///     Initializes a new instance of the <see cref="Flag" /> class.
     /// </summary>
     public Flag()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -54,16 +52,16 @@ public sealed class Flag : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.FlagStatus:
-                this.flagStatus = reader.ReadElementValue<ItemFlagStatus>();
+                flagStatus = reader.ReadElementValue<ItemFlagStatus>();
                 return true;
             case XmlElementNames.StartDate:
-                this.startDate = reader.ReadElementValueAsDateTime().Value;
+                startDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
             case XmlElementNames.DueDate:
-                this.dueDate = reader.ReadElementValueAsDateTime().Value;
+                dueDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
             case XmlElementNames.CompleteDate:
-                this.completeDate = reader.ReadElementValueAsDateTime().Value;
+                completeDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
             default:
                 return false;
@@ -71,69 +69,69 @@ public sealed class Flag : ComplexProperty
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FlagStatus, this.FlagStatus);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FlagStatus, FlagStatus);
 
-        if (this.FlagStatus == ItemFlagStatus.Flagged)
+        if (FlagStatus == ItemFlagStatus.Flagged)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.StartDate, this.StartDate);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DueDate, this.DueDate);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.StartDate, StartDate);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DueDate, DueDate);
         }
-        else if (this.FlagStatus == ItemFlagStatus.Complete)
+        else if (FlagStatus == ItemFlagStatus.Complete)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.CompleteDate, this.CompleteDate);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.CompleteDate, CompleteDate);
         }
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal void Validate()
     {
-        EwsUtilities.ValidateParam(this.flagStatus, "FlagStatus");
+        EwsUtilities.ValidateParam(flagStatus, "FlagStatus");
     }
 
     /// <summary>
-    /// Gets or sets the flag status.
+    ///     Gets or sets the flag status.
     /// </summary>
     public ItemFlagStatus FlagStatus
     {
-        get { return this.flagStatus; }
+        get => flagStatus;
 
-        set { this.SetFieldValue<ItemFlagStatus>(ref this.flagStatus, value); }
+        set => SetFieldValue(ref flagStatus, value);
     }
 
     /// <summary>
-    /// Gets the start date.
+    ///     Gets the start date.
     /// </summary>
     public DateTime StartDate
     {
-        get { return this.startDate; }
+        get => startDate;
 
-        set { this.SetFieldValue<DateTime>(ref this.startDate, value); }
+        set => SetFieldValue(ref startDate, value);
     }
 
     /// <summary>
-    /// Gets the due date.
+    ///     Gets the due date.
     /// </summary>
     public DateTime DueDate
     {
-        get { return this.dueDate; }
+        get => dueDate;
 
-        set { this.SetFieldValue<DateTime>(ref this.dueDate, value); }
+        set => SetFieldValue(ref dueDate, value);
     }
 
     /// <summary>
-    /// Gets the complete date.
+    ///     Gets the complete date.
     /// </summary>
     public DateTime CompleteDate
     {
-        get { return this.completeDate; }
+        get => completeDate;
 
-        set { this.SetFieldValue<DateTime>(ref this.completeDate, value); }
+        set => SetFieldValue(ref completeDate, value);
     }
 }

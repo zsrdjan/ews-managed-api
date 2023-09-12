@@ -23,66 +23,62 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Text;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the MIME content of an item.
+///     Represents the MIME content of an item.
 /// </summary>
 public sealed class MimeContent : MimeContentBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MimeContent"/> class.
+    ///     Initializes a new instance of the <see cref="MimeContent" /> class.
     /// </summary>
     public MimeContent()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MimeContent"/> class.
+    ///     Initializes a new instance of the <see cref="MimeContent" /> class.
     /// </summary>
     /// <param name="characterSet">The character set of the content.</param>
     /// <param name="content">The content.</param>
     public MimeContent(string characterSet, byte[] content)
     {
-        this.CharacterSet = characterSet;
-        this.Content = content;
+        CharacterSet = characterSet;
+        Content = content;
     }
 
 
     #region Object method overrides
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
-        if (this.Content == null)
+        if (Content == null)
         {
             return string.Empty;
         }
-        else
+
+        try
         {
-            try
-            {
-                // Try to convert to original MIME content using specified charset. If this fails, 
-                // return the Base64 representation of the content.
-                // Note: Encoding.GetString can throw DecoderFallbackException which is a subclass
-                // of ArgumentException.
-                string charSet = string.IsNullOrEmpty(this.CharacterSet) ? Encoding.UTF8.EncodingName
-                    : this.CharacterSet;
-                Encoding encoding = Encoding.GetEncoding(charSet);
-                return encoding.GetString(this.Content);
-            }
-            catch (ArgumentException)
-            {
-                return Convert.ToBase64String(this.Content);
-            }
+            // Try to convert to original MIME content using specified charset. If this fails, 
+            // return the Base64 representation of the content.
+            // Note: Encoding.GetString can throw DecoderFallbackException which is a subclass
+            // of ArgumentException.
+            var charSet = string.IsNullOrEmpty(CharacterSet) ? Encoding.UTF8.EncodingName : CharacterSet;
+            var encoding = Encoding.GetEncoding(charSet);
+            return encoding.GetString(Content);
+        }
+        catch (ArgumentException)
+        {
+            return Convert.ToBase64String(Content);
         }
     }
 

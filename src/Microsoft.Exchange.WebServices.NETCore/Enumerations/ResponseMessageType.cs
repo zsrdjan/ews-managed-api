@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the type of a ResponseMessage object.
+///     Defines the type of a ResponseMessage object.
 /// </summary>
 public enum ResponseMessageType
 {
     /// <summary>
-    /// The ResponseMessage is a reply to the sender of a message.
+    ///     The ResponseMessage is a reply to the sender of a message.
     /// </summary>
     Reply,
 
     /// <summary>
-    /// The ResponseMessage is a reply to the sender and all the recipients of a message.
+    ///     The ResponseMessage is a reply to the sender and all the recipients of a message.
     /// </summary>
     ReplyAll,
 
     /// <summary>
-    /// The ResponseMessage is a forward.
+    ///     The ResponseMessage is a forward.
     /// </summary>
     Forward
 }

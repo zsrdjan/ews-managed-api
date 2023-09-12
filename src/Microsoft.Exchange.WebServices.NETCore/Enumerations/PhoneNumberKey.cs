@@ -26,122 +26,122 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines phone number entries for a contact.
+///     Defines phone number entries for a contact.
 /// </summary>
 public enum PhoneNumberKey
 {
     /// <summary>
-    /// The assistant's phone number.
+    ///     The assistant's phone number.
     /// </summary>
     AssistantPhone,
 
     /// <summary>
-    /// The business fax number.
+    ///     The business fax number.
     /// </summary>
     BusinessFax,
 
     /// <summary>
-    /// The business phone number.
+    ///     The business phone number.
     /// </summary>
     BusinessPhone,
 
     /// <summary>
-    /// The second business phone number.
+    ///     The second business phone number.
     /// </summary>
     BusinessPhone2,
 
     /// <summary>
-    /// The callback number.
+    ///     The callback number.
     /// </summary>
     Callback,
 
     /// <summary>
-    /// The car phone number.
+    ///     The car phone number.
     /// </summary>
     CarPhone,
 
     /// <summary>
-    /// The company's main phone number.
+    ///     The company's main phone number.
     /// </summary>
     CompanyMainPhone,
 
     /// <summary>
-    /// The home fax number.
+    ///     The home fax number.
     /// </summary>
     HomeFax,
 
     /// <summary>
-    /// The home phone number.
+    ///     The home phone number.
     /// </summary>
     HomePhone,
 
     /// <summary>
-    /// The second home phone number.
+    ///     The second home phone number.
     /// </summary>
     HomePhone2,
 
     /// <summary>
-    /// The ISDN number.
+    ///     The ISDN number.
     /// </summary>
     Isdn,
 
     /// <summary>
-    /// The mobile phone number.
+    ///     The mobile phone number.
     /// </summary>
     MobilePhone,
 
     /// <summary>
-    /// An alternate fax number.
+    ///     An alternate fax number.
     /// </summary>
     OtherFax,
 
     /// <summary>
-    /// An alternate phone number.
+    ///     An alternate phone number.
     /// </summary>
     OtherTelephone,
 
     /// <summary>
-    /// The pager number.
+    ///     The pager number.
     /// </summary>
     Pager,
 
     /// <summary>
-    /// The primary phone number.
+    ///     The primary phone number.
     /// </summary>
     PrimaryPhone,
 
     /// <summary>
-    /// The radio phone number.
+    ///     The radio phone number.
     /// </summary>
     RadioPhone,
 
     /// <summary>
-    /// The Telex number.
+    ///     The Telex number.
     /// </summary>
     Telex,
 
     /// <summary>
-    /// The TTY/TTD phone number.
+    ///     The TTY/TTD phone number.
     /// </summary>
     TtyTddPhone,
 
     /// <summary>
-    /// Business mobile number.
+    ///     Business mobile number.
     /// </summary>
     BusinessMobile,
 
     /// <summary>
-    /// IP Phone number.
+    ///     IP Phone number.
     /// </summary>
     IPPhone,
 
     /// <summary>
-    /// Mms number.
+    ///     Mms number.
     /// </summary>
     Mms,
 
     /// <summary>
-    /// Msn number.
+    ///     Msn number.
     /// </summary>
     Msn
 }

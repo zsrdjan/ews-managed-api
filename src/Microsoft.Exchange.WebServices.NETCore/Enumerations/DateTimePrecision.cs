@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the precision for returned DateTime values
+///     Defines the precision for returned DateTime values
 /// </summary>
 public enum DateTimePrecision
 {
     /// <summary>
-    /// Default value.  No SOAP header emitted.
+    ///     Default value.  No SOAP header emitted.
     /// </summary>
     Default,
 
     /// <summary>
-    /// Seconds
+    ///     Seconds
     /// </summary>
     Seconds,
 
     /// <summary>
-    /// Milliseconds
+    ///     Milliseconds
     /// </summary>
     Milliseconds
 }

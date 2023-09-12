@@ -26,20 +26,19 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a collection of rule operation errors.
+///     Represents a collection of rule operation errors.
 /// </summary>
 public sealed class RuleOperationErrorCollection : ComplexPropertyCollection<RuleOperationError>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RuleOperationErrorCollection"/> class.
+    ///     Initializes a new instance of the <see cref="RuleOperationErrorCollection" /> class.
     /// </summary>
     internal RuleOperationErrorCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Creates an RuleOperationError object from an XML element name.
+    ///     Creates an RuleOperationError object from an XML element name.
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the RuleOperationError object.</param>
     /// <returns>A RuleOperationError object.</returns>
@@ -49,14 +48,12 @@ public sealed class RuleOperationErrorCollection : ComplexPropertyCollection<Rul
         {
             return new RuleOperationError();
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     /// <summary>
-    /// Retrieves the XML element name corresponding to the provided RuleOperationError object.
+    ///     Retrieves the XML element name corresponding to the provided RuleOperationError object.
     /// </summary>
     /// <param name="operationError">The RuleOperationError object from which to determine the XML element name.</param>
     /// <returns>The XML element name corresponding to the provided RuleOperationError object.</returns>

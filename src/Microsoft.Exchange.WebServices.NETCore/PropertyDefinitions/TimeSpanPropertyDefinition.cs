@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents TimeSpan property definition.
+///     Represents TimeSpan property definition.
 /// </summary>
 internal class TimeSpanPropertyDefinition : GenericPropertyDefinition<TimeSpan>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeSpanPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TimeSpanPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -50,7 +48,7 @@ internal class TimeSpanPropertyDefinition : GenericPropertyDefinition<TimeSpan>
     }
 
     /// <summary>
-    /// Parses the specified value.
+    ///     Parses the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>TimeSpan value.</returns>
@@ -60,7 +58,7 @@ internal class TimeSpanPropertyDefinition : GenericPropertyDefinition<TimeSpan>
     }
 
     /// <summary>
-    /// Converts instance to a string.
+    ///     Converts instance to a string.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>TimeSpan value.</returns>

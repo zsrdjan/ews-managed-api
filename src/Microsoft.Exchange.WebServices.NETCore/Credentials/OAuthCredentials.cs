@@ -23,19 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// OAuthCredentials provides credentials for server-to-server authentication. The JSON web token is 
-/// defined at http://tools.ietf.org/id/draft-jones-json-web-token-03.txt. The token string is 
-/// base64url encoded (described in http://www.ietf.org/rfc/rfc4648.txt, section 5).
-/// 
-/// OAuthCredentials is supported for Exchange 2013 or above.
+///     OAuthCredentials provides credentials for server-to-server authentication. The JSON web token is
+///     defined at http://tools.ietf.org/id/draft-jones-json-web-token-03.txt. The token string is
+///     base64url encoded (described in http://www.ietf.org/rfc/rfc4648.txt, section 5).
+///     OAuthCredentials is supported for Exchange 2013 or above.
 /// </summary>
 public sealed class OAuthCredentials : ExchangeCredentials
 {
@@ -51,7 +49,7 @@ public sealed class OAuthCredentials : ExchangeCredentials
     private readonly ICredentials credentials;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OAuthCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="OAuthCredentials" /> class.
     /// </summary>
     /// <param name="token">The JSON web token string.</param>
     public OAuthCredentials(string token)
@@ -60,7 +58,7 @@ public sealed class OAuthCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OAuthCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="OAuthCredentials" /> class.
     /// </summary>
     /// <param name="token"></param>
     /// <param name="verbatim"></param>
@@ -75,14 +73,14 @@ public sealed class OAuthCredentials : ExchangeCredentials
         }
         else
         {
-            int whiteSpacePosition = token.IndexOf(' ');
+            var whiteSpacePosition = token.IndexOf(' ');
             if (whiteSpacePosition == -1)
             {
                 rawToken = token;
             }
             else
             {
-                string authType = token.Substring(0, whiteSpacePosition);
+                var authType = token.Substring(0, whiteSpacePosition);
                 if (string.Compare(authType, BearerAuthenticationType, StringComparison.OrdinalIgnoreCase) != 0)
                 {
                     throw new ArgumentException(Strings.InvalidAuthScheme);
@@ -101,8 +99,8 @@ public sealed class OAuthCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OAuthCredentials"/> class using
-    /// specified credentials.
+    ///     Initializes a new instance of the <see cref="OAuthCredentials" /> class using
+    ///     specified credentials.
     /// </summary>
     /// <param name="credentials">Credentials to use.</param>
     public OAuthCredentials(ICredentials credentials)
@@ -113,21 +111,21 @@ public sealed class OAuthCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Add the Authorization header to a service request.
+    ///     Add the Authorization header to a service request.
     /// </summary>
     /// <param name="request">The request</param>
     internal override void PrepareWebRequest(IEwsHttpWebRequest request)
     {
         base.PrepareWebRequest(request);
 
-        if (this.token != null)
+        if (token != null)
         {
             request.Headers.Remove(HttpRequestHeader.Authorization.ToString());
-            request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, this.token);
+            request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, token);
         }
         else
         {
-            request.Credentials = this.credentials;
+            request.Credentials = credentials;
         }
     }
 }

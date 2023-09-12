@@ -23,23 +23,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.IO;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// XmlDocument that does not allow DTD parsing.
+///     XmlDocument that does not allow DTD parsing.
 /// </summary>
 internal class SafeXmlDocument : XmlDocument
 {
     #region Members
 
     /// <summary>
-    /// Xml settings object.
+    ///     Xml settings object.
     /// </summary>
-    private XmlReaderSettings settings = new XmlReaderSettings()
+    private readonly XmlReaderSettings settings = new XmlReaderSettings
     {
         DtdProcessing = DtdProcessing.Prohibit
     };
@@ -50,15 +48,14 @@ internal class SafeXmlDocument : XmlDocument
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the SafeXmlDocument class.
+    ///     Initializes a new instance of the SafeXmlDocument class.
     /// </summary>
     public SafeXmlDocument()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the SafeXmlDocument class with the specified XmlImplementation.
+    ///     Initializes a new instance of the SafeXmlDocument class with the specified XmlImplementation.
     /// </summary>
     /// <remarks>Not supported do to no use within exchange dev code.</remarks>
     /// <param name="imp">The XmlImplementation to use.</param>
@@ -68,7 +65,7 @@ internal class SafeXmlDocument : XmlDocument
     }
 
     /// <summary>
-    /// Initializes a new instance of the SafeXmlDocument class with the specified XmlNameTable.
+    ///     Initializes a new instance of the SafeXmlDocument class with the specified XmlNameTable.
     /// </summary>
     /// <param name="nt">The XmlNameTable to use.</param>
     public SafeXmlDocument(XmlNameTable nt)
@@ -82,31 +79,31 @@ internal class SafeXmlDocument : XmlDocument
     #region Methods
 
     /// <summary>
-    /// Loads the XML document from the specified stream.
+    ///     Loads the XML document from the specified stream.
     /// </summary>
     /// <param name="inStream">The stream containing the XML document to load.</param>
     public override void Load(Stream inStream)
     {
-        using (XmlReader reader = XmlReader.Create(inStream, this.settings))
+        using (var reader = XmlReader.Create(inStream, settings))
         {
-            this.Load(reader);
+            Load(reader);
         }
     }
 
     /// <summary>
-    /// Loads the XML document from the specified TextReader.
+    ///     Loads the XML document from the specified TextReader.
     /// </summary>
     /// <param name="txtReader">The TextReader used to feed the XML data into the document.</param>
     public override void Load(TextReader txtReader)
     {
-        using (XmlReader reader = XmlReader.Create(txtReader, this.settings))
+        using (var reader = XmlReader.Create(txtReader, settings))
         {
-            this.Load(reader);
+            Load(reader);
         }
     }
 
     /// <summary>
-    /// Loads the XML document from the specified XmlReader.
+    ///     Loads the XML document from the specified XmlReader.
     /// </summary>
     /// <param name="reader">The XmlReader used to feed the XML data into the document.</param>
     public override void Load(XmlReader reader)
@@ -137,12 +134,12 @@ internal class SafeXmlDocument : XmlDocument
     }
 
     /// <summary>
-    /// Loads the XML document from the specified string.
+    ///     Loads the XML document from the specified string.
     /// </summary>
     /// <param name="xml">String containing the XML document to load.</param>
     public override void LoadXml(string xml)
     {
-        using (XmlReader reader = XmlReader.Create(new StringReader(xml), this.settings))
+        using (var reader = XmlReader.Create(new StringReader(xml), settings))
         {
             base.Load(reader);
         }

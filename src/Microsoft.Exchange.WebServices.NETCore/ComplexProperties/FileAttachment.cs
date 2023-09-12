@@ -25,13 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
 /// <summary>
-/// Represents a file attachment.
+///     Represents a file attachment.
 /// </summary>
 public sealed class FileAttachment : Attachment
 {
@@ -42,7 +37,7 @@ public sealed class FileAttachment : Attachment
     private bool isContactPhoto;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FileAttachment"/> class.
+    ///     Initializes a new instance of the <see cref="FileAttachment" /> class.
     /// </summary>
     /// <param name="owner">The owner.</param>
     internal FileAttachment(Item owner)
@@ -51,7 +46,7 @@ public sealed class FileAttachment : Attachment
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FileAttachment"/> class.
+    ///     Initializes a new instance of the <see cref="FileAttachment" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal FileAttachment(ExchangeService service)
@@ -60,7 +55,7 @@ public sealed class FileAttachment : Attachment
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -69,37 +64,37 @@ public sealed class FileAttachment : Attachment
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     /// <param name="attachmentIndex">Index of this attachment.</param>
     internal override void Validate(int attachmentIndex)
     {
-        if (string.IsNullOrEmpty(this.fileName) && (this.content == null) && (this.contentStream == null))
+        if (string.IsNullOrEmpty(fileName) && (content == null) && (contentStream == null))
         {
             throw new ServiceValidationException(string.Format(Strings.FileAttachmentContentIsNotSet, attachmentIndex));
         }
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
     internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        bool result = base.TryReadElementFromXml(reader);
+        var result = base.TryReadElementFromXml(reader);
 
         if (!result)
         {
             if (reader.LocalName == XmlElementNames.IsContactPhoto)
             {
-                this.isContactPhoto = reader.ReadElementValue<bool>();
+                isContactPhoto = reader.ReadElementValue<bool>();
             }
             else if (reader.LocalName == XmlElementNames.Content)
             {
-                if (this.loadToStream != null)
+                if (loadToStream != null)
                 {
-                    reader.ReadBase64ElementValue(this.loadToStream);
+                    reader.ReadBase64ElementValue(loadToStream);
                 }
                 else
                 {
@@ -108,7 +103,7 @@ public sealed class FileAttachment : Attachment
                     // TODO: Should we mark the attachment to indicate that content is stored elsewhere?
                     if (reader.Service.FileAttachmentContentHandler != null)
                     {
-                        Stream outputStream = reader.Service.FileAttachmentContentHandler.GetOutputStream(this.Id);
+                        var outputStream = reader.Service.FileAttachmentContentHandler.GetOutputStream(Id);
 
                         if (outputStream != null)
                         {
@@ -116,12 +111,12 @@ public sealed class FileAttachment : Attachment
                         }
                         else
                         {
-                            this.content = reader.ReadBase64ElementValue();
+                            content = reader.ReadBase64ElementValue();
                         }
                     }
                     else
                     {
-                        this.content = reader.ReadBase64ElementValue();
+                        content = reader.ReadBase64ElementValue();
                     }
                 }
 
@@ -133,7 +128,7 @@ public sealed class FileAttachment : Attachment
     }
 
     /// <summary>
-    /// For FileAttachment, the only thing need to patch is the AttachmentId.
+    ///     For FileAttachment, the only thing need to patch is the AttachmentId.
     /// </summary>
     /// <param name="reader"></param>
     /// <returns></returns>
@@ -143,7 +138,7 @@ public sealed class FileAttachment : Attachment
     }
 
     /// <summary>
-    /// Writes elements and content to XML.
+    ///     Writes elements and content to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -152,25 +147,25 @@ public sealed class FileAttachment : Attachment
 
         if (writer.Service.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsContactPhoto, this.isContactPhoto);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsContactPhoto, isContactPhoto);
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Content);
 
-        if (!string.IsNullOrEmpty(this.FileName))
+        if (!string.IsNullOrEmpty(FileName))
         {
-            using (FileStream fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
+            using (var fileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
             {
                 writer.WriteBase64ElementValue(fileStream);
             }
         }
-        else if (this.ContentStream != null)
+        else if (ContentStream != null)
         {
-            writer.WriteBase64ElementValue(this.ContentStream);
+            writer.WriteBase64ElementValue(ContentStream);
         }
-        else if (this.Content != null)
+        else if (Content != null)
         {
-            writer.WriteBase64ElementValue(this.Content);
+            writer.WriteBase64ElementValue(Content);
         }
         else
         {
@@ -181,117 +176,120 @@ public sealed class FileAttachment : Attachment
     }
 
     /// <summary>
-    /// Loads the content of the file attachment into the specified stream. Calling this method results in a call to EWS.
+    ///     Loads the content of the file attachment into the specified stream. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="stream">The stream to load the content of the attachment into.</param>
     public async System.Threading.Tasks.Task Load(Stream stream)
     {
-        this.loadToStream = stream;
+        loadToStream = stream;
 
         try
         {
-            await this.Load();
+            await Load();
         }
         finally
         {
-            this.loadToStream = null;
+            loadToStream = null;
         }
     }
 
     /// <summary>
-    /// Loads the content of the file attachment into the specified file. Calling this method results in a call to EWS.
+    ///     Loads the content of the file attachment into the specified file. Calling this method results in a call to EWS.
     /// </summary>
-    /// <param name="fileName">The name of the file to load the content of the attachment into. If the file already exists, it is overwritten.</param>
+    /// <param name="fileName">
+    ///     The name of the file to load the content of the attachment into. If the file already exists, it
+    ///     is overwritten.
+    /// </param>
     public async System.Threading.Tasks.Task Load(string fileName)
     {
-        this.loadToStream = new FileStream(fileName, FileMode.Create);
+        loadToStream = new FileStream(fileName, FileMode.Create);
 
         try
         {
-            await this.Load();
+            await Load();
         }
         finally
         {
-            this.loadToStream.Dispose();
-            this.loadToStream = null;
+            loadToStream.Dispose();
+            loadToStream = null;
         }
 
         this.fileName = fileName;
-        this.content = null;
-        this.contentStream = null;
+        content = null;
+        contentStream = null;
     }
 
     /// <summary>
-    /// Gets the name of the file the attachment is linked to.
+    ///     Gets the name of the file the attachment is linked to.
     /// </summary>
     public string FileName
     {
-        get { return this.fileName; }
+        get => fileName;
 
         internal set
         {
-            this.ThrowIfThisIsNotNew();
+            ThrowIfThisIsNotNew();
 
-            this.fileName = value;
-            this.content = null;
-            this.contentStream = null;
+            fileName = value;
+            content = null;
+            contentStream = null;
         }
     }
 
     /// <summary>
-    /// Gets or sets the content stream.
+    ///     Gets or sets the content stream.
     /// </summary>
     /// <value>The content stream.</value>
     internal Stream ContentStream
     {
-        get { return this.contentStream; }
+        get => contentStream;
 
         set
         {
-            this.ThrowIfThisIsNotNew();
+            ThrowIfThisIsNotNew();
 
-            this.contentStream = value;
-            this.content = null;
-            this.fileName = null;
+            contentStream = value;
+            content = null;
+            fileName = null;
         }
     }
 
     /// <summary>
-    /// Gets the content of the attachment into memory. Content is set only when Load() is called.
+    ///     Gets the content of the attachment into memory. Content is set only when Load() is called.
     /// </summary>
     public byte[] Content
     {
-        get { return this.content; }
+        get => content;
 
         internal set
         {
-            this.ThrowIfThisIsNotNew();
+            ThrowIfThisIsNotNew();
 
-            this.content = value;
-            this.fileName = null;
-            this.contentStream = null;
+            content = value;
+            fileName = null;
+            contentStream = null;
         }
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this attachment is a contact photo.
+    ///     Gets or sets a value indicating whether this attachment is a contact photo.
     /// </summary>
     public bool IsContactPhoto
     {
         get
         {
-            EwsUtilities.ValidatePropertyVersion(this.Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
 
-            return this.isContactPhoto;
+            return isContactPhoto;
         }
 
         set
         {
-            EwsUtilities.ValidatePropertyVersion(this.Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
 
-            this.ThrowIfThisIsNotNew();
+            ThrowIfThisIsNotNew();
 
-            this.isContactPhoto = value;
+            isContactPhoto = value;
         }
     }
 }

@@ -25,118 +25,114 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents search preview item.
+///     Represents search preview item.
 /// </summary>
 public sealed class SearchPreviewItem
 {
     /// <summary>
-    /// Item id
+    ///     Item id
     /// </summary>
     public ItemId Id { get; set; }
 
     /// <summary>
-    /// Mailbox
+    ///     Mailbox
     /// </summary>
     public PreviewItemMailbox Mailbox { get; set; }
 
     /// <summary>
-    /// Parent item id
+    ///     Parent item id
     /// </summary>
     public ItemId ParentId { get; set; }
 
     /// <summary>
-    /// Item class
+    ///     Item class
     /// </summary>
     public string ItemClass { get; set; }
 
     /// <summary>
-    /// Unique hash
+    ///     Unique hash
     /// </summary>
     public string UniqueHash { get; set; }
 
     /// <summary>
-    /// Sort value
+    ///     Sort value
     /// </summary>
     public string SortValue { get; set; }
 
     /// <summary>
-    /// OWA Link
+    ///     OWA Link
     /// </summary>
     public string OwaLink { get; set; }
 
     /// <summary>
-    /// Sender
+    ///     Sender
     /// </summary>
     public string Sender { get; set; }
 
     /// <summary>
-    /// To recipients
+    ///     To recipients
     /// </summary>
     public string[] ToRecipients { get; set; }
 
     /// <summary>
-    /// Cc recipients
+    ///     Cc recipients
     /// </summary>
     public string[] CcRecipients { get; set; }
 
     /// <summary>
-    /// Bcc recipients
+    ///     Bcc recipients
     /// </summary>
     public string[] BccRecipients { get; set; }
 
     /// <summary>
-    /// Created time
+    ///     Created time
     /// </summary>
     public DateTime CreatedTime { get; set; }
 
     /// <summary>
-    /// Received time
+    ///     Received time
     /// </summary>
     public DateTime ReceivedTime { get; set; }
 
     /// <summary>
-    /// Sent time
+    ///     Sent time
     /// </summary>
     public DateTime SentTime { get; set; }
 
     /// <summary>
-    /// Subject
+    ///     Subject
     /// </summary>
     public string Subject { get; set; }
 
     /// <summary>
-    /// Item size
+    ///     Item size
     /// </summary>
     [CLSCompliant(false)]
     public ulong Size { get; set; }
 
     /// <summary>
-    /// Preview
+    ///     Preview
     /// </summary>
     public string Preview { get; set; }
 
     /// <summary>
-    /// Importance
+    ///     Importance
     /// </summary>
     public Importance Importance { get; set; }
 
     /// <summary>
-    /// Read
+    ///     Read
     /// </summary>
     public bool Read { get; set; }
 
     /// <summary>
-    /// Has attachments
+    ///     Has attachments
     /// </summary>
     public bool HasAttachment { get; set; }
 
     /// <summary>
-    /// Extended properties
+    ///     Extended properties
     /// </summary>
     public ExtendedPropertyCollection ExtendedProperties { get; set; }
 }

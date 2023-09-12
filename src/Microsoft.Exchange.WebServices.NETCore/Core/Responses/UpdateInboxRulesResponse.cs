@@ -25,56 +25,51 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Xml;
-
 /// <summary>
-/// Represents the response to a UpdateInboxRulesResponse operation.
+///     Represents the response to a UpdateInboxRulesResponse operation.
 /// </summary>
 internal sealed class UpdateInboxRulesResponse : ServiceResponse
 {
     /// <summary>
-    /// Rule operation error collection.
+    ///     Rule operation error collection.
     /// </summary>
-    private RuleOperationErrorCollection errors;
+    private readonly RuleOperationErrorCollection errors;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateInboxRulesResponse"/> class.
+    ///     Initializes a new instance of the <see cref="UpdateInboxRulesResponse" /> class.
     /// </summary>
     internal UpdateInboxRulesResponse()
-        : base()
     {
-        this.errors = new RuleOperationErrorCollection();
+        errors = new RuleOperationErrorCollection();
     }
 
     /// <summary>
-    /// Loads extra error details from XML
+    ///     Loads extra error details from XML
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlElementName">The current element name of the extra error details.</param>
-    /// <returns>True if the expected extra details is loaded; 
-    /// False if the element name does not match the expected element. </returns>
+    /// <returns>
+    ///     True if the expected extra details is loaded;
+    ///     False if the element name does not match the expected element.
+    /// </returns>
     internal override bool LoadExtraErrorDetailsFromXml(EwsServiceXmlReader reader, string xmlElementName)
     {
         if (xmlElementName.Equals(XmlElementNames.MessageXml))
         {
             return base.LoadExtraErrorDetailsFromXml(reader, xmlElementName);
         }
-        else if (xmlElementName.Equals(XmlElementNames.RuleOperationErrors))
+
+        if (xmlElementName.Equals(XmlElementNames.RuleOperationErrors))
         {
-            this.errors.LoadFromXml(reader, XmlNamespace.Messages, xmlElementName);
+            errors.LoadFromXml(reader, XmlNamespace.Messages, xmlElementName);
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Gets the rule operation errors in the response.
+    ///     Gets the rule operation errors in the response.
     /// </summary>
-    internal RuleOperationErrorCollection Errors
-    {
-        get { return this.errors; }
-    }
+    internal RuleOperationErrorCollection Errors => errors;
 }

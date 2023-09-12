@@ -25,22 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines base property sets that are used as the base for custom property sets.
+///     Defines base property sets that are used as the base for custom property sets.
 /// </summary>
 public enum BasePropertySet
 {
     /// <summary>
-    /// Only includes the Id of items and folders.
+    ///     Only includes the Id of items and folders.
     /// </summary>
     IdOnly,
 
     /// <summary>
-    /// Includes all the first class properties of items and folders.
+    ///     Includes all the first class properties of items and folders.
     /// </summary>
     FirstClassProperties
 }

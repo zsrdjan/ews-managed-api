@@ -25,21 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a search folder. 
+///     Represents a search folder.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.SearchFolder)]
 public class SearchFolder : Folder
 {
     /// <summary>
-    /// Binds to an existing search folder and loads the specified set of properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing search folder and loads the specified set of properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="id">The Id of the search folder to bind to.</param>
@@ -49,31 +43,27 @@ public class SearchFolder : Folder
         ExchangeService service,
         FolderId id,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return service.BindToFolder<SearchFolder>(id, propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing search folder and loads its first class properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing search folder and loads its first class properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="id">The Id of the search folder to bind to.</param>
     /// <returns>A SearchFolder instance representing the search folder corresponding to the specified Id.</returns>
-    public static new Task<SearchFolder> Bind(
-        ExchangeService service,
-        FolderId id,
-        CancellationToken token = default(CancellationToken)
-    )
+    public static new Task<SearchFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
     {
-        return SearchFolder.Bind(service, id, PropertySet.FirstClassProperties, token);
+        return Bind(service, id, PropertySet.FirstClassProperties, token);
     }
 
     /// <summary>
-    /// Binds to an existing search folder and loads the specified set of properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing search folder and loads the specified set of properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="name">The name of the search folder to bind to.</param>
@@ -83,15 +73,15 @@ public class SearchFolder : Folder
         ExchangeService service,
         WellKnownFolderName name,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return SearchFolder.Bind(service, new FolderId(name), propertySet, token);
+        return Bind(service, new FolderId(name), propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing search folder and loads its first class properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing search folder and loads its first class properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="name">The name of the search folder to bind to.</param>
@@ -99,14 +89,15 @@ public class SearchFolder : Folder
     public static new Task<SearchFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return SearchFolder.Bind(service, new FolderId(name), PropertySet.FirstClassProperties, token);
+        return Bind(service, new FolderId(name), PropertySet.FirstClassProperties, token);
     }
 
     /// <summary>
-    /// Initializes an unsaved local instance of <see cref="SearchFolder"/>. To bind to an existing search folder, use SearchFolder.Bind() instead.
+    ///     Initializes an unsaved local instance of <see cref="SearchFolder" />. To bind to an existing search folder, use
+    ///     SearchFolder.Bind() instead.
     /// </summary>
     /// <param name="service">The ExchangeService object to which the search folder will be bound.</param>
     public SearchFolder(ExchangeService service)
@@ -115,7 +106,7 @@ public class SearchFolder : Folder
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -124,20 +115,20 @@ public class SearchFolder : Folder
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (this.SearchParameters != null)
+        if (SearchParameters != null)
         {
-            this.SearchParameters.Validate();
+            SearchParameters.Validate();
         }
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -149,12 +140,10 @@ public class SearchFolder : Folder
     #region Properties
 
     /// <summary>
-    /// Gets the search parameters associated with the search folder.
+    ///     Gets the search parameters associated with the search folder.
     /// </summary>
-    public SearchFolderParameters SearchParameters
-    {
-        get { return (SearchFolderParameters)this.PropertyBag[SearchFolderSchema.SearchParameters]; }
-    }
+    public SearchFolderParameters SearchParameters =>
+        (SearchFolderParameters)PropertyBag[SearchFolderSchema.SearchParameters];
 
     #endregion
 }

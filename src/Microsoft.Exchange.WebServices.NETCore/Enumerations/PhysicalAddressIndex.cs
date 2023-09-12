@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines a physical address index.
+///     Defines a physical address index.
 /// </summary>
 public enum PhysicalAddressIndex
 {
     /// <summary>
-    /// None.
+    ///     None.
     /// </summary>
     None,
 
     /// <summary>
-    /// The business address.
+    ///     The business address.
     /// </summary>
     Business,
 
     /// <summary>
-    /// The home address.
+    ///     The home address.
     /// </summary>
     Home,
 
     /// <summary>
-    /// The alternate address.
+    ///     The alternate address.
     /// </summary>
     Other
 }

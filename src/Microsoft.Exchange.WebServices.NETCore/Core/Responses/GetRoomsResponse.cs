@@ -23,43 +23,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 /// <summary>
-/// Represents the response to a GetRooms operation.
+///     Represents the response to a GetRooms operation.
 /// </summary>
 internal sealed class GetRoomsResponse : ServiceResponse
 {
-    private Collection<EmailAddress> rooms = new Collection<EmailAddress>();
+    private readonly Collection<EmailAddress> rooms = new Collection<EmailAddress>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetRoomsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetRoomsResponse" /> class.
     /// </summary>
     internal GetRoomsResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets collection for all rooms returned
+    ///     Gets collection for all rooms returned
     /// </summary>
-    public Collection<EmailAddress> Rooms
-    {
-        get { return this.rooms; }
-    }
+    public Collection<EmailAddress> Rooms => rooms;
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.Rooms.Clear();
+        Rooms.Clear();
         base.ReadElementsFromXml(reader);
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Rooms);
@@ -73,9 +66,9 @@ internal sealed class GetRoomsResponse : ServiceResponse
             {
                 reader.Read(); // skip the start <Room>
 
-                EmailAddress emailAddress = new EmailAddress();
+                var emailAddress = new EmailAddress();
                 emailAddress.LoadFromXml(reader, XmlElementNames.RoomId);
-                this.Rooms.Add(emailAddress);
+                Rooms.Add(emailAddress);
 
                 reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.Room);
                 reader.Read();

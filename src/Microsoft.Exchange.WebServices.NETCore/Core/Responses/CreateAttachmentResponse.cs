@@ -23,26 +23,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to an individual attachment creation operation.
+///     Represents the response to an individual attachment creation operation.
 /// </summary>
 public sealed class CreateAttachmentResponse : ServiceResponse
 {
-    private Attachment attachment;
+    private readonly Attachment attachment;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateAttachmentResponse"/> class.
+    ///     Initializes a new instance of the <see cref="CreateAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
     internal CreateAttachmentResponse(Attachment attachment)
-        : base()
     {
         EwsUtilities.Assert(attachment != null, "CreateAttachmentResponse.ctor", "attachment is null");
 
@@ -50,7 +46,7 @@ public sealed class CreateAttachmentResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -60,16 +56,13 @@ public sealed class CreateAttachmentResponse : ServiceResponse
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Attachments);
 
         reader.Read(XmlNodeType.Element);
-        this.attachment.LoadFromXml(reader, reader.LocalName);
+        attachment.LoadFromXml(reader, reader.LocalName);
 
         reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
     }
 
     /// <summary>
-    /// Gets the attachment that was created.
+    ///     Gets the attachment that was created.
     /// </summary>
-    internal Attachment Attachment
-    {
-        get { return this.attachment; }
-    }
+    internal Attachment Attachment => attachment;
 }

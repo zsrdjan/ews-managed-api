@@ -25,103 +25,101 @@
 
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
-using System;
-
 /// <summary>
-/// The UnifiedGroupsSortType enum
+///     The UnifiedGroupsSortType enum
 /// </summary>
 public enum UnifiedGroupsSortType
 {
     /// <summary>
-    /// None
+    ///     None
     /// </summary>
     None = 0,
 
     /// <summary>
-    /// Display Name
+    ///     Display Name
     /// </summary>
     DisplayName = 1,
 
     /// <summary>
-    /// Join Date
+    ///     Join Date
     /// </summary>
     JoinDate = 2,
 
     /// <summary>
-    /// Favorite Date
+    ///     Favorite Date
     /// </summary>
     FavoriteDate = 3,
 
     /// <summary>
-    /// Relevance
+    ///     Relevance
     /// </summary>
     Relevance = 4,
 }
 
 /// <summary>
-/// The UnifiedGroupsFilterType enum
+///     The UnifiedGroupsFilterType enum
 /// </summary>
 public enum UnifiedGroupsFilterType
 {
     /// <summary>
-    /// All
+    ///     All
     /// </summary>
     All = 0,
 
     /// <summary>
-    /// Favorites
+    ///     Favorites
     /// </summary>
     Favorites = 1,
 
     /// <summary>
-    /// Exclude Favorites
+    ///     Exclude Favorites
     /// </summary>
     ExcludeFavorites = 2
 }
 
 /// <summary>
-/// The UnifiedGroupAccessType enum
+///     The UnifiedGroupAccessType enum
 /// </summary>
 public enum UnifiedGroupAccessType
 {
     /// <summary>
-    /// None 
+    ///     None
     /// </summary>
     None = 0,
 
     /// <summary>
-    /// Private Group
+    ///     Private Group
     /// </summary>
     Private = 1,
 
     /// <summary>
-    /// Secret Group
+    ///     Secret Group
     /// </summary>
     Secret = 2,
 
     /// <summary>
-    /// Public Group
+    ///     Public Group
     /// </summary>
     Public = 3,
 }
 
 /// <summary>
-/// The UnifiedGroupIdentityType enum
+///     The UnifiedGroupIdentityType enum
 /// </summary>
 public enum UnifiedGroupIdentityType
 {
     /// <summary>
-    /// Smtp Address
+    ///     Smtp Address
     /// </summary>
     SmtpAddress = 0,
 
     /// <summary>
-    /// Legacy DN
+    ///     Legacy DN
     /// </summary>
     LegacyDn = 1,
 
     /// <summary>
-    /// ExternalDirectoryObjectId
+    ///     ExternalDirectoryObjectId
     /// </summary>
     ExternalDirectoryObjectId = 2
 }

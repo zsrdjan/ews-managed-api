@@ -25,52 +25,48 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// The PhoneCallState enumeration
+///     The PhoneCallState enumeration
 /// </summary>
 public enum PhoneCallState
 {
     /// <summary>
-    /// Idle
+    ///     Idle
     /// </summary>
     Idle,
 
     /// <summary>
-    /// Connecting
+    ///     Connecting
     /// </summary>
     Connecting,
 
     /// <summary>
-    /// Alerted
+    ///     Alerted
     /// </summary>
     Alerted,
 
     /// <summary>
-    /// Connected
+    ///     Connected
     /// </summary>
     Connected,
 
     /// <summary>
-    /// Disconnected
+    ///     Disconnected
     /// </summary>
     Disconnected,
 
     /// <summary>
-    /// Incoming
+    ///     Incoming
     /// </summary>
     Incoming,
 
     /// <summary>
-    /// Transferring
+    ///     Transferring
     /// </summary>
     Transferring,
 
     /// <summary>
-    /// Forwarding
+    ///     Forwarding
     /// </summary>
     Forwarding
 }

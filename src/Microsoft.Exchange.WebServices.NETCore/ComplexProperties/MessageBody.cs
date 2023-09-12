@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents the body of a message.
+///     Represents the body of a message.
 /// </summary>
 public class MessageBody : ComplexProperty
 {
@@ -34,14 +34,14 @@ public class MessageBody : ComplexProperty
     private string text;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MessageBody"/> class.
+    ///     Initializes a new instance of the <see cref="MessageBody" /> class.
     /// </summary>
     public MessageBody()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MessageBody"/> class.
+    ///     Initializes a new instance of the <see cref="MessageBody" /> class.
     /// </summary>
     /// <param name="bodyType">The type of the message body's text.</param>
     /// <param name="text">The text of the message body.</param>
@@ -53,7 +53,7 @@ public class MessageBody : ComplexProperty
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MessageBody"/> class.
+    ///     Initializes a new instance of the <see cref="MessageBody" /> class.
     /// </summary>
     /// <param name="text">The text of the message body, assumed to be HTML.</param>
     public MessageBody(string text)
@@ -62,7 +62,7 @@ public class MessageBody : ComplexProperty
     }
 
     /// <summary>
-    /// Defines an implicit conversation between a string and MessageBody.
+    ///     Defines an implicit conversation between a string and MessageBody.
     /// </summary>
     /// <param name="textBody">The string to convert to MessageBody, assumed to be HTML.</param>
     /// <returns>A MessageBody initialized with the specified string.</returns>
@@ -72,7 +72,7 @@ public class MessageBody : ComplexProperty
     }
 
     /// <summary>
-    /// Defines an implicit conversion of MessageBody into a string.
+    ///     Defines an implicit conversion of MessageBody into a string.
     /// </summary>
     /// <param name="messageBody">The MessageBody to convert to a string.</param>
     /// <returns>A string containing the text of the MessageBody.</returns>
@@ -84,74 +84,74 @@ public class MessageBody : ComplexProperty
     }
 
     /// <summary>
-    /// Reads attributes from XML.
+    ///     Reads attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
+        bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
     }
 
     /// <summary>
-    /// Reads text value from XML.
+    ///     Reads text value from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        this.text = reader.ReadValue();
+        text = reader.ReadValue();
     }
 
     /// <summary>
-    /// Writes attributes to XML.
+    ///     Writes attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.BodyType, this.BodyType);
+        writer.WriteAttributeValue(XmlAttributeNames.BodyType, BodyType);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (!string.IsNullOrEmpty(this.Text))
+        if (!string.IsNullOrEmpty(Text))
         {
-            writer.WriteValue(this.Text, XmlElementNames.Body);
+            writer.WriteValue(Text, XmlElementNames.Body);
         }
     }
 
     /// <summary>
-    /// Gets or sets the type of the message body's text.
+    ///     Gets or sets the type of the message body's text.
     /// </summary>
     public BodyType BodyType
     {
-        get { return this.bodyType; }
-        set { this.SetFieldValue<BodyType>(ref this.bodyType, value); }
+        get => bodyType;
+        set => SetFieldValue(ref bodyType, value);
     }
 
     /// <summary>
-    /// Gets or sets the text of the message body.
+    ///     Gets or sets the text of the message body.
     /// </summary>
     public string Text
     {
-        get { return this.text; }
-        set { this.SetFieldValue<string>(ref this.text, value); }
+        get => text;
+        set => SetFieldValue(ref text, value);
     }
 
 
     #region Object method overrides
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
-        return (this.Text == null) ? string.Empty : this.Text;
+        return (Text == null) ? string.Empty : Text;
     }
 
     #endregion

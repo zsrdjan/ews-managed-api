@@ -27,7 +27,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 // System Dependencies
 
 /// <summary>
-/// Source of resolution.
+///     Source of resolution.
 /// </summary>
 public enum LocationSource
 {

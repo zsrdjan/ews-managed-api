@@ -23,15 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents an entry of an ImAddressDictionary.
+///     Represents an entry of an ImAddressDictionary.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
@@ -39,15 +36,14 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     private string imAddress;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ImAddressEntry"/> class.
+    ///     Initializes a new instance of the <see cref="ImAddressEntry" /> class.
     /// </summary>
     internal ImAddressEntry()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ImAddressEntry"/> class.
+    ///     Initializes a new instance of the <see cref="ImAddressEntry" /> class.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="imAddress">The im address.</param>
@@ -58,29 +54,29 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     }
 
     /// <summary>
-    /// Gets or sets the Instant Messaging address of the entry.
+    ///     Gets or sets the Instant Messaging address of the entry.
     /// </summary>
     public string ImAddress
     {
-        get { return this.imAddress; }
-        set { this.SetFieldValue<string>(ref this.imAddress, value); }
+        get => imAddress;
+        set => SetFieldValue(ref imAddress, value);
     }
 
     /// <summary>
-    /// Reads the text value from XML.
+    ///     Reads the text value from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        this.imAddress = reader.ReadValue();
+        imAddress = reader.ReadValue();
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteValue(this.ImAddress, XmlElementNames.ImAddress);
+        writer.WriteValue(ImAddress, XmlElementNames.ImAddress);
     }
 }

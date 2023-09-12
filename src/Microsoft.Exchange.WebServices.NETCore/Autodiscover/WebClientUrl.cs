@@ -23,14 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents the URL of the Exchange web client.
+///     Represents the URL of the Exchange web client.
 /// </summary>
 public sealed class WebClientUrl
 {
@@ -38,14 +38,14 @@ public sealed class WebClientUrl
     private string url;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebClientUrl"/> class.
+    ///     Initializes a new instance of the <see cref="WebClientUrl" /> class.
     /// </summary>
     private WebClientUrl()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebClientUrl"/> class.
+    ///     Initializes a new instance of the <see cref="WebClientUrl" /> class.
     /// </summary>
     /// <param name="authenticationMethods">The authentication methods.</param>
     /// <param name="url">The URL.</param>
@@ -56,13 +56,13 @@ public sealed class WebClientUrl
     }
 
     /// <summary>
-    /// Loads WebClientUrl instance from XML.
+    ///     Loads WebClientUrl instance from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>WebClientUrl.</returns>
     internal static WebClientUrl LoadFromXml(EwsXmlReader reader)
     {
-        WebClientUrl webClientUrl = new WebClientUrl();
+        var webClientUrl = new WebClientUrl();
 
         do
         {
@@ -86,20 +86,20 @@ public sealed class WebClientUrl
     }
 
     /// <summary>
-    /// Gets the authentication methods.
+    ///     Gets the authentication methods.
     /// </summary>
     public string AuthenticationMethods
     {
-        get { return this.authenticationMethods; }
-        internal set { this.authenticationMethods = value; }
+        get => authenticationMethods;
+        internal set => authenticationMethods = value;
     }
 
     /// <summary>
-    /// Gets the URL.
+    ///     Gets the URL.
     /// </summary>
     public string Url
     {
-        get { return this.url; }
-        internal set { this.url = value; }
+        get => url;
+        internal set => url = value;
     }
 }

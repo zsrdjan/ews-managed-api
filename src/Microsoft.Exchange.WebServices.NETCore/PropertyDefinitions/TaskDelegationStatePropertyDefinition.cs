@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a task delegation property definition.
+///     Represents a task delegation property definition.
 /// </summary>
 internal sealed class TaskDelegationStatePropertyDefinition : GenericPropertyDefinition<TaskDelegationState>
 {
@@ -36,7 +36,7 @@ internal sealed class TaskDelegationStatePropertyDefinition : GenericPropertyDef
     private const string Accepted = "Accepted";
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskDelegationStatePropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TaskDelegationStatePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -53,7 +53,7 @@ internal sealed class TaskDelegationStatePropertyDefinition : GenericPropertyDef
     }
 
     /// <summary>
-    /// Parses the specified value.
+    ///     Parses the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>TaskDelegationState value.</returns>
@@ -80,13 +80,13 @@ internal sealed class TaskDelegationStatePropertyDefinition : GenericPropertyDef
     }
 
     /// <summary>
-    /// Convert instance to string.
+    ///     Convert instance to string.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>TaskDelegationState value.</returns>
     internal override string ToString(object value)
     {
-        TaskDelegationState taskDelegationState = (TaskDelegationState)value;
+        var taskDelegationState = (TaskDelegationState)value;
 
         switch (taskDelegationState)
         {

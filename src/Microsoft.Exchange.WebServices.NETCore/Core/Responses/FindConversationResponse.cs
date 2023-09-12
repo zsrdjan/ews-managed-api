@@ -23,55 +23,49 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a Conversation search operation.
+///     Represents the response to a Conversation search operation.
 /// </summary>
 internal sealed class FindConversationResponse : ServiceResponse
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindConversationResponse"/> class.
+    ///     Initializes a new instance of the <see cref="FindConversationResponse" /> class.
     /// </summary>
     internal FindConversationResponse()
-        : base()
     {
-        this.Results = new FindConversationResults();
+        Results = new FindConversationResults();
     }
 
     /// <summary>
-    /// Gets the collection of conversations in results.
+    ///     Gets the collection of conversations in results.
     /// </summary>
-    internal Collection<Conversation> Conversations
-    {
-        get { return this.Results.Conversations; }
-    }
+    internal Collection<Conversation> Conversations => Results.Conversations;
 
     /// <summary>
-    /// Gets FindConversation results.
+    ///     Gets FindConversation results.
     /// </summary>
     /// <returns>FindConversation results.</returns>
     internal FindConversationResults Results { get; private set; }
 
     /// <summary>
-    /// Read Conversations from XML.
+    ///     Read Conversations from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         EwsUtilities.Assert(
-            this.Results.Conversations != null,
+            Results.Conversations != null,
             "FindConversationResponse.ReadElementsFromXml",
             "conversations is null."
         );
 
         EwsUtilities.Assert(
-            this.Results.HighlightTerms != null,
+            Results.HighlightTerms != null,
             "FindConversationResponse.ReadElementsFromXml",
             "highlightTerms is null."
         );
@@ -85,8 +79,10 @@ internal sealed class FindConversationResponse : ServiceResponse
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    Conversation item =
-                        EwsUtilities.CreateEwsObjectFromXmlElementName<Conversation>(reader.Service, reader.LocalName);
+                    var item = EwsUtilities.CreateEwsObjectFromXmlElementName<Conversation>(
+                        reader.Service,
+                        reader.LocalName
+                    );
 
                     if (item == null)
                     {
@@ -101,7 +97,7 @@ internal sealed class FindConversationResponse : ServiceResponse
                             false /* summaryPropertiesOnly */
                         );
 
-                        this.Results.Conversations.Add(item);
+                        Results.Conversations.Add(item);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.Conversations));
@@ -117,11 +113,11 @@ internal sealed class FindConversationResponse : ServiceResponse
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    HighlightTerm term = new HighlightTerm();
+                    var term = new HighlightTerm();
 
                     term.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.HighlightTerm);
 
-                    this.Results.HighlightTerms.Add(term);
+                    Results.HighlightTerms.Add(term);
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.HighlightTerms));
         }
@@ -129,14 +125,14 @@ internal sealed class FindConversationResponse : ServiceResponse
         if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.TotalConversationsInView) &&
             !reader.IsEmptyElement)
         {
-            this.Results.TotalCount = reader.ReadElementValue<int>();
+            Results.TotalCount = reader.ReadElementValue<int>();
 
             reader.Read();
         }
 
         if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.IndexedOffset) && !reader.IsEmptyElement)
         {
-            this.Results.IndexedOffset = reader.ReadElementValue<int>();
+            Results.IndexedOffset = reader.ReadElementValue<int>();
 
             reader.Read();
         }

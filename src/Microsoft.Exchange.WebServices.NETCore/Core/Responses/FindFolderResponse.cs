@@ -23,35 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a folder search operation.
+///     Represents the response to a folder search operation.
 /// </summary>
 public sealed class FindFolderResponse : ServiceResponse
 {
-    private FindFoldersResults results = new FindFoldersResults();
-    private PropertySet propertySet;
+    private readonly FindFoldersResults results = new FindFoldersResults();
+    private readonly PropertySet propertySet;
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootFolder);
 
-        this.results.TotalCount = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-        this.results.MoreAvailable = !reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+        results.TotalCount = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
+        results.MoreAvailable = !reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
         // Ignore IndexedPagingOffset attribute if MoreAvailable is false.
-        this.results.NextPageOffset = results.MoreAvailable
+        results.NextPageOffset = results.MoreAvailable
             ? reader.ReadNullableAttributeValue<int>(XmlAttributeNames.IndexedPagingOffset) : null;
 
         reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Folders);
@@ -63,7 +59,7 @@ public sealed class FindFolderResponse : ServiceResponse
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    Folder folder =
+                    var folder =
                         EwsUtilities.CreateEwsObjectFromXmlElementName<Folder>(reader.Service, reader.LocalName);
 
                     if (folder == null)
@@ -75,11 +71,11 @@ public sealed class FindFolderResponse : ServiceResponse
                         folder.LoadFromXml(
                             reader,
                             true, /* clearPropertyBag */
-                            this.propertySet,
+                            propertySet,
                             true /* summaryPropertiesOnly */
                         );
 
-                        this.results.Folders.Add(folder);
+                        results.Folders.Add(folder);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.Folders));
@@ -89,7 +85,7 @@ public sealed class FindFolderResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Creates a folder instance.
+    ///     Creates a folder instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -100,11 +96,10 @@ public sealed class FindFolderResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindFolderResponse"/> class.
+    ///     Initializes a new instance of the <see cref="FindFolderResponse" /> class.
     /// </summary>
     /// <param name="propertySet">The property set from, the request.</param>
     internal FindFolderResponse(PropertySet propertySet)
-        : base()
     {
         this.propertySet = propertySet;
 
@@ -112,10 +107,7 @@ public sealed class FindFolderResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Gets the results of the search operation.
+    ///     Gets the results of the search operation.
     /// </summary>
-    public FindFoldersResults Results
-    {
-        get { return this.results; }
-    }
+    public FindFoldersResults Results => results;
 }

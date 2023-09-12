@@ -23,18 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents an error returned by the Autodiscover service.
+///     Represents an error returned by the Autodiscover service.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class AutodiscoverError
@@ -46,20 +43,20 @@ public sealed class AutodiscoverError
     private string debugData;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutodiscoverError"/> class.
+    ///     Initializes a new instance of the <see cref="AutodiscoverError" /> class.
     /// </summary>
     private AutodiscoverError()
     {
     }
 
     /// <summary>
-    /// Parses the XML through the specified reader and creates an Autodiscover error.
+    ///     Parses the XML through the specified reader and creates an Autodiscover error.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>An Autodiscover error.</returns>
     internal static AutodiscoverError Parse(EwsXmlReader reader)
     {
-        AutodiscoverError error = new AutodiscoverError();
+        var error = new AutodiscoverError();
 
         error.time = reader.ReadAttributeValue(XmlAttributeNames.Time);
         error.id = reader.ReadAttributeValue(XmlAttributeNames.Id);
@@ -92,42 +89,28 @@ public sealed class AutodiscoverError
     }
 
     /// <summary>
-    /// Gets the time when the error was returned.
+    ///     Gets the time when the error was returned.
     /// </summary>
-    public string Time
-    {
-        get { return this.time; }
-    }
+    public string Time => time;
 
     /// <summary>
-    /// Gets a hash of the name of the computer that is running Microsoft Exchange Server that has the Client Access server role installed.
+    ///     Gets a hash of the name of the computer that is running Microsoft Exchange Server that has the Client Access server
+    ///     role installed.
     /// </summary>
-    public string Id
-    {
-        get { return this.id; }
-    }
+    public string Id => id;
 
     /// <summary>
-    /// Gets the error code.
+    ///     Gets the error code.
     /// </summary>
-    public int ErrorCode
-    {
-        get { return this.errorCode; }
-    }
+    public int ErrorCode => errorCode;
 
     /// <summary>
-    /// Gets the error message.
+    ///     Gets the error message.
     /// </summary>
-    public string Message
-    {
-        get { return this.message; }
-    }
+    public string Message => message;
 
     /// <summary>
-    /// Gets the debug data.
+    ///     Gets the debug data.
     /// </summary>
-    public string DebugData
-    {
-        get { return this.debugData; }
-    }
+    public string DebugData => debugData;
 }

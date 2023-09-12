@@ -25,41 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the GetHoldOnMailboxes response.
+///     Represents the GetHoldOnMailboxes response.
 /// </summary>
 public sealed class GetHoldOnMailboxesResponse : ServiceResponse
 {
-    MailboxHoldResult holdResult = null;
+    MailboxHoldResult holdResult;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetHoldOnMailboxesResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetHoldOnMailboxesResponse" /> class.
     /// </summary>
     internal GetHoldOnMailboxesResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        this.holdResult = MailboxHoldResult.LoadFromXml(reader);
+        holdResult = MailboxHoldResult.LoadFromXml(reader);
     }
 
     /// <summary>
-    /// Mailbox hold result
+    ///     Mailbox hold result
     /// </summary>
-    public MailboxHoldResult HoldResult
-    {
-        get { return this.holdResult; }
-    }
+    public MailboxHoldResult HoldResult => holdResult;
 }

@@ -23,33 +23,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 /// <summary>
-/// Represents the working hours for a specific time zone.
+///     Represents the working hours for a specific time zone.
 /// </summary>
 public sealed class WorkingHours : ComplexProperty
 {
     private TimeZoneInfo timeZone;
-    private Collection<DayOfTheWeek> daysOfTheWeek = new Collection<DayOfTheWeek>();
+    private readonly Collection<DayOfTheWeek> daysOfTheWeek = new Collection<DayOfTheWeek>();
     private TimeSpan startTime;
     private TimeSpan endTime;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WorkingHours"/> class.
+    ///     Initializes a new instance of the <see cref="WorkingHours" /> class.
     /// </summary>
     internal WorkingHours()
-        : base()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if appropriate element was read.</returns>
@@ -58,14 +54,14 @@ public sealed class WorkingHours : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.TimeZone:
-                LegacyAvailabilityTimeZone legacyTimeZone = new LegacyAvailabilityTimeZone();
+                var legacyTimeZone = new LegacyAvailabilityTimeZone();
                 legacyTimeZone.LoadFromXml(reader, reader.LocalName);
 
-                this.timeZone = legacyTimeZone.ToTimeZoneInfo();
+                timeZone = legacyTimeZone.ToTimeZoneInfo();
 
                 return true;
             case XmlElementNames.WorkingPeriodArray:
-                List<WorkingPeriod> workingPeriods = new List<WorkingPeriod>();
+                var workingPeriods = new List<WorkingPeriod>();
 
                 do
                 {
@@ -73,7 +69,7 @@ public sealed class WorkingHours : ComplexProperty
 
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.WorkingPeriod))
                     {
-                        WorkingPeriod workingPeriod = new WorkingPeriod();
+                        var workingPeriod = new WorkingPeriod();
 
                         workingPeriod.LoadFromXml(reader, reader.LocalName);
 
@@ -88,16 +84,16 @@ public sealed class WorkingHours : ComplexProperty
                 // structure if it happens to be in Exchange.
                 // So here we'll do what Outlook and OWA do: we'll use the start and end times of the
                 // first working period, but we'll use the week days of all the periods.
-                this.startTime = workingPeriods[0].StartTime;
-                this.endTime = workingPeriods[0].EndTime;
+                startTime = workingPeriods[0].StartTime;
+                endTime = workingPeriods[0].EndTime;
 
-                foreach (WorkingPeriod workingPeriod in workingPeriods)
+                foreach (var workingPeriod in workingPeriods)
                 {
-                    foreach (DayOfTheWeek dayOfWeek in workingPeriods[0].DaysOfWeek)
+                    foreach (var dayOfWeek in workingPeriods[0].DaysOfWeek)
                     {
-                        if (!this.daysOfTheWeek.Contains(dayOfWeek))
+                        if (!daysOfTheWeek.Contains(dayOfWeek))
                         {
-                            this.daysOfTheWeek.Add(dayOfWeek);
+                            daysOfTheWeek.Add(dayOfWeek);
                         }
                     }
                 }
@@ -109,34 +105,22 @@ public sealed class WorkingHours : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the time zone to which the working hours apply.
+    ///     Gets the time zone to which the working hours apply.
     /// </summary>
-    public TimeZoneInfo TimeZone
-    {
-        get { return this.timeZone; }
-    }
+    public TimeZoneInfo TimeZone => timeZone;
 
     /// <summary>
-    /// Gets the working days of the attendees.
+    ///     Gets the working days of the attendees.
     /// </summary>
-    public Collection<DayOfTheWeek> DaysOfTheWeek
-    {
-        get { return this.daysOfTheWeek; }
-    }
+    public Collection<DayOfTheWeek> DaysOfTheWeek => daysOfTheWeek;
 
     /// <summary>
-    /// Gets the time of the day the attendee starts working.
+    ///     Gets the time of the day the attendee starts working.
     /// </summary>
-    public TimeSpan StartTime
-    {
-        get { return this.startTime; }
-    }
+    public TimeSpan StartTime => startTime;
 
     /// <summary>
-    /// Gets the time of the day the attendee stops working.
+    ///     Gets the time of the day the attendee stops working.
     /// </summary>
-    public TimeSpan EndTime
-    {
-        get { return this.endTime; }
-    }
+    public TimeSpan EndTime => endTime;
 }

@@ -25,22 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a folder Id provided by a Folder object.
+///     Represents a folder Id provided by a Folder object.
 /// </summary>
 internal class FolderWrapper : AbstractFolderIdWrapper
 {
     /// <summary>
-    /// The Folder object providing the Id.
+    ///     The Folder object providing the Id.
     /// </summary>
-    private Folder folder;
+    private readonly Folder folder;
 
     /// <summary>
-    /// Initializes a new instance of FolderWrapper.
+    ///     Initializes a new instance of FolderWrapper.
     /// </summary>
     /// <param name="folder">The Folder object provinding the Id.</param>
     internal FolderWrapper(Folder folder)
@@ -52,20 +48,20 @@ internal class FolderWrapper : AbstractFolderIdWrapper
     }
 
     /// <summary>
-    /// Obtains the Folder object associated with the wrapper.
+    ///     Obtains the Folder object associated with the wrapper.
     /// </summary>
     /// <returns>The Folder object associated with the wrapper.</returns>
     public override Folder GetFolder()
     {
-        return this.folder;
+        return folder;
     }
 
     /// <summary>
-    /// Writes the Id encapsulated in the wrapper to XML.
+    ///     Writes the Id encapsulated in the wrapper to XML.
     /// </summary>
     /// <param name="writer">The writer to write the Id to.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer)
     {
-        this.folder.Id.WriteToXml(writer);
+        folder.Id.WriteToXml(writer);
     }
 }

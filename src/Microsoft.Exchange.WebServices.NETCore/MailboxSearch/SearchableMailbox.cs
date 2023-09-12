@@ -25,24 +25,20 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents searchable mailbox object
+///     Represents searchable mailbox object
 /// </summary>
 public sealed class SearchableMailbox
 {
     /// <summary>
-    /// Constructor
+    ///     Constructor
     /// </summary>
     public SearchableMailbox()
     {
     }
 
     /// <summary>
-    /// Constructor
+    ///     Constructor
     /// </summary>
     /// <param name="guid">Guid</param>
     /// <param name="smtpAddress">Smtp address</param>
@@ -61,17 +57,17 @@ public sealed class SearchableMailbox
         string referenceId
     )
     {
-        this.Guid = guid;
-        this.SmtpAddress = smtpAddress;
-        this.IsExternalMailbox = isExternalMailbox;
-        this.ExternalEmailAddress = externalEmailAddress;
-        this.DisplayName = displayName;
-        this.IsMembershipGroup = isMembershipGroup;
-        this.ReferenceId = referenceId;
+        Guid = guid;
+        SmtpAddress = smtpAddress;
+        IsExternalMailbox = isExternalMailbox;
+        ExternalEmailAddress = externalEmailAddress;
+        DisplayName = displayName;
+        IsMembershipGroup = isMembershipGroup;
+        ReferenceId = referenceId;
     }
 
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Searchable mailbox object</returns>
@@ -79,10 +75,10 @@ public sealed class SearchableMailbox
     {
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.SearchableMailbox);
 
-        SearchableMailbox searchableMailbox = new SearchableMailbox();
+        var searchableMailbox = new SearchableMailbox();
         searchableMailbox.Guid = new Guid(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Guid));
         searchableMailbox.SmtpAddress = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.PrimarySmtpAddress);
-        bool isExternalMailbox = false;
+        var isExternalMailbox = false;
         bool.TryParse(
             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsExternalMailbox),
             out isExternalMailbox
@@ -93,7 +89,7 @@ public sealed class SearchableMailbox
             XmlElementNames.ExternalEmailAddress
         );
         searchableMailbox.DisplayName = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.DisplayName);
-        bool isMembershipGroup = false;
+        var isMembershipGroup = false;
         bool.TryParse(
             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsMembershipGroup),
             out isMembershipGroup
@@ -105,37 +101,37 @@ public sealed class SearchableMailbox
     }
 
     /// <summary>
-    /// Guid
+    ///     Guid
     /// </summary>
     public Guid Guid { get; set; }
 
     /// <summary>
-    /// Smtp address
+    ///     Smtp address
     /// </summary>
     public string SmtpAddress { get; set; }
 
     /// <summary>
-    /// If true, this is an external mailbox
+    ///     If true, this is an external mailbox
     /// </summary>
     public bool IsExternalMailbox { get; set; }
 
     /// <summary>
-    /// External email address for the mailbox
+    ///     External email address for the mailbox
     /// </summary>
     public string ExternalEmailAddress { get; set; }
 
     /// <summary>
-    /// Display name
+    ///     Display name
     /// </summary>
     public string DisplayName { get; set; }
 
     /// <summary>
-    /// Is a membership group
+    ///     Is a membership group
     /// </summary>
     public bool IsMembershipGroup { get; set; }
 
     /// <summary>
-    /// Reference id
+    ///     Reference id
     /// </summary>
     public string ReferenceId { get; set; }
 }

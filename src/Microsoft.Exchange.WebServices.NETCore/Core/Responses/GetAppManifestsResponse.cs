@@ -23,60 +23,52 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to a GetAppManifests operation.
+///     Represents the response to a GetAppManifests operation.
 /// </summary>
 internal sealed class GetAppManifestsResponse : ServiceResponse
 {
     /// <summary>
-    /// List of manifests returned in the response.
+    ///     List of manifests returned in the response.
     /// </summary>
-    private Collection<XmlDocument> manifests = new Collection<XmlDocument>();
+    private readonly Collection<XmlDocument> manifests = new Collection<XmlDocument>();
 
     /// <summary>
-    /// List of extensions returned in the response.
+    ///     List of extensions returned in the response.
     /// </summary>
-    private Collection<ClientApp> apps = new Collection<ClientApp>();
+    private readonly Collection<ClientApp> apps = new Collection<ClientApp>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetAppManifestsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetAppManifestsResponse" /> class.
     /// </summary>
     internal GetAppManifestsResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets all manifests returned
+    ///     Gets all manifests returned
     /// </summary>
     /// <remarks>Provided for backwards compatibility with Exchange 2013.</remarks>
-    public Collection<XmlDocument> Manifests
-    {
-        get { return this.manifests; }
-    }
+    public Collection<XmlDocument> Manifests => manifests;
 
     /// <summary>
-    /// Gets all apps returned.
+    ///     Gets all apps returned.
     /// </summary>
     /// <remarks>Introduced for Exchange 2013 Sp1 to return additional metadata.</remarks>
-    public Collection<ClientApp> Apps
-    {
-        get { return this.apps; }
-    }
+    public Collection<ClientApp> Apps => apps;
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.Manifests.Clear();
+        Manifests.Clear();
         base.ReadElementsFromXml(reader);
 
         reader.Read(XmlNodeType.Element);
@@ -114,11 +106,11 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
 
             if (exchange2013Response)
             {
-                this.ReadFromExchange2013(reader);
+                ReadFromExchange2013(reader);
             }
             else
             {
-                this.ReadFromExchange2013Sp1(reader);
+                ReadFromExchange2013Sp1(reader);
             }
         }
 
@@ -129,8 +121,8 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Read the response from Exchange 2013.
-    /// This method assumes that the reader is currently at the Manifests element.
+    ///     Read the response from Exchange 2013.
+    ///     This method assumes that the reader is currently at the Manifests element.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void ReadFromExchange2013(EwsServiceXmlReader reader)
@@ -145,10 +137,10 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
         while (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.Manifest))
         {
             XmlDocument manifest = ClientApp.ReadToXmlDocument(reader);
-            this.Manifests.Add(manifest);
+            Manifests.Add(manifest);
 
-            this.Apps.Add(
-                new ClientApp()
+            Apps.Add(
+                new ClientApp
                 {
                     Manifest = manifest
                 }
@@ -157,8 +149,8 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Read the response from Exchange 2013.
-    /// This method assumes that the reader is currently at the Manifests element.
+    ///     Read the response from Exchange 2013.
+    ///     This method assumes that the reader is currently at the Manifests element.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void ReadFromExchange2013Sp1(EwsServiceXmlReader reader)
@@ -179,11 +171,11 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
         ////  <m:Apps>    <----- reader should be at this node at the end of the loop
         while (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.App))
         {
-            ClientApp clientApp = new ClientApp();
+            var clientApp = new ClientApp();
             clientApp.LoadFromXml(reader, XmlElementNames.App);
 
-            this.Apps.Add(clientApp);
-            this.Manifests.Add(clientApp.Manifest);
+            Apps.Add(clientApp);
+            Manifests.Add(clientApp.Manifest);
 
             reader.EnsureCurrentNodeIsEndElement(XmlNamespace.Types, XmlElementNames.App);
             reader.Read();

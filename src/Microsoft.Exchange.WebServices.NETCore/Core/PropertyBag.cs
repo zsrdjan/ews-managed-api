@@ -23,31 +23,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a property bag keyed on PropertyDefinition objects.
+///     Represents a property bag keyed on PropertyDefinition objects.
 /// </summary>
 internal class PropertyBag
 {
-    private ServiceObject owner;
+    private readonly ServiceObject owner;
     private bool isDirty;
     private bool loading;
     private bool onlySummaryPropertiesRequested;
-    private List<PropertyDefinition> loadedProperties = new List<PropertyDefinition>();
-    private Dictionary<PropertyDefinition, object> properties = new Dictionary<PropertyDefinition, object>();
-    private Dictionary<PropertyDefinition, object> deletedProperties = new Dictionary<PropertyDefinition, object>();
-    private List<PropertyDefinition> modifiedProperties = new List<PropertyDefinition>();
-    private List<PropertyDefinition> addedProperties = new List<PropertyDefinition>();
+    private readonly List<PropertyDefinition> loadedProperties = new List<PropertyDefinition>();
+    private readonly Dictionary<PropertyDefinition, object> properties = new Dictionary<PropertyDefinition, object>();
+
+    private readonly Dictionary<PropertyDefinition, object> deletedProperties =
+        new Dictionary<PropertyDefinition, object>();
+
+    private readonly List<PropertyDefinition> modifiedProperties = new List<PropertyDefinition>();
+    private readonly List<PropertyDefinition> addedProperties = new List<PropertyDefinition>();
     private PropertySet requestedPropertySet;
 
     /// <summary>
-    /// Initializes a new instance of PropertyBag.
+    ///     Initializes a new instance of PropertyBag.
     /// </summary>
     /// <param name="owner">The owner of the bag.</param>
     internal PropertyBag(ServiceObject owner)
@@ -58,36 +59,30 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Gets a dictionary holding the bag's properties.
+    ///     Gets a dictionary holding the bag's properties.
     /// </summary>
-    internal Dictionary<PropertyDefinition, object> Properties
-    {
-        get { return this.properties; }
-    }
+    internal Dictionary<PropertyDefinition, object> Properties => properties;
 
     /// <summary>
-    /// Gets the owner of this bag.
+    ///     Gets the owner of this bag.
     /// </summary>
-    internal ServiceObject Owner
-    {
-        get { return this.owner; }
-    }
+    internal ServiceObject Owner => owner;
 
     /// <summary>
-    /// True if the bag has pending changes, false otherwise.
+    ///     True if the bag has pending changes, false otherwise.
     /// </summary>
     internal bool IsDirty
     {
         get
         {
-            int changes = this.modifiedProperties.Count + this.deletedProperties.Count + this.addedProperties.Count;
+            var changes = modifiedProperties.Count + deletedProperties.Count + addedProperties.Count;
 
-            return changes > 0 || this.isDirty;
+            return changes > 0 || isDirty;
         }
     }
 
     /// <summary>
-    /// Adds the specified property to the specified change list if it is not already present.
+    ///     Adds the specified property to the specified change list if it is not already present.
     /// </summary>
     /// <param name="propertyDefinition">The property to add to the change list.</param>
     /// <param name="changeList">The change list to add the property to.</param>
@@ -100,7 +95,7 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Gets the name of the property update item.
+    ///     Gets the name of the property update item.
     /// </summary>
     /// <param name="serviceObject">The service object.</param>
     /// <returns></returns>
@@ -110,10 +105,10 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Determines whether specified property is loaded. This also includes
-    /// properties that were requested when the property bag was loaded but
-    /// were not returned by the server. In this case, the property value
-    /// will be null.
+    ///     Determines whether specified property is loaded. This also includes
+    ///     properties that were requested when the property bag was loaded but
+    ///     were not returned by the server. In this case, the property value
+    ///     will be null.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <returns>
@@ -122,19 +117,17 @@ internal class PropertyBag
     internal bool IsPropertyLoaded(PropertyDefinition propertyDefinition)
     {
         // Is the property loaded?
-        if (this.loadedProperties.Contains(propertyDefinition))
+        if (loadedProperties.Contains(propertyDefinition))
         {
             return true;
         }
-        else
-        {
-            // Was the property requested?
-            return this.IsRequestedProperty(propertyDefinition);
-        }
+
+        // Was the property requested?
+        return IsRequestedProperty(propertyDefinition);
     }
 
     /// <summary>
-    /// Determines whether specified property was requested.
+    ///     Determines whether specified property was requested.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <returns>
@@ -143,7 +136,7 @@ internal class PropertyBag
     private bool IsRequestedProperty(PropertyDefinition propertyDefinition)
     {
         // If no requested property set, then property wasn't requested.
-        if (this.requestedPropertySet == null)
+        if (requestedPropertySet == null)
         {
             return false;
         }
@@ -151,22 +144,19 @@ internal class PropertyBag
         // If base property set is all first-class properties, use the appropriate list of
         // property definitions to see if this property was requested. Otherwise, property had 
         // to be explicitly requested and needs to be listed in AdditionalProperties.
-        if (this.requestedPropertySet.BasePropertySet == BasePropertySet.FirstClassProperties)
+        if (requestedPropertySet.BasePropertySet == BasePropertySet.FirstClassProperties)
         {
-            List<PropertyDefinition> firstClassProps = this.onlySummaryPropertiesRequested
-                ? this.Owner.Schema.FirstClassSummaryProperties : this.Owner.Schema.FirstClassProperties;
+            var firstClassProps = onlySummaryPropertiesRequested ? Owner.Schema.FirstClassSummaryProperties
+                : Owner.Schema.FirstClassProperties;
 
-            return firstClassProps.Contains(propertyDefinition) ||
-                   this.requestedPropertySet.Contains(propertyDefinition);
+            return firstClassProps.Contains(propertyDefinition) || requestedPropertySet.Contains(propertyDefinition);
         }
-        else
-        {
-            return this.requestedPropertySet.Contains(propertyDefinition);
-        }
+
+        return requestedPropertySet.Contains(propertyDefinition);
     }
 
     /// <summary>
-    /// Determines whether the specified property has been updated.
+    ///     Determines whether the specified property has been updated.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <returns>
@@ -174,12 +164,11 @@ internal class PropertyBag
     /// </returns>
     internal bool IsPropertyUpdated(PropertyDefinition propertyDefinition)
     {
-        return this.modifiedProperties.Contains(propertyDefinition) ||
-               this.addedProperties.Contains(propertyDefinition);
+        return modifiedProperties.Contains(propertyDefinition) || addedProperties.Contains(propertyDefinition);
     }
 
     /// <summary>
-    /// Tries to get a property value based on a property definition.
+    ///     Tries to get a property value based on a property definition.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <param name="propertyValue">The property value.</param>
@@ -187,12 +176,12 @@ internal class PropertyBag
     internal bool TryGetProperty(PropertyDefinition propertyDefinition, out object propertyValue)
     {
         ServiceLocalException serviceException;
-        propertyValue = this.GetPropertyValueOrException(propertyDefinition, out serviceException);
+        propertyValue = GetPropertyValueOrException(propertyDefinition, out serviceException);
         return serviceException == null;
     }
 
     /// <summary>
-    /// Tries to get a property value based on a property definition.
+    ///     Tries to get a property value based on a property definition.
     /// </summary>
     /// <typeparam name="T">The types of the property.</typeparam>
     /// <param name="propertyDefinition">The property definition.</param>
@@ -203,7 +192,7 @@ internal class PropertyBag
         // Verify that the type parameter and property definition's type are compatible.
         if (!typeof(T).GetTypeInfo().IsAssignableFrom(propertyDefinition.Type.GetTypeInfo()))
         {
-            string errorMessage = string.Format(
+            var errorMessage = string.Format(
                 Strings.PropertyDefinitionTypeMismatch,
                 EwsUtilities.GetPrintableTypeName(propertyDefinition.Type),
                 EwsUtilities.GetPrintableTypeName(typeof(T))
@@ -213,15 +202,15 @@ internal class PropertyBag
 
         object value;
 
-        bool result = this.TryGetProperty(propertyDefinition, out value);
+        var result = TryGetProperty(propertyDefinition, out value);
 
-        propertyValue = result ? (T)value : default(T);
+        propertyValue = result ? (T)value : default;
 
         return result;
     }
 
     /// <summary>
-    /// Gets the property value.
+    ///     Gets the property value.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     /// <param name="exception">Exception that would be raised if there's an error retrieving the property.</param>
@@ -234,7 +223,7 @@ internal class PropertyBag
         object propertyValue = null;
         exception = null;
 
-        if (propertyDefinition.Version > this.Owner.Service.RequestedServerVersion)
+        if (propertyDefinition.Version > Owner.Service.RequestedServerVersion)
         {
             exception = new ServiceVersionException(
                 string.Format(
@@ -246,88 +235,86 @@ internal class PropertyBag
             return null;
         }
 
-        if (this.TryGetValue(propertyDefinition, out propertyValue))
+        if (TryGetValue(propertyDefinition, out propertyValue))
         {
             // If the requested property is in the bag, return it.
             return propertyValue;
         }
+
+        if (propertyDefinition.HasFlag(PropertyDefinitionFlags.AutoInstantiateOnRead))
+        {
+            // The requested property is an auto-instantiate-on-read property
+            var complexPropertyDefinition = propertyDefinition as ComplexPropertyDefinitionBase;
+
+            EwsUtilities.Assert(
+                complexPropertyDefinition != null,
+                "PropertyBag.get_this[]",
+                "propertyDefinition is marked with AutoInstantiateOnRead but is not a descendant of ComplexPropertyDefinitionBase"
+            );
+
+            propertyValue = complexPropertyDefinition.CreatePropertyInstance(Owner);
+
+            if (propertyValue != null)
+            {
+                InitComplexProperty(propertyValue as ComplexProperty);
+                properties[propertyDefinition] = propertyValue;
+            }
+        }
         else
         {
-            if (propertyDefinition.HasFlag(PropertyDefinitionFlags.AutoInstantiateOnRead))
+            // If the property is not the Id (we need to let developers read the Id when it's null) and if has
+            // not been loaded, we throw.
+            if (propertyDefinition != Owner.GetIdPropertyDefinition())
             {
-                // The requested property is an auto-instantiate-on-read property
-                ComplexPropertyDefinitionBase complexPropertyDefinition =
-                    propertyDefinition as ComplexPropertyDefinitionBase;
-
-                EwsUtilities.Assert(
-                    complexPropertyDefinition != null,
-                    "PropertyBag.get_this[]",
-                    "propertyDefinition is marked with AutoInstantiateOnRead but is not a descendant of ComplexPropertyDefinitionBase"
-                );
-
-                propertyValue = complexPropertyDefinition.CreatePropertyInstance(this.Owner);
-
-                if (propertyValue != null)
+                if (!IsPropertyLoaded(propertyDefinition))
                 {
-                    this.InitComplexProperty(propertyValue as ComplexProperty);
-                    this.properties[propertyDefinition] = propertyValue;
+                    exception = new ServiceObjectPropertyException(
+                        Strings.MustLoadOrAssignPropertyBeforeAccess,
+                        propertyDefinition
+                    );
+                    return null;
+                }
+
+                // Non-nullable properties (int, bool, etc.) must be assigned or loaded; cannot return null value.
+                if (!propertyDefinition.IsNullable)
+                {
+                    var errorMessage = IsRequestedProperty(propertyDefinition) ? Strings.ValuePropertyNotLoaded
+                        : Strings.ValuePropertyNotAssigned;
+                    exception = new ServiceObjectPropertyException(errorMessage, propertyDefinition);
                 }
             }
-            else
-            {
-                // If the property is not the Id (we need to let developers read the Id when it's null) and if has
-                // not been loaded, we throw.
-                if (propertyDefinition != this.Owner.GetIdPropertyDefinition())
-                {
-                    if (!this.IsPropertyLoaded(propertyDefinition))
-                    {
-                        exception = new ServiceObjectPropertyException(
-                            Strings.MustLoadOrAssignPropertyBeforeAccess,
-                            propertyDefinition
-                        );
-                        return null;
-                    }
-
-                    // Non-nullable properties (int, bool, etc.) must be assigned or loaded; cannot return null value.
-                    if (!propertyDefinition.IsNullable)
-                    {
-                        string errorMessage = this.IsRequestedProperty(propertyDefinition)
-                            ? Strings.ValuePropertyNotLoaded : Strings.ValuePropertyNotAssigned;
-                        exception = new ServiceObjectPropertyException(errorMessage, propertyDefinition);
-                    }
-                }
-            }
-
-            return propertyValue;
         }
+
+        return propertyValue;
     }
 
     /// <summary>
-    /// Gets or sets the value of a property.
+    ///     Gets or sets the value of a property.
     /// </summary>
     /// <param name="propertyDefinition">The property to get or set.</param>
     /// <returns>An object representing the value of the property.</returns>
     /// <exception cref="ServiceVersionException">Raised if this property requires a later version of Exchange.</exception>
-    /// <exception cref="ServiceObjectPropertyException">Raised for get if property hasn't been assigned or loaded. Raised for set if property cannot be updated or deleted.</exception>
+    /// <exception cref="ServiceObjectPropertyException">
+    ///     Raised for get if property hasn't been assigned or loaded. Raised for
+    ///     set if property cannot be updated or deleted.
+    /// </exception>
     internal object this[PropertyDefinition propertyDefinition]
     {
         get
         {
             ServiceLocalException serviceException;
-            object propertyValue = this.GetPropertyValueOrException(propertyDefinition, out serviceException);
+            var propertyValue = GetPropertyValueOrException(propertyDefinition, out serviceException);
             if (serviceException == null)
             {
                 return propertyValue;
             }
-            else
-            {
-                throw serviceException;
-            }
+
+            throw serviceException;
         }
 
         set
         {
-            if (propertyDefinition.Version > this.Owner.Service.RequestedServerVersion)
+            if (propertyDefinition.Version > Owner.Service.RequestedServerVersion)
             {
                 throw new ServiceVersionException(
                     string.Format(
@@ -340,22 +327,19 @@ internal class PropertyBag
 
             // If the property bag is not in the loading state, we need to verify whether
             // the property can actually be set or updated.
-            if (!this.loading)
+            if (!loading)
             {
                 // If the owner is new and if the property cannot be set, throw.
-                if (this.Owner.IsNew &&
-                    !propertyDefinition.HasFlag(
-                        PropertyDefinitionFlags.CanSet,
-                        this.Owner.Service.RequestedServerVersion
-                    ))
+                if (Owner.IsNew &&
+                    !propertyDefinition.HasFlag(PropertyDefinitionFlags.CanSet, Owner.Service.RequestedServerVersion))
                 {
                     throw new ServiceObjectPropertyException(Strings.PropertyIsReadOnly, propertyDefinition);
                 }
 
-                if (!this.Owner.IsNew)
+                if (!Owner.IsNew)
                 {
                     // If owner is an item attachment, properties cannot be updated (EWS doesn't support updating item attachments)
-                    Item ownerItem = this.Owner as Item;
+                    var ownerItem = Owner as Item;
                     if ((ownerItem != null) && ownerItem.IsAttachment)
                     {
                         throw new ServiceObjectPropertyException(
@@ -381,152 +365,152 @@ internal class PropertyBag
             // If the value is set to null, delete the property.
             if (value == null)
             {
-                this.DeleteProperty(propertyDefinition);
+                DeleteProperty(propertyDefinition);
             }
             else
             {
                 ComplexProperty complexProperty;
                 object currentValue;
 
-                if (this.properties.TryGetValue(propertyDefinition, out currentValue))
+                if (properties.TryGetValue(propertyDefinition, out currentValue))
                 {
                     complexProperty = currentValue as ComplexProperty;
 
                     if (complexProperty != null)
                     {
-                        complexProperty.OnChange -= this.PropertyChanged;
+                        complexProperty.OnChange -= PropertyChanged;
                     }
                 }
 
                 // If the property was to be deleted, the deletion becomes an update.
-                if (this.deletedProperties.Remove(propertyDefinition))
+                if (deletedProperties.Remove(propertyDefinition))
                 {
-                    AddToChangeList(propertyDefinition, this.modifiedProperties);
+                    AddToChangeList(propertyDefinition, modifiedProperties);
                 }
                 else
                 {
                     // If the property value was not set, we have a newly set property.
-                    if (!this.properties.ContainsKey(propertyDefinition))
+                    if (!properties.ContainsKey(propertyDefinition))
                     {
-                        AddToChangeList(propertyDefinition, this.addedProperties);
+                        AddToChangeList(propertyDefinition, addedProperties);
                     }
                     else
                     {
                         // The last case is that we have a modified property.
-                        if (!this.modifiedProperties.Contains(propertyDefinition))
+                        if (!modifiedProperties.Contains(propertyDefinition))
                         {
-                            AddToChangeList(propertyDefinition, this.modifiedProperties);
+                            AddToChangeList(propertyDefinition, modifiedProperties);
                         }
                     }
                 }
 
-                this.InitComplexProperty(value as ComplexProperty);
-                this.properties[propertyDefinition] = value;
+                InitComplexProperty(value as ComplexProperty);
+                properties[propertyDefinition] = value;
 
-                this.Changed();
+                Changed();
             }
         }
     }
 
     /// <summary>
-    /// Sets the isDirty flag to true and triggers dispatch of the change event to the owner
-    /// of the property bag. Changed must be called whenever an operation that changes the state
-    /// of this property bag is performed (e.g. adding or removing a property).
+    ///     Sets the isDirty flag to true and triggers dispatch of the change event to the owner
+    ///     of the property bag. Changed must be called whenever an operation that changes the state
+    ///     of this property bag is performed (e.g. adding or removing a property).
     /// </summary>
     internal void Changed()
     {
-        this.isDirty = true;
-        this.Owner.Changed();
+        isDirty = true;
+        Owner.Changed();
     }
 
     /// <summary>
-    /// Determines whether the property bag contains a specific property.
+    ///     Determines whether the property bag contains a specific property.
     /// </summary>
     /// <param name="propertyDefinition">The property to check against.</param>
     /// <returns>True if the specified property is in the bag, false otherwise.</returns>
     internal bool Contains(PropertyDefinition propertyDefinition)
     {
-        return this.properties.ContainsKey(propertyDefinition);
+        return properties.ContainsKey(propertyDefinition);
     }
 
     /// <summary>
-    /// Tries to retrieve the value of the specified property.
+    ///     Tries to retrieve the value of the specified property.
     /// </summary>
     /// <param name="propertyDefinition">The property for which to retrieve a value.</param>
     /// <param name="propertyValue">If the method succeeds, contains the value of the property.</param>
     /// <returns>True if the value could be retrieved, false otherwise.</returns>
     internal bool TryGetValue(PropertyDefinition propertyDefinition, out object propertyValue)
     {
-        return this.properties.TryGetValue(propertyDefinition, out propertyValue);
+        return properties.TryGetValue(propertyDefinition, out propertyValue);
     }
 
     /// <summary>
-    /// Handles a change event for the specified property.
+    ///     Handles a change event for the specified property.
     /// </summary>
     /// <param name="complexProperty">The property that changes.</param>
     internal void PropertyChanged(ComplexProperty complexProperty)
     {
-        foreach (KeyValuePair<PropertyDefinition, object> keyValuePair in this.properties)
+        foreach (var keyValuePair in properties)
         {
             if (keyValuePair.Value == complexProperty)
             {
-                if (!this.deletedProperties.ContainsKey(keyValuePair.Key))
+                if (!deletedProperties.ContainsKey(keyValuePair.Key))
                 {
-                    AddToChangeList(keyValuePair.Key, this.modifiedProperties);
-                    this.Changed();
+                    AddToChangeList(keyValuePair.Key, modifiedProperties);
+                    Changed();
                 }
             }
         }
     }
 
     /// <summary>
-    /// Deletes the property from the bag.
+    ///     Deletes the property from the bag.
     /// </summary>
     /// <param name="propertyDefinition">The property to delete.</param>
     internal void DeleteProperty(PropertyDefinition propertyDefinition)
     {
-        if (!this.deletedProperties.ContainsKey(propertyDefinition))
+        if (!deletedProperties.ContainsKey(propertyDefinition))
         {
             object propertyValue;
 
-            this.properties.TryGetValue(propertyDefinition, out propertyValue);
+            properties.TryGetValue(propertyDefinition, out propertyValue);
 
-            this.properties.Remove(propertyDefinition);
-            this.modifiedProperties.Remove(propertyDefinition);
-            this.deletedProperties.Add(propertyDefinition, propertyValue);
+            properties.Remove(propertyDefinition);
+            modifiedProperties.Remove(propertyDefinition);
+            deletedProperties.Add(propertyDefinition, propertyValue);
 
-            ComplexProperty complexProperty = propertyValue as ComplexProperty;
+            var complexProperty = propertyValue as ComplexProperty;
 
             if (complexProperty != null)
             {
-                complexProperty.OnChange -= this.PropertyChanged;
+                complexProperty.OnChange -= PropertyChanged;
             }
         }
     }
 
     /// <summary>
-    /// Clears the bag.
+    ///     Clears the bag.
     /// </summary>
     internal void Clear()
     {
-        this.ClearChangeLog();
-        this.properties.Clear();
-        this.loadedProperties.Clear();
-        this.requestedPropertySet = null;
+        ClearChangeLog();
+        properties.Clear();
+        loadedProperties.Clear();
+        requestedPropertySet = null;
     }
 
     /// <summary>
-    /// Clears the bag's change log.
+    ///     Clears the bag's change log.
     /// </summary>
     internal void ClearChangeLog()
     {
-        this.deletedProperties.Clear();
-        this.modifiedProperties.Clear();
-        this.addedProperties.Clear();
+        deletedProperties.Clear();
+        modifiedProperties.Clear();
+        addedProperties.Clear();
 
-        foreach (KeyValuePair<PropertyDefinition, object> keyValuePair in this.properties)
+        foreach (var keyValuePair in properties)
         {
-            ComplexProperty complexProperty = keyValuePair.Value as ComplexProperty;
+            var complexProperty = keyValuePair.Value as ComplexProperty;
 
             if (complexProperty != null)
             {
@@ -534,11 +518,11 @@ internal class PropertyBag
             }
         }
 
-        this.isDirty = false;
+        isDirty = false;
     }
 
     /// <summary>
-    /// Loads properties from XML and inserts them in the bag.
+    ///     Loads properties from XML and inserts them in the bag.
     /// </summary>
     /// <param name="reader">The reader from which to read the properties.</param>
     /// <param name="clear">Indicates whether the bag should be cleared before properties are loaded.</param>
@@ -553,12 +537,12 @@ internal class PropertyBag
     {
         if (clear)
         {
-            this.Clear();
+            Clear();
         }
 
         // Put the property bag in "loading" mode. When in loading mode, no checking is done
         // when setting property values.
-        this.loading = true;
+        loading = true;
 
         this.requestedPropertySet = requestedPropertySet;
         this.onlySummaryPropertiesRequested = onlySummaryPropertiesRequested;
@@ -573,42 +557,42 @@ internal class PropertyBag
                 {
                     PropertyDefinition propertyDefinition;
 
-                    if (this.Owner.Schema.TryGetPropertyDefinition(reader.LocalName, out propertyDefinition))
+                    if (Owner.Schema.TryGetPropertyDefinition(reader.LocalName, out propertyDefinition))
                     {
                         propertyDefinition.LoadPropertyValueFromXml(reader, this);
 
-                        this.loadedProperties.Add(propertyDefinition);
+                        loadedProperties.Add(propertyDefinition);
                     }
                     else
                     {
                         reader.SkipCurrentElement();
                     }
                 }
-            } while (!reader.IsEndElement(XmlNamespace.Types, this.Owner.GetXmlElementName()));
+            } while (!reader.IsEndElement(XmlNamespace.Types, Owner.GetXmlElementName()));
 
-            this.ClearChangeLog();
+            ClearChangeLog();
         }
         finally
         {
-            this.loading = false;
+            loading = false;
         }
     }
 
     /// <summary>
-    /// Writes the bag's properties to XML.
+    ///     Writes the bag's properties to XML.
     /// </summary>
     /// <param name="writer">The writer to write the properties to.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteStartElement(XmlNamespace.Types, this.Owner.GetXmlElementName());
+        writer.WriteStartElement(XmlNamespace.Types, Owner.GetXmlElementName());
 
-        foreach (PropertyDefinition propertyDefinition in this.Owner.Schema)
+        foreach (var propertyDefinition in Owner.Schema)
         {
             // The following test should not be necessary since the property bag prevents
             // properties to be set if they don't have the CanSet flag, but it doesn't hurt...
             if (propertyDefinition.HasFlag(PropertyDefinitionFlags.CanSet, writer.Service.RequestedServerVersion))
             {
-                if (this.Contains(propertyDefinition))
+                if (Contains(propertyDefinition))
                 {
                     propertyDefinition.WritePropertyValueToXml(writer, this, false /* isUpdateOperation */);
                 }
@@ -619,30 +603,30 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Writes the EWS update operations corresponding to the changes that occurred in the bag to XML.
+    ///     Writes the EWS update operations corresponding to the changes that occurred in the bag to XML.
     /// </summary>
     /// <param name="writer">The writer to write the updates to.</param>
     internal void WriteToXmlForUpdate(EwsServiceXmlWriter writer)
     {
-        writer.WriteStartElement(XmlNamespace.Types, this.Owner.GetChangeXmlElementName());
+        writer.WriteStartElement(XmlNamespace.Types, Owner.GetChangeXmlElementName());
 
-        this.Owner.GetId().WriteToXml(writer);
+        Owner.GetId().WriteToXml(writer);
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Updates);
 
-        foreach (PropertyDefinition propertyDefinition in this.addedProperties)
+        foreach (var propertyDefinition in addedProperties)
         {
-            this.WriteSetUpdateToXml(writer, propertyDefinition);
+            WriteSetUpdateToXml(writer, propertyDefinition);
         }
 
-        foreach (PropertyDefinition propertyDefinition in this.modifiedProperties)
+        foreach (var propertyDefinition in modifiedProperties)
         {
-            this.WriteSetUpdateToXml(writer, propertyDefinition);
+            WriteSetUpdateToXml(writer, propertyDefinition);
         }
 
-        foreach (KeyValuePair<PropertyDefinition, object> property in this.deletedProperties)
+        foreach (var property in deletedProperties)
         {
-            this.WriteDeleteUpdateToXml(writer, property.Key, property.Value);
+            WriteDeleteUpdateToXml(writer, property.Key, property.Value);
         }
 
         writer.WriteEndElement();
@@ -650,19 +634,19 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Determines whether an EWS UpdateItem/UpdateFolder call is necessary to save the changes that
-    /// occurred in the bag.
+    ///     Determines whether an EWS UpdateItem/UpdateFolder call is necessary to save the changes that
+    ///     occurred in the bag.
     /// </summary>
     /// <returns>True if an UpdateItem/UpdateFolder call is necessary, false otherwise.</returns>
     internal bool GetIsUpdateCallNecessary()
     {
-        List<PropertyDefinition> propertyDefinitions = new List<PropertyDefinition>();
+        var propertyDefinitions = new List<PropertyDefinition>();
 
-        propertyDefinitions.AddRange(this.addedProperties);
-        propertyDefinitions.AddRange(this.modifiedProperties);
-        propertyDefinitions.AddRange(this.deletedProperties.Keys);
+        propertyDefinitions.AddRange(addedProperties);
+        propertyDefinitions.AddRange(modifiedProperties);
+        propertyDefinitions.AddRange(deletedProperties.Keys);
 
-        foreach (PropertyDefinition propertyDefinition in propertyDefinitions)
+        foreach (var propertyDefinition in propertyDefinitions)
         {
             if (propertyDefinition.HasFlag(PropertyDefinitionFlags.CanUpdate))
             {
@@ -674,27 +658,27 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Initializes a ComplexProperty instance. When a property is inserted into the bag, it needs to be
-    /// initialized in order for changes that occur on that property to be properly detected and dispatched.
+    ///     Initializes a ComplexProperty instance. When a property is inserted into the bag, it needs to be
+    ///     initialized in order for changes that occur on that property to be properly detected and dispatched.
     /// </summary>
     /// <param name="complexProperty">The ComplexProperty instance to initialize.</param>
     private void InitComplexProperty(ComplexProperty complexProperty)
     {
         if (complexProperty != null)
         {
-            complexProperty.OnChange += this.PropertyChanged;
+            complexProperty.OnChange += PropertyChanged;
 
-            IOwnedProperty ownedProperty = complexProperty as IOwnedProperty;
+            var ownedProperty = complexProperty as IOwnedProperty;
 
             if (ownedProperty != null)
             {
-                ownedProperty.Owner = this.Owner;
+                ownedProperty.Owner = Owner;
             }
         }
     }
 
     /// <summary>
-    /// Writes an EWS SetUpdate opeartion for the specified property.
+    ///     Writes an EWS SetUpdate opeartion for the specified property.
     /// </summary>
     /// <param name="writer">The writer to write the update to.</param>
     /// <param name="propertyDefinition">The property fro which to write the update.</param>
@@ -705,23 +689,23 @@ internal class PropertyBag
         // doesn't hurt...
         if (propertyDefinition.HasFlag(PropertyDefinitionFlags.CanUpdate))
         {
-            object propertyValue = this[propertyDefinition];
+            var propertyValue = this[propertyDefinition];
 
-            bool handled = false;
-            ICustomUpdateSerializer updateSerializer = propertyValue as ICustomUpdateSerializer;
+            var handled = false;
+            var updateSerializer = propertyValue as ICustomUpdateSerializer;
 
             if (updateSerializer != null)
             {
-                handled = updateSerializer.WriteSetUpdateToXml(writer, this.Owner, propertyDefinition);
+                handled = updateSerializer.WriteSetUpdateToXml(writer, Owner, propertyDefinition);
             }
 
             if (!handled)
             {
-                writer.WriteStartElement(XmlNamespace.Types, this.Owner.GetSetFieldXmlElementName());
+                writer.WriteStartElement(XmlNamespace.Types, Owner.GetSetFieldXmlElementName());
 
                 propertyDefinition.WriteToXml(writer);
 
-                writer.WriteStartElement(XmlNamespace.Types, this.Owner.GetXmlElementName());
+                writer.WriteStartElement(XmlNamespace.Types, Owner.GetXmlElementName());
                 propertyDefinition.WritePropertyValueToXml(writer, this, true /* isUpdateOperation */);
                 writer.WriteEndElement();
 
@@ -731,7 +715,7 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Writes an EWS DeleteUpdate opeartion for the specified property.
+    ///     Writes an EWS DeleteUpdate opeartion for the specified property.
     /// </summary>
     /// <param name="writer">The writer to write the update to.</param>
     /// <param name="propertyDefinition">The property fro which to write the update.</param>
@@ -747,17 +731,17 @@ internal class PropertyBag
         // but it doesn't hurt...
         if (propertyDefinition.HasFlag(PropertyDefinitionFlags.CanDelete))
         {
-            bool handled = false;
-            ICustomUpdateSerializer updateSerializer = propertyValue as ICustomUpdateSerializer;
+            var handled = false;
+            var updateSerializer = propertyValue as ICustomUpdateSerializer;
 
             if (updateSerializer != null)
             {
-                handled = updateSerializer.WriteDeleteUpdateToXml(writer, this.Owner);
+                handled = updateSerializer.WriteDeleteUpdateToXml(writer, Owner);
             }
 
             if (!handled)
             {
-                writer.WriteStartElement(XmlNamespace.Types, this.Owner.GetDeleteFieldXmlElementName());
+                writer.WriteStartElement(XmlNamespace.Types, Owner.GetDeleteFieldXmlElementName());
                 propertyDefinition.WriteToXml(writer);
                 writer.WriteEndElement();
             }
@@ -765,31 +749,31 @@ internal class PropertyBag
     }
 
     /// <summary>
-    /// Validate property bag instance.
+    ///     Validate property bag instance.
     /// </summary>
     internal void Validate()
     {
-        foreach (PropertyDefinition propertyDefinition in this.addedProperties)
+        foreach (var propertyDefinition in addedProperties)
         {
-            this.ValidatePropertyValue(propertyDefinition);
+            ValidatePropertyValue(propertyDefinition);
         }
 
-        foreach (PropertyDefinition propertyDefinition in this.modifiedProperties)
+        foreach (var propertyDefinition in modifiedProperties)
         {
-            this.ValidatePropertyValue(propertyDefinition);
+            ValidatePropertyValue(propertyDefinition);
         }
     }
 
     /// <summary>
-    /// Validates the property value.
+    ///     Validates the property value.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
     private void ValidatePropertyValue(PropertyDefinition propertyDefinition)
     {
         object propertyValue;
-        if (this.TryGetProperty(propertyDefinition, out propertyValue))
+        if (TryGetProperty(propertyDefinition, out propertyValue))
         {
-            ISelfValidate validatingValue = propertyValue as ISelfValidate;
+            var validatingValue = propertyValue as ISelfValidate;
             if (validatingValue != null)
             {
                 validatingValue.Validate();

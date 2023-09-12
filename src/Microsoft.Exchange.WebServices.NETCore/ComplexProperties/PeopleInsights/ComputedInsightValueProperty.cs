@@ -11,7 +11,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a computed insight value.
+///     Represents a computed insight value.
 /// </summary>
 public sealed class ComputedInsightValueProperty : ComplexProperty
 {
@@ -19,27 +19,27 @@ public sealed class ComputedInsightValueProperty : ComplexProperty
     private string value;
 
     /// <summary>
-    /// Gets or sets the Key
+    ///     Gets or sets the Key
     /// </summary>
     public string Key
     {
-        get { return this.key; }
+        get => key;
 
-        set { this.SetFieldValue<string>(ref this.key, value); }
+        set => SetFieldValue(ref key, value);
     }
 
     /// <summary>
-    /// Gets or sets the Value
+    ///     Gets or sets the Value
     /// </summary>
     public string Value
     {
-        get { return this.value; }
+        get => value;
 
-        set { this.SetFieldValue<string>(ref this.value, value); }
+        set => SetFieldValue(ref this.value, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -48,10 +48,10 @@ public sealed class ComputedInsightValueProperty : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Key:
-                this.Key = reader.ReadElementValue();
+                Key = reader.ReadElementValue();
                 break;
             case XmlElementNames.Value:
-                this.Value = reader.ReadElementValue();
+                Value = reader.ReadElementValue();
                 break;
             default:
                 return false;

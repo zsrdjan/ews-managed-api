@@ -25,35 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a request to the GetUnifiedGroupUnseenCount operation.
+///     Represents a request to the GetUnifiedGroupUnseenCount operation.
 /// </summary>
 internal sealed class GetUnifiedGroupUnseenCountRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// The last visited time utc for the group
+    ///     The last visited time utc for the group
     /// </summary>
     private readonly DateTime lastVisitedTimeUtc;
 
     /// <summary>
-    /// The identify type associated with the group
+    ///     The identify type associated with the group
     /// </summary>
     private readonly UnifiedGroupIdentityType identityType;
 
     /// <summary>
-    /// The value of identity associated with the group
+    ///     The value of identity associated with the group
     /// </summary>
     private readonly string identityValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUnifiedGroupUnseenCountRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetUnifiedGroupUnseenCountRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="lastVisitedTimeUtc">The last visited time utc for the group</param>
@@ -69,11 +62,11 @@ internal sealed class GetUnifiedGroupUnseenCountRequest : SimpleServiceRequestBa
     {
         this.lastVisitedTimeUtc = lastVisitedTimeUtc;
         this.identityType = identityType;
-        this.identityValue = value;
+        identityValue = value;
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -82,44 +75,44 @@ internal sealed class GetUnifiedGroupUnseenCountRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
-    /// <returns>XML element name.</returns>    
+    /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
     {
         return XmlElementNames.GetUnifiedGroupUnseenCount;
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetUnifiedGroupUnseenCountResponse response = new GetUnifiedGroupUnseenCountResponse();
+        var response = new GetUnifiedGroupUnseenCountResponse();
         response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        UnifiedGroupIdentity groupIdentity = new UnifiedGroupIdentity(this.identityType, this.identityValue);
+        var groupIdentity = new UnifiedGroupIdentity(identityType, identityValue);
 
         groupIdentity.WriteToXml(writer, XmlElementNames.GroupIdentity);
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.LastVisitedTimeUtc,
-            this.lastVisitedTimeUtc.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ")
+            lastVisitedTimeUtc.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ")
         );
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -128,11 +121,11 @@ internal sealed class GetUnifiedGroupUnseenCountRequest : SimpleServiceRequestBa
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetUnifiedGroupUnseenCountResponse> Execute(CancellationToken token)
     {
-        return (GetUnifiedGroupUnseenCountResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        return (GetUnifiedGroupUnseenCountResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
     }
 }

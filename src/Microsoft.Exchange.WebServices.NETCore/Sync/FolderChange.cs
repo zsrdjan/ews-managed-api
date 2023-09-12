@@ -25,25 +25,20 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a change on a folder as returned by a synchronization operation.
+///     Represents a change on a folder as returned by a synchronization operation.
 /// </summary>
 public sealed class FolderChange : Change
 {
     /// <summary>
-    /// Initializes a new instance of FolderChange.
+    ///     Initializes a new instance of FolderChange.
     /// </summary>
     internal FolderChange()
-        : base()
     {
     }
 
     /// <summary>
-    /// Creates a FolderId instance.
+    ///     Creates a FolderId instance.
     /// </summary>
     /// <returns>A FolderId.</returns>
     internal override ServiceId CreateId()
@@ -52,20 +47,14 @@ public sealed class FolderChange : Change
     }
 
     /// <summary>
-    /// Gets the folder the change applies to. Folder is null when ChangeType is equal to
-    /// ChangeType.Delete. In that case, use the FolderId property to retrieve the Id of
-    /// the folder that was deleted.
+    ///     Gets the folder the change applies to. Folder is null when ChangeType is equal to
+    ///     ChangeType.Delete. In that case, use the FolderId property to retrieve the Id of
+    ///     the folder that was deleted.
     /// </summary>
-    public Folder Folder
-    {
-        get { return (Folder)this.ServiceObject; }
-    }
+    public Folder Folder => (Folder)ServiceObject;
 
     /// <summary>
-    /// Gets the Id of the folder the change applies to.
+    ///     Gets the Id of the folder the change applies to.
     /// </summary>
-    public FolderId FolderId
-    {
-        get { return (FolderId)this.Id; }
-    }
+    public FolderId FolderId => (FolderId)Id;
 }

@@ -23,14 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Dns;
-
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+namespace Microsoft.Exchange.WebServices.Dns;
+
 /// <summary>
-/// Represents a DNS SRV Record.
+///     Represents a DNS SRV Record.
 /// </summary>
 internal class DnsSrvRecord : DnsRecord
 {
@@ -47,7 +45,7 @@ internal class DnsSrvRecord : DnsRecord
     private int port;
 
     /// <summary>
-    /// Initializes a new instance of the DnsSrvRecord class.
+    ///     Initializes a new instance of the DnsSrvRecord class.
     /// </summary>
     /// <param name="header">Dns dnsRecord header</param>
     /// <param name="dataPointer">Pointer to the data portion of the dnsRecord</param>
@@ -55,56 +53,41 @@ internal class DnsSrvRecord : DnsRecord
     {
         base.Load(header, dataPointer);
 
-        Win32DnsSrvRecord record = Marshal.PtrToStructure<Win32DnsSrvRecord>(dataPointer);
-        this.target = record.NameTarget;
-        this.priority = record.Priority;
-        this.weight = record.Weight;
-        this.port = record.Port;
+        var record = Marshal.PtrToStructure<Win32DnsSrvRecord>(dataPointer);
+        target = record.NameTarget;
+        priority = record.Priority;
+        weight = record.Weight;
+        port = record.Port;
     }
 
     /// <summary>
-    /// Gets the matching type of DNS dnsRecord.
+    ///     Gets the matching type of DNS dnsRecord.
     /// </summary>
     /// <value>The type of the dnsRecord.</value>
-    internal override DnsRecordType RecordType
-    {
-        get { return DnsRecordType.SRV; }
-    }
+    internal override DnsRecordType RecordType => DnsRecordType.SRV;
 
     /// <summary>
-    /// Get the name target field of the DNS dnsRecord.
+    ///     Get the name target field of the DNS dnsRecord.
     /// </summary>
-    internal string NameTarget
-    {
-        get { return this.target; }
-    }
+    internal string NameTarget => target;
 
     /// <summary>
-    /// Gwet the priority field of this DNS SRV Record.
+    ///     Gwet the priority field of this DNS SRV Record.
     /// </summary>
-    internal int Priority
-    {
-        get { return this.priority; }
-    }
+    internal int Priority => priority;
 
     /// <summary>
-    /// Get the weight field of this DNS SRV Record.
+    ///     Get the weight field of this DNS SRV Record.
     /// </summary>
-    internal int Weight
-    {
-        get { return this.weight; }
-    }
+    internal int Weight => weight;
 
     /// <summary>
-    /// Gets the port field of the DNS SRV dnsRecord.
+    ///     Gets the port field of the DNS SRV dnsRecord.
     /// </summary>
-    internal int Port
-    {
-        get { return this.port; }
-    }
+    internal int Port => port;
 
     /// <summary>
-    ///  Win32DnsSrvRecord - native format SRV dnsRecord returned by DNS API
+    ///     Win32DnsSrvRecord - native format SRV dnsRecord returned by DNS API
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     private struct Win32DnsSrvRecord
@@ -119,8 +102,8 @@ internal class DnsSrvRecord : DnsRecord
         public UInt16 Priority;
 
         /// <summary>
-        /// Weight of the target host. Useful when selecting among hosts with the same priority. 
-        /// The chances of using this host should be proportional to its weight
+        ///     Weight of the target host. Useful when selecting among hosts with the same priority.
+        ///     The chances of using this host should be proportional to its weight
         /// </summary>
         public UInt16 Weight;
 

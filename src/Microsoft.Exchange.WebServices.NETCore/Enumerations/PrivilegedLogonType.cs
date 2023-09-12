@@ -26,17 +26,17 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the type of PrivilegedLogonType.
+///     Defines the type of PrivilegedLogonType.
 /// </summary>
 internal enum PrivilegedLogonType
 {
     /// <summary>
-    /// Logon as Admin
+    ///     Logon as Admin
     /// </summary>
     Admin,
 
     /// <summary>
-    /// Logon as SystemService
+    ///     Logon as SystemService
     /// </summary>
     SystemService,
 }

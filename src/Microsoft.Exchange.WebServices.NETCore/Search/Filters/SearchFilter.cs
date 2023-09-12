@@ -25,26 +25,21 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents the base search filter class. Use descendant search filter classes such as SearchFilter.IsEqualTo,
-/// SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection to define search filters.
+///     Represents the base search filter class. Use descendant search filter classes such as SearchFilter.IsEqualTo,
+///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection to define search filters.
 /// </summary>
 public abstract partial class SearchFilter : ComplexProperty
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SearchFilter"/> class.
+    ///     Initializes a new instance of the <see cref="SearchFilter" /> class.
     /// </summary>
     internal SearchFilter()
     {
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>SearchFilter.</returns>
@@ -52,9 +47,9 @@ public abstract partial class SearchFilter : ComplexProperty
     {
         reader.EnsureCurrentNodeIsStartElement();
 
-        string localName = reader.LocalName;
+        var localName = reader.LocalName;
 
-        SearchFilter searchFilter = GetSearchFilterInstance(localName);
+        var searchFilter = GetSearchFilterInstance(localName);
 
         if (searchFilter != null)
         {
@@ -65,7 +60,7 @@ public abstract partial class SearchFilter : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the search filter instance.
+    ///     Gets the search filter instance.
     /// </summary>
     /// <param name="localName">Name of the local.</param>
     /// <returns></returns>
@@ -119,17 +114,17 @@ public abstract partial class SearchFilter : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal abstract string GetXmlElementName();
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal virtual void WriteToXml(EwsServiceXmlWriter writer)
     {
-        base.WriteToXml(writer, this.GetXmlElementName());
+        base.WriteToXml(writer, GetXmlElementName());
     }
 }

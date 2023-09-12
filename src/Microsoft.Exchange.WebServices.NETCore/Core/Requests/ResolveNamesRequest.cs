@@ -25,18 +25,16 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents a ResolveNames request.
+///     Represents a ResolveNames request.
 /// </summary>
 internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveNamesResponse>
 {
-    private static LazyMember<Dictionary<ResolveNameSearchLocation, string>> searchScopeMap =
+    private static readonly LazyMember<Dictionary<ResolveNameSearchLocation, string>> searchScopeMap =
         new LazyMember<Dictionary<ResolveNameSearchLocation, string>>(
             delegate
             {
-                Dictionary<ResolveNameSearchLocation, string> map = new Dictionary<ResolveNameSearchLocation, string>();
+                var map = new Dictionary<ResolveNameSearchLocation, string>();
 
                 map.Add(ResolveNameSearchLocation.DirectoryOnly, "ActiveDirectory");
                 map.Add(ResolveNameSearchLocation.DirectoryThenContacts, "ActiveDirectoryContacts");
@@ -51,19 +49,19 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     private bool returnFullContactData;
     private ResolveNameSearchLocation searchLocation;
     private PropertySet contactDataPropertySet;
-    private FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
+    private readonly FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
 
     /// <summary>
-    /// Asserts the valid.
+    ///     Asserts the valid.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateNonBlankStringParam(this.NameToResolve, "NameToResolve");
+        EwsUtilities.ValidateNonBlankStringParam(NameToResolve, "NameToResolve");
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -74,7 +72,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -83,7 +81,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -92,7 +90,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -101,7 +99,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResolveNamesRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ResolveNamesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal ResolveNamesRequest(ExchangeService service)
@@ -110,7 +108,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -119,16 +117,16 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.ReturnFullContactData, this.ReturnFullContactData);
+        writer.WriteAttributeValue(XmlAttributeNames.ReturnFullContactData, ReturnFullContactData);
 
         string searchScope = null;
 
-        searchScopeMap.Member.TryGetValue(this.SearchLocation, out searchScope);
+        searchScopeMap.Member.TryGetValue(SearchLocation, out searchScope);
 
         EwsUtilities.Assert(
             !string.IsNullOrEmpty(searchScope),
@@ -137,15 +135,15 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
         );
 
         string propertySet = null;
-        if (this.contactDataPropertySet != null)
+        if (contactDataPropertySet != null)
         {
             PropertySet.DefaultPropertySetMap.Member.TryGetValue(
-                this.contactDataPropertySet.BasePropertySet,
+                contactDataPropertySet.BasePropertySet,
                 out propertySet
             );
         }
 
-        if (!this.Service.Exchange2007CompatibilityMode)
+        if (!Service.Exchange2007CompatibilityMode)
         {
             writer.WriteAttributeValue(XmlAttributeNames.SearchScope, searchScope);
         }
@@ -157,18 +155,18 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Writes the elements to XML.
+    ///     Writes the elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.ParentFolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ParentFolderIds);
+        ParentFolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ParentFolderIds);
 
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.UnresolvedEntry, this.NameToResolve);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.UnresolvedEntry, NameToResolve);
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -177,53 +175,50 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    /// Gets or sets the name to resolve.
+    ///     Gets or sets the name to resolve.
     /// </summary>
     /// <value>The name to resolve.</value>
     public string NameToResolve
     {
-        get { return this.nameToResolve; }
-        set { this.nameToResolve = value; }
+        get => nameToResolve;
+        set => nameToResolve = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to return full contact data or not.
+    ///     Gets or sets a value indicating whether to return full contact data or not.
     /// </summary>
     /// <value>
     ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
     /// </value>
     public bool ReturnFullContactData
     {
-        get { return this.returnFullContactData; }
-        set { this.returnFullContactData = value; }
+        get => returnFullContactData;
+        set => returnFullContactData = value;
     }
 
     /// <summary>
-    /// Gets or sets the search location.
+    ///     Gets or sets the search location.
     /// </summary>
     /// <value>The search scope.</value>
     public ResolveNameSearchLocation SearchLocation
     {
-        get { return this.searchLocation; }
-        set { this.searchLocation = value; }
+        get => searchLocation;
+        set => searchLocation = value;
     }
 
     /// <summary>
-    /// Gets or sets the PropertySet for Contact Data
+    ///     Gets or sets the PropertySet for Contact Data
     /// </summary>
     /// <value>The PropertySet</value>
     public PropertySet ContactDataPropertySet
     {
-        get { return this.contactDataPropertySet; }
-        set { this.contactDataPropertySet = value; }
+        get => contactDataPropertySet;
+        set => contactDataPropertySet = value;
     }
 
     /// <summary>
-    /// Gets the parent folder ids.
+    ///     Gets the parent folder ids.
     /// </summary>
     /// <value>The parent folder ids.</value>
-    public FolderIdWrapperList ParentFolderIds
-    {
-        get { return this.parentFolderIds; }
-    }
+    public FolderIdWrapperList ParentFolderIds => parentFolderIds;
 }

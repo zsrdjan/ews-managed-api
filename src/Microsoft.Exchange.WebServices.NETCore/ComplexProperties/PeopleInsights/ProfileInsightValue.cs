@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the ProfileInsightValue.
+///     Represents the ProfileInsightValue.
 /// </summary>
 public sealed class ProfileInsightValue : InsightValue
 {
@@ -43,71 +40,47 @@ public sealed class ProfileInsightValue : InsightValue
     private string title;
 
     /// <summary>
-    /// Gets the FullName
+    ///     Gets the FullName
     /// </summary>
-    public string FullName
-    {
-        get { return this.fullName; }
-    }
+    public string FullName => fullName;
 
     /// <summary>
-    /// Gets the FirstName
+    ///     Gets the FirstName
     /// </summary>
-    public string FirstName
-    {
-        get { return this.firstName; }
-    }
+    public string FirstName => firstName;
 
     /// <summary>
-    /// Gets the LastName
+    ///     Gets the LastName
     /// </summary>
-    public string LastName
-    {
-        get { return this.lastName; }
-    }
+    public string LastName => lastName;
 
     /// <summary>
-    /// Gets the EmailAddress
+    ///     Gets the EmailAddress
     /// </summary>
-    public string EmailAddress
-    {
-        get { return this.emailAddress; }
-    }
+    public string EmailAddress => emailAddress;
 
     /// <summary>
-    /// Gets the Avatar
+    ///     Gets the Avatar
     /// </summary>
-    public string Avatar
-    {
-        get { return this.avatar; }
-    }
+    public string Avatar => avatar;
 
     /// <summary>
-    /// Gets the JoinedUtcTicks
+    ///     Gets the JoinedUtcTicks
     /// </summary>
-    public long JoinedUtcTicks
-    {
-        get { return this.joinedUtcTicks; }
-    }
+    public long JoinedUtcTicks => joinedUtcTicks;
 
     /// <summary>
-    /// Gets the ProfilePicture
+    ///     Gets the ProfilePicture
     /// </summary>
-    public UserProfilePicture ProfilePicture
-    {
-        get { return this.profilePicture; }
-    }
+    public UserProfilePicture ProfilePicture => profilePicture;
 
     /// <summary>
-    /// Gets the Title
+    ///     Gets the Title
     /// </summary>
-    public string Title
-    {
-        get { return this.title; }
-    }
+    public string Title => title;
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -116,36 +89,36 @@ public sealed class ProfileInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.FullName:
-                this.fullName = reader.ReadElementValue();
+                fullName = reader.ReadElementValue();
                 break;
             case XmlElementNames.FirstName:
-                this.firstName = reader.ReadElementValue();
+                firstName = reader.ReadElementValue();
                 break;
             case XmlElementNames.LastName:
-                this.lastName = reader.ReadElementValue();
+                lastName = reader.ReadElementValue();
                 break;
             case XmlElementNames.EmailAddress:
-                this.emailAddress = reader.ReadElementValue();
+                emailAddress = reader.ReadElementValue();
                 break;
             case XmlElementNames.Avatar:
-                this.avatar = reader.ReadElementValue();
+                avatar = reader.ReadElementValue();
                 break;
             case XmlElementNames.JoinedUtcTicks:
-                this.joinedUtcTicks = reader.ReadElementValue<long>();
+                joinedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.ProfilePicture:
                 var picture = new UserProfilePicture();
                 picture.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ProfilePicture);
-                this.profilePicture = picture;
+                profilePicture = picture;
                 break;
             case XmlElementNames.Title:
-                this.title = reader.ReadElementValue();
+                title = reader.ReadElementValue();
                 break;
             default:
                 return false;

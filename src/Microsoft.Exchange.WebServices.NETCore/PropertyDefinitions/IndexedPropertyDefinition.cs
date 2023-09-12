@@ -25,20 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents an indexed property definition.
+///     Represents an indexed property definition.
 /// </summary>
 public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
 {
     /// <summary>
-    /// Index attribute of IndexedFieldURI element.
+    ///     Index attribute of IndexedFieldURI element.
     /// </summary>
-    private string index;
+    private readonly string index;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="IndexedPropertyDefinition" /> class.
     /// </summary>
     /// <param name="uri">The FieldURI attribute of the IndexedFieldURI element.</param>
     /// <param name="index">The Index attribute of the IndexedFieldURI element.</param>
@@ -49,14 +47,14 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    /// Determines whether two specified instances of IndexedPropertyDefinition are equal.
+    ///     Determines whether two specified instances of IndexedPropertyDefinition are equal.
     /// </summary>
     /// <param name="idxPropDef1">First indexed property definition.</param>
     /// <param name="idxPropDef2">Second indexed property definition.</param>
     /// <returns>True if indexed property definitions are equal.</returns>
     internal static bool IsEqualTo(IndexedPropertyDefinition idxPropDef1, IndexedPropertyDefinition idxPropDef2)
     {
-        return object.ReferenceEquals(idxPropDef1, idxPropDef2) ||
+        return ReferenceEquals(idxPropDef1, idxPropDef2) ||
                ((object)idxPropDef1 != null &&
                 (object)idxPropDef2 != null &&
                 idxPropDef1.Uri == idxPropDef2.Uri &&
@@ -64,26 +62,23 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    /// Gets the index of the property.
+    ///     Gets the index of the property.
     /// </summary>
-    public string Index
-    {
-        get { return this.index; }
-    }
+    public string Index => index;
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         base.WriteAttributesToXml(writer);
 
-        writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, this.Index);
+        writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, Index);
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -92,65 +87,62 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    /// Gets the property definition's printable name.
+    ///     Gets the property definition's printable name.
     /// </summary>
     /// <returns>
-    /// The property definition's printable name.
+    ///     The property definition's printable name.
     /// </returns>
     internal override string GetPrintableName()
     {
-        return string.Format("{0}:{1}", this.Uri, this.Index);
+        return string.Format("{0}:{1}", Uri, Index);
     }
 
     /// <summary>
-    /// Determines whether two specified instances of IndexedPropertyDefinition are equal.
+    ///     Determines whether two specified instances of IndexedPropertyDefinition are equal.
     /// </summary>
     /// <param name="idxPropDef1">First indexed property definition.</param>
     /// <param name="idxPropDef2">Second indexed property definition.</param>
     /// <returns>True if indexed property definitions are equal.</returns>
     public static bool operator ==(IndexedPropertyDefinition idxPropDef1, IndexedPropertyDefinition idxPropDef2)
     {
-        return IndexedPropertyDefinition.IsEqualTo(idxPropDef1, idxPropDef2);
+        return IsEqualTo(idxPropDef1, idxPropDef2);
     }
 
     /// <summary>
-    /// Determines whether two specified instances of IndexedPropertyDefinition are not equal.
+    ///     Determines whether two specified instances of IndexedPropertyDefinition are not equal.
     /// </summary>
     /// <param name="idxPropDef1">First indexed property definition.</param>
     /// <param name="idxPropDef2">Second indexed property definition.</param>
     /// <returns>True if indexed property definitions are equal.</returns>
     public static bool operator !=(IndexedPropertyDefinition idxPropDef1, IndexedPropertyDefinition idxPropDef2)
     {
-        return !IndexedPropertyDefinition.IsEqualTo(idxPropDef1, idxPropDef2);
+        return !IsEqualTo(idxPropDef1, idxPropDef2);
     }
 
     /// <summary>
-    /// Determines whether a given indexed property definition is equal to this indexed property definition.
+    ///     Determines whether a given indexed property definition is equal to this indexed property definition.
     /// </summary>
     /// <param name="obj">The object to check for equality.</param>
     /// <returns>True if the properties definitions define the same indexed property.</returns>
     public override bool Equals(object obj)
     {
-        IndexedPropertyDefinition propertyDefinition = obj as IndexedPropertyDefinition;
-        return IndexedPropertyDefinition.IsEqualTo(propertyDefinition, this);
+        var propertyDefinition = obj as IndexedPropertyDefinition;
+        return IsEqualTo(propertyDefinition, this);
     }
 
     /// <summary>
-    /// Serves as a hash function for a particular type.
+    ///     Serves as a hash function for a particular type.
     /// </summary>
     /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
+    ///     A hash code for the current <see cref="T:System.Object" />.
     /// </returns>
     public override int GetHashCode()
     {
-        return this.Uri.GetHashCode() ^ this.Index.GetHashCode();
+        return Uri.GetHashCode() ^ Index.GetHashCode();
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(string); }
-    }
+    public override Type Type => typeof(string);
 }

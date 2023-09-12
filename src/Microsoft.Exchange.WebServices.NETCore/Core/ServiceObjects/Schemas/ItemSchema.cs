@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for generic items.
+///     Represents the schema for generic items.
 /// </summary>
 [Schema]
 public class ItemSchema : ServiceObjectSchema
 {
     /// <summary>
-    /// Field URIs for Item.
+    ///     Field URIs for Item.
     /// </summary>
     private static class FieldUris
     {
@@ -93,7 +93,7 @@ public class ItemSchema : ServiceObjectSchema
     }
 
     /// <summary>
-    /// Defines the Id property.
+    ///     Defines the Id property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -105,11 +105,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.ItemId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new ItemId(); }
+        delegate { return new ItemId(); }
     );
 
     /// <summary>
-    /// Defines the Body property.
+    ///     Defines the Body property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -121,11 +121,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.Body,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanUpdate | PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new MessageBody(); }
+        delegate { return new MessageBody(); }
     );
 
     /// <summary>
-    /// Defines the ItemClass property.
+    ///     Defines the ItemClass property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -140,7 +140,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Subject property.
+    ///     Defines the Subject property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -158,7 +158,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the MimeContent property.
+    ///     Defines the MimeContent property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -172,11 +172,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.MustBeExplicitlyLoaded,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new MimeContent(); }
+        delegate { return new MimeContent(); }
     );
 
     /// <summary>
-    /// Defines the MimeContentUTF8 property.
+    ///     Defines the MimeContentUTF8 property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -190,11 +190,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.MustBeExplicitlyLoaded,
         ExchangeVersion.Exchange2013_SP1,
-        delegate() { return new MimeContentUTF8(); }
+        delegate { return new MimeContentUTF8(); }
     );
 
     /// <summary>
-    /// Defines the ParentFolderId property.
+    ///     Defines the ParentFolderId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -206,11 +206,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.ParentFolderId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new FolderId(); }
+        delegate { return new FolderId(); }
     );
 
     /// <summary>
-    /// Defines the Sensitivity property.
+    ///     Defines the Sensitivity property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -225,7 +225,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Attachments property.
+    ///     Defines the Attachments property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -235,7 +235,7 @@ public class ItemSchema : ServiceObjectSchema
     public static readonly PropertyDefinition Attachments = new AttachmentsPropertyDefinition();
 
     /// <summary>
-    /// Defines the DateTimeReceived property.
+    ///     Defines the DateTimeReceived property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -250,7 +250,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Size property.
+    ///     Defines the Size property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -265,7 +265,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Categories property.
+    ///     Defines the Categories property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -281,11 +281,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the Importance property.
+    ///     Defines the Importance property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -300,7 +300,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the InReplyTo property.
+    ///     Defines the InReplyTo property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -318,7 +318,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IsSubmitted property.
+    ///     Defines the IsSubmitted property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -333,7 +333,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IsAssociated property.
+    ///     Defines the IsAssociated property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -348,7 +348,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IsDraft property.
+    ///     Defines the IsDraft property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -363,7 +363,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IsFromMe property.
+    ///     Defines the IsFromMe property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -378,7 +378,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IsResend property.
+    ///     Defines the IsResend property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -393,7 +393,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IsUnmodified property.
+    ///     Defines the IsUnmodified property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -408,7 +408,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the InternetMessageHeaders property.
+    ///     Defines the InternetMessageHeaders property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -420,11 +420,11 @@ public class ItemSchema : ServiceObjectSchema
             XmlElementNames.InternetMessageHeaders,
             FieldUris.InternetMessageHeaders,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new InternetMessageHeaderCollection(); }
+            delegate { return new InternetMessageHeaderCollection(); }
         );
 
     /// <summary>
-    /// Defines the DateTimeSent property.
+    ///     Defines the DateTimeSent property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -439,7 +439,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the DateTimeCreated property.
+    ///     Defines the DateTimeCreated property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -454,7 +454,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the AllowedResponseActions property.
+    ///     Defines the AllowedResponseActions property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -468,7 +468,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ReminderDueBy property.
+    ///     Defines the ReminderDueBy property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -480,11 +480,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.ReminderDueBy,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanUpdate | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate(ExchangeVersion version) { return AppointmentSchema.StartTimeZone; }
+        delegate { return AppointmentSchema.StartTimeZone; }
     );
 
     /// <summary>
-    /// Defines the IsReminderSet property.
+    ///     Defines the IsReminderSet property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -499,7 +499,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ReminderMinutesBeforeStart property.
+    ///     Defines the ReminderMinutesBeforeStart property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -514,7 +514,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the DisplayCc property.
+    ///     Defines the DisplayCc property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -529,7 +529,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the DisplayTo property.
+    ///     Defines the DisplayTo property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -544,7 +544,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the HasAttachments property.
+    ///     Defines the HasAttachments property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -559,7 +559,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Culture property.
+    ///     Defines the Culture property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -577,7 +577,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the EffectiveRights property.
+    ///     Defines the EffectiveRights property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -592,7 +592,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the LastModifiedName property.
+    ///     Defines the LastModifiedName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -607,7 +607,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the LastModifiedTime property.
+    ///     Defines the LastModifiedTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -622,7 +622,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the WebClientReadFormQueryString property.
+    ///     Defines the WebClientReadFormQueryString property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -637,7 +637,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the WebClientEditFormQueryString property.
+    ///     Defines the WebClientEditFormQueryString property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -652,7 +652,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ConversationId property.
+    ///     Defines the ConversationId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -664,11 +664,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.ConversationId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010,
-        delegate() { return new ConversationId(); }
+        delegate { return new ConversationId(); }
     );
 
     /// <summary>
-    /// Defines the UniqueBody property.
+    ///     Defines the UniqueBody property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -680,11 +680,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.UniqueBody,
         PropertyDefinitionFlags.MustBeExplicitlyLoaded,
         ExchangeVersion.Exchange2010,
-        delegate() { return new UniqueBody(); }
+        delegate { return new UniqueBody(); }
     );
 
     /// <summary>
-    /// Defines the StoreEntryId property.
+    ///     Defines the StoreEntryId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -699,7 +699,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the InstanceKey property.
+    ///     Defines the InstanceKey property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -714,7 +714,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the NormalizedBody property.
+    ///     Defines the NormalizedBody property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -726,11 +726,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.NormalizedBody,
         PropertyDefinitionFlags.MustBeExplicitlyLoaded,
         ExchangeVersion.Exchange2013,
-        delegate() { return new NormalizedBody(); }
+        delegate { return new NormalizedBody(); }
     );
 
     /// <summary>
-    /// Defines the EntityExtractionResult property.
+    ///     Defines the EntityExtractionResult property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -743,11 +743,11 @@ public class ItemSchema : ServiceObjectSchema
             FieldUris.EntityExtractionResult,
             PropertyDefinitionFlags.MustBeExplicitlyLoaded,
             ExchangeVersion.Exchange2013,
-            delegate() { return new EntityExtractionResult(); }
+            delegate { return new EntityExtractionResult(); }
         );
 
     /// <summary>
-    /// Defines the InternetMessageHeaders property.
+    ///     Defines the InternetMessageHeaders property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -759,11 +759,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.Flag,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanUpdate | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate() { return new Flag(); }
+        delegate { return new Flag(); }
     );
 
     /// <summary>
-    /// Defines the PolicyTag property.
+    ///     Defines the PolicyTag property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -778,11 +778,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate() { return new PolicyTag(); }
+        delegate { return new PolicyTag(); }
     );
 
     /// <summary>
-    /// Defines the ArchiveTag property.
+    ///     Defines the ArchiveTag property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -797,11 +797,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate() { return new ArchiveTag(); }
+        delegate { return new ArchiveTag(); }
     );
 
     /// <summary>
-    /// Defines the RetentionDate property.
+    ///     Defines the RetentionDate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -817,7 +817,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Preview property.
+    ///     Defines the Preview property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -832,7 +832,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the TextBody property.
+    ///     Defines the TextBody property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -844,11 +844,11 @@ public class ItemSchema : ServiceObjectSchema
         FieldUris.TextBody,
         PropertyDefinitionFlags.MustBeExplicitlyLoaded,
         ExchangeVersion.Exchange2013,
-        delegate() { return new TextBody(); }
+        delegate { return new TextBody(); }
     );
 
     /// <summary>
-    /// Defines the IconIndex property.
+    ///     Defines the IconIndex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -863,7 +863,7 @@ public class ItemSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Hashtags property.
+    ///     Defines the Hashtags property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -878,11 +878,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2015,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the Mentions property.
+    ///     Defines the Mentions property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -897,11 +897,11 @@ public class ItemSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2015,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     /// <summary>
-    /// Defines the MentionedMe property.
+    ///     Defines the MentionedMe property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -920,76 +920,76 @@ public class ItemSchema : ServiceObjectSchema
     internal static readonly ItemSchema Instance = new ItemSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(MimeContent);
-        this.RegisterProperty(Id);
-        this.RegisterProperty(ParentFolderId);
-        this.RegisterProperty(ItemClass);
-        this.RegisterProperty(Subject);
-        this.RegisterProperty(Sensitivity);
-        this.RegisterProperty(Body);
-        this.RegisterProperty(Attachments);
-        this.RegisterProperty(DateTimeReceived);
-        this.RegisterProperty(Size);
-        this.RegisterProperty(Categories);
-        this.RegisterProperty(Importance);
-        this.RegisterProperty(InReplyTo);
-        this.RegisterProperty(IsSubmitted);
-        this.RegisterProperty(IsDraft);
-        this.RegisterProperty(IsFromMe);
-        this.RegisterProperty(IsResend);
-        this.RegisterProperty(IsUnmodified);
-        this.RegisterProperty(InternetMessageHeaders);
-        this.RegisterProperty(DateTimeSent);
-        this.RegisterProperty(DateTimeCreated);
-        this.RegisterProperty(AllowedResponseActions);
-        this.RegisterProperty(ReminderDueBy);
-        this.RegisterProperty(IsReminderSet);
-        this.RegisterProperty(ReminderMinutesBeforeStart);
-        this.RegisterProperty(DisplayCc);
-        this.RegisterProperty(DisplayTo);
-        this.RegisterProperty(HasAttachments);
-        this.RegisterProperty(ServiceObjectSchema.ExtendedProperties);
-        this.RegisterProperty(Culture);
-        this.RegisterProperty(EffectiveRights);
-        this.RegisterProperty(LastModifiedName);
-        this.RegisterProperty(LastModifiedTime);
-        this.RegisterProperty(IsAssociated);
-        this.RegisterProperty(WebClientReadFormQueryString);
-        this.RegisterProperty(WebClientEditFormQueryString);
-        this.RegisterProperty(ConversationId);
-        this.RegisterProperty(UniqueBody);
-        this.RegisterProperty(Flag);
-        this.RegisterProperty(StoreEntryId);
-        this.RegisterProperty(InstanceKey);
-        this.RegisterProperty(NormalizedBody);
-        this.RegisterProperty(EntityExtractionResult);
-        this.RegisterProperty(PolicyTag);
-        this.RegisterProperty(ArchiveTag);
-        this.RegisterProperty(RetentionDate);
-        this.RegisterProperty(Preview);
-        this.RegisterProperty(TextBody);
-        this.RegisterProperty(IconIndex);
-        this.RegisterProperty(MimeContentUTF8);
+        RegisterProperty(MimeContent);
+        RegisterProperty(Id);
+        RegisterProperty(ParentFolderId);
+        RegisterProperty(ItemClass);
+        RegisterProperty(Subject);
+        RegisterProperty(Sensitivity);
+        RegisterProperty(Body);
+        RegisterProperty(Attachments);
+        RegisterProperty(DateTimeReceived);
+        RegisterProperty(Size);
+        RegisterProperty(Categories);
+        RegisterProperty(Importance);
+        RegisterProperty(InReplyTo);
+        RegisterProperty(IsSubmitted);
+        RegisterProperty(IsDraft);
+        RegisterProperty(IsFromMe);
+        RegisterProperty(IsResend);
+        RegisterProperty(IsUnmodified);
+        RegisterProperty(InternetMessageHeaders);
+        RegisterProperty(DateTimeSent);
+        RegisterProperty(DateTimeCreated);
+        RegisterProperty(AllowedResponseActions);
+        RegisterProperty(ReminderDueBy);
+        RegisterProperty(IsReminderSet);
+        RegisterProperty(ReminderMinutesBeforeStart);
+        RegisterProperty(DisplayCc);
+        RegisterProperty(DisplayTo);
+        RegisterProperty(HasAttachments);
+        RegisterProperty(ExtendedProperties);
+        RegisterProperty(Culture);
+        RegisterProperty(EffectiveRights);
+        RegisterProperty(LastModifiedName);
+        RegisterProperty(LastModifiedTime);
+        RegisterProperty(IsAssociated);
+        RegisterProperty(WebClientReadFormQueryString);
+        RegisterProperty(WebClientEditFormQueryString);
+        RegisterProperty(ConversationId);
+        RegisterProperty(UniqueBody);
+        RegisterProperty(Flag);
+        RegisterProperty(StoreEntryId);
+        RegisterProperty(InstanceKey);
+        RegisterProperty(NormalizedBody);
+        RegisterProperty(EntityExtractionResult);
+        RegisterProperty(PolicyTag);
+        RegisterProperty(ArchiveTag);
+        RegisterProperty(RetentionDate);
+        RegisterProperty(Preview);
+        RegisterProperty(TextBody);
+        RegisterProperty(IconIndex);
+        RegisterProperty(MimeContentUTF8);
 
-        this.RegisterProperty(Hashtags);
-        this.RegisterProperty(Mentions);
-        this.RegisterProperty(MentionedMe);
+        RegisterProperty(Hashtags);
+        RegisterProperty(Mentions);
+        RegisterProperty(MentionedMe);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ItemSchema"/> class.
+    ///     Initializes a new instance of the <see cref="ItemSchema" /> class.
     /// </summary>
     internal ItemSchema()
-        : base()
     {
     }
 }

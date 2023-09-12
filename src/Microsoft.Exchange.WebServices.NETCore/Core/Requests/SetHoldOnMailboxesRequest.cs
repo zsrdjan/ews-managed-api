@@ -25,19 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a SetHoldOnMailboxesRequest request.
+///     Represents a SetHoldOnMailboxesRequest request.
 /// </summary>
 internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SetHoldOnMailboxesRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SetHoldOnMailboxesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SetHoldOnMailboxesRequest(ExchangeService service)
@@ -46,7 +40,7 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -55,7 +49,7 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -64,48 +58,48 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (string.IsNullOrEmpty(this.HoldId))
+        if (string.IsNullOrEmpty(HoldId))
         {
             throw new ServiceValidationException(Strings.HoldIdParameterIsNotSpecified);
         }
 
-        if (string.IsNullOrEmpty(this.InPlaceHoldIdentity) && (this.Mailboxes == null || this.Mailboxes.Length == 0))
+        if (string.IsNullOrEmpty(InPlaceHoldIdentity) && (Mailboxes == null || Mailboxes.Length == 0))
         {
             throw new ServiceValidationException(Strings.HoldMailboxesParameterIsNotSpecified);
         }
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        SetHoldOnMailboxesResponse response = new SetHoldOnMailboxesResponse();
+        var response = new SetHoldOnMailboxesResponse();
         response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ActionType, this.ActionType.ToString());
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.HoldId, this.HoldId);
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Query, this.Query ?? string.Empty);
-        if (this.Mailboxes != null && this.Mailboxes.Length > 0)
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ActionType, ActionType.ToString());
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.HoldId, HoldId);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Query, Query ?? string.Empty);
+        if (Mailboxes != null && Mailboxes.Length > 0)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Mailboxes);
-            foreach (string mailbox in this.Mailboxes)
+            foreach (var mailbox in Mailboxes)
             {
                 writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.String, mailbox);
             }
@@ -114,39 +108,34 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
         }
 
         // Language
-        if (!string.IsNullOrEmpty(this.Language))
+        if (!string.IsNullOrEmpty(Language))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Language, this.Language);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Language, Language);
         }
 
-        if (!string.IsNullOrEmpty(this.InPlaceHoldIdentity))
+        if (!string.IsNullOrEmpty(InPlaceHoldIdentity))
         {
-            writer.WriteElementValue(
-                XmlNamespace.Messages,
-                XmlElementNames.InPlaceHoldIdentity,
-                this.InPlaceHoldIdentity
-            );
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.InPlaceHoldIdentity, InPlaceHoldIdentity);
         }
 
-        if (!string.IsNullOrEmpty(this.ItemHoldPeriod))
+        if (!string.IsNullOrEmpty(ItemHoldPeriod))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ItemHoldPeriod, this.ItemHoldPeriod);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ItemHoldPeriod, ItemHoldPeriod);
         }
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<SetHoldOnMailboxesResponse> Execute(CancellationToken token)
     {
-        SetHoldOnMailboxesResponse serviceResponse =
-            (SetHoldOnMailboxesResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (SetHoldOnMailboxesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         return serviceResponse;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -155,37 +144,37 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Action type
+    ///     Action type
     /// </summary>
     public HoldAction ActionType { get; set; }
 
     /// <summary>
-    /// Hold id
+    ///     Hold id
     /// </summary>
     public string HoldId { get; set; }
 
     /// <summary>
-    /// Query
+    ///     Query
     /// </summary>
     public string Query { get; set; }
 
     /// <summary>
-    /// Collection of mailboxes to be held/unheld
+    ///     Collection of mailboxes to be held/unheld
     /// </summary>
     public string[] Mailboxes { get; set; }
 
     /// <summary>
-    /// Query language
+    ///     Query language
     /// </summary>
     public string Language { get; set; }
 
     /// <summary>
-    /// InPlaceHold Identity
+    ///     InPlaceHold Identity
     /// </summary>
     public string InPlaceHoldIdentity { get; set; }
 
     /// <summary>
-    /// Item hold period
+    ///     Item hold period
     /// </summary>
     public string ItemHoldPeriod { get; set; }
 }

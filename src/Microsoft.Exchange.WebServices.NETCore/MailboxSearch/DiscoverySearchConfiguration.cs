@@ -25,57 +25,53 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents mailbox query object.
+///     Represents mailbox query object.
 /// </summary>
 public sealed class DiscoverySearchConfiguration
 {
     /// <summary>
-    /// Search Id
+    ///     Search Id
     /// </summary>
     public string SearchId { get; set; }
 
     /// <summary>
-    /// Search query
+    ///     Search query
     /// </summary>
     public string SearchQuery { get; set; }
 
     /// <summary>
-    /// Set of mailbox and scope pair
+    ///     Set of mailbox and scope pair
     /// </summary>
     public SearchableMailbox[] SearchableMailboxes { get; set; }
 
     /// <summary>
-    /// In-Place hold identity
+    ///     In-Place hold identity
     /// </summary>
     public string InPlaceHoldIdentity { get; set; }
 
     /// <summary>
-    /// Managed by organization
+    ///     Managed by organization
     /// </summary>
     public string ManagedByOrganization { get; set; }
 
     /// <summary>
-    /// Language
+    ///     Language
     /// </summary>
     public string Language { get; set; }
 
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Discovery search configuration object</returns>
     internal static DiscoverySearchConfiguration LoadFromXml(EwsServiceXmlReader reader)
     {
-        List<SearchableMailbox> mailboxes = new List<SearchableMailbox>();
+        var mailboxes = new List<SearchableMailbox>();
 
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.DiscoverySearchConfiguration);
 
-        DiscoverySearchConfiguration configuration = new DiscoverySearchConfiguration();
+        var configuration = new DiscoverySearchConfiguration();
         configuration.SearchId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SearchId);
 
         // the query could be empty means there won't be Query element, hence needs to read and check

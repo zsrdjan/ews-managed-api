@@ -26,14 +26,14 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents the response to a delegate user retrieval operation.
+///     Represents the response to a delegate user retrieval operation.
 /// </summary>
 internal sealed class GetDelegateResponse : DelegateManagementResponse
 {
     private MeetingRequestsDeliveryScope meetingRequestsDeliveryScope = MeetingRequestsDeliveryScope.NoForward;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetDelegateResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetDelegateResponse" /> class.
     /// </summary>
     /// <param name="readDelegateUsers">if set to <c>true</c> [read delegate users].</param>
     internal GetDelegateResponse(bool readDelegateUsers)
@@ -42,18 +42,18 @@ internal sealed class GetDelegateResponse : DelegateManagementResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        if (this.ErrorCode == ServiceError.NoError)
+        if (ErrorCode == ServiceError.NoError)
         {
             // If there were no response messages, the reader will already be on the
             // DeliverMeetingRequests start element, so we don't need to read it.
-            if (this.DelegateUserResponses.Count > 0)
+            if (DelegateUserResponses.Count > 0)
             {
                 reader.Read();
             }
@@ -62,16 +62,13 @@ internal sealed class GetDelegateResponse : DelegateManagementResponse
             // In error cases, the element may not have been returned.
             if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.DeliverMeetingRequests))
             {
-                this.meetingRequestsDeliveryScope = reader.ReadElementValue<MeetingRequestsDeliveryScope>();
+                meetingRequestsDeliveryScope = reader.ReadElementValue<MeetingRequestsDeliveryScope>();
             }
         }
     }
 
     /// <summary>
-    /// Gets a value indicating if and how meeting requests are delivered to delegates.
+    ///     Gets a value indicating if and how meeting requests are delivered to delegates.
     /// </summary>
-    internal MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope
-    {
-        get { return this.meetingRequestsDeliveryScope; }
-    }
+    internal MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope => meetingRequestsDeliveryScope;
 }

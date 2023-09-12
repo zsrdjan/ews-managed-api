@@ -25,34 +25,30 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.IO;
-
 /// <summary>
-/// Represents an TaskSuggestion object.
+///     Represents an TaskSuggestion object.
 /// </summary>
 public sealed class TaskSuggestion : ExtractedEntity
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskSuggestion"/> class.
+    ///     Initializes a new instance of the <see cref="TaskSuggestion" /> class.
     /// </summary>
     internal TaskSuggestion()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets the meeting suggestion TaskString.
+    ///     Gets the meeting suggestion TaskString.
     /// </summary>
     public string TaskString { get; internal set; }
 
     /// <summary>
-    /// Gets the meeting suggestion Assignees.
+    ///     Gets the meeting suggestion Assignees.
     /// </summary>
     public EmailUserEntityCollection Assignees { get; internal set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -61,12 +57,12 @@ public sealed class TaskSuggestion : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgTaskString:
-                this.TaskString = reader.ReadElementValue();
+                TaskString = reader.ReadElementValue();
                 return true;
 
             case XmlElementNames.NlgAssignees:
-                this.Assignees = new EmailUserEntityCollection();
-                this.Assignees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgAssignees);
+                Assignees = new EmailUserEntityCollection();
+                Assignees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgAssignees);
                 return true;
 
             default:

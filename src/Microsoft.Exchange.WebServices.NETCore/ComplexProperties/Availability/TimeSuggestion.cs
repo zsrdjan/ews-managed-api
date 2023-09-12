@@ -23,33 +23,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 /// <summary>
-/// Represents an availability time suggestion.
+///     Represents an availability time suggestion.
 /// </summary>
 public sealed class TimeSuggestion : ComplexProperty
 {
     private DateTime meetingTime;
     private bool isWorkTime;
     private SuggestionQuality quality;
-    private Collection<Conflict> conflicts = new Collection<Conflict>();
+    private readonly Collection<Conflict> conflicts = new Collection<Conflict>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeSuggestion"/> class.
+    ///     Initializes a new instance of the <see cref="TimeSuggestion" /> class.
     /// </summary>
     internal TimeSuggestion()
-        : base()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if appropriate element was read.</returns>
@@ -58,13 +54,13 @@ public sealed class TimeSuggestion : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.MeetingTime:
-                this.meetingTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
+                meetingTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
                 return true;
             case XmlElementNames.IsWorkTime:
-                this.isWorkTime = reader.ReadElementValue<bool>();
+                isWorkTime = reader.ReadElementValue<bool>();
                 return true;
             case XmlElementNames.SuggestionQuality:
-                this.quality = reader.ReadElementValue<SuggestionQuality>();
+                quality = reader.ReadElementValue<SuggestionQuality>();
                 return true;
             case XmlElementNames.AttendeeConflictDataArray:
                 if (!reader.IsEmptyElement)
@@ -107,7 +103,7 @@ public sealed class TimeSuggestion : ComplexProperty
 
                             conflict.LoadFromXml(reader, reader.LocalName);
 
-                            this.conflicts.Add(conflict);
+                            conflicts.Add(conflict);
                         }
                     } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.AttendeeConflictDataArray));
                 }
@@ -119,34 +115,22 @@ public sealed class TimeSuggestion : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the suggested time.
+    ///     Gets the suggested time.
     /// </summary>
-    public DateTime MeetingTime
-    {
-        get { return this.meetingTime; }
-    }
+    public DateTime MeetingTime => meetingTime;
 
     /// <summary>
-    /// Gets a value indicating whether the suggested time is within working hours.
+    ///     Gets a value indicating whether the suggested time is within working hours.
     /// </summary>
-    public bool IsWorkTime
-    {
-        get { return this.isWorkTime; }
-    }
+    public bool IsWorkTime => isWorkTime;
 
     /// <summary>
-    /// Gets the quality of the suggestion.
+    ///     Gets the quality of the suggestion.
     /// </summary>
-    public SuggestionQuality Quality
-    {
-        get { return this.quality; }
-    }
+    public SuggestionQuality Quality => quality;
 
     /// <summary>
-    /// Gets a collection of conflicts at the suggested time.
+    ///     Gets a collection of conflicts at the suggested time.
     /// </summary>
-    public Collection<Conflict> Conflicts
-    {
-        get { return this.conflicts; }
-    }
+    public Collection<Conflict> Conflicts => conflicts;
 }

@@ -25,21 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents a GetAttachment request.
+///     Represents a GetAttachment request.
 /// </summary>
 internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAttachmentResponse>
 {
-    private List<Attachment> attachments = new List<Attachment>();
-    private List<string> attachmentIds = new List<string>();
-    private List<PropertyDefinitionBase> additionalProperties = new List<PropertyDefinitionBase>();
+    private readonly List<Attachment> attachments = new List<Attachment>();
+    private readonly List<string> attachmentIds = new List<string>();
+    private readonly List<PropertyDefinitionBase> additionalProperties = new List<PropertyDefinitionBase>();
     private BodyType? bodyType;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetAttachmentRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetAttachmentRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -49,54 +46,54 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        if (this.Attachments.Count > 0)
+        if (Attachments.Count > 0)
         {
-            EwsUtilities.ValidateParamCollection(this.Attachments, "Attachments");
+            EwsUtilities.ValidateParamCollection(Attachments, "Attachments");
         }
 
-        if (this.AttachmentIds.Count > 0)
+        if (AttachmentIds.Count > 0)
         {
-            EwsUtilities.ValidateParamCollection(this.AttachmentIds, "AttachmentIds");
+            EwsUtilities.ValidateParamCollection(AttachmentIds, "AttachmentIds");
         }
 
-        if (this.AttachmentIds.Count == 0 && this.Attachments.Count == 0)
+        if (AttachmentIds.Count == 0 && Attachments.Count == 0)
         {
             throw new ArgumentException(Strings.CollectionIsEmpty, @"Attachments/AttachmentIds");
         }
 
-        for (int i = 0; i < this.AdditionalProperties.Count; i++)
+        for (var i = 0; i < AdditionalProperties.Count; i++)
         {
-            EwsUtilities.ValidateParam(this.AdditionalProperties[i], string.Format("AdditionalProperties[{0}]", i));
+            EwsUtilities.ValidateParam(AdditionalProperties[i], string.Format("AdditionalProperties[{0}]", i));
         }
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override GetAttachmentResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new GetAttachmentResponse(this.Attachments.Count > 0 ? this.Attachments[responseIndex] : null);
+        return new GetAttachmentResponse(Attachments.Count > 0 ? Attachments[responseIndex] : null);
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.Attachments.Count + this.AttachmentIds.Count;
+        return Attachments.Count + AttachmentIds.Count;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -105,7 +102,7 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -114,7 +111,7 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -123,23 +120,23 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.BodyType.HasValue || this.AdditionalProperties.Count > 0)
+        if (BodyType.HasValue || AdditionalProperties.Count > 0)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.AttachmentShape);
 
-            if (this.BodyType.HasValue)
+            if (BodyType.HasValue)
             {
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.BodyType, this.BodyType.Value);
+                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.BodyType, BodyType.Value);
             }
 
-            if (this.AdditionalProperties.Count > 0)
+            if (AdditionalProperties.Count > 0)
             {
-                PropertySet.WriteAdditionalPropertiesToXml(writer, this.AdditionalProperties);
+                PropertySet.WriteAdditionalPropertiesToXml(writer, AdditionalProperties);
             }
 
             writer.WriteEndElement(); // AttachmentShape
@@ -147,21 +144,21 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
 
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.AttachmentIds);
 
-        foreach (Attachment attachment in this.Attachments)
+        foreach (var attachment in Attachments)
         {
-            this.WriteAttachmentIdXml(writer, attachment.Id);
+            WriteAttachmentIdXml(writer, attachment.Id);
         }
 
-        foreach (string attachmentId in this.AttachmentIds)
+        foreach (var attachmentId in AttachmentIds)
         {
-            this.WriteAttachmentIdXml(writer, attachmentId);
+            WriteAttachmentIdXml(writer, attachmentId);
         }
 
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -170,60 +167,46 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     }
 
     /// <summary>
-    /// Gets the attachments.
+    ///     Gets the attachments.
     /// </summary>
     /// <value>The attachments.</value>
-    public List<Attachment> Attachments
-    {
-        get { return this.attachments; }
-    }
+    public List<Attachment> Attachments => attachments;
 
     /// <summary>
-    /// Gets the attachment ids.
+    ///     Gets the attachment ids.
     /// </summary>
     /// <value>The attachment ids.</value>
-    public List<string> AttachmentIds
-    {
-        get { return this.attachmentIds; }
-    }
+    public List<string> AttachmentIds => attachmentIds;
 
     /// <summary>
-    /// Gets the additional properties.
+    ///     Gets the additional properties.
     /// </summary>
     /// <value>The additional properties.</value>
-    public List<PropertyDefinitionBase> AdditionalProperties
-    {
-        get { return this.additionalProperties; }
-    }
+    public List<PropertyDefinitionBase> AdditionalProperties => additionalProperties;
 
     /// <summary>
-    /// Gets or sets the type of the body.
+    ///     Gets or sets the type of the body.
     /// </summary>
     /// <value>The type of the body.</value>
     public BodyType? BodyType
     {
-        get { return this.bodyType; }
-        set { this.bodyType = value; }
+        get => bodyType;
+        set => bodyType = value;
     }
 
     /// <summary>
-    /// Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value>
     ///     <c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.
     /// </value>
-    internal override bool EmitTimeZoneHeader
-    {
-        get
-        {
-            // we currently do not emit "AttachmentResponseShapeType.IncludeMimeContent"
-            //
-            return this.additionalProperties.Contains(ItemSchema.MimeContent);
-        }
-    }
+    internal override bool EmitTimeZoneHeader =>
+        // we currently do not emit "AttachmentResponseShapeType.IncludeMimeContent"
+        //
+        additionalProperties.Contains(ItemSchema.MimeContent);
 
     /// <summary>
-    /// Writes attachment id elements.
+    ///     Writes attachment id elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="attachmentId">The attachment id.</param>

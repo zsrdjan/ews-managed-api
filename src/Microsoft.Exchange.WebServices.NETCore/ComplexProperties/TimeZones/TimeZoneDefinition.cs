@@ -23,36 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using Microsoft.Exchange.WebServices.Data.Misc;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using Misc;
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
 /// <summary>
-/// Represents a time zone as defined by the EWS schema.
+///     Represents a time zone as defined by the EWS schema.
 /// </summary>
 public class TimeZoneDefinition : ComplexProperty
 {
     /// <summary>
-    /// Prefix for generated ids.
+    ///     Prefix for generated ids.
     /// </summary>
     private const string NoIdPrefix = "NoId_";
 
     private string name;
     private string id;
-    private Dictionary<string, TimeZonePeriod> periods = new Dictionary<string, TimeZonePeriod>();
+    private readonly Dictionary<string, TimeZonePeriod> periods = new Dictionary<string, TimeZonePeriod>();
 
-    private Dictionary<string, TimeZoneTransitionGroup> transitionGroups =
+    private readonly Dictionary<string, TimeZoneTransitionGroup> transitionGroups =
         new Dictionary<string, TimeZoneTransitionGroup>();
 
-    private List<TimeZoneTransition> transitions = new List<TimeZoneTransition>();
+    private readonly List<TimeZoneTransition> transitions = new List<TimeZoneTransition>();
 
     /// <summary>
-    /// Compares the transitions.
+    ///     Compares the transitions.
     /// </summary>
     /// <param name="x">The first transition.</param>
     /// <param name="y">The second transition.</param>
@@ -63,78 +58,74 @@ public class TimeZoneDefinition : ComplexProperty
         {
             return 0;
         }
-        else if (x.GetType() == typeof(TimeZoneTransition))
+
+        if (x.GetType() == typeof(TimeZoneTransition))
         {
             return -1;
         }
-        else if (y.GetType() == typeof(TimeZoneTransition))
+
+        if (y.GetType() == typeof(TimeZoneTransition))
         {
             return 1;
         }
-        else
-        {
-            AbsoluteDateTransition firstTransition = (AbsoluteDateTransition)x;
-            AbsoluteDateTransition secondTransition = (AbsoluteDateTransition)y;
 
-            return DateTime.Compare(firstTransition.DateTime, secondTransition.DateTime);
-        }
+        var firstTransition = (AbsoluteDateTransition)x;
+        var secondTransition = (AbsoluteDateTransition)y;
+
+        return DateTime.Compare(firstTransition.DateTime, secondTransition.DateTime);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeZoneDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TimeZoneDefinition" /> class.
     /// </summary>
     internal TimeZoneDefinition()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeZoneDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TimeZoneDefinition" /> class.
     /// </summary>
     /// <param name="timeZoneInfo">The time zone info used to initialize this definition.</param>
     internal TimeZoneDefinition(TimeZoneInfo timeZoneInfo)
         : this()
     {
-        this.Id = timeZoneInfo.Id;
-        this.Name = timeZoneInfo.DisplayName;
+        Id = timeZoneInfo.Id;
+        Name = timeZoneInfo.DisplayName;
 
         // TimeZoneInfo only supports one standard period, which bias is the time zone's base
         // offset to UTC.
-        TimeZonePeriod standardPeriod = new TimeZonePeriod();
+        var standardPeriod = new TimeZonePeriod();
         standardPeriod.Id = TimeZonePeriod.StandardPeriodId;
         standardPeriod.Name = TimeZonePeriod.StandardPeriodName;
         standardPeriod.Bias = -timeZoneInfo.BaseUtcOffset;
 
-        AdjustmentRule[] adjustmentRules = timeZoneInfo.GetAdjustmentRulesEx();
+        var adjustmentRules = timeZoneInfo.GetAdjustmentRulesEx();
 
-        TimeZoneTransition transitionToStandardPeriod = new TimeZoneTransition(this, standardPeriod);
+        var transitionToStandardPeriod = new TimeZoneTransition(this, standardPeriod);
 
         if (adjustmentRules.Length == 0)
         {
-            this.periods.Add(standardPeriod.Id, standardPeriod);
+            periods.Add(standardPeriod.Id, standardPeriod);
 
             // If the time zone info doesn't support Daylight Saving Time, we just need to
             // create one transition to one group with one transition to the standard period.
-            TimeZoneTransitionGroup transitionGroup = new TimeZoneTransitionGroup(this, "0");
+            var transitionGroup = new TimeZoneTransitionGroup(this, "0");
             transitionGroup.Transitions.Add(transitionToStandardPeriod);
 
-            this.transitionGroups.Add(transitionGroup.Id, transitionGroup);
+            transitionGroups.Add(transitionGroup.Id, transitionGroup);
 
-            TimeZoneTransition initialTransition = new TimeZoneTransition(this, transitionGroup);
+            var initialTransition = new TimeZoneTransition(this, transitionGroup);
 
-            this.transitions.Add(initialTransition);
+            transitions.Add(initialTransition);
         }
         else
         {
-            for (int i = 0; i < adjustmentRules.Length; i++)
+            for (var i = 0; i < adjustmentRules.Length; i++)
             {
-                TimeZoneTransitionGroup transitionGroup = new TimeZoneTransitionGroup(
-                    this,
-                    this.transitionGroups.Count.ToString()
-                );
+                var transitionGroup = new TimeZoneTransitionGroup(this, transitionGroups.Count.ToString());
                 transitionGroup.InitializeFromAdjustmentRule(adjustmentRules[i], standardPeriod);
 
-                this.transitionGroups.Add(transitionGroup.Id, transitionGroup);
+                transitionGroups.Add(transitionGroup.Id, transitionGroup);
 
                 TimeZoneTransition transition;
 
@@ -145,19 +136,18 @@ public class TimeZoneDefinition : ComplexProperty
                     // period and a group containing the transitions mapping to the adjustment rule.
                     if (adjustmentRules[i].DateStart > DateTime.MinValue.Date)
                     {
-                        TimeZoneTransition transitionToDummyGroup = new TimeZoneTransition(
+                        var transitionToDummyGroup = new TimeZoneTransition(
                             this,
-                            this.CreateTransitionGroupToPeriod(standardPeriod)
+                            CreateTransitionGroupToPeriod(standardPeriod)
                         );
 
-                        this.transitions.Add(transitionToDummyGroup);
+                        transitions.Add(transitionToDummyGroup);
 
-                        AbsoluteDateTransition absoluteDateTransition =
-                            new AbsoluteDateTransition(this, transitionGroup);
+                        var absoluteDateTransition = new AbsoluteDateTransition(this, transitionGroup);
                         absoluteDateTransition.DateTime = adjustmentRules[i].DateStart;
 
                         transition = absoluteDateTransition;
-                        this.periods.Add(standardPeriod.Id, standardPeriod);
+                        periods.Add(standardPeriod.Id, standardPeriod);
                     }
                     else
                     {
@@ -166,73 +156,70 @@ public class TimeZoneDefinition : ComplexProperty
                 }
                 else
                 {
-                    AbsoluteDateTransition absoluteDateTransition = new AbsoluteDateTransition(this, transitionGroup);
+                    var absoluteDateTransition = new AbsoluteDateTransition(this, transitionGroup);
                     absoluteDateTransition.DateTime = adjustmentRules[i].DateStart;
 
                     transition = absoluteDateTransition;
                 }
 
-                this.transitions.Add(transition);
+                transitions.Add(transition);
             }
 
             // If the last adjustment rule's end date is not undefined (DateTime.MaxValue),
             // we need to create another absolute date transition that occurs the date after
             // the last rule's end date. We target this additional transition to a group that
             // contains a single simple transition to the Standard period.
-            DateTime lastAdjustmentRuleEndDate = adjustmentRules[adjustmentRules.Length - 1].DateEnd;
+            var lastAdjustmentRuleEndDate = adjustmentRules[adjustmentRules.Length - 1].DateEnd;
 
             if (lastAdjustmentRuleEndDate < DateTime.MaxValue.Date)
             {
-                AbsoluteDateTransition transitionToDummyGroup = new AbsoluteDateTransition(
+                var transitionToDummyGroup = new AbsoluteDateTransition(
                     this,
-                    this.CreateTransitionGroupToPeriod(standardPeriod)
+                    CreateTransitionGroupToPeriod(standardPeriod)
                 );
                 transitionToDummyGroup.DateTime = lastAdjustmentRuleEndDate.AddDays(1);
 
-                this.transitions.Add(transitionToDummyGroup);
+                transitions.Add(transitionToDummyGroup);
             }
         }
     }
 
     /// <summary>
-    /// Adds a transition group with a single transition to the specified period.
+    ///     Adds a transition group with a single transition to the specified period.
     /// </summary>
     /// <param name="timeZonePeriod">The time zone period.</param>
     /// <returns>A TimeZoneTransitionGroup.</returns>
     private TimeZoneTransitionGroup CreateTransitionGroupToPeriod(TimeZonePeriod timeZonePeriod)
     {
-        TimeZoneTransition transitionToPeriod = new TimeZoneTransition(this, timeZonePeriod);
+        var transitionToPeriod = new TimeZoneTransition(this, timeZonePeriod);
 
-        TimeZoneTransitionGroup transitionGroup = new TimeZoneTransitionGroup(
-            this,
-            this.transitionGroups.Count.ToString()
-        );
+        var transitionGroup = new TimeZoneTransitionGroup(this, transitionGroups.Count.ToString());
         transitionGroup.Transitions.Add(transitionToPeriod);
 
-        this.transitionGroups.Add(transitionGroup.Id, transitionGroup);
+        transitionGroups.Add(transitionGroup.Id, transitionGroup);
 
         return transitionGroup;
     }
 
     /// <summary>
-    /// Reads the attributes from XML.
+    ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.name = reader.ReadAttributeValue(XmlAttributeNames.Name);
-        this.id = reader.ReadAttributeValue(XmlAttributeNames.Id);
+        name = reader.ReadAttributeValue(XmlAttributeNames.Name);
+        id = reader.ReadAttributeValue(XmlAttributeNames.Id);
 
         // EWS can return a TimeZone definition with no Id. Generate a new Id in this case.
-        if (string.IsNullOrEmpty(this.id))
+        if (string.IsNullOrEmpty(id))
         {
-            string nameValue = string.IsNullOrEmpty(this.Name) ? string.Empty : this.Name;
-            this.Id = NoIdPrefix + Math.Abs(nameValue.GetHashCode()).ToString();
+            var nameValue = string.IsNullOrEmpty(Name) ? string.Empty : Name;
+            Id = NoIdPrefix + Math.Abs(nameValue.GetHashCode());
         }
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
@@ -240,14 +227,14 @@ public class TimeZoneDefinition : ComplexProperty
         // The Name attribute is only supported in Exchange 2010 and above.
         if (writer.Service.RequestedServerVersion != ExchangeVersion.Exchange2007_SP1)
         {
-            writer.WriteAttributeValue(XmlAttributeNames.Name, this.name);
+            writer.WriteAttributeValue(XmlAttributeNames.Name, name);
         }
 
-        writer.WriteAttributeValue(XmlAttributeNames.Id, this.id);
+        writer.WriteAttributeValue(XmlAttributeNames.Id, id);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -262,14 +249,14 @@ public class TimeZoneDefinition : ComplexProperty
 
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Period))
                     {
-                        TimeZonePeriod period = new TimeZonePeriod();
+                        var period = new TimeZonePeriod();
                         period.LoadFromXml(reader);
 
                         // OM:1648848 Bad timezone data from clients can include duplicate rules
                         // for one year, with duplicate ID. In that case, let the first one win.
-                        if (!this.periods.ContainsKey(period.Id))
+                        if (!periods.ContainsKey(period.Id))
                         {
-                            this.periods.Add(period.Id, period);
+                            periods.Add(period.Id, period);
                         }
                         else
                         {
@@ -278,8 +265,8 @@ public class TimeZoneDefinition : ComplexProperty
                                 string.Format(
                                     "An entry with the same key (Id) '{0}' already exists in Periods. Cannot add another one. Existing entry: [Name='{1}', Bias='{2}']. Entry to skip: [Name='{3}', Bias='{4}'].",
                                     period.Id,
-                                    this.Periods[period.Id].Name,
-                                    this.Periods[period.Id].Bias,
+                                    Periods[period.Id].Name,
+                                    Periods[period.Id].Bias,
                                     period.Name,
                                     period.Bias
                                 )
@@ -296,11 +283,11 @@ public class TimeZoneDefinition : ComplexProperty
 
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.TransitionsGroup))
                     {
-                        TimeZoneTransitionGroup transitionGroup = new TimeZoneTransitionGroup(this);
+                        var transitionGroup = new TimeZoneTransitionGroup(this);
 
                         transitionGroup.LoadFromXml(reader);
 
-                        this.transitionGroups.Add(transitionGroup.Id, transitionGroup);
+                        transitionGroups.Add(transitionGroup.Id, transitionGroup);
                     }
                 } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.TransitionsGroups));
 
@@ -312,11 +299,11 @@ public class TimeZoneDefinition : ComplexProperty
 
                     if (reader.IsStartElement())
                     {
-                        TimeZoneTransition transition = TimeZoneTransition.Create(this, reader.LocalName);
+                        var transition = TimeZoneTransition.Create(this, reader.LocalName);
 
                         transition.LoadFromXml(reader);
 
-                        this.transitions.Add(transition);
+                        transitions.Add(transition);
                     }
                 } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.Transitions));
 
@@ -327,18 +314,18 @@ public class TimeZoneDefinition : ComplexProperty
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsServiceXmlReader reader)
     {
-        this.LoadFromXml(reader, XmlElementNames.TimeZoneDefinition);
+        LoadFromXml(reader, XmlElementNames.TimeZoneDefinition);
 
-        this.transitions.Sort(this.CompareTransitions);
+        transitions.Sort(CompareTransitions);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -346,11 +333,11 @@ public class TimeZoneDefinition : ComplexProperty
         // We only emit the full time zone definition against Exchange 2010 servers and above.
         if (writer.Service.RequestedServerVersion != ExchangeVersion.Exchange2007_SP1)
         {
-            if (this.periods.Count > 0)
+            if (periods.Count > 0)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Periods);
 
-                foreach (KeyValuePair<string, TimeZonePeriod> keyValuePair in this.periods)
+                foreach (var keyValuePair in periods)
                 {
                     keyValuePair.Value.WriteToXml(writer);
                 }
@@ -358,11 +345,11 @@ public class TimeZoneDefinition : ComplexProperty
                 writer.WriteEndElement(); // Periods
             }
 
-            if (this.transitionGroups.Count > 0)
+            if (transitionGroups.Count > 0)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.TransitionsGroups);
 
-                foreach (KeyValuePair<string, TimeZoneTransitionGroup> keyValuePair in this.transitionGroups)
+                foreach (var keyValuePair in transitionGroups)
                 {
                     keyValuePair.Value.WriteToXml(writer);
                 }
@@ -370,11 +357,11 @@ public class TimeZoneDefinition : ComplexProperty
                 writer.WriteEndElement(); // TransitionGroups
             }
 
-            if (this.transitions.Count > 0)
+            if (transitions.Count > 0)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Transitions);
 
-                foreach (TimeZoneTransition transition in this.transitions)
+                foreach (var transition in transitions)
                 {
                     transition.WriteToXml(writer);
                 }
@@ -385,40 +372,40 @@ public class TimeZoneDefinition : ComplexProperty
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer)
     {
-        this.WriteToXml(writer, XmlElementNames.TimeZoneDefinition);
+        WriteToXml(writer, XmlElementNames.TimeZoneDefinition);
     }
 
     /// <summary>
-    /// Validates this time zone definition.
+    ///     Validates this time zone definition.
     /// </summary>
     internal void Validate()
     {
         // The definition must have at least one period, one transition group and one transition,
         // and there must be as many transitions as there are transition groups.
-        if (this.periods.Count < 1 ||
-            this.transitions.Count < 1 ||
-            this.transitionGroups.Count < 1 ||
-            this.transitionGroups.Count != this.transitions.Count)
+        if (periods.Count < 1 ||
+            transitions.Count < 1 ||
+            transitionGroups.Count < 1 ||
+            transitionGroups.Count != transitions.Count)
         {
             throw new ServiceLocalException(Strings.InvalidOrUnsupportedTimeZoneDefinition);
         }
 
         // The first transition must be of type TimeZoneTransition.
-        if (this.transitions[0].GetType() != typeof(TimeZoneTransition))
+        if (transitions[0].GetType() != typeof(TimeZoneTransition))
         {
             throw new ServiceLocalException(Strings.InvalidOrUnsupportedTimeZoneDefinition);
         }
 
         // All transitions must be to transition groups and be either TimeZoneTransition or
         // AbsoluteDateTransition instances.
-        foreach (TimeZoneTransition transition in this.transitions)
+        foreach (var transition in transitions)
         {
-            Type transitionType = transition.GetType();
+            var transitionType = transition.GetType();
 
             if (transitionType != typeof(TimeZoneTransition) && transitionType != typeof(AbsoluteDateTransition))
             {
@@ -432,40 +419,39 @@ public class TimeZoneDefinition : ComplexProperty
         }
 
         // All transition groups must be valid.
-        foreach (TimeZoneTransitionGroup transitionGroup in this.transitionGroups.Values)
+        foreach (var transitionGroup in transitionGroups.Values)
         {
             transitionGroup.Validate();
         }
     }
 
     /// <summary>
-    /// Converts this time zone definition into a TimeZoneInfo structure.
+    ///     Converts this time zone definition into a TimeZoneInfo structure.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <returns>A TimeZoneInfo representing the same time zone as this definition.</returns>
     internal TimeZoneInfo ToTimeZoneInfo(ExchangeService service)
     {
-        this.Validate();
+        Validate();
 
         TimeZoneInfo result;
 
         // Retrieve the base offset to UTC, standard and daylight display names from
         // the last transition group, which is the one that currently applies given that
         // transitions are ordered chronologically.
-        TimeZoneTransitionGroup.CustomTimeZoneCreateParams creationParams =
-            this.transitions[this.transitions.Count - 1].TargetGroup.GetCustomTimeZoneCreationParams();
+        var creationParams = transitions[transitions.Count - 1].TargetGroup.GetCustomTimeZoneCreationParams();
 
-        List<AdjustmentRule> adjustmentRules = new List<AdjustmentRule>();
+        var adjustmentRules = new List<AdjustmentRule>();
 
-        DateTime startDate = DateTime.MinValue;
+        var startDate = DateTime.MinValue;
         DateTime endDate;
         DateTime effectiveEndDate;
 
-        for (int i = 0; i < this.transitions.Count; i++)
+        for (var i = 0; i < transitions.Count; i++)
         {
-            if (i < this.transitions.Count - 1)
+            if (i < transitions.Count - 1)
             {
-                endDate = (this.transitions[i + 1] as AbsoluteDateTransition).DateTime;
+                endDate = (transitions[i + 1] as AbsoluteDateTransition).DateTime;
                 effectiveEndDate = endDate.AddDays(-1);
             }
             else
@@ -478,8 +464,7 @@ public class TimeZoneDefinition : ComplexProperty
             // startDate may not always come before the effectiveEndDate
             if (startDate < effectiveEndDate)
             {
-                AdjustmentRule adjustmentRule =
-                    this.transitions[i].TargetGroup.CreateAdjustmentRule(startDate, effectiveEndDate);
+                var adjustmentRule = transitions[i].TargetGroup.CreateAdjustmentRule(startDate, effectiveEndDate);
 
                 if (adjustmentRule != null)
                 {
@@ -506,18 +491,18 @@ public class TimeZoneDefinition : ComplexProperty
             // If there are no adjustment rule, the time zone does not support Daylight
             // saving time.
             result = TimeZoneExtensions.CreateCustomTimeZone(
-                this.Id,
+                Id,
                 creationParams.BaseOffsetToUtc,
-                this.Name,
+                Name,
                 creationParams.StandardDisplayName
             );
         }
         else
         {
             result = TimeZoneExtensions.CreateCustomTimeZone(
-                this.Id,
+                Id,
                 creationParams.BaseOffsetToUtc,
-                this.Name,
+                Name,
                 creationParams.StandardDisplayName,
                 creationParams.DaylightDisplayName,
                 adjustmentRules.ToArray()
@@ -528,36 +513,30 @@ public class TimeZoneDefinition : ComplexProperty
     }
 
     /// <summary>
-    /// Gets or sets the name of this time zone definition.
+    ///     Gets or sets the name of this time zone definition.
     /// </summary>
     internal string Name
     {
-        get { return this.name; }
-        set { this.name = value; }
+        get => name;
+        set => name = value;
     }
 
     /// <summary>
-    /// Gets or sets the Id of this time zone definition.
+    ///     Gets or sets the Id of this time zone definition.
     /// </summary>
     public string Id
     {
-        get { return this.id; }
-        set { this.id = value; }
+        get => id;
+        set => id = value;
     }
 
     /// <summary>
-    /// Gets the periods associated with this time zone definition, indexed by Id.
+    ///     Gets the periods associated with this time zone definition, indexed by Id.
     /// </summary>
-    internal Dictionary<string, TimeZonePeriod> Periods
-    {
-        get { return this.periods; }
-    }
+    internal Dictionary<string, TimeZonePeriod> Periods => periods;
 
     /// <summary>
-    /// Gets the transition groups associated with this time zone definition, indexed by Id.
+    ///     Gets the transition groups associated with this time zone definition, indexed by Id.
     /// </summary>
-    internal Dictionary<string, TimeZoneTransitionGroup> TransitionGroups
-    {
-        get { return this.transitionGroups; }
-    }
+    internal Dictionary<string, TimeZoneTransitionGroup> TransitionGroups => transitionGroups;
 }

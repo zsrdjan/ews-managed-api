@@ -25,19 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an UpdateFolder request.
+///     Represents an UpdateFolder request.
 /// </summary>
 internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private List<Folder> folders = new List<Folder>();
+    private readonly List<Folder> folders = new List<Folder>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateFolderRequest"/> class.
+    ///     Initializes a new instance of the <see cref="UpdateFolderRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -47,15 +43,15 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Validates the request.
+    ///     Validates the request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(this.Folders, "Folders");
-        for (int i = 0; i < this.Folders.Count; i++)
+        EwsUtilities.ValidateParamCollection(Folders, "Folders");
+        for (var i = 0; i < Folders.Count; i++)
         {
-            Folder folder = this.Folders[i];
+            var folder = Folders[i];
 
             if ((folder == null) || folder.IsNew)
             {
@@ -67,18 +63,18 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="session">The session.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override ServiceResponse CreateServiceResponse(ExchangeService session, int responseIndex)
     {
-        return new UpdateFolderResponse(this.Folders[responseIndex]);
+        return new UpdateFolderResponse(Folders[responseIndex]);
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetXmlElementName()
@@ -87,7 +83,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -96,7 +92,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -105,23 +101,23 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.folders.Count;
+        return folders.Count;
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.FolderChanges);
 
-        foreach (Folder folder in this.folders)
+        foreach (var folder in folders)
         {
             folder.WriteToXmlForUpdate(writer);
         }
@@ -130,7 +126,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -139,11 +135,8 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     }
 
     /// <summary>
-    /// Gets the list of folders.
+    ///     Gets the list of folders.
     /// </summary>
     /// <value>The folders.</value>
-    public List<Folder> Folders
-    {
-        get { return this.folders; }
-    }
+    public List<Folder> Folders => folders;
 }

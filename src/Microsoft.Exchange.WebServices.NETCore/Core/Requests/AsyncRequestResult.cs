@@ -25,16 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Threading;
-
 /// <summary>
-/// IAsyncResult implementation to be returned to caller - decorator pattern.
+///     IAsyncResult implementation to be returned to caller - decorator pattern.
 /// </summary>
 internal class AsyncRequestResult : IAsyncResult
 {
     /// <summary>
-    /// Contructor
+    ///     Contructor
     /// </summary>
     /// <param name="serviceRequest"></param>
     /// <param name="webRequest"></param>
@@ -51,58 +48,49 @@ internal class AsyncRequestResult : IAsyncResult
         EwsUtilities.ValidateParam(webRequest, "webRequest");
         EwsUtilities.ValidateParam(webAsyncResult, "webAsyncResult");
 
-        this.ServiceRequest = serviceRequest;
-        this.WebAsyncResult = webAsyncResult;
-        this.WebRequest = webRequest;
-        this.AsyncState = asyncState;
+        ServiceRequest = serviceRequest;
+        WebAsyncResult = webAsyncResult;
+        WebRequest = webRequest;
+        AsyncState = asyncState;
     }
 
     /// <summary>
-    /// ServiceRequest
+    ///     ServiceRequest
     /// </summary>
     public ServiceRequestBase ServiceRequest { get; private set; }
 
     /// <summary>
-    /// WebRequest
+    ///     WebRequest
     /// </summary>
     public IEwsHttpWebRequest WebRequest { get; private set; }
 
     /// <summary>
-    /// AsyncResult
+    ///     AsyncResult
     /// </summary>
     public IAsyncResult WebAsyncResult { get; private set; }
 
     /// <summary>
-    /// AsyncState
+    ///     AsyncState
     /// </summary>
     public object AsyncState { get; private set; }
 
     /// <summary>
-    /// AsyncWaitHandle
+    ///     AsyncWaitHandle
     /// </summary>
-    public WaitHandle AsyncWaitHandle
-    {
-        get { return this.WebAsyncResult.AsyncWaitHandle; }
-    }
+    public WaitHandle AsyncWaitHandle => WebAsyncResult.AsyncWaitHandle;
 
     /// <summary>
-    /// CompletedSynchronously
+    ///     CompletedSynchronously
     /// </summary>
-    public bool CompletedSynchronously
-    {
-        get { return this.WebAsyncResult.CompletedSynchronously; }
-    }
+    public bool CompletedSynchronously => WebAsyncResult.CompletedSynchronously;
 
     /// <summary>
-    /// IsCompleted
+    ///     IsCompleted
     /// </summary>
-    public bool IsCompleted
-    {
-        get { return this.WebAsyncResult.IsCompleted; }
-    }
+    public bool IsCompleted => WebAsyncResult.IsCompleted;
 
     /// <summary>
-    /// Extracts the original service request from the specified IAsyncResult instance
+    ///     Extracts the original service request from the specified IAsyncResult instance
     /// </summary>
     /// <typeparam name="T">Desired service request type</typeparam>
     /// <param name="exchangeService">The ExchangeService object to validate the integrity of asyncResult</param>
@@ -114,7 +102,7 @@ internal class AsyncRequestResult : IAsyncResult
         // Validate null first
         EwsUtilities.ValidateParam(asyncResult, "asyncResult");
 
-        AsyncRequestResult asyncRequestResult = asyncResult as AsyncRequestResult;
+        var asyncRequestResult = asyncResult as AsyncRequestResult;
         if (asyncRequestResult == null)
         {
             // Strings.InvalidAsyncResult is copied from the error message of HttpWebRequest.EndGetResponse()
@@ -129,13 +117,13 @@ internal class AsyncRequestResult : IAsyncResult
         }
 
         //Validate the service object
-        if (!Object.ReferenceEquals(asyncRequestResult.ServiceRequest.Service, exchangeService))
+        if (!ReferenceEquals(asyncRequestResult.ServiceRequest.Service, exchangeService))
         {
             throw new ArgumentException(Strings.InvalidAsyncResult, "asyncResult");
         }
 
         // Validate the request type
-        T serviceRequest = asyncRequestResult.ServiceRequest as T;
+        var serviceRequest = asyncRequestResult.ServiceRequest as T;
         if (serviceRequest == null)
         {
             throw new ArgumentException(Strings.InvalidAsyncResult, "asyncResult");
@@ -146,12 +134,12 @@ internal class AsyncRequestResult : IAsyncResult
 }
 
 /// <summary>
-/// State object wrapper to be passed to HttpWebRequest's async methods
+///     State object wrapper to be passed to HttpWebRequest's async methods
 /// </summary>
 internal class WebAsyncCallStateAnchor
 {
     /// <summary>
-    /// Contructor
+    ///     Contructor
     /// </summary>
     /// <param name="serviceRequest"></param>
     /// <param name="webRequest"></param>
@@ -167,30 +155,30 @@ internal class WebAsyncCallStateAnchor
         EwsUtilities.ValidateParam(serviceRequest, "serviceRequest");
         EwsUtilities.ValidateParam(webRequest, "webRequest");
 
-        this.ServiceRequest = serviceRequest;
-        this.WebRequest = webRequest;
+        ServiceRequest = serviceRequest;
+        WebRequest = webRequest;
 
-        this.AsyncCallback = asyncCallback;
-        this.AsyncState = asyncState;
+        AsyncCallback = asyncCallback;
+        AsyncState = asyncState;
     }
 
     /// <summary>
-    /// ServiceRequest
+    ///     ServiceRequest
     /// </summary>
     public ServiceRequestBase ServiceRequest { get; private set; }
 
     /// <summary>
-    /// WebRequest
+    ///     WebRequest
     /// </summary>
     public IEwsHttpWebRequest WebRequest { get; private set; }
 
     /// <summary>
-    /// AsyncState
+    ///     AsyncState
     /// </summary>
     public object AsyncState { get; private set; }
 
     /// <summary>
-    /// AsyncCallback
+    ///     AsyncCallback
     /// </summary>
     public AsyncCallback AsyncCallback { get; private set; }
 }

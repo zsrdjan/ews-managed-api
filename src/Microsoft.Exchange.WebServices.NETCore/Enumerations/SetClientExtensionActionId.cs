@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the type of SetClientExtensionActionId.
+///     Defines the type of SetClientExtensionActionId.
 /// </summary>
 public enum SetClientExtensionActionId
 {
     /// <summary>
-    /// Install
+    ///     Install
     /// </summary>
     Install,
 
     /// <summary>
-    /// Uninstall
+    ///     Uninstall
     /// </summary>
     Uninstall,
 
     /// <summary>
-    /// Configure
+    ///     Configure
     /// </summary>
     Configure,
 }

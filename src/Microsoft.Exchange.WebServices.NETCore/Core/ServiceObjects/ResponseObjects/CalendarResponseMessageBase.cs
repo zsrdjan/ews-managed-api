@@ -23,17 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents the base class for all calendar-related response messages.
+///     Represents the base class for all calendar-related response messages.
 /// </summary>
 /// <typeparam name="TMessage">The type of message that is created when this response message is saved.</typeparam>
 [EditorBrowsable(EditorBrowsableState.Never)]
@@ -41,7 +36,7 @@ public abstract class CalendarResponseMessageBase<TMessage> : ResponseObject<TMe
     where TMessage : EmailMessage
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CalendarResponseMessageBase&lt;TMessage&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="CalendarResponseMessageBase&lt;TMessage&gt;" /> class.
     /// </summary>
     /// <param name="referenceItem">The reference item.</param>
     internal CalendarResponseMessageBase(Item referenceItem)
@@ -50,123 +45,119 @@ public abstract class CalendarResponseMessageBase<TMessage> : ResponseObject<TMe
     }
 
     /// <summary>
-    /// Saves the response in the specified folder. Calling this method results in a call to EWS.
+    ///     Saves the response in the specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save the response.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
-    public new async Task<CalendarActionResults> Save(
-        FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
-    )
+    public new async Task<CalendarActionResults> Save(FolderId destinationFolderId, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
 
         return new CalendarActionResults(
-            await this.InternalCreate(destinationFolderId, MessageDisposition.SaveOnly, token).ConfigureAwait(false)
+            await InternalCreate(destinationFolderId, MessageDisposition.SaveOnly, token).ConfigureAwait(false)
         );
     }
 
     /// <summary>
-    /// Saves the response in the specified folder. Calling this method results in a call to EWS.
+    ///     Saves the response in the specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save the response.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     public new async Task<CalendarActionResults> Save(
         WellKnownFolderName destinationFolderName,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return new CalendarActionResults(
-            await this.InternalCreate(new FolderId(destinationFolderName), MessageDisposition.SaveOnly, token)
+            await InternalCreate(new FolderId(destinationFolderName), MessageDisposition.SaveOnly, token)
                 .ConfigureAwait(false)
         );
     }
 
     /// <summary>
-    /// Saves the response in the Drafts folder. Calling this method results in a call to EWS.
+    ///     Saves the response in the Drafts folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
-    public new async Task<CalendarActionResults> Save(CancellationToken token = default(CancellationToken))
+    public new async Task<CalendarActionResults> Save(CancellationToken token = default)
     {
         return new CalendarActionResults(
-            await this.InternalCreate(null, MessageDisposition.SaveOnly, token).ConfigureAwait(false)
+            await InternalCreate(null, MessageDisposition.SaveOnly, token).ConfigureAwait(false)
         );
     }
 
     /// <summary>
-    /// Sends this response without saving a copy. Calling this method results in a call to EWS.
+    ///     Sends this response without saving a copy. Calling this method results in a call to EWS.
     /// </summary>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
-    public new async Task<CalendarActionResults> Send(CancellationToken token = default(CancellationToken))
+    public new async Task<CalendarActionResults> Send(CancellationToken token = default)
     {
         return new CalendarActionResults(
-            await this.InternalCreate(null, MessageDisposition.SendOnly, token).ConfigureAwait(false)
+            await InternalCreate(null, MessageDisposition.SendOnly, token).ConfigureAwait(false)
         );
     }
 
     /// <summary>
-    /// Sends this response ans saves a copy in the specified folder. Calling this method results in a call to EWS.
+    ///     Sends this response ans saves a copy in the specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save the copy of the message.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     public new async Task<CalendarActionResults> SendAndSaveCopy(
         FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
 
         return new CalendarActionResults(
-            await this.InternalCreate(destinationFolderId, MessageDisposition.SendAndSaveCopy, token)
-                .ConfigureAwait(false)
+            await InternalCreate(destinationFolderId, MessageDisposition.SendAndSaveCopy, token).ConfigureAwait(false)
         );
     }
 
     /// <summary>
-    /// Sends this response and saves a copy in the specified folder. Calling this method results in a call to EWS.
+    ///     Sends this response and saves a copy in the specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save the copy of the message.</param>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
     public new async Task<CalendarActionResults> SendAndSaveCopy(
         WellKnownFolderName destinationFolderName,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return new CalendarActionResults(
-            await this.InternalCreate(new FolderId(destinationFolderName), MessageDisposition.SendAndSaveCopy, token)
+            await InternalCreate(new FolderId(destinationFolderName), MessageDisposition.SendAndSaveCopy, token)
                 .ConfigureAwait(false)
         );
     }
 
     /// <summary>
-    /// Sends this response ans saves a copy in the Sent Items folder. Calling this method results in a call to EWS.
+    ///     Sends this response ans saves a copy in the Sent Items folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
-    public new async Task<CalendarActionResults> SendAndSaveCopy(CancellationToken token = default(CancellationToken))
+    public new async Task<CalendarActionResults> SendAndSaveCopy(CancellationToken token = default)
     {
         return new CalendarActionResults(
-            await this.InternalCreate(null, MessageDisposition.SendAndSaveCopy, token).ConfigureAwait(false)
+            await InternalCreate(null, MessageDisposition.SendAndSaveCopy, token).ConfigureAwait(false)
         );
     }
 }

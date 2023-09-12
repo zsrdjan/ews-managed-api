@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents the definition for the meeting time zone property.
+///     Represents the definition for the meeting time zone property.
 /// </summary>
 internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingTimeZonePropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingTimeZonePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -50,20 +48,20 @@ internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
     internal override sealed void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        MeetingTimeZone meetingTimeZone = new MeetingTimeZone();
-        meetingTimeZone.LoadFromXml(reader, this.XmlElementName);
+        var meetingTimeZone = new MeetingTimeZone();
+        meetingTimeZone.LoadFromXml(reader, XmlElementName);
 
         propertyBag[AppointmentSchema.StartTimeZone] = meetingTimeZone.ToTimeZoneInfo();
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -74,19 +72,16 @@ internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        MeetingTimeZone value = (MeetingTimeZone)propertyBag[this];
+        var value = (MeetingTimeZone)propertyBag[this];
 
         if (value != null)
         {
-            value.WriteToXml(writer, this.XmlElementName);
+            value.WriteToXml(writer, XmlElementName);
         }
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(MeetingTimeZone); }
-    }
+    public override Type Type => typeof(MeetingTimeZone);
 }

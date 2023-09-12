@@ -26,12 +26,12 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a push subscriptions.
+///     Represents a push subscriptions.
 /// </summary>
 public sealed class PushSubscription : SubscriptionBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PushSubscription"/> class.
+    ///     Initializes a new instance of the <see cref="PushSubscription" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal PushSubscription(ExchangeService service)

@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a SetTeamMailbox request.
+///     Represents a SetTeamMailbox request.
 /// </summary>
 internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// TeamMailbox email address
+    ///     TeamMailbox email address
     /// </summary>
-    private EmailAddress emailAddress;
+    private readonly EmailAddress emailAddress;
 
     /// <summary>
-    /// SharePoint site URL
+    ///     SharePoint site URL
     /// </summary>
-    private Uri sharePointSiteUrl;
+    private readonly Uri sharePointSiteUrl;
 
     /// <summary>
-    /// TeamMailbox lifecycle state
+    ///     TeamMailbox lifecycle state
     /// </summary>
-    private TeamMailboxLifecycleState state;
+    private readonly TeamMailboxLifecycleState state;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SetTeamMailboxRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SetTeamMailboxRequest" /> class.
     /// </summary>
     /// <param name="service">The service</param>
     /// <param name="emailAddress">TeamMailbox email address</param>
@@ -80,7 +76,7 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -89,22 +85,22 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.emailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.EmailAddress);
+        emailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.EmailAddress);
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.SharePointSiteUrl,
-            this.sharePointSiteUrl.ToString()
+            sharePointSiteUrl.ToString()
         );
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.State, this.state.ToString());
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.State, state.ToString());
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -113,19 +109,19 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        ServiceResponse response = new ServiceResponse();
+        var response = new ServiceResponse();
         response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -134,12 +130,12 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<ServiceResponse> Execute(CancellationToken token)
     {
-        ServiceResponse serviceResponse = (ServiceResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (ServiceResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

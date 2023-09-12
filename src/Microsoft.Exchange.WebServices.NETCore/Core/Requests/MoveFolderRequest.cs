@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a MoveFolder request.
+///     Represents a MoveFolder request.
 /// </summary>
 internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoveFolderRequest"/> class.
+    ///     Initializes a new instance of the <see cref="MoveFolderRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -45,7 +41,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -56,7 +52,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetXmlElementName()
@@ -65,7 +61,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -74,7 +70,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -83,7 +79,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()

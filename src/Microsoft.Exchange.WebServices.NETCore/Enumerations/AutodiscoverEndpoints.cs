@@ -25,48 +25,44 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the types of Autodiscover endpoints that are available.
+///     Defines the types of Autodiscover endpoints that are available.
 /// </summary>
 [Flags]
 internal enum AutodiscoverEndpoints
 {
     /// <summary>
-    /// No endpoints available.
+    ///     No endpoints available.
     /// </summary>
     None = 0,
 
     /// <summary>
-    /// The "legacy" Autodiscover endpoint.
+    ///     The "legacy" Autodiscover endpoint.
     /// </summary>
     Legacy = 1,
 
     /// <summary>
-    /// The SOAP endpoint.
+    ///     The SOAP endpoint.
     /// </summary>
     Soap = 2,
 
     /// <summary>
-    /// The WS-Security endpoint.
+    ///     The WS-Security endpoint.
     /// </summary>
     WsSecurity = 4,
 
     /// <summary>
-    /// The WS-Security/SymmetricKey endpoint.
+    ///     The WS-Security/SymmetricKey endpoint.
     /// </summary>
     WSSecuritySymmetricKey = 8,
 
     /// <summary>
-    /// The WS-Security/X509Cert endpoint.
+    ///     The WS-Security/X509Cert endpoint.
     /// </summary>
     WSSecurityX509Cert = 16,
 
     /// <summary>
-    /// The OAuth endpoint
+    ///     The OAuth endpoint
     /// </summary>
     OAuth = 32,
 }

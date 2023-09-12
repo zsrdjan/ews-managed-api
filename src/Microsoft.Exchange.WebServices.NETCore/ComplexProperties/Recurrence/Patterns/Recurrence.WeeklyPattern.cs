@@ -25,34 +25,30 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <content>
-/// Contains nested type Recurrence.WeeklyPattern.
+///     Contains nested type Recurrence.WeeklyPattern.
 /// </content>
 public abstract partial class Recurrence
 {
     /// <summary>
-    /// Represents a recurrence pattern where each occurrence happens on specific days a specific number of weeks after the previous one.
+    ///     Represents a recurrence pattern where each occurrence happens on specific days a specific number of weeks after the
+    ///     previous one.
     /// </summary>
     public sealed class WeeklyPattern : IntervalPattern
     {
-        private DayOfTheWeekCollection daysOfTheWeek = new DayOfTheWeekCollection();
+        private readonly DayOfTheWeekCollection daysOfTheWeek = new DayOfTheWeekCollection();
         private DayOfWeek? firstDayOfWeek;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WeeklyPattern"/> class.
+        ///     Initializes a new instance of the <see cref="WeeklyPattern" /> class.
         /// </summary>
         public WeeklyPattern()
-            : base()
         {
-            this.daysOfTheWeek.OnChange += this.DaysOfTheWeekChanged;
+            daysOfTheWeek.OnChange += DaysOfTheWeekChanged;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WeeklyPattern"/> class.
+        ///     Initializes a new instance of the <see cref="WeeklyPattern" /> class.
         /// </summary>
         /// <param name="startDate">The date and time when the recurrence starts.</param>
         /// <param name="interval">The number of weeks between each occurrence.</param>
@@ -64,34 +60,31 @@ public abstract partial class Recurrence
         }
 
         /// <summary>
-        /// Change event handler.
+        ///     Change event handler.
         /// </summary>
         /// <param name="complexProperty">The complex property.</param>
         private void DaysOfTheWeekChanged(ComplexProperty complexProperty)
         {
-            this.Changed();
+            Changed();
         }
 
         /// <summary>
-        /// Gets the name of the XML element.
+        ///     Gets the name of the XML element.
         /// </summary>
         /// <value>The name of the XML element.</value>
-        internal override string XmlElementName
-        {
-            get { return XmlElementNames.WeeklyRecurrence; }
-        }
+        internal override string XmlElementName => XmlElementNames.WeeklyRecurrence;
 
         /// <summary>
-        /// Write properties to XML.
+        ///     Write properties to XML.
         /// </summary>
         /// <param name="writer">The writer.</param>
         internal override void InternalWritePropertiesToXml(EwsServiceXmlWriter writer)
         {
             base.InternalWritePropertiesToXml(writer);
 
-            this.DaysOfTheWeek.WriteToXml(writer, XmlElementNames.DaysOfWeek);
+            DaysOfTheWeek.WriteToXml(writer, XmlElementNames.DaysOfWeek);
 
-            if (this.firstDayOfWeek.HasValue)
+            if (firstDayOfWeek.HasValue)
             {
                 //  We only allow the "FirstDayOfWeek" parameter for the Exchange2010_SP1 schema
                 //  version.
@@ -102,12 +95,12 @@ public abstract partial class Recurrence
                     "FirstDayOfWeek"
                 );
 
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FirstDayOfWeek, this.firstDayOfWeek.Value);
+                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FirstDayOfWeek, firstDayOfWeek.Value);
             }
         }
 
         /// <summary>
-        /// Tries to read element from XML.
+        ///     Tries to read element from XML.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <returns>True if appropriate element was read.</returns>
@@ -117,67 +110,62 @@ public abstract partial class Recurrence
             {
                 return true;
             }
-            else
+
+            switch (reader.LocalName)
             {
-                switch (reader.LocalName)
-                {
-                    case XmlElementNames.DaysOfWeek:
-                        this.DaysOfTheWeek.LoadFromXml(reader, reader.LocalName);
-                        return true;
-                    case XmlElementNames.FirstDayOfWeek:
-                        this.FirstDayOfWeek = reader.ReadElementValue<DayOfWeek>(
-                            XmlNamespace.Types,
-                            XmlElementNames.FirstDayOfWeek
-                        );
-                        return true;
-                    default:
-                        return false;
-                }
+                case XmlElementNames.DaysOfWeek:
+                    DaysOfTheWeek.LoadFromXml(reader, reader.LocalName);
+                    return true;
+                case XmlElementNames.FirstDayOfWeek:
+                    FirstDayOfWeek = reader.ReadElementValue<DayOfWeek>(
+                        XmlNamespace.Types,
+                        XmlElementNames.FirstDayOfWeek
+                    );
+                    return true;
+                default:
+                    return false;
             }
         }
 
         /// <summary>
-        /// Validates this instance.
+        ///     Validates this instance.
         /// </summary>
         internal override void InternalValidate()
         {
             base.InternalValidate();
 
-            if (this.DaysOfTheWeek.Count == 0)
+            if (DaysOfTheWeek.Count == 0)
             {
                 throw new ServiceValidationException(Strings.DaysOfTheWeekNotSpecified);
             }
         }
 
         /// <summary>
-        /// Checks if two recurrence objects are identical. 
+        ///     Checks if two recurrence objects are identical.
         /// </summary>
         /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
         /// <returns>true if the two recurrences are identical, false otherwise.</returns>
         public override bool IsSame(Recurrence otherRecurrence)
         {
-            WeeklyPattern otherWeeklyPattern = (WeeklyPattern)otherRecurrence;
+            var otherWeeklyPattern = (WeeklyPattern)otherRecurrence;
 
             return base.IsSame(otherRecurrence) &&
-                   this.daysOfTheWeek.ToString(",") == otherWeeklyPattern.daysOfTheWeek.ToString(",") &&
-                   this.firstDayOfWeek == otherWeeklyPattern.firstDayOfWeek;
+                   daysOfTheWeek.ToString(",") == otherWeeklyPattern.daysOfTheWeek.ToString(",") &&
+                   firstDayOfWeek == otherWeeklyPattern.firstDayOfWeek;
         }
 
         /// <summary>
-        /// Gets the list of the days of the week when occurrences happen.
+        ///     Gets the list of the days of the week when occurrences happen.
         /// </summary>
-        public DayOfTheWeekCollection DaysOfTheWeek
-        {
-            get { return this.daysOfTheWeek; }
-        }
+        public DayOfTheWeekCollection DaysOfTheWeek => daysOfTheWeek;
 
         /// <summary>
-        /// Gets or sets the first day of the week for this recurrence.
+        ///     Gets or sets the first day of the week for this recurrence.
         /// </summary>
         public DayOfWeek FirstDayOfWeek
         {
-            get { return this.GetFieldValueOrThrowIfNull<DayOfWeek>(this.firstDayOfWeek, "FirstDayOfWeek"); }
-            set { this.SetFieldValue<DayOfWeek?>(ref this.firstDayOfWeek, value); }
+            get => GetFieldValueOrThrowIfNull(firstDayOfWeek, "FirstDayOfWeek");
+            set => SetFieldValue(ref firstDayOfWeek, value);
         }
     }
 }

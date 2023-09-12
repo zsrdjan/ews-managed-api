@@ -23,13 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// WSSecurityBasedCredentials is the base class for all credential classes using WS-Security.
+///     WSSecurityBasedCredentials is the base class for all credential classes using WS-Security.
 /// </summary>
 public abstract class WSSecurityBasedCredentials : ExchangeCredentials
 {
@@ -53,7 +52,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
                                                "</wsu:Timestamp>";
 
     /// <summary>
-    /// Path suffix for WS-Security endpoint.
+    ///     Path suffix for WS-Security endpoint.
     /// </summary>
     internal const string WsSecurityPathSuffix = "/wssecurity";
 
@@ -63,14 +62,14 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     private Uri ewsUrl;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WSSecurityBasedCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="WSSecurityBasedCredentials" /> class.
     /// </summary>
     internal WSSecurityBasedCredentials()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WSSecurityBasedCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="WSSecurityBasedCredentials" /> class.
     /// </summary>
     /// <param name="securityToken">The security token.</param>
     internal WSSecurityBasedCredentials(string securityToken)
@@ -79,7 +78,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WSSecurityBasedCredentials"/> class.
+    ///     Initializes a new instance of the <see cref="WSSecurityBasedCredentials" /> class.
     /// </summary>
     /// <param name="securityToken">The security token.</param>
     /// <param name="addTimestamp">Timestamp should be added.</param>
@@ -90,7 +89,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// This method is called to pre-authenticate credentials before a service request is made.
+    ///     This method is called to pre-authenticate credentials before a service request is made.
     /// </summary>
     internal override void PreAuthenticate()
     {
@@ -98,7 +97,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Emit the extra namespace aliases used for WS-Security and WS-Addressing.
+    ///     Emit the extra namespace aliases used for WS-Security and WS-Addressing.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void EmitExtraSoapHeaderNamespaceAliases(XmlWriter writer)
@@ -118,18 +117,18 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    /// Serialize the WS-Security and WS-Addressing SOAP headers.
+    ///     Serialize the WS-Security and WS-Addressing SOAP headers.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="webMethodName">The Web method being called.</param>
     internal override void SerializeExtraSoapHeaders(XmlWriter writer, string webMethodName)
     {
-        this.SerializeWSAddressingHeaders(writer, webMethodName);
-        this.SerializeWSSecurityHeaders(writer);
+        SerializeWSAddressingHeaders(writer, webMethodName);
+        SerializeWSSecurityHeaders(writer);
     }
 
     /// <summary>
-    /// Creates the WS-Addressing headers necessary to send with an outgoing request.
+    ///     Creates the WS-Addressing headers necessary to send with an outgoing request.
     /// </summary>
     /// <param name="xmlWriter">The XML writer to serialize the headers to.</param>
     /// <param name="webMethodName">Web method being called</param>
@@ -142,30 +141,26 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         );
 
         EwsUtilities.Assert(
-            this.ewsUrl != null,
+            ewsUrl != null,
             "WSSecurityBasedCredentials.SerializeWSAddressingHeaders",
             "EWS Url cannot be null!"
         );
 
         // Format the WS-Addressing headers.
-        string wsAddressingHeaders = String.Format(
-            WSSecurityBasedCredentials.WsAddressingHeadersFormat,
-            webMethodName,
-            this.ewsUrl
-        );
+        var wsAddressingHeaders = String.Format(WsAddressingHeadersFormat, webMethodName, ewsUrl);
 
         // And write them out...
         xmlWriter.WriteRaw(wsAddressingHeaders);
     }
 
     /// <summary>
-    /// Creates the WS-Security header necessary to send with an outgoing request.
+    ///     Creates the WS-Security header necessary to send with an outgoing request.
     /// </summary>
     /// <param name="xmlWriter">The XML writer to serialize the header to.</param>
     internal override void SerializeWSSecurityHeaders(XmlWriter xmlWriter)
     {
         EwsUtilities.Assert(
-            this.securityToken != null,
+            securityToken != null,
             "WSSecurityBasedCredentials.SerializeWSSecurityHeaders",
             "Security token cannot be null!"
         );
@@ -176,52 +171,49 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         // </wsu:Timestamp>
         //
         string timestamp = null;
-        if (this.addTimestamp)
+        if (addTimestamp)
         {
-            DateTime utcNow = DateTime.UtcNow;
-            timestamp = string.Format(WSSecurityBasedCredentials.WsuTimeStampFormat, utcNow, utcNow.AddMinutes(5));
+            var utcNow = DateTime.UtcNow;
+            timestamp = string.Format(WsuTimeStampFormat, utcNow, utcNow.AddMinutes(5));
         }
 
         // Format the WS-Security header based on all the information we have.
-        string wsSecurityHeader = String.Format(
-            WSSecurityBasedCredentials.WsSecurityHeaderFormat,
-            timestamp + this.securityToken
-        );
+        var wsSecurityHeader = String.Format(WsSecurityHeaderFormat, timestamp + securityToken);
 
         // And write the header out...
         xmlWriter.WriteRaw(wsSecurityHeader);
     }
 
     /// <summary>
-    /// Adjusts the URL based on the credentials.
+    ///     Adjusts the URL based on the credentials.
     /// </summary>
     /// <param name="url">The URL.</param>
     /// <returns>Adjust URL.</returns>
     internal override Uri AdjustUrl(Uri url)
     {
-        return new Uri(GetUriWithoutSuffix(url) + WSSecurityBasedCredentials.WsSecurityPathSuffix);
+        return new Uri(GetUriWithoutSuffix(url) + WsSecurityPathSuffix);
     }
 
     /// <summary>
-    /// Gets or sets the security token.
+    ///     Gets or sets the security token.
     /// </summary>
     internal string SecurityToken
     {
-        get { return this.securityToken; }
-        set { this.securityToken = value; }
+        get => securityToken;
+        set => securityToken = value;
     }
 
     /// <summary>
-    /// Gets or sets the EWS URL.
+    ///     Gets or sets the EWS URL.
     /// </summary>
     internal Uri EwsUrl
     {
-        get { return this.ewsUrl; }
-        set { this.ewsUrl = value; }
+        get => ewsUrl;
+        set => ewsUrl = value;
     }
 
     /// <summary>
-    /// Gets the XmlNamespaceManager which is used to select node during signing the message.
+    ///     Gets the XmlNamespaceManager which is used to select node during signing the message.
     /// </summary>
     internal static XmlNamespaceManager NamespaceManager
     {

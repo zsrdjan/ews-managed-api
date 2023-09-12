@@ -26,15 +26,14 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents the response to a SetOMEConfigurationResponse operation.
+///     Represents the response to a SetOMEConfigurationResponse operation.
 /// </summary>
 internal sealed class SetOMEConfigurationResponse : ServiceResponse
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SetOMEConfigurationResponse"/> class.
+    ///     Initializes a new instance of the <see cref="SetOMEConfigurationResponse" /> class.
     /// </summary>
     public SetOMEConfigurationResponse()
-        : base()
     {
     }
 }

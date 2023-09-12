@@ -23,31 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a SetOMEConfiguration request.
+///     Represents a SetOMEConfiguration request.
 /// </summary>
 internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// The XML representation of EncryptionConfigurationData
+    ///     The XML representation of EncryptionConfigurationData
     /// </summary>
     private readonly string xml;
 
     /// <summary>
-    /// The XML representation of EncryptionConfigurationData
+    ///     The XML representation of EncryptionConfigurationData
     /// </summary>
-    public string Xml
-    {
-        get { return this.xml; }
-    }
+    public string Xml => xml;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SetOMEConfigurationRequest"/> class.
+    ///     Initializes a new instance of the <see cref="SetOMEConfigurationRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xml">The XML representation of EncryptionConfigurationData</param>
@@ -58,7 +52,7 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -67,16 +61,16 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.OMEConfigurationXml, this.Xml);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.OMEConfigurationXml, Xml);
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -85,19 +79,19 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        SetOMEConfigurationResponse response = new SetOMEConfigurationResponse();
+        var response = new SetOMEConfigurationResponse();
         response.LoadFromXml(reader, GetResponseXmlElementName());
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -106,13 +100,12 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<ServiceResponse> Execute(CancellationToken token)
     {
-        SetOMEConfigurationResponse serviceResponse =
-            (SetOMEConfigurationResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (SetOMEConfigurationResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

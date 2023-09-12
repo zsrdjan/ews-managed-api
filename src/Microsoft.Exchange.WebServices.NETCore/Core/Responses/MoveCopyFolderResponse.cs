@@ -25,28 +25,22 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents the base response class for individual folder move and copy operations.
+///     Represents the base response class for individual folder move and copy operations.
 /// </summary>
 public sealed class MoveCopyFolderResponse : ServiceResponse
 {
     private Folder folder;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoveCopyFolderResponse"/> class.
+    ///     Initializes a new instance of the <see cref="MoveCopyFolderResponse" /> class.
     /// </summary>
     internal MoveCopyFolderResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets Folder instance.
+    ///     Gets Folder instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -57,29 +51,26 @@ public sealed class MoveCopyFolderResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        List<Folder> folders = reader.ReadServiceObjectsCollectionFromXml<Folder>(
+        var folders = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Folders,
-            this.GetObjectInstance,
+            GetObjectInstance,
             false, /* clearPropertyBag */
             null, /* requestedPropertySet */
             false
         ); /* summaryPropertiesOnly */
 
-        this.folder = folders[0];
+        folder = folders[0];
     }
 
     /// <summary>
-    /// Gets the new (moved or copied) folder.
+    ///     Gets the new (moved or copied) folder.
     /// </summary>
-    public Folder Folder
-    {
-        get { return this.folder; }
-    }
+    public Folder Folder => folder;
 }

@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the different user photo sizes that can be requested
+///     Defines the different user photo sizes that can be requested
 /// </summary>
 public static class UserPhotoSize
 {

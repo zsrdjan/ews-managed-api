@@ -25,35 +25,30 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the Id of a public folder item expressed in a specific format.
+///     Represents the Id of a public folder item expressed in a specific format.
 /// </summary>
 public class AlternatePublicFolderItemId : AlternatePublicFolderId
 {
     /// <summary>
-    /// Schema type associated with AlternatePublicFolderItemId.
+    ///     Schema type associated with AlternatePublicFolderItemId.
     /// </summary>
     internal new const string SchemaTypeName = "AlternatePublicFolderItemIdType";
 
     /// <summary>
-    /// Item id.
+    ///     Item id.
     /// </summary>
     private string itemId;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AlternatePublicFolderItemId"/> class.
+    ///     Initializes a new instance of the <see cref="AlternatePublicFolderItemId" /> class.
     /// </summary>
     public AlternatePublicFolderItemId()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AlternatePublicFolderItemId"/> class.
+    ///     Initializes a new instance of the <see cref="AlternatePublicFolderItemId" /> class.
     /// </summary>
     /// <param name="format">The format in which the public folder item Id is expressed.</param>
     /// <param name="folderId">The Id of the parent public folder of the public folder item.</param>
@@ -65,16 +60,16 @@ public class AlternatePublicFolderItemId : AlternatePublicFolderId
     }
 
     /// <summary>
-    /// The Id of the public folder item.
+    ///     The Id of the public folder item.
     /// </summary>
     public string ItemId
     {
-        get { return this.itemId; }
-        set { this.itemId = value; }
+        get => itemId;
+        set => itemId = value;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -83,24 +78,24 @@ public class AlternatePublicFolderItemId : AlternatePublicFolderId
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         base.WriteAttributesToXml(writer);
 
-        writer.WriteAttributeValue(XmlAttributeNames.ItemId, this.ItemId);
+        writer.WriteAttributeValue(XmlAttributeNames.ItemId, ItemId);
     }
 
     /// <summary>
-    /// Loads the attributes from XML.
+    ///     Loads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void LoadAttributesFromXml(EwsServiceXmlReader reader)
     {
         base.LoadAttributesFromXml(reader);
 
-        this.itemId = reader.ReadAttributeValue(XmlAttributeNames.ItemId);
+        itemId = reader.ReadAttributeValue(XmlAttributeNames.ItemId);
     }
 }

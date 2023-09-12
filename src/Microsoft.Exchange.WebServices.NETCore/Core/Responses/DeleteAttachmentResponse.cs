@@ -25,23 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the response to an individual attachment deletion operation.
+///     Represents the response to an individual attachment deletion operation.
 /// </summary>
 public sealed class DeleteAttachmentResponse : ServiceResponse
 {
-    private Attachment attachment;
+    private readonly Attachment attachment;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeleteAttachmentResponse"/> class.
+    ///     Initializes a new instance of the <see cref="DeleteAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
     internal DeleteAttachmentResponse(Attachment attachment)
-        : base()
     {
         EwsUtilities.Assert(attachment != null, "DeleteAttachmentResponse.ctor", "attachment is null");
 
@@ -49,7 +44,7 @@ public sealed class DeleteAttachmentResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -58,20 +53,17 @@ public sealed class DeleteAttachmentResponse : ServiceResponse
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootItemId);
 
-        string changeKey = reader.ReadAttributeValue(XmlAttributeNames.RootItemChangeKey);
-        if (!string.IsNullOrEmpty(changeKey) && this.attachment.Owner != null)
+        var changeKey = reader.ReadAttributeValue(XmlAttributeNames.RootItemChangeKey);
+        if (!string.IsNullOrEmpty(changeKey) && attachment.Owner != null)
         {
-            this.attachment.Owner.RootItemId.ChangeKey = changeKey;
+            attachment.Owner.RootItemId.ChangeKey = changeKey;
         }
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RootItemId);
     }
 
     /// <summary>
-    /// Gets the attachment that was deleted.
+    ///     Gets the attachment that was deleted.
     /// </summary>
-    internal Attachment Attachment
-    {
-        get { return this.attachment; }
-    }
+    internal Attachment Attachment => attachment;
 }

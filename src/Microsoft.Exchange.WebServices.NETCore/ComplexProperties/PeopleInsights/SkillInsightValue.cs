@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the SkillInsightValue.
+///     Represents the SkillInsightValue.
 /// </summary>
 public sealed class SkillInsightValue : InsightValue
 {
@@ -37,27 +34,27 @@ public sealed class SkillInsightValue : InsightValue
     private string strength;
 
     /// <summary>
-    /// Gets the Name
+    ///     Gets the Name
     /// </summary>
     public string Name
     {
-        get { return this.name; }
+        get => name;
 
-        set { this.SetFieldValue<string>(ref this.name, value); }
+        set => SetFieldValue(ref name, value);
     }
 
     /// <summary>
-    /// Gets the Strength
+    ///     Gets the Strength
     /// </summary>
     public string Strength
     {
-        get { return this.strength; }
+        get => strength;
 
-        set { this.SetFieldValue<string>(ref this.strength, value); }
+        set => SetFieldValue(ref strength, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -66,16 +63,16 @@ public sealed class SkillInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.Name:
-                this.Name = reader.ReadElementValue();
+                Name = reader.ReadElementValue();
                 break;
             case XmlElementNames.Strength:
-                this.Strength = reader.ReadElementValue();
+                Strength = reader.ReadElementValue();
                 break;
             default:
                 return false;

@@ -25,31 +25,29 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Encapsulates information on the deleted occurrence of a recurring appointment.
+///     Encapsulates information on the deleted occurrence of a recurring appointment.
 /// </summary>
 public class DeletedOccurrenceInfo : ComplexProperty
 {
     /// <summary>
-    /// The original start date and time of the deleted occurrence.
+    ///     The original start date and time of the deleted occurrence.
     /// </summary>
     /// <remarks>
-    /// The EWS schema contains a Start property for deleted occurrences but it's
-    /// really the original start date and time of the occurrence.
+    ///     The EWS schema contains a Start property for deleted occurrences but it's
+    ///     really the original start date and time of the occurrence.
     /// </remarks>
     private DateTime originalStart;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeletedOccurrenceInfo"/> class.
+    ///     Initializes a new instance of the <see cref="DeletedOccurrenceInfo" /> class.
     /// </summary>
     internal DeletedOccurrenceInfo()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -58,7 +56,7 @@ public class DeletedOccurrenceInfo : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Start:
-                this.originalStart = reader.ReadElementValueAsDateTime().Value;
+                originalStart = reader.ReadElementValueAsDateTime().Value;
                 return true;
             default:
                 return false;
@@ -66,10 +64,7 @@ public class DeletedOccurrenceInfo : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the original start date and time of the deleted occurrence.
+    ///     Gets the original start date and time of the deleted occurrence.
     /// </summary>
-    public DateTime OriginalStart
-    {
-        get { return this.originalStart; }
-    }
+    public DateTime OriginalStart => originalStart;
 }

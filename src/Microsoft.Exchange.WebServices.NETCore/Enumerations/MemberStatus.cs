@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the status of group members.
+///     Defines the status of group members.
 /// </summary>
 public enum MemberStatus
 {
     /// <summary>
-    /// The member is unrecognized.
+    ///     The member is unrecognized.
     /// </summary>
     Unrecognized,
 
     /// <summary>
-    /// The member is normal.
+    ///     The member is normal.
     /// </summary>
     Normal,
 
     /// <summary>
-    /// The member is demoted.
+    ///     The member is demoted.
     /// </summary>
     Demoted
 }

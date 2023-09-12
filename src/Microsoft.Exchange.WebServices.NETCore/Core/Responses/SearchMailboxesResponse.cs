@@ -25,44 +25,39 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the SearchMailboxes response.
+///     Represents the SearchMailboxes response.
 /// </summary>
 public sealed class SearchMailboxesResponse : ServiceResponse
 {
-    SearchMailboxesResult searchResult = null;
+    SearchMailboxesResult searchResult;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SearchMailboxesResponse"/> class.
+    ///     Initializes a new instance of the <see cref="SearchMailboxesResponse" /> class.
     /// </summary>
     internal SearchMailboxesResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.searchResult = new SearchMailboxesResult();
+        searchResult = new SearchMailboxesResult();
 
         base.ReadElementsFromXml(reader);
 
-        this.searchResult = SearchMailboxesResult.LoadFromXml(reader);
+        searchResult = SearchMailboxesResult.LoadFromXml(reader);
     }
 
     /// <summary>
-    /// Search mailboxes result
+    ///     Search mailboxes result
     /// </summary>
     public SearchMailboxesResult SearchResult
     {
-        get { return this.searchResult; }
-        internal set { this.searchResult = value; }
+        get => searchResult;
+        internal set => searchResult = value;
     }
 }

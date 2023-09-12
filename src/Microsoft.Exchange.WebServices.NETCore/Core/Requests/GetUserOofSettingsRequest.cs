@@ -25,21 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a GetUserOofSettings request.
+///     Represents a GetUserOofSettings request.
 /// </summary>
 internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
 {
     private string smtpAddress;
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -48,28 +42,28 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(this.SmtpAddress, "SmtpAddress");
+        EwsUtilities.ValidateParam(SmtpAddress, "SmtpAddress");
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Mailbox);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Address, this.SmtpAddress);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Address, SmtpAddress);
         writer.WriteEndElement(); // Mailbox
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -78,13 +72,13 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        GetUserOofSettingsResponse serviceResponse = new GetUserOofSettingsResponse();
+        var serviceResponse = new GetUserOofSettingsResponse();
 
         serviceResponse.LoadFromXml(reader, XmlElementNames.ResponseMessage);
 
@@ -105,7 +99,7 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -114,7 +108,7 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserOofSettingsRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserOofSettingsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetUserOofSettingsRequest(ExchangeService service)
@@ -123,13 +117,12 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<GetUserOofSettingsResponse> Execute(CancellationToken token)
     {
-        GetUserOofSettingsResponse serviceResponse =
-            (GetUserOofSettingsResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (GetUserOofSettingsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
 
         serviceResponse.ThrowIfNecessary();
 
@@ -137,11 +130,11 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets or sets the SMTP address.
+    ///     Gets or sets the SMTP address.
     /// </summary>
     internal string SmtpAddress
     {
-        get { return this.smtpAddress; }
-        set { this.smtpAddress = value; }
+        get => smtpAddress;
+        set => smtpAddress = value;
     }
 }

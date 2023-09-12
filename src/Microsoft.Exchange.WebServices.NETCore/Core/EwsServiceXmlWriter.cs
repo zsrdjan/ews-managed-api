@@ -23,38 +23,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// XML writer
+///     XML writer
 /// </summary>
 internal class EwsServiceXmlWriter : IDisposable
 {
     /// <summary>
-    /// Buffer size for writing Base64 encoded content.
+    ///     Buffer size for writing Base64 encoded content.
     /// </summary>
     private const int BufferSize = 4096;
 
     /// <summary>
-    /// UTF-8 encoding that does not create leading Byte order marks
+    ///     UTF-8 encoding that does not create leading Byte order marks
     /// </summary>
-    private static Encoding utf8Encoding = new UTF8Encoding(false);
+    private static readonly Encoding utf8Encoding = new UTF8Encoding(false);
 
     private bool isDisposed;
-    private ExchangeServiceBase service;
-    private XmlWriter xmlWriter;
+    private readonly ExchangeServiceBase service;
+    private readonly XmlWriter xmlWriter;
     private bool isTimeZoneHeaderEmitted;
     private bool requireWSSecurityUtilityNamespace;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EwsServiceXmlWriter"/> class.
+    ///     Initializes a new instance of the <see cref="EwsServiceXmlWriter" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="stream">The stream.</param>
@@ -62,16 +60,16 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         this.service = service;
 
-        XmlWriterSettings settings = new XmlWriterSettings();
+        var settings = new XmlWriterSettings();
         settings.Indent = true;
 
-        settings.Encoding = EwsServiceXmlWriter.utf8Encoding;
+        settings.Encoding = utf8Encoding;
 
-        this.xmlWriter = XmlWriter.Create(stream, settings);
+        xmlWriter = XmlWriter.Create(stream, settings);
     }
 
     /// <summary>
-    /// Try to convert object to a string.
+    ///     Try to convert object to a string.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="strValue">The string representation of value.</param>
@@ -80,13 +78,13 @@ internal class EwsServiceXmlWriter : IDisposable
     internal bool TryConvertObjectToString(object value, out string strValue)
     {
         strValue = null;
-        bool converted = true;
+        var converted = true;
 
         if (value != null)
         {
             // All value types should implement IConvertible. There are a couple of special cases 
             // that need to be handled directly. Otherwise use IConvertible.ToString()
-            IConvertible convertible = value as IConvertible;
+            var convertible = value as IConvertible;
             if (value.GetType().GetTypeInfo().IsEnum)
             {
                 strValue = EwsUtilities.SerializeEnum((Enum)value);
@@ -100,7 +98,7 @@ internal class EwsServiceXmlWriter : IDisposable
                         break;
 
                     case TypeCode.DateTime:
-                        strValue = this.Service.ConvertDateTimeToUniversalDateTimeString((DateTime)value);
+                        strValue = Service.ConvertDateTimeToUniversalDateTimeString((DateTime)value);
                         break;
 
                     default:
@@ -112,7 +110,7 @@ internal class EwsServiceXmlWriter : IDisposable
             {
                 // If the value type doesn't implement IConvertible but implements IFormattable, use its
                 // ToString(format,formatProvider) method to convert to a string.
-                IFormattable formattable = value as IFormattable;
+                var formattable = value as IFormattable;
                 if (formattable != null)
                 {
                     // Null arguments mean that we use default format and default locale.
@@ -125,7 +123,7 @@ internal class EwsServiceXmlWriter : IDisposable
                     // Note: if a value type implements IConvertible or IFormattable we will *not* check
                     // to see if it also implements ISearchStringProvider. We'll always use its IConvertible.ToString 
                     // or IFormattable.ToString method.
-                    ISearchStringProvider searchStringProvider = value as ISearchStringProvider;
+                    var searchStringProvider = value as ISearchStringProvider;
                     strValue = searchStringProvider.GetSearchString();
                 }
                 else if (value is byte[])
@@ -144,34 +142,34 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
     public void Dispose()
     {
-        if (!this.isDisposed)
+        if (!isDisposed)
         {
-            this.xmlWriter.Dispose();
+            xmlWriter.Dispose();
 
-            this.isDisposed = true;
+            isDisposed = true;
         }
     }
 
     /// <summary>
-    /// Flushes this instance.
+    ///     Flushes this instance.
     /// </summary>
     public void Flush()
     {
-        this.xmlWriter.Flush();
+        xmlWriter.Flush();
     }
 
     /// <summary>
-    /// Writes the start element.
+    ///     Writes the start element.
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">The local name of the element.</param>
     public void WriteStartElement(XmlNamespace xmlNamespace, string localName)
     {
-        this.xmlWriter.WriteStartElement(
+        xmlWriter.WriteStartElement(
             EwsUtilities.GetNamespacePrefix(xmlNamespace),
             localName,
             EwsUtilities.GetNamespaceUri(xmlNamespace)
@@ -179,25 +177,25 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the end element.
+    ///     Writes the end element.
     /// </summary>
     public void WriteEndElement()
     {
-        this.xmlWriter.WriteEndElement();
+        xmlWriter.WriteEndElement();
     }
 
     /// <summary>
-    /// Writes the attribute value.  Does not emit empty string values.
+    ///     Writes the attribute value.  Does not emit empty string values.
     /// </summary>
     /// <param name="localName">The local name of the attribute.</param>
     /// <param name="value">The value.</param>
     public void WriteAttributeValue(string localName, object value)
     {
-        this.WriteAttributeValue(localName, false /* alwaysWriteEmptyString */, value);
+        WriteAttributeValue(localName, false /* alwaysWriteEmptyString */, value);
     }
 
     /// <summary>
-    /// Writes the attribute value.  Optionally emits empty string values.
+    ///     Writes the attribute value.  Optionally emits empty string values.
     /// </summary>
     /// <param name="localName">The local name of the attribute.</param>
     /// <param name="alwaysWriteEmptyString">Always emit the empty string as the value.</param>
@@ -205,11 +203,11 @@ internal class EwsServiceXmlWriter : IDisposable
     public void WriteAttributeValue(string localName, bool alwaysWriteEmptyString, object value)
     {
         string stringValue;
-        if (this.TryConvertObjectToString(value, out stringValue))
+        if (TryConvertObjectToString(value, out stringValue))
         {
             if ((stringValue != null) && (alwaysWriteEmptyString || (stringValue.Length != 0)))
             {
-                this.WriteAttributeString(localName, stringValue);
+                WriteAttributeString(localName, stringValue);
             }
         }
         else
@@ -221,7 +219,7 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the attribute value.
+    ///     Writes the attribute value.
     /// </summary>
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="localName">The local name of the attribute.</param>
@@ -229,11 +227,11 @@ internal class EwsServiceXmlWriter : IDisposable
     public void WriteAttributeValue(string namespacePrefix, string localName, object value)
     {
         string stringValue;
-        if (this.TryConvertObjectToString(value, out stringValue))
+        if (TryConvertObjectToString(value, out stringValue))
         {
             if (!string.IsNullOrEmpty(stringValue))
             {
-                this.WriteAttributeString(namespacePrefix, localName, stringValue);
+                WriteAttributeString(namespacePrefix, localName, stringValue);
             }
         }
         else
@@ -245,7 +243,7 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the attribute value.
+    ///     Writes the attribute value.
     /// </summary>
     /// <param name="localName">The local name of the attribute.</param>
     /// <param name="stringValue">The string value.</param>
@@ -254,7 +252,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         try
         {
-            this.xmlWriter.WriteAttributeString(localName, stringValue);
+            xmlWriter.WriteAttributeString(localName, stringValue);
         }
         catch (ArgumentException ex)
         {
@@ -267,7 +265,7 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the attribute value.
+    ///     Writes the attribute value.
     /// </summary>
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="localName">The local name of the attribute.</param>
@@ -277,7 +275,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         try
         {
-            this.xmlWriter.WriteAttributeString(namespacePrefix, localName, null, stringValue);
+            xmlWriter.WriteAttributeString(namespacePrefix, localName, null, stringValue);
         }
         catch (ArgumentException ex)
         {
@@ -290,7 +288,7 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes string value. 
+    ///     Writes string value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="name">Element name (used for error handling)</param>
@@ -299,7 +297,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         try
         {
-            this.xmlWriter.WriteValue(value);
+            xmlWriter.WriteValue(value);
         }
         catch (ArgumentException ex)
         {
@@ -312,7 +310,7 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the element value.
+    ///     Writes the element value.
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">The local name of the element.</param>
@@ -321,7 +319,7 @@ internal class EwsServiceXmlWriter : IDisposable
     internal void WriteElementValue(XmlNamespace xmlNamespace, string localName, string displayName, object value)
     {
         string stringValue;
-        if (this.TryConvertObjectToString(value, out stringValue))
+        if (TryConvertObjectToString(value, out stringValue))
         {
             //  PS # 205106: The code here used to check IsNullOrEmpty on stringValue instead of just null.
             //  Unfortunately, that meant that if someone really needed to update a string property to be the
@@ -334,9 +332,9 @@ internal class EwsServiceXmlWriter : IDisposable
             //  always return the stringized integer).
             if (stringValue != null)
             {
-                this.WriteStartElement(xmlNamespace, localName);
-                this.WriteValue(stringValue, displayName);
-                this.WriteEndElement();
+                WriteStartElement(xmlNamespace, localName);
+                WriteValue(stringValue, displayName);
+                WriteEndElement();
             }
         }
         else
@@ -348,47 +346,47 @@ internal class EwsServiceXmlWriter : IDisposable
     }
 
     /// <summary>
-    /// Writes the Xml Node
+    ///     Writes the Xml Node
     /// </summary>
     /// <param name="xmlNode">The XML node.</param>
     public void WriteNode(XmlNode xmlNode)
     {
         if (xmlNode != null)
         {
-            xmlNode.WriteTo(this.xmlWriter);
+            xmlNode.WriteTo(xmlWriter);
         }
     }
 
     /// <summary>
-    /// Writes the element value.
+    ///     Writes the element value.
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">The local name of the element.</param>
     /// <param name="value">The value.</param>
     public void WriteElementValue(XmlNamespace xmlNamespace, string localName, object value)
     {
-        this.WriteElementValue(xmlNamespace, localName, localName, value);
+        WriteElementValue(xmlNamespace, localName, localName, value);
     }
 
     /// <summary>
-    /// Writes the base64-encoded element value.
+    ///     Writes the base64-encoded element value.
     /// </summary>
     /// <param name="buffer">The buffer.</param>
     public void WriteBase64ElementValue(byte[] buffer)
     {
-        this.xmlWriter.WriteBase64(buffer, 0, buffer.Length);
+        xmlWriter.WriteBase64(buffer, 0, buffer.Length);
     }
 
     /// <summary>
-    /// Writes the base64-encoded element value.
+    ///     Writes the base64-encoded element value.
     /// </summary>
     /// <param name="stream">The stream.</param>
     public void WriteBase64ElementValue(Stream stream)
     {
-        byte[] buffer = new byte[BufferSize];
+        var buffer = new byte[BufferSize];
         int bytesRead;
 
-        using (BinaryReader reader = new BinaryReader(stream))
+        using (var reader = new BinaryReader(stream))
         {
             do
             {
@@ -396,48 +394,42 @@ internal class EwsServiceXmlWriter : IDisposable
 
                 if (bytesRead > 0)
                 {
-                    this.xmlWriter.WriteBase64(buffer, 0, bytesRead);
+                    xmlWriter.WriteBase64(buffer, 0, bytesRead);
                 }
             } while (bytesRead > 0);
         }
     }
 
     /// <summary>
-    /// Gets the internal XML writer.
+    ///     Gets the internal XML writer.
     /// </summary>
     /// <value>The internal writer.</value>
-    public XmlWriter InternalWriter
-    {
-        get { return this.xmlWriter; }
-    }
+    public XmlWriter InternalWriter => xmlWriter;
 
     /// <summary>
-    /// Gets the service.
+    ///     Gets the service.
     /// </summary>
     /// <value>The service.</value>
-    public ExchangeServiceBase Service
-    {
-        get { return this.service; }
-    }
+    public ExchangeServiceBase Service => service;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the time zone SOAP header was emitted through this writer.
+    ///     Gets or sets a value indicating whether the time zone SOAP header was emitted through this writer.
     /// </summary>
     /// <value>
     ///     <c>true</c> if the time zone SOAP header was emitted; otherwise, <c>false</c>.
     /// </value>
     public bool IsTimeZoneHeaderEmitted
     {
-        get { return this.isTimeZoneHeaderEmitted; }
-        set { this.isTimeZoneHeaderEmitted = value; }
+        get => isTimeZoneHeaderEmitted;
+        set => isTimeZoneHeaderEmitted = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the SOAP message need WSSecurity Utility namespace.
+    ///     Gets or sets a value indicating whether the SOAP message need WSSecurity Utility namespace.
     /// </summary>
     public bool RequireWSSecurityUtilityNamespace
     {
-        get { return this.requireWSSecurityUtilityNamespace; }
-        set { this.requireWSSecurityUtilityNamespace = value; }
+        get => requireWSSecurityUtilityNamespace;
+        set => requireWSSecurityUtilityNamespace = value;
     }
 }

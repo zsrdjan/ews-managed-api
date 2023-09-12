@@ -25,22 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an item Id provided by a ItemId object.
+///     Represents an item Id provided by a ItemId object.
 /// </summary>
 internal class ItemIdWrapper : AbstractItemIdWrapper
 {
     /// <summary>
-    /// The ItemId object providing the Id.
+    ///     The ItemId object providing the Id.
     /// </summary>
-    private ItemId itemId;
+    private readonly ItemId itemId;
 
     /// <summary>
-    /// Initializes a new instance of ItemIdWrapper.
+    ///     Initializes a new instance of ItemIdWrapper.
     /// </summary>
     /// <param name="itemId">The ItemId object providing the Id.</param>
     internal ItemIdWrapper(ItemId itemId)
@@ -51,11 +47,11 @@ internal class ItemIdWrapper : AbstractItemIdWrapper
     }
 
     /// <summary>
-    /// Writes the Id encapsulated in the wrapper to XML.
+    ///     Writes the Id encapsulated in the wrapper to XML.
     /// </summary>
     /// <param name="writer">The writer to write the Id to.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer)
     {
-        this.itemId.WriteToXml(writer);
+        itemId.WriteToXml(writer);
     }
 }

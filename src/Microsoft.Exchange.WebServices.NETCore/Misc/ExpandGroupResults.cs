@@ -23,71 +23,60 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the results of an ExpandGroup operation.
+///     Represents the results of an ExpandGroup operation.
 /// </summary>
 public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
 {
     /// <summary>
-    /// True, if all members are returned.
-    /// EWS always returns true on ExpandDL, i.e. all members are returned.
+    ///     True, if all members are returned.
+    ///     EWS always returns true on ExpandDL, i.e. all members are returned.
     /// </summary>
     private bool includesAllMembers;
 
     /// <summary>
-    /// DL members.
+    ///     DL members.
     /// </summary>
-    private Collection<EmailAddress> members = new Collection<EmailAddress>();
+    private readonly Collection<EmailAddress> members = new Collection<EmailAddress>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExpandGroupResults"/> class.
+    ///     Initializes a new instance of the <see cref="ExpandGroupResults" /> class.
     /// </summary>
     internal ExpandGroupResults()
     {
     }
 
     /// <summary>
-    /// Gets the number of members that were returned by the ExpandGroup operation. Count might be
-    /// less than the total number of members in the group, in which case the value of the
-    /// IncludesAllMembers is false.
+    ///     Gets the number of members that were returned by the ExpandGroup operation. Count might be
+    ///     less than the total number of members in the group, in which case the value of the
+    ///     IncludesAllMembers is false.
     /// </summary>
-    public int Count
-    {
-        get { return this.members.Count; }
-    }
+    public int Count => members.Count;
 
     /// <summary>
-    /// Gets a value indicating whether all the members of the group have been returned by ExpandGroup.
+    ///     Gets a value indicating whether all the members of the group have been returned by ExpandGroup.
     /// </summary>
-    public bool IncludesAllMembers
-    {
-        get { return this.includesAllMembers; }
-    }
+    public bool IncludesAllMembers => includesAllMembers;
 
     /// <summary>
-    /// Gets the members of the expanded group.
+    ///     Gets the members of the expanded group.
     /// </summary>
-    public Collection<EmailAddress> Members
-    {
-        get { return this.members; }
-    }
+    public Collection<EmailAddress> Members => members;
 
 
     #region IEnumerable<EmailAddress> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<EmailAddress> GetEnumerator()
     {
-        return this.members.GetEnumerator();
+        return members.GetEnumerator();
     }
 
     #endregion
@@ -96,19 +85,19 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.members.GetEnumerator();
+        return members.GetEnumerator();
     }
 
     #endregion
 
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsServiceXmlReader reader)
@@ -116,17 +105,17 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.DLExpansion);
         if (!reader.IsEmptyElement)
         {
-            int totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-            this.includesAllMembers = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+            var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
+            includesAllMembers = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
-            for (int i = 0; i < totalItemsInView; i++)
+            for (var i = 0; i < totalItemsInView; i++)
             {
-                EmailAddress emailAddress = new EmailAddress();
+                var emailAddress = new EmailAddress();
 
                 reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Mailbox);
                 emailAddress.LoadFromXml(reader, XmlElementNames.Mailbox);
 
-                this.members.Add(emailAddress);
+                members.Add(emailAddress);
             }
 
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.DLExpansion);

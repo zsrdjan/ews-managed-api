@@ -25,22 +25,16 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a reply to a post item.
+///     Represents a reply to a post item.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.PostReplyItem, ReturnedByServer = false)]
 public sealed class PostReply : ServiceObject
 {
-    private Item referenceItem;
+    private readonly Item referenceItem;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PostReply"/> class.
+    ///     Initializes a new instance of the <see cref="PostReply" /> class.
     /// </summary>
     /// <param name="referenceItem">The reference item.</param>
     internal PostReply(Item referenceItem)
@@ -54,7 +48,7 @@ public sealed class PostReply : ServiceObject
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -63,7 +57,7 @@ public sealed class PostReply : ServiceObject
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -72,7 +66,7 @@ public sealed class PostReply : ServiceObject
     }
 
     /// <summary>
-    /// Create a PostItem response.
+    ///     Create a PostItem response.
     /// </summary>
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
@@ -83,16 +77,11 @@ public sealed class PostReply : ServiceObject
         CancellationToken token
     )
     {
-        ((ItemId)this.PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(this.referenceItem.Id);
+        ((ItemId)PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(referenceItem.Id);
 
-        List<Item> items = await this.Service.InternalCreateResponseObject(
-            this,
-            parentFolderId,
-            messageDisposition,
-            token
-        );
+        var items = await Service.InternalCreateResponseObject(this, parentFolderId, messageDisposition, token);
 
-        PostItem postItem = EwsUtilities.FindFirstItemOfType<PostItem>(items);
+        var postItem = EwsUtilities.FindFirstItemOfType<PostItem>(items);
 
         // This should never happen. If it does, we have a bug.
         EwsUtilities.Assert(
@@ -105,7 +94,7 @@ public sealed class PostReply : ServiceObject
     }
 
     /// <summary>
-    /// Loads the specified set of properties on the object.
+    ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
@@ -117,7 +106,7 @@ public sealed class PostReply : ServiceObject
     }
 
     /// <summary>
-    /// Deletes the object.
+    ///     Deletes the object.
     /// </summary>
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
@@ -133,68 +122,64 @@ public sealed class PostReply : ServiceObject
     }
 
     /// <summary>
-    /// Saves the post reply in the same folder as the original post item. Calling this method results in a call to EWS.
+    ///     Saves the post reply in the same folder as the original post item. Calling this method results in a call to EWS.
     /// </summary>
     /// <returns>A PostItem representing the posted reply.</returns>
-    public async Task<PostItem> Save(CancellationToken token = default(CancellationToken))
+    public async Task<PostItem> Save(CancellationToken token = default)
     {
-        return (PostItem)await this.InternalCreate(null, null, token).ConfigureAwait(false);
+        return (PostItem)await InternalCreate(null, null, token).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Saves the post reply in the specified folder. Calling this method results in a call to EWS.
+    ///     Saves the post reply in the specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save the post reply.</param>
     /// <returns>A PostItem representing the posted reply.</returns>
-    public async Task<PostItem> Save(FolderId destinationFolderId, CancellationToken token = default(CancellationToken))
+    public async Task<PostItem> Save(FolderId destinationFolderId, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
 
-        return (PostItem)await this.InternalCreate(destinationFolderId, null, token).ConfigureAwait(false);
+        return (PostItem)await InternalCreate(destinationFolderId, null, token).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Saves the post reply in a specified folder. Calling this method results in a call to EWS.
+    ///     Saves the post reply in a specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save the post reply.</param>
     /// <returns>A PostItem representing the posted reply.</returns>
-    public async Task<PostItem> Save(
-        WellKnownFolderName destinationFolderName,
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<PostItem> Save(WellKnownFolderName destinationFolderName, CancellationToken token = default)
     {
-        return (PostItem)await this.InternalCreate(new FolderId(destinationFolderName), null, token)
-            .ConfigureAwait(false);
+        return (PostItem)await InternalCreate(new FolderId(destinationFolderName), null, token).ConfigureAwait(false);
     }
 
 
     #region Properties
 
     /// <summary>
-    /// Gets or sets the subject of the post reply.
+    ///     Gets or sets the subject of the post reply.
     /// </summary>
     public string Subject
     {
-        get { return (string)this.PropertyBag[EmailMessageSchema.Subject]; }
-        set { this.PropertyBag[EmailMessageSchema.Subject] = value; }
+        get => (string)PropertyBag[ItemSchema.Subject];
+        set => PropertyBag[ItemSchema.Subject] = value;
     }
 
     /// <summary>
-    /// Gets or sets the body of the post reply.
+    ///     Gets or sets the body of the post reply.
     /// </summary>
     public MessageBody Body
     {
-        get { return (MessageBody)this.PropertyBag[ItemSchema.Body]; }
-        set { this.PropertyBag[ItemSchema.Body] = value; }
+        get => (MessageBody)PropertyBag[ItemSchema.Body];
+        set => PropertyBag[ItemSchema.Body] = value;
     }
 
     /// <summary>
-    /// Gets or sets the body prefix that should be prepended to the original post item's body.
+    ///     Gets or sets the body prefix that should be prepended to the original post item's body.
     /// </summary>
     public MessageBody BodyPrefix
     {
-        get { return (MessageBody)this.PropertyBag[ResponseObjectSchema.BodyPrefix]; }
-        set { this.PropertyBag[ResponseObjectSchema.BodyPrefix] = value; }
+        get => (MessageBody)PropertyBag[ResponseObjectSchema.BodyPrefix];
+        set => PropertyBag[ResponseObjectSchema.BodyPrefix] = value;
     }
 
     #endregion

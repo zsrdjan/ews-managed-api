@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the response to a folder synchronization operation.
+///     Represents the response to a folder synchronization operation.
 /// </summary>
 public sealed class SyncFolderHierarchyResponse : SyncResponse<Folder, FolderChange>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SyncFolderHierarchyResponse"/> class.
+    ///     Initializes a new instance of the <see cref="SyncFolderHierarchyResponse" /> class.
     /// </summary>
     /// <param name="propertySet">Property set.</param>
     internal SyncFolderHierarchyResponse(PropertySet propertySet)
@@ -44,7 +40,7 @@ public sealed class SyncFolderHierarchyResponse : SyncResponse<Folder, FolderCha
     }
 
     /// <summary>
-    /// Gets the name of the includes last in range XML element.
+    ///     Gets the name of the includes last in range XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetIncludesLastInRangeXmlElementName()
@@ -53,7 +49,7 @@ public sealed class SyncFolderHierarchyResponse : SyncResponse<Folder, FolderCha
     }
 
     /// <summary>
-    /// Creates a folder change instance.
+    ///     Creates a folder change instance.
     /// </summary>
     /// <returns>FolderChange instance</returns>
     internal override FolderChange CreateChangeInstance()
@@ -62,7 +58,7 @@ public sealed class SyncFolderHierarchyResponse : SyncResponse<Folder, FolderCha
     }
 
     /// <summary>
-    /// Gets the name of the change element.
+    ///     Gets the name of the change element.
     /// </summary>
     /// <returns>Change element name.</returns>
     internal override string GetChangeElementName()
@@ -71,7 +67,7 @@ public sealed class SyncFolderHierarchyResponse : SyncResponse<Folder, FolderCha
     }
 
     /// <summary>
-    /// Gets the name of the change id element.
+    ///     Gets the name of the change id element.
     /// </summary>
     /// <returns>Change id element name.</returns>
     internal override string GetChangeIdElementName()
@@ -80,13 +76,10 @@ public sealed class SyncFolderHierarchyResponse : SyncResponse<Folder, FolderCha
     }
 
     /// <summary>
-    /// Gets a value indicating whether this request returns full or summary properties.
+    ///     Gets a value indicating whether this request returns full or summary properties.
     /// </summary>
     /// <value>
-    /// <c>true</c> if summary properties only; otherwise, <c>false</c>.
+    ///     <c>true</c> if summary properties only; otherwise, <c>false</c>.
     /// </value>
-    internal override bool SummaryPropertiesOnly
-    {
-        get { return false; }
-    }
+    internal override bool SummaryPropertiesOnly => false;
 }

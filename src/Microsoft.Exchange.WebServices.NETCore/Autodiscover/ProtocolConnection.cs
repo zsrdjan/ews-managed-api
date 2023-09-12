@@ -23,14 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents the email Protocol connection settings for pop/imap/smtp protocols.
+///     Represents the email Protocol connection settings for pop/imap/smtp protocols.
 /// </summary>
 public sealed class ProtocolConnection
 {
@@ -39,19 +39,19 @@ public sealed class ProtocolConnection
     private int port;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ProtocolConnection"/> class.
+    ///     Initializes a new instance of the <see cref="ProtocolConnection" /> class.
     /// </summary>
     internal ProtocolConnection()
     {
     }
 
     /// <summary>
-    /// Read user setting with ProtocolConnection value.
+    ///     Read user setting with ProtocolConnection value.
     /// </summary>
     /// <param name="reader">EwsServiceXmlReader</param>
     internal static ProtocolConnection LoadFromXml(EwsXmlReader reader)
     {
-        ProtocolConnection connection = new ProtocolConnection();
+        var connection = new ProtocolConnection();
 
         do
         {
@@ -78,7 +78,7 @@ public sealed class ProtocolConnection
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ProtocolConnection"/> class.
+    ///     Initializes a new instance of the <see cref="ProtocolConnection" /> class.
     /// </summary>
     /// <param name="encryptionMethod">The encryption method.</param>
     /// <param name="hostname">The hostname.</param>
@@ -91,32 +91,32 @@ public sealed class ProtocolConnection
     }
 
     /// <summary>
-    /// Gets or sets the encryption method.
+    ///     Gets or sets the encryption method.
     /// </summary>
     /// <value>The encryption method.</value>
     public string EncryptionMethod
     {
-        get { return this.encryptionMethod; }
-        set { this.encryptionMethod = value; }
+        get => encryptionMethod;
+        set => encryptionMethod = value;
     }
 
     /// <summary>
-    /// Gets or sets the Hostname.
+    ///     Gets or sets the Hostname.
     /// </summary>
     /// <value>The hostname.</value>
     public string Hostname
     {
-        get { return this.hostname; }
-        set { this.hostname = value; }
+        get => hostname;
+        set => hostname = value;
     }
 
     /// <summary>
-    /// Gets or sets the port number.
+    ///     Gets or sets the port number.
     /// </summary>
     /// <value>The port number.</value>
     public int Port
     {
-        get { return this.port; }
-        set { this.port = value; }
+        get => port;
+        set => port = value;
     }
 }

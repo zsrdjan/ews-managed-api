@@ -25,31 +25,27 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a service request that can have multiple responses.
+///     Represents a service request that can have multiple responses.
 /// </summary>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
 internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRequestBase
     where TResponse : ServiceResponse
 {
-    private ServiceErrorHandling errorHandlingMode;
+    private readonly ServiceErrorHandling errorHandlingMode;
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Service response collection.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        ServiceResponseCollection<TResponse> serviceResponses = new ServiceResponseCollection<TResponse>();
+        var serviceResponses = new ServiceResponseCollection<TResponse>();
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ResponseMessages);
 
-        for (int i = 0; i < this.GetExpectedResponseMessageCount(); i++)
+        for (var i = 0; i < GetExpectedResponseMessageCount(); i++)
         {
             // Read ahead to see if we've reached the end of the response messages early.
             reader.Read();
@@ -58,9 +54,9 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
                 break;
             }
 
-            TResponse response = this.CreateServiceResponse(reader.Service, i);
+            var response = CreateServiceResponse(reader.Service, i);
 
-            response.LoadFromXml(reader, this.GetResponseMessageXmlElementName());
+            response.LoadFromXml(reader, GetResponseMessageXmlElementName());
 
             // Add the response to the list after it has been deserialized because the response
             // list updates an overall result as individual responses are added to it.
@@ -72,23 +68,21 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
         // (for example, if the SavedItemFolderId is bogus in a batch CreateItem
         // call). In this case, throw a ServiceResponseException. Otherwise this 
         // is an unexpected server error.
-        if (serviceResponses.Count < this.GetExpectedResponseMessageCount())
+        if (serviceResponses.Count < GetExpectedResponseMessageCount())
         {
             if ((serviceResponses.Count == 1) && (serviceResponses[0].Result == ServiceResult.Error))
             {
                 throw new ServiceResponseException(serviceResponses[0]);
             }
-            else
-            {
-                throw new ServiceXmlDeserializationException(
-                    string.Format(
-                        Strings.TooFewServiceReponsesReturned,
-                        this.GetResponseMessageXmlElementName(),
-                        this.GetExpectedResponseMessageCount(),
-                        serviceResponses.Count
-                    )
-                );
-            }
+
+            throw new ServiceXmlDeserializationException(
+                string.Format(
+                    Strings.TooFewServiceReponsesReturned,
+                    GetResponseMessageXmlElementName(),
+                    GetExpectedResponseMessageCount(),
+                    serviceResponses.Count
+                )
+            );
         }
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.ResponseMessages);
@@ -97,7 +91,7 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -105,19 +99,19 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     internal abstract TResponse CreateServiceResponse(ExchangeService service, int responseIndex);
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal abstract string GetResponseMessageXmlElementName();
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal abstract int GetExpectedResponseMessageCount();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MultiResponseServiceRequest&lt;TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="MultiResponseServiceRequest&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -128,15 +122,15 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response collection.</returns>
     internal async Task<ServiceResponseCollection<TResponse>> ExecuteAsync(CancellationToken token)
     {
-        ServiceResponseCollection<TResponse> serviceResponses =
-            (ServiceResponseCollection<TResponse>)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponses =
+            (ServiceResponseCollection<TResponse>)await InternalExecuteAsync(token).ConfigureAwait(false);
 
-        if (this.ErrorHandlingMode == ServiceErrorHandling.ThrowOnError)
+        if (ErrorHandlingMode == ServiceErrorHandling.ThrowOnError)
         {
             EwsUtilities.Assert(
                 serviceResponses.Count == 1,
@@ -151,10 +145,7 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     }
 
     /// <summary>
-    /// Gets a value indicating how errors should be handled.
+    ///     Gets a value indicating how errors should be handled.
     /// </summary>
-    internal ServiceErrorHandling ErrorHandlingMode
-    {
-        get { return this.errorHandlingMode; }
-    }
+    internal ServiceErrorHandling ErrorHandlingMode => errorHandlingMode;
 }

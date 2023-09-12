@@ -25,35 +25,31 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.IO;
-
 /// <summary>
-/// Represents an EmailUserEntity object.
+///     Represents an EmailUserEntity object.
 /// </summary>
 public sealed class EmailUserEntity : ComplexProperty
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailUserEntity"/> class.
+    ///     Initializes a new instance of the <see cref="EmailUserEntity" /> class.
     /// </summary>
     internal EmailUserEntity()
-        : base()
     {
-        this.Namespace = XmlNamespace.Types;
+        Namespace = XmlNamespace.Types;
     }
 
     /// <summary>
-    /// Gets the EmailUser entity Name.
+    ///     Gets the EmailUser entity Name.
     /// </summary>
     public string Name { get; internal set; }
 
     /// <summary>
-    /// Gets the EmailUser entity UserId.
+    ///     Gets the EmailUser entity UserId.
     /// </summary>
     public string UserId { get; internal set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -62,11 +58,11 @@ public sealed class EmailUserEntity : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgName:
-                this.Name = reader.ReadElementValue();
+                Name = reader.ReadElementValue();
                 return true;
 
             case XmlElementNames.NlgUserId:
-                this.UserId = reader.ReadElementValue();
+                UserId = reader.ReadElementValue();
                 return true;
 
             default:

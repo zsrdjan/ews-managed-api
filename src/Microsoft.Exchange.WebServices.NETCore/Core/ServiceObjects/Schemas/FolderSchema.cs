@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for folders.
+///     Represents the schema for folders.
 /// </summary>
 [Schema]
 public class FolderSchema : ServiceObjectSchema
 {
     /// <summary>
-    /// Field URIs for folders.
+    ///     Field URIs for folders.
     /// </summary>
     private static class FieldUris
     {
@@ -54,7 +54,7 @@ public class FolderSchema : ServiceObjectSchema
     }
 
     /// <summary>
-    /// Defines the Id property.
+    ///     Defines the Id property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -66,11 +66,11 @@ public class FolderSchema : ServiceObjectSchema
         FieldUris.FolderId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new FolderId(); }
+        delegate { return new FolderId(); }
     );
 
     /// <summary>
-    /// Defines the FolderClass property.
+    ///     Defines the FolderClass property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -85,7 +85,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ParentFolderId property.
+    ///     Defines the ParentFolderId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -97,11 +97,11 @@ public class FolderSchema : ServiceObjectSchema
         FieldUris.ParentFolderId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new FolderId(); }
+        delegate { return new FolderId(); }
     );
 
     /// <summary>
-    /// Defines the ChildFolderCount property.
+    ///     Defines the ChildFolderCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -116,7 +116,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the DisplayName property.
+    ///     Defines the DisplayName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -134,7 +134,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the UnreadCount property.
+    ///     Defines the UnreadCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -149,7 +149,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the TotalCount property.
+    ///     Defines the TotalCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -164,7 +164,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ManagedFolderInformation property.
+    ///     Defines the ManagedFolderInformation property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -177,11 +177,11 @@ public class FolderSchema : ServiceObjectSchema
             FieldUris.ManagedFolderInformation,
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new ManagedFolderInformation(); }
+            delegate { return new ManagedFolderInformation(); }
         );
 
     /// <summary>
-    /// Defines the EffectiveRights property.
+    ///     Defines the EffectiveRights property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -196,7 +196,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Permissions property.
+    ///     Defines the Permissions property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -215,7 +215,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the WellKnownFolderName property.
+    ///     Defines the WellKnownFolderName property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -230,7 +230,7 @@ public class FolderSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the PolicyTag property.
+    ///     Defines the PolicyTag property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -245,11 +245,11 @@ public class FolderSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate() { return new PolicyTag(); }
+        delegate { return new PolicyTag(); }
     );
 
     /// <summary>
-    /// Defines the ArchiveTag property.
+    ///     Defines the ArchiveTag property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -264,35 +264,36 @@ public class FolderSchema : ServiceObjectSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate() { return new ArchiveTag(); }
+        delegate { return new ArchiveTag(); }
     );
 
     // This must be declared after the property definitions
     internal static readonly FolderSchema Instance = new FolderSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(Id);
-        this.RegisterProperty(ParentFolderId);
-        this.RegisterProperty(FolderClass);
-        this.RegisterProperty(DisplayName);
-        this.RegisterProperty(TotalCount);
-        this.RegisterProperty(ChildFolderCount);
-        this.RegisterProperty(ServiceObjectSchema.ExtendedProperties);
-        this.RegisterProperty(ManagedFolderInformation);
-        this.RegisterProperty(EffectiveRights);
-        this.RegisterProperty(Permissions);
-        this.RegisterProperty(UnreadCount);
-        this.RegisterProperty(WellKnownFolderName);
-        this.RegisterProperty(PolicyTag);
-        this.RegisterProperty(ArchiveTag);
+        RegisterProperty(Id);
+        RegisterProperty(ParentFolderId);
+        RegisterProperty(FolderClass);
+        RegisterProperty(DisplayName);
+        RegisterProperty(TotalCount);
+        RegisterProperty(ChildFolderCount);
+        RegisterProperty(ExtendedProperties);
+        RegisterProperty(ManagedFolderInformation);
+        RegisterProperty(EffectiveRights);
+        RegisterProperty(Permissions);
+        RegisterProperty(UnreadCount);
+        RegisterProperty(WellKnownFolderName);
+        RegisterProperty(PolicyTag);
+        RegisterProperty(ArchiveTag);
     }
 }

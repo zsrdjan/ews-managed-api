@@ -25,10 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Encapsulates information on the occurrence of a recurring appointment.
+///     Encapsulates information on the occurrence of a recurring appointment.
 /// </summary>
 public sealed class OccurrenceInfo : ComplexProperty
 {
@@ -38,14 +36,14 @@ public sealed class OccurrenceInfo : ComplexProperty
     private DateTime originalStart;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OccurrenceInfo"/> class.
+    ///     Initializes a new instance of the <see cref="OccurrenceInfo" /> class.
     /// </summary>
     internal OccurrenceInfo()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -54,17 +52,17 @@ public sealed class OccurrenceInfo : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ItemId:
-                this.itemId = new ItemId();
-                this.itemId.LoadFromXml(reader, reader.LocalName);
+                itemId = new ItemId();
+                itemId.LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.Start:
-                this.start = reader.ReadElementValueAsDateTime().Value;
+                start = reader.ReadElementValueAsDateTime().Value;
                 return true;
             case XmlElementNames.End:
-                this.end = reader.ReadElementValueAsDateTime().Value;
+                end = reader.ReadElementValueAsDateTime().Value;
                 return true;
             case XmlElementNames.OriginalStart:
-                this.originalStart = reader.ReadElementValueAsDateTime().Value;
+                originalStart = reader.ReadElementValueAsDateTime().Value;
                 return true;
             default:
                 return false;
@@ -72,34 +70,22 @@ public sealed class OccurrenceInfo : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the Id of the occurrence.
+    ///     Gets the Id of the occurrence.
     /// </summary>
-    public ItemId ItemId
-    {
-        get { return this.itemId; }
-    }
+    public ItemId ItemId => itemId;
 
     /// <summary>
-    /// Gets the start date and time of the occurrence.
+    ///     Gets the start date and time of the occurrence.
     /// </summary>
-    public DateTime Start
-    {
-        get { return this.start; }
-    }
+    public DateTime Start => start;
 
     /// <summary>
-    /// Gets the end date and time of the occurrence.
+    ///     Gets the end date and time of the occurrence.
     /// </summary>
-    public DateTime End
-    {
-        get { return this.end; }
-    }
+    public DateTime End => end;
 
     /// <summary>
-    /// Gets the original start date and time of the occurrence.
+    ///     Gets the original start date and time of the occurrence.
     /// </summary>
-    public DateTime OriginalStart
-    {
-        get { return this.originalStart; }
-    }
+    public DateTime OriginalStart => originalStart;
 }

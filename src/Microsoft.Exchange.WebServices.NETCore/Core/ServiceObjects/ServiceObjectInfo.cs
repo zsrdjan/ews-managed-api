@@ -25,49 +25,45 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-
 internal delegate object CreateServiceObjectWithServiceParam(ExchangeService srv);
 
 internal delegate object CreateServiceObjectWithAttachmentParam(ItemAttachment itemAttachment, bool isNew);
 
 /// <summary>
-/// ServiceObjectInfo contains metadata on how to map from an element name to a ServiceObject type
-/// as well as how to map from a ServiceObject type to appropriate constructors.
+///     ServiceObjectInfo contains metadata on how to map from an element name to a ServiceObject type
+///     as well as how to map from a ServiceObject type to appropriate constructors.
 /// </summary>
 internal class ServiceObjectInfo
 {
-    private Dictionary<string, Type> xmlElementNameToServiceObjectClassMap;
-    private Dictionary<Type, CreateServiceObjectWithServiceParam> serviceObjectConstructorsWithServiceParam;
-    private Dictionary<Type, CreateServiceObjectWithAttachmentParam> serviceObjectConstructorsWithAttachmentParam;
+    private readonly Dictionary<string, Type> xmlElementNameToServiceObjectClassMap;
+    private readonly Dictionary<Type, CreateServiceObjectWithServiceParam> serviceObjectConstructorsWithServiceParam;
+
+    private readonly Dictionary<Type, CreateServiceObjectWithAttachmentParam>
+        serviceObjectConstructorsWithAttachmentParam;
 
     /// <summary>
-    /// Default constructor
+    ///     Default constructor
     /// </summary>
     internal ServiceObjectInfo()
     {
-        this.xmlElementNameToServiceObjectClassMap = new Dictionary<string, Type>();
-        this.serviceObjectConstructorsWithServiceParam = new Dictionary<Type, CreateServiceObjectWithServiceParam>();
-        this.serviceObjectConstructorsWithAttachmentParam =
-            new Dictionary<Type, CreateServiceObjectWithAttachmentParam>();
+        xmlElementNameToServiceObjectClassMap = new Dictionary<string, Type>();
+        serviceObjectConstructorsWithServiceParam = new Dictionary<Type, CreateServiceObjectWithServiceParam>();
+        serviceObjectConstructorsWithAttachmentParam = new Dictionary<Type, CreateServiceObjectWithAttachmentParam>();
 
-        this.InitializeServiceObjectClassMap();
+        InitializeServiceObjectClassMap();
     }
 
     /// <summary>
-    /// Initializes the service object class map.
+    ///     Initializes the service object class map.
     /// </summary>
     /// <remarks>
-    /// If you add a new ServiceObject subclass that can be returned by the Server, add the type
-    /// to the class map as well as associated delegate(s) to call the constructor(s).
+    ///     If you add a new ServiceObject subclass that can be returned by the Server, add the type
+    ///     to the class map as well as associated delegate(s) to call the constructor(s).
     /// </remarks>
     private void InitializeServiceObjectClassMap()
     {
         // Appointment
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.CalendarItem,
             typeof(Appointment),
             delegate(ExchangeService srv) { return new Appointment(srv); },
@@ -75,7 +71,7 @@ internal class ServiceObjectInfo
         );
 
         // CalendarFolder
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.CalendarFolder,
             typeof(CalendarFolder),
             delegate(ExchangeService srv) { return new CalendarFolder(srv); },
@@ -83,7 +79,7 @@ internal class ServiceObjectInfo
         );
 
         // Contact
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Contact,
             typeof(Contact),
             delegate(ExchangeService srv) { return new Contact(srv); },
@@ -91,7 +87,7 @@ internal class ServiceObjectInfo
         );
 
         // ContactsFolder
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.ContactsFolder,
             typeof(ContactsFolder),
             delegate(ExchangeService srv) { return new ContactsFolder(srv); },
@@ -99,7 +95,7 @@ internal class ServiceObjectInfo
         );
 
         // ContactGroup
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.DistributionList,
             typeof(ContactGroup),
             delegate(ExchangeService srv) { return new ContactGroup(srv); },
@@ -107,7 +103,7 @@ internal class ServiceObjectInfo
         );
 
         // Conversation
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Conversation,
             typeof(Conversation),
             delegate(ExchangeService srv) { return new Conversation(srv); },
@@ -115,7 +111,7 @@ internal class ServiceObjectInfo
         );
 
         // EmailMessage
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Message,
             typeof(EmailMessage),
             delegate(ExchangeService srv) { return new EmailMessage(srv); },
@@ -123,7 +119,7 @@ internal class ServiceObjectInfo
         );
 
         // Folder
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Folder,
             typeof(Folder),
             delegate(ExchangeService srv) { return new Folder(srv); },
@@ -131,7 +127,7 @@ internal class ServiceObjectInfo
         );
 
         // Item
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Item,
             typeof(Item),
             delegate(ExchangeService srv) { return new Item(srv); },
@@ -139,7 +135,7 @@ internal class ServiceObjectInfo
         );
 
         // MeetingCancellation
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.MeetingCancellation,
             typeof(MeetingCancellation),
             delegate(ExchangeService srv) { return new MeetingCancellation(srv); },
@@ -147,7 +143,7 @@ internal class ServiceObjectInfo
         );
 
         // MeetingMessage
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.MeetingMessage,
             typeof(MeetingMessage),
             delegate(ExchangeService srv) { return new MeetingMessage(srv); },
@@ -155,7 +151,7 @@ internal class ServiceObjectInfo
         );
 
         // MeetingRequest
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.MeetingRequest,
             typeof(MeetingRequest),
             delegate(ExchangeService srv) { return new MeetingRequest(srv); },
@@ -163,7 +159,7 @@ internal class ServiceObjectInfo
         );
 
         // MeetingResponse
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.MeetingResponse,
             typeof(MeetingResponse),
             delegate(ExchangeService srv) { return new MeetingResponse(srv); },
@@ -171,7 +167,7 @@ internal class ServiceObjectInfo
         );
 
         // Persona
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Persona,
             typeof(Persona),
             delegate(ExchangeService srv) { return new Persona(srv); },
@@ -179,7 +175,7 @@ internal class ServiceObjectInfo
         );
 
         // PostItem
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.PostItem,
             typeof(PostItem),
             delegate(ExchangeService srv) { return new PostItem(srv); },
@@ -187,7 +183,7 @@ internal class ServiceObjectInfo
         );
 
         // SearchFolder
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.SearchFolder,
             typeof(SearchFolder),
             delegate(ExchangeService srv) { return new SearchFolder(srv); },
@@ -195,7 +191,7 @@ internal class ServiceObjectInfo
         );
 
         // Task
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.Task,
             typeof(Task),
             delegate(ExchangeService srv) { return new Task(srv); },
@@ -203,7 +199,7 @@ internal class ServiceObjectInfo
         );
 
         // TasksFolder
-        this.AddServiceObjectType(
+        AddServiceObjectType(
             XmlElementNames.TasksFolder,
             typeof(TasksFolder),
             delegate(ExchangeService srv) { return new TasksFolder(srv); },
@@ -212,7 +208,7 @@ internal class ServiceObjectInfo
     }
 
     /// <summary>
-    /// Adds specified type of service object to map.
+    ///     Adds specified type of service object to map.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="type">The ServiceObject type.</param>
@@ -225,35 +221,30 @@ internal class ServiceObjectInfo
         CreateServiceObjectWithAttachmentParam createServiceObjectWithAttachmentParam
     )
     {
-        this.xmlElementNameToServiceObjectClassMap.Add(xmlElementName, type);
-        this.serviceObjectConstructorsWithServiceParam.Add(type, createServiceObjectWithServiceParam);
+        xmlElementNameToServiceObjectClassMap.Add(xmlElementName, type);
+        serviceObjectConstructorsWithServiceParam.Add(type, createServiceObjectWithServiceParam);
         if (createServiceObjectWithAttachmentParam != null)
         {
-            this.serviceObjectConstructorsWithAttachmentParam.Add(type, createServiceObjectWithAttachmentParam);
+            serviceObjectConstructorsWithAttachmentParam.Add(type, createServiceObjectWithAttachmentParam);
         }
     }
 
     /// <summary>
-    /// Return Dictionary that maps from element name to ServiceObject Type.
+    ///     Return Dictionary that maps from element name to ServiceObject Type.
     /// </summary>
-    internal Dictionary<string, Type> XmlElementNameToServiceObjectClassMap
-    {
-        get { return this.xmlElementNameToServiceObjectClassMap; }
-    }
+    internal Dictionary<string, Type> XmlElementNameToServiceObjectClassMap => xmlElementNameToServiceObjectClassMap;
 
     /// <summary>
-    /// Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithServiceParam delegate with ExchangeService parameter.
+    ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithServiceParam delegate with
+    ///     ExchangeService parameter.
     /// </summary>
-    internal Dictionary<Type, CreateServiceObjectWithServiceParam> ServiceObjectConstructorsWithServiceParam
-    {
-        get { return this.serviceObjectConstructorsWithServiceParam; }
-    }
+    internal Dictionary<Type, CreateServiceObjectWithServiceParam> ServiceObjectConstructorsWithServiceParam =>
+        serviceObjectConstructorsWithServiceParam;
 
     /// <summary>
-    /// Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithAttachmentParam delegate with ItemAttachment parameter.
+    ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithAttachmentParam delegate with
+    ///     ItemAttachment parameter.
     /// </summary>
-    internal Dictionary<Type, CreateServiceObjectWithAttachmentParam> ServiceObjectConstructorsWithAttachmentParam
-    {
-        get { return this.serviceObjectConstructorsWithAttachmentParam; }
-    }
+    internal Dictionary<Type, CreateServiceObjectWithAttachmentParam> ServiceObjectConstructorsWithAttachmentParam =>
+        serviceObjectConstructorsWithAttachmentParam;
 }

@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a GetFolder request specialized to return ServiceResponse.
+///     Represents a GetFolder request specialized to return ServiceResponse.
 /// </summary>
 internal sealed class GetFolderRequestForLoad : GetFolderRequestBase<ServiceResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetFolderRequestForLoad"/> class.
+    ///     Initializes a new instance of the <see cref="GetFolderRequestForLoad" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -45,13 +41,13 @@ internal sealed class GetFolderRequestForLoad : GetFolderRequestBase<ServiceResp
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new GetFolderResponse(this.FolderIds[responseIndex].GetFolder(), this.PropertySet);
+        return new GetFolderResponse(FolderIds[responseIndex].GetFolder(), PropertySet);
     }
 }

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a client token access request
+///     Represents a client token access request
 /// </summary>
 public class ClientAccessTokenRequest : ComplexProperty
 {
@@ -39,7 +35,7 @@ public class ClientAccessTokenRequest : ComplexProperty
     private readonly string scope;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientAccessTokenRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
     /// </summary>
     /// <param name="id">id</param>
     /// <param name="tokenType">The tokenType.</param>
@@ -49,7 +45,7 @@ public class ClientAccessTokenRequest : ComplexProperty
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientAccessTokenRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
     /// </summary>
     /// <param name="id">id</param>
     /// <param name="tokenType">The tokenType.</param>
@@ -62,26 +58,17 @@ public class ClientAccessTokenRequest : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the App Id.
+    ///     Gets the App Id.
     /// </summary>
-    public string Id
-    {
-        get { return this.id; }
-    }
+    public string Id => id;
 
     /// <summary>
-    /// Gets token type.
+    ///     Gets token type.
     /// </summary>
-    public ClientAccessTokenType TokenType
-    {
-        get { return this.tokenType; }
-    }
+    public ClientAccessTokenType TokenType => tokenType;
 
     /// <summary>
-    /// Gets the token scope.
+    ///     Gets the token scope.
     /// </summary>
-    public string Scope
-    {
-        get { return this.scope; }
-    }
+    public string Scope => scope;
 }

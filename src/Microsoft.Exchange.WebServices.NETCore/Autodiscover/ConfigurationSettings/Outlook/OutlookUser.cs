@@ -23,31 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
-using ConverterDictionary = System.Collections.Generic.Dictionary<UserSettingName, System.Func<OutlookUser, string>>;
-using ConverterPair = System.Collections.Generic.KeyValuePair<UserSettingName, System.Func<OutlookUser, string>>;
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+using ConverterDictionary = Dictionary<UserSettingName, Func<OutlookUser, string>>;
+using ConverterPair = KeyValuePair<UserSettingName, Func<OutlookUser, string>>;
 
 /// <summary>
-/// Represents the user Outlook configuration settings apply to.
+///     Represents the user Outlook configuration settings apply to.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal sealed class OutlookUser
 {
     /// <summary>
-    /// Converters to translate Outlook user settings.
-    /// Each entry maps to a lambda expression used to get the matching property from the OutlookUser instance. 
+    ///     Converters to translate Outlook user settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookUser instance.
     /// </summary>
-    private static LazyMember<ConverterDictionary> converterDictionary = new LazyMember<ConverterDictionary>(
-        delegate()
+    private static readonly LazyMember<ConverterDictionary> converterDictionary = new LazyMember<ConverterDictionary>(
+        delegate
         {
             var results = new ConverterDictionary();
             results.Add(UserSettingName.UserDisplayName, u => u.displayName);
@@ -70,14 +67,14 @@ internal sealed class OutlookUser
 
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OutlookUser"/> class.
+    ///     Initializes a new instance of the <see cref="OutlookUser" /> class.
     /// </summary>
     internal OutlookUser()
     {
     }
 
     /// <summary>
-    /// Load from XML.
+    ///     Load from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsXmlReader reader)
@@ -91,16 +88,16 @@ internal sealed class OutlookUser
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.DisplayName:
-                        this.displayName = reader.ReadElementValue();
+                        displayName = reader.ReadElementValue();
                         break;
                     case XmlElementNames.LegacyDN:
-                        this.legacyDN = reader.ReadElementValue();
+                        legacyDN = reader.ReadElementValue();
                         break;
                     case XmlElementNames.DeploymentId:
-                        this.deploymentId = reader.ReadElementValue();
+                        deploymentId = reader.ReadElementValue();
                         break;
                     case XmlElementNames.AutoDiscoverSMTPAddress:
-                        this.autodiscoverAMTPAddress = reader.ReadElementValue();
+                        autodiscoverAMTPAddress = reader.ReadElementValue();
                         break;
                     default:
                         reader.SkipCurrentElement();
@@ -111,7 +108,7 @@ internal sealed class OutlookUser
     }
 
     /// <summary>
-    /// Convert OutlookUser to GetUserSettings response.
+    ///     Convert OutlookUser to GetUserSettings response.
     /// </summary>
     /// <param name="requestedSettings">The requested settings.</param>
     /// <param name="response">The response.</param>
@@ -124,7 +121,7 @@ internal sealed class OutlookUser
 
         foreach (ConverterPair kv in converterQuery)
         {
-            string value = kv.Value(this);
+            var value = kv.Value(this);
             if (!string.IsNullOrEmpty(value))
             {
                 response.Settings[kv.Key] = value;
@@ -133,11 +130,8 @@ internal sealed class OutlookUser
     }
 
     /// <summary>
-    /// Gets the available user settings.
+    ///     Gets the available user settings.
     /// </summary>
     /// <value>The available user settings.</value>
-    internal static IEnumerable<UserSettingName> AvailableUserSettings
-    {
-        get { return converterDictionary.Member.Keys; }
-    }
+    internal static IEnumerable<UserSettingName> AvailableUserSettings => converterDictionary.Member.Keys;
 }

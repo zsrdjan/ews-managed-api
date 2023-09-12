@@ -25,35 +25,34 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Delegate called to perform the actual initialization of the member
+///     Delegate called to perform the actual initialization of the member
 /// </summary>
 /// <typeparam name="T">Wrapped lazy member type</typeparam>
 /// <returns>Newly instantiated and initialized member</returns>
 internal delegate T InitializeLazyMember<T>();
 
 /// <summary>
-/// Wrapper class for lazy members.  Does lazy initialization of member on first access.
+///     Wrapper class for lazy members.  Does lazy initialization of member on first access.
 /// </summary>
 /// <typeparam name="T">Type of the lazy member</typeparam>
-/// <remarks>If we find ourselves creating a whole bunch of these in our code, we need to rethink
-/// this.  Each lazy member holds the actual member, a lock object, a boolean flag and a delegate.
-/// That can turn into a whole lot of overhead.</remarks>
+/// <remarks>
+///     If we find ourselves creating a whole bunch of these in our code, we need to rethink
+///     this.  Each lazy member holds the actual member, a lock object, a boolean flag and a delegate.
+///     That can turn into a whole lot of overhead.
+/// </remarks>
 internal class LazyMember<T>
 {
     private T lazyMember;
-    private InitializeLazyMember<T> initializationDelegate;
-    private object lockObject = new object();
-    private bool initialized = false;
+    private readonly InitializeLazyMember<T> initializationDelegate;
+    private readonly object lockObject = new object();
+    private bool initialized;
 
     /// <summary>
-    /// Constructor
+    ///     Constructor
     /// </summary>
-    /// <param name="initializationDelegate">The initialization delegate to call for the item on first access
+    /// <param name="initializationDelegate">
+    ///     The initialization delegate to call for the item on first access
     /// </param>
     public LazyMember(InitializeLazyMember<T> initializationDelegate)
     {
@@ -61,26 +60,26 @@ internal class LazyMember<T>
     }
 
     /// <summary>
-    /// Public accessor for the lazy member.  Lazy initializes the member on first access
+    ///     Public accessor for the lazy member.  Lazy initializes the member on first access
     /// </summary>
     public T Member
     {
         get
         {
-            if (!this.initialized)
+            if (!initialized)
             {
-                lock (this.lockObject)
+                lock (lockObject)
                 {
-                    if (!this.initialized)
+                    if (!initialized)
                     {
-                        this.lazyMember = this.initializationDelegate();
+                        lazyMember = initializationDelegate();
                     }
 
-                    this.initialized = true;
+                    initialized = true;
                 }
             }
 
-            return this.lazyMember;
+            return lazyMember;
         }
     }
 }

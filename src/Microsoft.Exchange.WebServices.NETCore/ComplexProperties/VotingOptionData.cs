@@ -25,10 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents voting option information.
+///     Represents voting option information.
 /// </summary>
 public sealed class VotingOptionData : ComplexProperty
 {
@@ -36,14 +34,14 @@ public sealed class VotingOptionData : ComplexProperty
     private SendPrompt sendPrompt;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="VotingOptionData"/> class.
+    ///     Initializes a new instance of the <see cref="VotingOptionData" /> class.
     /// </summary>
     internal VotingOptionData()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -52,10 +50,10 @@ public sealed class VotingOptionData : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.VotingOptionDisplayName:
-                this.displayName = reader.ReadElementValue<string>();
+                displayName = reader.ReadElementValue<string>();
                 return true;
             case XmlElementNames.SendPrompt:
-                this.sendPrompt = reader.ReadElementValue<SendPrompt>();
+                sendPrompt = reader.ReadElementValue<SendPrompt>();
                 return true;
             default:
                 return false;
@@ -63,18 +61,12 @@ public sealed class VotingOptionData : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the display name for the voting option.
+    ///     Gets the display name for the voting option.
     /// </summary>
-    public string DisplayName
-    {
-        get { return this.displayName; }
-    }
+    public string DisplayName => displayName;
 
     /// <summary>
-    /// Gets the send prompt.
+    ///     Gets the send prompt.
     /// </summary>
-    public SendPrompt SendPrompt
-    {
-        get { return this.sendPrompt; }
-    }
+    public SendPrompt SendPrompt => sendPrompt;
 }

@@ -25,23 +25,19 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Linq;
-
 /// <summary>
-/// Represents the permissions of a delegate user.
+///     Represents the permissions of a delegate user.
 /// </summary>
 public sealed class DelegatePermissions : ComplexProperty
 {
-    private Dictionary<string, DelegateFolderPermission> delegateFolderPermissions;
+    private readonly Dictionary<string, DelegateFolderPermission> delegateFolderPermissions;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DelegatePermissions"/> class.
+    ///     Initializes a new instance of the <see cref="DelegatePermissions" /> class.
     /// </summary>
     internal DelegatePermissions()
-        : base()
     {
-        this.delegateFolderPermissions = new Dictionary<string, DelegateFolderPermission>()
+        delegateFolderPermissions = new Dictionary<string, DelegateFolderPermission>
         {
             {
                 XmlElementNames.CalendarFolderPermissionLevel, new DelegateFolderPermission()
@@ -65,72 +61,72 @@ public sealed class DelegatePermissions : ComplexProperty
     }
 
     /// <summary>
-    /// Gets or sets the delegate user's permission on the principal's calendar.
+    ///     Gets or sets the delegate user's permission on the principal's calendar.
     /// </summary>
     public DelegateFolderPermissionLevel CalendarFolderPermissionLevel
     {
-        get { return this.delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel; }
-        set { this.delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel = value; }
+        get => delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel;
+        set => delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
-    /// Gets or sets the delegate user's permission on the principal's tasks folder.
+    ///     Gets or sets the delegate user's permission on the principal's tasks folder.
     /// </summary>
     public DelegateFolderPermissionLevel TasksFolderPermissionLevel
     {
-        get { return this.delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel; }
-        set { this.delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel = value; }
+        get => delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel;
+        set => delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
-    /// Gets or sets the delegate user's permission on the principal's inbox.
+    ///     Gets or sets the delegate user's permission on the principal's inbox.
     /// </summary>
     public DelegateFolderPermissionLevel InboxFolderPermissionLevel
     {
-        get { return this.delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel; }
-        set { this.delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel = value; }
+        get => delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel;
+        set => delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
-    /// Gets or sets the delegate user's permission on the principal's contacts folder.
+    ///     Gets or sets the delegate user's permission on the principal's contacts folder.
     /// </summary>
     public DelegateFolderPermissionLevel ContactsFolderPermissionLevel
     {
-        get { return this.delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel; }
-        set { this.delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel = value; }
+        get => delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel;
+        set => delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
-    /// Gets or sets the delegate user's permission on the principal's notes folder.
+    ///     Gets or sets the delegate user's permission on the principal's notes folder.
     /// </summary>
     public DelegateFolderPermissionLevel NotesFolderPermissionLevel
     {
-        get { return this.delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel; }
-        set { this.delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel = value; }
+        get => delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel;
+        set => delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
-    /// Gets or sets the delegate user's permission on the principal's journal folder.
+    ///     Gets or sets the delegate user's permission on the principal's journal folder.
     /// </summary>
     public DelegateFolderPermissionLevel JournalFolderPermissionLevel
     {
-        get { return this.delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel; }
-        set { this.delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel = value; }
+        get => delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel;
+        set => delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
-    /// Resets this instance.
+    ///     Resets this instance.
     /// </summary>
     internal void Reset()
     {
-        foreach (DelegateFolderPermission delegateFolderPermission in this.delegateFolderPermissions.Values)
+        foreach (var delegateFolderPermission in delegateFolderPermissions.Values)
         {
             delegateFolderPermission.Reset();
         }
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Returns true if element was read.</returns>
@@ -138,7 +134,7 @@ public sealed class DelegatePermissions : ComplexProperty
     {
         DelegateFolderPermission delegateFolderPermission = null;
 
-        if (this.delegateFolderPermissions.TryGetValue(reader.LocalName, out delegateFolderPermission))
+        if (delegateFolderPermissions.TryGetValue(reader.LocalName, out delegateFolderPermission))
         {
             delegateFolderPermission.Initialize(reader.ReadElementValue<DelegateFolderPermissionLevel>());
         }
@@ -147,33 +143,32 @@ public sealed class DelegatePermissions : ComplexProperty
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.WritePermissionToXml(writer, XmlElementNames.CalendarFolderPermissionLevel);
+        WritePermissionToXml(writer, XmlElementNames.CalendarFolderPermissionLevel);
 
-        this.WritePermissionToXml(writer, XmlElementNames.TasksFolderPermissionLevel);
+        WritePermissionToXml(writer, XmlElementNames.TasksFolderPermissionLevel);
 
-        this.WritePermissionToXml(writer, XmlElementNames.InboxFolderPermissionLevel);
+        WritePermissionToXml(writer, XmlElementNames.InboxFolderPermissionLevel);
 
-        this.WritePermissionToXml(writer, XmlElementNames.ContactsFolderPermissionLevel);
+        WritePermissionToXml(writer, XmlElementNames.ContactsFolderPermissionLevel);
 
-        this.WritePermissionToXml(writer, XmlElementNames.NotesFolderPermissionLevel);
+        WritePermissionToXml(writer, XmlElementNames.NotesFolderPermissionLevel);
 
-        this.WritePermissionToXml(writer, XmlElementNames.JournalFolderPermissionLevel);
+        WritePermissionToXml(writer, XmlElementNames.JournalFolderPermissionLevel);
     }
 
     /// <summary>
-    /// Write permission to Xml.
+    ///     Write permission to Xml.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">The element name.</param>
     private void WritePermissionToXml(EwsServiceXmlWriter writer, string xmlElementName)
     {
-        DelegateFolderPermissionLevel delegateFolderPermissionLevel =
-            this.delegateFolderPermissions[xmlElementName].PermissionLevel;
+        var delegateFolderPermissionLevel = delegateFolderPermissions[xmlElementName].PermissionLevel;
 
         // UpdateDelegate fails if Custom permission level is round tripped
         //
@@ -184,28 +179,26 @@ public sealed class DelegatePermissions : ComplexProperty
     }
 
     /// <summary>
-    /// Validates this instance for AddDelegate.
+    ///     Validates this instance for AddDelegate.
     /// </summary>
     internal void ValidateAddDelegate()
     {
         // If any folder permission is Custom, throw
         //
-        if (this.delegateFolderPermissions.Any<KeyValuePair<string, DelegateFolderPermission>>(
-                kvp => kvp.Value.PermissionLevel == DelegateFolderPermissionLevel.Custom
-            ))
+        if (delegateFolderPermissions.Any(kvp => kvp.Value.PermissionLevel == DelegateFolderPermissionLevel.Custom))
         {
             throw new ServiceValidationException(Strings.CannotSetDelegateFolderPermissionLevelToCustom);
         }
     }
 
     /// <summary>
-    /// Validates this instance for UpdateDelegate.
+    ///     Validates this instance for UpdateDelegate.
     /// </summary>
     internal void ValidateUpdateDelegate()
     {
         // If any folder permission was changed to custom, throw
         //
-        if (this.delegateFolderPermissions.Any<KeyValuePair<string, DelegateFolderPermission>>(
+        if (delegateFolderPermissions.Any(
                 kvp => kvp.Value.PermissionLevel == DelegateFolderPermissionLevel.Custom &&
                        !kvp.Value.IsExistingPermissionLevelCustom
             ))
@@ -215,35 +208,35 @@ public sealed class DelegatePermissions : ComplexProperty
     }
 
     /// <summary>
-    /// Represents a folder's DelegateFolderPermissionLevel
+    ///     Represents a folder's DelegateFolderPermissionLevel
     /// </summary>
     private class DelegateFolderPermission
     {
         /// <summary>
-        /// Intializes this DelegateFolderPermission.
+        ///     Intializes this DelegateFolderPermission.
         /// </summary>
         /// <param name="permissionLevel">The DelegateFolderPermissionLevel</param>
         internal void Initialize(DelegateFolderPermissionLevel permissionLevel)
         {
-            this.PermissionLevel = permissionLevel;
-            this.IsExistingPermissionLevelCustom = permissionLevel == DelegateFolderPermissionLevel.Custom;
+            PermissionLevel = permissionLevel;
+            IsExistingPermissionLevelCustom = permissionLevel == DelegateFolderPermissionLevel.Custom;
         }
 
         /// <summary>
-        /// Resets this DelegateFolderPermission.
+        ///     Resets this DelegateFolderPermission.
         /// </summary>
         internal void Reset()
         {
-            this.Initialize(DelegateFolderPermissionLevel.None);
+            Initialize(DelegateFolderPermissionLevel.None);
         }
 
         /// <summary>
-        /// Gets or sets the delegate user's permission on a principal's folder.
+        ///     Gets or sets the delegate user's permission on a principal's folder.
         /// </summary>
         internal DelegateFolderPermissionLevel PermissionLevel { get; set; }
 
         /// <summary>
-        /// Gets IsExistingPermissionLevelCustom.
+        ///     Gets IsExistingPermissionLevelCustom.
         /// </summary>
         internal bool IsExistingPermissionLevelCustom { get; private set; }
     }

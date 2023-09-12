@@ -25,25 +25,20 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the base response class to subscription creation operations.
+///     Represents the base response class to subscription creation operations.
 /// </summary>
 /// <typeparam name="TSubscription">Subscription type.</typeparam>
 internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
     where TSubscription : SubscriptionBase
 {
-    private TSubscription subscription;
+    private readonly TSubscription subscription;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscribeResponse&lt;TSubscription&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="SubscribeResponse&lt;TSubscription&gt;" /> class.
     /// </summary>
     /// <param name="subscription">The subscription.</param>
     internal SubscribeResponse(TSubscription subscription)
-        : base()
     {
         EwsUtilities.Assert(subscription != null, "SubscribeResponse.ctor", "subscription is null");
 
@@ -51,21 +46,18 @@ internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        this.subscription.LoadFromXml(reader);
+        subscription.LoadFromXml(reader);
     }
 
     /// <summary>
-    /// Gets the subscription that was created.
+    ///     Gets the subscription that was created.
     /// </summary>
-    public TSubscription Subscription
-    {
-        get { return this.subscription; }
-    }
+    public TSubscription Subscription => subscription;
 }

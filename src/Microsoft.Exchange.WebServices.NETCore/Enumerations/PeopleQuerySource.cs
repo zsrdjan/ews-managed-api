@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 /// <summary>
-/// Lists the names of various sources of people
+///     Lists the names of various sources of people
 /// </summary>
 public sealed class PeopleQuerySource
 {

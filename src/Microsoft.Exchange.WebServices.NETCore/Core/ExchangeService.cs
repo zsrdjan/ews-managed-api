@@ -23,28 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Security.Cryptography;
-
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Autodiscover;
 using Microsoft.Exchange.WebServices.Data.Enumerations;
 using Microsoft.Exchange.WebServices.Data.Groups;
 
-using System.Threading.Tasks;
-using System.Threading;
+namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a binding to the Exchange Web Services.
+///     Represents a binding to the Exchange Web Services.
 /// </summary>
 public sealed class ExchangeService : ExchangeServiceBase
 {
@@ -67,7 +57,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     private UnifiedMessaging unifiedMessaging;
     private bool enableScpLookup = true;
     private bool traceEnablePrettyPrinting = true;
-    private string targetServerVersion = null;
+    private string targetServerVersion;
 
     #endregion
 
@@ -75,7 +65,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Response object operations
 
     /// <summary>
-    /// Create response object.
+    ///     Create response object.
     /// </summary>
     /// <param name="responseObject">The response object.</param>
     /// <param name="parentFolderId">The parent folder id.</param>
@@ -88,17 +78,16 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        CreateResponseObjectRequest request = new CreateResponseObjectRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new CreateResponseObjectRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.ParentFolderId = parentFolderId;
-        request.Items = new ServiceObject[]
+        request.Items = new[]
         {
             responseObject
         };
         request.MessageDisposition = messageDisposition;
 
-        ServiceResponseCollection<CreateResponseObjectResponse> responses =
-            await request.ExecuteAsync(token).ConfigureAwait(false);
+        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
 
         return responses[0].Items;
     }
@@ -109,15 +98,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Folder operations
 
     /// <summary>
-    /// Creates a folder. Calling this method results in a call to EWS.
+    ///     Creates a folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folder">The folder.</param>
     /// <param name="parentFolderId">The parent folder id.</param>
     internal System.Threading.Tasks.Task CreateFolder(Folder folder, FolderId parentFolderId, CancellationToken token)
     {
-        CreateFolderRequest request = new CreateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new CreateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
-        request.Folders = new Folder[]
+        request.Folders = new[]
         {
             folder
         };
@@ -127,12 +116,12 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates a folder.
+    ///     Updates a folder.
     /// </summary>
     /// <param name="folder">The folder.</param>
     internal System.Threading.Tasks.Task UpdateFolder(Folder folder, CancellationToken token)
     {
-        UpdateFolderRequest request = new UpdateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new UpdateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.Folders.Add(folder);
 
@@ -140,50 +129,50 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Copies a folder. Calling this method results in a call to EWS.
+    ///     Copies a folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderId">The folder id.</param>
     /// <param name="destinationFolderId">The destination folder id.</param>
     /// <returns>Copy of folder.</returns>
     internal async Task<Folder> CopyFolder(FolderId folderId, FolderId destinationFolderId, CancellationToken token)
     {
-        CopyFolderRequest request = new CopyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new CopyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.DestinationFolderId = destinationFolderId;
         request.FolderIds.Add(folderId);
 
-        ServiceResponseCollection<MoveCopyFolderResponse> responses =
-            await request.ExecuteAsync(token).ConfigureAwait(false);
+        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
 
         return responses[0].Folder;
     }
 
     /// <summary>
-    /// Move a folder.
+    ///     Move a folder.
     /// </summary>
     /// <param name="folderId">The folder id.</param>
     /// <param name="destinationFolderId">The destination folder id.</param>
     /// <returns>Moved folder.</returns>
     internal async Task<Folder> MoveFolder(FolderId folderId, FolderId destinationFolderId, CancellationToken token)
     {
-        MoveFolderRequest request = new MoveFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new MoveFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.DestinationFolderId = destinationFolderId;
         request.FolderIds.Add(folderId);
 
-        ServiceResponseCollection<MoveCopyFolderResponse> responses =
-            await request.ExecuteAsync(token).ConfigureAwait(false);
+        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
 
         return responses[0].Folder;
     }
 
     /// <summary>
-    /// Finds folders.
+    ///     Finds folders.
     /// </summary>
     /// <param name="parentFolderIds">The parent folder ids.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of folders returned.</param>
     /// <param name="errorHandlingMode">Indicates the type of error handling should be done.</param>
     /// <returns>Collection of service responses.</returns>
@@ -195,7 +184,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        FindFolderRequest request = new FindFolderRequest(this, errorHandlingMode);
+        var request = new FindFolderRequest(this, errorHandlingMode);
 
         request.ParentFolderIds.AddRange(parentFolderIds);
         request.SearchFilter = searchFilter;
@@ -205,27 +194,29 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of folders by searching the sub-folders of the specified folder.
+    ///     Obtains a list of folders by searching the sub-folders of the specified folder.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for folders.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of folders returned.</param>
     /// <returns>An object representing the results of the search operation.</returns>
     public async Task<FindFoldersResults> FindFolders(
         FolderId parentFolderId,
         SearchFilter searchFilter,
         FolderView view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
         EwsUtilities.ValidateParam(view, "view");
         EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
 
-        ServiceResponseCollection<FindFolderResponse> responses = await this.InternalFindFolders(
-                new FolderId[]
+        var responses = await InternalFindFolders(
+                new[]
                 {
                     parentFolderId
                 },
@@ -240,30 +231,32 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of folders by searching the sub-folders of each of the specified folders.
+    ///     Obtains a list of folders by searching the sub-folders of each of the specified folders.
     /// </summary>
     /// <param name="parentFolderIds">The Ids of the folders in which to search for folders.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of folders returned.</param>
     /// <returns>An object representing the results of the search operation.</returns>
     public Task<ServiceResponseCollection<FindFolderResponse>> FindFolders(
         IEnumerable<FolderId> parentFolderIds,
         SearchFilter searchFilter,
         FolderView view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(parentFolderIds, "parentFolderIds");
         EwsUtilities.ValidateParam(view, "view");
         EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
 
-        return this.InternalFindFolders(parentFolderIds, searchFilter, view, ServiceErrorHandling.ReturnErrors, token);
+        return InternalFindFolders(parentFolderIds, searchFilter, view, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Obtains a list of folders by searching the sub-folders of the specified folder.
+    ///     Obtains a list of folders by searching the sub-folders of the specified folder.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for folders.</param>
     /// <param name="view">The view controlling the number of folders returned.</param>
@@ -271,14 +264,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<FindFoldersResults> FindFolders(
         FolderId parentFolderId,
         FolderView view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
         EwsUtilities.ValidateParam(view, "view");
 
-        ServiceResponseCollection<FindFolderResponse> responses = await this.InternalFindFolders(
-                new FolderId[]
+        var responses = await InternalFindFolders(
+                new[]
                 {
                     parentFolderId
                 },
@@ -293,12 +286,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of folders by searching the sub-folders of the specified folder.
+    ///     Obtains a list of folders by searching the sub-folders of the specified folder.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for folders.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of folders returned.</param>
     /// <returns>An object representing the results of the search operation.</returns>
     public Task<FindFoldersResults> FindFolders(
@@ -307,22 +302,22 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderView view
     )
     {
-        return this.FindFolders(new FolderId(parentFolderName), searchFilter, view);
+        return FindFolders(new FolderId(parentFolderName), searchFilter, view);
     }
 
     /// <summary>
-    /// Obtains a list of folders by searching the sub-folders of the specified folder.
+    ///     Obtains a list of folders by searching the sub-folders of the specified folder.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for folders.</param>
     /// <param name="view">The view controlling the number of folders returned.</param>
     /// <returns>An object representing the results of the search operation.</returns>
     public Task<FindFoldersResults> FindFolders(WellKnownFolderName parentFolderName, FolderView view)
     {
-        return this.FindFolders(new FolderId(parentFolderName), view);
+        return FindFolders(new FolderId(parentFolderName), view);
     }
 
     /// <summary>
-    /// Load specified properties for a folder.
+    ///     Load specified properties for a folder.
     /// </summary>
     /// <param name="folder">The folder.</param>
     /// <param name="propertySet">The property set.</param>
@@ -335,7 +330,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(folder, "folder");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        GetFolderRequestForLoad request = new GetFolderRequestForLoad(this, ServiceErrorHandling.ThrowOnError);
+        var request = new GetFolderRequestForLoad(this, ServiceErrorHandling.ThrowOnError);
 
         request.FolderIds.Add(folder);
         request.PropertySet = propertySet;
@@ -344,7 +339,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Binds to a folder.
+    ///     Binds to a folder.
     /// </summary>
     /// <param name="folderId">The folder id.</param>
     /// <param name="propertySet">The property set.</param>
@@ -354,7 +349,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(folderId, "folderId");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        ServiceResponseCollection<GetFolderResponse> responses = await this.InternalBindToFolders(
+        var responses = await InternalBindToFolders(
             new[]
             {
                 folderId
@@ -368,7 +363,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Binds to folder.
+    ///     Binds to folder.
     /// </summary>
     /// <typeparam name="TFolder">The type of the folder.</typeparam>
     /// <param name="folderId">The folder id.</param>
@@ -381,22 +376,20 @@ public sealed class ExchangeService : ExchangeServiceBase
     )
         where TFolder : Folder
     {
-        Folder result = await this.BindToFolder(folderId, propertySet, token);
+        var result = await BindToFolder(folderId, propertySet, token);
 
         if (result is TFolder)
         {
             return (TFolder)result;
         }
-        else
-        {
-            throw new ServiceLocalException(
-                string.Format(Strings.FolderTypeNotCompatible, result.GetType().Name, typeof(TFolder).Name)
-            );
-        }
+
+        throw new ServiceLocalException(
+            string.Format(Strings.FolderTypeNotCompatible, result.GetType().Name, typeof(TFolder).Name)
+        );
     }
 
     /// <summary>
-    /// Binds to multiple folders in a single call to EWS.
+    ///     Binds to multiple folders in a single call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folders to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -404,17 +397,17 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<GetFolderResponse>> BindToFolders(
         IEnumerable<FolderId> folderIds,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        return this.InternalBindToFolders(folderIds, propertySet, ServiceErrorHandling.ReturnErrors, token);
+        return InternalBindToFolders(folderIds, propertySet, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Binds to multiple folders in a single call to EWS.
+    ///     Binds to multiple folders in a single call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folders to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -427,7 +420,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        GetFolderRequest request = new GetFolderRequest(this, errorHandling);
+        var request = new GetFolderRequest(this, errorHandling);
 
         request.FolderIds.AddRange(folderIds);
         request.PropertySet = propertySet;
@@ -436,7 +429,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Deletes a folder. Calling this method results in a call to EWS.
+    ///     Deletes a folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderId">The folder id.</param>
     /// <param name="deleteMode">The delete mode.</param>
@@ -448,7 +441,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(folderId, "folderId");
 
-        DeleteFolderRequest request = new DeleteFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new DeleteFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.FolderIds.Add(folderId);
         request.DeleteMode = deleteMode;
@@ -457,7 +450,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Empties a folder. Calling this method results in a call to EWS.
+    ///     Empties a folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderId">The folder id.</param>
     /// <param name="deleteMode">The delete mode.</param>
@@ -471,7 +464,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(folderId, "folderId");
 
-        EmptyFolderRequest request = new EmptyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new EmptyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.FolderIds.Add(folderId);
         request.DeleteMode = deleteMode;
@@ -481,7 +474,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Marks all items in folder as read/unread. Calling this method results in a call to EWS.
+    ///     Marks all items in folder as read/unread. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderId">The folder id.</param>
     /// <param name="readFlag">If true, items marked as read, otherwise unread.</param>
@@ -496,7 +489,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(folderId, "folderId");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "MarkAllItemsAsRead");
 
-        MarkAllItemsAsReadRequest request = new MarkAllItemsAsReadRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new MarkAllItemsAsReadRequest(this, ServiceErrorHandling.ThrowOnError);
 
         request.FolderIds.Add(folderId);
         request.ReadFlag = readFlag;
@@ -511,13 +504,23 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Item operations
 
     /// <summary>
-    /// Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact, PostItem, Task and Item.
-    /// CreateItems does not support items that have unsaved attachments.
+    ///     Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact,
+    ///     PostItem, Task and Item.
+    ///     CreateItems does not support items that have unsaved attachments.
     /// </summary>
     /// <param name="items">The items to create.</param>
-    /// <param name="parentFolderId">The Id of the folder in which to place the newly created items. If null, items are created in their default folders.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.</param>
-    /// <param name="sendInvitationsMode">Indicates if and how invitations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.</param>
+    /// <param name="parentFolderId">
+    ///     The Id of the folder in which to place the newly created items. If null, items are created
+    ///     in their default folders.
+    /// </param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for items of type EmailMessage. Required if items
+    ///     contains at least one EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsMode">
+    ///     Indicates if and how invitations should be sent for items of type Appointment.
+    ///     Required if items contains at least one Appointment instance.
+    /// </param>
     /// <param name="errorHandling">What type of error handling should be performed.</param>
     /// <returns>A ServiceResponseCollection providing creation results for each of the specified items.</returns>
     private Task<ServiceResponseCollection<ServiceResponse>> InternalCreateItems(
@@ -529,7 +532,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        CreateItemRequest request = new CreateItemRequest(this, errorHandling);
+        var request = new CreateItemRequest(this, errorHandling);
 
         request.ParentFolderId = parentFolderId;
         request.Items = items;
@@ -540,35 +543,45 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact, PostItem, Task and Item.
-    /// CreateItems does not support items that have unsaved attachments.
+    ///     Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact,
+    ///     PostItem, Task and Item.
+    ///     CreateItems does not support items that have unsaved attachments.
     /// </summary>
     /// <param name="items">The items to create.</param>
-    /// <param name="parentFolderId">The Id of the folder in which to place the newly created items. If null, items are created in their default folders.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.</param>
-    /// <param name="sendInvitationsMode">Indicates if and how invitations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.</param>
+    /// <param name="parentFolderId">
+    ///     The Id of the folder in which to place the newly created items. If null, items are created
+    ///     in their default folders.
+    /// </param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for items of type EmailMessage. Required if items
+    ///     contains at least one EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsMode">
+    ///     Indicates if and how invitations should be sent for items of type Appointment.
+    ///     Required if items contains at least one Appointment instance.
+    /// </param>
     /// <returns>A ServiceResponseCollection providing creation results for each of the specified items.</returns>
     public Task<ServiceResponseCollection<ServiceResponse>> CreateItems(
         IEnumerable<Item> items,
         FolderId parentFolderId,
         MessageDisposition? messageDisposition,
         SendInvitationsMode? sendInvitationsMode,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         // All items have to be new.
-        if (!items.TrueForAll((item) => item.IsNew))
+        if (!items.TrueForAll(item => item.IsNew))
         {
             throw new ServiceValidationException(Strings.CreateItemsDoesNotHandleExistingItems);
         }
 
         // Make sure that all items do *not* have unprocessed attachments.
-        if (!items.TrueForAll((item) => !item.HasUnprocessedAttachmentChanges()))
+        if (!items.TrueForAll(item => !item.HasUnprocessedAttachmentChanges()))
         {
             throw new ServiceValidationException(Strings.CreateItemsDoesNotAllowAttachments);
         }
 
-        return this.InternalCreateItems(
+        return InternalCreateItems(
             items,
             parentFolderId,
             messageDisposition,
@@ -579,12 +592,21 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Creates an item. Calling this method results in a call to EWS.
+    ///     Creates an item. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="item">The item to create.</param>
-    /// <param name="parentFolderId">The Id of the folder in which to place the newly created item. If null, the item is created in its default folders.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for items of type EmailMessage. Required if item is an EmailMessage instance.</param>
-    /// <param name="sendInvitationsMode">Indicates if and how invitations should be sent for item of type Appointment. Required if item is an Appointment instance.</param>
+    /// <param name="parentFolderId">
+    ///     The Id of the folder in which to place the newly created item. If null, the item is
+    ///     created in its default folders.
+    /// </param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for items of type EmailMessage. Required if item is an
+    ///     EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsMode">
+    ///     Indicates if and how invitations should be sent for item of type Appointment.
+    ///     Required if item is an Appointment instance.
+    /// </param>
     internal System.Threading.Tasks.Task CreateItem(
         Item item,
         FolderId parentFolderId,
@@ -593,8 +615,8 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        return this.InternalCreateItems(
-            new Item[]
+        return InternalCreateItems(
+            new[]
             {
                 item
             },
@@ -607,13 +629,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
+    ///     Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
     /// </summary>
     /// <param name="items">The items to update.</param>
-    /// <param name="savedItemsDestinationFolderId">The folder in which to save sent messages, meeting invitations or cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.</param>
+    /// <param name="savedItemsDestinationFolderId">
+    ///     The folder in which to save sent messages, meeting invitations or
+    ///     cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.
+    /// </param>
     /// <param name="conflictResolution">The conflict resolution mode.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.</param>
-    /// <param name="sendInvitationsOrCancellationsMode">Indicates if and how invitations and/or cancellations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.</param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for items of type EmailMessage. Required if items
+    ///     contains at least one EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsOrCancellationsMode">
+    ///     Indicates if and how invitations and/or cancellations should be sent
+    ///     for items of type Appointment. Required if items contains at least one Appointment instance.
+    /// </param>
     /// <param name="errorHandling">What type of error handling should be performed.</param>
     /// <param name="suppressReadReceipt">Whether to suppress read receipts</param>
     /// <returns>A ServiceResponseCollection providing update results for each of the specified items.</returns>
@@ -628,7 +659,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        UpdateItemRequest request = new UpdateItemRequest(this, errorHandling);
+        var request = new UpdateItemRequest(this, errorHandling);
 
         request.Items.AddRange(items);
         request.SavedItemsDestinationFolder = savedItemsDestinationFolderId;
@@ -641,13 +672,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
+    ///     Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
     /// </summary>
     /// <param name="items">The items to update.</param>
-    /// <param name="savedItemsDestinationFolderId">The folder in which to save sent messages, meeting invitations or cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.</param>
+    /// <param name="savedItemsDestinationFolderId">
+    ///     The folder in which to save sent messages, meeting invitations or
+    ///     cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.
+    /// </param>
     /// <param name="conflictResolution">The conflict resolution mode.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.</param>
-    /// <param name="sendInvitationsOrCancellationsMode">Indicates if and how invitations and/or cancellations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.</param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for items of type EmailMessage. Required if items
+    ///     contains at least one EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsOrCancellationsMode">
+    ///     Indicates if and how invitations and/or cancellations should be sent
+    ///     for items of type Appointment. Required if items contains at least one Appointment instance.
+    /// </param>
     /// <returns>A ServiceResponseCollection providing update results for each of the specified items.</returns>
     public Task<ServiceResponseCollection<UpdateItemResponse>> UpdateItems(
         IEnumerable<Item> items,
@@ -657,7 +697,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         SendInvitationsOrCancellationsMode? sendInvitationsOrCancellationsMode
     )
     {
-        return this.UpdateItems(
+        return UpdateItems(
             items,
             savedItemsDestinationFolderId,
             conflictResolution,
@@ -668,13 +708,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
+    ///     Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
     /// </summary>
     /// <param name="items">The items to update.</param>
-    /// <param name="savedItemsDestinationFolderId">The folder in which to save sent messages, meeting invitations or cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.</param>
+    /// <param name="savedItemsDestinationFolderId">
+    ///     The folder in which to save sent messages, meeting invitations or
+    ///     cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.
+    /// </param>
     /// <param name="conflictResolution">The conflict resolution mode.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.</param>
-    /// <param name="sendInvitationsOrCancellationsMode">Indicates if and how invitations and/or cancellations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.</param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for items of type EmailMessage. Required if items
+    ///     contains at least one EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsOrCancellationsMode">
+    ///     Indicates if and how invitations and/or cancellations should be sent
+    ///     for items of type Appointment. Required if items contains at least one Appointment instance.
+    /// </param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
     /// <returns>A ServiceResponseCollection providing update results for each of the specified items.</returns>
     public Task<ServiceResponseCollection<UpdateItemResponse>> UpdateItems(
@@ -684,22 +733,22 @@ public sealed class ExchangeService : ExchangeServiceBase
         MessageDisposition? messageDisposition,
         SendInvitationsOrCancellationsMode? sendInvitationsOrCancellationsMode,
         bool suppressReadReceipts,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         // All items have to exist on the server (!new) and modified (dirty)
-        if (!items.TrueForAll((item) => (!item.IsNew && item.IsDirty)))
+        if (!items.TrueForAll(item => (!item.IsNew && item.IsDirty)))
         {
             throw new ServiceValidationException(Strings.UpdateItemsDoesNotSupportNewOrUnchangedItems);
         }
 
         // Make sure that all items do *not* have unprocessed attachments.
-        if (!items.TrueForAll((item) => !item.HasUnprocessedAttachmentChanges()))
+        if (!items.TrueForAll(item => !item.HasUnprocessedAttachmentChanges()))
         {
             throw new ServiceValidationException(Strings.UpdateItemsDoesNotAllowAttachments);
         }
 
-        return this.InternalUpdateItems(
+        return InternalUpdateItems(
             items,
             savedItemsDestinationFolderId,
             conflictResolution,
@@ -712,13 +761,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates an item.
+    ///     Updates an item.
     /// </summary>
     /// <param name="item">The item to update.</param>
-    /// <param name="savedItemsDestinationFolderId">The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.</param>
+    /// <param name="savedItemsDestinationFolderId">
+    ///     The folder in which to save sent messages, meeting invitations or
+    ///     cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
+    /// </param>
     /// <param name="conflictResolution">The conflict resolution mode.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.</param>
-    /// <param name="sendInvitationsOrCancellationsMode">Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.</param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for an item of type EmailMessage. Required if item is
+    ///     an EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsOrCancellationsMode">
+    ///     Indicates if and how invitations and/or cancellations should be sent
+    ///     for ian tem of type Appointment. Required if item is an Appointment instance.
+    /// </param>
     /// <returns>Updated item.</returns>
     internal Task<Item> UpdateItem(
         Item item,
@@ -729,7 +787,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        return this.UpdateItem(
+        return UpdateItem(
             item,
             savedItemsDestinationFolderId,
             conflictResolution,
@@ -741,13 +799,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates an item.
+    ///     Updates an item.
     /// </summary>
     /// <param name="item">The item to update.</param>
-    /// <param name="savedItemsDestinationFolderId">The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.</param>
+    /// <param name="savedItemsDestinationFolderId">
+    ///     The folder in which to save sent messages, meeting invitations or
+    ///     cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
+    /// </param>
     /// <param name="conflictResolution">The conflict resolution mode.</param>
-    /// <param name="messageDisposition">Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.</param>
-    /// <param name="sendInvitationsOrCancellationsMode">Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.</param>
+    /// <param name="messageDisposition">
+    ///     Indicates the disposition mode for an item of type EmailMessage. Required if item is
+    ///     an EmailMessage instance.
+    /// </param>
+    /// <param name="sendInvitationsOrCancellationsMode">
+    ///     Indicates if and how invitations and/or cancellations should be sent
+    ///     for ian tem of type Appointment. Required if item is an Appointment instance.
+    /// </param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
     /// <returns>Updated item.</returns>
     internal async Task<Item> UpdateItem(
@@ -760,8 +827,8 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        ServiceResponseCollection<UpdateItemResponse> responses = await this.InternalUpdateItems(
-                new Item[]
+        var responses = await InternalUpdateItems(
+                new[]
                 {
                     item
                 },
@@ -779,7 +846,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sends an item.
+    ///     Sends an item.
     /// </summary>
     /// <param name="item">The item.</param>
     /// <param name="savedCopyDestinationFolderId">The saved copy destination folder id.</param>
@@ -789,9 +856,9 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        SendItemRequest request = new SendItemRequest(this, ServiceErrorHandling.ThrowOnError);
+        var request = new SendItemRequest(this, ServiceErrorHandling.ThrowOnError);
 
-        request.Items = new Item[]
+        request.Items = new[]
         {
             item
         };
@@ -801,7 +868,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Copies multiple items in a single call to EWS.
+    ///     Copies multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to copy.</param>
     /// <param name="destinationFolderId">The Id of the folder to copy the items to.</param>
@@ -816,7 +883,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        CopyItemRequest request = new CopyItemRequest(this, errorHandling);
+        var request = new CopyItemRequest(this, errorHandling);
         request.ItemIds.AddRange(itemIds);
         request.DestinationFolderId = destinationFolderId;
         request.ReturnNewItemIds = returnNewItemIds;
@@ -825,7 +892,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Copies multiple items in a single call to EWS.
+    ///     Copies multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to copy.</param>
     /// <param name="destinationFolderId">The Id of the folder to copy the items to.</param>
@@ -833,14 +900,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<MoveCopyItemResponse>> CopyItems(
         IEnumerable<ItemId> itemIds,
         FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.InternalCopyItems(itemIds, destinationFolderId, null, ServiceErrorHandling.ReturnErrors, token);
+        return InternalCopyItems(itemIds, destinationFolderId, null, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Copies multiple items in a single call to EWS.
+    ///     Copies multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to copy.</param>
     /// <param name="destinationFolderId">The Id of the folder to copy the items to.</param>
@@ -850,12 +917,12 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<ItemId> itemIds,
         FolderId destinationFolderId,
         bool returnNewItemIds,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "CopyItems");
 
-        return this.InternalCopyItems(
+        return InternalCopyItems(
             itemIds,
             destinationFolderId,
             returnNewItemIds,
@@ -865,15 +932,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Copies an item. Calling this method results in a call to EWS.
+    ///     Copies an item. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="itemId">The Id of the item to copy.</param>
     /// <param name="destinationFolderId">The Id of the folder to copy the item to.</param>
     /// <returns>The copy of the item.</returns>
     internal async Task<Item> CopyItem(ItemId itemId, FolderId destinationFolderId, CancellationToken token)
     {
-        return (await this.InternalCopyItems(
-                new ItemId[]
+        return (await InternalCopyItems(
+                new[]
                 {
                     itemId
                 },
@@ -886,7 +953,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Moves multiple items in a single call to EWS.
+    ///     Moves multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to move.</param>
     /// <param name="destinationFolderId">The Id of the folder to move the items to.</param>
@@ -901,7 +968,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        MoveItemRequest request = new MoveItemRequest(this, errorHandling);
+        var request = new MoveItemRequest(this, errorHandling);
 
         request.ItemIds.AddRange(itemIds);
         request.DestinationFolderId = destinationFolderId;
@@ -911,7 +978,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Moves multiple items in a single call to EWS.
+    ///     Moves multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to move.</param>
     /// <param name="destinationFolderId">The Id of the folder to move the items to.</param>
@@ -919,14 +986,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<MoveCopyItemResponse>> MoveItems(
         IEnumerable<ItemId> itemIds,
         FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.InternalMoveItems(itemIds, destinationFolderId, null, ServiceErrorHandling.ReturnErrors, token);
+        return InternalMoveItems(itemIds, destinationFolderId, null, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Moves multiple items in a single call to EWS.
+    ///     Moves multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to move.</param>
     /// <param name="destinationFolderId">The Id of the folder to move the items to.</param>
@@ -936,12 +1003,12 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<ItemId> itemIds,
         FolderId destinationFolderId,
         bool returnNewItemIds,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "MoveItems");
 
-        return this.InternalMoveItems(
+        return InternalMoveItems(
             itemIds,
             destinationFolderId,
             returnNewItemIds,
@@ -951,15 +1018,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Move an item.
+    ///     Move an item.
     /// </summary>
     /// <param name="itemId">The Id of the item to move.</param>
     /// <param name="destinationFolderId">The Id of the folder to move the item to.</param>
     /// <returns>The moved item.</returns>
     internal async Task<Item> MoveItem(ItemId itemId, FolderId destinationFolderId, CancellationToken token)
     {
-        return (await this.InternalMoveItems(
-                new ItemId[]
+        return (await InternalMoveItems(
+                new[]
                 {
                     itemId
                 },
@@ -972,7 +1039,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Archives multiple items in a single call to EWS.
+    ///     Archives multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to move.</param>
     /// <param name="sourceFolderId">The Id of the folder in primary corresponding to which items are being archived to.</param>
@@ -980,10 +1047,10 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<ArchiveItemResponse>> ArchiveItems(
         IEnumerable<ItemId> itemIds,
         FolderId sourceFolderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        ArchiveItemRequest request = new ArchiveItemRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new ArchiveItemRequest(this, ServiceErrorHandling.ReturnErrors);
 
         request.Ids.AddRange(itemIds);
         request.SourceFolderId = sourceFolderId;
@@ -992,13 +1059,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Finds items.
+    ///     Finds items.
     /// </summary>
     /// <typeparam name="TItem">The type of the item.</typeparam>
     /// <param name="parentFolderIds">The parent folder ids.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="queryString">query string to be used for indexed search.</param>
     /// <param name="view">The view controlling the number of items returned.</param>
     /// <param name="groupBy">The group by.</param>
@@ -1021,7 +1090,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
         EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
 
-        FindItemRequest<TItem> request = new FindItemRequest<TItem>(this, errorHandlingMode);
+        var request = new FindItemRequest<TItem>(this, errorHandlingMode);
 
         request.ParentFolderIds.AddRange(parentFolderIds);
         request.SearchFilter = searchFilter;
@@ -1033,7 +1102,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to
+    ///     EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
     /// <param name="queryString">the search string to be used for indexed search, if any.</param>
@@ -1043,13 +1113,13 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId parentFolderId,
         string queryString,
         ViewBase view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses = await this.FindItems<Item>(
-                new FolderId[]
+        var responses = await FindItems<Item>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1066,9 +1136,9 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. 
-    /// Along with conversations, a list of highlight terms are returned.
-    /// Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder.
+    ///     Along with conversations, a list of highlight terms are returned.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
     /// <param name="queryString">the search string to be used for indexed search, if any.</param>
@@ -1080,10 +1150,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         string queryString,
         bool returnHighlightTerms,
         ViewBase view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        FolderId[] parentFolderIds = new FolderId[]
+        FolderId[] parentFolderIds =
         {
             parentFolderId
         };
@@ -1094,22 +1164,21 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamAllowNull(returnHighlightTerms, "returnHighlightTerms");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "FindItems");
 
-        FindItemRequest<Item> request = new FindItemRequest<Item>(this, ServiceErrorHandling.ThrowOnError);
+        var request = new FindItemRequest<Item>(this, ServiceErrorHandling.ThrowOnError);
 
         request.ParentFolderIds.AddRange(parentFolderIds);
         request.QueryString = queryString;
         request.ReturnHighlightTerms = returnHighlightTerms;
         request.View = view;
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses =
-            await request.ExecuteAsync(token).ConfigureAwait(false);
+        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
         return responses[0].Results;
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. 
-    /// Along with conversations, a list of highlight terms are returned.
-    /// Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder.
+    ///     Along with conversations, a list of highlight terms are returned.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
     /// <param name="queryString">the search string to be used for indexed search, if any.</param>
@@ -1123,10 +1192,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         bool returnHighlightTerms,
         ViewBase view,
         Grouping groupBy,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        FolderId[] parentFolderIds = new FolderId[]
+        FolderId[] parentFolderIds =
         {
             parentFolderId
         };
@@ -1138,7 +1207,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamAllowNull(returnHighlightTerms, "returnHighlightTerms");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "FindItems");
 
-        FindItemRequest<Item> request = new FindItemRequest<Item>(this, ServiceErrorHandling.ThrowOnError);
+        var request = new FindItemRequest<Item>(this, ServiceErrorHandling.ThrowOnError);
 
         request.ParentFolderIds.AddRange(parentFolderIds);
         request.QueryString = queryString;
@@ -1146,31 +1215,33 @@ public sealed class ExchangeService : ExchangeServiceBase
         request.View = view;
         request.GroupBy = groupBy;
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses =
-            await request.ExecuteAsync(token).ConfigureAwait(false);
+        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
         return responses[0].GroupedFindResults;
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to
+    ///     EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of items returned.</param>
     /// <returns>An object representing the results of the search operation.</returns>
     public async Task<FindItemsResults<Item>> FindItems(
         FolderId parentFolderId,
         SearchFilter searchFilter,
         ViewBase view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses = await this.FindItems<Item>(
-                new FolderId[]
+        var responses = await FindItems<Item>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1187,7 +1258,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to
+    ///     EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
     /// <param name="view">The view controlling the number of items returned.</param>
@@ -1195,11 +1267,11 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<FindItemsResults<Item>> FindItems(
         FolderId parentFolderId,
         ViewBase view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        ServiceResponseCollection<FindItemResponse<Item>> responses = await this.FindItems<Item>(
-                new FolderId[]
+        var responses = await FindItems<Item>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1216,7 +1288,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to
+    ///     EWS.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for items.</param>
     /// <param name="queryString">query string to be used for indexed search</param>
@@ -1228,16 +1301,19 @@ public sealed class ExchangeService : ExchangeServiceBase
         ViewBase view
     )
     {
-        return this.FindItems(new FolderId(parentFolderName), queryString, view);
+        return FindItems(new FolderId(parentFolderName), queryString, view);
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to
+    ///     EWS.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for items.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of items returned.</param>
     /// <returns>An object representing the results of the search operation.</returns>
     public Task<FindItemsResults<Item>> FindItems(
@@ -1246,11 +1322,12 @@ public sealed class ExchangeService : ExchangeServiceBase
         ViewBase view
     )
     {
-        return this.FindItems(new FolderId(parentFolderName), searchFilter, view);
+        return FindItems(new FolderId(parentFolderName), searchFilter, view);
     }
 
     /// <summary>
-    /// Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to
+    ///     EWS.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for items.</param>
     /// <param name="view">The view controlling the number of items returned.</param>
@@ -1258,14 +1335,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<FindItemsResults<Item>> FindItems(
         WellKnownFolderName parentFolderName,
         ViewBase view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.FindItems(new FolderId(parentFolderName), (SearchFilter)null, view, token);
+        return FindItems(new FolderId(parentFolderName), (SearchFilter)null, view, token);
     }
 
     /// <summary>
-    /// Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
     /// <param name="queryString">query string to be used for indexed search</param>
@@ -1277,14 +1355,14 @@ public sealed class ExchangeService : ExchangeServiceBase
         string queryString,
         ViewBase view,
         Grouping groupBy,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(groupBy, "groupBy");
         EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses = await this.FindItems<Item>(
-                new FolderId[]
+        var responses = await FindItems<Item>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1301,12 +1379,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of items returned.</param>
     /// <param name="groupBy">The group by clause.</param>
     /// <returns>A list of items containing the contents of the specified folder.</returns>
@@ -1315,14 +1396,14 @@ public sealed class ExchangeService : ExchangeServiceBase
         SearchFilter searchFilter,
         ViewBase view,
         Grouping groupBy,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(groupBy, "groupBy");
         EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses = await this.FindItems<Item>(
-                new FolderId[]
+        var responses = await FindItems<Item>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1339,7 +1420,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
     /// <param name="view">The view controlling the number of items returned.</param>
@@ -1349,13 +1431,13 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId parentFolderId,
         ViewBase view,
         Grouping groupBy,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(groupBy, "groupBy");
 
-        ServiceResponseCollection<FindItemResponse<Item>> responses = await this.FindItems<Item>(
-                new FolderId[]
+        var responses = await FindItems<Item>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1372,12 +1454,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to search for items.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of items returned.</param>
     /// <param name="groupBy">The group by clause.</param>
     /// <typeparam name="TItem">Type of item.</typeparam>
@@ -1391,8 +1476,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     )
         where TItem : Item
     {
-        return this.FindItems<TItem>(
-            new FolderId[]
+        return FindItems<TItem>(
+            new[]
             {
                 parentFolderId
             },
@@ -1406,7 +1491,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for items.</param>
     /// <param name="queryString">query string to be used for indexed search</param>
@@ -1418,21 +1504,24 @@ public sealed class ExchangeService : ExchangeServiceBase
         string queryString,
         ViewBase view,
         Grouping groupBy,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(groupBy, "groupBy");
 
-        return this.FindItems(new FolderId(parentFolderName), queryString, view, groupBy, token);
+        return FindItems(new FolderId(parentFolderName), queryString, view, groupBy, token);
     }
 
     /// <summary>
-    /// Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to search for items.</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view controlling the number of items returned.</param>
     /// <param name="groupBy">The group by clause.</param>
     /// <returns>A collection of grouped items representing the contents of the specified.</returns>
@@ -1441,14 +1530,15 @@ public sealed class ExchangeService : ExchangeServiceBase
         SearchFilter searchFilter,
         ViewBase view,
         Grouping groupBy,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.FindItems(new FolderId(parentFolderName), searchFilter, view, groupBy, token);
+        return FindItems(new FolderId(parentFolderName), searchFilter, view, groupBy, token);
     }
 
     /// <summary>
-    /// Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderId">The id of the calendar folder in which to search for items.</param>
     /// <param name="calendarView">The calendar view controlling the number of appointments returned.</param>
@@ -1456,11 +1546,11 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<FindItemsResults<Appointment>> FindAppointments(
         FolderId parentFolderId,
         CalendarView calendarView,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        ServiceResponseCollection<FindItemResponse<Appointment>> response = await this.FindItems<Appointment>(
-                new FolderId[]
+        var response = await FindItems<Appointment>(
+                new[]
                 {
                     parentFolderId
                 },
@@ -1477,7 +1567,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a call to EWS.
+    ///     Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a
+    ///     call to EWS.
     /// </summary>
     /// <param name="parentFolderName">The name of the calendar folder in which to search for items.</param>
     /// <param name="calendarView">The calendar view controlling the number of appointments returned.</param>
@@ -1485,14 +1576,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<FindItemsResults<Appointment>> FindAppointments(
         WellKnownFolderName parentFolderName,
         CalendarView calendarView,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.FindAppointments(new FolderId(parentFolderName), calendarView, token);
+        return FindAppointments(new FolderId(parentFolderName), calendarView, token);
     }
 
     /// <summary>
-    /// Loads the properties of multiple items in a single call to EWS.
+    ///     Loads the properties of multiple items in a single call to EWS.
     /// </summary>
     /// <param name="items">The items to load the properties of.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -1500,17 +1591,17 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<ServiceResponse>> LoadPropertiesForItems(
         IEnumerable<Item> items,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(items, "items");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        return this.InternalLoadPropertiesForItems(items, propertySet, ServiceErrorHandling.ReturnErrors, token);
+        return InternalLoadPropertiesForItems(items, propertySet, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Loads the properties of multiple items in a single call to EWS.
+    ///     Loads the properties of multiple items in a single call to EWS.
     /// </summary>
     /// <param name="items">The items to load the properties of.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -1523,7 +1614,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        GetItemRequestForLoad request = new GetItemRequestForLoad(this, errorHandling);
+        var request = new GetItemRequestForLoad(this, errorHandling);
 
         request.ItemIds.AddRange(items);
         request.PropertySet = propertySet;
@@ -1532,7 +1623,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Binds to multiple items in a single call to EWS.
+    ///     Binds to multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -1547,7 +1638,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        GetItemRequest request = new GetItemRequest(this, errorHandling);
+        var request = new GetItemRequest(this, errorHandling);
 
         request.ItemIds.AddRange(itemIds);
         request.PropertySet = propertySet;
@@ -1557,7 +1648,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Binds to multiple items in a single call to EWS.
+    ///     Binds to multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -1565,13 +1656,13 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<GetItemResponse>> BindToItems(
         IEnumerable<ItemId> itemIds,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        return this.InternalBindToItems(
+        return InternalBindToItems(
             itemIds,
             propertySet,
             null, /* anchorMailbox */
@@ -1581,32 +1672,32 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Binds to multiple items in a single call to EWS.
+    ///     Binds to multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
     /// <param name="anchorMailbox">The SmtpAddress of mailbox that hosts all items we need to bind to</param>
     /// <returns>A ServiceResponseCollection providing results for each of the specified item Ids.</returns>
     /// <remarks>
-    /// This API designed to be used primarily in groups scenarios where we want to set the
-    /// anchor mailbox header so that request is routed directly to the group mailbox backend server.
+    ///     This API designed to be used primarily in groups scenarios where we want to set the
+    ///     anchor mailbox header so that request is routed directly to the group mailbox backend server.
     /// </remarks>
     public Task<ServiceResponseCollection<GetItemResponse>> BindToGroupItems(
         IEnumerable<ItemId> itemIds,
         PropertySet propertySet,
         string anchorMailbox,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
         EwsUtilities.ValidateParam(propertySet, "anchorMailbox");
 
-        return this.InternalBindToItems(itemIds, propertySet, anchorMailbox, ServiceErrorHandling.ReturnErrors, token);
+        return InternalBindToItems(itemIds, propertySet, anchorMailbox, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Binds to item.
+    ///     Binds to item.
     /// </summary>
     /// <param name="itemId">The item id.</param>
     /// <param name="propertySet">The property set.</param>
@@ -1616,8 +1707,8 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(itemId, "itemId");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        ServiceResponseCollection<GetItemResponse> responses = await this.InternalBindToItems(
-                new ItemId[]
+        var responses = await InternalBindToItems(
+                new[]
                 {
                     itemId
                 },
@@ -1632,7 +1723,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Binds to item.
+    ///     Binds to item.
     /// </summary>
     /// <typeparam name="TItem">The type of the item.</typeparam>
     /// <param name="itemId">The item id.</param>
@@ -1641,27 +1732,31 @@ public sealed class ExchangeService : ExchangeServiceBase
     internal async Task<TItem> BindToItem<TItem>(ItemId itemId, PropertySet propertySet, CancellationToken token)
         where TItem : Item
     {
-        Item result = await this.BindToItem(itemId, propertySet, token).ConfigureAwait(false);
+        var result = await BindToItem(itemId, propertySet, token).ConfigureAwait(false);
 
         if (result is TItem)
         {
             return (TItem)result;
         }
-        else
-        {
-            throw new ServiceLocalException(
-                string.Format(Strings.ItemTypeNotCompatible, result.GetType().Name, typeof(TItem).Name)
-            );
-        }
+
+        throw new ServiceLocalException(
+            string.Format(Strings.ItemTypeNotCompatible, result.GetType().Name, typeof(TItem).Name)
+        );
     }
 
     /// <summary>
-    /// Deletes multiple items in a single call to EWS.
+    ///     Deletes multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to delete.</param>
     /// <param name="deleteMode">The deletion mode.</param>
-    /// <param name="sendCancellationsMode">Indicates whether cancellation messages should be sent. Required if any of the item Ids represents an Appointment.</param>
-    /// <param name="affectedTaskOccurrences">Indicates which instance of a recurring task should be deleted. Required if any of the item Ids represents a Task.</param>
+    /// <param name="sendCancellationsMode">
+    ///     Indicates whether cancellation messages should be sent. Required if any of the item
+    ///     Ids represents an Appointment.
+    /// </param>
+    /// <param name="affectedTaskOccurrences">
+    ///     Indicates which instance of a recurring task should be deleted. Required if any
+    ///     of the item Ids represents a Task.
+    /// </param>
     /// <param name="errorHandling">Type of error handling to perform.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
     /// <returns>A ServiceResponseCollection providing deletion results for each of the specified item Ids.</returns>
@@ -1675,7 +1770,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        DeleteItemRequest request = new DeleteItemRequest(this, errorHandling);
+        var request = new DeleteItemRequest(this, errorHandling);
 
         request.ItemIds.AddRange(itemIds);
         request.DeleteMode = deleteMode;
@@ -1687,12 +1782,18 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Deletes multiple items in a single call to EWS.
+    ///     Deletes multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to delete.</param>
     /// <param name="deleteMode">The deletion mode.</param>
-    /// <param name="sendCancellationsMode">Indicates whether cancellation messages should be sent. Required if any of the item Ids represents an Appointment.</param>
-    /// <param name="affectedTaskOccurrences">Indicates which instance of a recurring task should be deleted. Required if any of the item Ids represents a Task.</param>
+    /// <param name="sendCancellationsMode">
+    ///     Indicates whether cancellation messages should be sent. Required if any of the item
+    ///     Ids represents an Appointment.
+    /// </param>
+    /// <param name="affectedTaskOccurrences">
+    ///     Indicates which instance of a recurring task should be deleted. Required if any
+    ///     of the item Ids represents a Task.
+    /// </param>
     /// <returns>A ServiceResponseCollection providing deletion results for each of the specified item Ids.</returns>
     public Task<ServiceResponseCollection<ServiceResponse>> DeleteItems(
         IEnumerable<ItemId> itemIds,
@@ -1701,16 +1802,22 @@ public sealed class ExchangeService : ExchangeServiceBase
         AffectedTaskOccurrence? affectedTaskOccurrences
     )
     {
-        return this.DeleteItems(itemIds, deleteMode, sendCancellationsMode, affectedTaskOccurrences, false);
+        return DeleteItems(itemIds, deleteMode, sendCancellationsMode, affectedTaskOccurrences, false);
     }
 
     /// <summary>
-    /// Deletes multiple items in a single call to EWS.
+    ///     Deletes multiple items in a single call to EWS.
     /// </summary>
     /// <param name="itemIds">The Ids of the items to delete.</param>
     /// <param name="deleteMode">The deletion mode.</param>
-    /// <param name="sendCancellationsMode">Indicates whether cancellation messages should be sent. Required if any of the item Ids represents an Appointment.</param>
-    /// <param name="affectedTaskOccurrences">Indicates which instance of a recurring task should be deleted. Required if any of the item Ids represents a Task.</param>
+    /// <param name="sendCancellationsMode">
+    ///     Indicates whether cancellation messages should be sent. Required if any of the item
+    ///     Ids represents an Appointment.
+    /// </param>
+    /// <param name="affectedTaskOccurrences">
+    ///     Indicates which instance of a recurring task should be deleted. Required if any
+    ///     of the item Ids represents a Task.
+    /// </param>
     /// <returns>A ServiceResponseCollection providing deletion results for each of the specified item Ids.</returns>
     /// <param name="suppressReadReceipt">Whether to suppress read receipts</param>
     public Task<ServiceResponseCollection<ServiceResponse>> DeleteItems(
@@ -1719,12 +1826,12 @@ public sealed class ExchangeService : ExchangeServiceBase
         SendCancellationsMode? sendCancellationsMode,
         AffectedTaskOccurrence? affectedTaskOccurrences,
         bool suppressReadReceipt,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
 
-        return this.InternalDeleteItems(
+        return InternalDeleteItems(
             itemIds,
             deleteMode,
             sendCancellationsMode,
@@ -1736,12 +1843,18 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Deletes an item. Calling this method results in a call to EWS.
+    ///     Deletes an item. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="itemId">The Id of the item to delete.</param>
     /// <param name="deleteMode">The deletion mode.</param>
-    /// <param name="sendCancellationsMode">Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.</param>
-    /// <param name="affectedTaskOccurrences">Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.</param>
+    /// <param name="sendCancellationsMode">
+    ///     Indicates whether cancellation messages should be sent. Required if the item Id
+    ///     represents an Appointment.
+    /// </param>
+    /// <param name="affectedTaskOccurrences">
+    ///     Indicates which instance of a recurring task should be deleted. Required if item
+    ///     Id represents a Task.
+    /// </param>
     internal Task<ServiceResponseCollection<ServiceResponse>> DeleteItem(
         ItemId itemId,
         DeleteMode deleteMode,
@@ -1750,16 +1863,22 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        return this.DeleteItem(itemId, deleteMode, sendCancellationsMode, affectedTaskOccurrences, false, token);
+        return DeleteItem(itemId, deleteMode, sendCancellationsMode, affectedTaskOccurrences, false, token);
     }
 
     /// <summary>
-    /// Deletes an item. Calling this method results in a call to EWS.
+    ///     Deletes an item. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="itemId">The Id of the item to delete.</param>
     /// <param name="deleteMode">The deletion mode.</param>
-    /// <param name="sendCancellationsMode">Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.</param>
-    /// <param name="affectedTaskOccurrences">Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.</param>
+    /// <param name="sendCancellationsMode">
+    ///     Indicates whether cancellation messages should be sent. Required if the item Id
+    ///     represents an Appointment.
+    /// </param>
+    /// <param name="affectedTaskOccurrences">
+    ///     Indicates which instance of a recurring task should be deleted. Required if item
+    ///     Id represents a Task.
+    /// </param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
     internal Task<ServiceResponseCollection<ServiceResponse>> DeleteItem(
         ItemId itemId,
@@ -1772,8 +1891,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(itemId, "itemId");
 
-        return this.InternalDeleteItems(
-            new ItemId[]
+        return InternalDeleteItems(
+            new[]
             {
                 itemId
             },
@@ -1787,20 +1906,26 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Mark items as junk.
+    ///     Mark items as junk.
     /// </summary>
     /// <param name="itemIds">ItemIds for the items to mark</param>
-    /// <param name="isJunk">Whether the items are junk.  If true, senders are add to blocked sender list. If false, senders are removed.</param>
-    /// <param name="moveItem">Whether to move the item.  Items are moved to junk folder if isJunk is true, inbox if isJunk is false.</param>
+    /// <param name="isJunk">
+    ///     Whether the items are junk.  If true, senders are add to blocked sender list. If false, senders
+    ///     are removed.
+    /// </param>
+    /// <param name="moveItem">
+    ///     Whether to move the item.  Items are moved to junk folder if isJunk is true, inbox if isJunk is
+    ///     false.
+    /// </param>
     /// <returns>A ServiceResponseCollection providing itemIds for each of the moved items..</returns>
     public Task<ServiceResponseCollection<MarkAsJunkResponse>> MarkAsJunk(
         IEnumerable<ItemId> itemIds,
         bool isJunk,
         bool moveItem,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        MarkAsJunkRequest request = new MarkAsJunkRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new MarkAsJunkRequest(this, ServiceErrorHandling.ReturnErrors);
         request.ItemIds.AddRange(itemIds);
         request.IsJunk = isJunk;
         request.MoveItem = moveItem;
@@ -1813,12 +1938,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region People operations
 
     /// <summary>
-    /// This method is for search scenarios. Retrieves a set of personas satisfying the specified search conditions.
+    ///     This method is for search scenarios. Retrieves a set of personas satisfying the specified search conditions.
     /// </summary>
     /// <param name="folderId">Id of the folder being searched</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view which defines the number of persona being returned</param>
     /// <param name="queryString">The query string for which the search is being performed</param>
     /// <returns>A collection of personas matching the search conditions</returns>
@@ -1827,7 +1954,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         SearchFilter searchFilter,
         ViewBase view,
         string queryString,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamAllowNull(folderId, "folderId");
@@ -1836,7 +1963,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(queryString, "queryString");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013_SP1, "FindPeople");
 
-        FindPeopleRequest request = new FindPeopleRequest(this);
+        var request = new FindPeopleRequest(this);
 
         request.FolderId = folderId;
         request.SearchFilter = searchFilter;
@@ -1847,12 +1974,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// This method is for search scenarios. Retrieves a set of personas satisfying the specified search conditions.
+    ///     This method is for search scenarios. Retrieves a set of personas satisfying the specified search conditions.
     /// </summary>
     /// <param name="folderName">Name of the folder being searched</param>
-    /// <param name="searchFilter">The search filter. Available search filter classes
-    /// include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and 
-    /// SearchFilter.SearchFilterCollection</param>
+    /// <param name="searchFilter">
+    ///     The search filter. Available search filter classes
+    ///     include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and
+    ///     SearchFilter.SearchFilterCollection
+    /// </param>
     /// <param name="view">The view which defines the number of persona being returned</param>
     /// <param name="queryString">The query string for which the search is being performed</param>
     /// <returns>A collection of personas matching the search conditions</returns>
@@ -1863,12 +1992,12 @@ public sealed class ExchangeService : ExchangeServiceBase
         string queryString
     )
     {
-        return this.FindPeople(new FolderId(folderName), searchFilter, view, queryString);
+        return FindPeople(new FolderId(folderName), searchFilter, view, queryString);
     }
 
     /// <summary>
-    /// This method is for browse scenarios. Retrieves a set of personas satisfying the specified browse conditions.
-    /// Browse scenariosdon't require query string.
+    ///     This method is for browse scenarios. Retrieves a set of personas satisfying the specified browse conditions.
+    ///     Browse scenariosdon't require query string.
     /// </summary>
     /// <param name="folderId">Id of the folder being browsed</param>
     /// <param name="searchFilter">Search filter</param>
@@ -1878,7 +2007,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId folderId,
         SearchFilter searchFilter,
         ViewBase view,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamAllowNull(folderId, "folderId");
@@ -1886,7 +2015,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamAllowNull(view, "view");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013_SP1, "FindPeople");
 
-        FindPeopleRequest request = new FindPeopleRequest(this);
+        var request = new FindPeopleRequest(this);
 
         request.FolderId = folderId;
         request.SearchFilter = searchFilter;
@@ -1896,8 +2025,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// This method is for browse scenarios. Retrieves a set of personas satisfying the specified browse conditions.
-    /// Browse scenarios don't require query string.
+    ///     This method is for browse scenarios. Retrieves a set of personas satisfying the specified browse conditions.
+    ///     Browse scenarios don't require query string.
     /// </summary>
     /// <param name="folderName">Name of the folder being browsed</param>
     /// <param name="searchFilter">Search filter</param>
@@ -1905,21 +2034,21 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <returns>A result object containing resultset for browsing</returns>
     public Task<FindPeopleResults> FindPeople(WellKnownFolderName folderName, SearchFilter searchFilter, ViewBase view)
     {
-        return this.FindPeople(new FolderId(folderName), searchFilter, view);
+        return FindPeople(new FolderId(folderName), searchFilter, view);
     }
 
     /// <summary>
-    /// Retrieves all people who are relevant to the user
+    ///     Retrieves all people who are relevant to the user
     /// </summary>
     /// <param name="view">The view which defines the number of personas being returned</param>
     /// <returns>A collection of personas matching the query string</returns>
     public Task<IPeopleQueryResults> BrowsePeople(ViewBase view)
     {
-        return this.BrowsePeople(view, null);
+        return BrowsePeople(view, null);
     }
 
     /// <summary>
-    /// Retrieves all people who are relevant to the user
+    ///     Retrieves all people who are relevant to the user
     /// </summary>
     /// <param name="view">The view which defines the number of personas being returned</param>
     /// <param name="context">The context for this query. See PeopleQueryContextKeys for keys</param>
@@ -1927,26 +2056,26 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<IPeopleQueryResults> BrowsePeople(
         ViewBase view,
         Dictionary<string, string> context,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.PerformPeopleQuery(view, string.Empty, context, null, token);
+        return PerformPeopleQuery(view, string.Empty, context, null, token);
     }
 
     /// <summary>
-    /// Searches for people who are relevant to the user, automatically determining
-    /// the best sources to use.
+    ///     Searches for people who are relevant to the user, automatically determining
+    ///     the best sources to use.
     /// </summary>
     /// <param name="view">The view which defines the number of personas being returned</param>
     /// <param name="queryString">The query string for which the search is being performed</param>
     /// <returns>A collection of personas matching the query string</returns>
     public Task<IPeopleQueryResults> SearchPeople(ViewBase view, string queryString)
     {
-        return this.SearchPeople(view, queryString, null, null);
+        return SearchPeople(view, queryString, null, null);
     }
 
     /// <summary>
-    /// Searches for people who are relevant to the user
+    ///     Searches for people who are relevant to the user
     /// </summary>
     /// <param name="view">The view which defines the number of personas being returned</param>
     /// <param name="queryString">The query string for which the search is being performed</param>
@@ -1958,16 +2087,16 @@ public sealed class ExchangeService : ExchangeServiceBase
         string queryString,
         Dictionary<string, string> context,
         PeopleQueryMode queryMode,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(queryString, "queryString");
 
-        return this.PerformPeopleQuery(view, queryString, context, queryMode, token);
+        return PerformPeopleQuery(view, queryString, context, queryMode, token);
     }
 
     /// <summary>
-    /// Performs a People Query FindPeople call
+    ///     Performs a People Query FindPeople call
     /// </summary>
     /// <param name="view">The view which defines the number of personas being returned</param>
     /// <param name="queryString">The query string for which the search is being performed</param>
@@ -1995,16 +2124,16 @@ public sealed class ExchangeService : ExchangeServiceBase
             queryMode = PeopleQueryMode.Auto;
         }
 
-        FindPeopleRequest request = new FindPeopleRequest(this);
+        var request = new FindPeopleRequest(this);
         request.View = view;
         request.QueryString = queryString;
         request.SearchPeopleSuggestionIndex = true;
         request.Context = context;
         request.QueryMode = queryMode;
 
-        FindPeopleResponse response = await request.Execute(token).ConfigureAwait(false);
+        var response = await request.Execute(token).ConfigureAwait(false);
 
-        PeopleQueryResults results = new PeopleQueryResults();
+        var results = new PeopleQueryResults();
         results.Personas = response.Personas.ToList();
         results.TransactionId = response.TransactionId;
 
@@ -2012,7 +2141,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get a user's photo.
+    ///     Get a user's photo.
     /// </summary>
     /// <param name="emailAddress">The user's email address</param>
     /// <param name="userPhotoSize">The desired size of the returned photo. Valid photo sizes are in UserPhotoSize</param>
@@ -2022,14 +2151,14 @@ public sealed class ExchangeService : ExchangeServiceBase
         string emailAddress,
         string userPhotoSize,
         string entityTag,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(emailAddress, "emailAddress");
         EwsUtilities.ValidateParam(userPhotoSize, "userPhotoSize");
         EwsUtilities.ValidateParamAllowNull(entityTag, "entityTag");
 
-        GetUserPhotoRequest request = new GetUserPhotoRequest(this);
+        var request = new GetUserPhotoRequest(this);
 
         request.EmailAddress = emailAddress;
         request.UserPhotoSize = userPhotoSize;
@@ -2044,16 +2173,16 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region PeopleInsights operations
 
     /// <summary>
-    /// This method is for retreiving people insight for given email addresses
+    ///     This method is for retreiving people insight for given email addresses
     /// </summary>
     /// <param name="emailAddresses">Specified eamiladdresses to retrieve</param>
     /// <returns>The collection of Person objects containing the insight info</returns>
     public async Task<Collection<Person>> GetPeopleInsights(
         IEnumerable<string> emailAddresses,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetPeopleInsightsRequest request = new GetPeopleInsightsRequest(this);
+        var request = new GetPeopleInsightsRequest(this);
         request.Emailaddresses.AddRange(emailAddresses);
 
         return (await request.Execute(token).ConfigureAwait(false)).People;
@@ -2065,7 +2194,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Attachment operations
 
     /// <summary>
-    /// Gets an attachment.
+    ///     Gets an attachment.
     /// </summary>
     /// <param name="attachments">The attachments.</param>
     /// <param name="bodyType">Type of the body.</param>
@@ -2080,7 +2209,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        GetAttachmentRequest request = new GetAttachmentRequest(this, errorHandling);
+        var request = new GetAttachmentRequest(this, errorHandling);
 
         request.Attachments.AddRange(attachments);
         request.BodyType = bodyType;
@@ -2094,7 +2223,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets attachments.
+    ///     Gets attachments.
     /// </summary>
     /// <param name="attachments">The attachments.</param>
     /// <param name="bodyType">Type of the body.</param>
@@ -2104,10 +2233,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         Attachment[] attachments,
         BodyType? bodyType,
         IEnumerable<PropertyDefinitionBase> additionalProperties,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.InternalGetAttachments(
+        return InternalGetAttachments(
             attachments,
             bodyType,
             additionalProperties,
@@ -2117,7 +2246,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets attachments.
+    ///     Gets attachments.
     /// </summary>
     /// <param name="attachmentIds">The attachment ids.</param>
     /// <param name="bodyType">Type of the body.</param>
@@ -2127,10 +2256,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         string[] attachmentIds,
         BodyType? bodyType,
         IEnumerable<PropertyDefinitionBase> additionalProperties,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetAttachmentRequest request = new GetAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new GetAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
 
         request.AttachmentIds.AddRange(attachmentIds);
         request.BodyType = bodyType;
@@ -2144,7 +2273,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets an attachment.
+    ///     Gets an attachment.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
     /// <param name="bodyType">Type of the body.</param>
@@ -2156,8 +2285,8 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        return this.InternalGetAttachments(
-            new Attachment[]
+        return InternalGetAttachments(
+            new[]
             {
                 attachment
             },
@@ -2169,7 +2298,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Creates attachments.
+    ///     Creates attachments.
     /// </summary>
     /// <param name="parentItemId">The parent item id.</param>
     /// <param name="attachments">The attachments.</param>
@@ -2180,7 +2309,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        CreateAttachmentRequest request = new CreateAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new CreateAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
 
         request.ParentItemId = parentItemId;
         request.Attachments.AddRange(attachments);
@@ -2189,7 +2318,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Deletes attachments.
+    ///     Deletes attachments.
     /// </summary>
     /// <param name="attachments">The attachments.</param>
     /// <returns>Service response collection.</returns>
@@ -2198,7 +2327,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        DeleteAttachmentRequest request = new DeleteAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new DeleteAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
 
         request.Attachments.AddRange(attachments);
 
@@ -2211,24 +2340,27 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region AD related operations
 
     /// <summary>
-    /// Finds contacts in the user's Contacts folder and the Global Address List (in that order) that have names
-    /// that match the one passed as a parameter. Calling this method results in a call to EWS.
+    ///     Finds contacts in the user's Contacts folder and the Global Address List (in that order) that have names
+    ///     that match the one passed as a parameter. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="nameToResolve">The name to resolve.</param>
     /// <returns>A collection of name resolutions whose names match the one passed as a parameter.</returns>
     public Task<NameResolutionCollection> ResolveName(string nameToResolve)
     {
-        return this.ResolveName(nameToResolve, ResolveNameSearchLocation.ContactsThenDirectory, false);
+        return ResolveName(nameToResolve, ResolveNameSearchLocation.ContactsThenDirectory, false);
     }
 
     /// <summary>
-    /// Finds contacts in the Global Address List and/or in specific contact folders that have names
-    /// that match the one passed as a parameter. Calling this method results in a call to EWS.
+    ///     Finds contacts in the Global Address List and/or in specific contact folders that have names
+    ///     that match the one passed as a parameter. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="nameToResolve">The name to resolve.</param>
     /// <param name="parentFolderIds">The Ids of the contact folders in which to look for matching contacts.</param>
     /// <param name="searchScope">The scope of the search.</param>
-    /// <param name="returnContactDetails">Indicates whether full contact information should be returned for each of the found contacts.</param>
+    /// <param name="returnContactDetails">
+    ///     Indicates whether full contact information should be returned for each of the found
+    ///     contacts.
+    /// </param>
     /// <returns>A collection of name resolutions whose names match the one passed as a parameter.</returns>
     public Task<NameResolutionCollection> ResolveName(
         string nameToResolve,
@@ -2241,13 +2373,16 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Finds contacts in the Global Address List and/or in specific contact folders that have names
-    /// that match the one passed as a parameter. Calling this method results in a call to EWS.
+    ///     Finds contacts in the Global Address List and/or in specific contact folders that have names
+    ///     that match the one passed as a parameter. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="nameToResolve">The name to resolve.</param>
     /// <param name="parentFolderIds">The Ids of the contact folders in which to look for matching contacts.</param>
     /// <param name="searchScope">The scope of the search.</param>
-    /// <param name="returnContactDetails">Indicates whether full contact information should be returned for each of the found contacts.</param>
+    /// <param name="returnContactDetails">
+    ///     Indicates whether full contact information should be returned for each of the found
+    ///     contacts.
+    /// </param>
     /// <param name="contactDataPropertySet">The property set for the contct details</param>
     /// <returns>A collection of name resolutions whose names match the one passed as a parameter.</returns>
     public async Task<NameResolutionCollection> ResolveName(
@@ -2256,7 +2391,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         ResolveNameSearchLocation searchScope,
         bool returnContactDetails,
         PropertySet contactDataPropertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         if (contactDataPropertySet != null)
@@ -2270,7 +2405,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             EwsUtilities.ValidateParamCollection(parentFolderIds, "parentFolderIds");
         }
 
-        ResolveNamesRequest request = new ResolveNamesRequest(this);
+        var request = new ResolveNamesRequest(this);
 
         request.NameToResolve = nameToResolve;
         request.ReturnFullContactData = returnContactDetails;
@@ -2282,12 +2417,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Finds contacts in the Global Address List that have names that match the one passed as a parameter.
-    /// Calling this method results in a call to EWS.
+    ///     Finds contacts in the Global Address List that have names that match the one passed as a parameter.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="nameToResolve">The name to resolve.</param>
     /// <param name="searchScope">The scope of the search.</param>
-    /// <param name="returnContactDetails">Indicates whether full contact information should be returned for each of the found contacts.</param>
+    /// <param name="returnContactDetails">
+    ///     Indicates whether full contact information should be returned for each of the found
+    ///     contacts.
+    /// </param>
     /// <param name="contactDataPropertySet">Propety set for contact details</param>
     /// <returns>A collection of name resolutions whose names match the one passed as a parameter.</returns>
     public Task<NameResolutionCollection> ResolveName(
@@ -2297,16 +2435,19 @@ public sealed class ExchangeService : ExchangeServiceBase
         PropertySet contactDataPropertySet
     )
     {
-        return this.ResolveName(nameToResolve, null, searchScope, returnContactDetails, contactDataPropertySet);
+        return ResolveName(nameToResolve, null, searchScope, returnContactDetails, contactDataPropertySet);
     }
 
     /// <summary>
-    /// Finds contacts in the Global Address List that have names that match the one passed as a parameter.
-    /// Calling this method results in a call to EWS.
+    ///     Finds contacts in the Global Address List that have names that match the one passed as a parameter.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="nameToResolve">The name to resolve.</param>
     /// <param name="searchScope">The scope of the search.</param>
-    /// <param name="returnContactDetails">Indicates whether full contact information should be returned for each of the found contacts.</param>
+    /// <param name="returnContactDetails">
+    ///     Indicates whether full contact information should be returned for each of the found
+    ///     contacts.
+    /// </param>
     /// <returns>A collection of name resolutions whose names match the one passed as a parameter.</returns>
     public Task<NameResolutionCollection> ResolveName(
         string nameToResolve,
@@ -2314,22 +2455,19 @@ public sealed class ExchangeService : ExchangeServiceBase
         bool returnContactDetails
     )
     {
-        return this.ResolveName(nameToResolve, null, searchScope, returnContactDetails);
+        return ResolveName(nameToResolve, null, searchScope, returnContactDetails);
     }
 
     /// <summary>
-    /// Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+    ///     Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="emailAddress">The e-mail address of the group.</param>
     /// <returns>An ExpandGroupResults containing the members of the group.</returns>
-    public async Task<ExpandGroupResults> ExpandGroup(
-        EmailAddress emailAddress,
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<ExpandGroupResults> ExpandGroup(EmailAddress emailAddress, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(emailAddress, "emailAddress");
 
-        ExpandGroupRequest request = new ExpandGroupRequest(this);
+        var request = new ExpandGroupRequest(this);
 
         request.EmailAddress = emailAddress;
 
@@ -2337,7 +2475,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+    ///     Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="groupId">The Id of the group to expand.</param>
     /// <returns>An ExpandGroupResults containing the members of the group.</returns>
@@ -2345,14 +2483,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(groupId, "groupId");
 
-        EmailAddress emailAddress = new EmailAddress();
+        var emailAddress = new EmailAddress();
         emailAddress.Id = groupId;
 
-        return this.ExpandGroup(emailAddress);
+        return ExpandGroup(emailAddress);
     }
 
     /// <summary>
-    /// Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+    ///     Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address of the group to expand.</param>
     /// <returns>An ExpandGroupResults containing the members of the group.</returns>
@@ -2360,11 +2498,11 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
 
-        return this.ExpandGroup(new EmailAddress(smtpAddress));
+        return ExpandGroup(new EmailAddress(smtpAddress));
     }
 
     /// <summary>
-    /// Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+    ///     Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="address">The SMTP address of the group to expand.</param>
     /// <param name="routingType">The routing type of the address of the group to expand.</param>
@@ -2374,23 +2512,20 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(address, "address");
         EwsUtilities.ValidateParam(routingType, "routingType");
 
-        EmailAddress emailAddress = new EmailAddress(address);
+        var emailAddress = new EmailAddress(address);
         emailAddress.RoutingType = routingType;
 
-        return this.ExpandGroup(emailAddress);
+        return ExpandGroup(emailAddress);
     }
 
     /// <summary>
-    /// Get the password expiration date
+    ///     Get the password expiration date
     /// </summary>
     /// <param name="mailboxSmtpAddress">The e-mail address of the user.</param>
     /// <returns>The password expiration date.</returns>
-    public async Task<DateTime?> GetPasswordExpirationDate(
-        string mailboxSmtpAddress,
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<DateTime?> GetPasswordExpirationDate(string mailboxSmtpAddress, CancellationToken token = default)
     {
-        GetPasswordExpirationDateRequest request = new GetPasswordExpirationDateRequest(this);
+        var request = new GetPasswordExpirationDateRequest(this);
         request.MailboxSmtpAddress = mailboxSmtpAddress;
 
         return (await request.Execute(token).ConfigureAwait(false)).PasswordExpirationDate;
@@ -2402,10 +2537,13 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Notification operations
 
     /// <summary>
-    /// Subscribes to pull notifications. Calling this method results in a call to EWS.
+    ///     Subscribes to pull notifications. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
-    /// <param name="timeout">The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.</param>
+    /// <param name="timeout">
+    ///     The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and
+    ///     1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A PullSubscription representing the new subscription.</returns>
@@ -2413,28 +2551,32 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<FolderId> folderIds,
         int timeout,
         string watermark,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
         EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
 
-        return (await this.BuildSubscribeToPullNotificationsRequest(folderIds, timeout, watermark, eventTypes)
+        return (await BuildSubscribeToPullNotificationsRequest(folderIds, timeout, watermark, eventTypes)
             .ExecuteAsync(token)
             .ConfigureAwait(false))[0].Subscription;
     }
 
     /// <summary>
-    /// Subscribes to pull notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+    ///     Subscribes to pull notifications on all folders in the authenticated user's mailbox. Calling this method results in
+    ///     a call to EWS.
     /// </summary>
-    /// <param name="timeout">The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.</param>
+    /// <param name="timeout">
+    ///     The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and
+    ///     1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A PullSubscription representing the new subscription.</returns>
     public async Task<PullSubscription> SubscribeToPullNotificationsOnAllFolders(
         int timeout,
         string watermark,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
@@ -2444,16 +2586,19 @@ public sealed class ExchangeService : ExchangeServiceBase
             "SubscribeToPullNotificationsOnAllFolders"
         );
 
-        return (await this.BuildSubscribeToPullNotificationsRequest(null, timeout, watermark, eventTypes)
+        return (await BuildSubscribeToPullNotificationsRequest(null, timeout, watermark, eventTypes)
             .ExecuteAsync(token)
             .ConfigureAwait(false))[0].Subscription;
     }
 
     /// <summary>
-    /// Builds a request to subscribe to pull notifications in the authenticated user's mailbox. 
+    ///     Builds a request to subscribe to pull notifications in the authenticated user's mailbox.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
-    /// <param name="timeout">The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.</param>
+    /// <param name="timeout">
+    ///     The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and
+    ///     1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A request to subscribe to pull notifications in the authenticated user's mailbox. </returns>
@@ -2471,7 +2616,7 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
 
-        SubscribeToPullNotificationsRequest request = new SubscribeToPullNotificationsRequest(this);
+        var request = new SubscribeToPullNotificationsRequest(this);
 
         if (folderIds != null)
         {
@@ -2486,16 +2631,16 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Unsubscribes from a subscription. Calling this method results in a call to EWS.
+    ///     Unsubscribes from a subscription. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="subscriptionId">The Id of the pull subscription to unsubscribe from.</param>
     internal System.Threading.Tasks.Task Unsubscribe(string subscriptionId, CancellationToken token)
     {
-        return this.BuildUnsubscribeRequest(subscriptionId).ExecuteAsync(token);
+        return BuildUnsubscribeRequest(subscriptionId).ExecuteAsync(token);
     }
 
     /// <summary>
-    /// Buids a request to unsubscribe from a subscription.
+    ///     Buids a request to unsubscribe from a subscription.
     /// </summary>
     /// <param name="subscriptionId">The Id of the subscription for which to get the events.</param>
     /// <returns>A request to unsubscribe from a subscription.</returns>
@@ -2503,7 +2648,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(subscriptionId, "subscriptionId");
 
-        UnsubscribeRequest request = new UnsubscribeRequest(this);
+        var request = new UnsubscribeRequest(this);
 
         request.SubscriptionId = subscriptionId;
 
@@ -2511,20 +2656,19 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Retrieves the latests events associated with a pull subscription. Calling this method results in a call to EWS.
+    ///     Retrieves the latests events associated with a pull subscription. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="subscriptionId">The Id of the pull subscription for which to get the events.</param>
     /// <param name="watermark">The watermark representing the point in time where to start receiving events.</param>
     /// <returns>A GetEventsResults containing a list of events associated with the subscription.</returns>
     internal async Task<GetEventsResults> GetEvents(string subscriptionId, string watermark, CancellationToken token)
     {
-        return (await this.BuildGetEventsRequest(subscriptionId, watermark)
-            .ExecuteAsync(token)
-            .ConfigureAwait(false))[0].Results;
+        return (await BuildGetEventsRequest(subscriptionId, watermark).ExecuteAsync(token).ConfigureAwait(false))[0]
+            .Results;
     }
 
     /// <summary>
-    /// Builds an request to retrieve the latests events associated with a pull subscription.
+    ///     Builds an request to retrieve the latests events associated with a pull subscription.
     /// </summary>
     /// <param name="subscriptionId">The Id of the pull subscription for which to get the events.</param>
     /// <param name="watermark">The watermark representing the point in time where to start receiving events.</param>
@@ -2534,7 +2678,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(subscriptionId, "subscriptionId");
         EwsUtilities.ValidateParam(watermark, "watermark");
 
-        GetEventsRequest request = new GetEventsRequest(this);
+        var request = new GetEventsRequest(this);
 
         request.SubscriptionId = subscriptionId;
         request.Watermark = watermark;
@@ -2543,11 +2687,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Subscribes to push notifications. Calling this method results in a call to EWS.
+    ///     Subscribes to push notifications. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
     /// <param name="url">The URL of the Web Service endpoint the Exchange server should push events to.</param>
-    /// <param name="frequency">The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.</param>
+    /// <param name="frequency">
+    ///     The frequency, in minutes, at which the Exchange server should contact the Web Service
+    ///     endpoint. Frequency must be between 1 and 1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A PushSubscription representing the new subscription.</returns>
@@ -2556,13 +2703,13 @@ public sealed class ExchangeService : ExchangeServiceBase
         Uri url,
         int frequency,
         string watermark,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
         EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
 
-        return (await this.BuildSubscribeToPushNotificationsRequest(
+        return (await BuildSubscribeToPushNotificationsRequest(
                 folderIds,
                 url,
                 frequency,
@@ -2576,10 +2723,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+    ///     Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in
+    ///     a call to EWS.
     /// </summary>
     /// <param name="url">The URL of the Web Service endpoint the Exchange server should push events to.</param>
-    /// <param name="frequency">The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.</param>
+    /// <param name="frequency">
+    ///     The frequency, in minutes, at which the Exchange server should contact the Web Service
+    ///     endpoint. Frequency must be between 1 and 1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A PushSubscription representing the new subscription.</returns>
@@ -2587,7 +2738,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         Uri url,
         int frequency,
         string watermark,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
@@ -2597,7 +2748,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             "SubscribeToPushNotificationsOnAllFolders"
         );
 
-        return (await this.BuildSubscribeToPushNotificationsRequest(
+        return (await BuildSubscribeToPushNotificationsRequest(
                 null,
                 url,
                 frequency,
@@ -2611,11 +2762,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Subscribes to push notifications. Calling this method results in a call to EWS.
+    ///     Subscribes to push notifications. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
     /// <param name="url">The URL of the Web Service endpoint the Exchange server should push events to.</param>
-    /// <param name="frequency">The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.</param>
+    /// <param name="frequency">
+    ///     The frequency, in minutes, at which the Exchange server should contact the Web Service
+    ///     endpoint. Frequency must be between 1 and 1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="callerData">Optional caller data that will be returned the call back.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
@@ -2626,13 +2780,13 @@ public sealed class ExchangeService : ExchangeServiceBase
         int frequency,
         string watermark,
         string callerData,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
         EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
 
-        return (await this.BuildSubscribeToPushNotificationsRequest(
+        return (await BuildSubscribeToPushNotificationsRequest(
                 folderIds,
                 url,
                 frequency,
@@ -2646,11 +2800,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Subscribes to push notifications on a group mailbox. Calling this method results in a call to EWS.
+    ///     Subscribes to push notifications on a group mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="groupMailboxSmtp">The smtpaddress of the group mailbox to subscribe to.</param>
     /// <param name="url">The URL of the Web Service endpoint the Exchange server should push events to.</param>
-    /// <param name="frequency">The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.</param>
+    /// <param name="frequency">
+    ///     The frequency, in minutes, at which the Exchange server should contact the Web Service
+    ///     endpoint. Frequency must be between 1 and 1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="callerData">Optional caller data that will be returned the call back.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
@@ -2661,15 +2818,15 @@ public sealed class ExchangeService : ExchangeServiceBase
         int frequency,
         string watermark,
         string callerData,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
-        var folderIds = new FolderId[]
+        var folderIds = new[]
         {
             new FolderId(WellKnownFolderName.Inbox, new Mailbox(groupMailboxSmtp))
         };
-        return (await this.BuildSubscribeToPushNotificationsRequest(
+        return (await BuildSubscribeToPushNotificationsRequest(
                 folderIds,
                 url,
                 frequency,
@@ -2683,10 +2840,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+    ///     Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in
+    ///     a call to EWS.
     /// </summary>
     /// <param name="url">The URL of the Web Service endpoint the Exchange server should push events to.</param>
-    /// <param name="frequency">The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.</param>
+    /// <param name="frequency">
+    ///     The frequency, in minutes, at which the Exchange server should contact the Web Service
+    ///     endpoint. Frequency must be between 1 and 1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="callerData">Optional caller data that will be returned the call back.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
@@ -2696,7 +2857,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         int frequency,
         string watermark,
         string callerData,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
@@ -2706,7 +2867,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             "SubscribeToPushNotificationsOnAllFolders"
         );
 
-        return (await this.BuildSubscribeToPushNotificationsRequest(
+        return (await BuildSubscribeToPushNotificationsRequest(
                 null,
                 url,
                 frequency,
@@ -2720,7 +2881,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Set a TeamMailbox
+    ///     Set a TeamMailbox
     /// </summary>
     /// <param name="emailAddress">TeamMailbox email address</param>
     /// <param name="sharePointSiteUrl">SharePoint site URL</param>
@@ -2729,7 +2890,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EmailAddress emailAddress,
         Uri sharePointSiteUrl,
         TeamMailboxLifecycleState state,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetTeamMailbox");
@@ -2744,18 +2905,15 @@ public sealed class ExchangeService : ExchangeServiceBase
             throw new ArgumentNullException("sharePointSiteUrl");
         }
 
-        SetTeamMailboxRequest request = new SetTeamMailboxRequest(this, emailAddress, sharePointSiteUrl, state);
+        var request = new SetTeamMailboxRequest(this, emailAddress, sharePointSiteUrl, state);
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Unpin a TeamMailbox
+    ///     Unpin a TeamMailbox
     /// </summary>
     /// <param name="emailAddress">TeamMailbox email address</param>
-    public System.Threading.Tasks.Task UnpinTeamMailbox(
-        EmailAddress emailAddress,
-        CancellationToken token = default(CancellationToken)
-    )
+    public System.Threading.Tasks.Task UnpinTeamMailbox(EmailAddress emailAddress, CancellationToken token = default)
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "UnpinTeamMailbox");
 
@@ -2764,16 +2922,19 @@ public sealed class ExchangeService : ExchangeServiceBase
             throw new ArgumentNullException("emailAddress");
         }
 
-        UnpinTeamMailboxRequest request = new UnpinTeamMailboxRequest(this, emailAddress);
+        var request = new UnpinTeamMailboxRequest(this, emailAddress);
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Builds an request to request to subscribe to push notifications in the authenticated user's mailbox.
+    ///     Builds an request to request to subscribe to push notifications in the authenticated user's mailbox.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
     /// <param name="url">The URL of the Web Service endpoint the Exchange server should push events to.</param>
-    /// <param name="frequency">The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.</param>
+    /// <param name="frequency">
+    ///     The frequency, in minutes, at which the Exchange server should contact the Web Service
+    ///     endpoint. Frequency must be between 1 and 1440.
+    /// </param>
     /// <param name="watermark">An optional watermark representing a previously opened subscription.</param>
     /// <param name="callerData">Optional caller data that will be returned the call back.</param>
     /// <param name="anchorMailbox">The smtpaddress of the mailbox to subscribe to.</param>
@@ -2798,7 +2959,7 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
 
-        SubscribeToPushNotificationsRequest request = new SubscribeToPushNotificationsRequest(this);
+        var request = new SubscribeToPushNotificationsRequest(this);
         request.AnchorMailbox = anchorMailbox;
 
         if (folderIds != null)
@@ -2816,14 +2977,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Subscribes to streaming notifications. Calling this method results in a call to EWS.
+    ///     Subscribes to streaming notifications. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A StreamingSubscription representing the new subscription.</returns>
-    public async System.Threading.Tasks.Task<StreamingSubscription> SubscribeToStreamingNotifications(
+    public async Task<StreamingSubscription> SubscribeToStreamingNotifications(
         IEnumerable<FolderId> folderIds,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
@@ -2831,18 +2992,19 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
 
-        return (await this.BuildSubscribeToStreamingNotificationsRequest(folderIds, eventTypes)
+        return (await BuildSubscribeToStreamingNotificationsRequest(folderIds, eventTypes)
             .ExecuteAsync(token)
             .ConfigureAwait(false))[0].Subscription;
     }
 
     /// <summary>
-    /// Subscribes to streaming notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+    ///     Subscribes to streaming notifications on all folders in the authenticated user's mailbox. Calling this method
+    ///     results in a call to EWS.
     /// </summary>
     /// <param name="eventTypes">The event types to subscribe to.</param>
     /// <returns>A StreamingSubscription representing the new subscription.</returns>
     public async Task<StreamingSubscription> SubscribeToStreamingNotificationsOnAllFolders(
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params EventType[] eventTypes
     )
     {
@@ -2852,13 +3014,13 @@ public sealed class ExchangeService : ExchangeServiceBase
             "SubscribeToStreamingNotificationsOnAllFolders"
         );
 
-        return (await this.BuildSubscribeToStreamingNotificationsRequest(null, eventTypes)
+        return (await BuildSubscribeToStreamingNotificationsRequest(null, eventTypes)
             .ExecuteAsync(token)
             .ConfigureAwait(false))[0].Subscription;
     }
 
     /// <summary>
-    /// Builds request to subscribe to streaming notifications in the authenticated user's mailbox. 
+    ///     Builds request to subscribe to streaming notifications in the authenticated user's mailbox.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
@@ -2870,7 +3032,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
 
-        SubscribeToStreamingNotificationsRequest request = new SubscribeToStreamingNotificationsRequest(this);
+        var request = new SubscribeToStreamingNotificationsRequest(this);
 
         if (folderIds != null)
         {
@@ -2888,7 +3050,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Synchronization operations
 
     /// <summary>
-    /// Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
+    ///     Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="syncFolderId">The Id of the folder containing the items to synchronize with.</param>
     /// <param name="propertySet">The set of properties to retrieve for synchronized items.</param>
@@ -2897,7 +3059,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="syncScope">The sync scope identifying items to include in the ChangeCollection.</param>
     /// <param name="syncState">The optional sync state representing the point in time when to start the synchronization.</param>
     /// <returns>A ChangeCollection containing a list of changes that occurred in the specified folder.</returns>
-    public System.Threading.Tasks.Task<ChangeCollection<ItemChange>> SyncFolderItems(
+    public Task<ChangeCollection<ItemChange>> SyncFolderItems(
         FolderId syncFolderId,
         PropertySet propertySet,
         IEnumerable<ItemId> ignoredItemIds,
@@ -2906,7 +3068,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         string syncState
     )
     {
-        return this.SyncFolderItems(
+        return SyncFolderItems(
             syncFolderId,
             propertySet,
             ignoredItemIds,
@@ -2918,7 +3080,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
+    ///     Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="syncFolderId">The Id of the folder containing the items to synchronize with.</param>
     /// <param name="propertySet">The set of properties to retrieve for synchronized items.</param>
@@ -2928,7 +3090,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="syncScope">The sync scope identifying items to include in the ChangeCollection.</param>
     /// <param name="syncState">The optional sync state representing the point in time when to start the synchronization.</param>
     /// <returns>A ChangeCollection containing a list of changes that occurred in the specified folder.</returns>
-    public async System.Threading.Tasks.Task<ChangeCollection<ItemChange>> SyncFolderItems(
+    public async Task<ChangeCollection<ItemChange>> SyncFolderItems(
         FolderId syncFolderId,
         PropertySet propertySet,
         IEnumerable<ItemId> ignoredItemIds,
@@ -2936,10 +3098,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         int numberOfDays,
         SyncFolderItemsScope syncScope,
         string syncState,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return (await this.BuildSyncFolderItemsRequest(
+        return (await BuildSyncFolderItemsRequest(
                 syncFolderId,
                 propertySet,
                 ignoredItemIds,
@@ -2953,7 +3115,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Builds a request to synchronize the items of a specific folder.
+    ///     Builds a request to synchronize the items of a specific folder.
     /// </summary>
     /// <param name="syncFolderId">The Id of the folder containing the items to synchronize with.</param>
     /// <param name="propertySet">The set of properties to retrieve for synchronized items.</param>
@@ -2976,7 +3138,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(syncFolderId, "syncFolderId");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        SyncFolderItemsRequest request = new SyncFolderItemsRequest(this);
+        var request = new SyncFolderItemsRequest(this);
 
         request.SyncFolderId = syncFolderId;
         request.PropertySet = propertySet;
@@ -2994,9 +3156,12 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Synchronizes the sub-folders of a specific folder. Calling this method results in a call to EWS.
+    ///     Synchronizes the sub-folders of a specific folder. Calling this method results in a call to EWS.
     /// </summary>
-    /// <param name="syncFolderId">The Id of the folder containing the items to synchronize with. A null value indicates the root folder of the mailbox.</param>
+    /// <param name="syncFolderId">
+    ///     The Id of the folder containing the items to synchronize with. A null value indicates the
+    ///     root folder of the mailbox.
+    /// </param>
     /// <param name="propertySet">The set of properties to retrieve for synchronized items.</param>
     /// <param name="syncState">The optional sync state representing the point in time when to start the synchronization.</param>
     /// <returns>A ChangeCollection containing a list of changes that occurred in the specified folder.</returns>
@@ -3004,29 +3169,33 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId syncFolderId,
         PropertySet propertySet,
         string syncState,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return (await this.BuildSyncFolderHierarchyRequest(syncFolderId, propertySet, syncState)
+        return (await BuildSyncFolderHierarchyRequest(syncFolderId, propertySet, syncState)
             .ExecuteAsync(token)
             .ConfigureAwait(false))[0].Changes;
     }
 
     /// <summary>
-    /// Synchronizes the entire folder hierarchy of the mailbox this Service is connected to. Calling this method results in a call to EWS.
+    ///     Synchronizes the entire folder hierarchy of the mailbox this Service is connected to. Calling this method results
+    ///     in a call to EWS.
     /// </summary>
     /// <param name="propertySet">The set of properties to retrieve for synchronized items.</param>
     /// <param name="syncState">The optional sync state representing the point in time when to start the synchronization.</param>
     /// <returns>A ChangeCollection containing a list of changes that occurred in the specified folder.</returns>
     public Task<ChangeCollection<FolderChange>> SyncFolderHierarchy(PropertySet propertySet, string syncState)
     {
-        return this.SyncFolderHierarchy(null, propertySet, syncState);
+        return SyncFolderHierarchy(null, propertySet, syncState);
     }
 
     /// <summary>
-    /// Builds a request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.
+    ///     Builds a request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.
     /// </summary>
-    /// <param name="syncFolderId">The Id of the folder containing the items to synchronize with. A null value indicates the root folder of the mailbox.</param>
+    /// <param name="syncFolderId">
+    ///     The Id of the folder containing the items to synchronize with. A null value indicates the
+    ///     root folder of the mailbox.
+    /// </param>
     /// <param name="propertySet">The set of properties to retrieve for synchronized items.</param>
     /// <param name="syncState">The optional sync state representing the point in time when to start the synchronization.</param>
     /// <returns>A request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.</returns>
@@ -3039,7 +3208,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamAllowNull(syncFolderId, "syncFolderId"); // Null syncFolderId is allowed
         EwsUtilities.ValidateParam(propertySet, "propertySet");
 
-        SyncFolderHierarchyRequest request = new SyncFolderHierarchyRequest(this);
+        var request = new SyncFolderHierarchyRequest(this);
 
         request.PropertySet = propertySet;
         request.SyncFolderId = syncFolderId;
@@ -3054,18 +3223,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Availability operations
 
     /// <summary>
-    /// Gets Out of Office (OOF) settings for a specific user. Calling this method results in a call to EWS.
+    ///     Gets Out of Office (OOF) settings for a specific user. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address of the user for which to retrieve OOF settings.</param>
     /// <returns>An OofSettings instance containing OOF information for the specified user.</returns>
-    public async Task<OofSettings> GetUserOofSettings(
-        string smtpAddress,
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<OofSettings> GetUserOofSettings(string smtpAddress, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
 
-        GetUserOofSettingsRequest request = new GetUserOofSettingsRequest(this);
+        var request = new GetUserOofSettingsRequest(this);
 
         request.SmtpAddress = smtpAddress;
 
@@ -3073,20 +3239,20 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets the Out of Office (OOF) settings for a specific mailbox. Calling this method results in a call to EWS.
+    ///     Sets the Out of Office (OOF) settings for a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address of the user for which to set OOF settings.</param>
     /// <param name="oofSettings">The OOF settings.</param>
     public System.Threading.Tasks.Task SetUserOofSettings(
         string smtpAddress,
         OofSettings oofSettings,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
         EwsUtilities.ValidateParam(oofSettings, "oofSettings");
 
-        SetUserOofSettingsRequest request = new SetUserOofSettingsRequest(this);
+        var request = new SetUserOofSettingsRequest(this);
 
         request.SmtpAddress = smtpAddress;
         request.OofSettings = oofSettings;
@@ -3095,30 +3261,30 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets detailed information about the availability of a set of users, rooms, and resources within a
-    /// specified time window.
+    ///     Gets detailed information about the availability of a set of users, rooms, and resources within a
+    ///     specified time window.
     /// </summary>
     /// <param name="attendees">The attendees for which to retrieve availability information.</param>
     /// <param name="timeWindow">The time window in which to retrieve user availability information.</param>
     /// <param name="requestedData">The requested data (free/busy and/or suggestions).</param>
     /// <param name="options">The options controlling the information returned.</param>
     /// <returns>
-    /// The availability information for each user appears in a unique FreeBusyResponse object. The order of users
-    /// in the request determines the order of availability data for each user in the response.
+    ///     The availability information for each user appears in a unique FreeBusyResponse object. The order of users
+    ///     in the request determines the order of availability data for each user in the response.
     /// </returns>
     public Task<GetUserAvailabilityResults> GetUserAvailability(
         IEnumerable<AttendeeInfo> attendees,
         TimeWindow timeWindow,
         AvailabilityData requestedData,
         AvailabilityOptions options,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(attendees, "attendees");
         EwsUtilities.ValidateParam(timeWindow, "timeWindow");
         EwsUtilities.ValidateParam(options, "options");
 
-        GetUserAvailabilityRequest request = new GetUserAvailabilityRequest(this);
+        var request = new GetUserAvailabilityRequest(this);
 
         request.Attendees = attendees;
         request.TimeWindow = timeWindow;
@@ -3129,15 +3295,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets detailed information about the availability of a set of users, rooms, and resources within a
-    /// specified time window.
+    ///     Gets detailed information about the availability of a set of users, rooms, and resources within a
+    ///     specified time window.
     /// </summary>
     /// <param name="attendees">The attendees for which to retrieve availability information.</param>
     /// <param name="timeWindow">The time window in which to retrieve user availability information.</param>
     /// <param name="requestedData">The requested data (free/busy and/or suggestions).</param>
     /// <returns>
-    /// The availability information for each user appears in a unique FreeBusyResponse object. The order of users
-    /// in the request determines the order of availability data for each user in the response.
+    ///     The availability information for each user appears in a unique FreeBusyResponse object. The order of users
+    ///     in the request determines the order of availability data for each user in the response.
     /// </returns>
     public Task<GetUserAvailabilityResults> GetUserAvailability(
         IEnumerable<AttendeeInfo> attendees,
@@ -3145,33 +3311,30 @@ public sealed class ExchangeService : ExchangeServiceBase
         AvailabilityData requestedData
     )
     {
-        return this.GetUserAvailability(attendees, timeWindow, requestedData, new AvailabilityOptions());
+        return GetUserAvailability(attendees, timeWindow, requestedData, new AvailabilityOptions());
     }
 
     /// <summary>
-    /// Retrieves a collection of all room lists in the organization.
+    ///     Retrieves a collection of all room lists in the organization.
     /// </summary>
     /// <returns>An EmailAddressCollection containing all the room lists in the organization.</returns>
-    public async Task<EmailAddressCollection> GetRoomLists(CancellationToken token = default(CancellationToken))
+    public async Task<EmailAddressCollection> GetRoomLists(CancellationToken token = default)
     {
-        GetRoomListsRequest request = new GetRoomListsRequest(this);
+        var request = new GetRoomListsRequest(this);
 
         return (await request.Execute(token).ConfigureAwait(false)).RoomLists;
     }
 
     /// <summary>
-    /// Retrieves a collection of all rooms in the specified room list in the organization.
+    ///     Retrieves a collection of all rooms in the specified room list in the organization.
     /// </summary>
     /// <param name="emailAddress">The e-mail address of the room list.</param>
     /// <returns>A collection of EmailAddress objects representing all the rooms within the specifed room list.</returns>
-    public async Task<Collection<EmailAddress>> GetRooms(
-        EmailAddress emailAddress,
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<Collection<EmailAddress>> GetRooms(EmailAddress emailAddress, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(emailAddress, "emailAddress");
 
-        GetRoomsRequest request = new GetRoomsRequest(this);
+        var request = new GetRoomsRequest(this);
 
         request.RoomList = emailAddress;
 
@@ -3184,7 +3347,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Conversation
 
     /// <summary>
-    /// Retrieves a collection of all Conversations in the specified Folder.
+    ///     Retrieves a collection of all Conversations in the specified Folder.
     /// </summary>
     /// <param name="view">The view controlling the number of conversations returned.</param>
     /// <param name="folderId">The Id of the folder in which to search for conversations.</param>
@@ -3192,14 +3355,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<ICollection<Conversation>> FindConversation(
         ViewBase view,
         FolderId folderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(view, "view");
         EwsUtilities.ValidateParam(folderId, "folderId");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "FindConversation");
 
-        FindConversationRequest request = new FindConversationRequest(this);
+        var request = new FindConversationRequest(this);
 
         request.View = view;
         request.FolderId = new FolderIdWrapper(folderId);
@@ -3208,21 +3371,21 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Retrieves a collection of all Conversations in the specified Folder.
+    ///     Retrieves a collection of all Conversations in the specified Folder.
     /// </summary>
     /// <param name="view">The view controlling the number of conversations returned.</param>
     /// <param name="folderId">The Id of the folder in which to search for conversations.</param>
     /// <param name="anchorMailbox">The anchorMailbox Smtp address to route the request directly to group mailbox.</param>
     /// <returns>Collection of conversations.</returns>
     /// <remarks>
-    /// This API designed to be used primarily in groups scenarios where we want to set the
-    /// anchor mailbox header so that request is routed directly to the group mailbox backend server.
+    ///     This API designed to be used primarily in groups scenarios where we want to set the
+    ///     anchor mailbox header so that request is routed directly to the group mailbox backend server.
     /// </remarks>
     public async Task<Collection<Conversation>> FindGroupConversation(
         ViewBase view,
         FolderId folderId,
         string anchorMailbox,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(view, "view");
@@ -3230,7 +3393,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(anchorMailbox, "anchorMailbox");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2015, "FindConversation");
 
-        FindConversationRequest request = new FindConversationRequest(this);
+        var request = new FindConversationRequest(this);
 
         request.View = view;
         request.FolderId = new FolderIdWrapper(folderId);
@@ -3240,7 +3403,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Retrieves a collection of all Conversations in the specified Folder.
+    ///     Retrieves a collection of all Conversations in the specified Folder.
     /// </summary>
     /// <param name="view">The view controlling the number of conversations returned.</param>
     /// <param name="folderId">The Id of the folder in which to search for conversations.</param>
@@ -3250,7 +3413,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         ViewBase view,
         FolderId folderId,
         string queryString,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(view, "view");
@@ -3262,7 +3425,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             "FindConversation"
         );
 
-        FindConversationRequest request = new FindConversationRequest(this);
+        var request = new FindConversationRequest(this);
 
         request.View = view;
         request.FolderId = new FolderIdWrapper(folderId);
@@ -3272,8 +3435,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Searches for and retrieves a collection of Conversations in the specified Folder.
-    /// Along with conversations, a list of highlight terms are returned.
+    ///     Searches for and retrieves a collection of Conversations in the specified Folder.
+    ///     Along with conversations, a list of highlight terms are returned.
     /// </summary>
     /// <param name="view">The view controlling the number of conversations returned.</param>
     /// <param name="folderId">The Id of the folder in which to search for conversations.</param>
@@ -3285,7 +3448,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId folderId,
         string queryString,
         bool returnHighlightTerms,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(view, "view");
@@ -3298,7 +3461,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             "FindConversation"
         );
 
-        FindConversationRequest request = new FindConversationRequest(this);
+        var request = new FindConversationRequest(this);
 
         request.View = view;
         request.FolderId = new FolderIdWrapper(folderId);
@@ -3309,8 +3472,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Searches for and retrieves a collection of Conversations in the specified Folder.
-    /// Along with conversations, a list of highlight terms are returned.
+    ///     Searches for and retrieves a collection of Conversations in the specified Folder.
+    ///     Along with conversations, a list of highlight terms are returned.
     /// </summary>
     /// <param name="view">The view controlling the number of conversations returned.</param>
     /// <param name="folderId">The Id of the folder in which to search for conversations.</param>
@@ -3324,7 +3487,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         string queryString,
         bool returnHighlightTerms,
         MailboxSearchLocation? mailboxScope,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(view, "view");
@@ -3338,7 +3501,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             "FindConversation"
         );
 
-        FindConversationRequest request = new FindConversationRequest(this);
+        var request = new FindConversationRequest(this);
 
         request.View = view;
         request.FolderId = new FolderIdWrapper(folderId);
@@ -3350,7 +3513,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the items for a set of conversations.
+    ///     Gets the items for a set of conversations.
     /// </summary>
     /// <param name="conversations">Conversations with items to load.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -3378,7 +3541,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamAllowNull(foldersToIgnore, "foldersToIgnore");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "GetConversationItems");
 
-        GetConversationItemsRequest request = new GetConversationItemsRequest(this, errorHandling);
+        var request = new GetConversationItemsRequest(this, errorHandling);
         request.ItemProperties = propertySet;
         request.FoldersToIgnore = new FolderIdCollection(foldersToIgnore);
         request.SortOrder = sortOrder;
@@ -3391,7 +3554,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the items for a set of conversations.
+    ///     Gets the items for a set of conversations.
     /// </summary>
     /// <param name="conversations">Conversations with items to load.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -3403,10 +3566,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         PropertySet propertySet,
         IEnumerable<FolderId> foldersToIgnore,
         ConversationSortOrder? sortOrder,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.InternalGetConversationItems(
+        return InternalGetConversationItems(
             conversations,
             propertySet,
             foldersToIgnore,
@@ -3420,7 +3583,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the items for a conversation.
+    ///     Gets the items for a conversation.
     /// </summary>
     /// <param name="conversationId">The conversation id.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -3434,13 +3597,13 @@ public sealed class ExchangeService : ExchangeServiceBase
         string syncState,
         IEnumerable<FolderId> foldersToIgnore,
         ConversationSortOrder? sortOrder,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        List<ConversationRequest> conversations = new List<ConversationRequest>();
+        var conversations = new List<ConversationRequest>();
         conversations.Add(new ConversationRequest(conversationId, syncState));
 
-        return (await this.InternalGetConversationItems(
+        return (await InternalGetConversationItems(
                 conversations,
                 propertySet,
                 foldersToIgnore,
@@ -3455,7 +3618,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the items for a conversation.
+    ///     Gets the items for a conversation.
     /// </summary>
     /// <param name="conversationId">The conversation id.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -3465,8 +3628,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="anchorMailbox">The smtp address of the mailbox hosting the conversations</param>
     /// <returns>ConversationResponseType response.</returns>
     /// <remarks>
-    /// This API designed to be used primarily in groups scenarios where we want to set the
-    /// anchor mailbox header so that request is routed directly to the group mailbox backend server.
+    ///     This API designed to be used primarily in groups scenarios where we want to set the
+    ///     anchor mailbox header so that request is routed directly to the group mailbox backend server.
     /// </remarks>
     public async Task<ConversationResponse> GetGroupConversationItems(
         ConversationId conversationId,
@@ -3475,15 +3638,15 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<FolderId> foldersToIgnore,
         ConversationSortOrder? sortOrder,
         string anchorMailbox,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(anchorMailbox, "anchorMailbox");
 
-        List<ConversationRequest> conversations = new List<ConversationRequest>();
+        var conversations = new List<ConversationRequest>();
         conversations.Add(new ConversationRequest(conversationId, syncState));
 
-        return (await this.InternalGetConversationItems(
+        return (await InternalGetConversationItems(
                 conversations,
                 propertySet,
                 foldersToIgnore,
@@ -3498,7 +3661,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the items for a set of conversations.
+    ///     Gets the items for a set of conversations.
     /// </summary>
     /// <param name="conversations">Conversations with items to load.</param>
     /// <param name="propertySet">The set of properties to load.</param>
@@ -3512,10 +3675,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<FolderId> foldersToIgnore,
         ConversationSortOrder? sortOrder,
         MailboxSearchLocation? mailboxScope,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.InternalGetConversationItems(
+        return InternalGetConversationItems(
             conversations,
             propertySet,
             foldersToIgnore,
@@ -3529,19 +3692,25 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Applies ConversationAction on the specified conversation.
+    ///     Applies ConversationAction on the specified conversation.
     /// </summary>
     /// <param name="actionType">ConversationAction</param>
     /// <param name="conversationIds">The conversation ids.</param>
-    /// <param name="processRightAway">True to process at once . This is blocking
-    /// and false to let the Assistant process it in the back ground</param>
+    /// <param name="processRightAway">
+    ///     True to process at once . This is blocking
+    ///     and false to let the Assistant process it in the back ground
+    /// </param>
     /// <param name="categories">Catgories that need to be stamped can be null or empty</param>
-    /// <param name="enableAlwaysDelete">True moves every current and future messages in the conversation
-    /// to deleted items folder. False stops the alwasy delete action. This is applicable only if
-    /// the action is AlwaysDelete</param>
-    /// <param name="destinationFolderId">Applicable if the action is AlwaysMove. This moves every current message and future
-    /// message in the conversation to the specified folder. Can be null if tis is then it stops
-    /// the always move action</param>
+    /// <param name="enableAlwaysDelete">
+    ///     True moves every current and future messages in the conversation
+    ///     to deleted items folder. False stops the alwasy delete action. This is applicable only if
+    ///     the action is AlwaysDelete
+    /// </param>
+    /// <param name="destinationFolderId">
+    ///     Applicable if the action is AlwaysMove. This moves every current message and future
+    ///     message in the conversation to the specified folder. Can be null if tis is then it stops
+    ///     the always move action
+    /// </param>
     /// <param name="errorHandlingMode">The error handling mode.</param>
     /// <returns></returns>
     private Task<ServiceResponseCollection<ServiceResponse>> ApplyConversationAction(
@@ -3566,11 +3735,11 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(conversationIds, "conversationId");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "ApplyConversationAction");
 
-        ApplyConversationActionRequest request = new ApplyConversationActionRequest(this, errorHandlingMode);
+        var request = new ApplyConversationActionRequest(this, errorHandlingMode);
 
         foreach (var conversationId in conversationIds)
         {
-            ConversationAction action = new ConversationAction();
+            var action = new ConversationAction();
 
             action.Action = actionType;
             action.ConversationId = conversationId;
@@ -3586,8 +3755,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Applies one time conversation action on items in specified folder inside
-    /// the conversation.
+    ///     Applies one time conversation action on items in specified folder inside
+    ///     the conversation.
     /// </summary>
     /// <param name="actionType">The action.</param>
     /// <param name="idTimePairs">The id time pairs.</param>
@@ -3630,11 +3799,11 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParamCollection(idTimePairs, "idTimePairs");
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "ApplyConversationAction");
 
-        ApplyConversationActionRequest request = new ApplyConversationActionRequest(this, errorHandlingMode);
+        var request = new ApplyConversationActionRequest(this, errorHandlingMode);
 
         foreach (var idTimePair in idTimePairs)
         {
-            ConversationAction action = new ConversationAction();
+            var action = new ConversationAction();
 
             action.Action = actionType;
             action.ConversationId = idTimePair.Key;
@@ -3655,23 +3824,25 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets up a conversation so that any item received within that conversation is always categorized.
-    /// Calling this method results in a call to EWS.
+    ///     Sets up a conversation so that any item received within that conversation is always categorized.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="conversationId">The id of the conversation.</param>
     /// <param name="categories">The categories that should be stamped on items in the conversation.</param>
-    /// <param name="processSynchronously">Indicates whether the method should return only once enabling this rule and stamping existing items
-    /// in the conversation is completely done. If processSynchronously is false, the method returns immediately.</param>
+    /// <param name="processSynchronously">
+    ///     Indicates whether the method should return only once enabling this rule and stamping existing items
+    ///     in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+    /// </param>
     /// <returns></returns>
     public Task<ServiceResponseCollection<ServiceResponse>> EnableAlwaysCategorizeItemsInConversations(
         IEnumerable<ConversationId> conversationId,
         IEnumerable<String> categories,
         bool processSynchronously,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(categories, "categories");
-        return this.ApplyConversationAction(
+        return ApplyConversationAction(
             ConversationActionType.AlwaysCategorize,
             conversationId,
             processSynchronously,
@@ -3684,20 +3855,23 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets up a conversation so that any item received within that conversation is no longer categorized.
-    /// Calling this method results in a call to EWS.
+    ///     Sets up a conversation so that any item received within that conversation is no longer categorized.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="conversationId">The id of the conversation.</param>
-    /// <param name="processSynchronously">Indicates whether the method should return only once disabling this rule and removing the categories from existing items
-    /// in the conversation is completely done. If processSynchronously is false, the method returns immediately.</param>
+    /// <param name="processSynchronously">
+    ///     Indicates whether the method should return only once disabling this rule and removing the categories from existing
+    ///     items
+    ///     in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+    /// </param>
     /// <returns></returns>
     public Task<ServiceResponseCollection<ServiceResponse>> DisableAlwaysCategorizeItemsInConversations(
         IEnumerable<ConversationId> conversationId,
         bool processSynchronously,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationAction(
+        return ApplyConversationAction(
             ConversationActionType.AlwaysCategorize,
             conversationId,
             processSynchronously,
@@ -3710,20 +3884,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets up a conversation so that any item received within that conversation is always moved to Deleted Items folder.
-    /// Calling this method results in a call to EWS.
+    ///     Sets up a conversation so that any item received within that conversation is always moved to Deleted Items folder.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="conversationId">The id of the conversation.</param>
-    /// <param name="processSynchronously">Indicates whether the method should return only once enabling this rule and deleting existing items
-    /// in the conversation is completely done. If processSynchronously is false, the method returns immediately.</param>
+    /// <param name="processSynchronously">
+    ///     Indicates whether the method should return only once enabling this rule and deleting existing items
+    ///     in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+    /// </param>
     /// <returns></returns>
     public Task<ServiceResponseCollection<ServiceResponse>> EnableAlwaysDeleteItemsInConversations(
         IEnumerable<ConversationId> conversationId,
         bool processSynchronously,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationAction(
+        return ApplyConversationAction(
             ConversationActionType.AlwaysDelete,
             conversationId,
             processSynchronously,
@@ -3736,20 +3912,23 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets up a conversation so that any item received within that conversation is no longer moved to Deleted Items folder.
-    /// Calling this method results in a call to EWS.
+    ///     Sets up a conversation so that any item received within that conversation is no longer moved to Deleted Items
+    ///     folder.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="conversationId">The id of the conversation.</param>
-    /// <param name="processSynchronously">Indicates whether the method should return only once disabling this rule and restoring the items
-    /// in the conversation is completely done. If processSynchronously is false, the method returns immediately.</param>
+    /// <param name="processSynchronously">
+    ///     Indicates whether the method should return only once disabling this rule and restoring the items
+    ///     in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+    /// </param>
     /// <returns></returns>
     public Task<ServiceResponseCollection<ServiceResponse>> DisableAlwaysDeleteItemsInConversations(
         IEnumerable<ConversationId> conversationId,
         bool processSynchronously,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationAction(
+        return ApplyConversationAction(
             ConversationActionType.AlwaysDelete,
             conversationId,
             processSynchronously,
@@ -3762,23 +3941,25 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets up a conversation so that any item received within that conversation is always moved to a specific folder.
-    /// Calling this method results in a call to EWS.
+    ///     Sets up a conversation so that any item received within that conversation is always moved to a specific folder.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="conversationId">The id of the conversation.</param>
     /// <param name="destinationFolderId">The Id of the folder to which conversation items should be moved.</param>
-    /// <param name="processSynchronously">Indicates whether the method should return only once enabling this rule and moving existing items
-    /// in the conversation is completely done. If processSynchronously is false, the method returns immediately.</param>
+    /// <param name="processSynchronously">
+    ///     Indicates whether the method should return only once enabling this rule and moving existing items
+    ///     in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+    /// </param>
     /// <returns></returns>
     public Task<ServiceResponseCollection<ServiceResponse>> EnableAlwaysMoveItemsInConversations(
         IEnumerable<ConversationId> conversationId,
         FolderId destinationFolderId,
         bool processSynchronously,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
-        return this.ApplyConversationAction(
+        return ApplyConversationAction(
             ConversationActionType.AlwaysMove,
             conversationId,
             processSynchronously,
@@ -3791,20 +3972,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets up a conversation so that any item received within that conversation is no longer moved to a specific folder.
-    /// Calling this method results in a call to EWS.
+    ///     Sets up a conversation so that any item received within that conversation is no longer moved to a specific folder.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="conversationIds">The conversation ids.</param>
-    /// <param name="processSynchronously">Indicates whether the method should return only once disabling this rule is completely done.
-    /// If processSynchronously is false, the method returns immediately.</param>
+    /// <param name="processSynchronously">
+    ///     Indicates whether the method should return only once disabling this rule is completely done.
+    ///     If processSynchronously is false, the method returns immediately.
+    /// </param>
     /// <returns></returns>
     public Task<ServiceResponseCollection<ServiceResponse>> DisableAlwaysMoveItemsInConversations(
         IEnumerable<ConversationId> conversationIds,
         bool processSynchronously,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationAction(
+        return ApplyConversationAction(
             ConversationActionType.AlwaysMove,
             conversationIds,
             processSynchronously,
@@ -3817,12 +4000,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Moves the items in the specified conversation to the specified destination folder.
-    /// Calling this method results in a call to EWS.
+    ///     Moves the items in the specified conversation to the specified destination folder.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should be moved and the dateTime conversation was last synced
-    /// (Items received after that dateTime will not be moved).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should be moved and the dateTime conversation was last synced
+    ///     (Items received after that dateTime will not be moved).
+    /// </param>
     /// <param name="contextFolderId">The Id of the folder that contains the conversation.</param>
     /// <param name="destinationFolderId">The Id of the destination folder.</param>
     /// <returns></returns>
@@ -3830,11 +4015,11 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<KeyValuePair<ConversationId, DateTime?>> idLastSyncTimePairs,
         FolderId contextFolderId,
         FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.Move,
             idLastSyncTimePairs,
             contextFolderId,
@@ -3851,12 +4036,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Copies the items in the specified conversation to the specified destination folder.
-    /// Calling this method results in a call to EWS.
+    ///     Copies the items in the specified conversation to the specified destination folder.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should be copied and the date and time conversation was last synced
-    /// (Items received after that date will not be copied).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should be copied and the date and time conversation was last synced
+    ///     (Items received after that date will not be copied).
+    /// </param>
     /// <param name="contextFolderId">The context folder id.</param>
     /// <param name="destinationFolderId">The destination folder id.</param>
     /// <returns></returns>
@@ -3864,11 +4051,11 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<KeyValuePair<ConversationId, DateTime?>> idLastSyncTimePairs,
         FolderId contextFolderId,
         FolderId destinationFolderId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.Copy,
             idLastSyncTimePairs,
             contextFolderId,
@@ -3885,11 +4072,13 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Deletes the items in the specified conversation. Calling this method results in a call to EWS.
+    ///     Deletes the items in the specified conversation. Calling this method results in a call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should be deleted and the date and time conversation was last synced
-    /// (Items received after that date will not be deleted).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should be deleted and the date and time conversation was last synced
+    ///     (Items received after that date will not be deleted).
+    /// </param>
     /// <param name="contextFolderId">The Id of the folder that contains the conversation.</param>
     /// <param name="deleteMode">The deletion mode.</param>
     /// <returns></returns>
@@ -3897,10 +4086,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<KeyValuePair<ConversationId, DateTime?>> idLastSyncTimePairs,
         FolderId contextFolderId,
         DeleteMode deleteMode,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.Delete,
             idLastSyncTimePairs,
             contextFolderId,
@@ -3917,23 +4106,25 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets the read state for items in conversation. Calling this method would
-    /// result in call to EWS.
+    ///     Sets the read state for items in conversation. Calling this method would
+    ///     result in call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should have their read state set and the date and time conversation
-    /// was last synced (Items received after that date will not have their read
-    /// state set).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should have their read state set and the date and time conversation
+    ///     was last synced (Items received after that date will not have their read
+    ///     state set).
+    /// </param>
     /// <param name="contextFolderId">The Id of the folder that contains the conversation.</param>
     /// <param name="isRead">if set to <c>true</c>, conversation items are marked as read; otherwise they are marked as unread.</param>
     public Task<ServiceResponseCollection<ServiceResponse>> SetReadStateForItemsInConversations(
         IEnumerable<KeyValuePair<ConversationId, DateTime?>> idLastSyncTimePairs,
         FolderId contextFolderId,
         bool isRead,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.SetReadState,
             idLastSyncTimePairs,
             contextFolderId,
@@ -3950,13 +4141,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets the read state for items in conversation. Calling this method would
-    /// result in call to EWS.
+    ///     Sets the read state for items in conversation. Calling this method would
+    ///     result in call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should have their read state set and the date and time conversation
-    /// was last synced (Items received after that date will not have their read
-    /// state set).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should have their read state set and the date and time conversation
+    ///     was last synced (Items received after that date will not have their read
+    ///     state set).
+    /// </param>
     /// <param name="contextFolderId">The Id of the folder that contains the conversation.</param>
     /// <param name="isRead">if set to <c>true</c>, conversation items are marked as read; otherwise they are marked as unread.</param>
     /// <param name="suppressReadReceipts">if set to <c>true</c> read receipts are suppressed.</param>
@@ -3965,12 +4158,12 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId contextFolderId,
         bool isRead,
         bool suppressReadReceipts,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetReadStateForItemsInConversations");
 
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.SetReadState,
             idLastSyncTimePairs,
             contextFolderId,
@@ -3987,13 +4180,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets the retention policy for items in conversation. Calling this method would
-    /// result in call to EWS.
+    ///     Sets the retention policy for items in conversation. Calling this method would
+    ///     result in call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should have their retention policy set and the date and time conversation
-    /// was last synced (Items received after that date will not have their retention
-    /// policy set).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should have their retention policy set and the date and time conversation
+    ///     was last synced (Items received after that date will not have their retention
+    ///     policy set).
+    /// </param>
     /// <param name="contextFolderId">The Id of the folder that contains the conversation.</param>
     /// <param name="retentionPolicyType">Retention policy type.</param>
     /// <param name="retentionPolicyTagId">Retention policy tag id.  Null will clear the policy.</param>
@@ -4002,10 +4197,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         FolderId contextFolderId,
         RetentionType retentionPolicyType,
         Guid? retentionPolicyTagId,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.SetRetentionPolicy,
             idLastSyncTimePairs,
             contextFolderId,
@@ -4022,24 +4217,26 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets flag status for items in conversation. Calling this method would result in call to EWS.
+    ///     Sets flag status for items in conversation. Calling this method would result in call to EWS.
     /// </summary>
-    /// <param name="idLastSyncTimePairs">The pairs of Id of conversation whose
-    /// items should have their read state set and the date and time conversation
-    /// was last synced (Items received after that date will not have their read
-    /// state set).</param>
+    /// <param name="idLastSyncTimePairs">
+    ///     The pairs of Id of conversation whose
+    ///     items should have their read state set and the date and time conversation
+    ///     was last synced (Items received after that date will not have their read
+    ///     state set).
+    /// </param>
     /// <param name="contextFolderId">The Id of the folder that contains the conversation.</param>
     /// <param name="flagStatus">Flag status to apply to conversation items.</param>
     public Task<ServiceResponseCollection<ServiceResponse>> SetFlagStatusForItemsInConversations(
         IEnumerable<KeyValuePair<ConversationId, DateTime?>> idLastSyncTimePairs,
         FolderId contextFolderId,
         Flag flagStatus,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetFlagStatusForItemsInConversations");
 
-        return this.ApplyConversationOneTimeAction(
+        return ApplyConversationOneTimeAction(
             ConversationActionType.Flag,
             idLastSyncTimePairs,
             contextFolderId,
@@ -4061,7 +4258,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Id conversion operations
 
     /// <summary>
-    /// Converts multiple Ids from one format to another in a single call to EWS.
+    ///     Converts multiple Ids from one format to another in a single call to EWS.
     /// </summary>
     /// <param name="ids">The Ids to convert.</param>
     /// <param name="destinationFormat">The destination format.</param>
@@ -4076,7 +4273,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParamCollection(ids, "ids");
 
-        ConvertIdRequest request = new ConvertIdRequest(this, errorHandling);
+        var request = new ConvertIdRequest(this, errorHandling);
 
         request.Ids.AddRange(ids);
         request.DestinationFormat = destinationFormat;
@@ -4085,7 +4282,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Converts multiple Ids from one format to another in a single call to EWS.
+    ///     Converts multiple Ids from one format to another in a single call to EWS.
     /// </summary>
     /// <param name="ids">The Ids to convert.</param>
     /// <param name="destinationFormat">The destination format.</param>
@@ -4093,16 +4290,16 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<ConvertIdResponse>> ConvertIds(
         IEnumerable<AlternateIdBase> ids,
         IdFormat destinationFormat,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParamCollection(ids, "ids");
 
-        return this.InternalConvertIds(ids, destinationFormat, ServiceErrorHandling.ReturnErrors, token);
+        return InternalConvertIds(ids, destinationFormat, ServiceErrorHandling.ReturnErrors, token);
     }
 
     /// <summary>
-    /// Converts Id from one format to another in a single call to EWS.
+    ///     Converts Id from one format to another in a single call to EWS.
     /// </summary>
     /// <param name="id">The Id to convert.</param>
     /// <param name="destinationFormat">The destination format.</param>
@@ -4110,13 +4307,13 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<AlternateIdBase> ConvertId(
         AlternateIdBase id,
         IdFormat destinationFormat,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(id, "id");
 
-        ServiceResponseCollection<ConvertIdResponse> responses = await this.InternalConvertIds(
-            new AlternateIdBase[]
+        var responses = await InternalConvertIds(
+            new[]
             {
                 id
             },
@@ -4134,7 +4331,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Delegate management operations
 
     /// <summary>
-    /// Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
+    ///     Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to add delegates to.</param>
     /// <param name="meetingRequestsDeliveryScope">Indicates how meeting requests should be sent to delegates.</param>
@@ -4146,11 +4343,11 @@ public sealed class ExchangeService : ExchangeServiceBase
         params DelegateUser[] delegateUsers
     )
     {
-        return this.AddDelegates(mailbox, meetingRequestsDeliveryScope, (IEnumerable<DelegateUser>)delegateUsers);
+        return AddDelegates(mailbox, meetingRequestsDeliveryScope, (IEnumerable<DelegateUser>)delegateUsers);
     }
 
     /// <summary>
-    /// Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
+    ///     Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to add delegates to.</param>
     /// <param name="meetingRequestsDeliveryScope">Indicates how meeting requests should be sent to delegates.</param>
@@ -4160,24 +4357,24 @@ public sealed class ExchangeService : ExchangeServiceBase
         Mailbox mailbox,
         MeetingRequestsDeliveryScope? meetingRequestsDeliveryScope,
         IEnumerable<DelegateUser> delegateUsers,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(mailbox, "mailbox");
         EwsUtilities.ValidateParamCollection(delegateUsers, "delegateUsers");
 
-        AddDelegateRequest request = new AddDelegateRequest(this);
+        var request = new AddDelegateRequest(this);
 
         request.Mailbox = mailbox;
         request.DelegateUsers.AddRange(delegateUsers);
         request.MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
 
-        DelegateManagementResponse response = await request.Execute(token).ConfigureAwait(false);
+        var response = await request.Execute(token).ConfigureAwait(false);
         return response.DelegateUserResponses;
     }
 
     /// <summary>
-    /// Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
+    ///     Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to update delegates on.</param>
     /// <param name="meetingRequestsDeliveryScope">Indicates how meeting requests should be sent to delegates.</param>
@@ -4186,15 +4383,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<Collection<DelegateUserResponse>> UpdateDelegates(
         Mailbox mailbox,
         MeetingRequestsDeliveryScope? meetingRequestsDeliveryScope,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params DelegateUser[] delegateUsers
     )
     {
-        return this.UpdateDelegates(mailbox, meetingRequestsDeliveryScope, (IEnumerable<DelegateUser>)delegateUsers);
+        return UpdateDelegates(mailbox, meetingRequestsDeliveryScope, delegateUsers);
     }
 
     /// <summary>
-    /// Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
+    ///     Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to update delegates on.</param>
     /// <param name="meetingRequestsDeliveryScope">Indicates how meeting requests should be sent to delegates.</param>
@@ -4204,39 +4401,39 @@ public sealed class ExchangeService : ExchangeServiceBase
         Mailbox mailbox,
         MeetingRequestsDeliveryScope? meetingRequestsDeliveryScope,
         IEnumerable<DelegateUser> delegateUsers,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(mailbox, "mailbox");
         EwsUtilities.ValidateParamCollection(delegateUsers, "delegateUsers");
 
-        UpdateDelegateRequest request = new UpdateDelegateRequest(this);
+        var request = new UpdateDelegateRequest(this);
 
         request.Mailbox = mailbox;
         request.DelegateUsers.AddRange(delegateUsers);
         request.MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
 
-        DelegateManagementResponse response = await request.Execute(token).ConfigureAwait(false);
+        var response = await request.Execute(token).ConfigureAwait(false);
         return response.DelegateUserResponses;
     }
 
     /// <summary>
-    /// Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
+    ///     Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to remove delegates from.</param>
     /// <param name="userIds">The Ids of the delegate users to remove.</param>
     /// <returns>A collection of DelegateUserResponse objects providing the results of the operation.</returns>
     public Task<Collection<DelegateUserResponse>> RemoveDelegates(
         Mailbox mailbox,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params UserId[] userIds
     )
     {
-        return this.RemoveDelegates(mailbox, (IEnumerable<UserId>)userIds, token);
+        return RemoveDelegates(mailbox, userIds, token);
     }
 
     /// <summary>
-    /// Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
+    ///     Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to remove delegates from.</param>
     /// <param name="userIds">The Ids of the delegate users to remove.</param>
@@ -4244,23 +4441,23 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<Collection<DelegateUserResponse>> RemoveDelegates(
         Mailbox mailbox,
         IEnumerable<UserId> userIds,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(mailbox, "mailbox");
         EwsUtilities.ValidateParamCollection(userIds, "userIds");
 
-        RemoveDelegateRequest request = new RemoveDelegateRequest(this);
+        var request = new RemoveDelegateRequest(this);
 
         request.Mailbox = mailbox;
         request.UserIds.AddRange(userIds);
 
-        DelegateManagementResponse response = await request.Execute(token).ConfigureAwait(false);
+        var response = await request.Execute(token).ConfigureAwait(false);
         return response.DelegateUserResponses;
     }
 
     /// <summary>
-    /// Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
+    ///     Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to retrieve the delegates of.</param>
     /// <param name="includePermissions">Indicates whether detailed permissions should be returned fro each delegate.</param>
@@ -4269,15 +4466,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<DelegateInformation> GetDelegates(
         Mailbox mailbox,
         bool includePermissions,
-        CancellationToken token = default(CancellationToken),
+        CancellationToken token = default,
         params UserId[] userIds
     )
     {
-        return this.GetDelegates(mailbox, includePermissions, (IEnumerable<UserId>)userIds);
+        return GetDelegates(mailbox, includePermissions, userIds);
     }
 
     /// <summary>
-    /// Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
+    ///     Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="mailbox">The mailbox to retrieve the delegates of.</param>
     /// <param name="includePermissions">Indicates whether detailed permissions should be returned fro each delegate.</param>
@@ -4287,19 +4484,19 @@ public sealed class ExchangeService : ExchangeServiceBase
         Mailbox mailbox,
         bool includePermissions,
         IEnumerable<UserId> userIds,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(mailbox, "mailbox");
 
-        GetDelegateRequest request = new GetDelegateRequest(this);
+        var request = new GetDelegateRequest(this);
 
         request.Mailbox = mailbox;
         request.UserIds.AddRange(userIds);
         request.IncludePermissions = includePermissions;
 
-        GetDelegateResponse response = await request.Execute(token).ConfigureAwait(false);
-        DelegateInformation delegateInformation = new DelegateInformation(
+        var response = await request.Execute(token).ConfigureAwait(false);
+        var delegateInformation = new DelegateInformation(
             response.DelegateUserResponses,
             response.MeetingRequestsDeliveryScope
         );
@@ -4313,7 +4510,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region UserConfiguration operations
 
     /// <summary>
-    /// Creates a UserConfiguration.
+    ///     Creates a UserConfiguration.
     /// </summary>
     /// <param name="userConfiguration">The UserConfiguration.</param>
     internal System.Threading.Tasks.Task CreateUserConfiguration(
@@ -4323,7 +4520,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
 
-        CreateUserConfigurationRequest request = new CreateUserConfigurationRequest(this);
+        var request = new CreateUserConfigurationRequest(this);
 
         request.UserConfiguration = userConfiguration;
 
@@ -4331,7 +4528,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Deletes a UserConfiguration.
+    ///     Deletes a UserConfiguration.
     /// </summary>
     /// <param name="name">Name of the UserConfiguration to retrieve.</param>
     /// <param name="parentFolderId">Id of the folder containing the UserConfiguration.</param>
@@ -4344,7 +4541,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(name, "name");
         EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
 
-        DeleteUserConfigurationRequest request = new DeleteUserConfigurationRequest(this);
+        var request = new DeleteUserConfigurationRequest(this);
 
         request.Name = name;
         request.ParentFolderId = parentFolderId;
@@ -4353,7 +4550,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets a UserConfiguration.
+    ///     Gets a UserConfiguration.
     /// </summary>
     /// <param name="name">Name of the UserConfiguration to retrieve.</param>
     /// <param name="parentFolderId">Id of the folder containing the UserConfiguration.</param>
@@ -4369,7 +4566,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(name, "name");
         EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
 
-        GetUserConfigurationRequest request = new GetUserConfigurationRequest(this);
+        var request = new GetUserConfigurationRequest(this);
 
         request.Name = name;
         request.ParentFolderId = parentFolderId;
@@ -4379,7 +4576,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Loads the properties of the specified userConfiguration.
+    ///     Loads the properties of the specified userConfiguration.
     /// </summary>
     /// <param name="userConfiguration">The userConfiguration containing properties to load.</param>
     /// <param name="properties">Properties to retrieve.</param>
@@ -4395,7 +4592,7 @@ public sealed class ExchangeService : ExchangeServiceBase
             "userConfiguration is null"
         );
 
-        GetUserConfigurationRequest request = new GetUserConfigurationRequest(this);
+        var request = new GetUserConfigurationRequest(this);
 
         request.UserConfiguration = userConfiguration;
         request.Properties = properties;
@@ -4404,7 +4601,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Updates a UserConfiguration.
+    ///     Updates a UserConfiguration.
     /// </summary>
     /// <param name="userConfiguration">The UserConfiguration.</param>
     internal System.Threading.Tasks.Task UpdateUserConfiguration(
@@ -4414,7 +4611,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
 
-        UpdateUserConfigurationRequest request = new UpdateUserConfigurationRequest(this);
+        var request = new UpdateUserConfigurationRequest(this);
 
         request.UserConfiguration = userConfiguration;
 
@@ -4427,53 +4624,50 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region InboxRule operations
 
     /// <summary>
-    /// Retrieves inbox rules of the authenticated user.
+    ///     Retrieves inbox rules of the authenticated user.
     /// </summary>
     /// <returns>A RuleCollection object containing the authenticated user's inbox rules.</returns>
-    public async Task<RuleCollection> GetInboxRules(CancellationToken token = default(CancellationToken))
+    public async Task<RuleCollection> GetInboxRules(CancellationToken token = default)
     {
-        GetInboxRulesRequest request = new GetInboxRulesRequest(this);
+        var request = new GetInboxRulesRequest(this);
 
         return (await request.Execute(token).ConfigureAwait(false)).Rules;
     }
 
     /// <summary>
-    /// Retrieves the inbox rules of the specified user.
+    ///     Retrieves the inbox rules of the specified user.
     /// </summary>
     /// <param name="mailboxSmtpAddress">The SMTP address of the user whose inbox rules should be retrieved.</param>
     /// <returns>A RuleCollection object containing the inbox rules of the specified user.</returns>
-    public async Task<RuleCollection> GetInboxRules(
-        string mailboxSmtpAddress,
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<RuleCollection> GetInboxRules(string mailboxSmtpAddress, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(mailboxSmtpAddress, "MailboxSmtpAddress");
 
-        GetInboxRulesRequest request = new GetInboxRulesRequest(this);
+        var request = new GetInboxRulesRequest(this);
         request.MailboxSmtpAddress = mailboxSmtpAddress;
 
         return (await request.Execute(token).ConfigureAwait(false)).Rules;
     }
 
     /// <summary>
-    /// Updates the authenticated user's inbox rules by applying the specified operations.
+    ///     Updates the authenticated user's inbox rules by applying the specified operations.
     /// </summary>
     /// <param name="operations">The operations that should be applied to the user's inbox rules.</param>
     /// <param name="removeOutlookRuleBlob">Indicate whether or not to remove Outlook Rule Blob.</param>
     public System.Threading.Tasks.Task UpdateInboxRules(
         IEnumerable<RuleOperation> operations,
         bool removeOutlookRuleBlob,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        UpdateInboxRulesRequest request = new UpdateInboxRulesRequest(this);
+        var request = new UpdateInboxRulesRequest(this);
         request.InboxRuleOperations = operations;
         request.RemoveOutlookRuleBlob = removeOutlookRuleBlob;
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Update the specified user's inbox rules by applying the specified operations.
+    ///     Update the specified user's inbox rules by applying the specified operations.
     /// </summary>
     /// <param name="operations">The operations that should be applied to the user's inbox rules.</param>
     /// <param name="removeOutlookRuleBlob">Indicate whether or not to remove Outlook Rule Blob.</param>
@@ -4482,10 +4676,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<RuleOperation> operations,
         bool removeOutlookRuleBlob,
         string mailboxSmtpAddress,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        UpdateInboxRulesRequest request = new UpdateInboxRulesRequest(this);
+        var request = new UpdateInboxRulesRequest(this);
         request.InboxRuleOperations = operations;
         request.RemoveOutlookRuleBlob = removeOutlookRuleBlob;
         request.MailboxSmtpAddress = mailboxSmtpAddress;
@@ -4498,7 +4692,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region eDiscovery/Compliance operations
 
     /// <summary>
-    /// Get dicovery search configuration
+    ///     Get dicovery search configuration
     /// </summary>
     /// <param name="searchId">Search Id</param>
     /// <param name="expandGroupMembership">True if want to expand group membership</param>
@@ -4508,10 +4702,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         string searchId,
         bool expandGroupMembership,
         bool inPlaceHoldConfigurationOnly,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetDiscoverySearchConfigurationRequest request = new GetDiscoverySearchConfigurationRequest(this);
+        var request = new GetDiscoverySearchConfigurationRequest(this);
         request.SearchId = searchId;
         request.ExpandGroupMembership = expandGroupMembership;
         request.InPlaceHoldConfigurationOnly = inPlaceHoldConfigurationOnly;
@@ -4520,7 +4714,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get searchable mailboxes
+    ///     Get searchable mailboxes
     /// </summary>
     /// <param name="searchFilter">Search filter</param>
     /// <param name="expandGroupMembership">True if want to expand group membership</param>
@@ -4528,10 +4722,10 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<GetSearchableMailboxesResponse> GetSearchableMailboxes(
         string searchFilter,
         bool expandGroupMembership,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetSearchableMailboxesRequest request = new GetSearchableMailboxesRequest(this);
+        var request = new GetSearchableMailboxesRequest(this);
         request.SearchFilter = searchFilter;
         request.ExpandGroupMembership = expandGroupMembership;
 
@@ -4539,7 +4733,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Search mailboxes
+    ///     Search mailboxes
     /// </summary>
     /// <param name="mailboxQueries">Collection of query and mailboxes</param>
     /// <param name="resultType">Search result type</param>
@@ -4547,10 +4741,10 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<ServiceResponseCollection<SearchMailboxesResponse>> SearchMailboxes(
         IEnumerable<MailboxQuery> mailboxQueries,
         SearchResultType resultType,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        SearchMailboxesRequest request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
         if (mailboxQueries != null)
         {
             request.SearchQueries.AddRange(mailboxQueries);
@@ -4562,7 +4756,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Search mailboxes
+    ///     Search mailboxes
     /// </summary>
     /// <param name="mailboxQueries">Collection of query and mailboxes</param>
     /// <param name="resultType">Search result type</param>
@@ -4580,10 +4774,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         int pageSize,
         SearchPageDirection pageDirection,
         string pageItemReference,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        SearchMailboxesRequest request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
         if (mailboxQueries != null)
         {
             request.SearchQueries.AddRange(mailboxQueries);
@@ -4600,24 +4794,24 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Search mailboxes
+    ///     Search mailboxes
     /// </summary>
     /// <param name="searchParameters">Search mailboxes parameters</param>
     /// <returns>Collection of search mailboxes response object</returns>
     public Task<ServiceResponseCollection<SearchMailboxesResponse>> SearchMailboxes(
         SearchMailboxesParameters searchParameters,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(searchParameters, "searchParameters");
         EwsUtilities.ValidateParam(searchParameters.SearchQueries, "searchParameters.SearchQueries");
 
-        SearchMailboxesRequest request = this.CreateSearchMailboxesRequest(searchParameters);
+        var request = CreateSearchMailboxesRequest(searchParameters);
         return request.ExecuteAsync(token);
     }
 
     /// <summary>
-    /// Set hold on mailboxes
+    ///     Set hold on mailboxes
     /// </summary>
     /// <param name="holdId">Hold id</param>
     /// <param name="actionType">Action type</param>
@@ -4629,10 +4823,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         HoldAction actionType,
         string query,
         string[] mailboxes,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        SetHoldOnMailboxesRequest request = new SetHoldOnMailboxesRequest(this);
+        var request = new SetHoldOnMailboxesRequest(this);
         request.HoldId = holdId;
         request.ActionType = actionType;
         request.Query = query;
@@ -4643,7 +4837,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Set hold on mailboxes
+    ///     Set hold on mailboxes
     /// </summary>
     /// <param name="holdId">Hold id</param>
     /// <param name="actionType">Action type</param>
@@ -4657,11 +4851,11 @@ public sealed class ExchangeService : ExchangeServiceBase
         string inPlaceHoldIdentity
     )
     {
-        return this.SetHoldOnMailboxes(holdId, actionType, query, inPlaceHoldIdentity, null);
+        return SetHoldOnMailboxes(holdId, actionType, query, inPlaceHoldIdentity, null);
     }
 
     /// <summary>
-    /// Set hold on mailboxes
+    ///     Set hold on mailboxes
     /// </summary>
     /// <param name="holdId">Hold id</param>
     /// <param name="actionType">Action type</param>
@@ -4675,10 +4869,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         string query,
         string inPlaceHoldIdentity,
         string itemHoldPeriod,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        SetHoldOnMailboxesRequest request = new SetHoldOnMailboxesRequest(this);
+        var request = new SetHoldOnMailboxesRequest(this);
         request.HoldId = holdId;
         request.ActionType = actionType;
         request.Query = query;
@@ -4690,18 +4884,18 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Set hold on mailboxes
+    ///     Set hold on mailboxes
     /// </summary>
     /// <param name="parameters">Set hold parameters</param>
     /// <returns>Service response object</returns>
     public Task<SetHoldOnMailboxesResponse> SetHoldOnMailboxes(
         SetHoldOnMailboxesParameters parameters,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(parameters, "parameters");
 
-        SetHoldOnMailboxesRequest request = new SetHoldOnMailboxesRequest(this);
+        var request = new SetHoldOnMailboxesRequest(this);
         request.HoldId = parameters.HoldId;
         request.ActionType = parameters.ActionType;
         request.Query = parameters.Query;
@@ -4713,33 +4907,30 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get hold on mailboxes
+    ///     Get hold on mailboxes
     /// </summary>
     /// <param name="holdId">Hold id</param>
     /// <returns>Service response object</returns>
-    public Task<GetHoldOnMailboxesResponse> GetHoldOnMailboxes(
-        string holdId,
-        CancellationToken token = default(CancellationToken)
-    )
+    public Task<GetHoldOnMailboxesResponse> GetHoldOnMailboxes(string holdId, CancellationToken token = default)
     {
-        GetHoldOnMailboxesRequest request = new GetHoldOnMailboxesRequest(this);
+        var request = new GetHoldOnMailboxesRequest(this);
         request.HoldId = holdId;
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Get non indexable item details
+    ///     Get non indexable item details
     /// </summary>
     /// <param name="mailboxes">Array of mailbox legacy DN</param>
     /// <returns>Service response object</returns>
     public Task<GetNonIndexableItemDetailsResponse> GetNonIndexableItemDetails(string[] mailboxes)
     {
-        return this.GetNonIndexableItemDetails(mailboxes, null, null, null);
+        return GetNonIndexableItemDetails(mailboxes, null, null, null);
     }
 
     /// <summary>
-    /// Get non indexable item details
+    ///     Get non indexable item details
     /// </summary>
     /// <param name="mailboxes">Array of mailbox legacy DN</param>
     /// <param name="pageSize">The page size</param>
@@ -4753,7 +4944,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         SearchPageDirection? pageDirection
     )
     {
-        GetNonIndexableItemDetailsParameters parameters = new GetNonIndexableItemDetailsParameters
+        var parameters = new GetNonIndexableItemDetailsParameters
         {
             Mailboxes = mailboxes,
             PageSize = pageSize,
@@ -4766,53 +4957,53 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get non indexable item details
+    ///     Get non indexable item details
     /// </summary>
     /// <param name="parameters">Get non indexable item details parameters</param>
     /// <returns>Service response object</returns>
     public Task<GetNonIndexableItemDetailsResponse> GetNonIndexableItemDetails(
         GetNonIndexableItemDetailsParameters parameters,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetNonIndexableItemDetailsRequest request = this.CreateGetNonIndexableItemDetailsRequest(parameters);
+        var request = CreateGetNonIndexableItemDetailsRequest(parameters);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Get non indexable item statistics
+    ///     Get non indexable item statistics
     /// </summary>
     /// <param name="mailboxes">Array of mailbox legacy DN</param>
     /// <returns>Service response object</returns>
     public Task<GetNonIndexableItemStatisticsResponse> GetNonIndexableItemStatistics(string[] mailboxes)
     {
-        GetNonIndexableItemStatisticsParameters parameters = new GetNonIndexableItemStatisticsParameters
+        var parameters = new GetNonIndexableItemStatisticsParameters
         {
             Mailboxes = mailboxes,
             SearchArchiveOnly = false,
         };
 
-        return this.GetNonIndexableItemStatistics(parameters);
+        return GetNonIndexableItemStatistics(parameters);
     }
 
     /// <summary>
-    /// Get non indexable item statistics
+    ///     Get non indexable item statistics
     /// </summary>
     /// <param name="parameters">Get non indexable item statistics parameters</param>
     /// <returns>Service response object</returns>
     public Task<GetNonIndexableItemStatisticsResponse> GetNonIndexableItemStatistics(
         GetNonIndexableItemStatisticsParameters parameters,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetNonIndexableItemStatisticsRequest request = this.CreateGetNonIndexableItemStatisticsRequest(parameters);
+        var request = CreateGetNonIndexableItemStatisticsRequest(parameters);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Create get non indexable item details request
+    ///     Create get non indexable item details request
     /// </summary>
     /// <param name="parameters">Get non indexable item details parameters</param>
     /// <returns>GetNonIndexableItemDetails request</returns>
@@ -4823,7 +5014,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(parameters, "parameters");
         EwsUtilities.ValidateParam(parameters.Mailboxes, "parameters.Mailboxes");
 
-        GetNonIndexableItemDetailsRequest request = new GetNonIndexableItemDetailsRequest(this);
+        var request = new GetNonIndexableItemDetailsRequest(this);
         request.Mailboxes = parameters.Mailboxes;
         request.PageSize = parameters.PageSize;
         request.PageItemReference = parameters.PageItemReference;
@@ -4834,7 +5025,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Create get non indexable item statistics request
+    ///     Create get non indexable item statistics request
     /// </summary>
     /// <param name="parameters">Get non indexable item statistics parameters</param>
     /// <returns>Service response object</returns>
@@ -4845,7 +5036,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsUtilities.ValidateParam(parameters, "parameters");
         EwsUtilities.ValidateParam(parameters.Mailboxes, "parameters.Mailboxes");
 
-        GetNonIndexableItemStatisticsRequest request = new GetNonIndexableItemStatisticsRequest(this);
+        var request = new GetNonIndexableItemStatisticsRequest(this);
         request.Mailboxes = parameters.Mailboxes;
         request.SearchArchiveOnly = parameters.SearchArchiveOnly;
 
@@ -4853,13 +5044,13 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Creates SearchMailboxesRequest from SearchMailboxesParameters
+    ///     Creates SearchMailboxesRequest from SearchMailboxesParameters
     /// </summary>
     /// <param name="searchParameters">search parameters</param>
     /// <returns>request object</returns>
     private SearchMailboxesRequest CreateSearchMailboxesRequest(SearchMailboxesParameters searchParameters)
     {
-        SearchMailboxesRequest request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
         request.SearchQueries.AddRange(searchParameters.SearchQueries);
         request.ResultType = searchParameters.ResultType;
         request.PreviewItemResponseShape = searchParameters.PreviewItemResponseShape;
@@ -4880,14 +5071,12 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region MRM operations
 
     /// <summary>
-    /// Get user retention policy tags.
+    ///     Get user retention policy tags.
     /// </summary>
     /// <returns>Service response object.</returns>
-    public Task<GetUserRetentionPolicyTagsResponse> GetUserRetentionPolicyTags(
-        CancellationToken token = default(CancellationToken)
-    )
+    public Task<GetUserRetentionPolicyTagsResponse> GetUserRetentionPolicyTags(CancellationToken token = default)
     {
-        GetUserRetentionPolicyTagsRequest request = new GetUserRetentionPolicyTagsRequest(this);
+        var request = new GetUserRetentionPolicyTagsRequest(this);
 
         return request.Execute(token);
     }
@@ -4898,8 +5087,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Autodiscover
 
     /// <summary>
-    /// Default implementation of AutodiscoverRedirectionUrlValidationCallback.
-    /// Always returns true indicating that the URL can be used.
+    ///     Default implementation of AutodiscoverRedirectionUrlValidationCallback.
+    ///     Always returns true indicating that the URL can be used.
     /// </summary>
     /// <param name="redirectionUrl">The redirection URL.</param>
     /// <returns>Returns true.</returns>
@@ -4909,18 +5098,18 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by
-    /// calling the Autodiscover service.
+    ///     Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by
+    ///     calling the Autodiscover service.
     /// </summary>
     /// <param name="emailAddress">The email address to use.</param>
     public System.Threading.Tasks.Task AutodiscoverUrl(string emailAddress)
     {
-        return this.AutodiscoverUrl(emailAddress, this.DefaultAutodiscoverRedirectionUrlValidationCallback);
+        return AutodiscoverUrl(emailAddress, DefaultAutodiscoverRedirectionUrlValidationCallback);
     }
 
     /// <summary>
-    /// Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by
-    /// calling the Autodiscover service.
+    ///     Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by
+    ///     calling the Autodiscover service.
     /// </summary>
     /// <param name="emailAddress">The email address to use.</param>
     /// <param name="validateRedirectionUrlCallback">The callback used to validate redirection URL.</param>
@@ -4931,22 +5120,22 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         Uri exchangeServiceUrl;
 
-        if (this.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
+        if (RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
         {
             try
             {
-                exchangeServiceUrl = await this.GetAutodiscoverUrl(
+                exchangeServiceUrl = await GetAutodiscoverUrl(
                     emailAddress,
-                    this.RequestedServerVersion,
+                    RequestedServerVersion,
                     validateRedirectionUrlCallback
                 );
 
-                this.Url = this.AdjustServiceUriFromCredentials(exchangeServiceUrl);
+                Url = AdjustServiceUriFromCredentials(exchangeServiceUrl);
                 return;
             }
             catch (AutodiscoverLocalException ex)
             {
-                this.TraceMessage(
+                TraceMessage(
                     TraceFlags.AutodiscoverResponse,
                     string.Format(
                         "Autodiscover service call failed with error '{0}'. Will try legacy service",
@@ -4962,7 +5151,7 @@ public sealed class ExchangeService : ExchangeServiceBase
                     throw;
                 }
 
-                this.TraceMessage(
+                TraceMessage(
                     TraceFlags.AutodiscoverResponse,
                     string.Format(
                         "Autodiscover service call failed with error '{0}'. Will try legacy service",
@@ -4973,31 +5162,31 @@ public sealed class ExchangeService : ExchangeServiceBase
         }
 
         // Try legacy Autodiscover provider
-        exchangeServiceUrl = await this.GetAutodiscoverUrl(
+        exchangeServiceUrl = await GetAutodiscoverUrl(
             emailAddress,
             ExchangeVersion.Exchange2007_SP1,
             validateRedirectionUrlCallback
         );
 
-        this.Url = this.AdjustServiceUriFromCredentials(exchangeServiceUrl);
+        Url = AdjustServiceUriFromCredentials(exchangeServiceUrl);
     }
 
     /// <summary>
-    /// Adjusts the service URI based on the current type of credentials.
+    ///     Adjusts the service URI based on the current type of credentials.
     /// </summary>
     /// <remarks>
-    /// Autodiscover will always return the "plain" EWS endpoint URL but if the client
-    /// is using WindowsLive credentials, ExchangeService needs to use the WS-Security endpoint.
+    ///     Autodiscover will always return the "plain" EWS endpoint URL but if the client
+    ///     is using WindowsLive credentials, ExchangeService needs to use the WS-Security endpoint.
     /// </remarks>
     /// <param name="uri">The URI.</param>
     /// <returns>Adjusted URL.</returns>
     private Uri AdjustServiceUriFromCredentials(Uri uri)
     {
-        return (this.Credentials != null) ? this.Credentials.AdjustUrl(uri) : uri;
+        return (Credentials != null) ? Credentials.AdjustUrl(uri) : uri;
     }
 
     /// <summary>
-    /// Gets the EWS URL from Autodiscover.
+    ///     Gets the EWS URL from Autodiscover.
     /// </summary>
     /// <param name="emailAddress">The email address.</param>
     /// <param name="requestedServerVersion">Exchange version.</param>
@@ -5009,13 +5198,13 @@ public sealed class ExchangeService : ExchangeServiceBase
         AutodiscoverRedirectionUrlValidationCallback validateRedirectionUrlCallback
     )
     {
-        AutodiscoverService autodiscoverService = new AutodiscoverService(this, requestedServerVersion)
+        var autodiscoverService = new AutodiscoverService(this, requestedServerVersion)
         {
             RedirectionUrlValidationCallback = validateRedirectionUrlCallback,
-            EnableScpLookup = this.EnableScpLookup
+            EnableScpLookup = EnableScpLookup
         };
 
-        GetUserSettingsResponse response = await autodiscoverService.GetUserSettings(
+        var response = await autodiscoverService.GetUserSettings(
             emailAddress,
             UserSettingName.InternalEwsUrl,
             UserSettingName.ExternalEwsUrl
@@ -5024,7 +5213,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         switch (response.ErrorCode)
         {
             case AutodiscoverErrorCode.NoError:
-                return this.GetEwsUrlFromResponse(response, autodiscoverService.IsExternal.GetValueOrDefault(true));
+                return GetEwsUrlFromResponse(response, autodiscoverService.IsExternal.GetValueOrDefault(true));
 
             case AutodiscoverErrorCode.InvalidUser:
                 throw new ServiceRemoteException(string.Format(Strings.InvalidUser, emailAddress));
@@ -5035,7 +5224,7 @@ public sealed class ExchangeService : ExchangeServiceBase
                 );
 
             default:
-                this.TraceMessage(
+                TraceMessage(
                     TraceFlags.AutodiscoverConfiguration,
                     string.Format(
                         "No EWS Url returned for user {0}, error code is {1}",
@@ -5049,7 +5238,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the EWS URL from Autodiscover GetUserSettings response.
+    ///     Gets the EWS URL from Autodiscover GetUserSettings response.
     /// </summary>
     /// <param name="response">The response.</param>
     /// <param name="isExternal">If true, Autodiscover call was made externally.</param>
@@ -5061,14 +5250,15 @@ public sealed class ExchangeService : ExchangeServiceBase
         // Figure out which URL to use: Internal or External.
         // AutoDiscover may not return an external protocol. First try external, then internal.
         // Either protocol may be returned without a configured URL.
-        if ((isExternal && response.TryGetSettingValue<string>(UserSettingName.ExternalEwsUrl, out uriString)) &&
+        if ((isExternal && response.TryGetSettingValue(UserSettingName.ExternalEwsUrl, out uriString)) &&
             !string.IsNullOrEmpty(uriString))
         {
             return new Uri(uriString);
         }
-        else if ((response.TryGetSettingValue<string>(UserSettingName.InternalEwsUrl, out uriString) ||
-                  response.TryGetSettingValue<string>(UserSettingName.ExternalEwsUrl, out uriString)) &&
-                 !string.IsNullOrEmpty(uriString))
+
+        if ((response.TryGetSettingValue(UserSettingName.InternalEwsUrl, out uriString) ||
+             response.TryGetSettingValue(UserSettingName.ExternalEwsUrl, out uriString)) &&
+            !string.IsNullOrEmpty(uriString))
         {
             return new Uri(uriString);
         }
@@ -5083,7 +5273,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region ClientAccessTokens
 
     /// <summary>
-    /// GetClientAccessToken
+    ///     GetClientAccessToken
     /// </summary>
     /// <param name="idAndTypes">Id and Types</param>
     /// <returns>A ServiceResponseCollection providing token results for each of the specified id and types.</returns>
@@ -5091,29 +5281,28 @@ public sealed class ExchangeService : ExchangeServiceBase
         IEnumerable<KeyValuePair<string, ClientAccessTokenType>> idAndTypes
     )
     {
-        GetClientAccessTokenRequest request = new GetClientAccessTokenRequest(this, ServiceErrorHandling.ReturnErrors);
-        List<ClientAccessTokenRequest> requestList = new List<ClientAccessTokenRequest>();
-        foreach (KeyValuePair<string, ClientAccessTokenType> idAndType in idAndTypes)
+        var request = new GetClientAccessTokenRequest(this, ServiceErrorHandling.ReturnErrors);
+        var requestList = new List<ClientAccessTokenRequest>();
+        foreach (var idAndType in idAndTypes)
         {
-            ClientAccessTokenRequest clientAccessTokenRequest =
-                new ClientAccessTokenRequest(idAndType.Key, idAndType.Value);
+            var clientAccessTokenRequest = new ClientAccessTokenRequest(idAndType.Key, idAndType.Value);
             requestList.Add(clientAccessTokenRequest);
         }
 
-        return this.GetClientAccessToken(requestList.ToArray());
+        return GetClientAccessToken(requestList.ToArray());
     }
 
     /// <summary>
-    /// GetClientAccessToken
+    ///     GetClientAccessToken
     /// </summary>
     /// <param name="tokenRequests">Token requests array</param>
     /// <returns>A ServiceResponseCollection providing token results for each of the specified id and types.</returns>
     public Task<ServiceResponseCollection<GetClientAccessTokenResponse>> GetClientAccessToken(
         ClientAccessTokenRequest[] tokenRequests,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetClientAccessTokenRequest request = new GetClientAccessTokenRequest(this, ServiceErrorHandling.ReturnErrors);
+        var request = new GetClientAccessTokenRequest(this, ServiceErrorHandling.ReturnErrors);
         request.TokenRequests = tokenRequests;
         return request.ExecuteAsync(token);
     }
@@ -5124,17 +5313,17 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Client Extensibility
 
     /// <summary>
-    /// Get the app manifests.
+    ///     Get the app manifests.
     /// </summary>
     /// <returns>Collection of manifests</returns>
-    public async Task<Collection<XmlDocument>> GetAppManifests(CancellationToken token = default(CancellationToken))
+    public async Task<Collection<XmlDocument>> GetAppManifests(CancellationToken token = default)
     {
-        GetAppManifestsRequest request = new GetAppManifestsRequest(this);
+        var request = new GetAppManifestsRequest(this);
         return (await request.Execute(token).ConfigureAwait(false)).Manifests;
     }
 
     /// <summary>
-    /// Get the app manifests.  Works with Exchange 2013 SP1 or later EWS.
+    ///     Get the app manifests.  Works with Exchange 2013 SP1 or later EWS.
     /// </summary>
     /// <param name="apiVersionSupported">The api version supported by the client.</param>
     /// <param name="schemaVersionSupported">The schema version supported by the client.</param>
@@ -5142,10 +5331,10 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<Collection<ClientApp>> GetAppManifests(
         string apiVersionSupported,
         string schemaVersionSupported,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetAppManifestsRequest request = new GetAppManifestsRequest(this);
+        var request = new GetAppManifestsRequest(this);
         request.ApiVersionSupported = apiVersionSupported;
         request.SchemaVersionSupported = schemaVersionSupported;
 
@@ -5153,36 +5342,37 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Install App. 
+    ///     Install App.
     /// </summary>
-    /// <param name="manifestStream">The manifest's plain text XML stream. 
-    /// Notice: Stream has state. If you want this function read from the expected position of the stream,
-    /// please make sure set read position by manifestStream.Position = expectedPosition.
-    /// Be aware read manifestStream.Lengh puts stream's Position at stream end.
-    /// If you retrieve manifestStream.Lengh before call this function, nothing will be read.
-    /// When this function succeeds, manifestStream is closed. This is by EWS design to 
-    /// release resource in timely manner. </param>
+    /// <param name="manifestStream">
+    ///     The manifest's plain text XML stream.
+    ///     Notice: Stream has state. If you want this function read from the expected position of the stream,
+    ///     please make sure set read position by manifestStream.Position = expectedPosition.
+    ///     Be aware read manifestStream.Lengh puts stream's Position at stream end.
+    ///     If you retrieve manifestStream.Lengh before call this function, nothing will be read.
+    ///     When this function succeeds, manifestStream is closed. This is by EWS design to
+    ///     release resource in timely manner.
+    /// </param>
     /// <remarks>Exception will be thrown for errors. </remarks>
-    public System.Threading.Tasks.Task InstallApp(
-        Stream manifestStream,
-        CancellationToken token = default(CancellationToken)
-    )
+    public System.Threading.Tasks.Task InstallApp(Stream manifestStream, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(manifestStream, "manifestStream");
 
-        return this.InternalInstallApp(manifestStream, null, null, false, token);
+        return InternalInstallApp(manifestStream, null, null, false, token);
     }
 
     /// <summary>
-    /// Install App. 
+    ///     Install App.
     /// </summary>
-    /// <param name="manifestStream">The manifest's plain text XML stream. 
-    /// Notice: Stream has state. If you want this function read from the expected position of the stream,
-    /// please make sure set read position by manifestStream.Position = expectedPosition.
-    /// Be aware read manifestStream.Lengh puts stream's Position at stream end.
-    /// If you retrieve manifestStream.Lengh before call this function, nothing will be read.
-    /// When this function succeeds, manifestStream is closed. This is by EWS design to 
-    /// release resource in timely manner. </param>
+    /// <param name="manifestStream">
+    ///     The manifest's plain text XML stream.
+    ///     Notice: Stream has state. If you want this function read from the expected position of the stream,
+    ///     please make sure set read position by manifestStream.Position = expectedPosition.
+    ///     Be aware read manifestStream.Lengh puts stream's Position at stream end.
+    ///     If you retrieve manifestStream.Lengh before call this function, nothing will be read.
+    ///     When this function succeeds, manifestStream is closed. This is by EWS design to
+    ///     release resource in timely manner.
+    /// </param>
     /// <param name="marketplaceAssetId">The asset id of the addin in marketplace</param>
     /// <param name="marketplaceContentMarket">The target market for content</param>
     /// <param name="sendWelcomeEmail">Whether to send welcome email for the addin</param>
@@ -5198,35 +5388,29 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         EwsUtilities.ValidateParam(manifestStream, "manifestStream");
 
-        InstallAppRequest request = new InstallAppRequest(
-            this,
-            manifestStream,
-            marketplaceAssetId,
-            marketplaceContentMarket,
-            false
-        );
+        var request = new InstallAppRequest(this, manifestStream, marketplaceAssetId, marketplaceContentMarket, false);
 
-        InstallAppResponse response = await request.Execute(token).ConfigureAwait(false);
+        var response = await request.Execute(token).ConfigureAwait(false);
 
         return response.WasFirstInstall;
     }
 
     /// <summary>
-    /// Uninstall app. 
+    ///     Uninstall app.
     /// </summary>
     /// <param name="id">App ID</param>
     /// <remarks>Exception will be thrown for errors. </remarks>
-    public System.Threading.Tasks.Task UninstallApp(string id, CancellationToken token = default(CancellationToken))
+    public System.Threading.Tasks.Task UninstallApp(string id, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(id, "id");
 
-        UninstallAppRequest request = new UninstallAppRequest(this, id);
+        var request = new UninstallAppRequest(this, id);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Disable App.
+    ///     Disable App.
     /// </summary>
     /// <param name="id">App ID</param>
     /// <param name="disableReason">Disable reason</param>
@@ -5234,39 +5418,35 @@ public sealed class ExchangeService : ExchangeServiceBase
     public System.Threading.Tasks.Task DisableApp(
         string id,
         DisableReasonType disableReason,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(id, "id");
         EwsUtilities.ValidateParam(disableReason, "disableReason");
 
-        DisableAppRequest request = new DisableAppRequest(this, id, disableReason);
+        var request = new DisableAppRequest(this, id, disableReason);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Sets the consent state of an extension.
+    ///     Sets the consent state of an extension.
     /// </summary>
     /// <param name="id">Extension id.</param>
     /// <param name="state">Sets the consent state of an extension.</param>
     /// <remarks>Exception will be thrown for errors. </remarks>
-    public System.Threading.Tasks.Task RegisterConsent(
-        string id,
-        ConsentState state,
-        CancellationToken token = default(CancellationToken)
-    )
+    public System.Threading.Tasks.Task RegisterConsent(string id, ConsentState state, CancellationToken token = default)
     {
         EwsUtilities.ValidateParam(id, "id");
         EwsUtilities.ValidateParam(state, "state");
 
-        RegisterConsentRequest request = new RegisterConsentRequest(this, id, state);
+        var request = new RegisterConsentRequest(this, id, state);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Get App Marketplace Url.
+    ///     Get App Marketplace Url.
     /// </summary>
     /// <remarks>Exception will be thrown for errors. </remarks>
     public Task<string> GetAppMarketplaceUrl()
@@ -5275,7 +5455,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get App Marketplace Url.  Works with Exchange 2013 SP1 or later EWS.
+    ///     Get App Marketplace Url.  Works with Exchange 2013 SP1 or later EWS.
     /// </summary>
     /// <param name="apiVersionSupported">The api version supported by the client.</param>
     /// <param name="schemaVersionSupported">The schema version supported by the client.</param>
@@ -5283,10 +5463,10 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<string> GetAppMarketplaceUrl(
         string apiVersionSupported,
         string schemaVersionSupported,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetAppMarketplaceUrlRequest request = new GetAppMarketplaceUrlRequest(this);
+        var request = new GetAppMarketplaceUrlRequest(this);
         request.ApiVersionSupported = apiVersionSupported;
         request.SchemaVersionSupported = schemaVersionSupported;
 
@@ -5294,26 +5474,36 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get the client extension data. This method is used in server-to-server calls to retrieve ORG extensions for
-    /// admin powershell/UMC access and user's powershell/UMC access as well as user's activation for OWA/Outlook.
-    /// This is expected to never be used or called directly from user client.
+    ///     Get the client extension data. This method is used in server-to-server calls to retrieve ORG extensions for
+    ///     admin powershell/UMC access and user's powershell/UMC access as well as user's activation for OWA/Outlook.
+    ///     This is expected to never be used or called directly from user client.
     /// </summary>
     /// <param name="requestedExtensionIds">An array of requested extension IDs to return.</param>
-    /// <param name="shouldReturnEnabledOnly">Whether enabled extension only should be returned, e.g. for user's
-    /// OWA/Outlook activation scenario.</param>
+    /// <param name="shouldReturnEnabledOnly">
+    ///     Whether enabled extension only should be returned, e.g. for user's
+    ///     OWA/Outlook activation scenario.
+    /// </param>
     /// <param name="isUserScope">Whether it's called from admin or user scope</param>
-    /// <param name="userId">Specifies optional (if called with user scope) user identity. This will allow to do proper
-    /// filtering in cases where admin installs an extension for specific users only</param>
-    /// <param name="userEnabledExtensionIds">Optional list of org extension IDs which user enabled. This is necessary for
-    /// proper result filtering on the server end. E.g. if admin installed N extensions but didn't enable them, it does not
-    /// make sense to return manifests for those which user never enabled either. Used only when asked
-    /// for enabled extension only (activation scenario).</param>
-    /// <param name="userDisabledExtensionIds">Optional list of org extension IDs which user disabled. This is necessary for
-    /// proper result filtering on the server end. E.g. if admin installed N optional extensions and enabled them, it does
-    /// not make sense to retrieve manifests for extensions which user disabled for him or herself. Used only when asked
-    /// for enabled extension only (activation scenario).</param>
-    /// <param name="isDebug">Optional flag to indicate whether it is debug mode. 
-    /// If it is, org master table in arbitration mailbox will be returned for debugging purpose.</param>
+    /// <param name="userId">
+    ///     Specifies optional (if called with user scope) user identity. This will allow to do proper
+    ///     filtering in cases where admin installs an extension for specific users only
+    /// </param>
+    /// <param name="userEnabledExtensionIds">
+    ///     Optional list of org extension IDs which user enabled. This is necessary for
+    ///     proper result filtering on the server end. E.g. if admin installed N extensions but didn't enable them, it does not
+    ///     make sense to return manifests for those which user never enabled either. Used only when asked
+    ///     for enabled extension only (activation scenario).
+    /// </param>
+    /// <param name="userDisabledExtensionIds">
+    ///     Optional list of org extension IDs which user disabled. This is necessary for
+    ///     proper result filtering on the server end. E.g. if admin installed N optional extensions and enabled them, it does
+    ///     not make sense to retrieve manifests for extensions which user disabled for him or herself. Used only when asked
+    ///     for enabled extension only (activation scenario).
+    /// </param>
+    /// <param name="isDebug">
+    ///     Optional flag to indicate whether it is debug mode.
+    ///     If it is, org master table in arbitration mailbox will be returned for debugging purpose.
+    /// </param>
     /// <returns>Collection of ClientExtension objects</returns>
     public Task<GetClientExtensionResponse> GetClientExtension(
         StringList requestedExtensionIds,
@@ -5323,10 +5513,10 @@ public sealed class ExchangeService : ExchangeServiceBase
         StringList userEnabledExtensionIds,
         StringList userDisabledExtensionIds,
         bool isDebug,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        GetClientExtensionRequest request = new GetClientExtensionRequest(
+        var request = new GetClientExtensionRequest(
             this,
             requestedExtensionIds,
             shouldReturnEnabledOnly,
@@ -5341,41 +5531,40 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Get the OME (i.e. Office Message Encryption) configuration data. This method is used in server-to-server calls to retrieve OME configuration
+    ///     Get the OME (i.e. Office Message Encryption) configuration data. This method is used in server-to-server calls to
+    ///     retrieve OME configuration
     /// </summary>
     /// <returns>OME Configuration response object</returns>
-    public Task<GetOMEConfigurationResponse> GetOMEConfiguration(CancellationToken token = default(CancellationToken))
+    public Task<GetOMEConfigurationResponse> GetOMEConfiguration(CancellationToken token = default)
     {
-        GetOMEConfigurationRequest request = new GetOMEConfigurationRequest(this);
+        var request = new GetOMEConfigurationRequest(this);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Set the OME (i.e. Office Message Encryption) configuration data. This method is used in server-to-server calls to set encryption configuration
+    ///     Set the OME (i.e. Office Message Encryption) configuration data. This method is used in server-to-server calls to
+    ///     set encryption configuration
     /// </summary>
     /// <param name="xml">The xml</param>
-    public System.Threading.Tasks.Task SetOMEConfiguration(
-        string xml,
-        CancellationToken token = default(CancellationToken)
-    )
+    public System.Threading.Tasks.Task SetOMEConfiguration(string xml, CancellationToken token = default)
     {
-        SetOMEConfigurationRequest request = new SetOMEConfigurationRequest(this, xml);
+        var request = new SetOMEConfigurationRequest(this, xml);
 
         return request.Execute(token);
     }
 
     /// <summary>
-    /// Set the client extension data. This method is used in server-to-server calls to install/uninstall/configure ORG
-    /// extensions to support admin's management of ORG extensions via powershell/UMC.
+    ///     Set the client extension data. This method is used in server-to-server calls to install/uninstall/configure ORG
+    ///     extensions to support admin's management of ORG extensions via powershell/UMC.
     /// </summary>
     /// <param name="actions">List of actions to execute.</param>
     public System.Threading.Tasks.Task SetClientExtension(
         List<SetClientExtensionAction> actions,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
-        SetClientExtensionRequest request = new SetClientExtensionRequest(this, actions);
+        var request = new SetClientExtensionRequest(this, actions);
 
         return request.ExecuteAsync(token);
     }
@@ -5386,7 +5575,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Groups
 
     /// <summary>
-    /// Gets the list of unified groups associated with the user
+    ///     Gets the list of unified groups associated with the user
     /// </summary>
     /// <param name="requestedUnifiedGroupsSets">The Requested Unified Groups Sets</param>
     /// <param name="userSmtpAddress">The smtp address of accessing user.</param>
@@ -5394,31 +5583,31 @@ public sealed class ExchangeService : ExchangeServiceBase
     public Task<Collection<UnifiedGroupsSet>> GetUserUnifiedGroups(
         IEnumerable<RequestedUnifiedGroupsSet> requestedUnifiedGroupsSets,
         string userSmtpAddress,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(requestedUnifiedGroupsSets, "requestedUnifiedGroupsSets");
         EwsUtilities.ValidateParam(userSmtpAddress, "userSmtpAddress");
 
-        return this.GetUserUnifiedGroupsInternal(requestedUnifiedGroupsSets, userSmtpAddress, token);
+        return GetUserUnifiedGroupsInternal(requestedUnifiedGroupsSets, userSmtpAddress, token);
     }
 
     /// <summary>
-    /// Gets the list of unified groups associated with the user
+    ///     Gets the list of unified groups associated with the user
     /// </summary>
     /// <param name="requestedUnifiedGroupsSets">The Requested Unified Groups Sets</param>
     /// <returns>UserUnified groups.</returns>
     public Task<Collection<UnifiedGroupsSet>> GetUserUnifiedGroups(
         IEnumerable<RequestedUnifiedGroupsSet> requestedUnifiedGroupsSets,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(requestedUnifiedGroupsSets, "requestedUnifiedGroupsSets");
-        return this.GetUserUnifiedGroupsInternal(requestedUnifiedGroupsSets, null, token);
+        return GetUserUnifiedGroupsInternal(requestedUnifiedGroupsSets, null, token);
     }
 
     /// <summary>
-    /// Gets the list of unified groups associated with the user
+    ///     Gets the list of unified groups associated with the user
     /// </summary>
     /// <param name="requestedUnifiedGroupsSets">The Requested Unified Groups Sets</param>
     /// <param name="userSmtpAddress">The smtp address of accessing user.</param>
@@ -5429,7 +5618,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         CancellationToken token
     )
     {
-        GetUserUnifiedGroupsRequest request = new GetUserUnifiedGroupsRequest(this);
+        var request = new GetUserUnifiedGroupsRequest(this);
 
         if (!string.IsNullOrEmpty(userSmtpAddress))
         {
@@ -5445,7 +5634,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Gets the UnifiedGroupsUnseenCount for the group specfied 
+    ///     Gets the UnifiedGroupsUnseenCount for the group specfied
     /// </summary>
     /// <param name="groupMailboxSmtpAddress">The smtpaddress of group for which unseendata is desired</param>
     /// <param name="lastVisitedTimeUtc">The LastVisitedTimeUtc of group for which unseendata is desired</param>
@@ -5453,12 +5642,12 @@ public sealed class ExchangeService : ExchangeServiceBase
     public async Task<int> GetUnifiedGroupUnseenCount(
         string groupMailboxSmtpAddress,
         DateTime lastVisitedTimeUtc,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(groupMailboxSmtpAddress, "groupMailboxSmtpAddress");
 
-        GetUnifiedGroupUnseenCountRequest request = new GetUnifiedGroupUnseenCountRequest(
+        var request = new GetUnifiedGroupUnseenCountRequest(
             this,
             lastVisitedTimeUtc,
             UnifiedGroupIdentityType.SmtpAddress,
@@ -5471,19 +5660,19 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Sets the LastVisitedTime for the group specfied 
+    ///     Sets the LastVisitedTime for the group specfied
     /// </summary>
     /// <param name="groupMailboxSmtpAddress">The smtpaddress of group for which unseendata is desired</param>
     /// <param name="lastVisitedTimeUtc">The LastVisitedTimeUtc of group for which unseendata is desired</param>
     public System.Threading.Tasks.Task SetUnifiedGroupLastVisitedTime(
         string groupMailboxSmtpAddress,
         DateTime lastVisitedTimeUtc,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateParam(groupMailboxSmtpAddress, "groupMailboxSmtpAddress");
 
-        SetUnifiedGroupLastVisitedTimeRequest request = new SetUnifiedGroupLastVisitedTimeRequest(
+        var request = new SetUnifiedGroupLastVisitedTimeRequest(
             this,
             lastVisitedTimeUtc,
             UnifiedGroupIdentityType.SmtpAddress,
@@ -5499,14 +5688,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Diagnostic Method -- Only used by test
 
     /// <summary>
-    /// Executes the diagnostic method.
+    ///     Executes the diagnostic method.
     /// </summary>
     /// <param name="verb">The verb.</param>
     /// <param name="parameter">The parameter.</param>
     /// <returns></returns>
     internal async Task<XmlDocument> ExecuteDiagnosticMethod(string verb, XmlNode parameter, CancellationToken token)
     {
-        ExecuteDiagnosticMethodRequest request = new ExecuteDiagnosticMethodRequest(this);
+        var request = new ExecuteDiagnosticMethodRequest(this);
         request.Verb = verb;
         request.Parameter = parameter;
 
@@ -5519,18 +5708,18 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Validation
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (this.Url == null)
+        if (Url == null)
         {
             throw new ServiceLocalException(Strings.ServiceUrlMustBeSet);
         }
 
-        if (this.PrivilegedUserId != null && this.ImpersonatedUserId != null)
+        if (PrivilegedUserId != null && ImpersonatedUserId != null)
         {
             throw new ServiceLocalException(Strings.CannotSetBothImpersonatedAndPrivilegedUser);
         }
@@ -5539,17 +5728,17 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Validates a new-style version string.
-    /// This validation is not as strict as server-side validation.
+    ///     Validates a new-style version string.
+    ///     This validation is not as strict as server-side validation.
     /// </summary>
     /// <param name="version"> the version string </param>
     /// <remarks>
-    /// The target version string has a required part and an optional part.
-    /// The required part is two integers separated by a dot, major.minor
-    /// The optional part is a minimum required version, minimum=major.minor
-    /// Examples:
-    ///   X-EWS-TargetVersion: 2.4
-    ///   X-EWS_TargetVersion: 2.9; minimum=2.4
+    ///     The target version string has a required part and an optional part.
+    ///     The required part is two integers separated by a dot, major.minor
+    ///     The optional part is a minimum required version, minimum=major.minor
+    ///     Examples:
+    ///     X-EWS-TargetVersion: 2.4
+    ///     X-EWS_TargetVersion: 2.9; minimum=2.4
     /// </remarks>
     internal static void ValidateTargetVersion(string version)
     {
@@ -5563,17 +5752,17 @@ public sealed class ExchangeService : ExchangeServiceBase
             throw new ArgumentException("Target version must not be empty.");
         }
 
-        string[] parts = version.Trim().Split(ParameterSeparator);
+        var parts = version.Trim().Split(ParameterSeparator);
         switch (parts.Length)
         {
             case 1:
                 // Validate the header value. We allow X.Y or Exchange20XX.
-                string part1 = parts[0].Trim();
+                var part1 = parts[0].Trim();
                 if (parts[0].StartsWith(LegacyVersionPrefix))
                 {
                     // Close enough; misses corner cases like "Exchange2001". Server will do complete validation.
                 }
-                else if (ExchangeService.IsMajorMinor(part1))
+                else if (IsMajorMinor(part1))
                 {
                     // Also close enough; misses corner cases like ".5".
                 }
@@ -5586,11 +5775,11 @@ public sealed class ExchangeService : ExchangeServiceBase
 
             case 2:
                 // Validate the optional minimum version parameter, "minimum=X.Y"
-                string part2 = parts[1].Trim();
-                string[] minParts = part2.Split(ParameterValueSeparator);
+                var part2 = parts[1].Trim();
+                var minParts = part2.Split(ParameterValueSeparator);
                 if (minParts.Length == 2 &&
                     minParts[0].Trim().Equals(ParameterName, StringComparison.OrdinalIgnoreCase) &&
-                    ExchangeService.IsMajorMinor(minParts[1].Trim()))
+                    IsMajorMinor(minParts[1].Trim()))
                 {
                     goto case 1;
                 }
@@ -5606,15 +5795,15 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         const char MajorMinorSeparator = '.';
 
-        string[] parts = versionPart.Split(MajorMinorSeparator);
+        var parts = versionPart.Split(MajorMinorSeparator);
         if (parts.Length != 2)
         {
             return false;
         }
 
-        foreach (string s in parts)
+        foreach (var s in parts)
         {
-            foreach (char c in s)
+            foreach (var c in s)
             {
                 if (!Char.IsDigit(c))
                 {
@@ -5632,17 +5821,16 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeService"/> class, targeting
-    /// the latest supported version of EWS and scoped to the system's current time zone.
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the latest supported version of EWS and scoped to the system's current time zone.
     /// </summary>
     public ExchangeService()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeService"/> class, targeting
-    /// the latest supported version of EWS and scoped to the specified time zone.
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the latest supported version of EWS and scoped to the specified time zone.
     /// </summary>
     /// <param name="timeZone">The time zone to which the service is scoped.</param>
     public ExchangeService(TimeZoneInfo timeZone)
@@ -5651,8 +5839,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeService"/> class, targeting
-    /// the specified version of EWS and scoped to the system's current time zone.
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the system's current time zone.
     /// </summary>
     /// <param name="requestedServerVersion">The version of EWS that the service targets.</param>
     public ExchangeService(ExchangeVersion requestedServerVersion)
@@ -5661,8 +5849,8 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeService"/> class, targeting
-    /// the specified version of EWS and scoped to the specified time zone.
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the specified time zone.
     /// </summary>
     /// <param name="requestedServerVersion">The version of EWS that the service targets.</param>
     /// <param name="timeZone">The time zone to which the service is scoped.</param>
@@ -5672,44 +5860,44 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeService"/> class, targeting
-    /// the specified version of EWS and scoped to the system's current time zone.
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the system's current time zone.
     /// </summary>
     /// <param name="targetServerVersion">The version (new style) of EWS that the service targets.</param>
     /// <remarks>
-    /// The target version string has a required part and an optional part.
-    /// The required part is two integers separated by a dot, major.minor
-    /// The optional part is a minimum required version, minimum=major.minor
-    /// Examples:
-    ///   X-EWS-TargetVersion: 2.4
-    ///   X-EWS_TargetVersion: 2.9; minimum=2.4
+    ///     The target version string has a required part and an optional part.
+    ///     The required part is two integers separated by a dot, major.minor
+    ///     The optional part is a minimum required version, minimum=major.minor
+    ///     Examples:
+    ///     X-EWS-TargetVersion: 2.4
+    ///     X-EWS_TargetVersion: 2.9; minimum=2.4
     /// </remarks>
     internal ExchangeService(string targetServerVersion)
         : base(ExchangeVersion.Exchange2013)
     {
-        ExchangeService.ValidateTargetVersion(targetServerVersion);
-        this.TargetServerVersion = targetServerVersion;
+        ValidateTargetVersion(targetServerVersion);
+        TargetServerVersion = targetServerVersion;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExchangeService"/> class, targeting
-    /// the specified version of EWS and scoped to the specified time zone.
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the specified time zone.
     /// </summary>
     /// <param name="targetServerVersion">The version (new style) of EWS that the service targets.</param>
     /// <param name="timeZone">The time zone to which the service is scoped.</param>
     /// <remarks>
-    /// The new style version string has a required part and an optional part.
-    /// The required part is two integers separated by a dot, major.minor
-    /// The optional part is a minimum required version, minimum=major.minor
-    /// Examples:
-    ///   2.4
-    ///   2.9; minimum=2.4
+    ///     The new style version string has a required part and an optional part.
+    ///     The required part is two integers separated by a dot, major.minor
+    ///     The optional part is a minimum required version, minimum=major.minor
+    ///     Examples:
+    ///     2.4
+    ///     2.9; minimum=2.4
     /// </remarks>
     internal ExchangeService(string targetServerVersion, TimeZoneInfo timeZone)
         : base(ExchangeVersion.Exchange2013, timeZone)
     {
-        ExchangeService.ValidateTargetVersion(targetServerVersion);
-        this.TargetServerVersion = targetServerVersion;
+        ValidateTargetVersion(targetServerVersion);
+        TargetServerVersion = targetServerVersion;
     }
 
     #endregion
@@ -5718,35 +5906,32 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Utilities
 
     /// <summary>
-    /// Creates an HttpWebRequest instance and initializes it with the appropriate parameters,
-    /// based on the configuration of this service object.
+    ///     Creates an HttpWebRequest instance and initializes it with the appropriate parameters,
+    ///     based on the configuration of this service object.
     /// </summary>
     /// <param name="methodName">Name of the method.</param>
     /// <returns>
-    /// An initialized instance of HttpWebRequest.
+    ///     An initialized instance of HttpWebRequest.
     /// </returns>
     internal IEwsHttpWebRequest PrepareHttpWebRequest(string methodName)
     {
-        Uri endpoint = this.Url;
-        this.RegisterCustomBasicAuthModule();
+        var endpoint = Url;
+        RegisterCustomBasicAuthModule();
 
-        endpoint = this.AdjustServiceUriFromCredentials(endpoint);
+        endpoint = AdjustServiceUriFromCredentials(endpoint);
 
-        IEwsHttpWebRequest request = this.PrepareHttpWebRequestForUrl(endpoint, this.AcceptGzipEncoding, true);
+        var request = PrepareHttpWebRequestForUrl(endpoint, AcceptGzipEncoding, true);
 
-        if (!String.IsNullOrEmpty(this.TargetServerVersion))
+        if (!String.IsNullOrEmpty(TargetServerVersion))
         {
-            request.Headers.TryAddWithoutValidation(
-                ExchangeService.TargetServerVersionHeaderName,
-                this.TargetServerVersion
-            );
+            request.Headers.TryAddWithoutValidation(TargetServerVersionHeaderName, TargetServerVersion);
         }
 
         return request;
     }
 
     /// <summary>
-    /// Sets the type of the content.
+    ///     Sets the type of the content.
     /// </summary>
     /// <param name="request">The request.</param>
     internal override void SetContentType(IEwsHttpWebRequest request)
@@ -5756,7 +5941,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     /// <summary>
-    /// Processes an HTTP error response.
+    ///     Processes an HTTP error response.
     /// </summary>
     /// <param name="httpWebResponse">The HTTP web response.</param>
     /// <param name="webException">The web exception.</param>
@@ -5765,7 +5950,7 @@ public sealed class ExchangeService : ExchangeServiceBase
         EwsHttpClientException webException
     )
     {
-        this.InternalProcessHttpErrorResponse(
+        InternalProcessHttpErrorResponse(
             httpWebResponse,
             webException,
             TraceFlags.EwsResponseHttpHeaders,
@@ -5779,141 +5964,138 @@ public sealed class ExchangeService : ExchangeServiceBase
     #region Properties
 
     /// <summary>
-    /// Gets or sets the URL of the Exchange Web Services. 
+    ///     Gets or sets the URL of the Exchange Web Services.
     /// </summary>
     public Uri Url
     {
-        get { return this.url; }
-        set { this.url = value; }
+        get => url;
+        set => url = value;
     }
 
     /// <summary>
-    /// Gets or sets the Id of the user that EWS should impersonate. 
+    ///     Gets or sets the Id of the user that EWS should impersonate.
     /// </summary>
     public ImpersonatedUserId ImpersonatedUserId
     {
-        get { return this.impersonatedUserId; }
-        set { this.impersonatedUserId = value; }
+        get => impersonatedUserId;
+        set => impersonatedUserId = value;
     }
 
     /// <summary>
-    /// Gets or sets the Id of the user that EWS should open his/her mailbox with privileged logon type. 
+    ///     Gets or sets the Id of the user that EWS should open his/her mailbox with privileged logon type.
     /// </summary>
     internal PrivilegedUserId PrivilegedUserId
     {
-        get { return this.privilegedUserId; }
-        set { this.privilegedUserId = value; }
+        get => privilegedUserId;
+        set => privilegedUserId = value;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     public ManagementRoles ManagementRoles
     {
-        get { return this.managementRoles; }
-        set { this.managementRoles = value; }
+        get => managementRoles;
+        set => managementRoles = value;
     }
 
     /// <summary>
-    /// Gets or sets the preferred culture for messages returned by the Exchange Web Services.
+    ///     Gets or sets the preferred culture for messages returned by the Exchange Web Services.
     /// </summary>
     public CultureInfo PreferredCulture
     {
-        get { return this.preferredCulture; }
-        set { this.preferredCulture = value; }
+        get => preferredCulture;
+        set => preferredCulture = value;
     }
 
     /// <summary>
-    /// Gets or sets the DateTime precision for DateTime values returned from Exchange Web Services.
+    ///     Gets or sets the DateTime precision for DateTime values returned from Exchange Web Services.
     /// </summary>
     public DateTimePrecision DateTimePrecision
     {
-        get { return this.dateTimePrecision; }
-        set { this.dateTimePrecision = value; }
+        get => dateTimePrecision;
+        set => dateTimePrecision = value;
     }
 
     /// <summary>
-    /// Gets or sets a file attachment content handler.
+    ///     Gets or sets a file attachment content handler.
     /// </summary>
     public IFileAttachmentContentHandler FileAttachmentContentHandler
     {
-        get { return this.fileAttachmentContentHandler; }
-        set { this.fileAttachmentContentHandler = value; }
+        get => fileAttachmentContentHandler;
+        set => fileAttachmentContentHandler = value;
     }
 
     /// <summary>
-    /// Gets the time zone this service is scoped to.
+    ///     Gets the time zone this service is scoped to.
     /// </summary>
-    public new TimeZoneInfo TimeZone
-    {
-        get { return base.TimeZone; }
-    }
+    public new TimeZoneInfo TimeZone => base.TimeZone;
 
     /// <summary>
-    /// Provides access to the Unified Messaging functionalities.
+    ///     Provides access to the Unified Messaging functionalities.
     /// </summary>
     public UnifiedMessaging UnifiedMessaging
     {
         get
         {
-            if (this.unifiedMessaging == null)
+            if (unifiedMessaging == null)
             {
-                this.unifiedMessaging = new UnifiedMessaging(this);
+                unifiedMessaging = new UnifiedMessaging(this);
             }
 
-            return this.unifiedMessaging;
+            return unifiedMessaging;
         }
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the AutodiscoverUrl method should perform SCP (Service Connection Point) record lookup when determining
-    /// the Autodiscover service URL.
+    ///     Gets or sets a value indicating whether the AutodiscoverUrl method should perform SCP (Service Connection Point)
+    ///     record lookup when determining
+    ///     the Autodiscover service URL.
     /// </summary>
     public bool EnableScpLookup
     {
-        get { return this.enableScpLookup; }
-        set { this.enableScpLookup = value; }
+        get => enableScpLookup;
+        set => enableScpLookup = value;
     }
 
     /// <summary>
-    /// Exchange 2007 compatibility mode flag. (Off by default)
+    ///     Exchange 2007 compatibility mode flag. (Off by default)
     /// </summary>
     private bool exchange2007CompatibilityMode;
 
     /// <summary>
-    /// Gets or sets a value indicating whether Exchange2007 compatibility mode is enabled.
+    ///     Gets or sets a value indicating whether Exchange2007 compatibility mode is enabled.
     /// </summary>
     /// <remarks>
-    /// In order to support E12 servers, the Exchange2007CompatibilityMode property can be used 
-    /// to indicate that we should use "Exchange2007" as the server version string rather than 
-    /// Exchange2007_SP1.
+    ///     In order to support E12 servers, the Exchange2007CompatibilityMode property can be used
+    ///     to indicate that we should use "Exchange2007" as the server version string rather than
+    ///     Exchange2007_SP1.
     /// </remarks>
     internal bool Exchange2007CompatibilityMode
     {
-        get { return this.exchange2007CompatibilityMode; }
-        set { this.exchange2007CompatibilityMode = value; }
+        get => exchange2007CompatibilityMode;
+        set => exchange2007CompatibilityMode = value;
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether trace output is pretty printed.
+    ///     Gets or sets a value indicating whether trace output is pretty printed.
     /// </summary>
     public bool TraceEnablePrettyPrinting
     {
-        get { return this.traceEnablePrettyPrinting; }
-        set { this.traceEnablePrettyPrinting = value; }
+        get => traceEnablePrettyPrinting;
+        set => traceEnablePrettyPrinting = value;
     }
 
     /// <summary>
-    /// Gets or sets the target server version string (newer than Exchange2013).
+    ///     Gets or sets the target server version string (newer than Exchange2013).
     /// </summary>
     internal string TargetServerVersion
     {
-        get { return this.targetServerVersion; }
+        get => targetServerVersion;
 
         set
         {
-            ExchangeService.ValidateTargetVersion(value);
-            this.targetServerVersion = value;
+            ValidateTargetVersion(value);
+            targetServerVersion = value;
         }
     }
 

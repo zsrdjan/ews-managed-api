@@ -25,31 +25,27 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract Move/Copy Folder request.
+///     Represents an abstract Move/Copy Folder request.
 /// </summary>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
 internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folder, TResponse>
     where TResponse : ServiceResponse
 {
-    private FolderIdWrapperList folderIds = new FolderIdWrapperList();
+    private readonly FolderIdWrapperList folderIds = new FolderIdWrapperList();
 
     /// <summary>
-    /// Validates request.
+    ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(this.FolderIds, "FolderIds");
-        this.FolderIds.Validate(this.Service.RequestedServerVersion);
+        EwsUtilities.ValidateParamCollection(FolderIds, "FolderIds");
+        FolderIds.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MoveCopyFolderRequest&lt;TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="MoveCopyFolderRequest&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -59,29 +55,26 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     }
 
     /// <summary>
-    /// Writes the ids as XML.
+    ///     Writes the ids as XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteIdsToXml(EwsServiceXmlWriter writer)
     {
-        this.folderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FolderIds);
+        folderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FolderIds);
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.FolderIds.Count;
+        return FolderIds.Count;
     }
 
     /// <summary>
-    /// Gets the folder ids.
+    ///     Gets the folder ids.
     /// </summary>
     /// <value>The folder ids.</value>
-    internal FolderIdWrapperList FolderIds
-    {
-        get { return this.folderIds; }
-    }
+    internal FolderIdWrapperList FolderIds => folderIds;
 }

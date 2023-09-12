@@ -25,21 +25,14 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Xml;
-
 /// <summary>
-/// XML reader.
+///     XML reader.
 /// </summary>
 internal class EwsServiceXmlReader : EwsXmlReader
 {
     #region Private members
 
-    private ExchangeService service;
+    private readonly ExchangeService service;
 
     #endregion
 
@@ -47,7 +40,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
     #region Constructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EwsServiceXmlReader"/> class.
+    ///     Initializes a new instance of the <see cref="EwsServiceXmlReader" /> class.
     /// </summary>
     /// <param name="stream">The stream.</param>
     /// <param name="service">The service.</param>
@@ -61,67 +54,67 @@ internal class EwsServiceXmlReader : EwsXmlReader
 
 
     /// <summary>
-    /// Converts the specified string into a DateTime objects.
+    ///     Converts the specified string into a DateTime objects.
     /// </summary>
     /// <param name="dateTimeString">The date time string to convert.</param>
     /// <returns>A DateTime representing the converted string.</returns>
     private DateTime? ConvertStringToDateTime(string dateTimeString)
     {
-        return this.Service.ConvertUniversalDateTimeStringToLocalDateTime(dateTimeString);
+        return Service.ConvertUniversalDateTimeStringToLocalDateTime(dateTimeString);
     }
 
     /// <summary>
-    /// Converts the specified string into a unspecified Date object, ignoring offset.
+    ///     Converts the specified string into a unspecified Date object, ignoring offset.
     /// </summary>
     /// <param name="dateTimeString">The date time string to convert.</param>
     /// <returns>A DateTime representing the converted string.</returns>
     private DateTime? ConvertStringToUnspecifiedDate(string dateTimeString)
     {
-        return this.Service.ConvertStartDateToUnspecifiedDateTime(dateTimeString);
+        return Service.ConvertStartDateToUnspecifiedDateTime(dateTimeString);
     }
 
     /// <summary>
-    /// Reads the element value as date time.
+    ///     Reads the element value as date time.
     /// </summary>
     /// <returns>Element value.</returns>
     public DateTime? ReadElementValueAsDateTime()
     {
-        return this.ConvertStringToDateTime(this.ReadElementValue());
+        return ConvertStringToDateTime(ReadElementValue());
     }
 
     /// <summary>
-    /// Reads the element value as unspecified date.
+    ///     Reads the element value as unspecified date.
     /// </summary>
     /// <returns>Element value.</returns>
     public DateTime? ReadElementValueAsUnspecifiedDate()
     {
-        return this.ConvertStringToUnspecifiedDate(this.ReadElementValue());
+        return ConvertStringToUnspecifiedDate(ReadElementValue());
     }
 
     /// <summary>
-    /// Reads the element value as date time, assuming it is unbiased (e.g. 2009/01/01T08:00) 
-    /// and scoped to service's time zone.
+    ///     Reads the element value as date time, assuming it is unbiased (e.g. 2009/01/01T08:00)
+    ///     and scoped to service's time zone.
     /// </summary>
     /// <returns>The element's value as a DateTime object.</returns>
     public DateTime ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone()
     {
-        string elementValue = this.ReadElementValue();
-        return EwsUtilities.ParseAsUnbiasedDatetimescopedToServicetimeZone(elementValue, this.Service);
+        var elementValue = ReadElementValue();
+        return EwsUtilities.ParseAsUnbiasedDatetimescopedToServicetimeZone(elementValue, Service);
     }
 
     /// <summary>
-    /// Reads the element value as date time.
+    ///     Reads the element value as date time.
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
     /// <returns>Element value.</returns>
     public DateTime? ReadElementValueAsDateTime(XmlNamespace xmlNamespace, string localName)
     {
-        return this.ConvertStringToDateTime(this.ReadElementValue(xmlNamespace, localName));
+        return ConvertStringToDateTime(ReadElementValue(xmlNamespace, localName));
     }
 
     /// <summary>
-    /// Reads the service objects collection from XML.
+    ///     Reads the service objects collection from XML.
     /// </summary>
     /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
     /// <param name="collectionXmlNamespace">Namespace of the collection XML element.</param>
@@ -141,41 +134,36 @@ internal class EwsServiceXmlReader : EwsXmlReader
     )
         where TServiceObject : ServiceObject
     {
-        List<TServiceObject> serviceObjects = new List<TServiceObject>();
+        var serviceObjects = new List<TServiceObject>();
         TServiceObject serviceObject = null;
 
-        if (!this.IsStartElement(collectionXmlNamespace, collectionXmlElementName))
+        if (!IsStartElement(collectionXmlNamespace, collectionXmlElementName))
         {
-            this.ReadStartElement(collectionXmlNamespace, collectionXmlElementName);
+            ReadStartElement(collectionXmlNamespace, collectionXmlElementName);
         }
 
-        if (!this.IsEmptyElement)
+        if (!IsEmptyElement)
         {
             do
             {
-                this.Read();
+                Read();
 
-                if (this.IsStartElement())
+                if (IsStartElement())
                 {
-                    serviceObject = getObjectInstanceDelegate(this.Service, this.LocalName);
+                    serviceObject = getObjectInstanceDelegate(Service, LocalName);
 
                     if (serviceObject == null)
                     {
-                        this.SkipCurrentElement();
+                        SkipCurrentElement();
                     }
                     else
                     {
-                        if (string.Compare(
-                                this.LocalName,
-                                serviceObject.GetXmlElementName(),
-                                StringComparison.Ordinal
-                            ) !=
-                            0)
+                        if (string.Compare(LocalName, serviceObject.GetXmlElementName(), StringComparison.Ordinal) != 0)
                         {
                             throw new ServiceLocalException(
                                 string.Format(
                                     "The type of the object in the store ({0}) does not match that of the local object ({1}).",
-                                    this.LocalName,
+                                    LocalName,
                                     serviceObject.GetXmlElementName()
                                 )
                             );
@@ -186,14 +174,14 @@ internal class EwsServiceXmlReader : EwsXmlReader
                         serviceObjects.Add(serviceObject);
                     }
                 }
-            } while (!this.IsEndElement(collectionXmlNamespace, collectionXmlElementName));
+            } while (!IsEndElement(collectionXmlNamespace, collectionXmlElementName));
         }
 
         return serviceObjects;
     }
 
     /// <summary>
-    /// Reads the service objects collection from XML.
+    ///     Reads the service objects collection from XML.
     /// </summary>
     /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
     /// <param name="collectionXmlElementName">Name of the collection XML element.</param>
@@ -211,7 +199,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
     )
         where TServiceObject : ServiceObject
     {
-        return this.ReadServiceObjectsCollectionFromXml<TServiceObject>(
+        return ReadServiceObjectsCollectionFromXml(
             XmlNamespace.Messages,
             collectionXmlElementName,
             getObjectInstanceDelegate,
@@ -222,11 +210,8 @@ internal class EwsServiceXmlReader : EwsXmlReader
     }
 
     /// <summary>
-    /// Gets the service.
+    ///     Gets the service.
     /// </summary>
     /// <value>The service.</value>
-    public ExchangeService Service
-    {
-        get { return this.service; }
-    }
+    public ExchangeService Service => service;
 }

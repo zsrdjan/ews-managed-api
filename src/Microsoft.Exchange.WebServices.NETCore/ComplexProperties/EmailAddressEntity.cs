@@ -25,29 +25,25 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.IO;
-
 /// <summary>
-/// Represents an EmailAddressEntity object.
+///     Represents an EmailAddressEntity object.
 /// </summary>
 public sealed class EmailAddressEntity : ExtractedEntity
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddressEntity"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddressEntity" /> class.
     /// </summary>
     internal EmailAddressEntity()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets the meeting suggestion Location.
+    ///     Gets the meeting suggestion Location.
     /// </summary>
     public string EmailAddress { get; internal set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -56,7 +52,7 @@ public sealed class EmailAddressEntity : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgEmailAddress:
-                this.EmailAddress = reader.ReadElementValue();
+                EmailAddress = reader.ReadElementValue();
                 return true;
 
             default:

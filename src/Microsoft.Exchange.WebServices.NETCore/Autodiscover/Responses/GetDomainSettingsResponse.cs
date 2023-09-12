@@ -23,73 +23,59 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents the response to a GetDomainSettings call for an individual domain.
+///     Represents the response to a GetDomainSettings call for an individual domain.
 /// </summary>
 public sealed class GetDomainSettingsResponse : AutodiscoverResponse
 {
     private string domain;
     private string redirectTarget;
-    private Dictionary<DomainSettingName, object> settings;
-    private Collection<DomainSettingError> domainSettingErrors;
+    private readonly Dictionary<DomainSettingName, object> settings;
+    private readonly Collection<DomainSettingError> domainSettingErrors;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetDomainSettingsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetDomainSettingsResponse" /> class.
     /// </summary>
     public GetDomainSettingsResponse()
-        : base()
     {
-        this.domain = string.Empty;
-        this.settings = new Dictionary<DomainSettingName, object>();
-        this.domainSettingErrors = new Collection<DomainSettingError>();
+        domain = string.Empty;
+        settings = new Dictionary<DomainSettingName, object>();
+        domainSettingErrors = new Collection<DomainSettingError>();
     }
 
     /// <summary>
-    /// Gets the domain this response applies to.
+    ///     Gets the domain this response applies to.
     /// </summary>
     public string Domain
     {
-        get { return this.domain; }
-        internal set { this.domain = value; }
+        get => domain;
+        internal set => domain = value;
     }
 
     /// <summary>
-    /// Gets the redirectionTarget (URL or email address)
+    ///     Gets the redirectionTarget (URL or email address)
     /// </summary>
-    public string RedirectTarget
-    {
-        get { return this.redirectTarget; }
-    }
+    public string RedirectTarget => redirectTarget;
 
     /// <summary>
-    /// Gets the requested settings for the domain.
+    ///     Gets the requested settings for the domain.
     /// </summary>
-    public IDictionary<DomainSettingName, object> Settings
-    {
-        get { return this.settings; }
-    }
+    public IDictionary<DomainSettingName, object> Settings => settings;
 
     /// <summary>
-    /// Gets error information for settings that could not be returned.
+    ///     Gets error information for settings that could not be returned.
     /// </summary>
-    public Collection<DomainSettingError> DomainSettingErrors
-    {
-        get { return this.domainSettingErrors; }
-    }
+    public Collection<DomainSettingError> DomainSettingErrors => domainSettingErrors;
 
     /// <summary>
-    /// Loads response from XML.
+    ///     Loads response from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="endElementName">End element name.</param>
@@ -104,13 +90,13 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.RedirectTarget:
-                        this.redirectTarget = reader.ReadElementValue();
+                        redirectTarget = reader.ReadElementValue();
                         break;
                     case XmlElementNames.DomainSettingErrors:
-                        this.LoadDomainSettingErrorsFromXml(reader);
+                        LoadDomainSettingErrorsFromXml(reader);
                         break;
                     case XmlElementNames.DomainSettings:
-                        this.LoadDomainSettingsFromXml(reader);
+                        LoadDomainSettingsFromXml(reader);
                         break;
                     default:
                         base.LoadFromXml(reader, endElementName);
@@ -121,7 +107,7 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadDomainSettingsFromXml(EwsXmlReader reader)
@@ -134,7 +120,7 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
 
                 if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.DomainSetting))
                 {
-                    string settingClass = reader.ReadAttributeValue(
+                    var settingClass = reader.ReadAttributeValue(
                         XmlNamespace.XmlSchemaInstance,
                         XmlAttributeNames.Type
                     );
@@ -142,7 +128,7 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
                     switch (settingClass)
                     {
                         case XmlElementNames.DomainStringSetting:
-                            this.ReadSettingFromXml(reader);
+                            ReadSettingFromXml(reader);
                             break;
 
                         default:
@@ -159,7 +145,7 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
     }
 
     /// <summary>
-    /// Reads domain setting from XML.
+    ///     Reads domain setting from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void ReadSettingFromXml(EwsXmlReader reader)
@@ -191,11 +177,11 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
             "Missing name element in domain setting"
         );
 
-        this.settings.Add(name.Value, value);
+        settings.Add(name.Value, value);
     }
 
     /// <summary>
-    /// Loads the domain setting errors.
+    ///     Loads the domain setting errors.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void LoadDomainSettingErrorsFromXml(EwsXmlReader reader)
@@ -209,7 +195,7 @@ public sealed class GetDomainSettingsResponse : AutodiscoverResponse
                 if ((reader.NodeType == XmlNodeType.Element) &&
                     (reader.LocalName == XmlElementNames.DomainSettingError))
                 {
-                    DomainSettingError error = new DomainSettingError();
+                    var error = new DomainSettingError();
                     error.LoadFromXml(reader);
                     domainSettingErrors.Add(error);
                 }

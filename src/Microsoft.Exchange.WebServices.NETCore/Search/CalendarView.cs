@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a date range view of appointments in calendar folder search operations.
+///     Represents a date range view of appointments in calendar folder search operations.
 /// </summary>
 public sealed class CalendarView : ViewBase
 {
@@ -40,16 +36,16 @@ public sealed class CalendarView : ViewBase
     private DateTime endDate;
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.Traversal, this.Traversal);
+        writer.WriteAttributeValue(XmlAttributeNames.Traversal, Traversal);
     }
 
     /// <summary>
-    /// Writes the search settings to XML.
+    ///     Writes the search settings to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="groupBy">The group by clause.</param>
@@ -59,7 +55,7 @@ public sealed class CalendarView : ViewBase
     }
 
     /// <summary>
-    /// Writes OrderBy property to XML.
+    ///     Writes OrderBy property to XML.
     /// </summary>
     /// <param name="writer">The writer</param>
     internal override void WriteOrderByToXml(EwsServiceXmlWriter writer)
@@ -68,7 +64,7 @@ public sealed class CalendarView : ViewBase
     }
 
     /// <summary>
-    /// Gets the type of service object this view applies to.
+    ///     Gets the type of service object this view applies to.
     /// </summary>
     /// <returns>A ServiceObjectType value.</returns>
     internal override ServiceObjectType GetServiceObjectType()
@@ -77,19 +73,18 @@ public sealed class CalendarView : ViewBase
     }
 
     /// <summary>
-    /// Initializes a new instance of CalendarView.
+    ///     Initializes a new instance of CalendarView.
     /// </summary>
     /// <param name="startDate">The start date.</param>
     /// <param name="endDate">The end date.</param>
     public CalendarView(DateTime startDate, DateTime endDate)
-        : base()
     {
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
     /// <summary>
-    /// Initializes a new instance of CalendarView.
+    ///     Initializes a new instance of CalendarView.
     /// </summary>
     /// <param name="startDate">The start date.</param>
     /// <param name="endDate">The end date.</param>
@@ -97,37 +92,37 @@ public sealed class CalendarView : ViewBase
     public CalendarView(DateTime startDate, DateTime endDate, int maxItemsReturned)
         : this(startDate, endDate)
     {
-        this.MaxItemsReturned = maxItemsReturned;
+        MaxItemsReturned = maxItemsReturned;
     }
 
     /// <summary>
-    /// Validate instance.
+    ///     Validate instance.
     /// </summary>
     /// <param name="request">The request using this view.</param>
     internal override void InternalValidate(ServiceRequestBase request)
     {
         base.InternalValidate(request);
 
-        if (this.endDate < this.StartDate)
+        if (endDate < StartDate)
         {
             throw new ServiceValidationException(Strings.EndDateMustBeGreaterThanStartDate);
         }
     }
 
     /// <summary>
-    /// Write to XML.
+    ///     Write to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void InternalWriteViewToXml(EwsServiceXmlWriter writer)
     {
         base.InternalWriteViewToXml(writer);
 
-        writer.WriteAttributeValue(XmlAttributeNames.StartDate, this.StartDate);
-        writer.WriteAttributeValue(XmlAttributeNames.EndDate, this.EndDate);
+        writer.WriteAttributeValue(XmlAttributeNames.StartDate, StartDate);
+        writer.WriteAttributeValue(XmlAttributeNames.EndDate, EndDate);
     }
 
     /// <summary>
-    /// Gets the name of the view XML element.
+    ///     Gets the name of the view XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetViewXmlElementName()
@@ -136,39 +131,40 @@ public sealed class CalendarView : ViewBase
     }
 
     /// <summary>
-    /// Gets the maximum number of items or folders the search operation should return.
+    ///     Gets the maximum number of items or folders the search operation should return.
     /// </summary>
-    /// <returns>The maximum number of items the search operation should return.
+    /// <returns>
+    ///     The maximum number of items the search operation should return.
     /// </returns>
     internal override int? GetMaxEntriesReturned()
     {
-        return this.MaxItemsReturned;
+        return MaxItemsReturned;
     }
 
     /// <summary>
-    /// Gets or sets the start date.
+    ///     Gets or sets the start date.
     /// </summary>
     public DateTime StartDate
     {
-        get { return this.startDate; }
-        set { this.startDate = value; }
+        get => startDate;
+        set => startDate = value;
     }
 
     /// <summary>
-    /// Gets or sets the end date.
+    ///     Gets or sets the end date.
     /// </summary>
     public DateTime EndDate
     {
-        get { return this.endDate; }
-        set { this.endDate = value; }
+        get => endDate;
+        set => endDate = value;
     }
 
     /// <summary>
-    /// The maximum number of items the search operation should return.
+    ///     The maximum number of items the search operation should return.
     /// </summary>
     public int? MaxItemsReturned
     {
-        get { return this.maxItemsReturned; }
+        get => maxItemsReturned;
 
         set
         {
@@ -180,16 +176,16 @@ public sealed class CalendarView : ViewBase
                 }
             }
 
-            this.maxItemsReturned = value;
+            maxItemsReturned = value;
         }
     }
 
     /// <summary>
-    /// Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
+    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
     /// </summary>
     public ItemTraversal Traversal
     {
-        get { return this.traversal; }
-        set { this.traversal = value; }
+        get => traversal;
+        set => traversal = value;
     }
 }

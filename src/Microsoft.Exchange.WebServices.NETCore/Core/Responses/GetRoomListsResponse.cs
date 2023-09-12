@@ -26,35 +26,31 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents the response to a GetRoomLists operation.
+///     Represents the response to a GetRoomLists operation.
 /// </summary>
 internal sealed class GetRoomListsResponse : ServiceResponse
 {
-    private EmailAddressCollection roomLists = new EmailAddressCollection();
+    private readonly EmailAddressCollection roomLists = new EmailAddressCollection();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetRoomListsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetRoomListsResponse" /> class.
     /// </summary>
     internal GetRoomListsResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets all room list returned
+    ///     Gets all room list returned
     /// </summary>
-    public EmailAddressCollection RoomLists
-    {
-        get { return this.roomLists; }
-    }
+    public EmailAddressCollection RoomLists => roomLists;
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.RoomLists.Clear();
+        RoomLists.Clear();
         base.ReadElementsFromXml(reader);
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RoomLists);
@@ -66,15 +62,13 @@ internal sealed class GetRoomListsResponse : ServiceResponse
             reader.Read();
             while (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Address))
             {
-                EmailAddress emailAddress = new EmailAddress();
+                var emailAddress = new EmailAddress();
                 emailAddress.LoadFromXml(reader, XmlElementNames.Address);
-                this.RoomLists.Add(emailAddress);
+                RoomLists.Add(emailAddress);
                 reader.Read();
             }
 
             reader.EnsureCurrentNodeIsEndElement(XmlNamespace.Messages, XmlElementNames.RoomLists);
         }
-
-        return;
     }
 }

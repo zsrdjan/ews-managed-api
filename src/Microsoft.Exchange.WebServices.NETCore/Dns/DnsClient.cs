@@ -23,39 +23,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Dns;
-
-using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Runtime.InteropServices;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Dns;
+
 /// <summary>
-/// DNS Query client.
+///     DNS Query client.
 /// </summary>
 internal class DnsClient
 {
     /// <summary>
-    /// Win32 successful operation.</summary>
+    ///     Win32 successful operation.
+    /// </summary>
     private const int Win32Success = 0;
 
     /// <summary>
-    /// Map type of DnsRecord to DnsRecordType.
+    ///     Map type of DnsRecord to DnsRecordType.
     /// </summary>
-    private static LazyMember<Dictionary<Type, DnsRecordType>> typeToDnsTypeMap =
+    private static readonly LazyMember<Dictionary<Type, DnsRecordType>> typeToDnsTypeMap =
         new LazyMember<Dictionary<Type, DnsRecordType>>(
-            delegate()
+            delegate
             {
-                Dictionary<Type, DnsRecordType> result = new Dictionary<Type, DnsRecordType>();
+                var result = new Dictionary<Type, DnsRecordType>();
                 result.Add(typeof(DnsSrvRecord), DnsRecordType.SRV);
                 return result;
             }
         );
 
     /// <summary>
-    /// Perform DNS Query.
+    ///     Perform DNS Query.
     /// </summary>
     /// <typeparam name="T">DnsRecord type.</typeparam>
     /// <param name="domain">The domain.</param>
@@ -64,18 +63,18 @@ internal class DnsClient
     internal static List<T> DnsQuery<T>(string domain, IPAddress dnsServerAddress)
         where T : DnsRecord, new()
     {
-        List<T> dnsRecordList = new List<T>();
+        var dnsRecordList = new List<T>();
 
         // Each strongly-typed DnsRecord type maps to a DnsRecordType enum.
-        DnsRecordType dnsRecordTypeToQuery = typeToDnsTypeMap.Member[typeof(T)];
+        var dnsRecordTypeToQuery = typeToDnsTypeMap.Member[typeof(T)];
 
         // queryResultsPtr will point to unmanaged heap memory if DnsQuery succeeds.
-        IntPtr queryResultsPtr = IntPtr.Zero;
+        var queryResultsPtr = IntPtr.Zero;
 
         try
         {
             // Perform DNS query. If successful, construct a list of results.
-            int errorCode = DnsNativeMethods.DnsQuery(
+            var errorCode = DnsNativeMethods.DnsQuery(
                 domain,
                 dnsServerAddress,
                 dnsRecordTypeToQuery,
@@ -87,13 +86,13 @@ internal class DnsClient
                 DnsRecordHeader dnsRecordHeader;
 
                 // Interate through linked list of query result records.
-                for (IntPtr recordPtr = queryResultsPtr;
+                for (var recordPtr = queryResultsPtr;
                      !recordPtr.Equals(IntPtr.Zero);
                      recordPtr = dnsRecordHeader.NextRecord)
                 {
                     dnsRecordHeader = Marshal.PtrToStructure<DnsRecordHeader>(recordPtr);
 
-                    T dnsRecord = new T();
+                    var dnsRecord = new T();
                     if (dnsRecordHeader.RecordType == dnsRecord.RecordType)
                     {
                         dnsRecord.Load(dnsRecordHeader, recordPtr);

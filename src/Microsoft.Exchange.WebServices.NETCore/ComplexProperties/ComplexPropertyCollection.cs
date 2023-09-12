@@ -23,16 +23,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using System.Text;
+
+namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a collection of properties that can be sent to and retrieved from EWS.
+///     Represents a collection of properties that can be sent to and retrieved from EWS.
 /// </summary>
 /// <typeparam name="TComplexProperty">ComplexProperty type.</typeparam>
 [EditorBrowsable(EditorBrowsableState.Never)]
@@ -40,40 +37,39 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     ICustomUpdateSerializer
     where TComplexProperty : ComplexProperty
 {
-    private List<TComplexProperty> items = new List<TComplexProperty>();
-    private List<TComplexProperty> addedItems = new List<TComplexProperty>();
-    private List<TComplexProperty> modifiedItems = new List<TComplexProperty>();
-    private List<TComplexProperty> removedItems = new List<TComplexProperty>();
+    private readonly List<TComplexProperty> items = new List<TComplexProperty>();
+    private readonly List<TComplexProperty> addedItems = new List<TComplexProperty>();
+    private readonly List<TComplexProperty> modifiedItems = new List<TComplexProperty>();
+    private readonly List<TComplexProperty> removedItems = new List<TComplexProperty>();
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Complex property instance.</returns>
     internal abstract TComplexProperty CreateComplexProperty(string xmlElementName);
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>
     internal abstract string GetCollectionItemXmlElementName(TComplexProperty complexProperty);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyCollection&lt;TComplexProperty&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyCollection&lt;TComplexProperty&gt;" /> class.
     /// </summary>
     internal ComplexPropertyCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Item changed.
+    ///     Item changed.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     internal void ItemChanged(ComplexProperty complexProperty)
     {
-        TComplexProperty property = complexProperty as TComplexProperty;
+        var property = complexProperty as TComplexProperty;
 
         EwsUtilities.Assert(
             property != null,
@@ -84,28 +80,28 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
             )
         );
 
-        if (!this.addedItems.Contains(property))
+        if (!addedItems.Contains(property))
         {
-            if (!this.modifiedItems.Contains(property))
+            if (!modifiedItems.Contains(property))
             {
-                this.modifiedItems.Add(property);
-                this.Changed();
+                modifiedItems.Add(property);
+                Changed();
             }
         }
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="localElementName">Name of the local element.</param>
     internal override void LoadFromXml(EwsServiceXmlReader reader, string localElementName)
     {
-        this.LoadFromXml(reader, XmlNamespace.Types, localElementName);
+        LoadFromXml(reader, XmlNamespace.Types, localElementName);
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
@@ -122,12 +118,12 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
 
                 if (reader.IsStartElement())
                 {
-                    TComplexProperty complexProperty = this.CreateComplexProperty(reader.LocalName);
+                    var complexProperty = CreateComplexProperty(reader.LocalName);
 
                     if (complexProperty != null)
                     {
                         complexProperty.LoadFromXml(reader, reader.LocalName);
-                        this.InternalAdd(complexProperty, true);
+                        InternalAdd(complexProperty, true);
                     }
                     else
                     {
@@ -139,7 +135,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     }
 
     /// <summary>
-    /// Loads from XML to update itself.
+    ///     Loads from XML to update itself.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
@@ -150,15 +146,15 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
 
         if (!reader.IsEmptyElement)
         {
-            int index = 0;
+            var index = 0;
             do
             {
                 reader.Read();
 
                 if (reader.IsStartElement())
                 {
-                    TComplexProperty complexProperty = this.CreateComplexProperty(reader.LocalName);
-                    TComplexProperty actualComplexProperty = this[index++];
+                    var complexProperty = CreateComplexProperty(reader.LocalName);
+                    var actualComplexProperty = this[index++];
 
                     if (complexProperty == null ||
                         !complexProperty.GetType()
@@ -175,109 +171,97 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace xmlNamespace, string xmlElementName)
     {
-        if (this.ShouldWriteToRequest())
+        if (ShouldWriteToRequest())
         {
             base.WriteToXml(writer, xmlNamespace, xmlElementName);
         }
     }
 
     /// <summary>
-    /// Determine whether we should write collection to XML or not.
+    ///     Determine whether we should write collection to XML or not.
     /// </summary>
     /// <returns>True if collection contains at least one element.</returns>
     internal virtual bool ShouldWriteToRequest()
     {
         // Only write collection if it has at least one element.
-        return this.Count > 0;
+        return Count > 0;
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        foreach (TComplexProperty complexProperty in this)
+        foreach (var complexProperty in this)
         {
-            complexProperty.WriteToXml(writer, this.GetCollectionItemXmlElementName(complexProperty));
+            complexProperty.WriteToXml(writer, GetCollectionItemXmlElementName(complexProperty));
         }
     }
 
     /// <summary>
-    /// Clears the change log.
+    ///     Clears the change log.
     /// </summary>
     internal override void ClearChangeLog()
     {
-        this.removedItems.Clear();
-        this.addedItems.Clear();
-        this.modifiedItems.Clear();
+        removedItems.Clear();
+        addedItems.Clear();
+        modifiedItems.Clear();
     }
 
     /// <summary>
-    /// Removes from change log.
+    ///     Removes from change log.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     internal void RemoveFromChangeLog(TComplexProperty complexProperty)
     {
-        this.removedItems.Remove(complexProperty);
-        this.modifiedItems.Remove(complexProperty);
-        this.addedItems.Remove(complexProperty);
+        removedItems.Remove(complexProperty);
+        modifiedItems.Remove(complexProperty);
+        addedItems.Remove(complexProperty);
     }
 
     /// <summary>
-    /// Gets the items.
+    ///     Gets the items.
     /// </summary>
     /// <value>The items.</value>
-    internal List<TComplexProperty> Items
-    {
-        get { return this.items; }
-    }
+    internal List<TComplexProperty> Items => items;
 
     /// <summary>
-    /// Gets the added items.
+    ///     Gets the added items.
     /// </summary>
     /// <value>The added items.</value>
-    internal List<TComplexProperty> AddedItems
-    {
-        get { return this.addedItems; }
-    }
+    internal List<TComplexProperty> AddedItems => addedItems;
 
     /// <summary>
-    /// Gets the modified items.
+    ///     Gets the modified items.
     /// </summary>
     /// <value>The modified items.</value>
-    internal List<TComplexProperty> ModifiedItems
-    {
-        get { return this.modifiedItems; }
-    }
+    internal List<TComplexProperty> ModifiedItems => modifiedItems;
 
     /// <summary>
-    /// Gets the removed items.
+    ///     Gets the removed items.
     /// </summary>
     /// <value>The removed items.</value>
-    internal List<TComplexProperty> RemovedItems
-    {
-        get { return this.removedItems; }
-    }
+    internal List<TComplexProperty> RemovedItems => removedItems;
 
     /// <summary>
-    /// Add complex property.
+    ///     Add complex property.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     internal void InternalAdd(TComplexProperty complexProperty)
     {
-        this.InternalAdd(complexProperty, false);
+        InternalAdd(complexProperty, false);
     }
 
     /// <summary>
-    /// Add complex property.
+    ///     Add complex property.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <param name="loading">If true, collection is being loaded.</param>
@@ -289,48 +273,48 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
             "complexProperty is null"
         );
 
-        if (!this.items.Contains(complexProperty))
+        if (!items.Contains(complexProperty))
         {
-            this.items.Add(complexProperty);
+            items.Add(complexProperty);
             if (!loading)
             {
-                this.removedItems.Remove(complexProperty);
-                this.addedItems.Add(complexProperty);
+                removedItems.Remove(complexProperty);
+                addedItems.Add(complexProperty);
             }
 
-            complexProperty.OnChange += this.ItemChanged;
-            this.Changed();
+            complexProperty.OnChange += ItemChanged;
+            Changed();
         }
     }
 
     /// <summary>
-    /// Clear collection.
+    ///     Clear collection.
     /// </summary>
     internal void InternalClear()
     {
-        while (this.Count > 0)
+        while (Count > 0)
         {
-            this.InternalRemoveAt(0);
+            InternalRemoveAt(0);
         }
     }
 
     /// <summary>
-    /// Remote entry at index.
+    ///     Remote entry at index.
     /// </summary>
     /// <param name="index">The index.</param>
     internal void InternalRemoveAt(int index)
     {
         EwsUtilities.Assert(
-            index >= 0 && index < this.Count,
+            index >= 0 && index < Count,
             "ComplexPropertyCollection.InternalRemoveAt",
             "index is out of range."
         );
 
-        this.InternalRemove(this.items[index]);
+        InternalRemove(items[index]);
     }
 
     /// <summary>
-    /// Remove specified complex property.
+    ///     Remove specified complex property.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>True if the complex property was successfully removed from the collection, false otherwise.</returns>
@@ -342,59 +326,54 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
             "complexProperty is null"
         );
 
-        if (this.items.Remove(complexProperty))
+        if (items.Remove(complexProperty))
         {
-            complexProperty.OnChange -= this.ItemChanged;
+            complexProperty.OnChange -= ItemChanged;
 
-            if (!this.addedItems.Contains(complexProperty))
+            if (!addedItems.Contains(complexProperty))
             {
-                this.removedItems.Add(complexProperty);
+                removedItems.Add(complexProperty);
             }
             else
             {
-                this.addedItems.Remove(complexProperty);
+                addedItems.Remove(complexProperty);
             }
 
-            this.modifiedItems.Remove(complexProperty);
-            this.Changed();
+            modifiedItems.Remove(complexProperty);
+            Changed();
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Determines whether a specific property is in the collection.
+    ///     Determines whether a specific property is in the collection.
     /// </summary>
     /// <param name="complexProperty">The property to locate in the collection.</param>
     /// <returns>True if the property was found in the collection, false otherwise.</returns>
     public bool Contains(TComplexProperty complexProperty)
     {
-        return this.items.Contains(complexProperty);
+        return items.Contains(complexProperty);
     }
 
     /// <summary>
-    /// Searches for a specific property and return its zero-based index within the collection.
+    ///     Searches for a specific property and return its zero-based index within the collection.
     /// </summary>
     /// <param name="complexProperty">The property to locate in the collection.</param>
     /// <returns>The zero-based index of the property within the collection.</returns>
     public int IndexOf(TComplexProperty complexProperty)
     {
-        return this.items.IndexOf(complexProperty);
+        return items.IndexOf(complexProperty);
     }
 
     /// <summary>
-    /// Gets the total number of properties in the collection.
+    ///     Gets the total number of properties in the collection.
     /// </summary>
-    public int Count
-    {
-        get { return this.items.Count; }
-    }
+    public int Count => items.Count;
 
     /// <summary>
-    /// Gets the property at the specified index.
+    ///     Gets the property at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index of the property to get.</param>
     /// <returns>The property at the specified index.</returns>
@@ -402,12 +381,12 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     {
         get
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= Count)
             {
                 throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
             }
 
-            return this.items[index];
+            return items[index];
         }
     }
 
@@ -415,12 +394,12 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     #region IEnumerable<TComplexProperty> Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TComplexProperty> GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion
@@ -429,12 +408,12 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     #region IEnumerable Members
 
     /// <summary>
-    /// Gets an enumerator that iterates through the elements of the collection.
+    ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return this.items.GetEnumerator();
+        return items.GetEnumerator();
     }
 
     #endregion
@@ -443,7 +422,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     #region ICustomXmlUpdateSerializer Members
 
     /// <summary>
-    /// Writes the update to XML.
+    ///     Writes the update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>
@@ -456,7 +435,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     )
     {
         // If the collection is empty, delete the property.
-        if (this.Count == 0)
+        if (Count == 0)
         {
             writer.WriteStartElement(XmlNamespace.Types, ewsObject.GetDeleteFieldXmlElementName());
             propertyDefinition.WriteToXml(writer);
@@ -465,14 +444,12 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
         }
 
         // Otherwise, use the default XML serializer.
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Writes the deletion update to XML.
+    ///     Writes the deletion update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>

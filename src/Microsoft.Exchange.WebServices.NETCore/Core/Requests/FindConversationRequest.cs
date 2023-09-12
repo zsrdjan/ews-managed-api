@@ -25,14 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a request to a Find Conversation operation
+///     Represents a request to a Find Conversation operation
 /// </summary>
 internal sealed class FindConversationRequest : SimpleServiceRequestBase
 {
@@ -51,74 +45,73 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets or sets the view controlling the number of conversations returned.
+    ///     Gets or sets the view controlling the number of conversations returned.
     /// </summary>
     public ViewBase View
     {
-        get { return this.view; }
+        get => view;
 
         set
         {
-            this.view = value;
-            if (this.view is SeekToConditionItemView)
+            view = value;
+            if (view is SeekToConditionItemView)
             {
-                ((SeekToConditionItemView)this.view).SetServiceObjectType(ServiceObjectType.Conversation);
+                ((SeekToConditionItemView)view).SetServiceObjectType(ServiceObjectType.Conversation);
             }
         }
     }
 
     /// <summary>
-    /// Gets or sets folder id
+    ///     Gets or sets folder id
     /// </summary>
     internal FolderIdWrapper FolderId
     {
-        get { return this.folderId; }
+        get => folderId;
 
-        set { this.folderId = value; }
+        set => folderId = value;
     }
 
     /// <summary>
-    /// Gets or sets the query string for search value.
+    ///     Gets or sets the query string for search value.
     /// </summary>
     internal string QueryString
     {
-        get { return this.queryString; }
+        get => queryString;
 
-        set { this.queryString = value; }
+        set => queryString = value;
     }
 
     /// <summary>
-    /// Gets or sets the query string highlight terms.
+    ///     Gets or sets the query string highlight terms.
     /// </summary>
     internal bool ReturnHighlightTerms
     {
-        get { return this.returnHighlightTerms; }
+        get => returnHighlightTerms;
 
-        set { this.returnHighlightTerms = value; }
+        set => returnHighlightTerms = value;
     }
 
     /// <summary>
-    /// Gets or sets the mailbox search location to include in the search.
+    ///     Gets or sets the mailbox search location to include in the search.
     /// </summary>
     internal MailboxSearchLocation? MailboxScope
     {
-        get { return this.mailboxScope; }
+        get => mailboxScope;
 
-        set { this.mailboxScope = value; }
+        set => mailboxScope = value;
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        this.view.InternalValidate(this);
+        view.InternalValidate(this);
 
         // query string parameter is only valid for Exchange2013 or higher
         //
-        if (!String.IsNullOrEmpty(this.queryString) &&
-            this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (!String.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -131,7 +124,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
 
         // ReturnHighlightTerms parameter is only valid for Exchange2013 or higher
         //
-        if (this.ReturnHighlightTerms && this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (ReturnHighlightTerms && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -144,8 +137,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
 
         // SeekToConditionItemView is only valid for Exchange2013 or higher
         //
-        if ((this.View is SeekToConditionItemView) &&
-            this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if ((View is SeekToConditionItemView) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -158,7 +150,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
 
         // MailboxScope is only valid for Exchange2013 or higher
         //
-        if (this.MailboxScope.HasValue && this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (MailboxScope.HasValue && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -171,82 +163,82 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML attributes.
+    ///     Writes XML attributes.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        this.View.WriteAttributesToXml(writer);
+        View.WriteAttributesToXml(writer);
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // Emit the view element
         //
-        this.View.WriteToXml(writer, null);
+        View.WriteToXml(writer, null);
 
         // Emit the Sort Order
         //
-        this.View.WriteOrderByToXml(writer);
+        View.WriteOrderByToXml(writer);
 
         // Emit the Parent Folder Id
         //
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ParentFolderId);
-        this.FolderId.WriteToXml(writer);
+        FolderId.WriteToXml(writer);
         writer.WriteEndElement();
 
         // Emit the MailboxScope flag
         // 
-        if (this.MailboxScope.HasValue)
+        if (MailboxScope.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxScope, this.MailboxScope.Value);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxScope, MailboxScope.Value);
         }
 
-        if (!string.IsNullOrEmpty(this.queryString))
+        if (!string.IsNullOrEmpty(queryString))
         {
             // Emit the QueryString
             //
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.QueryString);
 
-            if (this.ReturnHighlightTerms)
+            if (ReturnHighlightTerms)
             {
                 writer.WriteAttributeString(
                     XmlAttributeNames.ReturnHighlightTerms,
-                    this.ReturnHighlightTerms.ToString().ToLowerInvariant()
+                    ReturnHighlightTerms.ToString().ToLowerInvariant()
                 );
             }
 
-            writer.WriteValue(this.queryString, XmlElementNames.QueryString);
+            writer.WriteValue(queryString, XmlElementNames.QueryString);
             writer.WriteEndElement();
         }
 
-        if (this.Service.RequestedServerVersion >= ExchangeVersion.Exchange2013)
+        if (Service.RequestedServerVersion >= ExchangeVersion.Exchange2013)
         {
-            if (this.View.PropertySet != null)
+            if (View.PropertySet != null)
             {
-                this.View.PropertySet.WriteToXml(writer, ServiceObjectType.Conversation);
+                View.PropertySet.WriteToXml(writer, ServiceObjectType.Conversation);
             }
         }
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        FindConversationResponse response = new FindConversationResponse();
+        var response = new FindConversationResponse();
         response.LoadFromXml(reader, XmlElementNames.FindConversationResponse);
         return response;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -255,7 +247,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -264,7 +256,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -273,13 +265,12 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<FindConversationResponse> Execute(CancellationToken token)
     {
-        FindConversationResponse serviceResponse =
-            (FindConversationResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (FindConversationResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

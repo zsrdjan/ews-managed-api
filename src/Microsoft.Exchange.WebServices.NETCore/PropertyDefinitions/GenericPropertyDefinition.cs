@@ -25,17 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents generic property definition.
+///     Represents generic property definition.
 /// </summary>
 /// <typeparam name="TPropertyValue">Property value type. Constrained to be a value type.</typeparam>
 internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefinition
     where TPropertyValue : struct
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -46,7 +44,7 @@ internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefiniti
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -63,7 +61,7 @@ internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefiniti
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -82,7 +80,7 @@ internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefiniti
     }
 
     /// <summary>
-    /// Parses the specified value.
+    ///     Parses the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>Value of string.</returns>
@@ -92,10 +90,7 @@ internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefiniti
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return this.IsNullable ? typeof(Nullable<TPropertyValue>) : typeof(TPropertyValue); }
-    }
+    public override Type Type => IsNullable ? typeof(TPropertyValue?) : typeof(TPropertyValue);
 }

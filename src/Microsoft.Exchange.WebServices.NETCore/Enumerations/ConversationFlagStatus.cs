@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the flag status of a Conversation.
+///     Defines the flag status of a Conversation.
 /// </summary>
 public enum ConversationFlagStatus
 {
     /// <summary>
-    /// Not Flagged.
+    ///     Not Flagged.
     /// </summary>
     NotFlagged,
 
     /// <summary>
-    /// Flagged.
+    ///     Flagged.
     /// </summary>
     Flagged,
 
     /// <summary>
-    /// Complete.
+    ///     Complete.
     /// </summary>
     Complete
 }

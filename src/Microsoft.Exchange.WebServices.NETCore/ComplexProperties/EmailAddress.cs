@@ -26,60 +26,59 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an e-mail address.
+///     Represents an e-mail address.
 /// </summary>
 public class EmailAddress : ComplexProperty, ISearchStringProvider
 {
     /// <summary>
-    /// SMTP routing type.
+    ///     SMTP routing type.
     /// </summary>
     internal const string SmtpRoutingType = "SMTP";
 
     /// <summary>
-    /// Display name.
+    ///     Display name.
     /// </summary>
     private string name;
 
     /// <summary>
-    /// Email address.
+    ///     Email address.
     /// </summary>
     private string address;
 
     /// <summary>
-    /// Routing type.
+    ///     Routing type.
     /// </summary>
     private string routingType;
 
     /// <summary>
-    /// Mailbox type. 
+    ///     Mailbox type.
     /// </summary>
     private MailboxType? mailboxType;
 
     /// <summary>
-    /// ItemId - Contact or PDL.
+    ///     ItemId - Contact or PDL.
     /// </summary>
     private ItemId id;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
     /// </summary>
     public EmailAddress()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address used to initialize the EmailAddress.</param>
     public EmailAddress(string smtpAddress)
         : this()
     {
-        this.address = smtpAddress;
+        address = smtpAddress;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
     /// </summary>
     /// <param name="name">The name used to initialize the EmailAddress.</param>
     /// <param name="smtpAddress">The SMTP address used to initialize the EmailAddress.</param>
@@ -90,7 +89,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
     /// </summary>
     /// <param name="name">The name used to initialize the EmailAddress.</param>
     /// <param name="address">The address used to initialize the EmailAddress.</param>
@@ -102,7 +101,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
     /// </summary>
     /// <param name="name">The name used to initialize the EmailAddress.</param>
     /// <param name="address">The address used to initialize the EmailAddress.</param>
@@ -115,7 +114,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
     /// </summary>
     /// <param name="name">The name used to initialize the EmailAddress.</param>
     /// <param name="address">The address used to initialize the EmailAddress.</param>
@@ -126,11 +125,11 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
         : this(name, address, routingType)
     {
         this.mailboxType = mailboxType;
-        this.id = itemId;
+        id = itemId;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddress"/> class from another EmailAddress instance.
+    ///     Initializes a new instance of the <see cref="EmailAddress" /> class from another EmailAddress instance.
     /// </summary>
     /// <param name="mailbox">EMailAddress instance to copy.</param>
     internal EmailAddress(EmailAddress mailbox)
@@ -138,69 +137,69 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     {
         EwsUtilities.ValidateParam(mailbox, "mailbox");
 
-        this.Name = mailbox.Name;
-        this.Address = mailbox.Address;
-        this.RoutingType = mailbox.RoutingType;
-        this.MailboxType = mailbox.MailboxType;
-        this.Id = mailbox.Id;
+        Name = mailbox.Name;
+        Address = mailbox.Address;
+        RoutingType = mailbox.RoutingType;
+        MailboxType = mailbox.MailboxType;
+        Id = mailbox.Id;
     }
 
     /// <summary>
-    /// Gets or sets the name associated with the e-mail address.
+    ///     Gets or sets the name associated with the e-mail address.
     /// </summary>
     public string Name
     {
-        get { return this.name; }
+        get => name;
 
-        set { this.SetFieldValue<string>(ref this.name, value); }
+        set => SetFieldValue(ref name, value);
     }
 
     /// <summary>
-    /// Gets or sets the actual address associated with the e-mail address. The type of the Address property
-    /// must match the specified routing type. If RoutingType is not set, Address is assumed to be an SMTP
-    /// address.
+    ///     Gets or sets the actual address associated with the e-mail address. The type of the Address property
+    ///     must match the specified routing type. If RoutingType is not set, Address is assumed to be an SMTP
+    ///     address.
     /// </summary>
     public string Address
     {
-        get { return this.address; }
+        get => address;
 
-        set { this.SetFieldValue<string>(ref this.address, value); }
+        set => SetFieldValue(ref address, value);
     }
 
     /// <summary>
-    /// Gets or sets the routing type associated with the e-mail address. If RoutingType is not set,
-    /// Address is assumed to be an SMTP address.
+    ///     Gets or sets the routing type associated with the e-mail address. If RoutingType is not set,
+    ///     Address is assumed to be an SMTP address.
     /// </summary>
     public string RoutingType
     {
-        get { return this.routingType; }
+        get => routingType;
 
-        set { this.SetFieldValue<string>(ref this.routingType, value); }
+        set => SetFieldValue(ref routingType, value);
     }
 
     /// <summary>
-    /// Gets or sets the type of the e-mail address.
+    ///     Gets or sets the type of the e-mail address.
     /// </summary>
     public MailboxType? MailboxType
     {
-        get { return this.mailboxType; }
+        get => mailboxType;
 
-        set { this.SetFieldValue<MailboxType?>(ref this.mailboxType, value); }
+        set => SetFieldValue(ref mailboxType, value);
     }
 
     /// <summary>
-    /// Gets or sets the Id of the contact the e-mail address represents. When Id is specified, Address
-    /// should be set to null.
+    ///     Gets or sets the Id of the contact the e-mail address represents. When Id is specified, Address
+    ///     should be set to null.
     /// </summary>
     public ItemId Id
     {
-        get { return this.id; }
+        get => id;
 
-        set { this.SetFieldValue<ItemId>(ref this.id, value); }
+        set => SetFieldValue(ref id, value);
     }
 
     /// <summary>
-    /// Defines an implicit conversion between a string representing an SMTP address and EmailAddress.
+    ///     Defines an implicit conversion between a string representing an SMTP address and EmailAddress.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address to convert to EmailAddress.</param>
     /// <returns>An EmailAddress initialized with the specified SMTP address.</returns>
@@ -210,7 +209,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -219,20 +218,20 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
         switch (reader.LocalName)
         {
             case XmlElementNames.Name:
-                this.name = reader.ReadElementValue();
+                name = reader.ReadElementValue();
                 return true;
             case XmlElementNames.EmailAddress:
-                this.address = reader.ReadElementValue();
+                address = reader.ReadElementValue();
                 return true;
             case XmlElementNames.RoutingType:
-                this.routingType = reader.ReadElementValue();
+                routingType = reader.ReadElementValue();
                 return true;
             case XmlElementNames.MailboxType:
-                this.mailboxType = reader.ReadElementValue<MailboxType>();
+                mailboxType = reader.ReadElementValue<MailboxType>();
                 return true;
             case XmlElementNames.ItemId:
-                this.id = new ItemId();
-                this.id.LoadFromXml(reader, reader.LocalName);
+                id = new ItemId();
+                id.LoadFromXml(reader, reader.LocalName);
                 return true;
             default:
                 return false;
@@ -240,19 +239,19 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Name, this.Name);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EmailAddress, this.Address);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RoutingType, this.RoutingType);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MailboxType, this.MailboxType);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Name, Name);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EmailAddress, Address);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RoutingType, RoutingType);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MailboxType, MailboxType);
 
-        if (this.Id != null)
+        if (Id != null)
         {
-            this.Id.WriteToXml(writer, XmlElementNames.ItemId);
+            Id.WriteToXml(writer, XmlElementNames.ItemId);
         }
     }
 
@@ -260,12 +259,12 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     #region ISearchStringProvider methods
 
     /// <summary>
-    /// Get a string representation for using this instance in a search filter.
+    ///     Get a string representation for using this instance in a search filter.
     /// </summary>
     /// <returns>String representation of instance.</returns>
     string ISearchStringProvider.GetSearchString()
     {
-        return this.Address;
+        return Address;
     }
 
     #endregion
@@ -274,37 +273,35 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     #region Object method overrides
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
         string addressPart;
 
-        if (string.IsNullOrEmpty(this.Address))
+        if (string.IsNullOrEmpty(Address))
         {
             return string.Empty;
         }
 
-        if (!string.IsNullOrEmpty(this.RoutingType))
+        if (!string.IsNullOrEmpty(RoutingType))
         {
-            addressPart = this.RoutingType + ":" + this.Address;
+            addressPart = RoutingType + ":" + Address;
         }
         else
         {
-            addressPart = this.Address;
+            addressPart = Address;
         }
 
-        if (!string.IsNullOrEmpty(this.Name))
+        if (!string.IsNullOrEmpty(Name))
         {
-            return this.Name + " <" + addressPart + ">";
+            return Name + " <" + addressPart + ">";
         }
-        else
-        {
-            return addressPart;
-        }
+
+        return addressPart;
     }
 
     #endregion

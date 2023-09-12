@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// XML attribute names.
+///     XML attribute names.
 /// </summary>
 internal static class XmlAttributeNames
 {

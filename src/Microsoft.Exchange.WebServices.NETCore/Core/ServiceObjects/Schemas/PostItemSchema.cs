@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for post items.
+///     Represents the schema for post items.
 /// </summary>
 [Schema]
 public sealed class PostItemSchema : ItemSchema
 {
     /// <summary>
-    /// Field URIs for PostItem.
+    ///     Field URIs for PostItem.
     /// </summary>
     private static class FieldUris
     {
@@ -42,7 +42,7 @@ public sealed class PostItemSchema : ItemSchema
     }
 
     /// <summary>
-    /// Defines the ConversationIndex property.
+    ///     Defines the ConversationIndex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -52,7 +52,7 @@ public sealed class PostItemSchema : ItemSchema
     public static readonly PropertyDefinition ConversationIndex = EmailMessageSchema.ConversationIndex;
 
     /// <summary>
-    /// Defines the ConversationTopic property.
+    ///     Defines the ConversationTopic property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -62,7 +62,7 @@ public sealed class PostItemSchema : ItemSchema
     public static readonly PropertyDefinition ConversationTopic = EmailMessageSchema.ConversationTopic;
 
     /// <summary>
-    /// Defines the From property.
+    ///     Defines the From property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -72,7 +72,7 @@ public sealed class PostItemSchema : ItemSchema
     public static readonly PropertyDefinition From = EmailMessageSchema.From;
 
     /// <summary>
-    /// Defines the InternetMessageId property.
+    ///     Defines the InternetMessageId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -82,7 +82,7 @@ public sealed class PostItemSchema : ItemSchema
     public static readonly PropertyDefinition InternetMessageId = EmailMessageSchema.InternetMessageId;
 
     /// <summary>
-    /// Defines the IsRead property.
+    ///     Defines the IsRead property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -92,7 +92,7 @@ public sealed class PostItemSchema : ItemSchema
     public static readonly PropertyDefinition IsRead = EmailMessageSchema.IsRead;
 
     /// <summary>
-    /// Defines the PostedTime property.
+    ///     Defines the PostedTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -107,7 +107,7 @@ public sealed class PostItemSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the References property.
+    ///     Defines the References property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -117,7 +117,7 @@ public sealed class PostItemSchema : ItemSchema
     public static readonly PropertyDefinition References = EmailMessageSchema.References;
 
     /// <summary>
-    /// Defines the Sender property.
+    ///     Defines the Sender property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -130,30 +130,30 @@ public sealed class PostItemSchema : ItemSchema
     internal static new readonly PostItemSchema Instance = new PostItemSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(ConversationIndex);
-        this.RegisterProperty(ConversationTopic);
-        this.RegisterProperty(From);
-        this.RegisterProperty(InternetMessageId);
-        this.RegisterProperty(IsRead);
-        this.RegisterProperty(PostedTime);
-        this.RegisterProperty(References);
-        this.RegisterProperty(Sender);
+        RegisterProperty(ConversationIndex);
+        RegisterProperty(ConversationTopic);
+        RegisterProperty(From);
+        RegisterProperty(InternetMessageId);
+        RegisterProperty(IsRead);
+        RegisterProperty(PostedTime);
+        RegisterProperty(References);
+        RegisterProperty(Sender);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PostItemSchema"/> class.
+    ///     Initializes a new instance of the <see cref="PostItemSchema" /> class.
     /// </summary>
     internal PostItemSchema()
-        : base()
     {
     }
 }

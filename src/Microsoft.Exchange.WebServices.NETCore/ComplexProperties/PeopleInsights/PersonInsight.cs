@@ -23,47 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System.Collections.Generic;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the PersonInsight.
+///     Represents the PersonInsight.
 /// </summary>
 public sealed class PersonInsight : ComplexProperty
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PersonInsight"/> class.
+    ///     Initializes a new instance of the <see cref="PersonInsight" /> class.
     /// </summary>
     public PersonInsight()
-        : base()
     {
-        this.ItemList = new InsightValueCollection();
+        ItemList = new InsightValueCollection();
     }
 
     /// <summary>
-    /// Gets the string
+    ///     Gets the string
     /// </summary>
     public string InsightType { get; internal set; }
 
     /// <summary>
-    /// Gets the Rank
+    ///     Gets the Rank
     /// </summary>
     public double Rank { get; internal set; }
 
     /// <summary>
-    /// Gets the Content
+    ///     Gets the Content
     /// </summary>
     public ComplexProperty Content { get; internal set; }
 
     /// <summary>
-    /// Gets the ItemList
+    ///     Gets the ItemList
     /// </summary>
     public InsightValueCollection ItemList { get; internal set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -74,22 +72,22 @@ public sealed class PersonInsight : ComplexProperty
             switch (reader.LocalName)
             {
                 case XmlElementNames.InsightType:
-                    this.InsightType = reader.ReadElementValue<string>();
+                    InsightType = reader.ReadElementValue<string>();
                     break;
                 case XmlElementNames.Rank:
-                    this.Rank = reader.ReadElementValue<double>();
+                    Rank = reader.ReadElementValue<double>();
                     break;
                 case XmlElementNames.Content:
                     var type = reader.ReadAttributeValue("xsi:type");
                     switch (type)
                     {
                         case XmlElementNames.SingleValueInsightContent:
-                            this.Content = new SingleValueInsightContent();
-                            ((SingleValueInsightContent)this.Content).LoadFromXml(reader, reader.LocalName);
+                            Content = new SingleValueInsightContent();
+                            ((SingleValueInsightContent)Content).LoadFromXml(reader, reader.LocalName);
                             break;
                         case XmlElementNames.MultiValueInsightContent:
-                            this.Content = new MultiValueInsightContent();
-                            ((MultiValueInsightContent)this.Content).LoadFromXml(reader, reader.LocalName);
+                            Content = new MultiValueInsightContent();
+                            ((MultiValueInsightContent)Content).LoadFromXml(reader, reader.LocalName);
                             break;
                         default:
                             return false;
@@ -97,7 +95,7 @@ public sealed class PersonInsight : ComplexProperty
 
                     break;
                 case XmlElementNames.ItemList:
-                    this.ReadItemList(reader);
+                    ReadItemList(reader);
                     break;
                 default:
                     return false;
@@ -108,9 +106,9 @@ public sealed class PersonInsight : ComplexProperty
     }
 
     /// <summary>
-    /// Reads ItemList from XML
+    ///     Reads ItemList from XML
     /// </summary>
-    /// <param name="reader">The reader.</param>        
+    /// <param name="reader">The reader.</param>
     private void ReadItemList(EwsServiceXmlReader reader)
     {
         do
@@ -125,62 +123,62 @@ public sealed class PersonInsight : ComplexProperty
                     case XmlElementNames.StringInsightValue:
                         item = new StringInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.ProfileInsightValue:
                         item = new ProfileInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.JobInsightValue:
                         item = new JobInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.UserProfilePicture:
                         item = new UserProfilePicture();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.EducationInsightValue:
                         item = new EducationInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.SkillInsightValue:
                         item = new SkillInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.ComputedInsightValue:
                         item = new ComputedInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.MeetingInsightValue:
                         item = new MeetingInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.EmailInsightValue:
                         item = new EmailInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.DelveDocument:
                         item = new DelveDocument();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.CompanyInsightValue:
                         item = new CompanyInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                     case XmlElementNames.OutOfOfficeInsightValue:
                         item = new OutOfOfficeInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
-                        this.ItemList.InternalAdd(item);
+                        ItemList.InternalAdd(item);
                         break;
                 }
             }

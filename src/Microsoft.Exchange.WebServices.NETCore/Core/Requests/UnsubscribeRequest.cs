@@ -26,12 +26,12 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an Unsubscribe request.
+///     Represents an Unsubscribe request.
 /// </summary>
 internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="UnsubscribeRequest"/> class.
+    ///     Initializes a new instance of the <see cref="UnsubscribeRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal UnsubscribeRequest(ExchangeService service)
@@ -40,7 +40,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Creates service response.
+    ///     Creates service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -51,7 +51,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -60,7 +60,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetXmlElementName()
@@ -69,7 +69,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -78,7 +78,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -87,25 +87,25 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Validate the request.
+    ///     Validate the request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateNonBlankStringParam(this.SubscriptionId, "SubscriptionId");
+        EwsUtilities.ValidateNonBlankStringParam(SubscriptionId, "SubscriptionId");
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId, this.SubscriptionId);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId, SubscriptionId);
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -114,7 +114,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     }
 
     /// <summary>
-    /// Gets or sets the subscription id.
+    ///     Gets or sets the subscription id.
     /// </summary>
     public string SubscriptionId { get; set; }
 }

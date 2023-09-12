@@ -26,52 +26,51 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents the minimum and maximum size of a message.
+///     Represents the minimum and maximum size of a message.
 /// </summary>
 public sealed class RulePredicateSizeRange : ComplexProperty
 {
     /// <summary>
-    /// Minimum Size.
+    ///     Minimum Size.
     /// </summary>
     private int? minimumSize;
 
     /// <summary>
-    /// Mamixmum Size.
+    ///     Mamixmum Size.
     /// </summary>
     private int? maximumSize;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RulePredicateSizeRange"/> class.
+    ///     Initializes a new instance of the <see cref="RulePredicateSizeRange" /> class.
     /// </summary>
     internal RulePredicateSizeRange()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets or sets the minimum size, in kilobytes. If MinimumSize is set to 
-    /// null, no minimum size applies.
+    ///     Gets or sets the minimum size, in kilobytes. If MinimumSize is set to
+    ///     null, no minimum size applies.
     /// </summary>
     public int? MinimumSize
     {
-        get { return this.minimumSize; }
+        get => minimumSize;
 
-        set { this.SetFieldValue<int?>(ref this.minimumSize, value); }
+        set => SetFieldValue(ref minimumSize, value);
     }
 
     /// <summary>
-    /// Gets or sets the maximum size, in kilobytes. If MaximumSize is set to 
-    /// null, no maximum size applies.
+    ///     Gets or sets the maximum size, in kilobytes. If MaximumSize is set to
+    ///     null, no maximum size applies.
     /// </summary>
     public int? MaximumSize
     {
-        get { return this.maximumSize; }
+        get => maximumSize;
 
-        set { this.SetFieldValue<int?>(ref this.maximumSize, value); }
+        set => SetFieldValue(ref maximumSize, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -80,10 +79,10 @@ public sealed class RulePredicateSizeRange : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.MinimumSize:
-                this.minimumSize = reader.ReadElementValue<int>();
+                minimumSize = reader.ReadElementValue<int>();
                 return true;
             case XmlElementNames.MaximumSize:
-                this.maximumSize = reader.ReadElementValue<int>();
+                maximumSize = reader.ReadElementValue<int>();
                 return true;
             default:
                 return false;
@@ -91,29 +90,29 @@ public sealed class RulePredicateSizeRange : ComplexProperty
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.MinimumSize.HasValue)
+        if (MinimumSize.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MinimumSize, this.MinimumSize.Value);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MinimumSize, MinimumSize.Value);
         }
 
-        if (this.MaximumSize.HasValue)
+        if (MaximumSize.HasValue)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MaximumSize, this.MaximumSize.Value);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MaximumSize, MaximumSize.Value);
         }
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        if (this.minimumSize.HasValue && this.maximumSize.HasValue && this.minimumSize.Value > this.maximumSize.Value)
+        if (minimumSize.HasValue && maximumSize.HasValue && minimumSize.Value > maximumSize.Value)
         {
             throw new ServiceValidationException("MinimumSize cannot be larger than MaximumSize.");
         }

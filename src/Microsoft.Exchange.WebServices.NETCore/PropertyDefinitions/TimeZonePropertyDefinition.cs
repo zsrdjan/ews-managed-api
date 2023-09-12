@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents a property definition for properties of type TimeZoneInfo.
+///     Represents a property definition for properties of type TimeZoneInfo.
 /// </summary>
 internal class TimeZonePropertyDefinition : PropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimeZonePropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TimeZonePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -50,20 +48,20 @@ internal class TimeZonePropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
     internal override void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        TimeZoneDefinition timeZoneDefinition = new TimeZoneDefinition();
-        timeZoneDefinition.LoadFromXml(reader, this.XmlElementName);
+        var timeZoneDefinition = new TimeZoneDefinition();
+        timeZoneDefinition.LoadFromXml(reader, XmlElementName);
 
         propertyBag[this] = timeZoneDefinition.ToTimeZoneInfo(reader.Service);
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -74,7 +72,7 @@ internal class TimeZonePropertyDefinition : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        TimeZoneInfo value = (TimeZoneInfo)propertyBag[this];
+        var value = (TimeZoneInfo)propertyBag[this];
 
         if (value != null)
         {
@@ -83,18 +81,15 @@ internal class TimeZonePropertyDefinition : PropertyDefinition
             // is being emitted.
             if (!writer.IsTimeZoneHeaderEmitted || value != writer.Service.TimeZone)
             {
-                TimeZoneDefinition timeZoneDefinition = new TimeZoneDefinition(value);
+                var timeZoneDefinition = new TimeZoneDefinition(value);
 
-                timeZoneDefinition.WriteToXml(writer, this.XmlElementName);
+                timeZoneDefinition.WriteToXml(writer, XmlElementName);
             }
         }
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(TimeZoneInfo); }
-    }
+    public override Type Type => typeof(TimeZoneInfo);
 }

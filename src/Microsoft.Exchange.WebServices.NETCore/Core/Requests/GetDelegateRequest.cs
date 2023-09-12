@@ -25,20 +25,16 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a GetDelegate request.
+///     Represents a GetDelegate request.
 /// </summary>
 internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateResponse>
 {
-    private List<UserId> userIds = new List<UserId>();
+    private readonly List<UserId> userIds = new List<UserId>();
     private bool includePermissions;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetDelegateRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetDelegateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetDelegateRequest(ExchangeService service)
@@ -47,7 +43,7 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     }
 
     /// <summary>
-    /// Creates the response.
+    ///     Creates the response.
     /// </summary>
     /// <returns>Service response.</returns>
     internal override GetDelegateResponse CreateResponse()
@@ -56,32 +52,32 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     }
 
     /// <summary>
-    /// Writes XML attributes.
+    ///     Writes XML attributes.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <remarks>
-    /// Subclass will override if it has XML attributes.
+    ///     Subclass will override if it has XML attributes.
     /// </remarks>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         base.WriteAttributesToXml(writer);
 
-        writer.WriteAttributeValue(XmlAttributeNames.IncludePermissions, this.IncludePermissions);
+        writer.WriteAttributeValue(XmlAttributeNames.IncludePermissions, IncludePermissions);
     }
 
     /// <summary>
-    /// Writes the elements to XML.
+    ///     Writes the elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         base.WriteElementsToXml(writer);
 
-        if (this.UserIds.Count > 0)
+        if (UserIds.Count > 0)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.UserIds);
 
-            foreach (UserId userId in this.UserIds)
+            foreach (var userId in UserIds)
             {
                 userId.WriteToXml(writer, XmlElementNames.UserId);
             }
@@ -91,7 +87,7 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -100,7 +96,7 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -109,7 +105,7 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -118,20 +114,17 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     }
 
     /// <summary>
-    /// Gets the user ids.
+    ///     Gets the user ids.
     /// </summary>
     /// <value>The user ids.</value>
-    public List<UserId> UserIds
-    {
-        get { return this.userIds; }
-    }
+    public List<UserId> UserIds => userIds;
 
     /// <summary>
-    /// Gets or sets a value indicating whether permissions are included.
+    ///     Gets or sets a value indicating whether permissions are included.
     /// </summary>
     public bool IncludePermissions
     {
-        get { return this.includePermissions; }
-        set { this.includePermissions = value; }
+        get => includePermissions;
+        set => includePermissions = value;
     }
 }

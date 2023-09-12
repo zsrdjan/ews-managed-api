@@ -25,103 +25,99 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Item index error
+///     Item index error
 /// </summary>
 public enum ItemIndexError
 {
     /// <summary>
-    /// None
+    ///     None
     /// </summary>
     None,
 
     /// <summary>
-    /// Generic error
+    ///     Generic error
     /// </summary>
     GenericError,
 
     /// <summary>
-    /// Timeout
+    ///     Timeout
     /// </summary>
     Timeout,
 
     /// <summary>
-    /// Stale event
+    ///     Stale event
     /// </summary>
     StaleEvent,
 
     /// <summary>
-    /// Mailbox offline
+    ///     Mailbox offline
     /// </summary>
     MailboxOffline,
 
     /// <summary>
-    /// Too many attachments to index
+    ///     Too many attachments to index
     /// </summary>
     AttachmentLimitReached,
 
     /// <summary>
-    /// Data is truncated
+    ///     Data is truncated
     /// </summary>
     MarsWriterTruncation,
 }
 
 /// <summary>
-/// Represents non indexable item.
+///     Represents non indexable item.
 /// </summary>
 public sealed class NonIndexableItem
 {
     /// <summary>
-    /// Item Identity
+    ///     Item Identity
     /// </summary>
     public ItemId ItemId { get; set; }
 
     /// <summary>
-    /// Error code
+    ///     Error code
     /// </summary>
     public ItemIndexError ErrorCode { get; set; }
 
     /// <summary>
-    /// Error description
+    ///     Error description
     /// </summary>
     public string ErrorDescription { get; set; }
 
     /// <summary>
-    /// Is partially indexed
+    ///     Is partially indexed
     /// </summary>
     public bool IsPartiallyIndexed { get; set; }
 
     /// <summary>
-    /// Is permanent failure
+    ///     Is permanent failure
     /// </summary>
     public bool IsPermanentFailure { get; set; }
 
     /// <summary>
-    /// Attempt count
+    ///     Attempt count
     /// </summary>
     public int AttemptCount { get; set; }
 
     /// <summary>
-    /// Last attempt time
+    ///     Last attempt time
     /// </summary>
     public DateTime? LastAttemptTime { get; set; }
 
     /// <summary>
-    /// Additional info
+    ///     Additional info
     /// </summary>
     public string AdditionalInfo { get; set; }
 
     /// <summary>
-    /// Sort value
+    ///     Sort value
     /// </summary>
     public string SortValue { get; set; }
 
     /// <summary>
-    /// Load from xml
+    ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Non indexable item object</returns>
@@ -131,11 +127,11 @@ public sealed class NonIndexableItem
         if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.NonIndexableItemDetail))
         {
             ItemId itemId = null;
-            ItemIndexError errorCode = ItemIndexError.None;
+            var errorCode = ItemIndexError.None;
             string errorDescription = null;
-            bool isPartiallyIndexed = false;
-            bool isPermanentFailure = false;
-            int attemptCount = 0;
+            var isPartiallyIndexed = false;
+            var isPermanentFailure = false;
+            var attemptCount = 0;
             DateTime? lastAttemptTime = null;
             string additionalInfo = null;
             string sortValue = null;

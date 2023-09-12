@@ -25,20 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a meeting cancellation message. Properties available on meeting messages are defined in the MeetingMessageSchema class.
+///     Represents a meeting cancellation message. Properties available on meeting messages are defined in the
+///     MeetingMessageSchema class.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.MeetingCancellation)]
 public class MeetingCancellation : MeetingMessage
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingCancellation"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingCancellation" /> class.
     /// </summary>
     /// <param name="parentAttachment">The parent attachment.</param>
     internal MeetingCancellation(ItemAttachment parentAttachment)
@@ -47,7 +42,7 @@ public class MeetingCancellation : MeetingMessage
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingCancellation"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingCancellation" /> class.
     /// </summary>
     /// <param name="service">EWS service to which this object belongs.</param>
     internal MeetingCancellation(ExchangeService service)
@@ -56,37 +51,43 @@ public class MeetingCancellation : MeetingMessage
     }
 
     /// <summary>
-    /// Binds to an existing meeting cancellation message and loads the specified set of properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing meeting cancellation message and loads the specified set of properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the meeting cancellation message.</param>
     /// <param name="id">The Id of the meeting cancellation message to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
-    /// <returns>A MeetingCancellation instance representing the meeting cancellation message corresponding to the specified Id.</returns>
+    /// <returns>
+    ///     A MeetingCancellation instance representing the meeting cancellation message corresponding to the specified
+    ///     Id.
+    /// </returns>
     public static new Task<MeetingCancellation> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return service.BindToItem<MeetingCancellation>(id, propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing meeting cancellation message and loads its first class properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing meeting cancellation message and loads its first class properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the meeting cancellation message.</param>
     /// <param name="id">The Id of the meeting cancellation message to bind to.</param>
-    /// <returns>A MeetingCancellation instance representing the meeting cancellation message corresponding to the specified Id.</returns>
+    /// <returns>
+    ///     A MeetingCancellation instance representing the meeting cancellation message corresponding to the specified
+    ///     Id.
+    /// </returns>
     public static new Task<MeetingCancellation> Bind(ExchangeService service, ItemId id)
     {
-        return MeetingCancellation.Bind(service, id, PropertySet.FirstClassProperties);
+        return Bind(service, id, PropertySet.FirstClassProperties);
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -95,15 +96,13 @@ public class MeetingCancellation : MeetingMessage
     }
 
     /// <summary>
-    /// Removes the meeting associated with the cancellation message from the user's calendar.
+    ///     Removes the meeting associated with the cancellation message from the user's calendar.
     /// </summary>
     /// <returns>
-    /// A CalendarActionResults object containing the various items that were created or modified as a
-    /// results of this operation.
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
     /// </returns>
-    public async Task<CalendarActionResults> RemoveMeetingFromCalendar(
-        CancellationToken token = default(CancellationToken)
-    )
+    public async Task<CalendarActionResults> RemoveMeetingFromCalendar(CancellationToken token = default)
     {
         return new CalendarActionResults(
             await new RemoveFromCalendar(this).InternalCreate(null, null, token).ConfigureAwait(false)
@@ -111,7 +110,7 @@ public class MeetingCancellation : MeetingMessage
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -120,42 +119,28 @@ public class MeetingCancellation : MeetingMessage
     }
 
     /// <summary>
-    /// Gets the start time of the appointment.
+    ///     Gets the start time of the appointment.
     /// </summary>
-    public DateTime Start
-    {
-        get { return (DateTime)this.PropertyBag[MeetingCancellationSchema.Start]; }
-    }
+    public DateTime Start => (DateTime)PropertyBag[MeetingCancellationSchema.Start];
 
     /// <summary>
-    /// Gets the end time of the appointment.
+    ///     Gets the end time of the appointment.
     /// </summary>
-    public DateTime End
-    {
-        get { return (DateTime)this.PropertyBag[MeetingCancellationSchema.End]; }
-    }
+    public DateTime End => (DateTime)PropertyBag[MeetingCancellationSchema.End];
 
     /// <summary>
-    /// Gets the location of this appointment.
+    ///     Gets the location of this appointment.
     /// </summary>
-    public string Location
-    {
-        get { return (string)this.PropertyBag[MeetingCancellationSchema.Location]; }
-    }
+    public string Location => (string)PropertyBag[MeetingCancellationSchema.Location];
 
     /// <summary>
-    /// Gets the recurrence pattern for this meeting request.
+    ///     Gets the recurrence pattern for this meeting request.
     /// </summary>
-    public Recurrence Recurrence
-    {
-        get { return (Recurrence)this.PropertyBag[AppointmentSchema.Recurrence]; }
-    }
+    public Recurrence Recurrence => (Recurrence)PropertyBag[AppointmentSchema.Recurrence];
 
     /// <summary>
-    /// Gets the Enhanced location object.
+    ///     Gets the Enhanced location object.
     /// </summary>
-    public EnhancedLocation EnhancedLocation
-    {
-        get { return (EnhancedLocation)this.PropertyBag[MeetingCancellationSchema.EnhancedLocation]; }
-    }
+    public EnhancedLocation EnhancedLocation =>
+        (EnhancedLocation)PropertyBag[MeetingCancellationSchema.EnhancedLocation];
 }

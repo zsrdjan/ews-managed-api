@@ -25,60 +25,58 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents search mailbox parameters.
+///     Represents search mailbox parameters.
 /// </summary>
 public sealed class SearchMailboxesParameters
 {
     /// <summary>
-    /// Search queries
+    ///     Search queries
     /// </summary>
     public MailboxQuery[] SearchQueries { get; set; }
 
     /// <summary>
-    /// Result type
+    ///     Result type
     /// </summary>
     public SearchResultType ResultType { get; set; }
 
     /// <summary>
-    /// Sort by property
+    ///     Sort by property
     /// </summary>
     public string SortBy { get; set; }
 
     /// <summary>
-    /// Sort direction
+    ///     Sort direction
     /// </summary>
     public SortDirection SortOrder { get; set; }
 
     /// <summary>
-    /// Perform deduplication
+    ///     Perform deduplication
     /// </summary>
     public bool PerformDeduplication { get; set; }
 
     /// <summary>
-    /// Page size
+    ///     Page size
     /// </summary>
     public int PageSize { get; set; }
 
     /// <summary>
-    /// Search page direction
+    ///     Search page direction
     /// </summary>
     public SearchPageDirection PageDirection { get; set; }
 
     /// <summary>
-    /// Page item reference
+    ///     Page item reference
     /// </summary>
     public string PageItemReference { get; set; }
 
     /// <summary>
-    /// Preview item response shape
+    ///     Preview item response shape
     /// </summary>
     public PreviewItemResponseShape PreviewItemResponseShape { get; set; }
 
     /// <summary>
-    /// Query language
+    ///     Query language
     /// </summary>
     public string Language { get; set; }
 }

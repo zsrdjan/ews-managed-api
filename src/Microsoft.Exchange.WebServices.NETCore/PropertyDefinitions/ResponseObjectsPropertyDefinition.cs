@@ -25,18 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 /// <summary>
-/// Represents response object property defintion.
+///     Represents response object property defintion.
 /// </summary>
 internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResponseObjectsPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="ResponseObjectsPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -47,15 +42,15 @@ internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
-    internal override sealed void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
+    internal override void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        ResponseActions value = ResponseActions.None;
+        var value = ResponseActions.None;
 
-        reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, this.XmlElementName);
+        reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementName);
 
         if (!reader.IsEmptyElement)
         {
@@ -67,20 +62,20 @@ internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
                 {
                     value |= GetResponseAction(reader.LocalName);
                 }
-            } while (!reader.IsEndElement(XmlNamespace.Types, this.XmlElementName));
+            } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementName));
         }
 
         propertyBag[this] = value;
     }
 
     /// <summary>
-    /// Gets the response action.
+    ///     Gets the response action.
     /// </summary>
     /// <param name="responseActionString">The response action string.</param>
     /// <returns></returns>
     private static ResponseActions GetResponseAction(string responseActionString)
     {
-        ResponseActions value = ResponseActions.None;
+        var value = ResponseActions.None;
 
         switch (responseActionString)
         {
@@ -120,7 +115,7 @@ internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -135,18 +130,12 @@ internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
     /// </summary>
-    internal override bool IsNullable
-    {
-        get { return false; }
-    }
+    internal override bool IsNullable => false;
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(ResponseActions); }
-    }
+    public override Type Type => typeof(ResponseActions);
 }

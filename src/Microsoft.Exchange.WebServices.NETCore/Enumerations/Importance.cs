@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the importance of an item.
+///     Defines the importance of an item.
 /// </summary>
 public enum Importance
 {
     /// <summary>
-    /// Low importance.
+    ///     Low importance.
     /// </summary>
     Low,
 
     /// <summary>
-    /// Normal importance.
+    ///     Normal importance.
     /// </summary>
     Normal,
 
     /// <summary>
-    /// High importance.
+    ///     High importance.
     /// </summary>
     High
 }

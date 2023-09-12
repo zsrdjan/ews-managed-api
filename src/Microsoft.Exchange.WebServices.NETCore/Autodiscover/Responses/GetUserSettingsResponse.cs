@@ -23,33 +23,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents the response to a GetUsersSettings call for an individual user.
+///     Represents the response to a GetUsersSettings call for an individual user.
 /// </summary>
 public sealed class GetUserSettingsResponse : AutodiscoverResponse
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetUserSettingsResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetUserSettingsResponse" /> class.
     /// </summary>
     public GetUserSettingsResponse()
-        : base()
     {
-        this.SmtpAddress = string.Empty;
-        this.Settings = new Dictionary<UserSettingName, object>();
-        this.UserSettingErrors = new Collection<UserSettingError>();
+        SmtpAddress = string.Empty;
+        Settings = new Dictionary<UserSettingName, object>();
+        UserSettingErrors = new Collection<UserSettingError>();
     }
 
     /// <summary>
-    /// Tries the get the user setting value.
+    ///     Tries the get the user setting value.
     /// </summary>
     /// <typeparam name="T">Type of user setting.</typeparam>
     /// <param name="setting">The setting.</param>
@@ -58,40 +55,38 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
     public bool TryGetSettingValue<T>(UserSettingName setting, out T value)
     {
         object objValue;
-        if (this.Settings.TryGetValue(setting, out objValue))
+        if (Settings.TryGetValue(setting, out objValue))
         {
             value = (T)objValue;
             return true;
         }
-        else
-        {
-            value = default(T);
-            return false;
-        }
+
+        value = default;
+        return false;
     }
 
     /// <summary>
-    /// Gets the SMTP address this response applies to.
+    ///     Gets the SMTP address this response applies to.
     /// </summary>
     public string SmtpAddress { get; internal set; }
 
     /// <summary>
-    /// Gets the redirectionTarget (URL or email address)
+    ///     Gets the redirectionTarget (URL or email address)
     /// </summary>
     public string RedirectTarget { get; internal set; }
 
     /// <summary>
-    /// Gets the requested settings for the user.
+    ///     Gets the requested settings for the user.
     /// </summary>
     public IDictionary<UserSettingName, object> Settings { get; internal set; }
 
     /// <summary>
-    /// Gets error information for settings that could not be returned.
+    ///     Gets error information for settings that could not be returned.
     /// </summary>
     public Collection<UserSettingError> UserSettingErrors { get; internal set; }
 
     /// <summary>
-    /// Loads response from XML.
+    ///     Loads response from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="endElementName">End element name.</param>
@@ -106,13 +101,13 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.RedirectTarget:
-                        this.RedirectTarget = reader.ReadElementValue();
+                        RedirectTarget = reader.ReadElementValue();
                         break;
                     case XmlElementNames.UserSettingErrors:
-                        this.LoadUserSettingErrorsFromXml(reader);
+                        LoadUserSettingErrorsFromXml(reader);
                         break;
                     case XmlElementNames.UserSettings:
-                        this.LoadUserSettingsFromXml(reader);
+                        LoadUserSettingsFromXml(reader);
                         break;
                     default:
                         base.LoadFromXml(reader, endElementName);
@@ -123,7 +118,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadUserSettingsFromXml(EwsXmlReader reader)
@@ -136,7 +131,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
 
                 if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.UserSetting))
                 {
-                    string settingClass = reader.ReadAttributeValue(
+                    var settingClass = reader.ReadAttributeValue(
                         XmlNamespace.XmlSchemaInstance,
                         XmlAttributeNames.Type
                     );
@@ -148,7 +143,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
                         case XmlElementNames.AlternateMailboxCollectionSetting:
                         case XmlElementNames.ProtocolConnectionCollectionSetting:
                         case XmlElementNames.DocumentSharingLocationCollectionSetting:
-                            this.ReadSettingFromXml(reader);
+                            ReadSettingFromXml(reader);
                             break;
 
                         default:
@@ -165,7 +160,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
     }
 
     /// <summary>
-    /// Reads user setting from XML.
+    ///     Reads user setting from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void ReadSettingFromXml(EwsXmlReader reader)
@@ -206,8 +201,8 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
         // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
         try
         {
-            UserSettingName userSettingName = EwsUtilities.Parse<UserSettingName>(name);
-            this.Settings.Add(userSettingName, value);
+            var userSettingName = EwsUtilities.Parse<UserSettingName>(name);
+            Settings.Add(userSettingName, value);
         }
         catch (ArgumentException)
         {
@@ -226,7 +221,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
     }
 
     /// <summary>
-    /// Loads the user setting errors.
+    ///     Loads the user setting errors.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void LoadUserSettingErrorsFromXml(EwsXmlReader reader)
@@ -239,9 +234,9 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
 
                 if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.UserSettingError))
                 {
-                    UserSettingError error = new UserSettingError();
+                    var error = new UserSettingError();
                     error.LoadFromXml(reader);
-                    this.UserSettingErrors.Add(error);
+                    UserSettingErrors.Add(error);
                 }
             } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettingErrors));
         }

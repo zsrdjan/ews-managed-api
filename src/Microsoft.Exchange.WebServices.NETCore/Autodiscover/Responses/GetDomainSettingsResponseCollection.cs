@@ -23,30 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Xml;
-
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents a collection of responses to GetDomainSettings
+///     Represents a collection of responses to GetDomainSettings
 /// </summary>
 public sealed class GetDomainSettingsResponseCollection : AutodiscoverResponseCollection<GetDomainSettingsResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutodiscoverResponseCollection&lt;TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="AutodiscoverResponseCollection&lt;TResponse&gt;" /> class.
     /// </summary>
     internal GetDomainSettingsResponseCollection()
     {
     }
 
     /// <summary>
-    /// Create a response instance.
+    ///     Create a response instance.
     /// </summary>
     /// <returns>GetDomainSettingsResponse.</returns>
     internal override GetDomainSettingsResponse CreateResponseInstance()
@@ -55,7 +49,7 @@ public sealed class GetDomainSettingsResponseCollection : AutodiscoverResponseCo
     }
 
     /// <summary>
-    /// Gets the name of the response collection XML element.
+    ///     Gets the name of the response collection XML element.
     /// </summary>
     /// <returns>Response collection XMl element name.</returns>
     internal override string GetResponseCollectionXmlElementName()
@@ -64,7 +58,7 @@ public sealed class GetDomainSettingsResponseCollection : AutodiscoverResponseCo
     }
 
     /// <summary>
-    /// Gets the name of the response instance XML element.
+    ///     Gets the name of the response instance XML element.
     /// </summary>
     /// <returns>Response instance XMl element name.</returns>
     internal override string GetResponseInstanceXmlElementName()

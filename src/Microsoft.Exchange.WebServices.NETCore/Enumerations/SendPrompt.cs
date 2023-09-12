@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// The values indicate the types of item icons to display.
+///     The values indicate the types of item icons to display.
 /// </summary>
 public enum SendPrompt
 {
     /// <summary>
-    /// None
+    ///     None
     /// </summary>
     None,
 
     /// <summary>
-    /// Send
+    ///     Send
     /// </summary>
     Send,
 
     /// <summary>
-    /// VotingOption
+    ///     VotingOption
     /// </summary>
     VotingOption,
 }

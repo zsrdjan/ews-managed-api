@@ -25,65 +25,60 @@
 
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a UnifiedGroup class.
+///     Represents a UnifiedGroup class.
 /// </summary>
 public class UnifiedGroup : ComplexProperty
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="UnifiedGroup"/> class.
+    ///     Initializes a new instance of the <see cref="UnifiedGroup" /> class.
     /// </summary>
     internal UnifiedGroup()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets or sets whether this groups is a favorite group
+    ///     Gets or sets whether this groups is a favorite group
     /// </summary>
     public bool IsFavorite { get; set; }
 
     /// <summary>
-    /// Gets or sets the ExternalDirectoryObjectId for this group
+    ///     Gets or sets the ExternalDirectoryObjectId for this group
     /// </summary>
     public string ExternalDirectoryObjectId { get; set; }
 
     /// <summary>
-    /// Gets or sets the LastVisitedTimeUtc for this group and user
+    ///     Gets or sets the LastVisitedTimeUtc for this group and user
     /// </summary>
     public string LastVisitedTimeUtc { get; set; }
 
     /// <summary>
-    /// Gets or sets the SmtpAddress associated with this group
+    ///     Gets or sets the SmtpAddress associated with this group
     /// </summary>
     public string SmtpAddress { get; set; }
 
     /// <summary>
-    /// Gets or sets the LegacyDN associated with this group
+    ///     Gets or sets the LegacyDN associated with this group
     /// </summary>
     public string LegacyDN { get; set; }
 
     /// <summary>
-    /// Gets or sets the MailboxGuid associated with this group
+    ///     Gets or sets the MailboxGuid associated with this group
     /// </summary>
     public string MailboxGuid { get; set; }
 
     /// <summary>
-    /// Gets or sets the DisplayName associated with this group
+    ///     Gets or sets the DisplayName associated with this group
     /// </summary>
     public string DisplayName { get; set; }
 
     /// <summary>
-    /// Gets or sets the AccessType associated with this group
+    ///     Gets or sets the AccessType associated with this group
     /// </summary>
     public UnifiedGroupAccessType AccessType { get; set; }
 
     /// <summary>
-    /// Read Conversations from XML.
+    ///     Read Conversations from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlElementName">The xml element to read.</param>
@@ -96,34 +91,32 @@ public class UnifiedGroup : ComplexProperty
             switch (reader.LocalName)
             {
                 case XmlElementNames.SmtpAddress:
-                    this.SmtpAddress = reader.ReadElementValue();
+                    SmtpAddress = reader.ReadElementValue();
                     break;
                 case XmlElementNames.LegacyDN:
-                    this.LegacyDN = reader.ReadElementValue();
+                    LegacyDN = reader.ReadElementValue();
                     break;
                 case XmlElementNames.MailboxGuid:
-                    this.MailboxGuid = reader.ReadElementValue();
+                    MailboxGuid = reader.ReadElementValue();
                     break;
                 case XmlElementNames.DisplayName:
-                    this.DisplayName = reader.ReadElementValue();
+                    DisplayName = reader.ReadElementValue();
                     break;
                 case XmlElementNames.IsFavorite:
-                    this.IsFavorite = reader.ReadElementValue<bool>();
+                    IsFavorite = reader.ReadElementValue<bool>();
                     break;
                 case XmlElementNames.LastVisitedTimeUtc:
-                    this.LastVisitedTimeUtc = reader.ReadElementValue();
+                    LastVisitedTimeUtc = reader.ReadElementValue();
                     break;
                 case XmlElementNames.AccessType:
-                    this.AccessType = (UnifiedGroupAccessType)Enum.Parse(
+                    AccessType = (UnifiedGroupAccessType)Enum.Parse(
                         typeof(UnifiedGroupAccessType),
                         reader.ReadElementValue(),
                         false
                     );
                     break;
                 case XmlElementNames.ExternalDirectoryObjectId:
-                    this.ExternalDirectoryObjectId = reader.ReadElementValue();
-                    break;
-                default:
+                    ExternalDirectoryObjectId = reader.ReadElementValue();
                     break;
             }
         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UnifiedGroup));

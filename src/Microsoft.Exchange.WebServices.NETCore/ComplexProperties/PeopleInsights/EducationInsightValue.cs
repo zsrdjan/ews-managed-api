@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the EducationInsightValue.
+///     Represents the EducationInsightValue.
 /// </summary>
 public sealed class EducationInsightValue : InsightValue
 {
@@ -39,47 +36,47 @@ public sealed class EducationInsightValue : InsightValue
     private long endUtcTicks;
 
     /// <summary>
-    /// Gets the Institute
+    ///     Gets the Institute
     /// </summary>
     public string Institute
     {
-        get { return this.institute; }
+        get => institute;
 
-        set { this.SetFieldValue<string>(ref this.institute, value); }
+        set => SetFieldValue(ref institute, value);
     }
 
     /// <summary>
-    /// Gets the Degree
+    ///     Gets the Degree
     /// </summary>
     public string Degree
     {
-        get { return this.degree; }
+        get => degree;
 
-        set { this.SetFieldValue<string>(ref this.degree, value); }
+        set => SetFieldValue(ref degree, value);
     }
 
     /// <summary>
-    /// Gets the StartUtcTicks
+    ///     Gets the StartUtcTicks
     /// </summary>
     public long StartUtcTicks
     {
-        get { return this.startUtcTicks; }
+        get => startUtcTicks;
 
-        set { this.SetFieldValue<long>(ref this.startUtcTicks, value); }
+        set => SetFieldValue(ref startUtcTicks, value);
     }
 
     /// <summary>
-    /// Gets the EndUtcTicks
+    ///     Gets the EndUtcTicks
     /// </summary>
     public long EndUtcTicks
     {
-        get { return this.endUtcTicks; }
+        get => endUtcTicks;
 
-        set { this.SetFieldValue<long>(ref this.endUtcTicks, value); }
+        set => SetFieldValue(ref endUtcTicks, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -88,22 +85,22 @@ public sealed class EducationInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.Institute:
-                this.Institute = reader.ReadElementValue();
+                Institute = reader.ReadElementValue();
                 break;
             case XmlElementNames.Degree:
-                this.Degree = reader.ReadElementValue();
+                Degree = reader.ReadElementValue();
                 break;
             case XmlElementNames.StartUtcTicks:
-                this.StartUtcTicks = reader.ReadElementValue<long>();
+                StartUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.EndUtcTicks:
-                this.EndUtcTicks = reader.ReadElementValue<long>();
+                EndUtcTicks = reader.ReadElementValue<long>();
                 break;
             default:
                 return false;

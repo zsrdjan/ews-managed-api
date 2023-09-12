@@ -23,25 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of deleted occurrence objects.
+///     Represents a collection of deleted occurrence objects.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class DeletedOccurrenceInfoCollection : ComplexPropertyCollection<DeletedOccurrenceInfo>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="OccurrenceInfoCollection"/> class.
+    ///     Initializes a new instance of the <see cref="OccurrenceInfoCollection" /> class.
     /// </summary>
     internal DeletedOccurrenceInfoCollection()
     {
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>OccurenceInfo instance.</returns>
@@ -51,14 +51,12 @@ public sealed class DeletedOccurrenceInfoCollection : ComplexPropertyCollection<
         {
             return new DeletedOccurrenceInfo();
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>

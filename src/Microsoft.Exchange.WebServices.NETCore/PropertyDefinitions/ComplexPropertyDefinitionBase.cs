@@ -25,17 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents abstract complex property definition.
+///     Represents abstract complex property definition.
 /// </summary>
 internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyDefinitionBase"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyDefinitionBase" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="flags">The flags.</param>
@@ -50,7 +46,7 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyDefinitionBase"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyDefinitionBase" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -61,7 +57,7 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ComplexPropertyDefinitionBase"/> class.
+    ///     Initializes a new instance of the <see cref="ComplexPropertyDefinitionBase" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -78,14 +74,14 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     }
 
     /// <summary>
-    /// Creates the property instance.
+    ///     Creates the property instance.
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <returns>ComplexProperty.</returns>
     internal abstract ComplexProperty CreatePropertyInstance(ServiceObject owner);
 
     /// <summary>
-    /// Internals the load from XML.
+    ///     Internals the load from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -93,13 +89,10 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     {
         object complexProperty;
 
-        bool justCreated = GetPropertyInstance(propertyBag, out complexProperty);
+        var justCreated = GetPropertyInstance(propertyBag, out complexProperty);
 
         if (!justCreated &&
-            this.HasFlag(
-                PropertyDefinitionFlags.UpdateCollectionItems,
-                propertyBag.Owner.Service.RequestedServerVersion
-            ))
+            HasFlag(PropertyDefinitionFlags.UpdateCollectionItems, propertyBag.Owner.Service.RequestedServerVersion))
         {
             (complexProperty as ComplexProperty).UpdateFromXml(reader, reader.LocalName);
         }
@@ -112,7 +105,7 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     }
 
     /// <summary>
-    /// Gets the property instance.
+    ///     Gets the property instance.
     /// </summary>
     /// <param name="propertyBag">The property bag.</param>
     /// <param name="complexProperty">The property instance.</param>
@@ -121,9 +114,9 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     {
         complexProperty = null;
         if (!propertyBag.TryGetValue(this, out complexProperty) ||
-            !this.HasFlag(PropertyDefinitionFlags.ReuseInstance, propertyBag.Owner.Service.RequestedServerVersion))
+            !HasFlag(PropertyDefinitionFlags.ReuseInstance, propertyBag.Owner.Service.RequestedServerVersion))
         {
-            complexProperty = this.CreatePropertyInstance(propertyBag.Owner);
+            complexProperty = CreatePropertyInstance(propertyBag.Owner);
             return true;
         }
 
@@ -131,24 +124,24 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
     internal override sealed void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, this.XmlElementName);
+        reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementName);
 
         if (!reader.IsEmptyElement || reader.HasAttributes)
         {
-            this.InternalLoadFromXml(reader, propertyBag);
+            InternalLoadFromXml(reader, propertyBag);
         }
 
-        reader.ReadEndElementIfNecessary(XmlNamespace.Types, this.XmlElementName);
+        reader.ReadEndElementIfNecessary(XmlNamespace.Types, XmlElementName);
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -159,11 +152,11 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        ComplexProperty complexProperty = (ComplexProperty)propertyBag[this];
+        var complexProperty = (ComplexProperty)propertyBag[this];
 
         if (complexProperty != null)
         {
-            complexProperty.WriteToXml(writer, this.XmlElementName);
+            complexProperty.WriteToXml(writer, XmlElementName);
         }
     }
 }

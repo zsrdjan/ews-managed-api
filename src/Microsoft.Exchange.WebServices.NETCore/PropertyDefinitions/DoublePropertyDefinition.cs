@@ -26,12 +26,12 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents double-precision floating point property definition.
+///     Represents double-precision floating point property definition.
 /// </summary>
 internal sealed class DoublePropertyDefinition : GenericPropertyDefinition<double>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DoublePropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="DoublePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>

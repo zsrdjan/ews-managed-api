@@ -25,27 +25,22 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the response to an individual Id conversion operation.
+///     Represents the response to an individual Id conversion operation.
 /// </summary>
 public sealed class ConvertIdResponse : ServiceResponse
 {
     private AlternateIdBase convertedId;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConvertIdResponse"/> class.
+    ///     Initializes a new instance of the <see cref="ConvertIdResponse" /> class.
     /// </summary>
     internal ConvertIdResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -54,9 +49,9 @@ public sealed class ConvertIdResponse : ServiceResponse
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.AlternateId);
 
-        string alternateIdClass = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
+        var alternateIdClass = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
 
-        int aliasSeparatorIndex = alternateIdClass.IndexOf(':');
+        var aliasSeparatorIndex = alternateIdClass.IndexOf(':');
 
         if (aliasSeparatorIndex > -1)
         {
@@ -67,13 +62,13 @@ public sealed class ConvertIdResponse : ServiceResponse
         switch (alternateIdClass)
         {
             case AlternateId.SchemaTypeName:
-                this.convertedId = new AlternateId();
+                convertedId = new AlternateId();
                 break;
             case AlternatePublicFolderId.SchemaTypeName:
-                this.convertedId = new AlternatePublicFolderId();
+                convertedId = new AlternatePublicFolderId();
                 break;
             case AlternatePublicFolderItemId.SchemaTypeName:
-                this.convertedId = new AlternatePublicFolderItemId();
+                convertedId = new AlternatePublicFolderItemId();
                 break;
             default:
                 EwsUtilities.Assert(
@@ -84,16 +79,13 @@ public sealed class ConvertIdResponse : ServiceResponse
                 break;
         }
 
-        this.convertedId.LoadAttributesFromXml(reader);
+        convertedId.LoadAttributesFromXml(reader);
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.AlternateId);
     }
 
     /// <summary>
-    /// Gets the converted Id.
+    ///     Gets the converted Id.
     /// </summary>
-    public AlternateIdBase ConvertedId
-    {
-        get { return this.convertedId; }
-    }
+    public AlternateIdBase ConvertedId => convertedId;
 }

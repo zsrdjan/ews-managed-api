@@ -23,26 +23,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a request cannot be handled due to a service version mismatch.
+///     Represents an error that occurs when a request cannot be handled due to a service version mismatch.
 /// </summary>
 public sealed class ServiceVersionException : ServiceLocalException
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceVersionException"/> class.
+    ///     Initializes a new instance of the <see cref="ServiceVersionException" /> class.
     /// </summary>
     public ServiceVersionException()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceVersionException"/> class.
+    ///     Initializes a new instance of the <see cref="ServiceVersionException" /> class.
     /// </summary>
     /// <param name="message">The error message.</param>
     public ServiceVersionException(string message)
@@ -51,7 +49,7 @@ public sealed class ServiceVersionException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceVersionException"/> class.
+    ///     Initializes a new instance of the <see cref="ServiceVersionException" /> class.
     /// </summary>
     /// <param name="message">The error message.</param>
     /// <param name="innerException">The inner exception.</param>
@@ -61,7 +59,8 @@ public sealed class ServiceVersionException : ServiceLocalException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceVersionException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceVersionException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

@@ -25,46 +25,39 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Disable reason type
+///     Disable reason type
 /// </summary>
 public enum DisableReasonType
 {
     /// <summary>
-    /// Extension is being disabled with no reason
+    ///     Extension is being disabled with no reason
     /// </summary>
     NoReason,
 
     /// <summary>
-    /// Extension is being disabled from Outlook due to performance reasons
+    ///     Extension is being disabled from Outlook due to performance reasons
     /// </summary>
     OutlookClientPerformance,
 
     /// <summary>
-    /// Extension is being disabled from OWA due to performance reasons
+    ///     Extension is being disabled from OWA due to performance reasons
     /// </summary>
     OWAClientPerformance,
 
     /// <summary>
-    /// Extension is being disabled from MOWA due to performance reasons
+    ///     Extension is being disabled from MOWA due to performance reasons
     /// </summary>
     MobileClientPerformance
 }
 
 /// <summary>
-/// Represents a DisableApp request.
+///     Represents a DisableApp request.
 /// </summary>
 internal sealed class DisableAppRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DisableAppRequest"/> class.
+    ///     Initializes a new instance of the <see cref="DisableAppRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="id">Extension id.</param>
@@ -72,12 +65,12 @@ internal sealed class DisableAppRequest : SimpleServiceRequestBase
     internal DisableAppRequest(ExchangeService service, string id, DisableReasonType disableReason)
         : base(service)
     {
-        this.Id = id;
-        this.DisableReason = disableReason;
+        Id = id;
+        DisableReason = disableReason;
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -86,17 +79,17 @@ internal sealed class DisableAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ID, this.Id);
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.DisableReason, this.DisableReason);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ID, Id);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.DisableReason, DisableReason);
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -105,19 +98,19 @@ internal sealed class DisableAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Parses the response.
+    ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Response object.</returns>
     internal override object ParseResponse(EwsServiceXmlReader reader)
     {
-        DisableAppResponse response = new DisableAppResponse();
+        var response = new DisableAppResponse();
         response.LoadFromXml(reader, XmlElementNames.DisableAppResponse);
         return response;
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -126,24 +119,23 @@ internal sealed class DisableAppRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    /// Executes this request.
+    ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
     internal async Task<DisableAppResponse> Execute(CancellationToken token)
     {
-        DisableAppResponse serviceResponse =
-            (DisableAppResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = (DisableAppResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
 
     /// <summary>
-    /// Extension id
+    ///     Extension id
     /// </summary>
     private string Id { get; set; }
 
     /// <summary>
-    /// Disable reason
+    ///     Disable reason
     /// </summary>
     private DisableReasonType DisableReason { get; set; }
 }

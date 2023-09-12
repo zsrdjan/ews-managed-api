@@ -23,61 +23,57 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Net;
 using System.Net.Http.Headers;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the standard response to an Exchange Web Services operation.
+///     Represents the standard response to an Exchange Web Services operation.
 /// </summary>
 public class ServiceResponse
 {
     private ServiceResult result;
     private ServiceError errorCode;
     private string errorMessage;
-    private Dictionary<string, string> errorDetails = new Dictionary<string, string>();
-    private Collection<PropertyDefinitionBase> errorProperties = new Collection<PropertyDefinitionBase>();
+    private readonly Dictionary<string, string> errorDetails = new Dictionary<string, string>();
+    private readonly Collection<PropertyDefinitionBase> errorProperties = new Collection<PropertyDefinitionBase>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceResponse"/> class.
+    ///     Initializes a new instance of the <see cref="ServiceResponse" /> class.
     /// </summary>
     internal ServiceResponse()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceResponse"/> class.
+    ///     Initializes a new instance of the <see cref="ServiceResponse" /> class.
     /// </summary>
     /// <param name="soapFaultDetails">The SOAP fault details.</param>
     internal ServiceResponse(SoapFaultDetails soapFaultDetails)
     {
-        this.result = ServiceResult.Error;
-        this.errorCode = soapFaultDetails.ResponseCode;
-        this.errorMessage = soapFaultDetails.FaultString;
-        this.errorDetails = soapFaultDetails.ErrorDetails;
+        result = ServiceResult.Error;
+        errorCode = soapFaultDetails.ResponseCode;
+        errorMessage = soapFaultDetails.FaultString;
+        errorDetails = soapFaultDetails.ErrorDetails;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServiceResponse"/> class.
-    /// This is intended to be used by unit tests to create a fake service error response
+    ///     Initializes a new instance of the <see cref="ServiceResponse" /> class.
+    ///     This is intended to be used by unit tests to create a fake service error response
     /// </summary>
     /// <param name="responseCode">Response code</param>
     /// <param name="errorMessage">Detailed error message</param>
     internal ServiceResponse(ServiceError responseCode, string errorMessage)
     {
-        this.result = ServiceResult.Error;
-        this.errorCode = responseCode;
+        result = ServiceResult.Error;
+        errorCode = responseCode;
         this.errorMessage = errorMessage;
-        this.errorDetails = null;
+        errorDetails = null;
     }
 
     /// <summary>
-    /// Loads response from XML.
+    ///     Loads response from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -88,24 +84,24 @@ public class ServiceResponse
             reader.ReadStartElement(XmlNamespace.Messages, xmlElementName);
         }
 
-        this.result = reader.ReadAttributeValue<ServiceResult>(XmlAttributeNames.ResponseClass);
+        result = reader.ReadAttributeValue<ServiceResult>(XmlAttributeNames.ResponseClass);
 
-        if (this.result == ServiceResult.Success || this.result == ServiceResult.Warning)
+        if (result == ServiceResult.Success || result == ServiceResult.Warning)
         {
-            if (this.result == ServiceResult.Warning)
+            if (result == ServiceResult.Warning)
             {
-                this.errorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
+                errorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
             }
 
-            this.errorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
+            errorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
 
-            if (this.result == ServiceResult.Warning)
+            if (result == ServiceResult.Warning)
             {
                 reader.ReadElementValue<int>(XmlNamespace.Messages, XmlElementNames.DescriptiveLinkKey);
             }
 
             // If batch processing stopped, EWS returns an empty element. Skip over it.
-            if (this.BatchProcessingStopped)
+            if (BatchProcessingStopped)
             {
                 do
                 {
@@ -114,15 +110,15 @@ public class ServiceResponse
             }
             else
             {
-                this.ReadElementsFromXml(reader);
+                ReadElementsFromXml(reader);
 
                 reader.ReadEndElementIfNecessary(XmlNamespace.Messages, xmlElementName);
             }
         }
         else
         {
-            this.errorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
-            this.errorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
+            errorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
+            errorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
             reader.ReadElementValue<int>(XmlNamespace.Messages, XmlElementNames.DescriptiveLinkKey);
 
             while (!reader.IsEndElement(XmlNamespace.Messages, xmlElementName))
@@ -131,7 +127,7 @@ public class ServiceResponse
 
                 if (reader.IsStartElement())
                 {
-                    if (!this.LoadExtraErrorDetailsFromXml(reader, reader.LocalName))
+                    if (!LoadExtraErrorDetailsFromXml(reader, reader.LocalName))
                     {
                         reader.SkipCurrentElement();
                     }
@@ -139,13 +135,13 @@ public class ServiceResponse
             }
         }
 
-        this.MapErrorCodeToErrorMessage();
+        MapErrorCodeToErrorMessage();
 
-        this.Loaded();
+        Loaded();
     }
 
     /// <summary>
-    /// Parses the message XML.
+    ///     Parses the message XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void ParseMessageXml(EwsServiceXmlReader reader)
@@ -159,14 +155,11 @@ public class ServiceResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.Value:
-                        this.errorDetails.Add(
-                            reader.ReadAttributeValue(XmlAttributeNames.Name),
-                            reader.ReadElementValue()
-                        );
+                        errorDetails.Add(reader.ReadAttributeValue(XmlAttributeNames.Name), reader.ReadElementValue());
                         break;
 
                     case XmlElementNames.FieldURI:
-                        this.errorProperties.Add(
+                        errorProperties.Add(
                             ServiceObjectSchema.FindPropertyDefinition(
                                 reader.ReadAttributeValue(XmlAttributeNames.FieldURI)
                             )
@@ -174,7 +167,7 @@ public class ServiceResponse
                         break;
 
                     case XmlElementNames.IndexedFieldURI:
-                        this.errorProperties.Add(
+                        errorProperties.Add(
                             new IndexedPropertyDefinition(
                                 reader.ReadAttributeValue(XmlAttributeNames.FieldURI),
                                 reader.ReadAttributeValue(XmlAttributeNames.FieldIndex)
@@ -183,12 +176,9 @@ public class ServiceResponse
                         break;
 
                     case XmlElementNames.ExtendedFieldURI:
-                        ExtendedPropertyDefinition extendedPropDef = new ExtendedPropertyDefinition();
+                        var extendedPropDef = new ExtendedPropertyDefinition();
                         extendedPropDef.LoadFromXml(reader);
-                        this.errorProperties.Add(extendedPropDef);
-                        break;
-
-                    default:
+                        errorProperties.Add(extendedPropDef);
                         break;
                 }
             }
@@ -196,26 +186,26 @@ public class ServiceResponse
     }
 
     /// <summary>
-    /// Called when the response has been loaded from XML.
+    ///     Called when the response has been loaded from XML.
     /// </summary>
     internal virtual void Loaded()
     {
     }
 
     /// <summary>
-    /// Called after the response has been loaded from XML in order to map error codes to "better" error messages.
+    ///     Called after the response has been loaded from XML in order to map error codes to "better" error messages.
     /// </summary>
     internal void MapErrorCodeToErrorMessage()
     {
         // Use a better error message when an item cannot be updated because its changeKey is old.
-        if (this.ErrorCode == ServiceError.ErrorIrresolvableConflict)
+        if (ErrorCode == ServiceError.ErrorIrresolvableConflict)
         {
-            this.ErrorMessage = Strings.ItemIsOutOfDate;
+            ErrorMessage = Strings.ItemIsOutOfDate;
         }
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal virtual void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -223,7 +213,7 @@ public class ServiceResponse
     }
 
     /// <summary>
-    /// Reads the headers from a HTTP response
+    ///     Reads the headers from a HTTP response
     /// </summary>
     /// <param name="responseHeaders">a collection of response headers</param>
     internal virtual void ReadHeader(HttpResponseHeaders responseHeaders)
@@ -231,103 +221,88 @@ public class ServiceResponse
     }
 
     /// <summary>
-    /// Loads extra error details from XML
+    ///     Loads extra error details from XML
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlElementName">The current element name of the extra error details.</param>
-    /// <returns>True if the expected extra details is loaded; 
-    /// False if the element name does not match the expected element. </returns>
+    /// <returns>
+    ///     True if the expected extra details is loaded;
+    ///     False if the element name does not match the expected element.
+    /// </returns>
     internal virtual bool LoadExtraErrorDetailsFromXml(EwsServiceXmlReader reader, string xmlElementName)
     {
         if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.MessageXml) && !reader.IsEmptyElement)
         {
-            this.ParseMessageXml(reader);
+            ParseMessageXml(reader);
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Throws a ServiceResponseException if this response has its Result property set to Error.
+    ///     Throws a ServiceResponseException if this response has its Result property set to Error.
     /// </summary>
     internal void ThrowIfNecessary()
     {
-        this.InternalThrowIfNecessary();
+        InternalThrowIfNecessary();
     }
 
     /// <summary>
-    /// Internal method that throws a ServiceResponseException if this response has its Result property set to Error.
+    ///     Internal method that throws a ServiceResponseException if this response has its Result property set to Error.
     /// </summary>
     internal virtual void InternalThrowIfNecessary()
     {
-        if (this.Result == ServiceResult.Error)
+        if (Result == ServiceResult.Error)
         {
             throw new ServiceResponseException(this);
         }
     }
 
     /// <summary>
-    /// Gets a value indicating whether a batch request stopped processing before the end.
+    ///     Gets a value indicating whether a batch request stopped processing before the end.
     /// </summary>
-    internal bool BatchProcessingStopped
-    {
-        get
-        {
-            return (this.result == ServiceResult.Warning) &&
-                   (this.errorCode == ServiceError.ErrorBatchProcessingStopped);
-        }
-    }
+    internal bool BatchProcessingStopped =>
+        (result == ServiceResult.Warning) && (errorCode == ServiceError.ErrorBatchProcessingStopped);
 
     /// <summary>
-    /// Gets the result associated with this response.
+    ///     Gets the result associated with this response.
     /// </summary>
-    public ServiceResult Result
-    {
-        get { return this.result; }
-    }
+    public ServiceResult Result => result;
 
     /// <summary>
-    /// Gets the error code associated with this response.
+    ///     Gets the error code associated with this response.
     /// </summary>
-    public ServiceError ErrorCode
-    {
-        get { return this.errorCode; }
-    }
+    public ServiceError ErrorCode => errorCode;
 
     /// <summary>
-    /// Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null.
-    /// ErrorMessage is localized according to the PreferredCulture property of the ExchangeService object that
-    /// was used to call the method that generated the response.
+    ///     Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null.
+    ///     ErrorMessage is localized according to the PreferredCulture property of the ExchangeService object that
+    ///     was used to call the method that generated the response.
     /// </summary>
     public string ErrorMessage
     {
-        get { return this.errorMessage; }
-        internal set { this.errorMessage = value; }
+        get => errorMessage;
+        internal set => errorMessage = value;
     }
 
     /// <summary>
-    /// Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null.
-    /// Error details will only available for some error codes. For example, when error code is ErrorRecurrenceHasNoOccurrence, 
-    /// the ErrorDetailsDictionary will contain keys for EffectiveStartDate and EffectiveEndDate.
+    ///     Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null.
+    ///     Error details will only available for some error codes. For example, when error code is
+    ///     ErrorRecurrenceHasNoOccurrence,
+    ///     the ErrorDetailsDictionary will contain keys for EffectiveStartDate and EffectiveEndDate.
     /// </summary>
     /// <value>The error details dictionary.</value>
-    public IDictionary<string, string> ErrorDetails
-    {
-        get { return this.errorDetails; }
-    }
+    public IDictionary<string, string> ErrorDetails => errorDetails;
 
     /// <summary>
-    /// Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties returns null.
-    /// ErrorProperties is only available for some error codes. For example, when the error code is ErrorInvalidPropertyForOperation,
-    /// ErrorProperties will contain the definition of the property that was invalid for the request.
+    ///     Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties
+    ///     returns null.
+    ///     ErrorProperties is only available for some error codes. For example, when the error code is
+    ///     ErrorInvalidPropertyForOperation,
+    ///     ErrorProperties will contain the definition of the property that was invalid for the request.
     /// </summary>
     /// <value>The error properties list.</value>
-    public Collection<PropertyDefinitionBase> ErrorProperties
-    {
-        get { return this.errorProperties; }
-    }
+    public Collection<PropertyDefinitionBase> ErrorProperties => errorProperties;
 }

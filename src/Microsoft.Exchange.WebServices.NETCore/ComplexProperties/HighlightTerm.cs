@@ -26,46 +26,39 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an AQS highlight term. 
+///     Represents an AQS highlight term.
 /// </summary>
 public sealed class HighlightTerm : ComplexProperty
 {
     /// <summary>
-    /// Term scope.
+    ///     Term scope.
     /// </summary>
     private string scope;
 
     /// <summary>
-    /// Term value.
+    ///     Term value.
     /// </summary>
     private string value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HighlightTerm"/> class.
+    ///     Initializes a new instance of the <see cref="HighlightTerm" /> class.
     /// </summary>
     internal HighlightTerm()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets term scope.
+    ///     Gets term scope.
     /// </summary>
-    public string Scope
-    {
-        get { return this.scope; }
-    }
+    public string Scope => scope;
 
     /// <summary>
-    /// Gets term value.
+    ///     Gets term value.
     /// </summary>
-    public string Value
-    {
-        get { return this.value; }
-    }
+    public string Value => value;
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -74,10 +67,10 @@ public sealed class HighlightTerm : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.HighlightTermScope:
-                this.scope = reader.ReadElementValue();
+                scope = reader.ReadElementValue();
                 return true;
             case XmlElementNames.HighlightTermValue:
-                this.value = reader.ReadElementValue();
+                value = reader.ReadElementValue();
                 return true;
             default:
                 return false;

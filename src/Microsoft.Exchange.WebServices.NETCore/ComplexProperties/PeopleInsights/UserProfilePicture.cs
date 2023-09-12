@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the UserProfilePicture.
+///     Represents the UserProfilePicture.
 /// </summary>
 public sealed class UserProfilePicture : InsightValue
 {
@@ -39,47 +36,47 @@ public sealed class UserProfilePicture : InsightValue
     private string imageType;
 
     /// <summary>
-    /// Gets the Blob
+    ///     Gets the Blob
     /// </summary>
     public string Blob
     {
-        get { return this.blob; }
+        get => blob;
 
-        set { this.SetFieldValue<string>(ref this.blob, value); }
+        set => SetFieldValue(ref blob, value);
     }
 
     /// <summary>
-    /// Gets the PhotoSize
+    ///     Gets the PhotoSize
     /// </summary>
     public string PhotoSize
     {
-        get { return this.photoSize; }
+        get => photoSize;
 
-        set { this.SetFieldValue<string>(ref this.photoSize, value); }
+        set => SetFieldValue(ref photoSize, value);
     }
 
     /// <summary>
-    /// Gets the Url
+    ///     Gets the Url
     /// </summary>
     public string Url
     {
-        get { return this.url; }
+        get => url;
 
-        set { this.SetFieldValue<string>(ref this.url, value); }
+        set => SetFieldValue(ref url, value);
     }
 
     /// <summary>
-    /// Gets the ImageType
+    ///     Gets the ImageType
     /// </summary>
     public string ImageType
     {
-        get { return this.imageType; }
+        get => imageType;
 
-        set { this.SetFieldValue<string>(ref this.imageType, value); }
+        set => SetFieldValue(ref imageType, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -88,22 +85,22 @@ public sealed class UserProfilePicture : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.Blob:
-                this.Blob = reader.ReadElementValue();
+                Blob = reader.ReadElementValue();
                 break;
             case XmlElementNames.PhotoSize:
-                this.PhotoSize = reader.ReadElementValue();
+                PhotoSize = reader.ReadElementValue();
                 break;
             case XmlElementNames.Url:
-                this.Url = reader.ReadElementValue();
+                Url = reader.ReadElementValue();
                 break;
             case XmlElementNames.ImageType:
-                this.ImageType = reader.ReadElementValue();
+                ImageType = reader.ReadElementValue();
                 break;
             default:
                 return false;

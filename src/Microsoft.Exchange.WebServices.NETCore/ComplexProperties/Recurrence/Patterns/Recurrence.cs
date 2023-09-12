@@ -25,14 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Text;
-
 /// <summary>
-/// Represents a recurrence pattern, as used by Appointment and Task items.
+///     Represents a recurrence pattern, as used by Appointment and Task items.
 /// </summary>
 public abstract partial class Recurrence : ComplexProperty
 {
@@ -41,15 +35,14 @@ public abstract partial class Recurrence : ComplexProperty
     private DateTime? endDate;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Recurrence"/> class.
+    ///     Initializes a new instance of the <see cref="Recurrence" /> class.
     /// </summary>
     internal Recurrence()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Recurrence"/> class.
+    ///     Initializes a new instance of the <see cref="Recurrence" /> class.
     /// </summary>
     /// <param name="startDate">The start date.</param>
     internal Recurrence(DateTime startDate)
@@ -59,24 +52,21 @@ public abstract partial class Recurrence : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
     internal abstract string XmlElementName { get; }
 
     /// <summary>
-    /// Gets a value indicating whether this instance is regeneration pattern.
+    ///     Gets a value indicating whether this instance is regeneration pattern.
     /// </summary>
     /// <value>
     ///     <c>true</c> if this instance is regeneration pattern; otherwise, <c>false</c>.
     /// </value>
-    internal virtual bool IsRegenerationPattern
-    {
-        get { return false; }
-    }
+    internal virtual bool IsRegenerationPattern => false;
 
     /// <summary>
-    /// Write properties to XML.
+    ///     Write properties to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal virtual void InternalWritePropertiesToXml(EwsServiceXmlWriter writer)
@@ -84,101 +74,97 @@ public abstract partial class Recurrence : ComplexProperty
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override sealed void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteStartElement(XmlNamespace.Types, this.XmlElementName);
-        this.InternalWritePropertiesToXml(writer);
+        writer.WriteStartElement(XmlNamespace.Types, XmlElementName);
+        InternalWritePropertiesToXml(writer);
         writer.WriteEndElement();
 
         RecurrenceRange range;
 
-        if (!this.HasEnd)
+        if (!HasEnd)
         {
-            range = new NoEndRecurrenceRange(this.StartDate);
+            range = new NoEndRecurrenceRange(StartDate);
         }
-        else if (this.NumberOfOccurrences.HasValue)
+        else if (NumberOfOccurrences.HasValue)
         {
-            range = new NumberedRecurrenceRange(this.StartDate, this.NumberOfOccurrences);
+            range = new NumberedRecurrenceRange(StartDate, NumberOfOccurrences);
         }
         else
         {
-            range = new EndDateRecurrenceRange(this.StartDate, this.EndDate.Value);
+            range = new EndDateRecurrenceRange(StartDate, EndDate.Value);
         }
 
         range.WriteToXml(writer, range.XmlElementName);
     }
 
     /// <summary>
-    /// Gets a property value or throw if null.
+    ///     Gets a property value or throw if null.
     /// </summary>
     /// <typeparam name="T">Value type.</typeparam>
     /// <param name="value">The value.</param>
     /// <param name="name">The property name.</param>
     /// <returns>Property value</returns>
-    internal T GetFieldValueOrThrowIfNull<T>(Nullable<T> value, string name)
+    internal T GetFieldValueOrThrowIfNull<T>(T? value, string name)
         where T : struct
     {
         if (value.HasValue)
         {
             return value.Value;
         }
-        else
-        {
-            throw new ServiceValidationException(
-                string.Format(Strings.PropertyValueMustBeSpecifiedForRecurrencePattern, name)
-            );
-        }
+
+        throw new ServiceValidationException(
+            string.Format(Strings.PropertyValueMustBeSpecifiedForRecurrencePattern, name)
+        );
     }
 
     /// <summary>
-    /// Gets or sets the date and time when the recurrence start.
+    ///     Gets or sets the date and time when the recurrence start.
     /// </summary>
     public DateTime StartDate
     {
-        get { return this.GetFieldValueOrThrowIfNull<DateTime>(this.startDate, "StartDate"); }
-        set { this.startDate = value; }
+        get => GetFieldValueOrThrowIfNull(startDate, "StartDate");
+        set => startDate = value;
     }
 
     /// <summary>
-    /// Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
+    ///     Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
     /// </summary>
-    public bool HasEnd
-    {
-        get { return this.numberOfOccurrences.HasValue || this.endDate.HasValue; }
-    }
+    public bool HasEnd => numberOfOccurrences.HasValue || endDate.HasValue;
 
     /// <summary>
-    /// Sets up this recurrence so that it never ends. Calling NeverEnds is equivalent to setting both NumberOfOccurrences and EndDate to null.
+    ///     Sets up this recurrence so that it never ends. Calling NeverEnds is equivalent to setting both NumberOfOccurrences
+    ///     and EndDate to null.
     /// </summary>
     public void NeverEnds()
     {
-        this.numberOfOccurrences = null;
-        this.endDate = null;
-        this.Changed();
+        numberOfOccurrences = null;
+        endDate = null;
+        Changed();
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
         base.InternalValidate();
 
-        if (!this.startDate.HasValue)
+        if (!startDate.HasValue)
         {
             throw new ServiceValidationException(Strings.RecurrencePatternMustHaveStartDate);
         }
     }
 
     /// <summary>
-    /// Gets or sets the number of occurrences after which the recurrence ends. Setting NumberOfOccurrences resets EndDate.
+    ///     Gets or sets the number of occurrences after which the recurrence ends. Setting NumberOfOccurrences resets EndDate.
     /// </summary>
     public int? NumberOfOccurrences
     {
-        get { return this.numberOfOccurrences; }
+        get => numberOfOccurrences;
 
         set
         {
@@ -187,27 +173,27 @@ public abstract partial class Recurrence : ComplexProperty
                 throw new ArgumentException(Strings.NumberOfOccurrencesMustBeGreaterThanZero);
             }
 
-            this.SetFieldValue<int?>(ref this.numberOfOccurrences, value);
-            this.endDate = null;
+            SetFieldValue(ref numberOfOccurrences, value);
+            endDate = null;
         }
     }
 
     /// <summary>
-    /// Gets or sets the date after which the recurrence ends. Setting EndDate resets NumberOfOccurrences.
+    ///     Gets or sets the date after which the recurrence ends. Setting EndDate resets NumberOfOccurrences.
     /// </summary>
     public DateTime? EndDate
     {
-        get { return this.endDate; }
+        get => endDate;
 
         set
         {
-            this.SetFieldValue<DateTime?>(ref this.endDate, value);
-            this.numberOfOccurrences = null;
+            SetFieldValue(ref endDate, value);
+            numberOfOccurrences = null;
         }
     }
 
     /// <summary>
-    /// Checks if two recurrence objects are identical. 
+    ///     Checks if two recurrence objects are identical.
     /// </summary>
     /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
     /// <returns>true if the two recurrences are identical, false otherwise.</returns>
@@ -218,9 +204,9 @@ public abstract partial class Recurrence : ComplexProperty
             return false;
         }
 
-        return (this.GetType() == otherRecurrence.GetType() &&
-                this.numberOfOccurrences == otherRecurrence.numberOfOccurrences &&
-                this.endDate == otherRecurrence.endDate &&
-                this.startDate == otherRecurrence.startDate);
+        return (GetType() == otherRecurrence.GetType() &&
+                numberOfOccurrences == otherRecurrence.numberOfOccurrences &&
+                endDate == otherRecurrence.endDate &&
+                startDate == otherRecurrence.startDate);
     }
 }

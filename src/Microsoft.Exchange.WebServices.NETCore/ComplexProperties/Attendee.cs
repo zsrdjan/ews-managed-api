@@ -25,13 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-
 /// <summary>
-/// Represents an attendee to a meeting.
+///     Represents an attendee to a meeting.
 /// </summary>
 public sealed class Attendee : EmailAddress
 {
@@ -39,15 +34,14 @@ public sealed class Attendee : EmailAddress
     private DateTime? lastResponseTime;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Attendee"/> class.
+    ///     Initializes a new instance of the <see cref="Attendee" /> class.
     /// </summary>
     public Attendee()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Attendee"/> class.
+    ///     Initializes a new instance of the <see cref="Attendee" /> class.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address used to initialize the Attendee.</param>
     public Attendee(string smtpAddress)
@@ -57,7 +51,7 @@ public sealed class Attendee : EmailAddress
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Attendee"/> class.
+    ///     Initializes a new instance of the <see cref="Attendee" /> class.
     /// </summary>
     /// <param name="name">The name used to initialize the Attendee.</param>
     /// <param name="smtpAddress">The SMTP address used to initialize the Attendee.</param>
@@ -67,7 +61,7 @@ public sealed class Attendee : EmailAddress
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Attendee"/> class.
+    ///     Initializes a new instance of the <see cref="Attendee" /> class.
     /// </summary>
     /// <param name="name">The name used to initialize the Attendee.</param>
     /// <param name="smtpAddress">The SMTP address used to initialize the Attendee.</param>
@@ -78,7 +72,7 @@ public sealed class Attendee : EmailAddress
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Attendee"/> class from an EmailAddress.
+    ///     Initializes a new instance of the <see cref="Attendee" /> class from an EmailAddress.
     /// </summary>
     /// <param name="mailbox">The mailbox used to initialize the Attendee.</param>
     public Attendee(EmailAddress mailbox)
@@ -87,23 +81,17 @@ public sealed class Attendee : EmailAddress
     }
 
     /// <summary>
-    /// Gets the type of response the attendee gave to the meeting invitation it received.
+    ///     Gets the type of response the attendee gave to the meeting invitation it received.
     /// </summary>
-    public MeetingResponseType? ResponseType
-    {
-        get { return this.responseType; }
-    }
+    public MeetingResponseType? ResponseType => responseType;
 
     /// <summary>
-    /// Gets the date and time when the attendee last responded to a meeting invitation or update.
+    ///     Gets the date and time when the attendee last responded to a meeting invitation or update.
     /// </summary>
-    public DateTime? LastResponseTime
-    {
-        get { return this.lastResponseTime; }
-    }
+    public DateTime? LastResponseTime => lastResponseTime;
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -112,13 +100,13 @@ public sealed class Attendee : EmailAddress
         switch (reader.LocalName)
         {
             case XmlElementNames.Mailbox:
-                this.LoadFromXml(reader, reader.LocalName);
+                LoadFromXml(reader, reader.LocalName);
                 return true;
             case XmlElementNames.ResponseType:
-                this.responseType = reader.ReadElementValue<MeetingResponseType>();
+                responseType = reader.ReadElementValue<MeetingResponseType>();
                 return true;
             case XmlElementNames.LastResponseTime:
-                this.lastResponseTime = reader.ReadElementValueAsDateTime();
+                lastResponseTime = reader.ReadElementValueAsDateTime();
                 return true;
             default:
                 return base.TryReadElementFromXml(reader);
@@ -126,12 +114,12 @@ public sealed class Attendee : EmailAddress
     }
 
     /// <summary>
-    /// Writes the elements to XML.
+    ///     Writes the elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteStartElement(this.Namespace, XmlElementNames.Mailbox);
+        writer.WriteStartElement(Namespace, XmlElementNames.Mailbox);
         base.WriteElementsToXml(writer);
         writer.WriteEndElement();
     }

@@ -25,63 +25,60 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <content>
-/// Contains nested type SearchFilter.Not.
+///     Contains nested type SearchFilter.Not.
 /// </content>
 public abstract partial class SearchFilter
 {
     /// <summary>
-    /// Represents a search filter that negates another. Applications can use NotFilter to define
-    /// conditions such as "NOT(other filter)".
+    ///     Represents a search filter that negates another. Applications can use NotFilter to define
+    ///     conditions such as "NOT(other filter)".
     /// </summary>
     public sealed class Not : SearchFilter
     {
         private SearchFilter searchFilter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Not"/> class.
+        ///     Initializes a new instance of the <see cref="Not" /> class.
         /// </summary>
         public Not()
-            : base()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Not"/> class.
+        ///     Initializes a new instance of the <see cref="Not" /> class.
         /// </summary>
-        /// <param name="searchFilter">The search filter to negate. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.</param>
+        /// <param name="searchFilter">
+        ///     The search filter to negate. Available search filter classes include SearchFilter.IsEqualTo,
+        ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
+        /// </param>
         public Not(SearchFilter searchFilter)
-            : base()
         {
             this.searchFilter = searchFilter;
         }
 
         /// <summary>
-        /// A search filter has changed.
+        ///     A search filter has changed.
         /// </summary>
         /// <param name="complexProperty">The complex property.</param>
         private void SearchFilterChanged(ComplexProperty complexProperty)
         {
-            this.Changed();
+            Changed();
         }
 
         /// <summary>
-        /// Validate instance.
+        ///     Validate instance.
         /// </summary>
         internal override void InternalValidate()
         {
-            if (this.searchFilter == null)
+            if (searchFilter == null)
             {
                 throw new ServiceValidationException(Strings.SearchFilterMustBeSet);
             }
         }
 
         /// <summary>
-        /// Gets the name of the XML element.
+        ///     Gets the name of the XML element.
         /// </summary>
         /// <returns>XML element name.</returns>
         internal override string GetXmlElementName()
@@ -90,45 +87,45 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        /// Tries to read element from XML.
+        ///     Tries to read element from XML.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <returns>True if element was read.</returns>
         internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
         {
-            this.searchFilter = SearchFilter.LoadFromXml(reader);
+            searchFilter = LoadFromXml(reader);
             return true;
         }
 
         /// <summary>
-        /// Writes the elements to XML.
+        ///     Writes the elements to XML.
         /// </summary>
         /// <param name="writer">The writer.</param>
         internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
         {
-            this.SearchFilter.WriteToXml(writer);
+            SearchFilter.WriteToXml(writer);
         }
 
         /// <summary>
-        /// Gets or sets the search filter to negate. Available search filter classes include
-        /// SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
+        ///     Gets or sets the search filter to negate. Available search filter classes include
+        ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
         /// </summary>
         public SearchFilter SearchFilter
         {
-            get { return this.searchFilter; }
+            get => searchFilter;
 
             set
             {
-                if (this.searchFilter != null)
+                if (searchFilter != null)
                 {
-                    this.searchFilter.OnChange -= this.SearchFilterChanged;
+                    searchFilter.OnChange -= SearchFilterChanged;
                 }
 
-                this.SetFieldValue<SearchFilter>(ref this.searchFilter, value);
+                SetFieldValue(ref searchFilter, value);
 
-                if (this.searchFilter != null)
+                if (searchFilter != null)
                 {
-                    this.searchFilter.OnChange += this.SearchFilterChanged;
+                    searchFilter.OnChange += SearchFilterChanged;
                 }
             }
         }

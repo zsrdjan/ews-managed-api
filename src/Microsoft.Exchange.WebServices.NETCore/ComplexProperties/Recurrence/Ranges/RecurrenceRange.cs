@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents recurrence range with start and end dates.
+///     Represents recurrence range with start and end dates.
 /// </summary>
 internal abstract class RecurrenceRange : ComplexProperty
 {
@@ -38,15 +34,14 @@ internal abstract class RecurrenceRange : ComplexProperty
     private Recurrence recurrence;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecurrenceRange"/> class.
+    ///     Initializes a new instance of the <see cref="RecurrenceRange" /> class.
     /// </summary>
     internal RecurrenceRange()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecurrenceRange"/> class.
+    ///     Initializes a new instance of the <see cref="RecurrenceRange" /> class.
     /// </summary>
     /// <param name="startDate">The start date.</param>
     internal RecurrenceRange(DateTime startDate)
@@ -56,27 +51,27 @@ internal abstract class RecurrenceRange : ComplexProperty
     }
 
     /// <summary>
-    /// Changes handler.
+    ///     Changes handler.
     /// </summary>
     internal override void Changed()
     {
-        if (this.Recurrence != null)
+        if (Recurrence != null)
         {
-            this.Recurrence.Changed();
+            Recurrence.Changed();
         }
     }
 
     /// <summary>
-    /// Setup the recurrence.
+    ///     Setup the recurrence.
     /// </summary>
     /// <param name="recurrence">The recurrence.</param>
     internal virtual void SetupRecurrence(Recurrence recurrence)
     {
-        recurrence.StartDate = this.StartDate;
+        recurrence.StartDate = StartDate;
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
@@ -84,12 +79,12 @@ internal abstract class RecurrenceRange : ComplexProperty
         writer.WriteElementValue(
             XmlNamespace.Types,
             XmlElementNames.StartDate,
-            EwsUtilities.DateTimeToXSDate(this.StartDate)
+            EwsUtilities.DateTimeToXSDate(StartDate)
         );
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -99,7 +94,7 @@ internal abstract class RecurrenceRange : ComplexProperty
         {
             case XmlElementNames.StartDate:
 
-                DateTime? startDate = reader.ReadElementValueAsUnspecifiedDate();
+                var startDate = reader.ReadElementValueAsUnspecifiedDate();
                 if (startDate.HasValue)
                 {
                     this.startDate = startDate.Value;
@@ -114,28 +109,28 @@ internal abstract class RecurrenceRange : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
     internal abstract string XmlElementName { get; }
 
     /// <summary>
-    /// Gets or sets the recurrence.
+    ///     Gets or sets the recurrence.
     /// </summary>
     /// <value>The recurrence.</value>
     internal Recurrence Recurrence
     {
-        get { return this.recurrence; }
-        set { this.recurrence = value; }
+        get => recurrence;
+        set => recurrence = value;
     }
 
     /// <summary>
-    /// Gets or sets the start date.
+    ///     Gets or sets the start date.
     /// </summary>
     /// <value>The start date.</value>
     internal DateTime StartDate
     {
-        get { return this.startDate; }
-        set { this.SetFieldValue<DateTime>(ref this.startDate, value); }
+        get => startDate;
+        set => SetFieldValue(ref startDate, value);
     }
 }

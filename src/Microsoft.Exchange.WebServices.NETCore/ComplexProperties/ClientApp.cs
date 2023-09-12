@@ -23,56 +23,53 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.IO;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a app in GetAppManifests response.
+///     Represents a app in GetAppManifests response.
 /// </summary>
 public sealed class ClientApp : ComplexProperty
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientApp"/> class.
+    ///     Initializes a new instance of the <see cref="ClientApp" /> class.
     /// </summary>
     internal ClientApp()
-        : base()
     {
-        this.Namespace = XmlNamespace.Types;
+        Namespace = XmlNamespace.Types;
     }
 
     /// <summary>
-    /// The manifest for the app.
+    ///     The manifest for the app.
     /// </summary>
     public XmlDocument Manifest { get; internal set; }
 
     /// <summary>
-    /// Metadata related to the app.
+    ///     Metadata related to the app.
     /// </summary>
     public ClientAppMetadata Metadata { get; internal set; }
 
     /// <summary>
-    /// Helper to convert to xml dcouemnt from the current value.
+    ///     Helper to convert to xml dcouemnt from the current value.
     /// </summary>
     /// <param name="reader">the reader.</param>
     /// <returns>The xml document</returns>
     internal static SafeXmlDocument ReadToXmlDocument(EwsServiceXmlReader reader)
     {
-        using (MemoryStream stream = new MemoryStream())
+        using (var stream = new MemoryStream())
         {
             reader.ReadBase64ElementValue(stream);
             stream.Position = 0;
 
-            SafeXmlDocument manifest = new SafeXmlDocument();
+            var manifest = new SafeXmlDocument();
             manifest.Load(stream);
             return manifest;
         }
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -81,12 +78,12 @@ public sealed class ClientApp : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Manifest:
-                this.Manifest = ClientApp.ReadToXmlDocument(reader);
+                Manifest = ReadToXmlDocument(reader);
                 return true;
 
             case XmlElementNames.Metadata:
-                this.Metadata = new ClientAppMetadata();
-                this.Metadata.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Metadata);
+                Metadata = new ClientAppMetadata();
+                Metadata.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Metadata);
                 return true;
 
             default:

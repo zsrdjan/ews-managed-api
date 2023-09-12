@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a FindItem request.
+///     Represents a FindItem request.
 /// </summary>
 /// <typeparam name="TItem">The type of the item.</typeparam>
 internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TItem>>
@@ -39,7 +35,7 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     private Grouping groupBy;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindItemRequest&lt;TItem&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="FindItemRequest&lt;TItem&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -49,27 +45,27 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     }
 
     /// <summary>
-    /// Gets the group by clause.
+    ///     Gets the group by clause.
     /// </summary>
     /// <returns>The group by clause, null if the request does not have or support grouping.</returns>
     internal override Grouping GetGroupBy()
     {
-        return this.GroupBy;
+        return GroupBy;
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override FindItemResponse<TItem> CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new FindItemResponse<TItem>(this.GroupBy != null, this.View.GetPropertySetOrDefault());
+        return new FindItemResponse<TItem>(GroupBy != null, View.GetPropertySetOrDefault());
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -78,7 +74,7 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -87,7 +83,7 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -96,7 +92,7 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -105,12 +101,12 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     }
 
     /// <summary>
-    /// Gets or sets the group by.
+    ///     Gets or sets the group by.
     /// </summary>
     /// <value>The group by.</value>
     public Grouping GroupBy
     {
-        get { return this.groupBy; }
-        set { this.groupBy = value; }
+        get => groupBy;
+        set => groupBy = value;
     }
 }

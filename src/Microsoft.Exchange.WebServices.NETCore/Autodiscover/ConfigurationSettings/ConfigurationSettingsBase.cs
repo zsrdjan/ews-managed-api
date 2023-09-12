@@ -23,16 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents the base class for configuration settings.
+///     Represents the base class for configuration settings.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal abstract class ConfigurationSettingsBase
@@ -40,14 +38,14 @@ internal abstract class ConfigurationSettingsBase
     private AutodiscoverError error;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationSettingsBase"/> class.
+    ///     Initializes a new instance of the <see cref="ConfigurationSettingsBase" /> class.
     /// </summary>
     internal ConfigurationSettingsBase()
     {
     }
 
     /// <summary>
-    /// Tries to read the current XML element.
+    ///     Tries to read the current XML element.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True is the current element was read, false otherwise.</returns>
@@ -55,18 +53,16 @@ internal abstract class ConfigurationSettingsBase
     {
         if (reader.LocalName == XmlElementNames.Error)
         {
-            this.error = AutodiscoverError.Parse(reader);
+            error = AutodiscoverError.Parse(reader);
 
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /// <summary>
-    /// Loads the settings from XML.
+    ///     Loads the settings from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsXmlReader reader)
@@ -80,7 +76,7 @@ internal abstract class ConfigurationSettingsBase
 
             if (reader.IsStartElement())
             {
-                if (!this.TryReadCurrentXmlElement(reader))
+                if (!TryReadCurrentXmlElement(reader))
                 {
                     reader.SkipCurrentElement();
                 }
@@ -91,31 +87,31 @@ internal abstract class ConfigurationSettingsBase
     }
 
     /// <summary>
-    /// Gets the namespace that defines the settings.
+    ///     Gets the namespace that defines the settings.
     /// </summary>
     /// <returns>The namespace that defines the settings</returns>
     internal abstract string GetNamespace();
 
     /// <summary>
-    /// Makes this instance a redirection response.
+    ///     Makes this instance a redirection response.
     /// </summary>
     /// <param name="redirectUrl">The redirect URL.</param>
     internal abstract void MakeRedirectionResponse(Uri redirectUrl);
 
     /// <summary>
-    /// Gets the type of the response.
+    ///     Gets the type of the response.
     /// </summary>
     /// <value>The type of the response.</value>
     internal abstract AutodiscoverResponseType ResponseType { get; }
 
     /// <summary>
-    /// Gets the redirect target.
+    ///     Gets the redirect target.
     /// </summary>
     /// <value>The redirect target.</value>
     internal abstract string RedirectTarget { get; }
 
     /// <summary>
-    /// Convert ConfigurationSettings to GetUserSettings response.
+    ///     Convert ConfigurationSettings to GetUserSettings response.
     /// </summary>
     /// <param name="smtpAddress">SMTP address.</param>
     /// <param name="requestedSettings">The requested settings.</param>
@@ -126,11 +122,8 @@ internal abstract class ConfigurationSettingsBase
     );
 
     /// <summary>
-    /// Gets the error.
+    ///     Gets the error.
     /// </summary>
     /// <value>The error.</value>
-    internal AutodiscoverError Error
-    {
-        get { return this.error; }
-    }
+    internal AutodiscoverError Error => error;
 }

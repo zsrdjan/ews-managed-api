@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents the archive tag of an item or folder.
+///     Represents the archive tag of an item or folder.
 /// </summary>
 public sealed class ArchiveTag : RetentionTagBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ArchiveTag"/> class.
+    ///     Initializes a new instance of the <see cref="ArchiveTag" /> class.
     /// </summary>
     public ArchiveTag()
         : base(XmlElementNames.ArchiveTag)
@@ -41,14 +39,14 @@ public sealed class ArchiveTag : RetentionTagBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ArchiveTag"/> class.
+    ///     Initializes a new instance of the <see cref="ArchiveTag" /> class.
     /// </summary>
     /// <param name="isExplicit">Is explicit.</param>
     /// <param name="retentionId">Retention id.</param>
     public ArchiveTag(bool isExplicit, Guid retentionId)
         : this()
     {
-        this.IsExplicit = isExplicit;
-        this.RetentionId = retentionId;
+        IsExplicit = isExplicit;
+        RetentionId = retentionId;
     }
 }

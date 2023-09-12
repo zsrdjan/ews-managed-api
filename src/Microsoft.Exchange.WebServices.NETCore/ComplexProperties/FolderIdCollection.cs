@@ -23,40 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents a collection of folder Ids.
+///     Represents a collection of folder Ids.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="FolderIdCollection"/> class.
+    ///     Initializes a new instance of the <see cref="FolderIdCollection" /> class.
     /// </summary>
     internal FolderIdCollection()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FolderIdCollection"/> class.
+    ///     Initializes a new instance of the <see cref="FolderIdCollection" /> class.
     /// </summary>
     /// <param name="folderIds">The folder ids to include.</param>
     internal FolderIdCollection(IEnumerable<FolderId> folderIds)
     {
         if (folderIds != null)
         {
-            folderIds.ForEach((folderId) => this.InternalAdd(folderId));
+            folderIds.ForEach(folderId => InternalAdd(folderId));
         }
     }
 
     /// <summary>
-    /// Creates the complex property.
+    ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>FolderId.</returns>
@@ -66,7 +63,7 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     }
 
     /// <summary>
-    /// Gets the name of the collection item XML element.
+    ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>
@@ -76,64 +73,64 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     }
 
     /// <summary>
-    /// Adds a folder Id to the collection.
+    ///     Adds a folder Id to the collection.
     /// </summary>
     /// <param name="folderId">The folder Id to add.</param>
     public void Add(FolderId folderId)
     {
         EwsUtilities.ValidateParam(folderId, "folderId");
 
-        if (this.Contains(folderId))
+        if (Contains(folderId))
         {
             throw new ArgumentException(Strings.IdAlreadyInList, "folderId");
         }
 
-        this.InternalAdd(folderId);
+        InternalAdd(folderId);
     }
 
     /// <summary>
-    /// Adds a well-known folder to the collection.
+    ///     Adds a well-known folder to the collection.
     /// </summary>
     /// <param name="folderName">The well known folder to add.</param>
     /// <returns>A FolderId encapsulating the specified Id.</returns>
     public FolderId Add(WellKnownFolderName folderName)
     {
-        if (this.Contains(folderName))
+        if (Contains(folderName))
         {
             throw new ArgumentException(Strings.IdAlreadyInList, "folderName");
         }
 
-        FolderId folderId = new FolderId(folderName);
+        var folderId = new FolderId(folderName);
 
-        this.InternalAdd(folderId);
+        InternalAdd(folderId);
 
         return folderId;
     }
 
     /// <summary>
-    /// Clears the collection.
+    ///     Clears the collection.
     /// </summary>
     public void Clear()
     {
-        this.InternalClear();
+        InternalClear();
     }
 
     /// <summary>
-    /// Removes the folder Id at the specified index.
+    ///     Removes the folder Id at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index of the folder Id to remove.</param>
     public void RemoveAt(int index)
     {
-        if (index < 0 || index >= this.Count)
+        if (index < 0 || index >= Count)
         {
             throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
         }
 
-        this.InternalRemoveAt(index);
+        InternalRemoveAt(index);
     }
 
     /// <summary>
-    /// Removes the specified folder Id from the collection.
+    ///     Removes the specified folder Id from the collection.
     /// </summary>
     /// <param name="folderId">The folder Id to remove from the collection.</param>
     /// <returns>True if the folder id was successfully removed from the collection, false otherwise.</returns>
@@ -141,16 +138,16 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     {
         EwsUtilities.ValidateParam(folderId, "folderId");
 
-        return this.InternalRemove(folderId);
+        return InternalRemove(folderId);
     }
 
     /// <summary>
-    /// Removes the specified well-known folder from the collection.
+    ///     Removes the specified well-known folder from the collection.
     /// </summary>
     /// <param name="folderName">The well-knwon folder to remove from the collection.</param>
     /// <returns>True if the well-known folder was successfully removed from the collection, false otherwise.</returns>
     public bool Remove(WellKnownFolderName folderName)
     {
-        return this.InternalRemove(folderName);
+        return InternalRemove(folderName);
     }
 }

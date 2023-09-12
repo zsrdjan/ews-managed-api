@@ -23,22 +23,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the base class for event subscriptions.
+///     Represents the base class for event subscriptions.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class SubscriptionBase
 {
-    private ExchangeService service;
+    private readonly ExchangeService service;
     private string id;
     private string watermark;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscriptionBase"/> class.
+    ///     Initializes a new instance of the <see cref="SubscriptionBase" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SubscriptionBase(ExchangeService service)
@@ -49,7 +49,7 @@ public abstract class SubscriptionBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscriptionBase"/> class.
+    ///     Initializes a new instance of the <see cref="SubscriptionBase" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="id">The id.</param>
@@ -62,7 +62,7 @@ public abstract class SubscriptionBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SubscriptionBase"/> class.
+    ///     Initializes a new instance of the <see cref="SubscriptionBase" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="id">The id.</param>
@@ -74,51 +74,45 @@ public abstract class SubscriptionBase
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal virtual void LoadFromXml(EwsServiceXmlReader reader)
     {
-        this.id = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId);
+        id = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId);
 
-        if (this.UsesWatermark)
+        if (UsesWatermark)
         {
-            this.watermark = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.Watermark);
+            watermark = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.Watermark);
         }
     }
 
     /// <summary>
-    /// Gets the session.
+    ///     Gets the session.
     /// </summary>
     /// <value>The session.</value>
-    internal ExchangeService Service
-    {
-        get { return this.service; }
-    }
+    internal ExchangeService Service => service;
 
     /// <summary>
-    /// Gets the Id of the subscription.
+    ///     Gets the Id of the subscription.
     /// </summary>
     public string Id
     {
-        get { return this.id; }
-        internal set { this.id = value; }
+        get => id;
+        internal set => id = value;
     }
 
     /// <summary>
-    /// Gets the latest watermark of the subscription. Watermark is always null for streaming subscriptions.
+    ///     Gets the latest watermark of the subscription. Watermark is always null for streaming subscriptions.
     /// </summary>
     public string Watermark
     {
-        get { return this.watermark; }
-        internal set { this.watermark = value; }
+        get => watermark;
+        internal set => watermark = value;
     }
 
     /// <summary>
-    /// Gets whether or not this subscription uses watermarks.
+    ///     Gets whether or not this subscription uses watermarks.
     /// </summary>
-    protected virtual bool UsesWatermark
-    {
-        get { return true; }
-    }
+    protected virtual bool UsesWatermark => true;
 }

@@ -25,28 +25,22 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents a response to a Move or Copy operation.
+///     Represents a response to a Move or Copy operation.
 /// </summary>
 public sealed class ArchiveItemResponse : ServiceResponse
 {
     private Item item;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ArchiveItemResponse"/> class.
+    ///     Initializes a new instance of the <see cref="ArchiveItemResponse" /> class.
     /// </summary>
     internal ArchiveItemResponse()
-        : base()
     {
     }
 
     /// <summary>
-    /// Gets Item instance.
+    ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -57,16 +51,16 @@ public sealed class ArchiveItemResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        List<Item> items = reader.ReadServiceObjectsCollectionFromXml<Item>(
+        var items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
-            this.GetObjectInstance,
+            GetObjectInstance,
             false, /* clearPropertyBag */
             null, /* requestedPropertySet */
             false
@@ -74,15 +68,12 @@ public sealed class ArchiveItemResponse : ServiceResponse
 
         if (items.Count > 0)
         {
-            this.item = items[0];
+            item = items[0];
         }
     }
 
     /// <summary>
-    /// Gets the copied or moved item.
+    ///     Gets the copied or moved item.
     /// </summary>
-    public Item Item
-    {
-        get { return this.item; }
-    }
+    public Item Item => item;
 }

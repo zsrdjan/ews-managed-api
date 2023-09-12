@@ -23,32 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the response to an individual attachment retrieval request.
+///     Represents the response to an individual attachment retrieval request.
 /// </summary>
 public sealed class GetAttachmentResponse : ServiceResponse
 {
     private Attachment attachment;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetAttachmentResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
     internal GetAttachmentResponse(Attachment attachment)
-        : base()
     {
         this.attachment = attachment;
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
@@ -60,11 +56,11 @@ public sealed class GetAttachmentResponse : ServiceResponse
         {
             reader.Read(XmlNodeType.Element);
 
-            if (this.attachment == null)
+            if (attachment == null)
             {
                 if (string.Equals(reader.LocalName, XmlElementNames.FileAttachment, StringComparison.OrdinalIgnoreCase))
                 {
-                    this.attachment = new FileAttachment(reader.Service);
+                    attachment = new FileAttachment(reader.Service);
                 }
                 else if (string.Equals(
                              reader.LocalName,
@@ -72,13 +68,13 @@ public sealed class GetAttachmentResponse : ServiceResponse
                              StringComparison.OrdinalIgnoreCase
                          ))
                 {
-                    this.attachment = new ItemAttachment(reader.Service);
+                    attachment = new ItemAttachment(reader.Service);
                 }
             }
 
-            if (this.attachment != null)
+            if (attachment != null)
             {
-                this.attachment.LoadFromXml(reader, reader.LocalName);
+                attachment.LoadFromXml(reader, reader.LocalName);
             }
 
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
@@ -86,10 +82,7 @@ public sealed class GetAttachmentResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Gets the attachment that was retrieved.
+    ///     Gets the attachment that was retrieved.
     /// </summary>
-    public Attachment Attachment
-    {
-        get { return this.attachment; }
-    }
+    public Attachment Attachment => attachment;
 }

@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the response types from a GetUserPhoto request
+///     Defines the response types from a GetUserPhoto request
 /// </summary>
 public enum GetUserPhotoStatus
 {
     /// <summary>
-    /// The photo was successfully returned
+    ///     The photo was successfully returned
     /// </summary>
     PhotoReturned,
 
     /// <summary>
-    /// The photo has not changed since it was last obtained
+    ///     The photo has not changed since it was last obtained
     /// </summary>
     PhotoUnchanged,
 
     /// <summary>
-    /// The photo or user was not found on the server
+    ///     The photo or user was not found on the server
     /// </summary>
     PhotoOrUserNotFound,
 }

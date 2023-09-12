@@ -26,14 +26,14 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents typed property definition.
+///     Represents typed property definition.
 /// </summary>
 internal abstract class TypedPropertyDefinition : PropertyDefinition
 {
-    private bool isNullable;
+    private readonly bool isNullable;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TypedPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TypedPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -41,11 +41,11 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     internal TypedPropertyDefinition(string xmlElementName, string uri, ExchangeVersion version)
         : base(xmlElementName, uri, version)
     {
-        this.isNullable = false;
+        isNullable = false;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TypedPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TypedPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -62,7 +62,7 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TypedPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="TypedPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -82,22 +82,19 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Parses the specified value.
+    ///     Parses the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>Typed value.</returns>
     internal abstract object Parse(string value);
 
     /// <summary>
-    /// Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
     /// </summary>
-    internal override bool IsNullable
-    {
-        get { return this.isNullable; }
-    }
+    internal override bool IsNullable => isNullable;
 
     /// <summary>
-    /// Convert instance to string.
+    ///     Convert instance to string.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>String representation of property value.</returns>
@@ -107,22 +104,22 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
     internal override void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        string value = reader.ReadElementValue(XmlNamespace.Types, this.XmlElementName);
+        var value = reader.ReadElementValue(XmlNamespace.Types, XmlElementName);
 
         if (!string.IsNullOrEmpty(value))
         {
-            propertyBag[this] = this.Parse(value);
+            propertyBag[this] = Parse(value);
         }
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -133,11 +130,11 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        object value = propertyBag[this];
+        var value = propertyBag[this];
 
         if (value != null)
         {
-            writer.WriteElementValue(XmlNamespace.Types, this.XmlElementName, this.Name, value);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementName, Name, value);
         }
     }
 }

@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Text;
-using System.Threading;
-
 /// <summary>
-/// Represents a phone call.
+///     Represents a phone call.
 /// </summary>
 public sealed class PhoneCall : ComplexProperty
 {
     private const string SuccessfulResponseText = "OK";
     private const int SuccessfulResponseCode = 200;
 
-    private ExchangeService service;
+    private readonly ExchangeService service;
     private PhoneCallState state;
     private ConnectionFailureCause connectionFailureCause;
     private string sipResponseText;
     private int sipResponseCode;
-    private PhoneCallId id;
+    private readonly PhoneCallId id;
 
     /// <summary>
-    /// PhoneCall Constructor.
+    ///     PhoneCall Constructor.
     /// </summary>
     /// <param name="service">EWS service to which this object belongs.</param>
     internal PhoneCall(ExchangeService service)
@@ -53,14 +49,14 @@ public sealed class PhoneCall : ComplexProperty
         EwsUtilities.Assert(service != null, "PhoneCall.ctor", "service is null");
 
         this.service = service;
-        this.state = PhoneCallState.Connecting;
-        this.connectionFailureCause = ConnectionFailureCause.None;
-        this.sipResponseText = PhoneCall.SuccessfulResponseText;
-        this.sipResponseCode = PhoneCall.SuccessfulResponseCode;
+        state = PhoneCallState.Connecting;
+        connectionFailureCause = ConnectionFailureCause.None;
+        sipResponseText = SuccessfulResponseText;
+        sipResponseCode = SuccessfulResponseCode;
     }
 
     /// <summary>
-    /// PhoneCall Constructor.
+    ///     PhoneCall Constructor.
     /// </summary>
     /// <param name="service">EWS service to which this object belongs.</param>
     /// <param name="id">The Id of the phone call.</param>
@@ -71,36 +67,35 @@ public sealed class PhoneCall : ComplexProperty
     }
 
     /// <summary>
-    /// Refreshes the state of this phone call.
+    ///     Refreshes the state of this phone call.
     /// </summary>
-    public async System.Threading.Tasks.Task Refresh(CancellationToken token = default(CancellationToken))
+    public async System.Threading.Tasks.Task Refresh(CancellationToken token = default)
     {
-        PhoneCall phoneCall =
-            await service.UnifiedMessaging.GetPhoneCallInformation(this.id, token).ConfigureAwait(false);
-        this.state = phoneCall.State;
-        this.connectionFailureCause = phoneCall.ConnectionFailureCause;
-        this.sipResponseText = phoneCall.SIPResponseText;
-        this.sipResponseCode = phoneCall.SIPResponseCode;
+        var phoneCall = await service.UnifiedMessaging.GetPhoneCallInformation(id, token).ConfigureAwait(false);
+        state = phoneCall.State;
+        connectionFailureCause = phoneCall.ConnectionFailureCause;
+        sipResponseText = phoneCall.SIPResponseText;
+        sipResponseCode = phoneCall.SIPResponseCode;
     }
 
     /// <summary>
-    /// Disconnects this phone call.
+    ///     Disconnects this phone call.
     /// </summary>
-    public async System.Threading.Tasks.Task Disconnect(CancellationToken token = default(CancellationToken))
+    public async System.Threading.Tasks.Task Disconnect(CancellationToken token = default)
     {
         // If call is already disconnected, throw exception
         //
-        if (this.state == PhoneCallState.Disconnected)
+        if (state == PhoneCallState.Disconnected)
         {
             throw new ServiceLocalException(Strings.PhoneCallAlreadyDisconnected);
         }
 
-        await this.service.UnifiedMessaging.DisconnectPhoneCall(this.id, token);
-        this.state = PhoneCallState.Disconnected;
+        await service.UnifiedMessaging.DisconnectPhoneCall(id, token);
+        state = PhoneCallState.Disconnected;
     }
 
     /// <summary>
-    /// Tries to read an element from XML.
+    ///     Tries to read an element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -109,16 +104,16 @@ public sealed class PhoneCall : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.PhoneCallState:
-                this.state = reader.ReadElementValue<PhoneCallState>();
+                state = reader.ReadElementValue<PhoneCallState>();
                 return true;
             case XmlElementNames.ConnectionFailureCause:
-                this.connectionFailureCause = reader.ReadElementValue<ConnectionFailureCause>();
+                connectionFailureCause = reader.ReadElementValue<ConnectionFailureCause>();
                 return true;
             case XmlElementNames.SIPResponseText:
-                this.sipResponseText = reader.ReadElementValue();
+                sipResponseText = reader.ReadElementValue();
                 return true;
             case XmlElementNames.SIPResponseCode:
-                this.sipResponseCode = reader.ReadElementValue<int>();
+                sipResponseCode = reader.ReadElementValue<int>();
                 return true;
             default:
                 return false;
@@ -126,34 +121,22 @@ public sealed class PhoneCall : ComplexProperty
     }
 
     /// <summary>
-    /// Gets a value indicating the last known state of this phone call.
+    ///     Gets a value indicating the last known state of this phone call.
     /// </summary>
-    public PhoneCallState State
-    {
-        get { return this.state; }
-    }
+    public PhoneCallState State => state;
 
     /// <summary>
-    /// Gets a value indicating the reason why this phone call failed to connect.
+    ///     Gets a value indicating the reason why this phone call failed to connect.
     /// </summary>
-    public ConnectionFailureCause ConnectionFailureCause
-    {
-        get { return this.connectionFailureCause; }
-    }
+    public ConnectionFailureCause ConnectionFailureCause => connectionFailureCause;
 
     /// <summary>
-    /// Gets the SIP response text of this phone call.
+    ///     Gets the SIP response text of this phone call.
     /// </summary>
-    public string SIPResponseText
-    {
-        get { return this.sipResponseText; }
-    }
+    public string SIPResponseText => sipResponseText;
 
     /// <summary>
-    /// Gets the SIP response code of this phone call.
+    ///     Gets the SIP response code of this phone call.
     /// </summary>
-    public int SIPResponseCode
-    {
-        get { return this.sipResponseCode; }
-    }
+    public int SIPResponseCode => sipResponseCode;
 }

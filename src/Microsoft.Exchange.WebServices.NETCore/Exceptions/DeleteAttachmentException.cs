@@ -23,18 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
 using System.Runtime.Serialization;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an error that occurs when a call to the DeleteAttachment web method fails.
+///     Represents an error that occurs when a call to the DeleteAttachment web method fails.
 /// </summary>
 public sealed class DeleteAttachmentException : BatchServiceResponseException<DeleteAttachmentResponse>
 {
     /// <summary>
-    /// Initializes a new instance of DeleteAttachmentException.
+    ///     Initializes a new instance of DeleteAttachmentException.
     /// </summary>
     /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
     /// <param name="message">The message that describes the error.</param>
@@ -47,7 +46,7 @@ public sealed class DeleteAttachmentException : BatchServiceResponseException<De
     }
 
     /// <summary>
-    /// Initializes a new instance of DeleteAttachmentException.
+    ///     Initializes a new instance of DeleteAttachmentException.
     /// </summary>
     /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
     /// <param name="message">The message that describes the error.</param>
@@ -62,7 +61,8 @@ public sealed class DeleteAttachmentException : BatchServiceResponseException<De
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.DeleteAttachmentException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.DeleteAttachmentException" />
+    ///     class with serialized data.
     /// </summary>
     /// <param name="info">The object that holds the serialized object data.</param>
     /// <param name="context">The contextual information about the source or destination.</param>

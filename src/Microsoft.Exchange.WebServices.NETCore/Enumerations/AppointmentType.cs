@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the type of an appointment.
+///     Defines the type of an appointment.
 /// </summary>
 public enum AppointmentType
 {
     /// <summary>
-    /// The appointment is non-recurring.
+    ///     The appointment is non-recurring.
     /// </summary>
     Single,
 
     /// <summary>
-    /// The appointment is an occurrence of a recurring appointment.
+    ///     The appointment is an occurrence of a recurring appointment.
     /// </summary>
     Occurrence,
 
     /// <summary>
-    /// The appointment is an exception of a recurring appointment.
+    ///     The appointment is an exception of a recurring appointment.
     /// </summary>
     Exception,
 
     /// <summary>
-    /// The appointment is the recurring master of a series.
+    ///     The appointment is the recurring master of a series.
     /// </summary>
     RecurringMaster
 }

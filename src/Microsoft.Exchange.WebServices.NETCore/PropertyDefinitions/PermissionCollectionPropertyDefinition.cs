@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents permission set property definition.
+///     Represents permission set property definition.
 /// </summary>
 internal class PermissionSetPropertyDefinition : ComplexPropertyDefinitionBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PermissionSetPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="PermissionSetPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -50,13 +48,13 @@ internal class PermissionSetPropertyDefinition : ComplexPropertyDefinitionBase
     }
 
     /// <summary>
-    /// Creates the property instance.
+    ///     Creates the property instance.
     /// </summary>
     /// <param name="owner">The owner.</param>
     /// <returns>ComplexProperty.</returns>
     internal override ComplexProperty CreatePropertyInstance(ServiceObject owner)
     {
-        Folder folder = owner as Folder;
+        var folder = owner as Folder;
 
         EwsUtilities.Assert(
             folder != null,
@@ -68,10 +66,7 @@ internal class PermissionSetPropertyDefinition : ComplexPropertyDefinitionBase
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(FolderPermissionCollection); }
-    }
+    public override Type Type => typeof(FolderPermissionCollection);
 }

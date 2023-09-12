@@ -23,33 +23,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text;
+
+namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a suggestion for a specific date.
+///     Represents a suggestion for a specific date.
 /// </summary>
 public sealed class Suggestion : ComplexProperty
 {
     private DateTime date;
     private SuggestionQuality quality;
-    private Collection<TimeSuggestion> timeSuggestions = new Collection<TimeSuggestion>();
+    private readonly Collection<TimeSuggestion> timeSuggestions = new Collection<TimeSuggestion>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Suggestion"/> class.
+    ///     Initializes a new instance of the <see cref="Suggestion" /> class.
     /// </summary>
     internal Suggestion()
-        : base()
     {
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if appropriate element was read.</returns>
@@ -59,20 +55,20 @@ public sealed class Suggestion : ComplexProperty
         {
             case XmlElementNames.Date:
                 // The date that is returned by Availability is unscoped. 
-                DateTime tempDate = DateTime.Parse(reader.ReadElementValue(), CultureInfo.InvariantCulture);
+                var tempDate = DateTime.Parse(reader.ReadElementValue(), CultureInfo.InvariantCulture);
 
                 if (tempDate.Kind != DateTimeKind.Unspecified)
                 {
-                    this.date = new DateTime(tempDate.Ticks, DateTimeKind.Unspecified);
+                    date = new DateTime(tempDate.Ticks, DateTimeKind.Unspecified);
                 }
                 else
                 {
-                    this.date = tempDate;
+                    date = tempDate;
                 }
 
                 return true;
             case XmlElementNames.DayQuality:
-                this.quality = reader.ReadElementValue<SuggestionQuality>();
+                quality = reader.ReadElementValue<SuggestionQuality>();
                 return true;
             case XmlElementNames.SuggestionArray:
                 if (!reader.IsEmptyElement)
@@ -83,11 +79,11 @@ public sealed class Suggestion : ComplexProperty
 
                         if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Suggestion))
                         {
-                            TimeSuggestion timeSuggestion = new TimeSuggestion();
+                            var timeSuggestion = new TimeSuggestion();
 
                             timeSuggestion.LoadFromXml(reader, reader.LocalName);
 
-                            this.timeSuggestions.Add(timeSuggestion);
+                            timeSuggestions.Add(timeSuggestion);
                         }
                     } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.SuggestionArray));
                 }
@@ -99,26 +95,17 @@ public sealed class Suggestion : ComplexProperty
     }
 
     /// <summary>
-    /// Gets the date and time of the suggestion.
+    ///     Gets the date and time of the suggestion.
     /// </summary>
-    public DateTime Date
-    {
-        get { return this.date; }
-    }
+    public DateTime Date => date;
 
     /// <summary>
-    /// Gets the quality of the suggestion.
+    ///     Gets the quality of the suggestion.
     /// </summary>
-    public SuggestionQuality Quality
-    {
-        get { return this.quality; }
-    }
+    public SuggestionQuality Quality => quality;
 
     /// <summary>
-    /// Gets a collection of suggested times within the suggested day.
+    ///     Gets a collection of suggested times within the suggested day.
     /// </summary>
-    public Collection<TimeSuggestion> TimeSuggestions
-    {
-        get { return this.timeSuggestions; }
-    }
+    public Collection<TimeSuggestion> TimeSuggestions => timeSuggestions;
 }

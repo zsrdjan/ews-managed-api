@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the CompanyInsightValue.
+///     Represents the CompanyInsightValue.
 /// </summary>
 public sealed class CompanyInsightValue : InsightValue
 {
@@ -44,97 +41,97 @@ public sealed class CompanyInsightValue : InsightValue
     private string websiteUrl;
 
     /// <summary>
-    /// Gets the Name
+    ///     Gets the Name
     /// </summary>
     public string Name
     {
-        get { return this.name; }
+        get => name;
 
-        set { this.SetFieldValue<string>(ref this.name, value); }
+        set => SetFieldValue(ref name, value);
     }
 
     /// <summary>
-    /// Gets the SatoriId
+    ///     Gets the SatoriId
     /// </summary>
     public string SatoriId
     {
-        get { return this.satoriId; }
+        get => satoriId;
 
-        set { this.SetFieldValue<string>(ref this.satoriId, value); }
+        set => SetFieldValue(ref satoriId, value);
     }
 
     /// <summary>
-    /// Gets the Description
+    ///     Gets the Description
     /// </summary>
     public string Description
     {
-        get { return this.description; }
+        get => description;
 
-        set { this.SetFieldValue<string>(ref this.description, value); }
+        set => SetFieldValue(ref description, value);
     }
 
     /// <summary>
-    /// Gets the DescriptionAttribution
+    ///     Gets the DescriptionAttribution
     /// </summary>
     public string DescriptionAttribution
     {
-        get { return this.descriptionAttribution; }
+        get => descriptionAttribution;
 
-        set { this.SetFieldValue<string>(ref this.descriptionAttribution, value); }
+        set => SetFieldValue(ref descriptionAttribution, value);
     }
 
     /// <summary>
-    /// Gets the ImageUrl
+    ///     Gets the ImageUrl
     /// </summary>
     public string ImageUrl
     {
-        get { return this.imageUrl; }
+        get => imageUrl;
 
-        set { this.SetFieldValue<string>(ref this.imageUrl, value); }
+        set => SetFieldValue(ref imageUrl, value);
     }
 
     /// <summary>
-    /// Gets the ImageUrlAttribution
+    ///     Gets the ImageUrlAttribution
     /// </summary>
     public string ImageUrlAttribution
     {
-        get { return this.imageUrlAttribution; }
+        get => imageUrlAttribution;
 
-        set { this.SetFieldValue<string>(ref this.imageUrlAttribution, value); }
+        set => SetFieldValue(ref imageUrlAttribution, value);
     }
 
     /// <summary>
-    /// Gets the YearFound
+    ///     Gets the YearFound
     /// </summary>
     public string YearFound
     {
-        get { return this.yearFound; }
+        get => yearFound;
 
-        set { this.SetFieldValue<string>(ref this.yearFound, value); }
+        set => SetFieldValue(ref yearFound, value);
     }
 
     /// <summary>
-    /// Gets the FinanceSymbol
+    ///     Gets the FinanceSymbol
     /// </summary>
     public string FinanceSymbol
     {
-        get { return this.financeSymbol; }
+        get => financeSymbol;
 
-        set { this.SetFieldValue<string>(ref this.financeSymbol, value); }
+        set => SetFieldValue(ref financeSymbol, value);
     }
 
     /// <summary>
-    /// Gets the WebsiteUrl
+    ///     Gets the WebsiteUrl
     /// </summary>
     public string WebsiteUrl
     {
-        get { return this.websiteUrl; }
+        get => websiteUrl;
 
-        set { this.SetFieldValue<string>(ref this.websiteUrl, value); }
+        set => SetFieldValue(ref websiteUrl, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -143,37 +140,37 @@ public sealed class CompanyInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.Name:
-                this.Name = reader.ReadElementValue();
+                Name = reader.ReadElementValue();
                 break;
             case XmlElementNames.SatoriId:
-                this.SatoriId = reader.ReadElementValue();
+                SatoriId = reader.ReadElementValue();
                 break;
             case XmlElementNames.Description:
-                this.Description = reader.ReadElementValue();
+                Description = reader.ReadElementValue();
                 break;
             case XmlElementNames.DescriptionAttribution:
-                this.DescriptionAttribution = reader.ReadElementValue();
+                DescriptionAttribution = reader.ReadElementValue();
                 break;
             case XmlElementNames.ImageUrl:
-                this.ImageUrl = reader.ReadElementValue();
+                ImageUrl = reader.ReadElementValue();
                 break;
             case XmlElementNames.ImageUrlAttribution:
-                this.ImageUrlAttribution = reader.ReadElementValue();
+                ImageUrlAttribution = reader.ReadElementValue();
                 break;
             case XmlElementNames.YearFound:
-                this.YearFound = reader.ReadElementValue();
+                YearFound = reader.ReadElementValue();
                 break;
             case XmlElementNames.FinanceSymbol:
-                this.FinanceSymbol = reader.ReadElementValue();
+                FinanceSymbol = reader.ReadElementValue();
                 break;
             case XmlElementNames.WebsiteUrl:
-                this.WebsiteUrl = reader.ReadElementValue();
+                WebsiteUrl = reader.ReadElementValue();
                 break;
             default:
                 return false;

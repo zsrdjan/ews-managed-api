@@ -25,20 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents the results of an Persona search operation.
+///     Represents the results of an Persona search operation.
 /// </summary>
 public interface IPeopleQueryResults
 {
     /// <summary>
-    /// Gets the Personas that were found by the search operation.
+    ///     Gets the Personas that were found by the search operation.
     /// </summary>
     IList<Persona> Personas { get; }
 
     /// <summary>
-    /// Gets the ID for this FindPeople call, which can be used for feedback
+    ///     Gets the ID for this FindPeople call, which can be used for feedback
     /// </summary>
     string TransactionId { get; }
 }

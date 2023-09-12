@@ -25,10 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents an privileged user Id.
+///     Represents an privileged user Id.
 /// </summary>
 internal sealed class PrivilegedUserId
 {
@@ -38,14 +36,14 @@ internal sealed class PrivilegedUserId
     private PrivilegedUserIdBudgetType? budgetType;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PrivilegedUserId"/> class.
+    ///     Initializes a new instance of the <see cref="PrivilegedUserId" /> class.
     /// </summary>
     public PrivilegedUserId()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PrivilegedUserId"/> class.
+    ///     Initializes a new instance of the <see cref="PrivilegedUserId" /> class.
     /// </summary>
     /// <param name="openType">The open type.</param>
     /// <param name="idType">The type of this Id.</param>
@@ -53,90 +51,90 @@ internal sealed class PrivilegedUserId
     public PrivilegedUserId(PrivilegedLogonType openType, ConnectingIdType idType, string id)
         : this()
     {
-        this.logonType = openType;
+        logonType = openType;
         this.idType = idType;
         this.id = id;
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="requestedServerVersion">The requested server version.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer, ExchangeVersion requestedServerVersion)
     {
-        if (string.IsNullOrEmpty(this.id))
+        if (string.IsNullOrEmpty(id))
         {
             throw new ArgumentException(Strings.IdPropertyMustBeSet);
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.OpenAsAdminOrSystemService);
-        writer.WriteAttributeString(XmlElementNames.LogonType, this.logonType.ToString());
-        if (requestedServerVersion >= ExchangeVersion.Exchange2013 && this.budgetType.HasValue)
+        writer.WriteAttributeString(XmlElementNames.LogonType, logonType.ToString());
+        if (requestedServerVersion >= ExchangeVersion.Exchange2013 && budgetType.HasValue)
         {
-            writer.WriteAttributeString(XmlElementNames.BudgetType, ((int)this.budgetType.Value).ToString());
+            writer.WriteAttributeString(XmlElementNames.BudgetType, ((int)budgetType.Value).ToString());
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ConnectingSID);
-        writer.WriteElementValue(XmlNamespace.Types, this.idType.ToString(), this.id);
+        writer.WriteElementValue(XmlNamespace.Types, idType.ToString(), id);
         writer.WriteEndElement(); // ConnectingSID
         writer.WriteEndElement(); // OpenAsAdminOrSystemService
     }
 
     /// <summary>
-    /// Gets or sets the type of the Id.
+    ///     Gets or sets the type of the Id.
     /// </summary>
     public ConnectingIdType IdType
     {
-        get { return this.idType; }
-        set { this.idType = value; }
+        get => idType;
+        set => idType = value;
     }
 
     /// <summary>
-    /// Gets or sets the user Id.
+    ///     Gets or sets the user Id.
     /// </summary>
     public string Id
     {
-        get { return this.id; }
-        set { this.id = value; }
+        get => id;
+        set => id = value;
     }
 
     /// <summary>
-    /// Gets or sets the special logon type.
+    ///     Gets or sets the special logon type.
     /// </summary>
     public PrivilegedLogonType LogonType
     {
-        get { return this.logonType; }
-        set { this.logonType = value; }
+        get => logonType;
+        set => logonType = value;
     }
 
     /// <summary>
-    /// Gets or sets the budget type.
+    ///     Gets or sets the budget type.
     /// </summary>
     public PrivilegedUserIdBudgetType? BudgetType
     {
-        get { return this.budgetType; }
-        set { this.budgetType = value; }
+        get => budgetType;
+        set => budgetType = value;
     }
 }
 
 /// <summary>
-/// PrivilegedUserId BudgetType enum
+///     PrivilegedUserId BudgetType enum
 /// </summary>
 internal enum PrivilegedUserIdBudgetType
 {
     /// <summary>
-    /// Interactive, charge against a copy of target mailbox budget.
+    ///     Interactive, charge against a copy of target mailbox budget.
     /// </summary>
     Default = 0,
 
     /// <summary>
-    /// Running as background load
+    ///     Running as background load
     /// </summary>
     RunningAsBackgroundLoad = 1,
 
     /// <summary>
-    /// Unthrottled budget.
+    ///     Unthrottled budget.
     /// </summary>
     Unthrottled = 2,
 }

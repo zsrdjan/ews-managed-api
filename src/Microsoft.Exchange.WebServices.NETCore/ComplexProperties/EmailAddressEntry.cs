@@ -23,33 +23,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.ComponentModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents an entry of an EmailAddressDictionary.
+///     Represents an entry of an EmailAddressDictionary.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
 {
     /// <summary>
-    /// The email address.
+    ///     The email address.
     /// </summary>
     private EmailAddress emailAddress;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddressEntry"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddressEntry" /> class.
     /// </summary>
     internal EmailAddressEntry()
-        : base()
     {
-        this.emailAddress = new EmailAddress();
-        this.emailAddress.OnChange += this.EmailAddressChanged;
+        emailAddress = new EmailAddress();
+        emailAddress.OnChange += EmailAddressChanged;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailAddressEntry"/> class.
+    ///     Initializes a new instance of the <see cref="EmailAddressEntry" /> class.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="emailAddress">The email address.</param>
@@ -60,43 +59,43 @@ public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
 
         if (this.emailAddress != null)
         {
-            this.emailAddress.OnChange += this.EmailAddressChanged;
+            this.emailAddress.OnChange += EmailAddressChanged;
         }
     }
 
     /// <summary>
-    /// Reads the attributes from XML.
+    ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
         base.ReadAttributesFromXml(reader);
 
-        this.EmailAddress.Name = reader.ReadAttributeValue<string>(XmlAttributeNames.Name);
-        this.EmailAddress.RoutingType = reader.ReadAttributeValue<string>(XmlAttributeNames.RoutingType);
+        EmailAddress.Name = reader.ReadAttributeValue<string>(XmlAttributeNames.Name);
+        EmailAddress.RoutingType = reader.ReadAttributeValue<string>(XmlAttributeNames.RoutingType);
 
-        string mailboxTypeString = reader.ReadAttributeValue(XmlAttributeNames.MailboxType);
+        var mailboxTypeString = reader.ReadAttributeValue(XmlAttributeNames.MailboxType);
         if (!string.IsNullOrEmpty(mailboxTypeString))
         {
-            this.EmailAddress.MailboxType = EwsUtilities.Parse<MailboxType>(mailboxTypeString);
+            EmailAddress.MailboxType = EwsUtilities.Parse<MailboxType>(mailboxTypeString);
         }
         else
         {
-            this.EmailAddress.MailboxType = null;
+            EmailAddress.MailboxType = null;
         }
     }
 
     /// <summary>
-    /// Reads the text value from XML.
+    ///     Reads the text value from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        this.EmailAddress.Address = reader.ReadValue();
+        EmailAddress.Address = reader.ReadValue();
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
@@ -105,48 +104,48 @@ public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
 
         if (writer.Service.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
         {
-            writer.WriteAttributeValue(XmlAttributeNames.Name, this.EmailAddress.Name);
-            writer.WriteAttributeValue(XmlAttributeNames.RoutingType, this.EmailAddress.RoutingType);
-            if (this.EmailAddress.MailboxType != MailboxType.Unknown)
+            writer.WriteAttributeValue(XmlAttributeNames.Name, EmailAddress.Name);
+            writer.WriteAttributeValue(XmlAttributeNames.RoutingType, EmailAddress.RoutingType);
+            if (EmailAddress.MailboxType != MailboxType.Unknown)
             {
-                writer.WriteAttributeValue(XmlAttributeNames.MailboxType, this.EmailAddress.MailboxType);
+                writer.WriteAttributeValue(XmlAttributeNames.MailboxType, EmailAddress.MailboxType);
             }
         }
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteValue(this.EmailAddress.Address, XmlElementNames.EmailAddress);
+        writer.WriteValue(EmailAddress.Address, XmlElementNames.EmailAddress);
     }
 
     /// <summary>
-    /// Gets or sets the e-mail address of the entry.
+    ///     Gets or sets the e-mail address of the entry.
     /// </summary>
     public EmailAddress EmailAddress
     {
-        get { return this.emailAddress; }
+        get => emailAddress;
 
         set
         {
-            this.SetFieldValue<EmailAddress>(ref this.emailAddress, value);
+            SetFieldValue(ref emailAddress, value);
 
-            if (this.emailAddress != null)
+            if (emailAddress != null)
             {
-                this.emailAddress.OnChange += this.EmailAddressChanged;
+                emailAddress.OnChange += EmailAddressChanged;
             }
         }
     }
 
     /// <summary>
-    /// E-mail address was changed.
+    ///     E-mail address was changed.
     /// </summary>
     /// <param name="complexProperty">Property that changed.</param>
     private void EmailAddressChanged(ComplexProperty complexProperty)
     {
-        this.Changed();
+        Changed();
     }
 }

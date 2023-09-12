@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for appointment and meeting requests.
+///     Represents the schema for appointment and meeting requests.
 /// </summary>
 [Schema]
 public class AppointmentSchema : ItemSchema
 {
     /// <summary>
-    /// Field URIs for Appointment.
+    ///     Field URIs for Appointment.
     /// </summary>
     private static class FieldUris
     {
@@ -87,7 +87,7 @@ public class AppointmentSchema : ItemSchema
     }
 
     /// <summary>
-    /// Defines the StartTimeZone property.
+    ///     Defines the StartTimeZone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -102,7 +102,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the EndTimeZone property.
+    ///     Defines the EndTimeZone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -117,7 +117,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Start property.
+    ///     Defines the Start property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -129,11 +129,11 @@ public class AppointmentSchema : ItemSchema
         FieldUris.Start,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanUpdate | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate(ExchangeVersion version) { return AppointmentSchema.StartTimeZone; }
+        delegate { return StartTimeZone; }
     );
 
     /// <summary>
-    /// Defines the End property.
+    ///     Defines the End property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -147,13 +147,12 @@ public class AppointmentSchema : ItemSchema
         ExchangeVersion.Exchange2007_SP1,
         delegate(ExchangeVersion version)
         {
-            return version == ExchangeVersion.Exchange2007_SP1 ? AppointmentSchema.StartTimeZone
-                : AppointmentSchema.EndTimeZone;
+            return version == ExchangeVersion.Exchange2007_SP1 ? StartTimeZone : EndTimeZone;
         }
     );
 
     /// <summary>
-    /// Defines the OriginalStart property.
+    ///     Defines the OriginalStart property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -167,7 +166,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsAllDayEvent property.
+    ///     Defines the IsAllDayEvent property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -182,7 +181,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the LegacyFreeBusyStatus property.
+    ///     Defines the LegacyFreeBusyStatus property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -198,7 +197,7 @@ public class AppointmentSchema : ItemSchema
         );
 
     /// <summary>
-    /// Defines the Location property.
+    ///     Defines the Location property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -216,7 +215,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the When property.
+    ///     Defines the When property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -234,7 +233,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsMeeting property.
+    ///     Defines the IsMeeting property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -249,7 +248,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsCancelled property.
+    ///     Defines the IsCancelled property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -264,7 +263,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsRecurring property.
+    ///     Defines the IsRecurring property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -279,7 +278,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the MeetingRequestWasSent property.
+    ///     Defines the MeetingRequestWasSent property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -294,7 +293,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsResponseRequested property.
+    ///     Defines the IsResponseRequested property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -309,7 +308,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the AppointmentType property.
+    ///     Defines the AppointmentType property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -324,7 +323,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the MyResponseType property.
+    ///     Defines the MyResponseType property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -339,7 +338,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Organizer property.
+    ///     Defines the Organizer property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -352,11 +351,11 @@ public class AppointmentSchema : ItemSchema
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddress(); }
+        delegate { return new EmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the RequiredAttendees property.
+    ///     Defines the RequiredAttendees property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -371,11 +370,11 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new AttendeeCollection(); }
+        delegate { return new AttendeeCollection(); }
     );
 
     /// <summary>
-    /// Defines the OptionalAttendees property.
+    ///     Defines the OptionalAttendees property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -390,11 +389,11 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new AttendeeCollection(); }
+        delegate { return new AttendeeCollection(); }
     );
 
     /// <summary>
-    /// Defines the Resources property.
+    ///     Defines the Resources property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -409,11 +408,11 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new AttendeeCollection(); }
+        delegate { return new AttendeeCollection(); }
     );
 
     /// <summary>
-    /// Defines the ConflictingMeetingCount property.
+    ///     Defines the ConflictingMeetingCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -427,7 +426,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the AdjacentMeetingCount property.
+    ///     Defines the AdjacentMeetingCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -441,7 +440,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ConflictingMeetings property.
+    ///     Defines the ConflictingMeetings property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -453,11 +452,11 @@ public class AppointmentSchema : ItemSchema
             XmlElementNames.ConflictingMeetings,
             FieldUris.ConflictingMeetings,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new ItemCollection<Appointment>(); }
+            delegate { return new ItemCollection<Appointment>(); }
         );
 
     /// <summary>
-    /// Defines the AdjacentMeetings property.
+    ///     Defines the AdjacentMeetings property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -469,11 +468,11 @@ public class AppointmentSchema : ItemSchema
             XmlElementNames.AdjacentMeetings,
             FieldUris.AdjacentMeetings,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new ItemCollection<Appointment>(); }
+            delegate { return new ItemCollection<Appointment>(); }
         );
 
     /// <summary>
-    /// Defines the Duration property.
+    ///     Defines the Duration property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -488,7 +487,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the TimeZone property.
+    ///     Defines the TimeZone property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -503,7 +502,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the AppointmentReplyTime property.
+    ///     Defines the AppointmentReplyTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -518,7 +517,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the AppointmentSequenceNumber property.
+    ///     Defines the AppointmentSequenceNumber property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -532,7 +531,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the AppointmentState property.
+    ///     Defines the AppointmentState property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -547,7 +546,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Recurrence property.
+    ///     Defines the Recurrence property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -562,7 +561,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the FirstOccurrence property.
+    ///     Defines the FirstOccurrence property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -573,11 +572,11 @@ public class AppointmentSchema : ItemSchema
         XmlElementNames.FirstOccurrence,
         FieldUris.FirstOccurrence,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new OccurrenceInfo(); }
+        delegate { return new OccurrenceInfo(); }
     );
 
     /// <summary>
-    /// Defines the LastOccurrence property.
+    ///     Defines the LastOccurrence property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -588,11 +587,11 @@ public class AppointmentSchema : ItemSchema
         XmlElementNames.LastOccurrence,
         FieldUris.LastOccurrence,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new OccurrenceInfo(); }
+        delegate { return new OccurrenceInfo(); }
     );
 
     /// <summary>
-    /// Defines the ModifiedOccurrences property.
+    ///     Defines the ModifiedOccurrences property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -604,11 +603,11 @@ public class AppointmentSchema : ItemSchema
             XmlElementNames.ModifiedOccurrences,
             FieldUris.ModifiedOccurrences,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new OccurrenceInfoCollection(); }
+            delegate { return new OccurrenceInfoCollection(); }
         );
 
     /// <summary>
-    /// Defines the DeletedOccurrences property.
+    ///     Defines the DeletedOccurrences property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -620,11 +619,11 @@ public class AppointmentSchema : ItemSchema
             XmlElementNames.DeletedOccurrences,
             FieldUris.DeletedOccurrences,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new DeletedOccurrenceInfoCollection(); }
+            delegate { return new DeletedOccurrenceInfoCollection(); }
         );
 
     /// <summary>
-    /// Defines the MeetingTimeZone property.
+    ///     Defines the MeetingTimeZone property.
     /// </summary>
     internal static readonly PropertyDefinition MeetingTimeZone = new MeetingTimeZonePropertyDefinition(
         XmlElementNames.MeetingTimeZone,
@@ -634,7 +633,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ConferenceType property.
+    ///     Defines the ConferenceType property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -649,7 +648,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the AllowNewTimeProposal property.
+    ///     Defines the AllowNewTimeProposal property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -664,7 +663,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsOnlineMeeting property.
+    ///     Defines the IsOnlineMeeting property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -679,7 +678,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the MeetingWorkspaceUrl property.
+    ///     Defines the MeetingWorkspaceUrl property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -697,7 +696,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the NetShowUrl property.
+    ///     Defines the NetShowUrl property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -715,7 +714,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the iCalendar Uid property.
+    ///     Defines the iCalendar Uid property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -730,7 +729,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the iCalendar RecurrenceId property.
+    ///     Defines the iCalendar RecurrenceId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -746,7 +745,7 @@ public class AppointmentSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Defines the iCalendar DateTimeStamp property.
+    ///     Defines the iCalendar DateTimeStamp property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -762,7 +761,7 @@ public class AppointmentSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Enhanced Location property.
+    ///     Enhanced Location property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -777,11 +776,11 @@ public class AppointmentSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2013,
-        delegate() { return new EnhancedLocation(); }
+        delegate { return new EnhancedLocation(); }
     );
 
     /// <summary>
-    /// JoinOnlineMeetingUrl property.
+    ///     JoinOnlineMeetingUrl property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -796,7 +795,7 @@ public class AppointmentSchema : ItemSchema
     );
 
     /// <summary>
-    /// OnlineMeetingSettings property.
+    ///     OnlineMeetingSettings property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -809,80 +808,80 @@ public class AppointmentSchema : ItemSchema
             FieldUris.OnlineMeetingSettings,
             PropertyDefinitionFlags.CanFind,
             ExchangeVersion.Exchange2013,
-            delegate() { return new OnlineMeetingSettings(); }
+            delegate { return new OnlineMeetingSettings(); }
         );
 
     /// <summary>
-    /// Instance of schema.
+    ///     Instance of schema.
     /// </summary>
     /// <remarks>
-    /// This must be after the declaration of property definitions.
+    ///     This must be after the declaration of property definitions.
     /// </remarks>
     internal static new readonly AppointmentSchema Instance = new AppointmentSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(ICalUid);
-        this.RegisterProperty(ICalRecurrenceId);
-        this.RegisterProperty(ICalDateTimeStamp);
-        this.RegisterProperty(Start);
-        this.RegisterProperty(End);
-        this.RegisterProperty(OriginalStart);
-        this.RegisterProperty(IsAllDayEvent);
-        this.RegisterProperty(LegacyFreeBusyStatus);
-        this.RegisterProperty(Location);
-        this.RegisterProperty(When);
-        this.RegisterProperty(IsMeeting);
-        this.RegisterProperty(IsCancelled);
-        this.RegisterProperty(IsRecurring);
-        this.RegisterProperty(MeetingRequestWasSent);
-        this.RegisterProperty(IsResponseRequested);
-        this.RegisterProperty(AppointmentType);
-        this.RegisterProperty(MyResponseType);
-        this.RegisterProperty(Organizer);
-        this.RegisterProperty(RequiredAttendees);
-        this.RegisterProperty(OptionalAttendees);
-        this.RegisterProperty(Resources);
-        this.RegisterProperty(ConflictingMeetingCount);
-        this.RegisterProperty(AdjacentMeetingCount);
-        this.RegisterProperty(ConflictingMeetings);
-        this.RegisterProperty(AdjacentMeetings);
-        this.RegisterProperty(Duration);
-        this.RegisterProperty(TimeZone);
-        this.RegisterProperty(AppointmentReplyTime);
-        this.RegisterProperty(AppointmentSequenceNumber);
-        this.RegisterProperty(AppointmentState);
-        this.RegisterProperty(Recurrence);
-        this.RegisterProperty(FirstOccurrence);
-        this.RegisterProperty(LastOccurrence);
-        this.RegisterProperty(ModifiedOccurrences);
-        this.RegisterProperty(DeletedOccurrences);
-        this.RegisterInternalProperty(MeetingTimeZone);
-        this.RegisterProperty(StartTimeZone);
-        this.RegisterProperty(EndTimeZone);
-        this.RegisterProperty(ConferenceType);
-        this.RegisterProperty(AllowNewTimeProposal);
-        this.RegisterProperty(IsOnlineMeeting);
-        this.RegisterProperty(MeetingWorkspaceUrl);
-        this.RegisterProperty(NetShowUrl);
-        this.RegisterProperty(EnhancedLocation);
-        this.RegisterProperty(JoinOnlineMeetingUrl);
-        this.RegisterProperty(OnlineMeetingSettings);
+        RegisterProperty(ICalUid);
+        RegisterProperty(ICalRecurrenceId);
+        RegisterProperty(ICalDateTimeStamp);
+        RegisterProperty(Start);
+        RegisterProperty(End);
+        RegisterProperty(OriginalStart);
+        RegisterProperty(IsAllDayEvent);
+        RegisterProperty(LegacyFreeBusyStatus);
+        RegisterProperty(Location);
+        RegisterProperty(When);
+        RegisterProperty(IsMeeting);
+        RegisterProperty(IsCancelled);
+        RegisterProperty(IsRecurring);
+        RegisterProperty(MeetingRequestWasSent);
+        RegisterProperty(IsResponseRequested);
+        RegisterProperty(AppointmentType);
+        RegisterProperty(MyResponseType);
+        RegisterProperty(Organizer);
+        RegisterProperty(RequiredAttendees);
+        RegisterProperty(OptionalAttendees);
+        RegisterProperty(Resources);
+        RegisterProperty(ConflictingMeetingCount);
+        RegisterProperty(AdjacentMeetingCount);
+        RegisterProperty(ConflictingMeetings);
+        RegisterProperty(AdjacentMeetings);
+        RegisterProperty(Duration);
+        RegisterProperty(TimeZone);
+        RegisterProperty(AppointmentReplyTime);
+        RegisterProperty(AppointmentSequenceNumber);
+        RegisterProperty(AppointmentState);
+        RegisterProperty(Recurrence);
+        RegisterProperty(FirstOccurrence);
+        RegisterProperty(LastOccurrence);
+        RegisterProperty(ModifiedOccurrences);
+        RegisterProperty(DeletedOccurrences);
+        RegisterInternalProperty(MeetingTimeZone);
+        RegisterProperty(StartTimeZone);
+        RegisterProperty(EndTimeZone);
+        RegisterProperty(ConferenceType);
+        RegisterProperty(AllowNewTimeProposal);
+        RegisterProperty(IsOnlineMeeting);
+        RegisterProperty(MeetingWorkspaceUrl);
+        RegisterProperty(NetShowUrl);
+        RegisterProperty(EnhancedLocation);
+        RegisterProperty(JoinOnlineMeetingUrl);
+        RegisterProperty(OnlineMeetingSettings);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AppointmentSchema"/> class.
+    ///     Initializes a new instance of the <see cref="AppointmentSchema" /> class.
     /// </summary>
     internal AppointmentSchema()
-        : base()
     {
     }
 }

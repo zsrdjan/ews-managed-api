@@ -25,11 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-using System.Xml;
-
 /// <summary>
-/// Represents the JobInsightValue.
+///     Represents the JobInsightValue.
 /// </summary>
 public sealed class JobInsightValue : InsightValue
 {
@@ -44,97 +41,97 @@ public sealed class JobInsightValue : InsightValue
     private long endUtcTicks;
 
     /// <summary>
-    /// Gets the Company
+    ///     Gets the Company
     /// </summary>
     public string Company
     {
-        get { return this.company; }
+        get => company;
 
-        set { this.SetFieldValue<string>(ref this.company, value); }
+        set => SetFieldValue(ref company, value);
     }
 
     /// <summary>
-    /// Gets the CompanyDescription
+    ///     Gets the CompanyDescription
     /// </summary>
     public string CompanyDescription
     {
-        get { return this.companyDescription; }
+        get => companyDescription;
 
-        set { this.SetFieldValue<string>(ref this.companyDescription, value); }
+        set => SetFieldValue(ref companyDescription, value);
     }
 
     /// <summary>
-    /// Gets the CompanyTicker
+    ///     Gets the CompanyTicker
     /// </summary>
     public string CompanyTicker
     {
-        get { return this.companyTicker; }
+        get => companyTicker;
 
-        set { this.SetFieldValue<string>(ref this.companyTicker, value); }
+        set => SetFieldValue(ref companyTicker, value);
     }
 
     /// <summary>
-    /// Gets the CompanyLogoUrl
+    ///     Gets the CompanyLogoUrl
     /// </summary>
     public string CompanyLogoUrl
     {
-        get { return this.companyLogoUrl; }
+        get => companyLogoUrl;
 
-        set { this.SetFieldValue<string>(ref this.companyLogoUrl, value); }
+        set => SetFieldValue(ref companyLogoUrl, value);
     }
 
     /// <summary>
-    /// Gets the CompanyWebsiteUrl
+    ///     Gets the CompanyWebsiteUrl
     /// </summary>
     public string CompanyWebsiteUrl
     {
-        get { return this.companyWebsiteUrl; }
+        get => companyWebsiteUrl;
 
-        set { this.SetFieldValue<string>(ref this.companyWebsiteUrl, value); }
+        set => SetFieldValue(ref companyWebsiteUrl, value);
     }
 
     /// <summary>
-    /// Gets the CompanyLinkedInUrl
+    ///     Gets the CompanyLinkedInUrl
     /// </summary>
     public string CompanyLinkedInUrl
     {
-        get { return this.companyLinkedInUrl; }
+        get => companyLinkedInUrl;
 
-        set { this.SetFieldValue<string>(ref this.companyLinkedInUrl, value); }
+        set => SetFieldValue(ref companyLinkedInUrl, value);
     }
 
     /// <summary>
-    /// Gets the Title
+    ///     Gets the Title
     /// </summary>
     public string Title
     {
-        get { return this.title; }
+        get => title;
 
-        set { this.SetFieldValue<string>(ref this.title, value); }
+        set => SetFieldValue(ref title, value);
     }
 
     /// <summary>
-    /// Gets the StartUtcTicks
+    ///     Gets the StartUtcTicks
     /// </summary>
     public long StartUtcTicks
     {
-        get { return this.startUtcTicks; }
+        get => startUtcTicks;
 
-        set { this.SetFieldValue<long>(ref this.startUtcTicks, value); }
+        set => SetFieldValue(ref startUtcTicks, value);
     }
 
     /// <summary>
-    /// Gets the EndUtcTicks
+    ///     Gets the EndUtcTicks
     /// </summary>
     public long EndUtcTicks
     {
-        get { return this.endUtcTicks; }
+        get => endUtcTicks;
 
-        set { this.SetFieldValue<long>(ref this.endUtcTicks, value); }
+        set => SetFieldValue(ref endUtcTicks, value);
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">XML reader</param>
     /// <returns>Whether the element was read</returns>
@@ -143,22 +140,22 @@ public sealed class JobInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
-                this.InsightSource = reader.ReadElementValue<string>();
+                InsightSource = reader.ReadElementValue<string>();
                 break;
             case XmlElementNames.UpdatedUtcTicks:
-                this.UpdatedUtcTicks = reader.ReadElementValue<long>();
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.Company:
-                this.Company = reader.ReadElementValue();
+                Company = reader.ReadElementValue();
                 break;
             case XmlElementNames.Title:
-                this.Title = reader.ReadElementValue();
+                Title = reader.ReadElementValue();
                 break;
             case XmlElementNames.StartUtcTicks:
-                this.StartUtcTicks = reader.ReadElementValue<long>();
+                StartUtcTicks = reader.ReadElementValue<long>();
                 break;
             case XmlElementNames.EndUtcTicks:
-                this.EndUtcTicks = reader.ReadElementValue<long>();
+                EndUtcTicks = reader.ReadElementValue<long>();
                 break;
             default:
                 return false;

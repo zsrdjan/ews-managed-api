@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a GetServerTimeZones request.
+///     Represents a GetServerTimeZones request.
 /// </summary>
 internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServerTimeZonesResponse>
 {
     private IEnumerable<string> ids;
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        if (this.ids != null)
+        if (ids != null)
         {
-            EwsUtilities.ValidateParamCollection(this.ids, "Ids");
+            EwsUtilities.ValidateParamCollection(ids, "Ids");
         }
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetServerTimeZonesRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetServerTimeZonesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal GetServerTimeZonesRequest(ExchangeService service)
@@ -59,7 +55,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -70,7 +66,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -79,7 +75,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
@@ -88,7 +84,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetXmlElementName()
@@ -97,7 +93,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -106,7 +102,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Gets the minimum server version required to process this request.
+    ///     Gets the minimum server version required to process this request.
     /// </summary>
     /// <returns>Exchange server version.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -115,16 +111,16 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.Ids != null)
+        if (Ids != null)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Ids);
 
-            foreach (string id in this.ids)
+            foreach (var id in ids)
             {
                 writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Id, id);
             }
@@ -134,11 +130,11 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     }
 
     /// <summary>
-    /// Gets or sets the ids of the time zones that should be returned by the server.
+    ///     Gets or sets the ids of the time zones that should be returned by the server.
     /// </summary>
     internal IEnumerable<string> Ids
     {
-        get { return this.ids; }
-        set { this.ids = value; }
+        get => ids;
+        set => ids = value;
     }
 }

@@ -25,22 +25,16 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a response object created to remove a calendar item from a meeting cancellation.
+///     Represents a response object created to remove a calendar item from a meeting cancellation.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.RemoveItem, ReturnedByServer = false)]
 internal sealed class RemoveFromCalendar : ServiceObject
 {
-    private Item referenceItem;
+    private readonly Item referenceItem;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RemoveFromCalendar"/> class.
+    ///     Initializes a new instance of the <see cref="RemoveFromCalendar" /> class.
     /// </summary>
     /// <param name="referenceItem">The reference item.</param>
     internal RemoveFromCalendar(Item referenceItem)
@@ -54,7 +48,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -63,7 +57,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -72,7 +66,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     }
 
     /// <summary>
-    /// Loads the specified set of properties on the object.
+    ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
@@ -84,7 +78,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     }
 
     /// <summary>
-    /// Deletes the object.
+    ///     Deletes the object.
     /// </summary>
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
@@ -100,7 +94,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     }
 
     /// <summary>
-    /// Create response object.
+    ///     Create response object.
     /// </summary>
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
@@ -111,8 +105,8 @@ internal sealed class RemoveFromCalendar : ServiceObject
         CancellationToken token
     )
     {
-        ((ItemId)this.PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(this.referenceItem.Id);
+        ((ItemId)PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(referenceItem.Id);
 
-        return this.Service.InternalCreateResponseObject(this, parentFolderId, messageDisposition, token);
+        return Service.InternalCreateResponseObject(this, parentFolderId, messageDisposition, token);
     }
 }

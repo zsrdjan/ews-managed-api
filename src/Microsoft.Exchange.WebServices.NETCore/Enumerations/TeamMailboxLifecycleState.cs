@@ -26,30 +26,30 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// TeamMailbox lifecycle state
+///     TeamMailbox lifecycle state
 /// </summary>
 public enum TeamMailboxLifecycleState
 {
     /// <summary>
-    /// Active
+    ///     Active
     /// </summary>
     [EwsEnum("Active")]
     Active,
 
     /// <summary>
-    /// Closed
+    ///     Closed
     /// </summary>
     [EwsEnum("Closed")]
     Closed,
 
     /// <summary>
-    /// Unlinked
+    ///     Unlinked
     /// </summary>
     [EwsEnum("Unlinked")]
     Unlinked,
 
     /// <summary>
-    /// PendingDelete
+    ///     PendingDelete
     /// </summary>
     [EwsEnum("PendingDelete")]
     PendingDelete,

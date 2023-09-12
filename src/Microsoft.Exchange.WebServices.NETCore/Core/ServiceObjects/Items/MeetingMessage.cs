@@ -23,22 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a meeting-related message. Properties available on meeting messages are defined in the MeetingMessageSchema class.
+///     Represents a meeting-related message. Properties available on meeting messages are defined in the
+///     MeetingMessageSchema class.
 /// </summary>
 [ServiceObjectDefinition(XmlElementNames.MeetingMessage)]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class MeetingMessage : EmailMessage
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingMessage"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingMessage" /> class.
     /// </summary>
     /// <param name="parentAttachment">The parent attachment.</param>
     internal MeetingMessage(ItemAttachment parentAttachment)
@@ -47,7 +45,7 @@ public class MeetingMessage : EmailMessage
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MeetingMessage"/> class.
+    ///     Initializes a new instance of the <see cref="MeetingMessage" /> class.
     /// </summary>
     /// <param name="service">EWS service to which this object belongs.</param>
     internal MeetingMessage(ExchangeService service)
@@ -56,8 +54,8 @@ public class MeetingMessage : EmailMessage
     }
 
     /// <summary>
-    /// Binds to an existing meeting message and loads the specified set of properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing meeting message and loads the specified set of properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the meeting message.</param>
     /// <param name="id">The Id of the meeting message to bind to.</param>
@@ -67,26 +65,26 @@ public class MeetingMessage : EmailMessage
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
-        CancellationToken token = default(CancellationToken)
+        CancellationToken token = default
     )
     {
         return service.BindToItem<MeetingMessage>(id, propertySet, token);
     }
 
     /// <summary>
-    /// Binds to an existing meeting message and loads its first class properties.
-    /// Calling this method results in a call to EWS.
+    ///     Binds to an existing meeting message and loads its first class properties.
+    ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the meeting message.</param>
     /// <param name="id">The Id of the meeting message to bind to.</param>
     /// <returns>A MeetingMessage instance representing the meeting message corresponding to the specified Id.</returns>
     public static new Task<MeetingMessage> Bind(ExchangeService service, ItemId id)
     {
-        return MeetingMessage.Bind(service, id, PropertySet.FirstClassProperties);
+        return Bind(service, id, PropertySet.FirstClassProperties);
     }
 
     /// <summary>
-    /// Internal method to return the schema associated with this type of object.
+    ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
     internal override ServiceObjectSchema GetSchema()
@@ -95,7 +93,7 @@ public class MeetingMessage : EmailMessage
     }
 
     /// <summary>
-    /// Gets the minimum required server version.
+    ///     Gets the minimum required server version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
@@ -107,77 +105,50 @@ public class MeetingMessage : EmailMessage
     #region Properties
 
     /// <summary>
-    /// Gets the Id of the appointment associated with the meeting message.
+    ///     Gets the Id of the appointment associated with the meeting message.
     /// </summary>
-    public ItemId AssociatedAppointmentId
-    {
-        get { return (ItemId)this.PropertyBag[MeetingMessageSchema.AssociatedAppointmentId]; }
-    }
+    public ItemId AssociatedAppointmentId => (ItemId)PropertyBag[MeetingMessageSchema.AssociatedAppointmentId];
 
     /// <summary>
-    /// Gets a value indicating whether the meeting message is delegated.
+    ///     Gets a value indicating whether the meeting message is delegated.
     /// </summary>
-    public bool IsDelegated
-    {
-        get { return (bool)this.PropertyBag[MeetingMessageSchema.IsDelegated]; }
-    }
+    public bool IsDelegated => (bool)PropertyBag[MeetingMessageSchema.IsDelegated];
 
     /// <summary>
-    /// Gets a value indicating whether the meeting message is out of date.
+    ///     Gets a value indicating whether the meeting message is out of date.
     /// </summary>
-    public bool IsOutOfDate
-    {
-        get { return (bool)this.PropertyBag[MeetingMessageSchema.IsOutOfDate]; }
-    }
+    public bool IsOutOfDate => (bool)PropertyBag[MeetingMessageSchema.IsOutOfDate];
 
     /// <summary>
-    ///  Gets a value indicating whether the meeting message has been processed by Exchange (i.e. Exchange has noted
-    ///  the arrival of a meeting request and has created the associated meeting item in the calendar).
+    ///     Gets a value indicating whether the meeting message has been processed by Exchange (i.e. Exchange has noted
+    ///     the arrival of a meeting request and has created the associated meeting item in the calendar).
     /// </summary>
-    public bool HasBeenProcessed
-    {
-        get { return (bool)this.PropertyBag[MeetingMessageSchema.HasBeenProcessed]; }
-    }
+    public bool HasBeenProcessed => (bool)PropertyBag[MeetingMessageSchema.HasBeenProcessed];
 
     /// <summary>
-    /// Gets the isorganizer property for this meeting
+    ///     Gets the isorganizer property for this meeting
     /// </summary>
-    public bool? IsOrganizer
-    {
-        get { return (bool?)this.PropertyBag[MeetingMessageSchema.IsOrganizer]; }
-    }
+    public bool? IsOrganizer => (bool?)PropertyBag[MeetingMessageSchema.IsOrganizer];
 
     /// <summary>
-    /// Gets the type of response the meeting message represents.
+    ///     Gets the type of response the meeting message represents.
     /// </summary>
-    public MeetingResponseType ResponseType
-    {
-        get { return (MeetingResponseType)this.PropertyBag[MeetingMessageSchema.ResponseType]; }
-    }
+    public MeetingResponseType ResponseType => (MeetingResponseType)PropertyBag[MeetingMessageSchema.ResponseType];
 
     /// <summary>
-    /// Gets the ICalendar Uid.
+    ///     Gets the ICalendar Uid.
     /// </summary>
-    public string ICalUid
-    {
-        get { return (string)this.PropertyBag[MeetingMessageSchema.ICalUid]; }
-    }
+    public string ICalUid => (string)PropertyBag[MeetingMessageSchema.ICalUid];
 
     /// <summary>
-    /// Gets the ICalendar RecurrenceId.
+    ///     Gets the ICalendar RecurrenceId.
     /// </summary>
-    public DateTime? ICalRecurrenceId
-    {
-        get { return (DateTime?)this.PropertyBag[MeetingMessageSchema.ICalRecurrenceId]; }
-    }
+    public DateTime? ICalRecurrenceId => (DateTime?)PropertyBag[MeetingMessageSchema.ICalRecurrenceId];
 
     /// <summary>
-    /// Gets the ICalendar DateTimeStamp.
+    ///     Gets the ICalendar DateTimeStamp.
     /// </summary>
-    public DateTime? ICalDateTimeStamp
-    {
-        get { return (DateTime?)this.PropertyBag[MeetingMessageSchema.ICalDateTimeStamp]; }
-    }
+    public DateTime? ICalDateTimeStamp => (DateTime?)PropertyBag[MeetingMessageSchema.ICalDateTimeStamp];
 
     #endregion
 }

@@ -25,47 +25,42 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.ObjectModel;
 // using System.Drawing;
-using System.IO;
-
-using Microsoft.Exchange.WebServices.Data.Enumerations;
 
 /// <summary>
-/// Represents the results of a GetUserPhoto operation.
+///     Represents the results of a GetUserPhoto operation.
 /// </summary>
 public sealed class GetUserPhotoResults
 {
     /// <summary>
-    /// Creates a new instance of the <see cref="GetUserPhotoResults"/> class.
+    ///     Creates a new instance of the <see cref="GetUserPhotoResults" /> class.
     /// </summary>
     internal GetUserPhotoResults()
     {
     }
 
     /// <summary>
-    /// Accessors for the picture data
+    ///     Accessors for the picture data
     /// </summary>
     public byte[] Photo { get; internal set; }
 
     /// <summary>
-    /// Accessors for the Photo EntityTag
+    ///     Accessors for the Photo EntityTag
     /// </summary>
     public string EntityTag { get; internal set; }
 
     /// <summary>
-    /// Accessors for the ContentType of the photo
+    ///     Accessors for the ContentType of the photo
     /// </summary>
     public string ContentType { get; internal set; }
 
     /// <summary>
-    /// Accessors for the Expries header tag
+    ///     Accessors for the Expries header tag
     /// </summary>
     public DateTime Expires { get; internal set; }
 
     /// <summary>
-    /// The status of the photo response
+    ///     The status of the photo response
     /// </summary>
     public GetUserPhotoStatus Status { get; internal set; }
 

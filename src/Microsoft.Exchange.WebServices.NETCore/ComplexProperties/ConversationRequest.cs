@@ -26,40 +26,39 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// 
 /// </summary>
 public sealed class ConversationRequest : ComplexProperty, ISelfValidate
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConversationRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ConversationRequest" /> class.
     /// </summary>
     public ConversationRequest()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConversationRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ConversationRequest" /> class.
     /// </summary>
     /// <param name="conversationId">The conversation id.</param>
     /// <param name="syncState">State of the sync.</param>
     public ConversationRequest(ConversationId conversationId, string syncState)
     {
-        this.ConversationId = conversationId;
-        this.SyncState = syncState;
+        ConversationId = conversationId;
+        SyncState = syncState;
     }
 
     /// <summary>
-    /// Gets or sets the conversation id.
+    ///     Gets or sets the conversation id.
     /// </summary>
     public ConversationId ConversationId { get; set; }
 
     /// <summary>
-    /// Gets or sets the sync state representing the current state of the conversation for synchronization purposes.
+    ///     Gets or sets the sync state representing the current state of the conversation for synchronization purposes.
     /// </summary>
     public string SyncState { get; set; }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -67,21 +66,21 @@ public sealed class ConversationRequest : ComplexProperty, ISelfValidate
     {
         writer.WriteStartElement(XmlNamespace.Types, xmlElementName);
 
-        this.ConversationId.WriteToXml(writer);
+        ConversationId.WriteToXml(writer);
 
-        if (this.SyncState != null)
+        if (SyncState != null)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SyncState, this.SyncState);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SyncState, SyncState);
         }
 
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(this.ConversationId, "ConversationId");
+        EwsUtilities.ValidateParam(ConversationId, "ConversationId");
     }
 }

@@ -25,25 +25,21 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract Find request.
+///     Represents an abstract Find request.
 /// </summary>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
 internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TResponse>
     where TResponse : ServiceResponse
 {
-    private FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
+    private readonly FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
     private SearchFilter searchFilter;
     private string queryString;
     private bool returnHighlightTerms;
     private ViewBase view;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FindRequest&lt;TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="FindRequest&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -53,18 +49,17 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        this.View.InternalValidate(this);
+        View.InternalValidate(this);
 
         // query string parameter is only valid for Exchange2010 or higher
         //
-        if (!String.IsNullOrEmpty(this.queryString) &&
-            this.Service.RequestedServerVersion < ExchangeVersion.Exchange2010)
+        if (!String.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2010)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -77,7 +72,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
 
         // ReturnHighlightTerms parameter is only valid for Exchange2013 or higher
         //
-        if (this.ReturnHighlightTerms && this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (ReturnHighlightTerms && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -90,8 +85,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
 
         // SeekToConditionItemView is only valid for Exchange2013 or higher
         //
-        if ((this.View is SeekToConditionItemView) &&
-            this.Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if ((View is SeekToConditionItemView) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -102,23 +96,23 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
             );
         }
 
-        if (!String.IsNullOrEmpty(this.queryString) && this.searchFilter != null)
+        if (!String.IsNullOrEmpty(queryString) && searchFilter != null)
         {
             throw new ServiceLocalException(Strings.BothSearchFilterAndQueryStringCannotBeSpecified);
         }
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.ParentFolderIds.Count;
+        return ParentFolderIds.Count;
     }
 
     /// <summary>
-    /// Gets the group by clause.
+    ///     Gets the group by clause.
     /// </summary>
     /// <returns>The group by clause, null if the request does not have or support grouping.</returns>
     internal virtual Grouping GetGroupBy()
@@ -127,97 +121,94 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
     }
 
     /// <summary>
-    /// Writes XML attributes.
+    ///     Writes XML attributes.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         base.WriteAttributesToXml(writer);
 
-        this.View.WriteAttributesToXml(writer);
+        View.WriteAttributesToXml(writer);
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.View.WriteToXml(writer, this.GetGroupBy());
+        View.WriteToXml(writer, GetGroupBy());
 
-        if (this.SearchFilter != null)
+        if (SearchFilter != null)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Restriction);
-            this.SearchFilter.WriteToXml(writer);
+            SearchFilter.WriteToXml(writer);
             writer.WriteEndElement(); // Restriction
         }
 
-        this.View.WriteOrderByToXml(writer);
+        View.WriteOrderByToXml(writer);
 
-        this.ParentFolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ParentFolderIds);
+        ParentFolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ParentFolderIds);
 
-        if (!string.IsNullOrEmpty(this.queryString))
+        if (!string.IsNullOrEmpty(queryString))
         {
             // Emit the QueryString
             //
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.QueryString);
 
-            if (this.ReturnHighlightTerms)
+            if (ReturnHighlightTerms)
             {
                 writer.WriteAttributeString(
                     XmlAttributeNames.ReturnHighlightTerms,
-                    this.ReturnHighlightTerms.ToString().ToLowerInvariant()
+                    ReturnHighlightTerms.ToString().ToLowerInvariant()
                 );
             }
 
-            writer.WriteValue(this.queryString, XmlElementNames.QueryString);
+            writer.WriteValue(queryString, XmlElementNames.QueryString);
             writer.WriteEndElement();
         }
     }
 
     /// <summary>
-    /// Gets the parent folder ids.
+    ///     Gets the parent folder ids.
     /// </summary>
-    public FolderIdWrapperList ParentFolderIds
-    {
-        get { return this.parentFolderIds; }
-    }
+    public FolderIdWrapperList ParentFolderIds => parentFolderIds;
 
     /// <summary>
-    /// Gets or sets the search filter. Available search filter classes include SearchFilter.IsEqualTo,
-    /// SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
-    /// is null, no search filters are applied.
+    ///     Gets or sets the search filter. Available search filter classes include SearchFilter.IsEqualTo,
+    ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
+    ///     is null, no search filters are applied.
     /// </summary>
     public SearchFilter SearchFilter
     {
-        get { return this.searchFilter; }
-        set { this.searchFilter = value; }
+        get => searchFilter;
+        set => searchFilter = value;
     }
 
     /// <summary>
-    /// Gets or sets the query string for indexed search.
+    ///     Gets or sets the query string for indexed search.
     /// </summary>
     public string QueryString
     {
-        get { return this.queryString; }
-        set { this.queryString = value; }
+        get => queryString;
+        set => queryString = value;
     }
 
     /// <summary>
-    /// Gets or sets the query string highlight terms.
+    ///     Gets or sets the query string highlight terms.
     /// </summary>
     internal bool ReturnHighlightTerms
     {
-        get { return this.returnHighlightTerms; }
-        set { this.returnHighlightTerms = value; }
+        get => returnHighlightTerms;
+        set => returnHighlightTerms = value;
     }
 
     /// <summary>
-    /// Gets or sets the view controlling the number of items or folders returned.
+    ///     Gets or sets the view controlling the number of items or folders returned.
     /// </summary>
     public ViewBase View
     {
-        get { return this.view; }
-        set { this.view = value; }
+        get => view;
+        set => view = value;
     }
 }

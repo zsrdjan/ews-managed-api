@@ -25,20 +25,18 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System.Collections.Generic;
-
 /// <summary>
-/// Represents the definition of a folder or item property.
+///     Represents the definition of a folder or item property.
 /// </summary>
 public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
 {
-    private string xmlElementName;
-    private PropertyDefinitionFlags flags;
+    private readonly string xmlElementName;
+    private readonly PropertyDefinitionFlags flags;
     private string name;
-    private ExchangeVersion version;
+    private readonly ExchangeVersion version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="PropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -47,18 +45,17 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
         : base(uri)
     {
         this.xmlElementName = xmlElementName;
-        this.flags = PropertyDefinitionFlags.None;
+        flags = PropertyDefinitionFlags.None;
         this.version = version;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="PropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="flags">The flags.</param>
     /// <param name="version">The version.</param>
     internal PropertyDefinition(string xmlElementName, PropertyDefinitionFlags flags, ExchangeVersion version)
-        : base()
     {
         this.xmlElementName = xmlElementName;
         this.flags = flags;
@@ -66,7 +63,7 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="PropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -84,7 +81,7 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    /// Determines whether the specified flag is set.
+    ///     Determines whether the specified flag is set.
     /// </summary>
     /// <param name="flag">The flag.</param>
     /// <returns>
@@ -92,11 +89,11 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     /// </returns>
     internal bool HasFlag(PropertyDefinitionFlags flag)
     {
-        return this.HasFlag(flag, null);
+        return HasFlag(flag, null);
     }
 
     /// <summary>
-    /// Determines whether the specified flag is set.
+    ///     Determines whether the specified flag is set.
     /// </summary>
     /// <param name="flag">The flag.</param>
     /// <param name="version">Requested version.</param>
@@ -105,11 +102,11 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     /// </returns>
     internal virtual bool HasFlag(PropertyDefinitionFlags flag, ExchangeVersion? version)
     {
-        return (this.flags & flag) == flag;
+        return (flags & flag) == flag;
     }
 
     /// <summary>
-    /// Registers associated internal properties.
+    ///     Registers associated internal properties.
     /// </summary>
     /// <param name="properties">The list in which to add the associated properties.</param>
     internal virtual void RegisterAssociatedInternalProperties(List<PropertyDefinition> properties)
@@ -117,48 +114,42 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    /// Gets a list of associated internal properties.
+    ///     Gets a list of associated internal properties.
     /// </summary>
     /// <returns>A list of PropertyDefinition objects.</returns>
     /// <remarks>
-    /// This is a hack. It is here (currently) solely to help the API
-    /// register the MeetingTimeZone property definition that is internal.
+    ///     This is a hack. It is here (currently) solely to help the API
+    ///     register the MeetingTimeZone property definition that is internal.
     /// </remarks>
     internal List<PropertyDefinition> GetAssociatedInternalProperties()
     {
-        List<PropertyDefinition> properties = new List<PropertyDefinition>();
+        var properties = new List<PropertyDefinition>();
 
-        this.RegisterAssociatedInternalProperties(properties);
+        RegisterAssociatedInternalProperties(properties);
 
         return properties;
     }
 
     /// <summary>
-    /// Gets the minimum Exchange version that supports this property.
+    ///     Gets the minimum Exchange version that supports this property.
     /// </summary>
     /// <value>The version.</value>
-    public override ExchangeVersion Version
-    {
-        get { return this.version; }
-    }
+    public override ExchangeVersion Version => version;
 
     /// <summary>
-    /// Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
     /// </summary>
-    internal virtual bool IsNullable
-    {
-        get { return true; }
-    }
+    internal virtual bool IsNullable => true;
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
     internal abstract void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag);
 
     /// <summary>
-    /// Writes the property value to XML.
+    ///     Writes the property value to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -170,41 +161,38 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     );
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
-    internal string XmlElementName
-    {
-        get { return this.xmlElementName; }
-    }
+    internal string XmlElementName => xmlElementName;
 
     /// <summary>
-    /// Gets the name of the property.
+    ///     Gets the name of the property.
     /// </summary>
     public string Name
     {
         get
         {
             // Name is initialized at read time for all PropertyDefinition instances using Reflection.
-            if (string.IsNullOrEmpty(this.name))
+            if (string.IsNullOrEmpty(name))
             {
                 ServiceObjectSchema.InitializeSchemaPropertyNames();
             }
 
-            return this.name;
+            return name;
         }
 
-        internal set { this.name = value; }
+        internal set => name = value;
     }
 
     /// <summary>
-    /// Gets the property definition's printable name.
+    ///     Gets the property definition's printable name.
     /// </summary>
     /// <returns>
-    /// The property definition's printable name.
+    ///     The property definition's printable name.
     /// </returns>
     internal override string GetPrintableName()
     {
-        return this.Name;
+        return Name;
     }
 }

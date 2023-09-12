@@ -23,14 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System;
-
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents the base class for all responses returned by the Autodiscover service.
+///     Represents the base class for all responses returned by the Autodiscover service.
 /// </summary>
 public abstract class AutodiscoverResponse
 {
@@ -39,16 +37,16 @@ public abstract class AutodiscoverResponse
     private Uri redirectionUrl;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutodiscoverResponse"/> class.
+    ///     Initializes a new instance of the <see cref="AutodiscoverResponse" /> class.
     /// </summary>
     internal AutodiscoverResponse()
     {
-        this.errorCode = AutodiscoverErrorCode.NoError;
-        this.errorMessage = Strings.NoError;
+        errorCode = AutodiscoverErrorCode.NoError;
+        errorMessage = Strings.NoError;
     }
 
     /// <summary>
-    /// Loads response from XML.
+    ///     Loads response from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="endElementName">End element name.</param>
@@ -57,12 +55,10 @@ public abstract class AutodiscoverResponse
         switch (reader.LocalName)
         {
             case XmlElementNames.ErrorCode:
-                this.ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
+                ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
                 break;
             case XmlElementNames.ErrorMessage:
-                this.ErrorMessage = reader.ReadElementValue();
-                break;
-            default:
+                ErrorMessage = reader.ReadElementValue();
                 break;
         }
     }
@@ -71,32 +67,32 @@ public abstract class AutodiscoverResponse
     #region Properties
 
     /// <summary>
-    /// Gets the error code that was returned by the service.
+    ///     Gets the error code that was returned by the service.
     /// </summary>
     public AutodiscoverErrorCode ErrorCode
     {
-        get { return this.errorCode; }
-        internal set { this.errorCode = value; }
+        get => errorCode;
+        internal set => errorCode = value;
     }
 
     /// <summary>
-    /// Gets the error message that was returned by the service.
+    ///     Gets the error message that was returned by the service.
     /// </summary>
     /// <value>The error message.</value>
     public string ErrorMessage
     {
-        get { return this.errorMessage; }
-        internal set { this.errorMessage = value; }
+        get => errorMessage;
+        internal set => errorMessage = value;
     }
 
     /// <summary>
-    /// Gets or sets the redirection URL.
+    ///     Gets or sets the redirection URL.
     /// </summary>
     /// <value>The redirection URL.</value>
     internal Uri RedirectionUrl
     {
-        get { return this.redirectionUrl; }
-        set { this.redirectionUrl = value; }
+        get => redirectionUrl;
+        set => redirectionUrl = value;
     }
 
     #endregion

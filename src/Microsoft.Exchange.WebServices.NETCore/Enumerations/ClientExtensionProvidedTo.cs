@@ -26,17 +26,17 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the type of ClientExtensionProvidedTo.
+///     Defines the type of ClientExtensionProvidedTo.
 /// </summary>
 public enum ClientExtensionProvidedTo
 {
     /// <summary>
-    /// Everyone
+    ///     Everyone
     /// </summary>
     Everyone,
 
     /// <summary>
-    /// SpecificUsers
+    ///     SpecificUsers
     /// </summary>
     SpecificUsers,
 }

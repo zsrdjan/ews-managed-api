@@ -23,33 +23,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-
 /// <summary>
-/// Represents the availability of an individual attendee.
+///     Represents the availability of an individual attendee.
 /// </summary>
 public sealed class AttendeeAvailability : ServiceResponse
 {
-    private Collection<CalendarEvent> calendarEvents = new Collection<CalendarEvent>();
-    private Collection<LegacyFreeBusyStatus> mergedFreeBusyStatus = new Collection<LegacyFreeBusyStatus>();
+    private readonly Collection<CalendarEvent> calendarEvents = new Collection<CalendarEvent>();
+    private readonly Collection<LegacyFreeBusyStatus> mergedFreeBusyStatus = new Collection<LegacyFreeBusyStatus>();
     private FreeBusyViewType viewType;
     private WorkingHours workingHours;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AttendeeAvailability"/> class.
+    ///     Initializes a new instance of the <see cref="AttendeeAvailability" /> class.
     /// </summary>
     internal AttendeeAvailability()
-        : base()
     {
     }
 
     /// <summary>
-    /// Loads the free busy view from XML.
+    ///     Loads the free busy view from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="viewType">Type of free/busy view.</param>
@@ -57,7 +53,7 @@ public sealed class AttendeeAvailability : ServiceResponse
     {
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView);
 
-        string viewTypeString = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.FreeBusyViewType);
+        var viewTypeString = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.FreeBusyViewType);
 
         this.viewType = (FreeBusyViewType)Enum.Parse(typeof(FreeBusyViewType), viewTypeString, false);
 
@@ -70,13 +66,11 @@ public sealed class AttendeeAvailability : ServiceResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.MergedFreeBusy:
-                        string mergedFreeBusy = reader.ReadElementValue();
+                        var mergedFreeBusy = reader.ReadElementValue();
 
-                        for (int i = 0; i < mergedFreeBusy.Length; i++)
+                        for (var i = 0; i < mergedFreeBusy.Length; i++)
                         {
-                            this.mergedFreeBusyStatus.Add(
-                                (LegacyFreeBusyStatus)Byte.Parse(mergedFreeBusy[i].ToString())
-                            );
+                            mergedFreeBusyStatus.Add((LegacyFreeBusyStatus)Byte.Parse(mergedFreeBusy[i].ToString()));
                         }
 
                         break;
@@ -93,7 +87,8 @@ public sealed class AttendeeAvailability : ServiceResponse
                                 // There is no the end tag of CalendarEventArray, but the reader is reading the end tag of FreeBusyView.
                                 break;
                             }
-                            else if (reader.LocalName == XmlElementNames.WorkingHours)
+
+                            if (reader.LocalName == XmlElementNames.WorkingHours)
                             {
                                 // There is no the end tag of CalendarEventArray, but the reader is reading the start tag of WorkingHours.
                                 goto case XmlElementNames.WorkingHours;
@@ -101,18 +96,18 @@ public sealed class AttendeeAvailability : ServiceResponse
 
                             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.CalendarEvent))
                             {
-                                CalendarEvent calendarEvent = new CalendarEvent();
+                                var calendarEvent = new CalendarEvent();
 
                                 calendarEvent.LoadFromXml(reader, XmlElementNames.CalendarEvent);
 
-                                this.calendarEvents.Add(calendarEvent);
+                                calendarEvents.Add(calendarEvent);
                             }
                         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.CalendarEventArray));
 
                         break;
                     case XmlElementNames.WorkingHours:
-                        this.workingHours = new WorkingHours();
-                        this.workingHours.LoadFromXml(reader, reader.LocalName);
+                        workingHours = new WorkingHours();
+                        workingHours.LoadFromXml(reader, reader.LocalName);
 
                         break;
                 }
@@ -121,34 +116,22 @@ public sealed class AttendeeAvailability : ServiceResponse
     }
 
     /// <summary>
-    /// Gets a collection of calendar events for the attendee.
+    ///     Gets a collection of calendar events for the attendee.
     /// </summary>
-    public Collection<CalendarEvent> CalendarEvents
-    {
-        get { return this.calendarEvents; }
-    }
+    public Collection<CalendarEvent> CalendarEvents => calendarEvents;
 
     /// <summary>
-    /// Gets the free/busy view type that wes retrieved for the attendee.
+    ///     Gets the free/busy view type that wes retrieved for the attendee.
     /// </summary>
-    public FreeBusyViewType ViewType
-    {
-        get { return this.viewType; }
-    }
+    public FreeBusyViewType ViewType => viewType;
 
     /// <summary>
-    /// Gets a collection of merged free/busy status for the attendee.
+    ///     Gets a collection of merged free/busy status for the attendee.
     /// </summary>
-    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus
-    {
-        get { return this.mergedFreeBusyStatus; }
-    }
+    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus => mergedFreeBusyStatus;
 
     /// <summary>
-    /// Gets the working hours of the attendee.
+    ///     Gets the working hours of the attendee.
     /// </summary>
-    public WorkingHours WorkingHours
-    {
-        get { return this.workingHours; }
-    }
+    public WorkingHours WorkingHours => workingHours;
 }

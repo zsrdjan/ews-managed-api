@@ -23,22 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Xml.Serialization;
-
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the retention type.
+///     Defines the retention type.
 /// </summary>
 public enum RetentionType
 {
     /// <summary>
-    /// Delete retention.
+    ///     Delete retention.
     /// </summary>
     Delete = 0,
 
     /// <summary>
-    /// Archive retention.
+    ///     Archive retention.
     /// </summary>
     Archive = 1,
 }

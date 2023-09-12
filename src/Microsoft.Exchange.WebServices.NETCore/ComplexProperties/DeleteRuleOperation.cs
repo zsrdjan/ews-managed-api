@@ -26,65 +26,60 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an operation to delete an existing rule.
+///     Represents an operation to delete an existing rule.
 /// </summary>
 public sealed class DeleteRuleOperation : RuleOperation
 {
     /// <summary>
-    /// Id of the inbox rule to delete.
+    ///     Id of the inbox rule to delete.
     /// </summary>
     private string ruleId;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeleteRuleOperation"/> class.
+    ///     Initializes a new instance of the <see cref="DeleteRuleOperation" /> class.
     /// </summary>
     public DeleteRuleOperation()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DeleteRuleOperation"/> class.
+    ///     Initializes a new instance of the <see cref="DeleteRuleOperation" /> class.
     /// </summary>
     /// <param name="ruleId">The Id of the inbox rule to delete.</param>
     public DeleteRuleOperation(string ruleId)
-        : base()
     {
         this.ruleId = ruleId;
     }
 
     /// <summary>
-    /// Gets or sets the Id of the rule to delete.
+    ///     Gets or sets the Id of the rule to delete.
     /// </summary>
     public string RuleId
     {
-        get { return this.ruleId; }
+        get => ruleId;
 
-        set { this.SetFieldValue<string>(ref this.ruleId, value); }
+        set => SetFieldValue(ref ruleId, value);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RuleId, this.RuleId);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RuleId, RuleId);
     }
 
     /// <summary>
-    ///  Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(this.ruleId, "RuleId");
+        EwsUtilities.ValidateParam(ruleId, "RuleId");
     }
 
     /// <summary>
-    /// Gets the Xml element name of the DeleteRuleOperation object.
+    ///     Gets the Xml element name of the DeleteRuleOperation object.
     /// </summary>
-    internal override string XmlElementName
-    {
-        get { return XmlElementNames.DeleteRuleOperation; }
-    }
+    internal override string XmlElementName => XmlElementNames.DeleteRuleOperation;
 }

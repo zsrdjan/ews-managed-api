@@ -25,24 +25,17 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a request to a Apply Conversation Action operation
+///     Represents a request to a Apply Conversation Action operation
 /// </summary>
 internal sealed class ApplyConversationActionRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private List<ConversationAction> conversationActions = new List<ConversationAction>();
+    private readonly List<ConversationAction> conversationActions = new List<ConversationAction>();
 
-    public List<ConversationAction> ConversationActions
-    {
-        get { return this.conversationActions; }
-    }
+    public List<ConversationAction> ConversationActions => conversationActions;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ApplyConversationActionRequest"/> class.
+    ///     Initializes a new instance of the <see cref="ApplyConversationActionRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode">Indicates how errors should be handled.</param>
@@ -52,7 +45,7 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
@@ -63,44 +56,44 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return this.conversationActions.Count;
+        return conversationActions.Count;
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(this.conversationActions, "conversationActions");
-        for (int iAction = 0; iAction < this.ConversationActions.Count; iAction++)
+        EwsUtilities.ValidateParamCollection(conversationActions, "conversationActions");
+        for (var iAction = 0; iAction < ConversationActions.Count; iAction++)
         {
-            this.ConversationActions[iAction].Validate();
+            ConversationActions[iAction].Validate();
         }
     }
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ConversationActions);
-        for (int iAction = 0; iAction < this.ConversationActions.Count; iAction++)
+        for (var iAction = 0; iAction < ConversationActions.Count; iAction++)
         {
-            this.ConversationActions[iAction].WriteElementsToXml(writer);
+            ConversationActions[iAction].WriteElementsToXml(writer);
         }
 
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -109,7 +102,7 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseXmlElementName()
@@ -118,7 +111,7 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -127,7 +120,7 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     }
 
     /// <summary>
-    /// Gets the request version.
+    ///     Gets the request version.
     /// </summary>
     /// <returns>Earliest Exchange version in which this request is supported.</returns>
     internal override ExchangeVersion GetMinimumRequiredServerVersion()

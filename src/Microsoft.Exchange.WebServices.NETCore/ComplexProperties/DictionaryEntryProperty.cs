@@ -23,19 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents an entry of a DictionaryProperty object.
+///     Represents an entry of a DictionaryProperty object.
 /// </summary>
 /// <remarks>
-/// All descendants of DictionaryEntryProperty must implement a parameterless
-/// constructor. That constructor does not have to be public.
+///     All descendants of DictionaryEntryProperty must implement a parameterless
+///     constructor. That constructor does not have to be public.
 /// </remarks>
 /// <typeparam name="TKey">The type of the key used by this dictionary.</typeparam>
 [EditorBrowsable(EditorBrowsableState.Never)]
@@ -44,52 +41,51 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     private TKey key;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;" /> class.
     /// </summary>
     internal DictionaryEntryProperty()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;" /> class.
     /// </summary>
     /// <param name="key">The key.</param>
     internal DictionaryEntryProperty(TKey key)
-        : base()
     {
         this.key = key;
     }
 
     /// <summary>
-    /// Gets or sets the key.
+    ///     Gets or sets the key.
     /// </summary>
     /// <value>The key.</value>
     internal TKey Key
     {
-        get { return this.key; }
-        set { this.key = value; }
+        get => key;
+        set => key = value;
     }
 
     /// <summary>
-    /// Reads the attributes from XML.
+    ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.key = reader.ReadAttributeValue<TKey>(XmlAttributeNames.Key);
+        key = reader.ReadAttributeValue<TKey>(XmlAttributeNames.Key);
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.Key, this.Key);
+        writer.WriteAttributeValue(XmlAttributeNames.Key, Key);
     }
 
     /// <summary>
-    /// Writes the set update to XML.
+    ///     Writes the set update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>
@@ -105,7 +101,7 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     }
 
     /// <summary>
-    /// Writes the delete update to XML.
+    ///     Writes the delete update to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="ewsObject">The ews object.</param>

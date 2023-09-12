@@ -26,65 +26,60 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents an operation to create a new rule.
+///     Represents an operation to create a new rule.
 /// </summary>
 public sealed class CreateRuleOperation : RuleOperation
 {
     /// <summary>
-    /// Inbox rule to be created.
+    ///     Inbox rule to be created.
     /// </summary>
     private Rule rule;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateRuleOperation"/> class.
+    ///     Initializes a new instance of the <see cref="CreateRuleOperation" /> class.
     /// </summary>
     public CreateRuleOperation()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateRuleOperation"/> class.
+    ///     Initializes a new instance of the <see cref="CreateRuleOperation" /> class.
     /// </summary>
     /// <param name="rule">The inbox rule to create.</param>
     public CreateRuleOperation(Rule rule)
-        : base()
     {
         this.rule = rule;
     }
 
     /// <summary>
-    /// Gets or sets the rule to be created.
+    ///     Gets or sets the rule to be created.
     /// </summary>
     public Rule Rule
     {
-        get { return this.rule; }
+        get => rule;
 
-        set { this.SetFieldValue<Rule>(ref this.rule, value); }
+        set => SetFieldValue(ref rule, value);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        this.Rule.WriteToXml(writer, XmlElementNames.Rule);
+        Rule.WriteToXml(writer, XmlElementNames.Rule);
     }
 
     /// <summary>
-    ///  Validates this instance.
+    ///     Validates this instance.
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(this.rule, "Rule");
+        EwsUtilities.ValidateParam(rule, "Rule");
     }
 
     /// <summary>
-    /// Gets the Xml element name of the CreateRuleOperation object.
+    ///     Gets the Xml element name of the CreateRuleOperation object.
     /// </summary>
-    internal override string XmlElementName
-    {
-        get { return XmlElementNames.CreateRuleOperation; }
-    }
+    internal override string XmlElementName => XmlElementNames.CreateRuleOperation;
 }

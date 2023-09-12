@@ -26,12 +26,12 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a GetItem request.
+///     Represents a GetItem request.
 /// </summary>
 internal sealed class GetItemRequest : GetItemRequestBase<GetItemResponse>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetItemRequest"/> class.
+    ///     Initializes a new instance of the <see cref="GetItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -41,13 +41,13 @@ internal sealed class GetItemRequest : GetItemRequestBase<GetItemResponse>
     }
 
     /// <summary>
-    /// Creates the service response.
+    ///     Creates the service response.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
     internal override GetItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
-        return new GetItemResponse(this.ItemIds[responseIndex], this.PropertySet);
+        return new GetItemResponse(ItemIds[responseIndex], PropertySet);
     }
 }

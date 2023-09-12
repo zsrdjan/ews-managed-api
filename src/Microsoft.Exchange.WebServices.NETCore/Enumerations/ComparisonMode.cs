@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the way values are compared in search filters.
+///     Defines the way values are compared in search filters.
 /// </summary>
 public enum ComparisonMode
 {
     /// <summary>
-    /// The comparison is exact.
+    ///     The comparison is exact.
     /// </summary>
     Exact,
 
     /// <summary>
-    /// The comparison ignores casing.
+    ///     The comparison ignores casing.
     /// </summary>
     IgnoreCase,
 
     /// <summary>
-    /// The comparison ignores spacing characters.
+    ///     The comparison ignores spacing characters.
     /// </summary>
     IgnoreNonSpacingCharacters,
 
     /// <summary>
-    /// The comparison ignores casing and spacing characters.
+    ///     The comparison ignores casing and spacing characters.
     /// </summary>
     IgnoreCaseAndNonSpacingCharacters
 

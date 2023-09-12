@@ -25,19 +25,15 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 /// <summary>
-/// Represents a pull subscription.
+///     Represents a pull subscription.
 /// </summary>
 public sealed class PullSubscription : SubscriptionBase
 {
     private bool? moreEventsAvailable;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PullSubscription"/> class.
+    ///     Initializes a new instance of the <see cref="PullSubscription" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal PullSubscription(ExchangeService service)
@@ -46,34 +42,31 @@ public sealed class PullSubscription : SubscriptionBase
     }
 
     /// <summary>
-    /// Obtains a collection of events that occurred on the subscribed folders since the point
-    /// in time defined by the Watermark property. When GetEvents succeeds, Watermark is updated.
+    ///     Obtains a collection of events that occurred on the subscribed folders since the point
+    ///     in time defined by the Watermark property. When GetEvents succeeds, Watermark is updated.
     /// </summary>
     /// <returns>Returns a collection of events that occurred since the last watermark.</returns>
-    public async Task<GetEventsResults> GetEvents(CancellationToken token = default(CancellationToken))
+    public async Task<GetEventsResults> GetEvents(CancellationToken token = default)
     {
-        GetEventsResults results = await this.Service.GetEvents(this.Id, this.Watermark, token);
+        var results = await Service.GetEvents(Id, Watermark, token);
 
-        this.Watermark = results.NewWatermark;
-        this.moreEventsAvailable = results.MoreEventsAvailable;
+        Watermark = results.NewWatermark;
+        moreEventsAvailable = results.MoreEventsAvailable;
 
         return results;
     }
 
     /// <summary>
-    /// Unsubscribes from the pull subscription.
+    ///     Unsubscribes from the pull subscription.
     /// </summary>
-    public System.Threading.Tasks.Task Unsubscribe(CancellationToken token = default(CancellationToken))
+    public System.Threading.Tasks.Task Unsubscribe(CancellationToken token = default)
     {
-        return this.Service.Unsubscribe(this.Id, token);
+        return Service.Unsubscribe(Id, token);
     }
 
     /// <summary>
-    /// Gets a value indicating whether more events are available on the server.
-    /// MoreEventsAvailable is undefined (null) until GetEvents is called.
+    ///     Gets a value indicating whether more events are available on the server.
+    ///     MoreEventsAvailable is undefined (null) until GetEvents is called.
     /// </summary>
-    public bool? MoreEventsAvailable
-    {
-        get { return this.moreEventsAvailable; }
-    }
+    public bool? MoreEventsAvailable => moreEventsAvailable;
 }

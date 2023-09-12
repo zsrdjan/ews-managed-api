@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for Conversation.
+///     Represents the schema for Conversation.
 /// </summary>
 [Schema]
 public class ConversationSchema : ServiceObjectSchema
 {
     /// <summary>
-    /// Field URIs for Item.
+    ///     Field URIs for Item.
     /// </summary>
     private static class FieldUris
     {
@@ -77,7 +77,7 @@ public class ConversationSchema : ServiceObjectSchema
     }
 
     /// <summary>
-    /// Defines the Id property.
+    ///     Defines the Id property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -89,11 +89,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.ConversationId,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new ConversationId(); }
+        delegate { return new ConversationId(); }
     );
 
     /// <summary>
-    /// Defines the Topic property.
+    ///     Defines the Topic property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -108,7 +108,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the UniqueRecipients property.
+    ///     Defines the UniqueRecipients property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -120,11 +120,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.UniqueRecipients,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the GlobalUniqueRecipients property.
+    ///     Defines the GlobalUniqueRecipients property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -136,11 +136,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.GlobalUniqueRecipients,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the UniqueUnreadSenders property.
+    ///     Defines the UniqueUnreadSenders property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -152,11 +152,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.UniqueUnreadSenders,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the GlobalUniqueUnreadSenders property.
+    ///     Defines the GlobalUniqueUnreadSenders property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -168,11 +168,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.GlobalUniqueUnreadSenders,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the UniqueSenders property.
+    ///     Defines the UniqueSenders property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -184,11 +184,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.UniqueSenders,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the GlobalUniqueSenders property.
+    ///     Defines the GlobalUniqueSenders property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -200,11 +200,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.GlobalUniqueSenders,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the LastDeliveryTime property.
+    ///     Defines the LastDeliveryTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -219,7 +219,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalLastDeliveryTime property.
+    ///     Defines the GlobalLastDeliveryTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -234,7 +234,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Categories property.
+    ///     Defines the Categories property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -246,11 +246,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.Categories,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the GlobalCategories property.
+    ///     Defines the GlobalCategories property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -262,11 +262,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.GlobalCategories,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the FlagStatus property.
+    ///     Defines the FlagStatus property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -281,7 +281,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalFlagStatus property.
+    ///     Defines the GlobalFlagStatus property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -296,7 +296,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the HasAttachments property.
+    ///     Defines the HasAttachments property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -311,7 +311,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalHasAttachments property.
+    ///     Defines the GlobalHasAttachments property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -326,7 +326,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the MessageCount property.
+    ///     Defines the MessageCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -341,7 +341,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalMessageCount property.
+    ///     Defines the GlobalMessageCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -356,7 +356,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the UnreadCount property.
+    ///     Defines the UnreadCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -371,7 +371,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalUnreadCount property.
+    ///     Defines the GlobalUnreadCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -386,7 +386,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Size property.
+    ///     Defines the Size property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -401,7 +401,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalSize property.
+    ///     Defines the GlobalSize property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -416,7 +416,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ItemClasses property.
+    ///     Defines the ItemClasses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -428,11 +428,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.ItemClasses,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(XmlElementNames.ItemClass); }
+        delegate { return new StringList(XmlElementNames.ItemClass); }
     );
 
     /// <summary>
-    /// Defines the GlobalItemClasses property.
+    ///     Defines the GlobalItemClasses property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -444,11 +444,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.GlobalItemClasses,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new StringList(XmlElementNames.ItemClass); }
+        delegate { return new StringList(XmlElementNames.ItemClass); }
     );
 
     /// <summary>
-    /// Defines the Importance property.
+    ///     Defines the Importance property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -463,7 +463,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalImportance property.
+    ///     Defines the GlobalImportance property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -478,7 +478,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the ItemIds property.
+    ///     Defines the ItemIds property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -490,11 +490,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.ItemIds,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new ItemIdCollection(); }
+        delegate { return new ItemIdCollection(); }
     );
 
     /// <summary>
-    /// Defines the GlobalItemIds property.
+    ///     Defines the GlobalItemIds property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -506,11 +506,11 @@ public class ConversationSchema : ServiceObjectSchema
         FieldUris.GlobalItemIds,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2010_SP1,
-        delegate() { return new ItemIdCollection(); }
+        delegate { return new ItemIdCollection(); }
     );
 
     /// <summary>
-    /// Defines the LastModifiedTime property.
+    ///     Defines the LastModifiedTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -525,7 +525,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the InstanceKey property.
+    ///     Defines the InstanceKey property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -540,7 +540,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the Preview property.
+    ///     Defines the Preview property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -555,7 +555,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the IconIndex property.
+    ///     Defines the IconIndex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -570,7 +570,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalIconIndex property.
+    ///     Defines the GlobalIconIndex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -585,7 +585,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the DraftItemIds property.
+    ///     Defines the DraftItemIds property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -601,7 +601,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the HasIrm property.
+    ///     Defines the HasIrm property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -616,7 +616,7 @@ public class ConversationSchema : ServiceObjectSchema
     );
 
     /// <summary>
-    /// Defines the GlobalHasIrm property.
+    ///     Defines the GlobalHasIrm property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -634,58 +634,58 @@ public class ConversationSchema : ServiceObjectSchema
     internal static readonly ConversationSchema Instance = new ConversationSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(Id);
-        this.RegisterProperty(Topic);
-        this.RegisterProperty(UniqueRecipients);
-        this.RegisterProperty(GlobalUniqueRecipients);
-        this.RegisterProperty(UniqueUnreadSenders);
-        this.RegisterProperty(GlobalUniqueUnreadSenders);
-        this.RegisterProperty(UniqueSenders);
-        this.RegisterProperty(GlobalUniqueSenders);
-        this.RegisterProperty(LastDeliveryTime);
-        this.RegisterProperty(GlobalLastDeliveryTime);
-        this.RegisterProperty(Categories);
-        this.RegisterProperty(GlobalCategories);
-        this.RegisterProperty(FlagStatus);
-        this.RegisterProperty(GlobalFlagStatus);
-        this.RegisterProperty(HasAttachments);
-        this.RegisterProperty(GlobalHasAttachments);
-        this.RegisterProperty(MessageCount);
-        this.RegisterProperty(GlobalMessageCount);
-        this.RegisterProperty(UnreadCount);
-        this.RegisterProperty(GlobalUnreadCount);
-        this.RegisterProperty(Size);
-        this.RegisterProperty(GlobalSize);
-        this.RegisterProperty(ItemClasses);
-        this.RegisterProperty(GlobalItemClasses);
-        this.RegisterProperty(Importance);
-        this.RegisterProperty(GlobalImportance);
-        this.RegisterProperty(ItemIds);
-        this.RegisterProperty(GlobalItemIds);
-        this.RegisterProperty(LastModifiedTime);
-        this.RegisterProperty(InstanceKey);
-        this.RegisterProperty(Preview);
-        this.RegisterProperty(IconIndex);
-        this.RegisterProperty(GlobalIconIndex);
-        this.RegisterProperty(DraftItemIds);
-        this.RegisterProperty(HasIrm);
-        this.RegisterProperty(GlobalHasIrm);
+        RegisterProperty(Id);
+        RegisterProperty(Topic);
+        RegisterProperty(UniqueRecipients);
+        RegisterProperty(GlobalUniqueRecipients);
+        RegisterProperty(UniqueUnreadSenders);
+        RegisterProperty(GlobalUniqueUnreadSenders);
+        RegisterProperty(UniqueSenders);
+        RegisterProperty(GlobalUniqueSenders);
+        RegisterProperty(LastDeliveryTime);
+        RegisterProperty(GlobalLastDeliveryTime);
+        RegisterProperty(Categories);
+        RegisterProperty(GlobalCategories);
+        RegisterProperty(FlagStatus);
+        RegisterProperty(GlobalFlagStatus);
+        RegisterProperty(HasAttachments);
+        RegisterProperty(GlobalHasAttachments);
+        RegisterProperty(MessageCount);
+        RegisterProperty(GlobalMessageCount);
+        RegisterProperty(UnreadCount);
+        RegisterProperty(GlobalUnreadCount);
+        RegisterProperty(Size);
+        RegisterProperty(GlobalSize);
+        RegisterProperty(ItemClasses);
+        RegisterProperty(GlobalItemClasses);
+        RegisterProperty(Importance);
+        RegisterProperty(GlobalImportance);
+        RegisterProperty(ItemIds);
+        RegisterProperty(GlobalItemIds);
+        RegisterProperty(LastModifiedTime);
+        RegisterProperty(InstanceKey);
+        RegisterProperty(Preview);
+        RegisterProperty(IconIndex);
+        RegisterProperty(GlobalIconIndex);
+        RegisterProperty(DraftItemIds);
+        RegisterProperty(HasIrm);
+        RegisterProperty(GlobalHasIrm);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConversationSchema"/> class.
+    ///     Initializes a new instance of the <see cref="ConversationSchema" /> class.
     /// </summary>
     internal ConversationSchema()
-        : base()
     {
     }
 }

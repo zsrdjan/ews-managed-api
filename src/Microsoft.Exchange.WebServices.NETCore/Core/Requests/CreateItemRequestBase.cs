@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract CreateItem request.
+///     Represents an abstract CreateItem request.
 /// </summary>
 /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -42,7 +38,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     private SendInvitationsMode? sendInvitationsMode;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateItemRequestBase&lt;TServiceObject, TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="CreateItemRequestBase&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -52,7 +48,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value>
     ///     <c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.
@@ -61,7 +57,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     {
         get
         {
-            foreach (TServiceObject serviceObject in this.Items)
+            foreach (var serviceObject in Items)
             {
                 if (serviceObject.GetIsTimeZoneHeaderRequired(false /* isUpdateOperation */))
                 {
@@ -74,17 +70,17 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Validate the request.
+    ///     Validate the request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(this.Items, "Items");
+        EwsUtilities.ValidateParam(Items, "Items");
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
@@ -93,7 +89,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Gets the name of the response XML element.
+    ///     Gets the name of the response XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseXmlElementName()
@@ -102,7 +98,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Gets the name of the response message XML element.
+    ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetResponseMessageXmlElementName()
@@ -111,7 +107,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Gets the name of the parent folder XML element.
+    ///     Gets the name of the parent folder XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetParentFolderXmlElementName()
@@ -120,7 +116,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Gets the name of the object collection XML element.
+    ///     Gets the name of the object collection XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetObjectCollectionXmlElementName()
@@ -129,51 +125,51 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         base.WriteAttributesToXml(writer);
 
-        if (this.MessageDisposition.HasValue)
+        if (MessageDisposition.HasValue)
         {
-            writer.WriteAttributeValue(XmlAttributeNames.MessageDisposition, this.MessageDisposition.Value);
+            writer.WriteAttributeValue(XmlAttributeNames.MessageDisposition, MessageDisposition.Value);
         }
 
-        if (this.SendInvitationsMode.HasValue)
+        if (SendInvitationsMode.HasValue)
         {
-            writer.WriteAttributeValue(XmlAttributeNames.SendMeetingInvitations, this.SendInvitationsMode.Value);
+            writer.WriteAttributeValue(XmlAttributeNames.SendMeetingInvitations, SendInvitationsMode.Value);
         }
     }
 
     /// <summary>
-    /// Gets or sets the message disposition.
+    ///     Gets or sets the message disposition.
     /// </summary>
     /// <value>The message disposition.</value>
     public MessageDisposition? MessageDisposition
     {
-        get { return this.messageDisposition; }
-        set { this.messageDisposition = value; }
+        get => messageDisposition;
+        set => messageDisposition = value;
     }
 
     /// <summary>
-    /// Gets or sets the send invitations mode.
+    ///     Gets or sets the send invitations mode.
     /// </summary>
     /// <value>The send invitations mode.</value>
     public SendInvitationsMode? SendInvitationsMode
     {
-        get { return this.sendInvitationsMode; }
-        set { this.sendInvitationsMode = value; }
+        get => sendInvitationsMode;
+        set => sendInvitationsMode = value;
     }
 
     /// <summary>
-    /// Gets or sets the items.
+    ///     Gets or sets the items.
     /// </summary>
     /// <value>The items.</value>
     public IEnumerable<TServiceObject> Items
     {
-        get { return this.Objects; }
-        set { this.Objects = value; }
+        get => Objects;
+        set => Objects = value;
     }
 }

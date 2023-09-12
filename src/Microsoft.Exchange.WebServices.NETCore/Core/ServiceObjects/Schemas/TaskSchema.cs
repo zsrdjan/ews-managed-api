@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for task items.
+///     Represents the schema for task items.
 /// </summary>
 [Schema]
 public class TaskSchema : ItemSchema
 {
     /// <summary>
-    /// Field URIs for tasks.
+    ///     Field URIs for tasks.
     /// </summary>
     private static class FieldUris
     {
@@ -63,7 +63,7 @@ public class TaskSchema : ItemSchema
     }
 
     /// <summary>
-    /// Defines the ActualWork property.
+    ///     Defines the ActualWork property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -82,7 +82,7 @@ public class TaskSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Defines the AssignedTime property.
+    ///     Defines the AssignedTime property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -98,7 +98,7 @@ public class TaskSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Defines the BillingInformation property.
+    ///     Defines the BillingInformation property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -116,7 +116,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ChangeCount property.
+    ///     Defines the ChangeCount property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -131,7 +131,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Companies property.
+    ///     Defines the Companies property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -147,11 +147,11 @@ public class TaskSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the CompleteDate property.
+    ///     Defines the CompleteDate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -170,7 +170,7 @@ public class TaskSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Defines the Contacts property.
+    ///     Defines the Contacts property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -186,11 +186,11 @@ public class TaskSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new StringList(); }
+        delegate { return new StringList(); }
     );
 
     /// <summary>
-    /// Defines the DelegationState property.
+    ///     Defines the DelegationState property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -205,7 +205,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Delegator property.
+    ///     Defines the Delegator property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -220,7 +220,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the DueDate property.
+    ///     Defines the DueDate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -241,7 +241,7 @@ public class TaskSchema : ItemSchema
     // TODO : This is the worst possible name for that property
 
     /// <summary>
-    /// Defines the Mode property.
+    ///     Defines the Mode property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -256,7 +256,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsComplete property.
+    ///     Defines the IsComplete property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -271,7 +271,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsRecurring property.
+    ///     Defines the IsRecurring property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -286,7 +286,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsTeamTask property.
+    ///     Defines the IsTeamTask property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -301,7 +301,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Mileage property.
+    ///     Defines the Mileage property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -319,7 +319,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Owner property.
+    ///     Defines the Owner property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -334,7 +334,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the PercentComplete property.
+    ///     Defines the PercentComplete property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -349,7 +349,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the Recurrence property.
+    ///     Defines the Recurrence property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -364,7 +364,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the StartDate property.
+    ///     Defines the StartDate property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -383,7 +383,7 @@ public class TaskSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Defines the Status property.
+    ///     Defines the Status property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -398,7 +398,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the StatusDescription property.
+    ///     Defines the StatusDescription property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -413,7 +413,7 @@ public class TaskSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the TotalWork property.
+    ///     Defines the TotalWork property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -435,44 +435,44 @@ public class TaskSchema : ItemSchema
     internal static new readonly TaskSchema Instance = new TaskSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(ActualWork);
-        this.RegisterProperty(AssignedTime);
-        this.RegisterProperty(BillingInformation);
-        this.RegisterProperty(ChangeCount);
-        this.RegisterProperty(Companies);
-        this.RegisterProperty(CompleteDate);
-        this.RegisterProperty(Contacts);
-        this.RegisterProperty(DelegationState);
-        this.RegisterProperty(Delegator);
-        this.RegisterProperty(DueDate);
-        this.RegisterProperty(Mode);
-        this.RegisterProperty(IsComplete);
-        this.RegisterProperty(IsRecurring);
-        this.RegisterProperty(IsTeamTask);
-        this.RegisterProperty(Mileage);
-        this.RegisterProperty(Owner);
-        this.RegisterProperty(PercentComplete);
-        this.RegisterProperty(Recurrence);
-        this.RegisterProperty(StartDate);
-        this.RegisterProperty(Status);
-        this.RegisterProperty(StatusDescription);
-        this.RegisterProperty(TotalWork);
+        RegisterProperty(ActualWork);
+        RegisterProperty(AssignedTime);
+        RegisterProperty(BillingInformation);
+        RegisterProperty(ChangeCount);
+        RegisterProperty(Companies);
+        RegisterProperty(CompleteDate);
+        RegisterProperty(Contacts);
+        RegisterProperty(DelegationState);
+        RegisterProperty(Delegator);
+        RegisterProperty(DueDate);
+        RegisterProperty(Mode);
+        RegisterProperty(IsComplete);
+        RegisterProperty(IsRecurring);
+        RegisterProperty(IsTeamTask);
+        RegisterProperty(Mileage);
+        RegisterProperty(Owner);
+        RegisterProperty(PercentComplete);
+        RegisterProperty(Recurrence);
+        RegisterProperty(StartDate);
+        RegisterProperty(Status);
+        RegisterProperty(StatusDescription);
+        RegisterProperty(TotalWork);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskSchema"/> class.
+    ///     Initializes a new instance of the <see cref="TaskSchema" /> class.
     /// </summary>
     internal TaskSchema()
-        : base()
     {
     }
 }

@@ -25,10 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents Exchange server information.
+///     Represents Exchange server information.
 /// </summary>
 public sealed class ExchangeServerInfo
 {
@@ -39,14 +37,14 @@ public sealed class ExchangeServerInfo
     private string versionString;
 
     /// <summary>
-    /// Default constructor
+    ///     Default constructor
     /// </summary>
     internal ExchangeServerInfo()
     {
     }
 
     /// <summary>
-    /// Parse current element to extract server information
+    ///     Parse current element to extract server information
     /// </summary>
     /// <param name="reader">EwsServiceXmlReader</param>
     /// <returns>ExchangeServerInfo</returns>
@@ -58,7 +56,7 @@ public sealed class ExchangeServerInfo
             "Current element doesn't have attributes"
         );
 
-        ExchangeServerInfo info = new ExchangeServerInfo();
+        var info = new ExchangeServerInfo();
         info.MajorVersion = reader.ReadAttributeValue<int>("MajorVersion");
         info.MinorVersion = reader.ReadAttributeValue<int>("MinorVersion");
         info.MajorBuildNumber = reader.ReadAttributeValue<int>("MajorBuildNumber");
@@ -68,66 +66,66 @@ public sealed class ExchangeServerInfo
     }
 
     /// <summary>
-    /// Gets the Major Exchange server version number
+    ///     Gets the Major Exchange server version number
     /// </summary>
     public int MajorVersion
     {
-        get { return this.majorVersion; }
-        internal set { this.majorVersion = value; }
+        get => majorVersion;
+        internal set => majorVersion = value;
     }
 
     /// <summary>
-    /// Gets the Minor Exchange server version number
+    ///     Gets the Minor Exchange server version number
     /// </summary>
     public int MinorVersion
     {
-        get { return this.minorVersion; }
-        internal set { this.minorVersion = value; }
+        get => minorVersion;
+        internal set => minorVersion = value;
     }
 
     /// <summary>
-    /// Gets the Major Exchange server build number
+    ///     Gets the Major Exchange server build number
     /// </summary>
     public int MajorBuildNumber
     {
-        get { return this.majorBuildNumber; }
-        internal set { this.majorBuildNumber = value; }
+        get => majorBuildNumber;
+        internal set => majorBuildNumber = value;
     }
 
     /// <summary>
-    /// Gets the Minor Exchange server build number
+    ///     Gets the Minor Exchange server build number
     /// </summary>
     public int MinorBuildNumber
     {
-        get { return this.minorBuildNumber; }
-        internal set { this.minorBuildNumber = value; }
+        get => minorBuildNumber;
+        internal set => minorBuildNumber = value;
     }
 
     /// <summary>
-    /// Gets the Exchange server version string (e.g. "Exchange2010")
+    ///     Gets the Exchange server version string (e.g. "Exchange2010")
     /// </summary>
     /// <remarks>
-    /// The version is a string rather than an enum since its possible for the client to
-    /// be connected to a later server for which there would be no appropriate enum value.
+    ///     The version is a string rather than an enum since its possible for the client to
+    ///     be connected to a later server for which there would be no appropriate enum value.
     /// </remarks>
     public string VersionString
     {
-        get { return this.versionString; }
-        internal set { this.versionString = value; }
+        get => versionString;
+        internal set => versionString = value;
     }
 
     /// <summary>
-    /// Override ToString method
+    ///     Override ToString method
     /// </summary>
     /// <returns>Canonical ExchangeService version string</returns>
     public override string ToString()
     {
         return String.Format(
             "{0:d}.{1:d2}.{2:d4}.{3:d3}",
-            this.MajorVersion,
-            this.MinorVersion,
-            this.MajorBuildNumber,
-            this.MinorBuildNumber
+            MajorVersion,
+            MinorVersion,
+            MajorBuildNumber,
+            MinorBuildNumber
         );
     }
 }

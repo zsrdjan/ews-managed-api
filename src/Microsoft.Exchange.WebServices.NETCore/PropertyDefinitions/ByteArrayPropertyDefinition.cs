@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents byte array property definition.
+///     Represents byte array property definition.
 /// </summary>
 internal sealed class ByteArrayPropertyDefinition : TypedPropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ByteArrayPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="ByteArrayPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -50,7 +48,7 @@ internal sealed class ByteArrayPropertyDefinition : TypedPropertyDefinition
     }
 
     /// <summary>
-    /// Parses the specified value.
+    ///     Parses the specified value.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>Byte array value.</returns>
@@ -60,7 +58,7 @@ internal sealed class ByteArrayPropertyDefinition : TypedPropertyDefinition
     }
 
     /// <summary>
-    /// Converts byte array property to a string.
+    ///     Converts byte array property to a string.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>Byte array value.</returns>
@@ -70,18 +68,12 @@ internal sealed class ByteArrayPropertyDefinition : TypedPropertyDefinition
     }
 
     /// <summary>
-    /// Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
     /// </summary>
-    internal override bool IsNullable
-    {
-        get { return true; }
-    }
+    internal override bool IsNullable => true;
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(byte[]); }
-    }
+    public override Type Type => typeof(byte[]);
 }

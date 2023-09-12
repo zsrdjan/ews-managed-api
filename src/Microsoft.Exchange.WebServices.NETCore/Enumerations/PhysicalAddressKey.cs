@@ -25,27 +25,23 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines physical address entries for a contact.
+///     Defines physical address entries for a contact.
 /// </summary>
 public enum PhysicalAddressKey
 {
     /// <summary>
-    /// The business address.
+    ///     The business address.
     /// </summary>
     Business,
 
     /// <summary>
-    /// The home address.
+    ///     The home address.
     /// </summary>
     Home,
 
     /// <summary>
-    /// An alternate address.
+    ///     An alternate address.
     /// </summary>
     Other
 }

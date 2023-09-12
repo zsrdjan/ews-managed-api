@@ -26,22 +26,22 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the type of ClientAccessTokenType
+///     Defines the type of ClientAccessTokenType
 /// </summary>
 public enum ClientAccessTokenType
 {
     /// <summary>
-    /// CallerIdentity
+    ///     CallerIdentity
     /// </summary>
     CallerIdentity,
 
     /// <summary>
-    /// ExtensionCallback.
+    ///     ExtensionCallback.
     /// </summary>
     ExtensionCallback,
 
     /// <summary>
-    /// ScopedToken.
+    ///     ScopedToken.
     /// </summary>
     ScopedToken,
 }

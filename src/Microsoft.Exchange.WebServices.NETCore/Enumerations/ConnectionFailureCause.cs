@@ -25,37 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// The ConnectionFailureCause enumeration
+///     The ConnectionFailureCause enumeration
 /// </summary>
 public enum ConnectionFailureCause
 {
     /// <summary>
-    /// None
+    ///     None
     /// </summary>
     None,
 
     /// <summary>
-    /// UserBusy
+    ///     UserBusy
     /// </summary>
     UserBusy,
 
     /// <summary>
-    /// NoAnswer
+    ///     NoAnswer
     /// </summary>
     NoAnswer,
 
     /// <summary>
-    /// Unavailable
+    ///     Unavailable
     /// </summary>
     Unavailable,
 
     /// <summary>
-    /// Other
+    ///     Other
     /// </summary>
     Other
 }

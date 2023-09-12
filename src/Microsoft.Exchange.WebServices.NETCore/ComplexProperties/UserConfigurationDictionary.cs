@@ -23,126 +23,118 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections;
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Xml;
-
 /// <summary>
-/// Represents a user configuration's Dictionary property.
+///     Represents a user configuration's Dictionary property.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
 {
     // TODO: Consider implementing IsDirty mechanism in ComplexProperty.
-    private Dictionary<object, object> dictionary;
-    private bool isDirty = false;
+    private readonly Dictionary<object, object> dictionary;
+    private bool isDirty;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="UserConfigurationDictionary"/> class.
+    ///     Initializes a new instance of <see cref="UserConfigurationDictionary" /> class.
     /// </summary>
     internal UserConfigurationDictionary()
-        : base()
     {
-        this.dictionary = new Dictionary<object, object>();
+        dictionary = new Dictionary<object, object>();
     }
 
     /// <summary>
-    /// Gets or sets the element with the specified key.
+    ///     Gets or sets the element with the specified key.
     /// </summary>
     /// <param name="key">The key of the element to get or set.</param>
     /// <returns>The element with the specified key.</returns>
     public object this[object key]
     {
-        get { return this.dictionary[key]; }
+        get => dictionary[key];
 
         set
         {
-            this.ValidateEntry(key, value);
+            ValidateEntry(key, value);
 
-            this.dictionary[key] = value;
+            dictionary[key] = value;
 
-            this.Changed();
+            Changed();
         }
     }
 
     /// <summary>
-    /// Adds an element with the provided key and value to the user configuration dictionary.
+    ///     Adds an element with the provided key and value to the user configuration dictionary.
     /// </summary>
     /// <param name="key">The object to use as the key of the element to add.</param>
     /// <param name="value">The object to use as the value of the element to add.</param>
     public void Add(object key, object value)
     {
-        this.ValidateEntry(key, value);
+        ValidateEntry(key, value);
 
-        this.dictionary.Add(key, value);
+        dictionary.Add(key, value);
 
-        this.Changed();
+        Changed();
     }
 
     /// <summary>
-    /// Determines whether the user configuration dictionary contains an element with the specified key.
+    ///     Determines whether the user configuration dictionary contains an element with the specified key.
     /// </summary>
     /// <param name="key">The key to locate in the user configuration dictionary.</param>
     /// <returns>true if the user configuration dictionary contains an element with the key; otherwise false.</returns>
     public bool ContainsKey(object key)
     {
-        return this.dictionary.ContainsKey(key);
+        return dictionary.ContainsKey(key);
     }
 
     /// <summary>
-    /// Removes the element with the specified key from the user configuration dictionary.
+    ///     Removes the element with the specified key from the user configuration dictionary.
     /// </summary>
     /// <param name="key">The key of the element to remove.</param>
     /// <returns>true if the element is successfully removed; otherwise false.</returns>
     public bool Remove(object key)
     {
-        bool isRemoved = this.dictionary.Remove(key);
+        var isRemoved = dictionary.Remove(key);
 
         if (isRemoved)
         {
-            this.Changed();
+            Changed();
         }
 
         return isRemoved;
     }
 
     /// <summary>
-    /// Gets the value associated with the specified key.
+    ///     Gets the value associated with the specified key.
     /// </summary>
     /// <param name="key">The key whose value to get.</param>
-    /// <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, null.</param>
+    /// <param name="value">
+    ///     When this method returns, the value associated with the specified key, if the key is found;
+    ///     otherwise, null.
+    /// </param>
     /// <returns>true if the user configuration dictionary contains the key; otherwise false.</returns>
     public bool TryGetValue(object key, out object value)
     {
-        return this.dictionary.TryGetValue(key, out value);
+        return dictionary.TryGetValue(key, out value);
     }
 
     /// <summary>
-    /// Gets the number of elements in the user configuration dictionary.
+    ///     Gets the number of elements in the user configuration dictionary.
     /// </summary>
-    public int Count
-    {
-        get { return this.dictionary.Count; }
-    }
+    public int Count => dictionary.Count;
 
     /// <summary>
-    /// Removes all items from the user configuration dictionary.
+    ///     Removes all items from the user configuration dictionary.
     /// </summary>
     public void Clear()
     {
-        if (this.dictionary.Count != 0)
+        if (dictionary.Count != 0)
         {
-            this.dictionary.Clear();
+            dictionary.Clear();
 
-            this.Changed();
+            Changed();
         }
     }
 
@@ -150,59 +142,59 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     #region IEnumerable members
 
     /// <summary>
-    /// Returns an enumerator that iterates through the user configuration dictionary.
+    ///     Returns an enumerator that iterates through the user configuration dictionary.
     /// </summary>
     /// <returns>An IEnumerator that can be used to iterate through the user configuration dictionary.</returns>
     public IEnumerator GetEnumerator()
     {
-        return this.dictionary.GetEnumerator();
+        return dictionary.GetEnumerator();
     }
 
     #endregion
 
 
     /// <summary>
-    /// Gets or sets the isDirty flag.
+    ///     Gets or sets the isDirty flag.
     /// </summary>
     internal bool IsDirty
     {
-        get { return this.isDirty; }
+        get => isDirty;
 
-        set { this.isDirty = value; }
+        set => isDirty = value;
     }
 
     /// <summary>
-    /// Instance was changed.
+    ///     Instance was changed.
     /// </summary>
     internal override void Changed()
     {
         base.Changed();
 
-        this.isDirty = true;
+        isDirty = true;
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         EwsUtilities.Assert(writer != null, "UserConfigurationDictionary.WriteElementsToXml", "writer is null");
 
-        foreach (KeyValuePair<object, object> dictionaryEntry in this.dictionary)
+        foreach (var dictionaryEntry in dictionary)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.DictionaryEntry);
 
-            this.WriteObjectToXml(writer, XmlElementNames.DictionaryKey, dictionaryEntry.Key);
+            WriteObjectToXml(writer, XmlElementNames.DictionaryKey, dictionaryEntry.Key);
 
-            this.WriteObjectToXml(writer, XmlElementNames.DictionaryValue, dictionaryEntry.Value);
+            WriteObjectToXml(writer, XmlElementNames.DictionaryValue, dictionaryEntry.Value);
 
             writer.WriteEndElement();
         }
     }
 
     /// <summary>
-    /// Gets the type code.
+    ///     Gets the type code.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="dictionaryObject">The dictionary object.</param>
@@ -260,13 +252,13 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             EwsUtilities.Assert(
                 false,
                 "UserConfigurationDictionary.WriteObjectValueToXml",
-                "Unsupported type: " + dictionaryObject.GetType().ToString()
+                "Unsupported type: " + dictionaryObject.GetType()
             );
         }
     }
 
     /// <summary>
-    /// Gets the type of the object.
+    ///     Gets the type of the object.
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns></returns>
@@ -280,7 +272,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     }
 
     /// <summary>
-    /// Writes a dictionary object (key or value) to Xml.
+    ///     Writes a dictionary object (key or value) to Xml.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">The Xml element name.</param>
@@ -312,14 +304,14 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         }
         else
         {
-            this.WriteObjectValueToXml(writer, dictionaryObject);
+            WriteObjectValueToXml(writer, dictionaryObject);
         }
 
         writer.WriteEndElement();
     }
 
     /// <summary>
-    /// Writes a dictionary Object's value to Xml.
+    ///     Writes a dictionary Object's value to Xml.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="dictionaryObject">The dictionary object to write.</param>
@@ -343,23 +335,23 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         //   . datetime, boolean, byte, short, int, long, string, ushort, unint, ulong
         //
         // First check for a string array
-        string[] dictionaryObjectAsStringArray = dictionaryObject as string[];
+        var dictionaryObjectAsStringArray = dictionaryObject as string[];
         if (dictionaryObjectAsStringArray != null)
         {
-            this.WriteEntryTypeToXml(writer, UserConfigurationDictionaryObjectType.StringArray);
+            WriteEntryTypeToXml(writer, UserConfigurationDictionaryObjectType.StringArray);
 
-            foreach (string arrayElement in dictionaryObjectAsStringArray)
+            foreach (var arrayElement in dictionaryObjectAsStringArray)
             {
-                this.WriteEntryValueToXml(writer, arrayElement);
+                WriteEntryValueToXml(writer, arrayElement);
             }
         }
         else
         {
             // if not a string array, all other object values are returned as a single element
-            UserConfigurationDictionaryObjectType dictionaryObjectType = UserConfigurationDictionaryObjectType.String;
+            var dictionaryObjectType = UserConfigurationDictionaryObjectType.String;
             string valueAsString = null;
 
-            byte[] dictionaryObjectAsByteArray = dictionaryObject as byte[];
+            var dictionaryObjectAsByteArray = dictionaryObject as byte[];
             if (dictionaryObjectAsByteArray != null)
             {
                 // Convert byte array to base64 string
@@ -371,13 +363,13 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                 GetTypeCode(writer.Service, dictionaryObject, ref dictionaryObjectType, ref valueAsString);
             }
 
-            this.WriteEntryTypeToXml(writer, dictionaryObjectType);
-            this.WriteEntryValueToXml(writer, valueAsString);
+            WriteEntryTypeToXml(writer, dictionaryObjectType);
+            WriteEntryValueToXml(writer, valueAsString);
         }
     }
 
     /// <summary>
-    /// Writes a dictionary entry type to Xml.
+    ///     Writes a dictionary entry type to Xml.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="dictionaryObjectType">Type to write.</param>
@@ -392,7 +384,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     }
 
     /// <summary>
-    /// Writes a dictionary entry value to Xml.
+    ///     Writes a dictionary entry value to Xml.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="value">Value to write.</param>
@@ -410,7 +402,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     }
 
     /// <summary>
-    /// Loads this dictionary from the specified reader.
+    ///     Loads this dictionary from the specified reader.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="xmlNamespace">The dictionary's XML namespace.</param>
@@ -419,25 +411,25 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         base.LoadFromXml(reader, xmlNamespace, xmlElementName);
 
-        this.isDirty = false;
+        isDirty = false;
     }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
     internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        reader.EnsureCurrentNodeIsStartElement(this.Namespace, XmlElementNames.DictionaryEntry);
+        reader.EnsureCurrentNodeIsStartElement(Namespace, XmlElementNames.DictionaryEntry);
 
-        this.LoadEntry(reader);
+        LoadEntry(reader);
 
         return true;
     }
 
     /// <summary>
-    /// Loads an entry, consisting of a key value pair, into this dictionary from the specified reader.
+    ///     Loads an entry, consisting of a key value pair, into this dictionary from the specified reader.
     /// </summary>
     /// <param name="reader">The reader.</param>
     private void LoadEntry(EwsServiceXmlReader reader)
@@ -448,34 +440,33 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         object value = null;
 
         // Position at DictionaryKey
-        reader.ReadStartElement(this.Namespace, XmlElementNames.DictionaryKey);
+        reader.ReadStartElement(Namespace, XmlElementNames.DictionaryKey);
 
-        key = this.GetDictionaryObject(reader);
+        key = GetDictionaryObject(reader);
 
         // Position at DictionaryValue
-        reader.ReadStartElement(this.Namespace, XmlElementNames.DictionaryValue);
+        reader.ReadStartElement(Namespace, XmlElementNames.DictionaryValue);
 
-        string nil = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Nil);
-        bool hasValue = (nil == null) || (!Convert.ToBoolean(nil));
+        var nil = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Nil);
+        var hasValue = (nil == null) || (!Convert.ToBoolean(nil));
         if (hasValue)
         {
-            value = this.GetDictionaryObject(reader);
+            value = GetDictionaryObject(reader);
         }
 
-        this.dictionary.Add(key, value);
+        dictionary.Add(key, value);
     }
 
     /// <summary>
-    /// Gets the object value.
+    ///     Gets the object value.
     /// </summary>
     /// <param name="valueArray">The value array.</param>
-    /// 
     /// <returns></returns>
     private List<string> GetObjectValue(object[] valueArray)
     {
-        List<string> stringArray = new List<string>();
+        var stringArray = new List<string>();
 
-        foreach (object value in valueArray)
+        foreach (var value in valueArray)
         {
             stringArray.Add(value as string);
         }
@@ -484,7 +475,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     }
 
     /// <summary>
-    /// Extracts a dictionary object (key or entry value) from the specified reader.
+    ///     Extracts a dictionary object (key or entry value) from the specified reader.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Dictionary object.</returns>
@@ -492,16 +483,16 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         EwsUtilities.Assert(reader != null, "UserConfigurationDictionary.LoadFromXml", "reader is null");
 
-        UserConfigurationDictionaryObjectType type = this.GetObjectType(reader);
+        var type = GetObjectType(reader);
 
-        List<string> values = this.GetObjectValue(reader, type);
+        var values = GetObjectValue(reader, type);
 
-        return this.ConstructObject(type, values, reader.Service);
+        return ConstructObject(type, values, reader.Service);
     }
 
     /// <summary>
-    /// Extracts a dictionary object (key or entry value) as a string list from the
-    /// specified reader.
+    ///     Extracts a dictionary object (key or entry value) as a string list from the
+    ///     specified reader.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="type">The object type.</param>
@@ -510,9 +501,9 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         EwsUtilities.Assert(reader != null, "UserConfigurationDictionary.LoadFromXml", "reader is null");
 
-        List<string> values = new List<string>();
+        var values = new List<string>();
 
-        reader.ReadStartElement(this.Namespace, XmlElementNames.Value);
+        reader.ReadStartElement(Namespace, XmlElementNames.Value);
 
         do
         {
@@ -531,7 +522,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                         EwsUtilities.Assert(
                             false,
                             "UserConfigurationDictionary.GetObjectValue",
-                            "Empty element passed for type: " + type.ToString()
+                            "Empty element passed for type: " + type
                         );
                         break;
                 }
@@ -544,13 +535,13 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             values.Add(value);
 
             reader.Read(); // Position at next element or DictionaryKey/DictionaryValue end element
-        } while (reader.IsStartElement(this.Namespace, XmlElementNames.Value));
+        } while (reader.IsStartElement(Namespace, XmlElementNames.Value));
 
         return values;
     }
 
     /// <summary>
-    /// Extracts the dictionary object (key or entry value) type from the specified reader.
+    ///     Extracts the dictionary object (key or entry value) type from the specified reader.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Dictionary object type.</returns>
@@ -558,15 +549,15 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         EwsUtilities.Assert(reader != null, "UserConfigurationDictionary.LoadFromXml", "reader is null");
 
-        reader.ReadStartElement(this.Namespace, XmlElementNames.Type);
+        reader.ReadStartElement(Namespace, XmlElementNames.Type);
 
-        string type = reader.ReadElementValue();
+        var type = reader.ReadElementValue();
 
         return GetObjectType(type);
     }
 
     /// <summary>
-    /// Constructs a dictionary object (key or entry value) from the specified type and string list.
+    ///     Constructs a dictionary object (key or entry value) from the specified type and string list.
     /// </summary>
     /// <param name="type">Object type to construct.</param>
     /// <param name="value">Value of the dictionary object as a string list</param>
@@ -602,7 +593,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                 break;
 
             case UserConfigurationDictionaryObjectType.DateTime:
-                DateTime? dateTime = service.ConvertUniversalDateTimeStringToLocalDateTime(value[0]);
+                var dateTime = service.ConvertUniversalDateTimeStringToLocalDateTime(value[0]);
 
                 if (dateTime.HasValue)
                 {
@@ -643,7 +634,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                 EwsUtilities.Assert(
                     false,
                     "UserConfigurationDictionary.ConstructObject",
-                    "Type not recognized: " + type.ToString()
+                    "Type not recognized: " + type
                 );
                 break;
         }
@@ -652,18 +643,18 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     }
 
     /// <summary>
-    ///  Validates the specified key and value.
+    ///     Validates the specified key and value.
     /// </summary>
     /// <param name="key">The dictionary entry key.</param>
     /// <param name="value">The dictionary entry value.</param>
     private void ValidateEntry(object key, object value)
     {
-        this.ValidateObject(key);
-        this.ValidateObject(value);
+        ValidateObject(key);
+        ValidateObject(value);
     }
 
     /// <summary>
-    /// Validates the dictionary object (key or entry value).
+    ///     Validates the dictionary object (key or entry value).
     /// </summary>
     /// <param name="dictionaryObject">Object to validate.</param>
     private void ValidateObject(object dictionaryObject)
@@ -671,20 +662,20 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         // Keys may not be null but we rely on the internal dictionary to throw if the key is null.
         if (dictionaryObject != null)
         {
-            Array dictionaryObjectAsArray = dictionaryObject as Array;
+            var dictionaryObjectAsArray = dictionaryObject as Array;
             if (dictionaryObjectAsArray != null)
             {
-                this.ValidateArrayObject(dictionaryObjectAsArray);
+                ValidateArrayObject(dictionaryObjectAsArray);
             }
             else
             {
-                this.ValidateObjectType(dictionaryObject.GetType());
+                ValidateObjectType(dictionaryObject.GetType());
             }
         }
     }
 
     /// <summary>
-    /// Validate the array object.
+    ///     Validate the array object.
     /// </summary>
     /// <param name="dictionaryObjectAsArray">Object to validate</param>
     private void ValidateArrayObject(Array dictionaryObjectAsArray)
@@ -694,7 +685,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         {
             if (dictionaryObjectAsArray.Length > 0)
             {
-                foreach (object arrayElement in dictionaryObjectAsArray)
+                foreach (var arrayElement in dictionaryObjectAsArray)
                 {
                     if (arrayElement == null)
                     {
@@ -722,22 +713,26 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         }
     }
 
-    static readonly Type[] ValidTypes = new Type[]
+    static readonly Type[] ValidTypes =
     {
         typeof(Boolean), typeof(Byte), typeof(DateTime), typeof(Int32), typeof(Int64), typeof(String), typeof(UInt32),
         typeof(UInt64)
     };
 
     /// <summary>
-    /// Validates the dictionary object type.
+    ///     Validates the dictionary object type.
     /// </summary>
     /// <param name="type">Type to validate.</param>
     private void ValidateObjectType(Type type)
     {
         // This logic is based on Microsoft.Exchange.Data.Storage.ConfigurationDictionary.CheckElementSupportedType().
-        bool isValidType = false;
+        var isValidType = false;
 
-        if (ValidTypes.Contains(type)) isValidType = true;
+        if (ValidTypes.Contains(type))
+        {
+            isValidType = true;
+        }
+
         if (!isValidType)
         {
             throw new ServiceLocalException(string.Format(Strings.ObjectTypeNotSupported, type));

@@ -25,30 +25,26 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.IO;
-
 /// <summary>
-/// Represents an ExtractedEntity object.
+///     Represents an ExtractedEntity object.
 /// </summary>
 public abstract class ExtractedEntity : ComplexProperty
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExtractedEntity"/> class.
+    ///     Initializes a new instance of the <see cref="ExtractedEntity" /> class.
     /// </summary>
     internal ExtractedEntity()
-        : base()
     {
-        this.Namespace = XmlNamespace.Types;
+        Namespace = XmlNamespace.Types;
     }
 
     /// <summary>
-    /// Gets the Position.
+    ///     Gets the Position.
     /// </summary>
     public EmailPosition Position { get; internal set; }
 
     /// <summary>
-    /// Tries to read element from XML.
+    ///     Tries to read element from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -57,11 +53,11 @@ public abstract class ExtractedEntity : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgEmailPosition:
-                string positionAsString = reader.ReadElementValue();
+                var positionAsString = reader.ReadElementValue();
 
                 if (!string.IsNullOrEmpty(positionAsString))
                 {
-                    this.Position = EwsUtilities.Parse<EmailPosition>(positionAsString);
+                    Position = EwsUtilities.Parse<EmailPosition>(positionAsString);
                 }
 
                 return true;

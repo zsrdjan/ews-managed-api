@@ -23,15 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents the base response class for synchronuization operations.
+///     Represents the base response class for synchronuization operations.
 /// </summary>
 /// <typeparam name="TServiceObject">ServiceObject type.</typeparam>
 /// <typeparam name="TChange">Change type.</typeparam>
@@ -40,15 +37,14 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     where TServiceObject : ServiceObject
     where TChange : Change
 {
-    private ChangeCollection<TChange> changes = new ChangeCollection<TChange>();
-    private PropertySet propertySet;
+    private readonly ChangeCollection<TChange> changes = new ChangeCollection<TChange>();
+    private readonly PropertySet propertySet;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SyncResponse&lt;TServiceObject, TChange&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="SyncResponse&lt;TServiceObject, TChange&gt;" /> class.
     /// </summary>
     /// <param name="propertySet">Property set.</param>
     internal SyncResponse(PropertySet propertySet)
-        : base()
     {
         this.propertySet = propertySet;
 
@@ -56,39 +52,39 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     }
 
     /// <summary>
-    /// Gets the name of the includes last in range XML element.
+    ///     Gets the name of the includes last in range XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal abstract string GetIncludesLastInRangeXmlElementName();
 
     /// <summary>
-    /// Creates the change instance.
+    ///     Creates the change instance.
     /// </summary>
     /// <returns>TChange instance</returns>
     internal abstract TChange CreateChangeInstance();
 
     /// <summary>
-    /// Gets the name of the change element.
+    ///     Gets the name of the change element.
     /// </summary>
     /// <returns>Change element name.</returns>
     internal abstract string GetChangeElementName();
 
     /// <summary>
-    /// Gets the name of the change id element.
+    ///     Gets the name of the change id element.
     /// </summary>
     /// <returns>Change id element name.</returns>
     internal abstract string GetChangeIdElementName();
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        this.Changes.SyncState = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SyncState);
-        this.Changes.MoreChangesAvailable = !reader.ReadElementValue<bool>(
+        Changes.SyncState = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SyncState);
+        Changes.MoreChangesAvailable = !reader.ReadElementValue<bool>(
             XmlNamespace.Messages,
-            this.GetIncludesLastInRangeXmlElementName()
+            GetIncludesLastInRangeXmlElementName()
         );
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Changes);
@@ -100,7 +96,7 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
 
                 if (reader.IsStartElement())
                 {
-                    TChange change = this.CreateChangeInstance();
+                    var change = CreateChangeInstance();
 
                     switch (reader.LocalName)
                     {
@@ -138,7 +134,7 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
                                     reader.Read();
                                     reader.EnsureCurrentNodeIsStartElement();
 
-                                    ItemChange itemChange = change as ItemChange;
+                                    var itemChange = change as ItemChange;
 
                                     EwsUtilities.Assert(
                                         itemChange != null,
@@ -162,15 +158,15 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
                                 change.ServiceObject.LoadFromXml(
                                     reader,
                                     true, /* clearPropertyBag */
-                                    this.propertySet,
-                                    this.SummaryPropertiesOnly
+                                    propertySet,
+                                    SummaryPropertiesOnly
                                 );
                                 break;
                         }
 
                         reader.ReadEndElementIfNecessary(XmlNamespace.Types, change.ChangeType.ToString());
 
-                        this.changes.Add(change);
+                        changes.Add(change);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.Changes));
@@ -178,15 +174,12 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     }
 
     /// <summary>
-    /// Gets a list of changes that occurred on the synchronized folder.
+    ///     Gets a list of changes that occurred on the synchronized folder.
     /// </summary>
-    public ChangeCollection<TChange> Changes
-    {
-        get { return this.changes; }
-    }
+    public ChangeCollection<TChange> Changes => changes;
 
     /// <summary>
-    /// Gets a value indicating whether this request returns full or summary properties.
+    ///     Gets a value indicating whether this request returns full or summary properties.
     /// </summary>
     internal abstract bool SummaryPropertiesOnly { get; }
 }

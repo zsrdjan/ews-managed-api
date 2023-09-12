@@ -23,18 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
 using System.Diagnostics.CodeAnalysis;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the schema for e-mail messages.
+///     Represents the schema for e-mail messages.
 /// </summary>
 [Schema]
 public class EmailMessageSchema : ItemSchema
 {
     /// <summary>
-    /// Field URIs for EmailMessage.
+    ///     Field URIs for EmailMessage.
     /// </summary>
     private static class FieldUris
     {
@@ -60,7 +60,7 @@ public class EmailMessageSchema : ItemSchema
     }
 
     /// <summary>
-    /// Defines the ToRecipients property.
+    ///     Defines the ToRecipients property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -75,11 +75,11 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     /// <summary>
-    /// Defines the BccRecipients property.
+    ///     Defines the BccRecipients property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -94,11 +94,11 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     /// <summary>
-    /// Defines the CcRecipients property.
+    ///     Defines the CcRecipients property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -113,11 +113,11 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     /// <summary>
-    /// Defines the ConversationIndex property.
+    ///     Defines the ConversationIndex property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -132,7 +132,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ConversationTopic property.
+    ///     Defines the ConversationTopic property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -147,7 +147,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the From property.
+    ///     Defines the From property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -163,11 +163,11 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanDelete |
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddress(); }
+        delegate { return new EmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the IsDeliveryReceiptRequested property.
+    ///     Defines the IsDeliveryReceiptRequested property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -185,7 +185,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsRead property.
+    ///     Defines the IsRead property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -200,7 +200,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsReadReceiptRequested property.
+    ///     Defines the IsReadReceiptRequested property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -218,7 +218,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the IsResponseRequested property.
+    ///     Defines the IsResponseRequested property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -237,7 +237,7 @@ public class EmailMessageSchema : ItemSchema
     ); // isNullable
 
     /// <summary>
-    /// Defines the InternetMessageId property.
+    ///     Defines the InternetMessageId property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -252,7 +252,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the References property.
+    ///     Defines the References property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -270,7 +270,7 @@ public class EmailMessageSchema : ItemSchema
     );
 
     /// <summary>
-    /// Defines the ReplyTo property.
+    ///     Defines the ReplyTo property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -285,11 +285,11 @@ public class EmailMessageSchema : ItemSchema
         PropertyDefinitionFlags.CanUpdate |
         PropertyDefinitionFlags.CanDelete,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     /// <summary>
-    /// Defines the Sender property.
+    ///     Defines the Sender property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -302,11 +302,11 @@ public class EmailMessageSchema : ItemSchema
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddress(); }
+        delegate { return new EmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the ReceivedBy property.
+    ///     Defines the ReceivedBy property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -319,11 +319,11 @@ public class EmailMessageSchema : ItemSchema
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddress(); }
+        delegate { return new EmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the ReceivedRepresenting property.
+    ///     Defines the ReceivedRepresenting property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -336,11 +336,11 @@ public class EmailMessageSchema : ItemSchema
         XmlElementNames.Mailbox,
         PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate() { return new EmailAddress(); }
+        delegate { return new EmailAddress(); }
     );
 
     /// <summary>
-    /// Defines the ApprovalRequestData property.
+    ///     Defines the ApprovalRequestData property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -351,11 +351,11 @@ public class EmailMessageSchema : ItemSchema
         XmlElementNames.ApprovalRequestData,
         FieldUris.ApprovalRequestData,
         ExchangeVersion.Exchange2013,
-        delegate() { return new ApprovalRequestData(); }
+        delegate { return new ApprovalRequestData(); }
     );
 
     /// <summary>
-    /// Defines the VotingInformation property.
+    ///     Defines the VotingInformation property.
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -366,11 +366,11 @@ public class EmailMessageSchema : ItemSchema
         XmlElementNames.VotingInformation,
         FieldUris.VotingInformation,
         ExchangeVersion.Exchange2013,
-        delegate() { return new VotingInformation(); }
+        delegate { return new VotingInformation(); }
     );
 
     /// <summary>
-    /// Defines the Likers property
+    ///     Defines the Likers property
     /// </summary>
     [SuppressMessage(
         "Microsoft.Security",
@@ -382,48 +382,48 @@ public class EmailMessageSchema : ItemSchema
         FieldUris.Likers,
         PropertyDefinitionFlags.AutoInstantiateOnRead,
         ExchangeVersion.Exchange2015,
-        delegate() { return new EmailAddressCollection(); }
+        delegate { return new EmailAddressCollection(); }
     );
 
     // This must be after the declaration of property definitions
     internal static new readonly EmailMessageSchema Instance = new EmailMessageSchema();
 
     /// <summary>
-    /// Registers properties.
+    ///     Registers properties.
     /// </summary>
     /// <remarks>
-    /// IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
     /// </remarks>
     internal override void RegisterProperties()
     {
         base.RegisterProperties();
 
-        this.RegisterProperty(Sender);
-        this.RegisterProperty(ToRecipients);
-        this.RegisterProperty(CcRecipients);
-        this.RegisterProperty(BccRecipients);
-        this.RegisterProperty(IsReadReceiptRequested);
-        this.RegisterProperty(IsDeliveryReceiptRequested);
-        this.RegisterProperty(ConversationIndex);
-        this.RegisterProperty(ConversationTopic);
-        this.RegisterProperty(From);
-        this.RegisterProperty(InternetMessageId);
-        this.RegisterProperty(IsRead);
-        this.RegisterProperty(IsResponseRequested);
-        this.RegisterProperty(References);
-        this.RegisterProperty(ReplyTo);
-        this.RegisterProperty(ReceivedBy);
-        this.RegisterProperty(ReceivedRepresenting);
-        this.RegisterProperty(ApprovalRequestData);
-        this.RegisterProperty(VotingInformation);
-        this.RegisterProperty(Likers);
+        RegisterProperty(Sender);
+        RegisterProperty(ToRecipients);
+        RegisterProperty(CcRecipients);
+        RegisterProperty(BccRecipients);
+        RegisterProperty(IsReadReceiptRequested);
+        RegisterProperty(IsDeliveryReceiptRequested);
+        RegisterProperty(ConversationIndex);
+        RegisterProperty(ConversationTopic);
+        RegisterProperty(From);
+        RegisterProperty(InternetMessageId);
+        RegisterProperty(IsRead);
+        RegisterProperty(IsResponseRequested);
+        RegisterProperty(References);
+        RegisterProperty(ReplyTo);
+        RegisterProperty(ReceivedBy);
+        RegisterProperty(ReceivedRepresenting);
+        RegisterProperty(ApprovalRequestData);
+        RegisterProperty(VotingInformation);
+        RegisterProperty(Likers);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailMessageSchema"/> class.
+    ///     Initializes a new instance of the <see cref="EmailMessageSchema" /> class.
     /// </summary>
     internal EmailMessageSchema()
-        : base()
     {
     }
 }

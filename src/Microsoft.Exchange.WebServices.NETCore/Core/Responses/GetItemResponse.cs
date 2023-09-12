@@ -25,25 +25,20 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents a response to an individual item retrieval operation.
+///     Represents a response to an individual item retrieval operation.
 /// </summary>
 public sealed class GetItemResponse : ServiceResponse
 {
     private Item item;
-    private PropertySet propertySet;
+    private readonly PropertySet propertySet;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetItemResponse"/> class.
+    ///     Initializes a new instance of the <see cref="GetItemResponse" /> class.
     /// </summary>
     /// <param name="item">The item.</param>
     /// <param name="propertySet">The property set.</param>
     internal GetItemResponse(Item item, PropertySet propertySet)
-        : base()
     {
         this.item = item;
         this.propertySet = propertySet;
@@ -52,47 +47,42 @@ public sealed class GetItemResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        List<Item> items = reader.ReadServiceObjectsCollectionFromXml<Item>(
+        var items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
-            this.GetObjectInstance,
+            GetObjectInstance,
             true, /* clearPropertyBag */
-            this.propertySet, /* requestedPropertySet */
+            propertySet, /* requestedPropertySet */
             false
         ); /* summaryPropertiesOnly */
 
-        this.item = items[0];
+        item = items[0];
     }
 
     /// <summary>
-    /// Gets Item instance.
+    ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
     private Item GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        if (this.Item != null)
+        if (Item != null)
         {
-            return this.Item;
+            return Item;
         }
-        else
-        {
-            return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
-        }
+
+        return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
     }
 
     /// <summary>
-    /// Gets the item that was retrieved.
+    ///     Gets the item that was retrieved.
     /// </summary>
-    public Item Item
-    {
-        get { return this.item; }
-    }
+    public Item Item => item;
 }

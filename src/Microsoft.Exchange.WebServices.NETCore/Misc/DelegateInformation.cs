@@ -23,20 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data;
-
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
 /// <summary>
-/// Represents the results of a GetDelegates operation.
+///     Represents the results of a GetDelegates operation.
 /// </summary>
 public sealed class DelegateInformation
 {
     #region Private members
 
-    private Collection<DelegateUserResponse> delegateUserResponses;
-    private MeetingRequestsDeliveryScope meetingReqestsDeliveryScope;
+    private readonly Collection<DelegateUserResponse> delegateUserResponses;
+    private readonly MeetingRequestsDeliveryScope meetingReqestsDeliveryScope;
 
     #endregion
 
@@ -44,7 +43,7 @@ public sealed class DelegateInformation
     #region Constructor
 
     /// <summary>
-    /// Initializes a DelegateInformation object
+    ///     Initializes a DelegateInformation object
     /// </summary>
     /// <param name="delegateUserResponses">List of DelegateUserResponses from a GetDelegates request</param>
     /// <param name="meetingReqestsDeliveryScope">MeetingRequestsDeliveryScope from a GetDelegates request.</param>
@@ -63,20 +62,14 @@ public sealed class DelegateInformation
     #region Public Properties
 
     /// <summary>
-    /// Gets a list of responses for each of the delegate users concerned by the operation.
+    ///     Gets a list of responses for each of the delegate users concerned by the operation.
     /// </summary>
-    public Collection<DelegateUserResponse> DelegateUserResponses
-    {
-        get { return this.delegateUserResponses; }
-    }
+    public Collection<DelegateUserResponse> DelegateUserResponses => delegateUserResponses;
 
     /// <summary>
-    /// Gets a value indicating if and how meeting requests are delivered to delegates.
+    ///     Gets a value indicating if and how meeting requests are delivered to delegates.
     /// </summary>
-    public MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope
-    {
-        get { return this.meetingReqestsDeliveryScope; }
-    }
+    public MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope => meetingReqestsDeliveryScope;
 
     #endregion
 }

@@ -23,34 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-using System.Collections.Generic;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
 /// <summary>
-/// Represents a user setting that is a collection of alternate mailboxes.
+///     Represents a user setting that is a collection of alternate mailboxes.
 /// </summary>
 public sealed class AlternateMailboxCollection
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AlternateMailboxCollection"/> class.
+    ///     Initializes a new instance of the <see cref="AlternateMailboxCollection" /> class.
     /// </summary>
     internal AlternateMailboxCollection()
     {
-        this.Entries = new List<AlternateMailbox>();
+        Entries = new List<AlternateMailbox>();
     }
 
     /// <summary>
-    /// Loads instance of AlternateMailboxCollection from XML.
+    ///     Loads instance of AlternateMailboxCollection from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>AlternateMailboxCollection</returns>
     internal static AlternateMailboxCollection LoadFromXml(EwsXmlReader reader)
     {
-        AlternateMailboxCollection instance = new AlternateMailboxCollection();
+        var instance = new AlternateMailboxCollection();
 
         do
         {
@@ -66,7 +65,7 @@ public sealed class AlternateMailboxCollection
     }
 
     /// <summary>
-    /// Gets the collection of alternate mailboxes.
+    ///     Gets the collection of alternate mailboxes.
     /// </summary>
     public List<AlternateMailbox> Entries { get; private set; }
 }

@@ -25,37 +25,33 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 // This maps to the bogus TaskDelegationState in the EWS schema.
 // The schema enum has 6 values, but EWS should never return anything but
 // values between 0 and 3, so we should be safe without mappings for
 // EWS's Declined and Max values
 
 /// <summary>
-/// Defines the delegation state of a task.
+///     Defines the delegation state of a task.
 /// </summary>
 public enum TaskDelegationState
 {
     /// <summary>
-    /// The task is not delegated
+    ///     The task is not delegated
     /// </summary>
     NoDelegation, // Maps to NoMatch
 
     /// <summary>
-    /// The task's delegation state is unknown.
+    ///     The task's delegation state is unknown.
     /// </summary>
     Unknown, // Maps to OwnNew
 
     /// <summary>
-    /// The task was delegated and the delegation was accepted.
+    ///     The task was delegated and the delegation was accepted.
     /// </summary>
     Accepted, // Maps to Owned
 
     /// <summary>
-    /// The task was delegated but the delegation was declined.
+    ///     The task was delegated but the delegation was declined.
     /// </summary>
     Declined // Maps to Accepted
 

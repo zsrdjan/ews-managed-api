@@ -25,32 +25,28 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Defines the type of a service object.
+///     Defines the type of a service object.
 /// </summary>
 public enum ServiceObjectType
 {
     /// <summary>
-    /// The object is a folder.
+    ///     The object is a folder.
     /// </summary>
     Folder,
 
     /// <summary>
-    /// The object is an item.
+    ///     The object is an item.
     /// </summary>
     Item,
 
     /// <summary>
-    /// Data represents a conversation
+    ///     Data represents a conversation
     /// </summary>
     Conversation,
 
     /// <summary>
-    /// Data represents a persona
+    ///     Data represents a persona
     /// </summary>
     Persona
 }

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an Internet message header.
+///     Represents an Internet message header.
 /// </summary>
 public sealed class InternetMessageHeader : ComplexProperty
 {
@@ -38,72 +34,72 @@ public sealed class InternetMessageHeader : ComplexProperty
     private string value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InternetMessageHeader"/> class.
+    ///     Initializes a new instance of the <see cref="InternetMessageHeader" /> class.
     /// </summary>
     internal InternetMessageHeader()
     {
     }
 
     /// <summary>
-    /// Reads the attributes from XML.
+    ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.name = reader.ReadAttributeValue(XmlAttributeNames.HeaderName);
+        name = reader.ReadAttributeValue(XmlAttributeNames.HeaderName);
     }
 
     /// <summary>
-    /// Reads the text value from XML.
+    ///     Reads the text value from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        this.value = reader.ReadValue();
+        value = reader.ReadValue();
     }
 
     /// <summary>
-    /// Writes the attributes to XML.
+    ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.HeaderName, this.Name);
+        writer.WriteAttributeValue(XmlAttributeNames.HeaderName, Name);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteValue(this.Value, this.Name);
+        writer.WriteValue(Value, Name);
     }
 
     /// <summary>
-    /// Obtains a string representation of the header.
+    ///     Obtains a string representation of the header.
     /// </summary>
     /// <returns>The string representation of the header.</returns>
     public override string ToString()
     {
-        return string.Format("{0}={1}", this.Name, this.Value);
+        return string.Format("{0}={1}", Name, Value);
     }
 
     /// <summary>
-    /// The name of the header.
+    ///     The name of the header.
     /// </summary>
     public string Name
     {
-        get { return this.name; }
-        set { this.SetFieldValue<string>(ref this.name, value); }
+        get => name;
+        set => SetFieldValue(ref name, value);
     }
 
     /// <summary>
-    /// The value of the header.
+    ///     The value of the header.
     /// </summary>
     public string Value
     {
-        get { return this.value; }
-        set { this.SetFieldValue<string>(ref this.value, value); }
+        get => value;
+        set => SetFieldValue(ref this.value, value);
     }
 }

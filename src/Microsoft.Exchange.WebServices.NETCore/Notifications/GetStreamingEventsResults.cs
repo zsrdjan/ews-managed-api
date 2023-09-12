@@ -23,48 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.ObjectModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-
 /// <summary>
-/// Represents a collection of notification events.
+///     Represents a collection of notification events.
 /// </summary>
 internal sealed class GetStreamingEventsResults
 {
     /// <summary>
-    /// Structure to track a subscription and its associated notification events.
+    ///     Structure to track a subscription and its associated notification events.
     /// </summary>
     internal struct NotificationGroup
     {
         /// <summary>
-        /// Subscription Id
+        ///     Subscription Id
         /// </summary>
         internal string SubscriptionId;
 
         /// <summary>
-        /// Events in the response associated with the subscription id.
+        ///     Events in the response associated with the subscription id.
         /// </summary>
         internal Collection<NotificationEvent> Events;
     }
 
     /// <summary>
-    /// Collection of notification events.
+    ///     Collection of notification events.
     /// </summary>
-    private Collection<NotificationGroup> events = new Collection<NotificationGroup>();
+    private readonly Collection<NotificationGroup> events = new Collection<NotificationGroup>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GetStreamingEventsResults"/> class.
+    ///     Initializes a new instance of the <see cref="GetStreamingEventsResults" /> class.
     /// </summary>
     internal GetStreamingEventsResults()
     {
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsServiceXmlReader reader)
@@ -73,13 +70,13 @@ internal sealed class GetStreamingEventsResults
 
         do
         {
-            NotificationGroup notifications = new NotificationGroup();
+            var notifications = new NotificationGroup();
             notifications.SubscriptionId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SubscriptionId);
             notifications.Events = new Collection<NotificationEvent>();
 
             lock (this)
             {
-                this.events.Add(notifications);
+                events.Add(notifications);
             }
 
             do
@@ -88,7 +85,7 @@ internal sealed class GetStreamingEventsResults
 
                 if (reader.IsStartElement())
                 {
-                    string eventElementName = reader.LocalName;
+                    var eventElementName = reader.LocalName;
                     EventType eventType;
 
                     if (GetEventsResults.XmlElementNameToEventTypeMap.TryGetValue(eventElementName, out eventType))
@@ -100,7 +97,7 @@ internal sealed class GetStreamingEventsResults
                         }
                         else
                         {
-                            this.LoadNotificationEventFromXml(reader, eventElementName, eventType, notifications);
+                            LoadNotificationEventFromXml(reader, eventElementName, eventType, notifications);
                         }
                     }
                     else
@@ -115,7 +112,7 @@ internal sealed class GetStreamingEventsResults
     }
 
     /// <summary>
-    /// Loads a notification event from XML.
+    ///     Loads a notification event from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="eventElementName">Name of the event XML element.</param>
@@ -128,7 +125,7 @@ internal sealed class GetStreamingEventsResults
         NotificationGroup notifications
     )
     {
-        DateTime timestamp = reader.ReadElementValue<DateTime>(XmlNamespace.Types, XmlElementNames.TimeStamp);
+        var timestamp = reader.ReadElementValue<DateTime>(XmlNamespace.Types, XmlElementNames.TimeStamp);
 
         NotificationEvent notificationEvent;
 
@@ -148,11 +145,8 @@ internal sealed class GetStreamingEventsResults
     }
 
     /// <summary>
-    /// Gets the notification collection.
+    ///     Gets the notification collection.
     /// </summary>
     /// <value>The notification collection.</value>
-    internal Collection<NotificationGroup> Notifications
-    {
-        get { return this.events; }
-    }
+    internal Collection<NotificationGroup> Notifications => events;
 }

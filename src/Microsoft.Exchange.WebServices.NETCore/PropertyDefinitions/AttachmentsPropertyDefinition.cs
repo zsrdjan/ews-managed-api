@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents base Attachments property type.
+///     Represents base Attachments property type.
 /// </summary>
 internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<AttachmentCollection>
 {
@@ -37,7 +37,7 @@ internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<
         PropertyDefinitionFlags.UpdateCollectionItems;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AttachmentsPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="AttachmentsPropertyDefinition" /> class.
     /// </summary>
     public AttachmentsPropertyDefinition()
         : base(
@@ -45,13 +45,13 @@ internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<
             "item:Attachments",
             PropertyDefinitionFlags.AutoInstantiateOnRead,
             ExchangeVersion.Exchange2007_SP1,
-            delegate() { return new AttachmentCollection(); }
+            delegate { return new AttachmentCollection(); }
         )
     {
     }
 
     /// <summary>
-    /// Determines whether the specified flag is set.
+    ///     Determines whether the specified flag is set.
     /// </summary>
     /// <param name="flag">The flag.</param>
     /// <param name="version">Requested version.</param>
@@ -62,7 +62,7 @@ internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<
     {
         if (version != null && version >= ExchangeVersion.Exchange2010_SP2)
         {
-            return (flag & AttachmentsPropertyDefinition.Exchange2010SP2PropertyDefinitionFlags) == flag;
+            return (flag & Exchange2010SP2PropertyDefinitionFlags) == flag;
         }
 
         return base.HasFlag(flag, version);

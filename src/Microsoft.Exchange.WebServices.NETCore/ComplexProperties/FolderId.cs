@@ -25,27 +25,24 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents the Id of a folder.
+///     Represents the Id of a folder.
 /// </summary>
 public sealed class FolderId : ServiceId
 {
-    private WellKnownFolderName? folderName;
-    private Mailbox mailbox;
+    private readonly WellKnownFolderName? folderName;
+    private readonly Mailbox mailbox;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FolderId"/> class.
+    ///     Initializes a new instance of the <see cref="FolderId" /> class.
     /// </summary>
     internal FolderId()
-        : base()
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FolderId"/> class. Use this constructor
-    /// to link this FolderId to an existing folder that you have the unique Id of.
+    ///     Initializes a new instance of the <see cref="FolderId" /> class. Use this constructor
+    ///     to link this FolderId to an existing folder that you have the unique Id of.
     /// </summary>
     /// <param name="uniqueId">The unique Id used to initialize the FolderId.</param>
     public FolderId(string uniqueId)
@@ -54,20 +51,19 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FolderId"/> class. Use this constructor
-    /// to link this FolderId to a well known folder (e.g. Inbox, Calendar or Contacts).
+    ///     Initializes a new instance of the <see cref="FolderId" /> class. Use this constructor
+    ///     to link this FolderId to a well known folder (e.g. Inbox, Calendar or Contacts).
     /// </summary>
     /// <param name="folderName">The folder name used to initialize the FolderId.</param>
     public FolderId(WellKnownFolderName folderName)
-        : base()
     {
         this.folderName = folderName;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FolderId"/> class. Use this constructor
-    /// to link this FolderId to a well known folder (e.g. Inbox, Calendar or Contacts) in a
-    /// specific mailbox.
+    ///     Initializes a new instance of the <see cref="FolderId" /> class. Use this constructor
+    ///     to link this FolderId to a well known folder (e.g. Inbox, Calendar or Contacts) in a
+    ///     specific mailbox.
     /// </summary>
     /// <param name="folderName">The folder name used to initialize the FolderId.</param>
     /// <param name="mailbox">The mailbox used to initialize the FolderId.</param>
@@ -78,27 +74,27 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    /// Gets the name of the XML element.
+    ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal override string GetXmlElementName()
     {
-        return this.FolderName.HasValue ? XmlElementNames.DistinguishedFolderId : XmlElementNames.FolderId;
+        return FolderName.HasValue ? XmlElementNames.DistinguishedFolderId : XmlElementNames.FolderId;
     }
 
     /// <summary>
-    /// Writes attributes to XML.
+    ///     Writes attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        if (this.FolderName.HasValue)
+        if (FolderName.HasValue)
         {
-            writer.WriteAttributeValue(XmlAttributeNames.Id, this.FolderName.Value.ToString().ToLowerInvariant());
+            writer.WriteAttributeValue(XmlAttributeNames.Id, FolderName.Value.ToString().ToLowerInvariant());
 
-            if (this.Mailbox != null)
+            if (Mailbox != null)
             {
-                this.Mailbox.WriteToXml(writer, XmlElementNames.Mailbox);
+                Mailbox.WriteToXml(writer, XmlElementNames.Mailbox);
             }
         }
         else
@@ -108,37 +104,32 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    /// Validates FolderId against a specified request version.
+    ///     Validates FolderId against a specified request version.
     /// </summary>
     /// <param name="version">The version.</param>
     internal void Validate(ExchangeVersion version)
     {
         // The FolderName property is a WellKnownFolderName, an enumeration type. If the property
         // is set, make sure that the value is valid for the request version.
-        if (this.FolderName.HasValue)
+        if (FolderName.HasValue)
         {
-            EwsUtilities.ValidateEnumVersionValue(this.FolderName.Value, version);
+            EwsUtilities.ValidateEnumVersionValue(FolderName.Value, version);
         }
     }
 
     /// <summary>
-    /// Gets the name of the folder associated with the folder Id. Name and Id are mutually exclusive; if one is set, the other is null.
+    ///     Gets the name of the folder associated with the folder Id. Name and Id are mutually exclusive; if one is set, the
+    ///     other is null.
     /// </summary>
-    public WellKnownFolderName? FolderName
-    {
-        get { return this.folderName; }
-    }
+    public WellKnownFolderName? FolderName => folderName;
 
     /// <summary>
-    /// Gets the mailbox of the folder. Mailbox is only set when FolderName is set.
+    ///     Gets the mailbox of the folder. Mailbox is only set when FolderName is set.
     /// </summary>
-    public Mailbox Mailbox
-    {
-        get { return this.mailbox; }
-    }
+    public Mailbox Mailbox => mailbox;
 
     /// <summary>
-    ///  Defines an implicit conversion between string and FolderId.
+    ///     Defines an implicit conversion between string and FolderId.
     /// </summary>
     /// <param name="uniqueId">The unique Id to convert to FolderId.</param>
     /// <returns>A FolderId initialized with the specified unique Id.</returns>
@@ -148,7 +139,7 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    /// Defines an implicit conversion between WellKnownFolderName and FolderId.
+    ///     Defines an implicit conversion between WellKnownFolderName and FolderId.
     /// </summary>
     /// <param name="folderName">The folder name to convert to FolderId.</param>
     /// <returns>A FolderId initialized with the specified folder name.</returns>
@@ -158,86 +149,86 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    /// True if this instance is valid, false otherthise.
+    ///     True if this instance is valid, false otherthise.
     /// </summary>
     /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
     internal override bool IsValid
     {
         get
         {
-            if (this.FolderName.HasValue)
+            if (FolderName.HasValue)
             {
-                return (this.Mailbox == null) || this.Mailbox.IsValid;
+                return (Mailbox == null) || Mailbox.IsValid;
             }
-            else
-            {
-                return base.IsValid;
-            }
+
+            return base.IsValid;
         }
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+    ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+    ///     <see cref="T:System.Object" />.
     /// </summary>
-    /// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
+    /// <param name="obj">The <see cref="T:System.Object" /> to compare with the current <see cref="T:System.Object" />.</param>
     /// <returns>
-    /// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+    ///     true if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:System.Object" />;
+    ///     otherwise, false.
     /// </returns>
-    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
+    /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
     public override bool Equals(object obj)
     {
-        if (object.ReferenceEquals(this, obj))
+        if (ReferenceEquals(this, obj))
         {
             return true;
         }
-        else
+
+        var other = obj as FolderId;
+
+        if (other == null)
         {
-            FolderId other = obj as FolderId;
-
-            if (other == null)
-            {
-                return false;
-            }
-            else if (this.FolderName.HasValue)
-            {
-                if (other.FolderName.HasValue && this.FolderName.Value.Equals(other.FolderName.Value))
-                {
-                    if (this.Mailbox != null)
-                    {
-                        return this.Mailbox.Equals(other.Mailbox);
-                    }
-                    else if (other.Mailbox == null)
-                    {
-                        return true;
-                    }
-                }
-            }
-            else if (base.Equals(other))
-            {
-                return true;
-            }
-
             return false;
         }
+
+        if (FolderName.HasValue)
+        {
+            if (other.FolderName.HasValue && FolderName.Value.Equals(other.FolderName.Value))
+            {
+                if (Mailbox != null)
+                {
+                    return Mailbox.Equals(other.Mailbox);
+                }
+
+                if (other.Mailbox == null)
+                {
+                    return true;
+                }
+            }
+        }
+        else if (base.Equals(other))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
-    /// Serves as a hash function for a particular type.
+    ///     Serves as a hash function for a particular type.
     /// </summary>
     /// <returns>
-    /// A hash code for the current <see cref="T:System.Object"/>.
+    ///     A hash code for the current <see cref="T:System.Object" />.
     /// </returns>
     public override int GetHashCode()
     {
         int hashCode;
 
-        if (this.FolderName.HasValue)
+        if (FolderName.HasValue)
         {
-            hashCode = this.FolderName.Value.GetHashCode();
+            hashCode = FolderName.Value.GetHashCode();
 
-            if ((this.Mailbox != null) && this.Mailbox.IsValid)
+            if ((Mailbox != null) && Mailbox.IsValid)
             {
-                hashCode = hashCode ^ this.Mailbox.GetHashCode();
+                hashCode = hashCode ^ Mailbox.GetHashCode();
             }
         }
         else
@@ -249,34 +240,28 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
     /// </returns>
     public override string ToString()
     {
-        if (this.IsValid)
+        if (IsValid)
         {
-            if (this.FolderName.HasValue)
+            if (FolderName.HasValue)
             {
-                if ((this.Mailbox != null) && mailbox.IsValid)
+                if ((Mailbox != null) && mailbox.IsValid)
                 {
-                    return string.Format("{0} ({1})", this.folderName.Value, this.Mailbox.ToString());
+                    return string.Format("{0} ({1})", folderName.Value, Mailbox);
                 }
-                else
-                {
-                    return this.FolderName.Value.ToString();
-                }
+
+                return FolderName.Value.ToString();
             }
-            else
-            {
-                return base.ToString();
-            }
+
+            return base.ToString();
         }
-        else
-        {
-            return string.Empty;
-        }
+
+        return string.Empty;
     }
 }

@@ -25,15 +25,13 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-
 /// <summary>
-/// Represents effective rights property definition.
+///     Represents effective rights property definition.
 /// </summary>
 internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="EffectiveRightsPropertyDefinition"/> class.
+    ///     Initializes a new instance of the <see cref="EffectiveRightsPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <param name="uri">The URI.</param>
@@ -50,15 +48,15 @@ internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Loads from XML.
+    ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
-    internal override sealed void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
+    internal override void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        EffectiveRights value = EffectiveRights.None;
+        var value = EffectiveRights.None;
 
-        reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, this.XmlElementName);
+        reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementName);
 
         if (!reader.IsEmptyElement)
         {
@@ -121,14 +119,14 @@ internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
                             break;
                     }
                 }
-            } while (!reader.IsEndElement(XmlNamespace.Types, this.XmlElementName));
+            } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementName));
         }
 
         propertyBag[this] = value;
     }
 
     /// <summary>
-    /// Writes to XML.
+    ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="propertyBag">The property bag.</param>
@@ -143,10 +141,7 @@ internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
     }
 
     /// <summary>
-    /// Gets the property type.
+    ///     Gets the property type.
     /// </summary>
-    public override Type Type
-    {
-        get { return typeof(EffectiveRights); }
-    }
+    public override Type Type => typeof(EffectiveRights);
 }

@@ -26,51 +26,50 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Represents a group member.
+///     Represents a group member.
 /// </summary>
 [RequiredServerVersion(ExchangeVersion.Exchange2010)]
 public class GroupMember : ComplexProperty
 {
     /// <summary>
-    /// AddressInformation field.
+    ///     AddressInformation field.
     /// </summary>
     private EmailAddress addressInformation;
 
     /// <summary>
-    /// Status field.
+    ///     Status field.
     /// </summary>
     private MemberStatus status;
 
     /// <summary>
-    /// Member key field.
+    ///     Member key field.
     /// </summary>
     private string key;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     public GroupMember()
-        : base()
     {
         // Key is assigned by server
-        this.key = null;
+        key = null;
 
         // Member status is calculated by server
-        this.status = MemberStatus.Unrecognized;
+        status = MemberStatus.Unrecognized;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address of the member.</param>
     public GroupMember(string smtpAddress)
         : this()
     {
-        this.AddressInformation = new EmailAddress(smtpAddress);
+        AddressInformation = new EmailAddress(smtpAddress);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="address">The address of the member.</param>
     /// <param name="routingType">The routing type of the address.</param>
@@ -85,7 +84,7 @@ public class GroupMember : ComplexProperty
             case MailboxType.Mailbox:
             case MailboxType.Contact:
             case MailboxType.OneOff:
-                this.AddressInformation = new EmailAddress(null, address, routingType, mailboxType);
+                AddressInformation = new EmailAddress(null, address, routingType, mailboxType);
                 break;
 
             default:
@@ -94,7 +93,7 @@ public class GroupMember : ComplexProperty
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="smtpAddress">The SMTP address of the member.</param>
     /// <param name="mailboxType">The mailbox type of the member.</param>
@@ -104,7 +103,7 @@ public class GroupMember : ComplexProperty
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="name">The name of the one-off member.</param>
     /// <param name="address">The address of the one-off member.</param>
@@ -112,11 +111,11 @@ public class GroupMember : ComplexProperty
     public GroupMember(string name, string address, string routingType)
         : this()
     {
-        this.AddressInformation = new EmailAddress(name, address, routingType, MailboxType.OneOff);
+        AddressInformation = new EmailAddress(name, address, routingType, MailboxType.OneOff);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="name">The name of the one-off member.</param>
     /// <param name="smtpAddress">The SMTP address of the one-off member.</param>
@@ -126,49 +125,50 @@ public class GroupMember : ComplexProperty
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="contactGroupId">The Id of the contact group to link the member to.</param>
     public GroupMember(ItemId contactGroupId)
         : this()
     {
-        this.AddressInformation = new EmailAddress(null, null, null, MailboxType.ContactGroup, contactGroupId);
+        AddressInformation = new EmailAddress(null, null, null, MailboxType.ContactGroup, contactGroupId);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="contactId">The Id of the contact member.</param>
     /// <param name="addressToLink">The Id of the contact to link the member to.</param>
     public GroupMember(ItemId contactId, string addressToLink)
         : this()
     {
-        this.AddressInformation = new EmailAddress(null, addressToLink, null, MailboxType.Contact, contactId);
+        AddressInformation = new EmailAddress(null, addressToLink, null, MailboxType.Contact, contactId);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     /// <param name="addressInformation">The e-mail address of the member.</param>
     public GroupMember(EmailAddress addressInformation)
         : this()
     {
-        this.AddressInformation = new EmailAddress(addressInformation);
+        AddressInformation = new EmailAddress(addressInformation);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class from another GroupMember instance.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class from another GroupMember instance.
     /// </summary>
     /// <param name="member">GroupMember class instance to copy.</param>
     internal GroupMember(GroupMember member)
         : this()
     {
         EwsUtilities.ValidateParam(member, "member");
-        this.AddressInformation = new EmailAddress(member.AddressInformation);
+        AddressInformation = new EmailAddress(member.AddressInformation);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GroupMember"/> class from a Contact instance indexed by the specified key.
+    ///     Initializes a new instance of the <see cref="GroupMember" /> class from a Contact instance indexed by the specified
+    ///     key.
     /// </summary>
     /// <param name="contact">The contact to link to.</param>
     /// <param name="emailAddressKey">The contact's e-mail address to link to.</param>
@@ -177,63 +177,57 @@ public class GroupMember : ComplexProperty
     {
         EwsUtilities.ValidateParam(contact, "contact");
 
-        EmailAddress emailAddress = contact.EmailAddresses[emailAddressKey];
+        var emailAddress = contact.EmailAddresses[emailAddressKey];
 
-        this.AddressInformation = new EmailAddress(emailAddress);
+        AddressInformation = new EmailAddress(emailAddress);
 
-        this.addressInformation.Id = contact.Id;
+        addressInformation.Id = contact.Id;
     }
 
     /// <summary>
-    /// Gets the key of the member.
+    ///     Gets the key of the member.
     /// </summary>
-    public string Key
-    {
-        get { return this.key; }
-    }
+    public string Key => key;
 
     /// <summary>
-    /// Gets the address information of the member.
+    ///     Gets the address information of the member.
     /// </summary>
     public EmailAddress AddressInformation
     {
-        get { return this.addressInformation; }
+        get => addressInformation;
 
         internal set
         {
-            if (this.addressInformation != null)
+            if (addressInformation != null)
             {
-                this.addressInformation.OnChange -= this.AddressInformationChanged;
+                addressInformation.OnChange -= AddressInformationChanged;
             }
 
-            this.addressInformation = value;
+            addressInformation = value;
 
-            if (this.addressInformation != null)
+            if (addressInformation != null)
             {
-                this.addressInformation.OnChange += this.AddressInformationChanged;
+                addressInformation.OnChange += AddressInformationChanged;
             }
         }
     }
 
     /// <summary>
-    /// Gets the status of the member.
+    ///     Gets the status of the member.
     /// </summary>
-    public MemberStatus Status
-    {
-        get { return this.status; }
-    }
+    public MemberStatus Status => status;
 
     /// <summary>
-    /// Reads the member Key attribute from XML.
+    ///     Reads the member Key attribute from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        this.key = reader.ReadAttributeValue<string>(XmlAttributeNames.Key);
+        key = reader.ReadAttributeValue<string>(XmlAttributeNames.Key);
     }
 
     /// <summary>
-    /// Tries to read Status or Mailbox elements from XML.
+    ///     Tries to read Status or Mailbox elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>True if element was read.</returns>
@@ -242,12 +236,12 @@ public class GroupMember : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Status:
-                this.status = EwsUtilities.Parse<MemberStatus>(reader.ReadElementValue());
+                status = EwsUtilities.Parse<MemberStatus>(reader.ReadElementValue());
                 return true;
 
             case XmlElementNames.Mailbox:
-                this.AddressInformation = new EmailAddress();
-                this.AddressInformation.LoadFromXml(reader, reader.LocalName);
+                AddressInformation = new EmailAddress();
+                AddressInformation.LoadFromXml(reader, reader.LocalName);
                 return true;
 
             default:
@@ -256,32 +250,32 @@ public class GroupMember : ComplexProperty
     }
 
     /// <summary>
-    /// Writes the member key attribute to XML.
+    ///     Writes the member key attribute to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         // if this.key is null or empty, writer skips the attribute
-        writer.WriteAttributeValue(XmlAttributeNames.Key, this.key);
+        writer.WriteAttributeValue(XmlAttributeNames.Key, key);
     }
 
     /// <summary>
-    /// Writes elements to XML.
+    ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // No need to write member Status back to server
         // Write only AddressInformation container element
-        this.AddressInformation.WriteToXml(writer, XmlNamespace.Types, XmlElementNames.Mailbox);
+        AddressInformation.WriteToXml(writer, XmlNamespace.Types, XmlElementNames.Mailbox);
     }
 
     /// <summary>
-    /// AddressInformation instance is changed.
+    ///     AddressInformation instance is changed.
     /// </summary>
     /// <param name="complexProperty">Changed property.</param>
     private void AddressInformationChanged(ComplexProperty complexProperty)
     {
-        this.Changed();
+        Changed();
     }
 }

@@ -25,12 +25,8 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents an abstract Create request.
+///     Represents an abstract Create request.
 /// </summary>
 /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
@@ -42,7 +38,7 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     private IEnumerable<TServiceObject> objects;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateRequest&lt;TServiceObject, TResponse&gt;"/> class.
+    ///     Initializes a new instance of the <see cref="CreateRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
@@ -52,53 +48,53 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     }
 
     /// <summary>
-    /// Validate request.
+    ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        if (this.ParentFolderId != null)
+        if (ParentFolderId != null)
         {
-            this.ParentFolderId.Validate(this.Service.RequestedServerVersion);
+            ParentFolderId.Validate(Service.RequestedServerVersion);
         }
     }
 
     /// <summary>
-    /// Gets the expected response message count.
+    ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of responses expected.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return EwsUtilities.GetEnumeratedObjectCount(this.objects);
+        return EwsUtilities.GetEnumeratedObjectCount(objects);
     }
 
     /// <summary>
-    /// Gets the name of the parent folder XML element.
+    ///     Gets the name of the parent folder XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal abstract string GetParentFolderXmlElementName();
 
     /// <summary>
-    /// Gets the name of the object collection XML element.
+    ///     Gets the name of the object collection XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
     internal abstract string GetObjectCollectionXmlElementName();
 
     /// <summary>
-    /// Writes XML elements.
+    ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (this.ParentFolderId != null)
+        if (ParentFolderId != null)
         {
-            writer.WriteStartElement(XmlNamespace.Messages, this.GetParentFolderXmlElementName());
-            this.ParentFolderId.WriteToXml(writer);
+            writer.WriteStartElement(XmlNamespace.Messages, GetParentFolderXmlElementName());
+            ParentFolderId.WriteToXml(writer);
             writer.WriteEndElement();
         }
 
-        writer.WriteStartElement(XmlNamespace.Messages, this.GetObjectCollectionXmlElementName());
-        foreach (ServiceObject obj in this.objects)
+        writer.WriteStartElement(XmlNamespace.Messages, GetObjectCollectionXmlElementName());
+        foreach (ServiceObject obj in objects)
         {
             obj.WriteToXml(writer);
         }
@@ -107,22 +103,22 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     }
 
     /// <summary>
-    /// Gets or sets the service objects.
+    ///     Gets or sets the service objects.
     /// </summary>
     /// <value>The objects.</value>
     internal IEnumerable<TServiceObject> Objects
     {
-        get { return this.objects; }
-        set { this.objects = value; }
+        get => objects;
+        set => objects = value;
     }
 
     /// <summary>
-    /// Gets or sets the parent folder id.
+    ///     Gets or sets the parent folder id.
     /// </summary>
     /// <value>The parent folder id.</value>
     public FolderId ParentFolderId
     {
-        get { return this.parentFolderId; }
-        set { this.parentFolderId = value; }
+        get => parentFolderId;
+        set => parentFolderId = value;
     }
 }

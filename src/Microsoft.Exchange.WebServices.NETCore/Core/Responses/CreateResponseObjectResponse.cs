@@ -23,21 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.ComponentModel;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
 /// <summary>
-/// Represents response to generic Create request.
+///     Represents response to generic Create request.
 /// </summary>
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal sealed class CreateResponseObjectResponse : CreateItemResponseBase
 {
     /// <summary>
-    /// Gets Item instance.
+    ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -48,10 +45,9 @@ internal sealed class CreateResponseObjectResponse : CreateItemResponseBase
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CreateResponseObjectResponse"/> class.
+    ///     Initializes a new instance of the <see cref="CreateResponseObjectResponse" /> class.
     /// </summary>
     internal CreateResponseObjectResponse()
-        : base()
     {
     }
 }

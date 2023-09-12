@@ -26,27 +26,27 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-/// Defines the type of ExtensionInstallScope.
+///     Defines the type of ExtensionInstallScope.
 /// </summary>
 public enum ExtensionInstallScope
 {
     /// <summary>
-    /// Unassigned
+    ///     Unassigned
     /// </summary>
     None = 0,
 
     /// <summary>
-    /// User
+    ///     User
     /// </summary>
     User = 1,
 
     /// <summary>
-    /// Organization
+    ///     Organization
     /// </summary>
     Organization = 2,
 
     /// <summary>
-    /// Exchange Default
+    ///     Exchange Default
     /// </summary>
     Default = 3,
 }

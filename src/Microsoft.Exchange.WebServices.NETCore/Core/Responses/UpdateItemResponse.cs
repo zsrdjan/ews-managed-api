@@ -25,25 +25,20 @@
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 /// <summary>
-/// Represents the response to an individual item update operation.
+///     Represents the response to an individual item update operation.
 /// </summary>
 public sealed class UpdateItemResponse : ServiceResponse
 {
-    private Item item;
+    private readonly Item item;
     private Item returnedItem;
     private int conflictCount;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="UpdateItemResponse"/> class.
+    ///     Initializes a new instance of the <see cref="UpdateItemResponse" /> class.
     /// </summary>
     /// <param name="item">The item.</param>
     internal UpdateItemResponse(Item item)
-        : base()
     {
         EwsUtilities.Assert(item != null, "UpdateItemResponse.ctor", "item is null");
 
@@ -51,16 +46,16 @@ public sealed class UpdateItemResponse : ServiceResponse
     }
 
     /// <summary>
-    /// Reads response elements from XML.
+    ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
 
-        reader.ReadServiceObjectsCollectionFromXml<Item>(
+        reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
-            this.GetObjectInstance,
+            GetObjectInstance,
             false, /* clearPropertyBag */
             null, /* requestedPropertySet */
             false
@@ -70,7 +65,7 @@ public sealed class UpdateItemResponse : ServiceResponse
         if (!reader.Service.Exchange2007CompatibilityMode)
         {
             reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ConflictResults);
-            this.conflictCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.Count);
+            conflictCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.Count);
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.ConflictResults);
         }
 
@@ -85,54 +80,48 @@ public sealed class UpdateItemResponse : ServiceResponse
         //
         // Note that there can be no returned item at all, as in an UpdateItem call
         // with MessageDisposition set to SendOnly or SendAndSaveCopy.
-        if (this.returnedItem != null)
+        if (returnedItem != null)
         {
-            if (this.item.Id.UniqueId == this.returnedItem.Id.UniqueId)
+            if (item.Id.UniqueId == returnedItem.Id.UniqueId)
             {
-                this.item.Id.ChangeKey = this.returnedItem.Id.ChangeKey;
-                this.returnedItem = null;
+                item.Id.ChangeKey = returnedItem.Id.ChangeKey;
+                returnedItem = null;
             }
         }
     }
 
     /// <summary>
-    /// Clears the change log of the created folder if the creation succeeded.
+    ///     Clears the change log of the created folder if the creation succeeded.
     /// </summary>
     internal override void Loaded()
     {
-        if (this.Result == ServiceResult.Success)
+        if (Result == ServiceResult.Success)
         {
-            this.item.ClearChangeLog();
+            item.ClearChangeLog();
         }
     }
 
     /// <summary>
-    /// Gets Item instance.
+    ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
     private Item GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        this.returnedItem = EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
+        returnedItem = EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
 
-        return this.returnedItem;
+        return returnedItem;
     }
 
     /// <summary>
-    /// Gets the item that was returned by the update operation. ReturnedItem is set only when a recurring Task
-    /// is marked as complete or when its recurrence pattern changes. 
+    ///     Gets the item that was returned by the update operation. ReturnedItem is set only when a recurring Task
+    ///     is marked as complete or when its recurrence pattern changes.
     /// </summary>
-    public Item ReturnedItem
-    {
-        get { return this.returnedItem; }
-    }
+    public Item ReturnedItem => returnedItem;
 
     /// <summary>
-    /// Gets the number of property conflicts that were resolved during the update operation.
+    ///     Gets the number of property conflicts that were resolved during the update operation.
     /// </summary>
-    public int ConflictCount
-    {
-        get { return this.conflictCount; }
-    }
+    public int ConflictCount => conflictCount;
 }
