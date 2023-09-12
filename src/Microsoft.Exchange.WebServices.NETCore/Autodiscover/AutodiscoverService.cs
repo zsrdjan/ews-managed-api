@@ -25,16 +25,13 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
-
-#if NETSTANDARD2_0
-using System.Runtime.InteropServices;
-#endif
 
 /// <summary>
 ///     Defines a delegate that is used by the AutodiscoverService to ask whether a redirectionUrl can be used.
@@ -1602,10 +1599,11 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 throw new ServiceLocalException(Strings.CredentialsRequired);
             }
 
-#if NETSTANDARD2_0
             // Temporary fix for authentication on Linux platform
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
-#endif
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
+            }
 
             // Make sure that credentials have been authenticated if required
             serviceCredentials.PreAuthenticate();

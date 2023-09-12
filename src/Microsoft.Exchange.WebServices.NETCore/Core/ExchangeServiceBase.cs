@@ -28,12 +28,9 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Xml;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.Exchange.WebServices.Data;
-
-#if NETSTANDARD2_0
-using System.Runtime.InteropServices;
-#endif
 
 /// <summary>
 ///     Represents an abstract binding to an Exchange Service.
@@ -185,10 +182,11 @@ public abstract class ExchangeServiceBase
                     throw new ServiceLocalException(Strings.CredentialsRequired);
                 }
 
-#if NETSTANDARD2_0
                 // Temporary fix for authentication on Linux platform
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
-#endif
+                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
+                }
 
                 // Make sure that credentials have been authenticated if required
                 serviceCredentials.PreAuthenticate();

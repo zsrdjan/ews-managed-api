@@ -23,7 +23,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
@@ -33,102 +33,93 @@ using DefaultPropertySetDictionary = LazyMember<Dictionary<BasePropertySet, stri
 ///     Represents a set of item or folder properties. Property sets are used to indicate what properties of an item or
 ///     folder should be loaded when binding to an existing item or folder or when loading an item or folder's properties.
 /// </summary>
+[PublicAPI]
 public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionBase>
 {
     /// <summary>
     ///     Returns a predefined property set that only includes the Id property.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable instance"
-    )]
     public static readonly PropertySet IdOnly = CreateReadonlyPropertySet(BasePropertySet.IdOnly);
 
     /// <summary>
     ///     Returns a predefined property set that includes the first class properties of an item or folder.
     /// </summary>
-    [SuppressMessage(
-        "Microsoft.Security",
-        "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes",
-        Justification = "Immutable instance"
-    )]
     public static readonly PropertySet FirstClassProperties =
         CreateReadonlyPropertySet(BasePropertySet.FirstClassProperties);
 
     /// <summary>
     ///     Maps BasePropertySet values to EWS's BaseShape values.
     /// </summary>
-    private static readonly DefaultPropertySetDictionary defaultPropertySetMap = new DefaultPropertySetDictionary(
-        delegate
-        {
-            var result = new Dictionary<BasePropertySet, string>();
-            result.Add(BasePropertySet.IdOnly, "IdOnly");
-            result.Add(BasePropertySet.FirstClassProperties, "AllProperties");
-            return result;
+    private static readonly DefaultPropertySetDictionary defaultPropertySetMap = new(
+        () => new Dictionary<BasePropertySet, string>
+        { 
+            // @formatter:off
+            { BasePropertySet.IdOnly, "IdOnly" },
+            { BasePropertySet.FirstClassProperties, "AllProperties" },
+            // @formatter:on
         }
     );
 
     /// <summary>
     ///     The base property set this property set is based upon.
     /// </summary>
-    private BasePropertySet basePropertySet;
+    private BasePropertySet _basePropertySet;
 
     /// <summary>
     ///     The list of additional properties included in this property set.
     /// </summary>
-    private readonly List<PropertyDefinitionBase> additionalProperties = new List<PropertyDefinitionBase>();
+    private readonly List<PropertyDefinitionBase> _additionalProperties = new();
 
     /// <summary>
     ///     The requested body type for get and find operations. If null, the "best body" is returned.
     /// </summary>
-    private BodyType? requestedBodyType;
+    private BodyType? _requestedBodyType;
 
     /// <summary>
     ///     The requested unique body type for get and find operations. If null, the should return the same value as body type.
     /// </summary>
-    private BodyType? requestedUniqueBodyType;
+    private BodyType? _requestedUniqueBodyType;
 
     /// <summary>
     ///     The requested normalized body type for get and find operations. If null, the should return the same value as body
     ///     type.
     /// </summary>
-    private BodyType? requestedNormalizedBodyType;
+    private BodyType? _requestedNormalizedBodyType;
 
     /// <summary>
     ///     Value indicating whether or not the server should filter HTML content.
     /// </summary>
-    private bool? filterHtml;
+    private bool? _filterHtml;
 
     /// <summary>
     ///     Value indicating whether or not the server should convert HTML code page to UTF8.
     /// </summary>
-    private bool? convertHtmlCodePageToUTF8;
+    private bool? _convertHtmlCodePageToUtf8;
 
     /// <summary>
     ///     Value of the URL template to use for the src attribute of inline IMG elements.
     /// </summary>
-    private string inlineImageUrlTemplate;
+    private string _inlineImageUrlTemplate;
 
     /// <summary>
     ///     Value indicating whether or not the server should block references to external images.
     /// </summary>
-    private bool? blockExternalImages;
+    private bool? _blockExternalImages;
 
     /// <summary>
     ///     Value indicating whether or not to add a blank target attribute to anchor links.
     /// </summary>
-    private bool? addTargetToLinks;
+    private bool? _addTargetToLinks;
 
     /// <summary>
     ///     Value indicating whether or not this PropertySet can be modified.
     /// </summary>
-    private bool isReadOnly;
+    private bool _isReadOnly;
 
     /// <summary>
     ///     Value indicating the maximum body size to retrieve.
     /// </summary>
-    private int? maximumBodySize;
+    private int? _maximumBodySize;
 
     /// <summary>
     ///     Initializes a new instance of PropertySet.
@@ -139,8 +130,8 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
     ///     ContactSchema.GivenName, etc.)
     /// </param>
-    public PropertySet(BasePropertySet basePropertySet, params PropertyDefinitionBase[] additionalProperties)
-        : this(basePropertySet, (IEnumerable<PropertyDefinitionBase>)additionalProperties)
+    public PropertySet(BasePropertySet basePropertySet, params PropertyDefinitionBase[]? additionalProperties)
+        : this(basePropertySet, (IEnumerable<PropertyDefinitionBase>?)additionalProperties)
     {
     }
 
@@ -153,13 +144,13 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
     ///     ContactSchema.GivenName, etc.)
     /// </param>
-    public PropertySet(BasePropertySet basePropertySet, IEnumerable<PropertyDefinitionBase> additionalProperties)
+    public PropertySet(BasePropertySet basePropertySet, IEnumerable<PropertyDefinitionBase>? additionalProperties)
     {
-        this.basePropertySet = basePropertySet;
+        _basePropertySet = basePropertySet;
 
         if (additionalProperties != null)
         {
-            this.additionalProperties.AddRange(additionalProperties);
+            _additionalProperties.AddRange(additionalProperties);
         }
     }
 
@@ -225,9 +216,9 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
         ThrowIfReadonly();
         EwsUtilities.ValidateParam(property, "property");
 
-        if (!additionalProperties.Contains(property))
+        if (!_additionalProperties.Contains(property))
         {
-            additionalProperties.Add(property);
+            _additionalProperties.Add(property);
         }
     }
 
@@ -252,7 +243,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     public void Clear()
     {
         ThrowIfReadonly();
-        additionalProperties.Clear();
+        _additionalProperties.Clear();
     }
 
     /// <summary>
@@ -263,7 +254,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     private static PropertySet CreateReadonlyPropertySet(BasePropertySet basePropertySet)
     {
         var propertySet = new PropertySet(basePropertySet);
-        propertySet.isReadOnly = true;
+        propertySet._isReadOnly = true;
         return propertySet;
     }
 
@@ -302,7 +293,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     private void ThrowIfReadonly()
     {
-        if (isReadOnly)
+        if (_isReadOnly)
         {
             throw new NotSupportedException(Strings.PropertySetCannotBeModified);
         }
@@ -318,7 +309,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </returns>
     public bool Contains(PropertyDefinitionBase property)
     {
-        return additionalProperties.Contains(property);
+        return _additionalProperties.Contains(property);
     }
 
     /// <summary>
@@ -329,7 +320,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     public bool Remove(PropertyDefinitionBase property)
     {
         ThrowIfReadonly();
-        return additionalProperties.Remove(property);
+        return _additionalProperties.Remove(property);
     }
 
     /// <summary>
@@ -337,11 +328,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public BasePropertySet BasePropertySet
     {
-        get => basePropertySet;
+        get => _basePropertySet;
         set
         {
             ThrowIfReadonly();
-            basePropertySet = value;
+            _basePropertySet = value;
         }
     }
 
@@ -351,11 +342,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public BodyType? RequestedBodyType
     {
-        get => requestedBodyType;
+        get => _requestedBodyType;
         set
         {
             ThrowIfReadonly();
-            requestedBodyType = value;
+            _requestedBodyType = value;
         }
     }
 
@@ -364,11 +355,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public BodyType? RequestedUniqueBodyType
     {
-        get => requestedUniqueBodyType;
+        get => _requestedUniqueBodyType;
         set
         {
             ThrowIfReadonly();
-            requestedUniqueBodyType = value;
+            _requestedUniqueBodyType = value;
         }
     }
 
@@ -378,29 +369,29 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public BodyType? RequestedNormalizedBodyType
     {
-        get => requestedNormalizedBodyType;
+        get => _requestedNormalizedBodyType;
         set
         {
             ThrowIfReadonly();
-            requestedNormalizedBodyType = value;
+            _requestedNormalizedBodyType = value;
         }
     }
 
     /// <summary>
     ///     Gets the number of explicitly added properties in this set.
     /// </summary>
-    public int Count => additionalProperties.Count;
+    public int Count => _additionalProperties.Count;
 
     /// <summary>
     ///     Gets or sets value indicating whether or not to filter potentially unsafe HTML content from message bodies.
     /// </summary>
     public bool? FilterHtmlContent
     {
-        get => filterHtml;
+        get => _filterHtml;
         set
         {
             ThrowIfReadonly();
-            filterHtml = value;
+            _filterHtml = value;
         }
     }
 
@@ -409,11 +400,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public bool? ConvertHtmlCodePageToUTF8
     {
-        get => convertHtmlCodePageToUTF8;
+        get => _convertHtmlCodePageToUtf8;
         set
         {
             ThrowIfReadonly();
-            convertHtmlCodePageToUTF8 = value;
+            _convertHtmlCodePageToUtf8 = value;
         }
     }
 
@@ -422,11 +413,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public string InlineImageUrlTemplate
     {
-        get => inlineImageUrlTemplate;
+        get => _inlineImageUrlTemplate;
         set
         {
             ThrowIfReadonly();
-            inlineImageUrlTemplate = value;
+            _inlineImageUrlTemplate = value;
         }
     }
 
@@ -435,11 +426,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public bool? BlockExternalImages
     {
-        get => blockExternalImages;
+        get => _blockExternalImages;
         set
         {
             ThrowIfReadonly();
-            blockExternalImages = value;
+            _blockExternalImages = value;
         }
     }
 
@@ -448,11 +439,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     public bool? AddBlankTargetToLinks
     {
-        get => addTargetToLinks;
+        get => _addTargetToLinks;
         set
         {
             ThrowIfReadonly();
-            addTargetToLinks = value;
+            _addTargetToLinks = value;
         }
     }
 
@@ -464,11 +455,11 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </value>
     public int? MaximumBodySize
     {
-        get => maximumBodySize;
+        get => _maximumBodySize;
         set
         {
             ThrowIfReadonly();
-            maximumBodySize = value;
+            _maximumBodySize = value;
         }
     }
 
@@ -476,7 +467,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.PropertyDefinitionBase" /> at the specified index.
     /// </summary>
     /// <param name="index">Index.</param>
-    public PropertyDefinitionBase this[int index] => additionalProperties[index];
+    public PropertyDefinitionBase this[int index] => _additionalProperties[index];
 
     /// <summary>
     ///     Implements ISelfValidate.Validate. Validates this property set.
@@ -516,9 +507,9 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     internal void InternalValidate()
     {
-        for (var i = 0; i < additionalProperties.Count; i++)
+        for (var i = 0; i < _additionalProperties.Count; i++)
         {
-            if (additionalProperties[i] == null)
+            if (_additionalProperties[i] == null)
             {
                 throw new ServiceValidationException(string.Format(Strings.AdditionalPropertyIsNull, i));
             }
@@ -535,7 +526,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// <param name="summaryPropertiesOnly">if set to <c>true</c> then only summary properties are allowed.</param>
     internal void ValidateForRequest(ServiceRequestBase request, bool summaryPropertiesOnly)
     {
-        foreach (var propDefBase in additionalProperties)
+        foreach (var propDefBase in _additionalProperties)
         {
             var propertyDefinition = propDefBase as PropertyDefinition;
             if (propertyDefinition != null)
@@ -748,9 +739,9 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
             }
         }
 
-        if (additionalProperties.Count > 0)
+        if (_additionalProperties.Count > 0)
         {
-            WriteAdditionalPropertiesToXml(writer, additionalProperties);
+            WriteAdditionalPropertiesToXml(writer, _additionalProperties);
         }
 
         writer.WriteEndElement(); // Item/FolderShape
@@ -767,7 +758,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </returns>
     public IEnumerator<PropertyDefinitionBase> GetEnumerator()
     {
-        return additionalProperties.GetEnumerator();
+        return _additionalProperties.GetEnumerator();
     }
 
     #endregion
@@ -783,7 +774,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return additionalProperties.GetEnumerator();
+        return _additionalProperties.GetEnumerator();
     }
 
     #endregion
