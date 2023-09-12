@@ -38,7 +38,7 @@ internal class SafeXmlFactory
     /// <summary>
     ///     Safe xml reader settings.
     /// </summary>
-    private static readonly XmlReaderSettings defaultSettings = new XmlReaderSettings
+    private static readonly XmlReaderSettings DefaultSettings = new()
     {
         Async = true,
         DtdProcessing = DtdProcessing.Prohibit,
@@ -62,7 +62,7 @@ internal class SafeXmlFactory
             {
                 Async = true,
                 DtdProcessing = DtdProcessing.Ignore,
-                CheckCharacters = false
+                CheckCharacters = false,
             }
         );
         return xtr;
@@ -81,7 +81,7 @@ internal class SafeXmlFactory
             {
                 Async = true,
                 DtdProcessing = DtdProcessing.Ignore,
-                CheckCharacters = false
+                CheckCharacters = false,
             }
         );
         return xtr;
@@ -100,7 +100,7 @@ internal class SafeXmlFactory
             {
                 Async = true,
                 DtdProcessing = DtdProcessing.Ignore,
-                CheckCharacters = false
+                CheckCharacters = false,
             }
         );
         return xtr;
@@ -121,7 +121,7 @@ internal class SafeXmlFactory
                 Async = true,
                 NameTable = nt,
                 DtdProcessing = DtdProcessing.Ignore,
-                CheckCharacters = false
+                CheckCharacters = false,
             }
         );
         return xtr;
@@ -142,7 +142,7 @@ internal class SafeXmlFactory
                 Async = true,
                 NameTable = nt,
                 DtdProcessing = DtdProcessing.Ignore,
-                CheckCharacters = false
+                CheckCharacters = false,
             }
         );
         return xtr;
@@ -163,7 +163,7 @@ internal class SafeXmlFactory
                 Async = true,
                 NameTable = nt,
                 DtdProcessing = DtdProcessing.Ignore,
-                CheckCharacters = false
+                CheckCharacters = false,
             }
         );
         return xtr;
@@ -181,10 +181,8 @@ internal class SafeXmlFactory
     /// <returns>A new instance of the XPathDocument class.</returns>
     public static XPathDocument CreateXPathDocument(Stream stream)
     {
-        using (var xr = XmlReader.Create(stream, defaultSettings))
-        {
-            return CreateXPathDocument(xr);
-        }
+        using var xr = XmlReader.Create(stream, DefaultSettings);
+        return CreateXPathDocument(xr);
     }
 
     /// <summary>
@@ -194,10 +192,8 @@ internal class SafeXmlFactory
     /// <returns>A new instance of the XPathDocument class.</returns>
     public static XPathDocument CreateXPathDocument(string uri)
     {
-        using (var xr = XmlReader.Create(uri, defaultSettings))
-        {
-            return CreateXPathDocument(xr);
-        }
+        using var xr = XmlReader.Create(uri, DefaultSettings);
+        return CreateXPathDocument(xr);
     }
 
     /// <summary>
@@ -208,10 +204,8 @@ internal class SafeXmlFactory
     /// <returns>A new instance of the XPathDocument class.</returns>
     public static XPathDocument CreateXPathDocument(TextReader textReader)
     {
-        using (var xr = XmlReader.Create(textReader, defaultSettings))
-        {
-            return CreateXPathDocument(xr);
-        }
+        using var xr = XmlReader.Create(textReader, DefaultSettings);
+        return CreateXPathDocument(xr);
     }
 
     /// <summary>
@@ -243,10 +237,8 @@ internal class SafeXmlFactory
     /// <returns>A new instance of the XPathDocument class.</returns>
     public static XPathDocument CreateXPathDocument(string uri, XmlSpace space)
     {
-        using (var xr = XmlReader.Create(uri, defaultSettings))
-        {
-            return CreateXPathDocument(xr, space);
-        }
+        using var xr = XmlReader.Create(uri, DefaultSettings);
+        return CreateXPathDocument(xr, space);
     }
 
     /// <summary>

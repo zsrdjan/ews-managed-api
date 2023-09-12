@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a change on a folder as returned by a synchronization operation.
 /// </summary>
+[PublicAPI]
 public sealed class FolderChange : Change
 {
     /// <summary>

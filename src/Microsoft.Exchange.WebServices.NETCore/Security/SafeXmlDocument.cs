@@ -37,9 +37,9 @@ internal class SafeXmlDocument : XmlDocument
     /// <summary>
     ///     Xml settings object.
     /// </summary>
-    private readonly XmlReaderSettings settings = new XmlReaderSettings
+    private readonly XmlReaderSettings _settings = new XmlReaderSettings
     {
-        DtdProcessing = DtdProcessing.Prohibit
+        DtdProcessing = DtdProcessing.Prohibit,
     };
 
     #endregion
@@ -84,10 +84,8 @@ internal class SafeXmlDocument : XmlDocument
     /// <param name="inStream">The stream containing the XML document to load.</param>
     public override void Load(Stream inStream)
     {
-        using (var reader = XmlReader.Create(inStream, settings))
-        {
-            Load(reader);
-        }
+        using var reader = XmlReader.Create(inStream, _settings);
+        Load(reader);
     }
 
     /// <summary>
@@ -96,10 +94,8 @@ internal class SafeXmlDocument : XmlDocument
     /// <param name="txtReader">The TextReader used to feed the XML data into the document.</param>
     public override void Load(TextReader txtReader)
     {
-        using (var reader = XmlReader.Create(txtReader, settings))
-        {
-            Load(reader);
-        }
+        using var reader = XmlReader.Create(txtReader, _settings);
+        Load(reader);
     }
 
     /// <summary>
@@ -139,10 +135,8 @@ internal class SafeXmlDocument : XmlDocument
     /// <param name="xml">String containing the XML document to load.</param>
     public override void LoadXml(string xml)
     {
-        using (var reader = XmlReader.Create(new StringReader(xml), settings))
-        {
-            base.Load(reader);
-        }
+        using var reader = XmlReader.Create(new StringReader(xml), _settings);
+        base.Load(reader);
     }
 
     #endregion

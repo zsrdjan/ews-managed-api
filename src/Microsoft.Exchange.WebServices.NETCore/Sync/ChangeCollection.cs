@@ -23,18 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of changes as returned by a synchronization operation.
 /// </summary>
 /// <typeparam name="TChange">Type representing the type of change (e.g. FolderChange or ItemChange)</typeparam>
+[PublicAPI]
 public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     where TChange : Change
 {
-    private readonly List<TChange> changes = new List<TChange>();
-    private string syncState;
-    private bool moreChangesAvailable;
+    private readonly List<TChange> _changes = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChangeCollection&lt;TChange&gt;" /> class.
@@ -51,13 +52,13 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     {
         EwsUtilities.Assert(change != null, "ChangeList.Add", "change is null");
 
-        changes.Add(change);
+        _changes.Add(change);
     }
 
     /// <summary>
     ///     Gets the number of changes in the collection.
     /// </summary>
-    public int Count => changes.Count;
+    public int Count => _changes.Count;
 
     /// <summary>
     ///     Gets an individual change from the change collection.
@@ -70,30 +71,22 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            return changes[index];
+            return _changes[index];
         }
     }
 
     /// <summary>
     ///     Gets the SyncState blob returned by a synchronization operation.
     /// </summary>
-    public string SyncState
-    {
-        get => syncState;
-        internal set => syncState = value;
-    }
+    public string SyncState { get; internal set; }
 
     /// <summary>
     ///     Gets a value indicating whether the there are more changes to be synchronized from the server.
     /// </summary>
-    public bool MoreChangesAvailable
-    {
-        get => moreChangesAvailable;
-        internal set => moreChangesAvailable = value;
-    }
+    public bool MoreChangesAvailable { get; internal set; }
 
 
     #region IEnumerable<TChange> Members
@@ -104,7 +97,7 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TChange> GetEnumerator()
     {
-        return changes.GetEnumerator();
+        return _changes.GetEnumerator();
     }
 
     #endregion
@@ -118,7 +111,7 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return changes.GetEnumerator();
+        return _changes.GetEnumerator();
     }
 
     #endregion

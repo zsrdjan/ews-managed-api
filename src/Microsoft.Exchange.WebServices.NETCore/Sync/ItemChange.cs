@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a change on an item as returned by a synchronization operation.
 /// </summary>
+[PublicAPI]
 public sealed class ItemChange : Change
 {
-    private bool isRead;
-
     /// <summary>
     ///     Initializes a new instance of ItemChange.
     /// </summary>
@@ -60,11 +61,7 @@ public sealed class ItemChange : Change
     ///     Gets the IsRead property for the item that the change applies to. IsRead is
     ///     only valid when ChangeType is equal to ChangeType.ReadFlagChange.
     /// </summary>
-    public bool IsRead
-    {
-        get => isRead;
-        internal set => isRead = value;
-    }
+    public bool IsRead { get; internal set; }
 
     /// <summary>
     ///     Gets the Id of the item the change applies to.

@@ -25,6 +25,8 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -32,6 +34,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 /// <typeparam name="TServiceObject">ServiceObject type.</typeparam>
 /// <typeparam name="TChange">Change type.</typeparam>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     where TServiceObject : ServiceObject

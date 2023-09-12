@@ -38,7 +38,7 @@ internal class SafeXmlSchema : XmlSchema
     /// <summary>
     ///     Safe xml reader settings.
     /// </summary>
-    private static XmlReaderSettings defaultSettings = new XmlReaderSettings
+    private static XmlReaderSettings _defaultSettings = new()
     {
         DtdProcessing = DtdProcessing.Prohibit,
     };
@@ -57,12 +57,10 @@ internal class SafeXmlSchema : XmlSchema
     ///     errors.
     /// </param>
     /// <returns>The XmlSchema object representing the XML Schema.</returns>
-    public static new XmlSchema Read(Stream stream, ValidationEventHandler validationEventHandler)
+    public new static XmlSchema Read(Stream stream, ValidationEventHandler validationEventHandler)
     {
-        using (var xr = XmlReader.Create(stream, defaultSettings))
-        {
-            return XmlSchema.Read(xr, validationEventHandler);
-        }
+        using var xr = XmlReader.Create(stream, _defaultSettings);
+        return XmlSchema.Read(xr, validationEventHandler);
     }
 
     /// <summary>
@@ -74,12 +72,10 @@ internal class SafeXmlSchema : XmlSchema
     ///     errors.
     /// </param>
     /// <returns>The XmlSchema object representing the XML Schema.</returns>
-    public static new XmlSchema Read(TextReader reader, ValidationEventHandler validationEventHandler)
+    public new static XmlSchema Read(TextReader reader, ValidationEventHandler validationEventHandler)
     {
-        using (var xr = XmlReader.Create(reader, defaultSettings))
-        {
-            return XmlSchema.Read(xr, validationEventHandler);
-        }
+        using var xr = XmlReader.Create(reader, _defaultSettings);
+        return XmlSchema.Read(xr, validationEventHandler);
     }
 
     /// <summary>
@@ -91,7 +87,7 @@ internal class SafeXmlSchema : XmlSchema
     ///     errors.
     /// </param>
     /// <returns>The XmlSchema object representing the XML Schema.</returns>
-    public static new XmlSchema Read(XmlReader reader, ValidationEventHandler validationEventHandler)
+    public new static XmlSchema Read(XmlReader reader, ValidationEventHandler validationEventHandler)
     {
         // we need to check to see if the reader is configured properly
         if (reader.Settings != null)

@@ -25,28 +25,21 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a change as returned by a synchronization operation.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class Change
 {
     /// <summary>
-    ///     The type of change.
-    /// </summary>
-    private ChangeType changeType;
-
-    /// <summary>
-    ///     The service object the change applies to.
-    /// </summary>
-    private ServiceObject serviceObject;
-
-    /// <summary>
     ///     The Id of the service object the change applies to.
     /// </summary>
-    private ServiceId id;
+    private ServiceId _id;
 
     /// <summary>
     ///     Initializes a new instance of Change.
@@ -64,27 +57,19 @@ public abstract class Change
     /// <summary>
     ///     Gets the type of the change.
     /// </summary>
-    public ChangeType ChangeType
-    {
-        get => changeType;
-        internal set => changeType = value;
-    }
+    public ChangeType ChangeType { get; internal set; }
 
     /// <summary>
     ///     Gets or sets the service object the change applies to.
     /// </summary>
-    internal ServiceObject ServiceObject
-    {
-        get => serviceObject;
-        set => serviceObject = value;
-    }
+    internal ServiceObject? ServiceObject { get; set; }
 
     /// <summary>
     ///     Gets or sets the Id of the service object the change applies to.
     /// </summary>
     internal ServiceId Id
     {
-        get => ServiceObject != null ? ServiceObject.GetId() : id;
-        set => id = value;
+        get => ServiceObject != null ? ServiceObject.GetId() : _id;
+        set => _id = value;
     }
 }
