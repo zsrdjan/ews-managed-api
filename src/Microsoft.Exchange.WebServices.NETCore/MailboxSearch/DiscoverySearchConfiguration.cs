@@ -23,42 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents mailbox query object.
 /// </summary>
+[PublicAPI]
 public sealed class DiscoverySearchConfiguration
 {
     /// <summary>
     ///     Search Id
     /// </summary>
-    public string SearchId { get; set; }
+    public string? SearchId { get; set; }
 
     /// <summary>
     ///     Search query
     /// </summary>
-    public string SearchQuery { get; set; }
+    public string? SearchQuery { get; set; }
 
     /// <summary>
     ///     Set of mailbox and scope pair
     /// </summary>
-    public SearchableMailbox[] SearchableMailboxes { get; set; }
+    public SearchableMailbox[]? SearchableMailboxes { get; set; }
 
     /// <summary>
     ///     In-Place hold identity
     /// </summary>
-    public string InPlaceHoldIdentity { get; set; }
+    public string? InPlaceHoldIdentity { get; set; }
 
     /// <summary>
     ///     Managed by organization
     /// </summary>
-    public string ManagedByOrganization { get; set; }
+    public string? ManagedByOrganization { get; set; }
 
     /// <summary>
     ///     Language
     /// </summary>
-    public string Language { get; set; }
+    public string? Language { get; set; }
 
     /// <summary>
     ///     Load from xml
@@ -71,15 +74,17 @@ public sealed class DiscoverySearchConfiguration
 
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.DiscoverySearchConfiguration);
 
-        var configuration = new DiscoverySearchConfiguration();
-        configuration.SearchId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SearchId);
+        var configuration = new DiscoverySearchConfiguration
+        {
+            SearchId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SearchId),
 
-        // the query could be empty means there won't be Query element, hence needs to read and check
-        // if the next element is not Query, then it means already read SearchableMailboxes element
-        configuration.SearchQuery = string.Empty;
-        configuration.InPlaceHoldIdentity = string.Empty;
-        configuration.ManagedByOrganization = string.Empty;
-        configuration.Language = string.Empty;
+            // the query could be empty means there won't be Query element, hence needs to read and check
+            // if the next element is not Query, then it means already read SearchableMailboxes element
+            SearchQuery = string.Empty,
+            InPlaceHoldIdentity = string.Empty,
+            ManagedByOrganization = string.Empty,
+            Language = string.Empty,
+        };
 
         do
         {

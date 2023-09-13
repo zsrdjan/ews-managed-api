@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines how messages are disposed of in CreateItem and UpdateItem operations.
 /// </summary>
+[PublicAPI]
 public enum MessageDisposition
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum MessageDisposition
     /// <summary>
     ///     Messages are sent but no copy is saved.
     /// </summary>
-    SendOnly
+    SendOnly,
 }

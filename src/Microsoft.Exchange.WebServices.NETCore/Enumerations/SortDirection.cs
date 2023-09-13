@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a sort direction
 /// </summary>
+[PublicAPI]
 public enum SortDirection
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum SortDirection
     /// <summary>
     ///     The sort is performed in descending order.
     /// </summary>
-    Descending
+    Descending,
 }

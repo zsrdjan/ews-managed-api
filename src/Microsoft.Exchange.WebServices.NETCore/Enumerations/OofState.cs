@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a user's Out of Office Assistant status.
 /// </summary>
+[PublicAPI]
 public enum OofState
 {
     /// <summary>
-    ///     The assistant is diabled.
+    ///     The assistant is disabled.
     /// </summary>
     Disabled,
 
@@ -43,5 +46,5 @@ public enum OofState
     /// <summary>
     ///     The assistant is scheduled.
     /// </summary>
-    Scheduled
+    Scheduled,
 }

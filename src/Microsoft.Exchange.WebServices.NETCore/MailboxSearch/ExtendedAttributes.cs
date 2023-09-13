@@ -23,18 +23,22 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Class ExtendedAttributes
 /// </summary>
+[PublicAPI]
 public sealed class ExtendedAttributes : List<ExtendedAttribute>
 {
 }
 
 /// <summary>
 ///     Class ExtendedAttribute
-/// </summary>
+/// </summary
+[PublicAPI]
 public sealed class ExtendedAttribute
 {
     /// <summary>

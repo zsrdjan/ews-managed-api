@@ -43,7 +43,7 @@ public abstract class ExchangeServiceBase
 {
     #region Const members
 
-    private static readonly object lockObj = new object();
+    private static readonly object LockObj = new();
 
     /// <summary>
     ///     Special HTTP status code that indicates that the account is locked.
@@ -53,7 +53,7 @@ public abstract class ExchangeServiceBase
     /// <summary>
     ///     The binary secret.
     /// </summary>
-    private static byte[]? binarySecret;
+    private static byte[]? _binarySecret;
 
     #endregion
 
@@ -63,7 +63,7 @@ public abstract class ExchangeServiceBase
     /// <summary>
     ///     Default UserAgent
     /// </summary>
-    private static readonly string defaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
+    private static readonly string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
 
     #endregion
 
@@ -75,14 +75,14 @@ public abstract class ExchangeServiceBase
     /// </summary>
     public event ResponseHeadersCapturedHandler? OnResponseHeadersCaptured;
 
-    private ExchangeCredentials? credentials;
-    private bool useDefaultCredentials;
-    private int timeout = 100000;
-    private bool traceEnabled;
-    private ITraceListener? traceListener = new EwsTraceListener();
-    private string userAgent = defaultUserAgent;
-    private TimeZoneDefinition? timeZoneDefinition;
-    private IEwsHttpWebRequestFactory ewsHttpWebRequestFactory = new EwsHttpWebRequestFactory();
+    private ExchangeCredentials? _credentials;
+    private bool _useDefaultCredentials;
+    private int _timeout = 100000;
+    private bool _traceEnabled;
+    private ITraceListener? _traceListener = new EwsTraceListener();
+    private string _userAgent = DefaultUserAgent;
+    private TimeZoneDefinition? _timeZoneDefinition;
+    private IEwsHttpWebRequestFactory _ewsHttpWebRequestFactory = new EwsHttpWebRequestFactory();
 
     #endregion
 
@@ -502,7 +502,7 @@ public abstract class ExchangeServiceBase
     /// <param name="userAgent">User agent string to set on the service</param>
     internal void SetCustomUserAgent(string userAgent)
     {
-        this.userAgent = userAgent;
+        _userAgent = userAgent;
     }
 
     #endregion
@@ -556,20 +556,20 @@ public abstract class ExchangeServiceBase
     internal ExchangeServiceBase(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
         : this(requestedServerVersion)
     {
-        useDefaultCredentials = service.useDefaultCredentials;
-        credentials = service.credentials;
-        traceEnabled = service.traceEnabled;
-        traceListener = service.traceListener;
+        _useDefaultCredentials = service._useDefaultCredentials;
+        _credentials = service._credentials;
+        _traceEnabled = service._traceEnabled;
+        _traceListener = service._traceListener;
         TraceFlags = service.TraceFlags;
-        timeout = service.timeout;
+        _timeout = service._timeout;
         PreAuthenticate = service.PreAuthenticate;
-        userAgent = service.userAgent;
+        _userAgent = service._userAgent;
         AcceptGzipEncoding = service.AcceptGzipEncoding;
         KeepAlive = service.KeepAlive;
         ConnectionGroupName = service.ConnectionGroupName;
         TimeZone = service.TimeZone;
         HttpHeaders = service.HttpHeaders;
-        ewsHttpWebRequestFactory = service.ewsHttpWebRequestFactory;
+        _ewsHttpWebRequestFactory = service._ewsHttpWebRequestFactory;
         WebProxy = service.WebProxy;
     }
 
@@ -613,7 +613,7 @@ public abstract class ExchangeServiceBase
     /// <summary>
     ///     Gets a time zone definition generated from the time zone info to which this service is scoped.
     /// </summary>
-    public TimeZoneDefinition TimeZoneDefinition => timeZoneDefinition ??= new TimeZoneDefinition(TimeZone);
+    public TimeZoneDefinition TimeZoneDefinition => _timeZoneDefinition ??= new TimeZoneDefinition(TimeZone);
 
     /// <summary>
     ///     Gets or sets a value indicating whether client latency info is push to server.
@@ -623,17 +623,17 @@ public abstract class ExchangeServiceBase
     /// <summary>
     ///     Gets or sets a value indicating whether tracing is enabled.
     /// </summary>
-    [MemberNotNullWhen(true, nameof(traceListener))]
+    [MemberNotNullWhen(true, nameof(_traceListener))]
     public bool TraceEnabled
     {
-        get => traceEnabled;
+        get => _traceEnabled;
 
         set
         {
-            traceEnabled = value;
-            if (traceEnabled && traceListener == null)
+            _traceEnabled = value;
+            if (_traceEnabled && _traceListener == null)
             {
-                traceListener = new EwsTraceListener();
+                _traceListener = new EwsTraceListener();
             }
         }
     }
@@ -650,12 +650,12 @@ public abstract class ExchangeServiceBase
     /// <value>The trace listener.</value>
     public ITraceListener? TraceListener
     {
-        get => traceListener;
+        get => _traceListener;
 
         set
         {
-            traceListener = value;
-            traceEnabled = value != null;
+            _traceListener = value;
+            _traceEnabled = value != null;
         }
     }
 
@@ -665,12 +665,12 @@ public abstract class ExchangeServiceBase
     /// </summary>
     public ExchangeCredentials? Credentials
     {
-        get => credentials;
+        get => _credentials;
 
         set
         {
-            credentials = value;
-            useDefaultCredentials = false;
+            _credentials = value;
+            _useDefaultCredentials = false;
             CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
         }
     }
@@ -683,15 +683,15 @@ public abstract class ExchangeServiceBase
     /// </summary>
     public bool UseDefaultCredentials
     {
-        get => useDefaultCredentials;
+        get => _useDefaultCredentials;
 
         set
         {
-            useDefaultCredentials = value;
+            _useDefaultCredentials = value;
 
             if (value)
             {
-                credentials = null;
+                _credentials = null;
                 CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
             }
         }
@@ -703,7 +703,7 @@ public abstract class ExchangeServiceBase
     /// </summary>
     public int Timeout
     {
-        get => timeout;
+        get => _timeout;
 
         set
         {
@@ -712,7 +712,7 @@ public abstract class ExchangeServiceBase
                 throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
             }
 
-            timeout = value;
+            _timeout = value;
         }
     }
 
@@ -742,8 +742,8 @@ public abstract class ExchangeServiceBase
     /// <value>The user agent.</value>
     public string UserAgent
     {
-        get => userAgent;
-        set => userAgent = value + " (" + defaultUserAgent + ")";
+        get => _userAgent;
+        set => _userAgent = value + " (" + DefaultUserAgent + ")";
     }
 
     /// <summary>
@@ -797,16 +797,16 @@ public abstract class ExchangeServiceBase
         get
         {
             // this has to be computed only once.
-            lock (lockObj)
+            lock (LockObj)
             {
-                if (binarySecret == null)
+                if (_binarySecret == null)
                 {
                     var randomNumberGenerator = RandomNumberGenerator.Create();
-                    binarySecret = new byte[256 / 8];
-                    randomNumberGenerator.GetBytes(binarySecret);
+                    _binarySecret = new byte[256 / 8];
+                    randomNumberGenerator.GetBytes(_binarySecret);
                 }
 
-                return binarySecret;
+                return _binarySecret;
             }
         }
     }
@@ -816,10 +816,10 @@ public abstract class ExchangeServiceBase
     /// </summary>
     internal IEwsHttpWebRequestFactory? HttpWebRequestFactory
     {
-        get => ewsHttpWebRequestFactory;
+        get => _ewsHttpWebRequestFactory;
 
         // If new value is null, reset to default factory.
-        set => ewsHttpWebRequestFactory = value ?? new EwsHttpWebRequestFactory();
+        set => _ewsHttpWebRequestFactory = value ?? new EwsHttpWebRequestFactory();
     }
 
     /// <summary>

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines how meeting cancellations should be sent to attendees when an appointment is deleted.
 /// </summary>
+[PublicAPI]
 public enum SendCancellationsMode
 {
     /// <summary>

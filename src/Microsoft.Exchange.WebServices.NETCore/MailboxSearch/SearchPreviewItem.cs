@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents search preview item.
 /// </summary>
+[PublicAPI]
 public sealed class SearchPreviewItem
 {
     /// <summary>
@@ -108,7 +111,6 @@ public sealed class SearchPreviewItem
     /// <summary>
     ///     Item size
     /// </summary>
-    [CLSCompliant(false)]
     public ulong Size { get; set; }
 
     /// <summary>

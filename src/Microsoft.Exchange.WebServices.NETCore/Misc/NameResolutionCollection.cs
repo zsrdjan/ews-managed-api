@@ -30,9 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 public sealed class NameResolutionCollection : IEnumerable<NameResolution>
 {
-    private readonly ExchangeService service;
-    private bool includesAllResolutions;
-    private readonly List<NameResolution> items = new List<NameResolution>();
+    private readonly List<NameResolution> _items = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="NameResolutionCollection" /> class.
@@ -42,7 +40,7 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     {
         EwsUtilities.Assert(service != null, "NameResolutionSet.ctor", "service is null.");
 
-        this.service = service;
+        Session = service;
     }
 
     /// <summary>
@@ -54,7 +52,7 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
 
         var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-        includesAllResolutions = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+        IncludesAllResolutions = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
         for (var i = 0; i < totalItemsInView; i++)
         {
@@ -62,7 +60,7 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
 
             nameResolution.LoadFromXml(reader);
 
-            items.Add(nameResolution);
+            _items.Add(nameResolution);
         }
 
         reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
@@ -72,35 +70,35 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     ///     Gets the session.
     /// </summary>
     /// <value>The session.</value>
-    internal ExchangeService Session => service;
+    internal ExchangeService Session { get; }
 
     /// <summary>
     ///     Gets the total number of elements in the list.
     /// </summary>
-    public int Count => items.Count;
+    public int Count => _items.Count;
 
     /// <summary>
     ///     Gets a value indicating whether more suggested resolutions are available. ResolveName only returns
     ///     a maximum of 100 name resolutions. When IncludesAllResolutions is false, there were more than 100
     ///     matching names on the server. To narrow the search, provide a more precise name to ResolveName.
     /// </summary>
-    public bool IncludesAllResolutions => includesAllResolutions;
+    public bool IncludesAllResolutions { get; private set; }
 
     /// <summary>
     ///     Gets the name resolution at the specified index.
     /// </summary>
     /// <param name="index">The index of the name resolution to get.</param>
-    /// <returns>The name resolution at the speicfied index.</returns>
+    /// <returns>The name resolution at the specified index.</returns>
     public NameResolution this[int index]
     {
         get
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            return items[index];
+            return _items[index];
         }
     }
 
@@ -113,7 +111,7 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<NameResolution> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion
@@ -127,7 +125,7 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion

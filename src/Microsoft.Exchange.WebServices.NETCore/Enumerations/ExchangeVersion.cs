@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the each available Exchange release version
 /// </summary>
+[PublicAPI]
 public enum ExchangeVersion
 {
     /// <summary>

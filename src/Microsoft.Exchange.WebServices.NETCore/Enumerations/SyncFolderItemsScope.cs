@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Determines items to be included in a SyncFolderItems response.
 /// </summary>
+[PublicAPI]
 public enum SyncFolderItemsScope
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum SyncFolderItemsScope
     /// <summary>
     ///     Include normal and associated items in the response.
     /// </summary>
-    NormalAndAssociatedItems
+    NormalAndAssociatedItems,
 }

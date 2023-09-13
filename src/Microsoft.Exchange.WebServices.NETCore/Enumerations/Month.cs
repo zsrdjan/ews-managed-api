@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines months of the year.
 /// </summary>
+[PublicAPI]
 public enum Month
 {
     /// <summary>
@@ -88,5 +91,5 @@ public enum Month
     /// <summary>
     ///     December.
     /// </summary>
-    December = 12
+    December = 12,
 }

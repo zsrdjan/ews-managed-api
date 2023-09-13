@@ -26,25 +26,23 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when an operation on a property fails.
 /// </summary>
+[PublicAPI]
 public class PropertyException : ServiceLocalException
 {
-    /// <summary>
-    ///     The name of the property that is at the origin of the exception.
-    /// </summary>
-    private readonly string name;
-
     /// <summary>
     ///     PropertyException constructor.
     /// </summary>
     /// <param name="name">The name of the property that is at the origin of the exception.</param>
     public PropertyException(string name)
     {
-        this.name = name;
+        Name = name;
     }
 
     /// <summary>
@@ -55,7 +53,7 @@ public class PropertyException : ServiceLocalException
     public PropertyException(string message, string name)
         : base(message)
     {
-        this.name = name;
+        Name = name;
     }
 
     /// <summary>
@@ -67,7 +65,7 @@ public class PropertyException : ServiceLocalException
     public PropertyException(string message, string name, Exception innerException)
         : base(message, innerException)
     {
-        this.name = name;
+        Name = name;
     }
 
     /// <summary>
@@ -79,7 +77,7 @@ public class PropertyException : ServiceLocalException
     protected PropertyException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        name = info.GetString("PropertyName");
+        Name = info.GetString("PropertyName");
     }
 
     /// <summary>
@@ -98,11 +96,11 @@ public class PropertyException : ServiceLocalException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("PropertyName", name);
+        info.AddValue("PropertyName", Name);
     }
 
     /// <summary>
     ///     Gets the name of the property that caused the exception.
     /// </summary>
-    public string Name => name;
+    public string Name { get; }
 }

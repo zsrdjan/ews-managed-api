@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when a service operation request fails (e.g. connection error).
 /// </summary>
+[PublicAPI]
 public class ServiceRequestException : ServiceRemoteException
 {
     /// <summary>

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
 /// <summary>
 ///     Domain setting names.
 /// </summary>
+[PublicAPI]
 public enum DomainSettingName
 {
     /// <summary>

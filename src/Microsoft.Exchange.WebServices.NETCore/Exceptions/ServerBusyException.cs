@@ -25,15 +25,18 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a server busy exception found in a service response.
 /// </summary>
+[PublicAPI]
 public class ServerBusyException : ServiceResponseException
 {
-    private const string BackOffMillisecondsKey = @"BackOffMilliseconds";
-    private readonly int backOffMilliseconds;
+    private const string BackOffMillisecondsKey = "BackOffMilliseconds";
+    private readonly int _backOffMilliseconds;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ServerBusyException" /> class.
@@ -44,7 +47,7 @@ public class ServerBusyException : ServiceResponseException
     {
         if (response.ErrorDetails != null && response.ErrorDetails.ContainsKey(BackOffMillisecondsKey))
         {
-            int.TryParse(response.ErrorDetails[BackOffMillisecondsKey], out backOffMilliseconds);
+            _ = int.TryParse(response.ErrorDetails[BackOffMillisecondsKey], out _backOffMilliseconds);
         }
     }
 
@@ -57,7 +60,7 @@ public class ServerBusyException : ServiceResponseException
     protected ServerBusyException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        backOffMilliseconds = info.GetInt32("BackOffMilliseconds");
+        _backOffMilliseconds = info.GetInt32("BackOffMilliseconds");
     }
 
     /// <summary>
@@ -76,12 +79,12 @@ public class ServerBusyException : ServiceResponseException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("BackOffMilliseconds", backOffMilliseconds);
+        info.AddValue("BackOffMilliseconds", _backOffMilliseconds);
     }
 
     /// <summary>
     ///     Suggested number of milliseconds to wait before attempting a request again. If zero,
     ///     there is no suggested backoff time.
     /// </summary>
-    public int BackOffMilliseconds => backOffMilliseconds;
+    public int BackOffMilliseconds => _backOffMilliseconds;
 }

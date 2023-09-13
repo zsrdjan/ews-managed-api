@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class EwsTraceListener : ITraceListener
 {
-    private readonly TextWriter writer;
+    private readonly TextWriter _writer;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsTraceListener" /> class.
@@ -47,7 +47,7 @@ internal class EwsTraceListener : ITraceListener
     /// <param name="writer">The writer.</param>
     internal EwsTraceListener(TextWriter writer)
     {
-        this.writer = writer;
+        _writer = writer;
     }
 
     /// <summary>
@@ -57,6 +57,6 @@ internal class EwsTraceListener : ITraceListener
     /// <param name="traceMessage">The trace message.</param>
     public void Trace(string traceType, string traceMessage)
     {
-        writer.Write(traceMessage);
+        _writer.Write(traceMessage);
     }
 }

@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 // System Dependencies
 
 /// <summary>
 ///     Source of resolution.
 /// </summary>
+[PublicAPI]
 public enum LocationSource
 {
     /// <summary>Unresolved</summary>

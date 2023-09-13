@@ -25,16 +25,16 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of a GetUserAvailability operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetUserAvailabilityResults
 {
-    private ServiceResponseCollection<AttendeeAvailability> attendeesAvailability;
-    private SuggestionsResponse suggestionsResponse;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserAvailabilityResults" /> class.
     /// </summary>
@@ -45,37 +45,29 @@ public sealed class GetUserAvailabilityResults
     /// <summary>
     ///     Gets or sets the suggestions response for the requested meeting time.
     /// </summary>
-    internal SuggestionsResponse SuggestionsResponse
-    {
-        get => suggestionsResponse;
-        set => suggestionsResponse = value;
-    }
+    internal SuggestionsResponse? SuggestionsResponse { get; set; }
 
     /// <summary>
     ///     Gets a collection of AttendeeAvailability objects representing availability information for each of the specified
     ///     attendees.
     /// </summary>
-    public ServiceResponseCollection<AttendeeAvailability> AttendeesAvailability
-    {
-        get => attendeesAvailability;
-        internal set => attendeesAvailability = value;
-    }
+    public ServiceResponseCollection<AttendeeAvailability> AttendeesAvailability { get; internal set; }
 
     /// <summary>
     ///     Gets a collection of suggested meeting times for the specified time period.
     /// </summary>
-    public Collection<Suggestion> Suggestions
+    public Collection<Suggestion>? Suggestions
     {
         get
         {
-            if (suggestionsResponse == null)
+            if (SuggestionsResponse == null)
             {
                 return null;
             }
 
-            suggestionsResponse.ThrowIfNecessary();
+            SuggestionsResponse.ThrowIfNecessary();
 
-            return suggestionsResponse.Suggestions;
+            return SuggestionsResponse.Suggestions;
         }
     }
 }

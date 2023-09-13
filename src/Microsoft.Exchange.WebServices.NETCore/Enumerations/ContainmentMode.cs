@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the containment mode for Contains search filters.
 /// </summary>
+[PublicAPI]
 public enum ContainmentMode
 {
     /// <summary>
@@ -54,5 +57,5 @@ public enum ContainmentMode
     /// <summary>
     ///     The comparison is between an exact phrase in the string and the constant.
     /// </summary>
-    ExactPhrase
+    ExactPhrase,
 }

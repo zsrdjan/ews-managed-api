@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the error codes identifying why a rule failed validation.
 /// </summary>
+[PublicAPI]
 public enum RuleErrorCode
 {
     /// <summary>
@@ -151,5 +154,5 @@ public enum RuleErrorCode
     /// <summary>
     ///     The rule is not supported.
     /// </summary>
-    UnsupportedRule
+    UnsupportedRule,
 }

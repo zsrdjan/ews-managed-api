@@ -25,24 +25,17 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an exception thrown when an error occurs as a result of calling
 ///     the UpdateInboxRules operation.
 /// </summary>
+[PublicAPI]
 public sealed class UpdateInboxRulesException : ServiceRemoteException
 {
-    /// <summary>
-    ///     ServiceResponse when service operation failed remotely.
-    /// </summary>
-    private readonly ServiceResponse serviceResponse;
-
-    /// <summary>
-    ///     Rule operation error collection.
-    /// </summary>
-    private readonly RuleOperationErrorCollection errors;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateInboxRulesException" /> class.
     /// </summary>
@@ -53,9 +46,9 @@ public sealed class UpdateInboxRulesException : ServiceRemoteException
         IEnumerator<RuleOperation> ruleOperations
     )
     {
-        this.serviceResponse = serviceResponse;
-        errors = serviceResponse.Errors;
-        foreach (var error in errors)
+        ServiceResponse = serviceResponse;
+        Errors = serviceResponse.Errors;
+        foreach (var error in Errors)
         {
             error.SetOperationByIndex(ruleOperations);
         }
@@ -70,8 +63,8 @@ public sealed class UpdateInboxRulesException : ServiceRemoteException
     private UpdateInboxRulesException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        serviceResponse = (ServiceResponse)info.GetValue("ServiceResponse", typeof(ServiceResponse));
-        errors = (RuleOperationErrorCollection)info.GetValue("Errors", typeof(RuleOperationErrorCollection));
+        ServiceResponse = (ServiceResponse)info.GetValue("ServiceResponse", typeof(ServiceResponse));
+        Errors = (RuleOperationErrorCollection)info.GetValue("Errors", typeof(RuleOperationErrorCollection));
     }
 
     /// <summary>
@@ -90,27 +83,27 @@ public sealed class UpdateInboxRulesException : ServiceRemoteException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("Errors", errors, typeof(RuleOperationErrorCollection));
-        info.AddValue("ServiceResponse", serviceResponse, typeof(ServiceResponse));
+        info.AddValue("Errors", Errors, typeof(RuleOperationErrorCollection));
+        info.AddValue("ServiceResponse", ServiceResponse, typeof(ServiceResponse));
     }
 
     /// <summary>
-    ///     Gets the ServiceResponse for the exception.
+    ///     Gets the ServiceResponse when service operation failed remotely.
     /// </summary>
-    public ServiceResponse ServiceResponse => serviceResponse;
+    public ServiceResponse ServiceResponse { get; }
 
     /// <summary>
     ///     Gets the rule operation error collection.
     /// </summary>
-    public RuleOperationErrorCollection Errors => errors;
+    public RuleOperationErrorCollection Errors { get; }
 
     /// <summary>
     ///     Gets the rule operation error code.
     /// </summary>
-    public ServiceError ErrorCode => serviceResponse.ErrorCode;
+    public ServiceError ErrorCode => ServiceResponse.ErrorCode;
 
     /// <summary>
     ///     Gets the rule operation error message.
     /// </summary>
-    public string ErrorMessage => serviceResponse.ErrorMessage;
+    public string ErrorMessage => ServiceResponse.ErrorMessage;
 }

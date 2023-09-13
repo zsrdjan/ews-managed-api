@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the conflict types that can be returned in meeting time suggestions.
 /// </summary>
+[PublicAPI]
 public enum ConflictType
 {
     /// <summary>
-    ///     There is a conflict with an indicidual attendee.
+    ///     There is a conflict with an individual attendee.
     /// </summary>
     IndividualAttendeeConflict,
 
@@ -49,5 +52,5 @@ public enum ConflictType
     /// <summary>
     ///     There is a conflict with an unresolvable attendee or an attendee that is not a user, group, or contact.
     /// </summary>
-    UnknownAttendeeConflict
+    UnknownAttendeeConflict,
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the types of event that can occur in a folder.
 /// </summary>
+[PublicAPI]
 public enum EventType
 {
     /// <summary>
@@ -78,5 +81,5 @@ public enum EventType
     /// </summary>
     [RequiredServerVersion(ExchangeVersion.Exchange2010_SP1)]
     [EwsEnum("FreeBusyChangedEvent")]
-    FreeBusyChanged
+    FreeBusyChanged,
 }

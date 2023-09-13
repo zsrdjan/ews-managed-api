@@ -33,22 +33,22 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     /// <summary>
     ///     List of <see cref="Microsoft.Exchange.WebServices.Data.AbstractFolderIdWrapper" />.
     /// </summary>
-    private readonly List<AbstractFolderIdWrapper> ids = new List<AbstractFolderIdWrapper>();
+    private readonly List<AbstractFolderIdWrapper> _ids = new();
 
     /// <summary>
     ///     Adds the specified folder.
     /// </summary>
     /// <param name="folder">The folder.</param>
-    internal void Add(Folder? folder)
+    internal void Add(Folder folder)
     {
-        ids.Add(new FolderWrapper(folder));
+        _ids.Add(new FolderWrapper(folder));
     }
 
     /// <summary>
     ///     Adds the range.
     /// </summary>
     /// <param name="folders">The folders.</param>
-    internal void AddRange(IEnumerable<Folder?> folders)
+    internal void AddRange(IEnumerable<Folder>? folders)
     {
         if (folders != null)
         {
@@ -65,14 +65,14 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     /// <param name="folderId">The folder id.</param>
     internal void Add(FolderId folderId)
     {
-        ids.Add(new FolderIdWrapper(folderId));
+        _ids.Add(new FolderIdWrapper(folderId));
     }
 
     /// <summary>
     ///     Adds the range of folder ids.
     /// </summary>
     /// <param name="folderIds">The folder ids.</param>
-    internal void AddRange(IEnumerable<FolderId> folderIds)
+    internal void AddRange(IEnumerable<FolderId>? folderIds)
     {
         if (folderIds != null)
         {
@@ -87,15 +87,15 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
-    /// <param name="ewsNamesapce">The ews namesapce.</param>
+    /// <param name="ewsNamespace">The ews namespace.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
-    internal void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace ewsNamesapce, string xmlElementName)
+    internal void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace ewsNamespace, string xmlElementName)
     {
         if (Count > 0)
         {
-            writer.WriteStartElement(ewsNamesapce, xmlElementName);
+            writer.WriteStartElement(ewsNamespace, xmlElementName);
 
-            foreach (var folderIdWrapper in ids)
+            foreach (var folderIdWrapper in _ids)
             {
                 folderIdWrapper.WriteToXml(writer);
             }
@@ -108,13 +108,13 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     ///     Gets the id count.
     /// </summary>
     /// <value>The count.</value>
-    internal int Count => ids.Count;
+    internal int Count => _ids.Count;
 
     /// <summary>
     ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.AbstractFolderIdWrapper" /> at the specified index.
     /// </summary>
     /// <param name="index">the index</param>
-    internal AbstractFolderIdWrapper this[int index] => ids[index];
+    internal AbstractFolderIdWrapper this[int index] => _ids[index];
 
     /// <summary>
     ///     Validates list of folderIds against a specified request version.
@@ -122,7 +122,7 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     /// <param name="version">The version.</param>
     internal void Validate(ExchangeVersion version)
     {
-        foreach (var folderIdWrapper in ids)
+        foreach (var folderIdWrapper in _ids)
         {
             folderIdWrapper.Validate(version);
         }
@@ -137,7 +137,7 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<AbstractFolderIdWrapper> GetEnumerator()
     {
-        return ids.GetEnumerator();
+        return _ids.GetEnumerator();
     }
 
     #endregion
@@ -151,7 +151,7 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return ids.GetEnumerator();
+        return _ids.GetEnumerator();
     }
 
     #endregion

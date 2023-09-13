@@ -32,54 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SoapFaultDetails
 {
-    #region Private Members
-
-    private string faultCode;
-    private string faultString;
-    private string faultActor;
-
-    /// <summary>
-    ///     Response code returned by EWS requests.
-    ///     Default to InternalServerError.
-    /// </summary>
-    private ServiceError responseCode = ServiceError.ErrorInternalServerError;
-
-    /// <summary>
-    ///     Message text of the error.
-    /// </summary>
-    private string message;
-
-    /// <summary>
-    ///     This is returned by Availability requests.
-    /// </summary>
-    private ServiceError errorCode = ServiceError.NoError;
-
-    /// <summary>
-    ///     This is returned by UM requests. It's the name of the exception that was raised.
-    /// </summary>
-    private string exceptionType;
-
-    /// <summary>
-    ///     When a schema validation error is returned, this is the line number in the request where the error occurred.
-    /// </summary>
-    private int lineNumber;
-
-    /// <summary>
-    ///     When a schema validation error is returned, this is the offset into the line of the request where the error
-    ///     occurred.
-    /// </summary>
-    private int positionWithinLine;
-
-    /// <summary>
-    ///     Dictionary of key/value pairs from the MessageXml node in the fault. Usually empty but there are
-    ///     a few cases where SOAP faults may include MessageXml details (e.g. CASOverBudgetException includes
-    ///     BackoffTime value).
-    /// </summary>
-    private Dictionary<string, string> errorDetails = new Dictionary<string, string>();
-
-    #endregion
-
-
     #region Constructor
 
     /// <summary>
@@ -110,20 +62,25 @@ internal class SoapFaultDetails
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.SOAPFaultCodeElementName:
+                    {
                         soapFaultDetails.FaultCode = reader.ReadElementValue();
                         break;
-
+                    }
                     case XmlElementNames.SOAPFaultStringElementName:
+                    {
                         soapFaultDetails.FaultString = reader.ReadElementValue();
                         break;
-
+                    }
                     case XmlElementNames.SOAPFaultActorElementName:
+                    {
                         soapFaultDetails.FaultActor = reader.ReadElementValue();
                         break;
-
+                    }
                     case XmlElementNames.SOAPDetailElementName:
+                    {
                         soapFaultDetails.ParseDetailNode(reader);
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(soapNamespace, XmlElementNames.SOAPFaultElementName));
@@ -145,6 +102,7 @@ internal class SoapFaultDetails
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.EwsResponseCodeElementName:
+                    {
                         try
                         {
                             ResponseCode = reader.ReadElementValue<ServiceError>();
@@ -156,20 +114,24 @@ internal class SoapFaultDetails
                         }
 
                         break;
-
+                    }
                     case XmlElementNames.EwsMessageElementName:
+                    {
                         Message = reader.ReadElementValue();
                         break;
-
+                    }
                     case XmlElementNames.EwsLineElementName:
+                    {
                         LineNumber = reader.ReadElementValue<int>();
                         break;
-
+                    }
                     case XmlElementNames.EwsPositionElementName:
+                    {
                         PositionWithinLine = reader.ReadElementValue<int>();
                         break;
-
+                    }
                     case XmlElementNames.EwsErrorCodeElementName:
+                    {
                         try
                         {
                             ErrorCode = reader.ReadElementValue<ServiceError>();
@@ -181,14 +143,17 @@ internal class SoapFaultDetails
                         }
 
                         break;
-
+                    }
                     case XmlElementNames.EwsExceptionTypeElementName:
+                    {
                         ExceptionType = reader.ReadElementValue();
                         break;
-
+                    }
                     case XmlElementNames.MessageXml:
+                    {
                         ParseMessageXml(reader);
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.SOAPDetailElementName));
@@ -204,7 +169,7 @@ internal class SoapFaultDetails
         // namespaces (types namespace for E12, errors namespace in E14). To
         // avoid this problem, the parser will match the namespace from the
         // start and end elements.
-        var elementNS = EwsUtilities.GetNamespaceFromUri(reader.NamespaceUri);
+        var elementNs = EwsUtilities.GetNamespaceFromUri(reader.NamespaceUri);
 
         if (!reader.IsEmptyElement)
         {
@@ -217,14 +182,16 @@ internal class SoapFaultDetails
                     switch (reader.LocalName)
                     {
                         case XmlElementNames.Value:
-                            errorDetails.Add(
+                        {
+                            ErrorDetails.Add(
                                 reader.ReadAttributeValue(XmlAttributeNames.Name),
                                 reader.ReadElementValue()
                             );
                             break;
+                        }
                     }
                 }
-            } while (!reader.IsEndElement(elementNS, XmlElementNames.MessageXml));
+            } while (!reader.IsEndElement(elementNs, XmlElementNames.MessageXml));
         }
     }
 
@@ -232,99 +199,71 @@ internal class SoapFaultDetails
     ///     Gets or sets the SOAP fault code.
     /// </summary>
     /// <value>The SOAP fault code.</value>
-    internal string FaultCode
-    {
-        get => faultCode;
-        set => faultCode = value;
-    }
+    internal string FaultCode { get; set; }
 
     /// <summary>
     ///     Gets or sets the SOAP fault string.
     /// </summary>
     /// <value>The fault string.</value>
-    internal string FaultString
-    {
-        get => faultString;
-        set => faultString = value;
-    }
+    internal string FaultString { get; set; }
 
     /// <summary>
     ///     Gets or sets the SOAP fault actor.
     /// </summary>
     /// <value>The fault actor.</value>
-    internal string FaultActor
-    {
-        get => faultActor;
-        set => faultActor = value;
-    }
+    internal string FaultActor { get; set; }
 
     /// <summary>
-    ///     Gets or sets the response code.
+    ///     Gets or sets the response code returned by EWS requests.
     /// </summary>
+    /// <remarks>Default to InternalServerError.</remarks>
     /// <value>The response code.</value>
-    internal ServiceError ResponseCode
-    {
-        get => responseCode;
-        set => responseCode = value;
-    }
+    internal ServiceError ResponseCode { get; set; } = ServiceError.ErrorInternalServerError;
 
     /// <summary>
     ///     Gets or sets the message.
     /// </summary>
     /// <value>The message.</value>
-    internal string Message
-    {
-        get => message;
-        set => message = value;
-    }
+    internal string Message { get; set; }
 
     /// <summary>
     ///     Gets or sets the error code.
     /// </summary>
     /// <value>The error code.</value>
-    internal ServiceError ErrorCode
-    {
-        get => errorCode;
-        set => errorCode = value;
-    }
+    internal ServiceError ErrorCode { get; set; } = ServiceError.NoError;
 
     /// <summary>
     ///     Gets or sets the type of the exception.
     /// </summary>
+    /// <remarks>This is returned by UM requests. It's the name of the exception that was raised.</remarks>
     /// <value>The type of the exception.</value>
-    internal string ExceptionType
-    {
-        get => exceptionType;
-        set => exceptionType = value;
-    }
+    internal string ExceptionType { get; set; }
 
     /// <summary>
     ///     Gets or sets the line number.
     /// </summary>
+    /// <remarks>When a schema validation error is returned, this is the line number in the request where the error occurred.</remarks>
     /// <value>The line number.</value>
-    internal int LineNumber
-    {
-        get => lineNumber;
-        set => lineNumber = value;
-    }
+    internal int LineNumber { get; set; }
 
     /// <summary>
     ///     Gets or sets the position within line.
     /// </summary>
+    /// <remarks>
+    /// When a schema validation error is returned, this is the offset
+    /// into the line of the request where the error occurred.
+    /// </remarks>
     /// <value>The position within line.</value>
-    internal int PositionWithinLine
-    {
-        get => positionWithinLine;
-        set => positionWithinLine = value;
-    }
+    internal int PositionWithinLine { get; set; }
 
     /// <summary>
     ///     Gets or sets the error details dictionary.
     /// </summary>
+    /// <remarks>
+    ///     Dictionary of key/value pairs from the MessageXml node in the fault. Usually empty but there are
+    ///     a few cases where SOAP faults may include MessageXml details (e.g. CASOverBudgetException includes
+    ///     BackoffTime value).
+    /// </remarks>
     /// <value>The error details dictionary.</value>
-    internal Dictionary<string, string> ErrorDetails
-    {
-        get => errorDetails;
-        set => errorDetails = value;
-    }
+    internal Dictionary<string, string> ErrorDetails { get; set; } = new();
 }

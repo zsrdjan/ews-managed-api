@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the source of a contact or group.
 /// </summary>
+[PublicAPI]
 public enum ContactSource
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum ContactSource
     /// <summary>
     ///     The contact or group is stored in Exchange.
     /// </summary>
-    Store
+    Store,
 }

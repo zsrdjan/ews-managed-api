@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the page direction for mailbox search.
 /// </summary>
+[PublicAPI]
 public enum SearchPageDirection
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum SearchPageDirection
     /// <summary>
     ///     Navigate to previous page.
     /// </summary>
-    Previous
+    Previous,
 }

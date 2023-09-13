@@ -25,16 +25,16 @@
 
 using System.Globalization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a time period.
 /// </summary>
+[PublicAPI]
 public sealed class TimeWindow : ISelfValidate
 {
-    private DateTime startTime;
-    private DateTime endTime;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="TimeWindow" /> class.
     /// </summary>
@@ -50,27 +50,19 @@ public sealed class TimeWindow : ISelfValidate
     public TimeWindow(DateTime startTime, DateTime endTime)
         : this()
     {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        StartTime = startTime;
+        EndTime = endTime;
     }
 
     /// <summary>
     ///     Gets or sets the start date and time.
     /// </summary>
-    public DateTime StartTime
-    {
-        get => startTime;
-        set => startTime = value;
-    }
+    public DateTime StartTime { get; set; }
 
     /// <summary>
     ///     Gets or sets the end date and time.
     /// </summary>
-    public DateTime EndTime
-    {
-        get => endTime;
-        set => endTime = value;
-    }
+    public DateTime EndTime { get; set; }
 
     /// <summary>
     ///     Loads from XML.
@@ -80,8 +72,8 @@ public sealed class TimeWindow : ISelfValidate
     {
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.Duration);
 
-        startTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
-        endTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
+        StartTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
+        EndTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
 
         reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.Duration);
     }
@@ -111,13 +103,13 @@ public sealed class TimeWindow : ISelfValidate
     /// <param name="xmlElementName">Name of the XML element.</param>
     internal void WriteToXmlUnscopedDatesOnly(EwsServiceXmlWriter writer, string xmlElementName)
     {
-        const string DateOnlyFormat = "yyyy-MM-ddT00:00:00";
+        const string dateOnlyFormat = "yyyy-MM-ddT00:00:00";
 
         WriteToXml(
             writer,
             xmlElementName,
-            StartTime.ToString(DateOnlyFormat, CultureInfo.InvariantCulture),
-            EndTime.ToString(DateOnlyFormat, CultureInfo.InvariantCulture)
+            StartTime.ToString(dateOnlyFormat, CultureInfo.InvariantCulture),
+            EndTime.ToString(dateOnlyFormat, CultureInfo.InvariantCulture)
         );
     }
 
@@ -134,7 +126,7 @@ public sealed class TimeWindow : ISelfValidate
     /// <summary>
     ///     Gets the duration.
     /// </summary>
-    internal TimeSpan Duration => endTime - startTime;
+    internal TimeSpan Duration => EndTime - StartTime;
 
 
     #region ISelfValidate Members

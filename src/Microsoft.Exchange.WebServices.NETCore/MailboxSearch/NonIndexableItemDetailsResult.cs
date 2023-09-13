@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents non indexable item details result.
 /// </summary>
+[PublicAPI]
 public sealed class NonIndexableItemDetailsResult
 {
     /// <summary>
@@ -76,10 +79,10 @@ public sealed class NonIndexableItemDetailsResult
     /// <summary>
     ///     Collection of items
     /// </summary>
-    public NonIndexableItem[] Items { get; set; }
+    public NonIndexableItem[]? Items { get; set; }
 
     /// <summary>
     ///     Failed mailboxes
     /// </summary>
-    public FailedSearchMailbox[] FailedMailboxes { get; set; }
+    public FailedSearchMailbox[]? FailedMailboxes { get; set; }
 }

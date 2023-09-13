@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the importance of an item.
 /// </summary>
+[PublicAPI]
 public enum Importance
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum Importance
     /// <summary>
     ///     High importance.
     /// </summary>
-    High
+    High,
 }

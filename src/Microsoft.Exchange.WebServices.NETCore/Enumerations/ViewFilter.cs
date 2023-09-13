@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the view filter for queries.
 /// </summary>
+[PublicAPI]
 public enum ViewFilter
 {
     /// <summary>

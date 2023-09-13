@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of a ResponseMessage object.
 /// </summary>
+[PublicAPI]
 public enum ResponseMessageType
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum ResponseMessageType
     /// <summary>
     ///     The ResponseMessage is a forward.
     /// </summary>
-    Forward
+    Forward,
 }

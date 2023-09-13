@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base class for Id expressed in a specific format.
 /// </summary>
+[PublicAPI]
 public abstract class AlternateIdBase : ISelfValidate
 {
     /// <summary>
@@ -86,7 +89,7 @@ public abstract class AlternateIdBase : ISelfValidate
 
         WriteAttributesToXml(writer);
 
-        writer.WriteEndElement(); // this.GetXmlElementName()
+        writer.WriteEndElement();
     }
 
     /// <summary>

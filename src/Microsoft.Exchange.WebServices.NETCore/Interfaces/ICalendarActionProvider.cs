@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-///     Interface defintion of a group of methods that are common to items that return CalendarActionResults
+///     Interface definition of a group of methods that are common to items that return CalendarActionResults
 /// </summary>
 internal interface ICalendarActionProvider
 {

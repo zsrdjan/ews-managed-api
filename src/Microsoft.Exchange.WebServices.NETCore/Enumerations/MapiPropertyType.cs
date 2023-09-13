@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the MAPI type of an extended property.
 /// </summary>
+[PublicAPI]
 public enum MapiPropertyType
 {
     /// <summary>
@@ -163,5 +166,5 @@ public enum MapiPropertyType
     /// <summary>
     ///     The property is of type StringArray.
     /// </summary>
-    StringArray
+    StringArray,
 }

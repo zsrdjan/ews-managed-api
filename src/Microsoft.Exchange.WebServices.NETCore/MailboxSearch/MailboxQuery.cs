@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents mailbox query object.
 /// </summary>
+[PublicAPI]
 public sealed class MailboxQuery
 {
     /// <summary>
@@ -55,20 +58,18 @@ public sealed class MailboxQuery
 /// <summary>
 ///     Represents mailbox search scope object.
 /// </summary>
+[PublicAPI]
 public sealed class MailboxSearchScope
 {
-    private MailboxSearchLocation searchScope = MailboxSearchLocation.All;
-    private MailboxSearchScopeType scopeType = MailboxSearchScopeType.LegacyExchangeDN;
-
     /// <summary>
     ///     Constructor
     /// </summary>
     /// <param name="mailbox">Mailbox</param>
     /// <param name="searchScope">Search scope</param>
-    public MailboxSearchScope(string mailbox, MailboxSearchLocation searchScope)
+    public MailboxSearchScope(string mailbox, MailboxSearchLocation searchScope = MailboxSearchLocation.All)
     {
         Mailbox = mailbox;
-        this.searchScope = searchScope;
+        SearchScope = searchScope;
         ExtendedAttributes = new ExtendedAttributes();
     }
 
@@ -80,20 +81,12 @@ public sealed class MailboxSearchScope
     /// <summary>
     ///     Search scope
     /// </summary>
-    public MailboxSearchLocation SearchScope
-    {
-        get => searchScope;
-        set => searchScope = value;
-    }
+    public MailboxSearchLocation SearchScope { get; set; }
 
     /// <summary>
     ///     Search scope type
     /// </summary>
-    internal MailboxSearchScopeType SearchScopeType
-    {
-        get => scopeType;
-        set => scopeType = value;
-    }
+    internal MailboxSearchScopeType SearchScopeType { get; set; } = MailboxSearchScopeType.LegacyExchangeDN;
 
     /// <summary>
     ///     Gets the extended data.
@@ -105,6 +98,7 @@ public sealed class MailboxSearchScope
 /// <summary>
 ///     Represents mailbox object for preview item.
 /// </summary>
+[PublicAPI]
 public sealed class PreviewItemMailbox
 {
     /// <summary>

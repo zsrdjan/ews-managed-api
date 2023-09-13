@@ -25,6 +25,8 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,13 +34,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents an exception from an autodiscover error response.
 /// </summary>
+[PublicAPI]
 public class AutodiscoverResponseException : ServiceRemoteException
 {
-    /// <summary>
-    ///     Error code when Autodiscover service operation failed remotely.
-    /// </summary>
-    private readonly AutodiscoverErrorCode errorCode;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverResponseException" /> class.
     /// </summary>
@@ -47,7 +45,7 @@ public class AutodiscoverResponseException : ServiceRemoteException
     internal AutodiscoverResponseException(AutodiscoverErrorCode errorCode, string message)
         : base(message)
     {
-        this.errorCode = errorCode;
+        ErrorCode = errorCode;
     }
 
     /// <summary>
@@ -59,7 +57,7 @@ public class AutodiscoverResponseException : ServiceRemoteException
     protected AutodiscoverResponseException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        errorCode = (AutodiscoverErrorCode)info.GetInt32("ErrorCode");
+        ErrorCode = (AutodiscoverErrorCode)info.GetInt32("ErrorCode");
     }
 
     /// <summary>
@@ -78,11 +76,11 @@ public class AutodiscoverResponseException : ServiceRemoteException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("ErrorCode", (int)errorCode);
+        info.AddValue("ErrorCode", (int)ErrorCode);
     }
 
     /// <summary>
     ///     Gets the ErrorCode for the exception.
     /// </summary>
-    public AutodiscoverErrorCode ErrorCode => errorCode;
+    public AutodiscoverErrorCode ErrorCode { get; }
 }

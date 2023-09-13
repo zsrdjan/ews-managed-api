@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents deletion modes.
 /// </summary>
+[PublicAPI]
 public enum DeleteMode
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum DeleteMode
     /// <summary>
     ///     The item or folder will be moved to the mailbox' Deleted Items folder.
     /// </summary>
-    MoveToDeletedItems
+    MoveToDeletedItems,
 }

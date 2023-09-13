@@ -25,23 +25,26 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of an ExpandGroup operation.
 /// </summary>
+[PublicAPI]
 public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
 {
     /// <summary>
     ///     True, if all members are returned.
     ///     EWS always returns true on ExpandDL, i.e. all members are returned.
     /// </summary>
-    private bool includesAllMembers;
+    private bool _includesAllMembers;
 
     /// <summary>
     ///     DL members.
     /// </summary>
-    private readonly Collection<EmailAddress> members = new Collection<EmailAddress>();
+    private readonly Collection<EmailAddress> _members = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ExpandGroupResults" /> class.
@@ -55,17 +58,17 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
     ///     less than the total number of members in the group, in which case the value of the
     ///     IncludesAllMembers is false.
     /// </summary>
-    public int Count => members.Count;
+    public int Count => _members.Count;
 
     /// <summary>
     ///     Gets a value indicating whether all the members of the group have been returned by ExpandGroup.
     /// </summary>
-    public bool IncludesAllMembers => includesAllMembers;
+    public bool IncludesAllMembers => _includesAllMembers;
 
     /// <summary>
     ///     Gets the members of the expanded group.
     /// </summary>
-    public Collection<EmailAddress> Members => members;
+    public Collection<EmailAddress> Members => _members;
 
 
     #region IEnumerable<EmailAddress> Members
@@ -76,7 +79,7 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<EmailAddress> GetEnumerator()
     {
-        return members.GetEnumerator();
+        return _members.GetEnumerator();
     }
 
     #endregion
@@ -90,7 +93,7 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return members.GetEnumerator();
+        return _members.GetEnumerator();
     }
 
     #endregion
@@ -106,7 +109,7 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
         if (!reader.IsEmptyElement)
         {
             var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-            includesAllMembers = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+            _includesAllMembers = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
             for (var i = 0; i < totalItemsInView; i++)
             {
@@ -115,7 +118,7 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
                 reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Mailbox);
                 emailAddress.LoadFromXml(reader, XmlElementNames.Mailbox);
 
-                members.Add(emailAddress);
+                _members.Add(emailAddress);
             }
 
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.DLExpansion);

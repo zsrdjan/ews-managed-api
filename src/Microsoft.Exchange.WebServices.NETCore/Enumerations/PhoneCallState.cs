@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     The PhoneCallState enumeration
 /// </summary>
+[PublicAPI]
 public enum PhoneCallState
 {
     /// <summary>
@@ -68,5 +71,5 @@ public enum PhoneCallState
     /// <summary>
     ///     Forwarding
     /// </summary>
-    Forwarding
+    Forwarding,
 }

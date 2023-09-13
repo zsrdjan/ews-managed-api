@@ -27,8 +27,6 @@ using System.Globalization;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using TypeToDefaultValueMap = Dictionary<Type, object>;
-
 /// <summary>
 ///     Represents an entry in the MapiTypeConverter map.
 /// </summary>
@@ -37,23 +35,21 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Map CLR types used for MAPI properties to matching default values.
     /// </summary>
-    private static readonly LazyMember<TypeToDefaultValueMap> defaultValueMap = new LazyMember<TypeToDefaultValueMap>(
-        () =>
+    private static readonly LazyMember<Dictionary<Type, object?>> DefaultValueMap = new(
+        () => new Dictionary<Type, object?>
         {
-            var map = new TypeToDefaultValueMap();
-
-            map.Add(typeof(bool), false);
-            map.Add(typeof(byte[]), null);
-            map.Add(typeof(short), (short)0);
-            map.Add(typeof(int), 0);
-            map.Add(typeof(long), (long)0);
-            map.Add(typeof(float), (float)0.0);
-            map.Add(typeof(double), 0.0);
-            map.Add(typeof(DateTime), DateTime.MinValue);
-            map.Add(typeof(Guid), Guid.Empty);
-            map.Add(typeof(string), null);
-
-            return map;
+            // @formatter:off
+            { typeof(bool), false },
+            { typeof(byte[]), null },
+            { typeof(short), (short)0 },
+            { typeof(int), 0 },
+            { typeof(long), (long)0 },
+            { typeof(float), (float)0.0 },
+            { typeof(double), 0.0 },
+            { typeof(DateTime), DateTime.MinValue },
+            { typeof(Guid), Guid.Empty },
+            { typeof(string), null },
+            // @formatter:on
         }
     );
 
@@ -70,9 +66,9 @@ internal class MapiTypeConverterMapEntry
     internal MapiTypeConverterMapEntry(Type type)
     {
         EwsUtilities.Assert(
-            defaultValueMap.Member.ContainsKey(type),
+            DefaultValueMap.Member.ContainsKey(type),
             "MapiTypeConverterMapEntry ctor",
-            string.Format("No default value entry for type {0}", type.Name)
+            $"No default value entry for type {type.Name}"
         );
 
         Type = type;
@@ -169,8 +165,7 @@ internal class MapiTypeConverterMapEntry
     /// <param name="value">The value.</param>
     private void ValidateValueAsArray(object value)
     {
-        var array = value as Array;
-        if (array == null)
+        if (value is not Array array)
         {
             throw new ArgumentException(string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type));
         }
@@ -221,7 +216,7 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Gets the default value for the type.
     /// </summary>
-    internal object DefaultValue => defaultValueMap.Member[Type];
+    internal object DefaultValue => DefaultValueMap.Member[Type];
 
     #endregion
 }

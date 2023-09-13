@@ -1,5 +1,8 @@
-﻿namespace Microsoft.Exchange.WebServices.Data.Misc;
+using JetBrains.Annotations;
 
+namespace Microsoft.Exchange.WebServices.Data.Misc;
+
+[PublicAPI]
 public static class TimeZoneExtensions
 {
     public static TimeZoneInfo CreateCustomTimeZone(

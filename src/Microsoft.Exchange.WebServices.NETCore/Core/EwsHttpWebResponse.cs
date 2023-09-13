@@ -36,7 +36,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// <summary>
     ///     Underlying HttpWebRequest.
     /// </summary>
-    private readonly HttpResponseMessage response;
+    private readonly HttpResponseMessage _response;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebResponse" /> class.
@@ -44,7 +44,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// <param name="response">The response.</param>
     internal EwsHttpWebResponse(HttpResponseMessage response)
     {
-        this.response = response;
+        _response = response;
     }
 
 
@@ -55,7 +55,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// </summary>
     void IEwsHttpWebResponse.Close()
     {
-        response.Dispose();
+        _response.Dispose();
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// </returns>
     Task<Stream> IEwsHttpWebResponse.GetResponseStream()
     {
-        return response.Content.ReadAsStreamAsync();
+        return _response.Content.ReadAsStreamAsync();
     }
 
     /// <summary>
@@ -74,13 +74,13 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// </summary>
     /// <returns>A string that describes the method that is used to encode the body of the response.</returns>
     string IEwsHttpWebResponse.ContentEncoding =>
-        response.Content.Headers.ContentEncoding.FirstOrDefault() ?? string.Empty;
+        _response.Content.Headers.ContentEncoding.FirstOrDefault() ?? string.Empty;
 
     /// <summary>
     ///     Gets the content type of the response.
     /// </summary>
     /// <returns>A string that contains the content type of the response.</returns>
-    string IEwsHttpWebResponse.ContentType => response.Content.Headers.ContentType?.ToString();
+    string IEwsHttpWebResponse.ContentType => _response.Content.Headers.ContentType?.ToString();
 
     /// <summary>
     ///     Gets the headers that are associated with this response from the server.
@@ -89,32 +89,32 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the header information returned with the
     ///     response.
     /// </returns>
-    HttpResponseHeaders IEwsHttpWebResponse.Headers => response.Headers;
+    HttpResponseHeaders IEwsHttpWebResponse.Headers => _response.Headers;
 
     /// <summary>
     ///     Gets the URI of the Internet resource that responded to the request.
     /// </summary>
     /// <returns>A <see cref="T:System.Uri" /> that contains the URI of the Internet resource that responded to the request.</returns>
-    Uri IEwsHttpWebResponse.ResponseUri => response.RequestMessage.RequestUri;
+    Uri? IEwsHttpWebResponse.ResponseUri => _response.RequestMessage.RequestUri;
 
     /// <summary>
     ///     Gets the status of the response.
     /// </summary>
     /// <returns>One of the System.Net.HttpStatusCode values.</returns>
-    HttpStatusCode IEwsHttpWebResponse.StatusCode => response.StatusCode;
+    HttpStatusCode IEwsHttpWebResponse.StatusCode => _response.StatusCode;
 
     /// <summary>
     ///     Gets the status description returned with the response.
     /// </summary>
     /// <returns>A string that describes the status of the response.</returns>
-    string IEwsHttpWebResponse.StatusDescription => response.ReasonPhrase;
+    string? IEwsHttpWebResponse.StatusDescription => _response.ReasonPhrase;
 
     /// <summary>
     ///     Gets the version of the HTTP protocol that is used in the response.
     /// </summary>
     /// <value></value>
     /// <returns>System.Version that contains the HTTP protocol version of the response.</returns>
-    Version IEwsHttpWebResponse.ProtocolVersion => response.Version;
+    Version IEwsHttpWebResponse.ProtocolVersion => _response.Version;
 
     #endregion
 
@@ -126,7 +126,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// </summary>
     void IDisposable.Dispose()
     {
-        response.Dispose();
+        _response.Dispose();
     }
 
     #endregion

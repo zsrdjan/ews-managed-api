@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the sensitivity of an item.
 /// </summary>
+[PublicAPI]
 public enum Sensitivity
 {
     /// <summary>
@@ -48,5 +51,5 @@ public enum Sensitivity
     /// <summary>
     ///     The item is confidential.
     /// </summary>
-    Confidential
+    Confidential,
 }

@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an exception that is thrown when the Autodiscover service could not be contacted.
 /// </summary>
+[PublicAPI]
 public class AutodiscoverLocalException : ServiceLocalException
 {
     /// <summary>

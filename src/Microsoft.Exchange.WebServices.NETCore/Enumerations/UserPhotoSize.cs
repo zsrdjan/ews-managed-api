@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the different user photo sizes that can be requested
 /// </summary>
+[PublicAPI]
 public static class UserPhotoSize
 {
     /// <summary>Image of size 48x48</summary>

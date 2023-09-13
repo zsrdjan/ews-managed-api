@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents non indexable item parameters base class
 /// </summary>
+[PublicAPI]
 public abstract class NonIndexableItemParameters
 {
     /// <summary>
@@ -44,6 +47,7 @@ public abstract class NonIndexableItemParameters
 /// <summary>
 ///     Represents get non indexable item statistics parameters.
 /// </summary>
+[PublicAPI]
 public sealed class GetNonIndexableItemStatisticsParameters : NonIndexableItemParameters
 {
 }
@@ -51,6 +55,7 @@ public sealed class GetNonIndexableItemStatisticsParameters : NonIndexableItemPa
 /// <summary>
 ///     Represents get non indexable item details parameters.
 /// </summary>
+[PublicAPI]
 public sealed class GetNonIndexableItemDetailsParameters : NonIndexableItemParameters
 {
     /// <summary>

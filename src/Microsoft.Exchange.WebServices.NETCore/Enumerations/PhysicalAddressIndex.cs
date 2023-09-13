@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a physical address index.
 /// </summary>
+[PublicAPI]
 public enum PhysicalAddressIndex
 {
     /// <summary>
@@ -48,5 +51,5 @@ public enum PhysicalAddressIndex
     /// <summary>
     ///     The alternate address.
     /// </summary>
-    Other
+    Other,
 }

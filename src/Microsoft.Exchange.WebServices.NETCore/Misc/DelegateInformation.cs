@@ -25,51 +25,38 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of a GetDelegates operation.
 /// </summary>
+[PublicAPI]
 public sealed class DelegateInformation
 {
-    #region Private members
-
-    private readonly Collection<DelegateUserResponse> delegateUserResponses;
-    private readonly MeetingRequestsDeliveryScope meetingReqestsDeliveryScope;
-
-    #endregion
-
-
-    #region Constructor
-
     /// <summary>
     ///     Initializes a DelegateInformation object
     /// </summary>
     /// <param name="delegateUserResponses">List of DelegateUserResponses from a GetDelegates request</param>
-    /// <param name="meetingReqestsDeliveryScope">MeetingRequestsDeliveryScope from a GetDelegates request.</param>
+    /// <param name="meetingRequestsDeliveryScope">MeetingRequestsDeliveryScope from a GetDelegates request.</param>
     internal DelegateInformation(
         IList<DelegateUserResponse> delegateUserResponses,
-        MeetingRequestsDeliveryScope meetingReqestsDeliveryScope
+        MeetingRequestsDeliveryScope meetingRequestsDeliveryScope
     )
     {
-        this.delegateUserResponses = new Collection<DelegateUserResponse>(delegateUserResponses);
-        this.meetingReqestsDeliveryScope = meetingReqestsDeliveryScope;
+        DelegateUserResponses = new Collection<DelegateUserResponse>(delegateUserResponses);
+        MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
     }
 
-    #endregion
-
-
-    #region Public Properties
 
     /// <summary>
     ///     Gets a list of responses for each of the delegate users concerned by the operation.
     /// </summary>
-    public Collection<DelegateUserResponse> DelegateUserResponses => delegateUserResponses;
+    public Collection<DelegateUserResponse> DelegateUserResponses { get; }
 
     /// <summary>
     ///     Gets a value indicating if and how meeting requests are delivered to delegates.
     /// </summary>
-    public MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope => meetingReqestsDeliveryScope;
-
-    #endregion
+    public MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope { get; }
 }

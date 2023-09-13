@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the legacy free/busy status associated with an appointment.
 /// </summary>
+[PublicAPI]
 public enum LegacyFreeBusyStatus
 {
     /// <summary>
@@ -58,5 +61,5 @@ public enum LegacyFreeBusyStatus
     /// <summary>
     ///     No free/busy status is associated with the appointment.
     /// </summary>
-    NoData = 5
+    NoData = 5,
 }

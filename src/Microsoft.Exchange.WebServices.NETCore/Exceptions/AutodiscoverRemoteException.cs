@@ -25,6 +25,8 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,17 +34,16 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents an exception that is thrown when the Autodiscover service returns an error.
 /// </summary>
+[PublicAPI]
 public class AutodiscoverRemoteException : ServiceRemoteException
 {
-    private readonly AutodiscoverError error;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverRemoteException" /> class.
     /// </summary>
     /// <param name="error">The error.</param>
     public AutodiscoverRemoteException(AutodiscoverError error)
     {
-        this.error = error;
+        Error = error;
     }
 
     /// <summary>
@@ -53,7 +54,7 @@ public class AutodiscoverRemoteException : ServiceRemoteException
     public AutodiscoverRemoteException(string message, AutodiscoverError error)
         : base(message)
     {
-        this.error = error;
+        Error = error;
     }
 
     /// <summary>
@@ -65,7 +66,7 @@ public class AutodiscoverRemoteException : ServiceRemoteException
     public AutodiscoverRemoteException(string message, AutodiscoverError error, Exception innerException)
         : base(message, innerException)
     {
-        this.error = error;
+        Error = error;
     }
 
     /// <summary>
@@ -77,7 +78,7 @@ public class AutodiscoverRemoteException : ServiceRemoteException
     protected AutodiscoverRemoteException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        error = (AutodiscoverError)info.GetValue("Error", typeof(AutodiscoverError));
+        Error = (AutodiscoverError)info.GetValue("Error", typeof(AutodiscoverError));
     }
 
     /// <summary>
@@ -96,12 +97,12 @@ public class AutodiscoverRemoteException : ServiceRemoteException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("Error", error, typeof(Uri));
+        info.AddValue("Error", Error, typeof(Uri));
     }
 
     /// <summary>
     ///     Gets the error.
     /// </summary>
     /// <value>The error.</value>
-    public AutodiscoverError Error => error;
+    public AutodiscoverError Error { get; }
 }

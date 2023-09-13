@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the modes of a Task.
 /// </summary>
+[PublicAPI]
 public enum TaskMode
 {
     /// <summary>
@@ -58,5 +61,5 @@ public enum TaskMode
     /// <summary>
     ///     The task is self delegated
     /// </summary>
-    SelfDelegated = 5
+    SelfDelegated = 5,
 }

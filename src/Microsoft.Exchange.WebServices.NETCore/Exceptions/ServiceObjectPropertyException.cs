@@ -25,18 +25,16 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when an operation on a property fails.
 /// </summary>
+[PublicAPI]
 public class ServiceObjectPropertyException : PropertyException
 {
-    /// <summary>
-    ///     The definition of the property that is at the origin of the exception.
-    /// </summary>
-    private readonly PropertyDefinitionBase propertyDefinition;
-
     /// <summary>
     ///     ServiceObjectPropertyException constructor.
     /// </summary>
@@ -44,7 +42,7 @@ public class ServiceObjectPropertyException : PropertyException
     public ServiceObjectPropertyException(PropertyDefinitionBase propertyDefinition)
         : base(propertyDefinition.GetPrintableName())
     {
-        this.propertyDefinition = propertyDefinition;
+        PropertyDefinition = propertyDefinition;
     }
 
     /// <summary>
@@ -55,7 +53,7 @@ public class ServiceObjectPropertyException : PropertyException
     public ServiceObjectPropertyException(string message, PropertyDefinitionBase propertyDefinition)
         : base(message, propertyDefinition.GetPrintableName())
     {
-        this.propertyDefinition = propertyDefinition;
+        PropertyDefinition = propertyDefinition;
     }
 
     /// <summary>
@@ -71,7 +69,7 @@ public class ServiceObjectPropertyException : PropertyException
     )
         : base(message, propertyDefinition.GetPrintableName(), innerException)
     {
-        this.propertyDefinition = propertyDefinition;
+        PropertyDefinition = propertyDefinition;
     }
 
     /// <summary>
@@ -83,7 +81,7 @@ public class ServiceObjectPropertyException : PropertyException
     protected ServiceObjectPropertyException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        propertyDefinition = (PropertyDefinitionBase)info.GetValue(
+        PropertyDefinition = (PropertyDefinitionBase)info.GetValue(
             "PropertyDefinition",
             typeof(PropertyDefinitionBase)
         );
@@ -105,11 +103,12 @@ public class ServiceObjectPropertyException : PropertyException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("PropertyDefinition", propertyDefinition, typeof(PropertyDefinitionBase));
+        info.AddValue("PropertyDefinition", PropertyDefinition, typeof(PropertyDefinitionBase));
     }
 
     /// <summary>
     ///     Gets the definition of the property that caused the exception.
     /// </summary>
-    public PropertyDefinitionBase PropertyDefinition => propertyDefinition;
+    /// <remarks>The definition of the property that is at the origin of the exception.</remarks>
+    public PropertyDefinitionBase PropertyDefinition { get; }
 }

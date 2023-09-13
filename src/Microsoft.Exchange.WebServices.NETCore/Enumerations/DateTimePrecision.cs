@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the precision for returned DateTime values
 /// </summary>
+[PublicAPI]
 public enum DateTimePrecision
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum DateTimePrecision
     /// <summary>
     ///     Milliseconds
     /// </summary>
-    Milliseconds
+    Milliseconds,
 }

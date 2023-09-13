@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
 /// <summary>
 ///     Represents a UnifiedGroup class.
 /// </summary>
+[PublicAPI]
 public class UnifiedGroup : ComplexProperty
 {
     /// <summary>
@@ -45,32 +48,32 @@ public class UnifiedGroup : ComplexProperty
     /// <summary>
     ///     Gets or sets the ExternalDirectoryObjectId for this group
     /// </summary>
-    public string ExternalDirectoryObjectId { get; set; }
+    public string? ExternalDirectoryObjectId { get; set; }
 
     /// <summary>
     ///     Gets or sets the LastVisitedTimeUtc for this group and user
     /// </summary>
-    public string LastVisitedTimeUtc { get; set; }
+    public string? LastVisitedTimeUtc { get; set; }
 
     /// <summary>
     ///     Gets or sets the SmtpAddress associated with this group
     /// </summary>
-    public string SmtpAddress { get; set; }
+    public string? SmtpAddress { get; set; }
 
     /// <summary>
     ///     Gets or sets the LegacyDN associated with this group
     /// </summary>
-    public string LegacyDN { get; set; }
+    public string? LegacyDN { get; set; }
 
     /// <summary>
     ///     Gets or sets the MailboxGuid associated with this group
     /// </summary>
-    public string MailboxGuid { get; set; }
+    public string? MailboxGuid { get; set; }
 
     /// <summary>
     ///     Gets or sets the DisplayName associated with this group
     /// </summary>
-    public string DisplayName { get; set; }
+    public string? DisplayName { get; set; }
 
     /// <summary>
     ///     Gets or sets the AccessType associated with this group
@@ -91,33 +94,45 @@ public class UnifiedGroup : ComplexProperty
             switch (reader.LocalName)
             {
                 case XmlElementNames.SmtpAddress:
+                {
                     SmtpAddress = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.LegacyDN:
+                {
                     LegacyDN = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.MailboxGuid:
+                {
                     MailboxGuid = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.DisplayName:
+                {
                     DisplayName = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.IsFavorite:
+                {
                     IsFavorite = reader.ReadElementValue<bool>();
                     break;
+                }
                 case XmlElementNames.LastVisitedTimeUtc:
+                {
                     LastVisitedTimeUtc = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.AccessType:
-                    AccessType = (UnifiedGroupAccessType)Enum.Parse(
-                        typeof(UnifiedGroupAccessType),
-                        reader.ReadElementValue(),
-                        false
-                    );
+                {
+                    AccessType = Enum.Parse<UnifiedGroupAccessType>(reader.ReadElementValue(), false);
                     break;
+                }
                 case XmlElementNames.ExternalDirectoryObjectId:
+                {
                     ExternalDirectoryObjectId = reader.ReadElementValue();
                     break;
+                }
             }
         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UnifiedGroup));
 

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the response types from a GetUserPhoto request
 /// </summary>
+[PublicAPI]
 public enum GetUserPhotoStatus
 {
     /// <summary>

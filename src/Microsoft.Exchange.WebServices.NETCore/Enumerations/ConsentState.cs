@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data.Enumerations;
 
 /// <summary>
 ///     The consent states enumeration
 /// </summary>
+[PublicAPI]
 public enum ConsentState
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum ConsentState
     /// <summary>
     ///     User has requested to enable the extension.
     /// </summary>
-    Consented = 2
+    Consented = 2,
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the location for mailbox search.
 /// </summary>
+[PublicAPI]
 public enum MailboxSearchLocation
 {
     /// <summary>

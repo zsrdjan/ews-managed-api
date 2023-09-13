@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the scope of a user's permission on a folders.
 /// </summary>
+[PublicAPI]
 public enum PermissionScope
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum PermissionScope
     /// <summary>
     ///     The user has the associated permission on all items.
     /// </summary>
-    All
+    All,
 }

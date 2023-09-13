@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a user's read access permission on items in a non-calendar folder.
 /// </summary>
+[PublicAPI]
 public enum FolderPermissionReadAccess
 {
     /// <summary>
@@ -49,5 +52,5 @@ public enum FolderPermissionReadAccess
     /// <summary>
     ///     The user has access to the full details of items.
     /// </summary>
-    FullDetails
+    FullDetails,
 }

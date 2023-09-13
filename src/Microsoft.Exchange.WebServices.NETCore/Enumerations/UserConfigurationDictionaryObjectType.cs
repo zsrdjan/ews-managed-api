@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Identifies the user configuration dictionary key and value types.
 /// </summary>
+[PublicAPI]
 public enum UserConfigurationDictionaryObjectType
 {
     /// <summary>

@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when a service operation fails locally (e.g. validation error).
 /// </summary>
+[PublicAPI]
 public class ServiceLocalException : Exception
 {
     /// <summary>

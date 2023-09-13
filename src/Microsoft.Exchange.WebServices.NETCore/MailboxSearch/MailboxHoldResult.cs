@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents mailbox hold status
 /// </summary>
+[PublicAPI]
 public sealed class MailboxHoldStatus
 {
     /// <summary>
@@ -69,6 +72,7 @@ public sealed class MailboxHoldStatus
 /// <summary>
 ///     Represents mailbox hold result
 /// </summary>
+[PublicAPI]
 public sealed class MailboxHoldResult
 {
     /// <summary>
@@ -82,8 +86,10 @@ public sealed class MailboxHoldResult
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.MailboxHoldResult);
 
-        var holdResult = new MailboxHoldResult();
-        holdResult.HoldId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.HoldId);
+        var holdResult = new MailboxHoldResult
+        {
+            HoldId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.HoldId),
+        };
 
         // the query could be empty means there won't be Query element, hence needs to read and check
         // if the next element is not Query, then it means already read MailboxHoldStatuses element
@@ -118,15 +124,15 @@ public sealed class MailboxHoldResult
     /// <summary>
     ///     Hold id
     /// </summary>
-    public string HoldId { get; set; }
+    public string? HoldId { get; set; }
 
     /// <summary>
     ///     Query
     /// </summary>
-    public string Query { get; set; }
+    public string? Query { get; set; }
 
     /// <summary>
     ///     Collection of mailbox status
     /// </summary>
-    public MailboxHoldStatus[] Statuses { get; set; }
+    public MailboxHoldStatus[]? Statuses { get; set; }
 }

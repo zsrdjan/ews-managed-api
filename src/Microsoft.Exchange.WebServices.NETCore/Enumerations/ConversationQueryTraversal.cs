@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the folder traversal depth in queries.
 /// </summary>
+[PublicAPI]
 public enum ConversationQueryTraversal
 {
     /// <summary>

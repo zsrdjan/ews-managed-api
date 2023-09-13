@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
 /// <summary>
@@ -32,6 +34,7 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 ///     Add new values to the end and keep in sync with
 ///     Microsoft.Exchange.Autodiscover.ConfigurationSettings.UserConfigurationSettingName.
 /// </remarks>
+[PublicAPI]
 public enum UserSettingName
 {
     /// <summary>
@@ -532,5 +535,5 @@ public enum UserSettingName
     /// <summary>
     ///     External OutlookService URL
     /// </summary>
-    ExternalOutlookServiceUrl = 99
+    ExternalOutlookServiceUrl = 99,
 }

@@ -30,9 +30,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class Time
 {
-    private int hours;
-    private int minutes;
-    private int seconds;
+    private readonly int _hours;
+    private readonly int _minutes;
+    private readonly int _seconds;
 
     /// <summary>
     ///     Initializes a new instance of Time.
@@ -50,7 +50,7 @@ internal sealed class Time
     {
         if (minutes < 0 || minutes >= 1440)
         {
-            throw new ArgumentException(Strings.MinutesMustBeBetween0And1439, "minutes");
+            throw new ArgumentException(Strings.MinutesMustBeBetween0And1439, nameof(minutes));
         }
 
         Hours = minutes / 60;
@@ -87,9 +87,9 @@ internal sealed class Time
     ///     Convert Time to XML Schema time.
     /// </summary>
     /// <returns>String in XML Schema time format.</returns>
-    internal string ToXSTime()
+    internal string ToXsTime()
     {
-        return string.Format("{0:00}:{1:00}:{2:00}", Hours, Minutes, Seconds);
+        return $"{Hours:00}:{Minutes:00}:{Seconds:00}";
     }
 
     /// <summary>
@@ -106,13 +106,13 @@ internal sealed class Time
     /// </summary>
     internal int Hours
     {
-        get => hours;
+        get => _hours;
 
-        set
+        init
         {
             if (value >= 0 && value < 24)
             {
-                hours = value;
+                _hours = value;
             }
             else
             {
@@ -126,13 +126,13 @@ internal sealed class Time
     /// </summary>
     internal int Minutes
     {
-        get => minutes;
+        get => _minutes;
 
-        set
+        init
         {
             if (value >= 0 && value < 60)
             {
-                minutes = value;
+                _minutes = value;
             }
             else
             {
@@ -146,13 +146,13 @@ internal sealed class Time
     /// </summary>
     internal int Seconds
     {
-        get => seconds;
+        get => _seconds;
 
-        set
+        init
         {
             if (value >= 0 && value < 60)
             {
-                seconds = value;
+                _seconds = value;
             }
             else
             {

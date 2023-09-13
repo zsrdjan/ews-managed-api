@@ -23,6 +23,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -43,13 +44,9 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <summary>
     ///     UTF-8 encoding that does not create leading Byte order marks
     /// </summary>
-    private static readonly Encoding utf8Encoding = new UTF8Encoding(false);
+    private static readonly Encoding Utf8Encoding = new UTF8Encoding(false);
 
-    private bool isDisposed;
-    private readonly ExchangeServiceBase service;
-    private readonly XmlWriter xmlWriter;
-    private bool isTimeZoneHeaderEmitted;
-    private bool requireWSSecurityUtilityNamespace;
+    private bool _isDisposed;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsServiceXmlWriter" /> class.
@@ -58,14 +55,15 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="stream">The stream.</param>
     internal EwsServiceXmlWriter(ExchangeServiceBase service, Stream stream)
     {
-        this.service = service;
+        Service = service;
 
-        var settings = new XmlWriterSettings();
-        settings.Indent = true;
+        var settings = new XmlWriterSettings
+        {
+            Indent = true,
+            Encoding = Utf8Encoding,
+        };
 
-        settings.Encoding = utf8Encoding;
-
-        xmlWriter = XmlWriter.Create(stream, settings);
+        InternalWriter = XmlWriter.Create(stream, settings);
     }
 
     /// <summary>
@@ -75,65 +73,63 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="strValue">The string representation of value.</param>
     /// <returns>True if object was converted, false otherwise.</returns>
     /// <remarks>A null object will be "successfully" converted to a null string.</remarks>
-    internal bool TryConvertObjectToString(object value, out string strValue)
+    internal bool TryConvertObjectToString(object? value, [MaybeNullWhen(false)] out string strValue)
     {
         strValue = null;
         var converted = true;
 
-        if (value != null)
+        if (value == null)
         {
-            // All value types should implement IConvertible. There are a couple of special cases 
-            // that need to be handled directly. Otherwise use IConvertible.ToString()
-            var convertible = value as IConvertible;
-            if (value.GetType().GetTypeInfo().IsEnum)
-            {
-                strValue = EwsUtilities.SerializeEnum((Enum)value);
-            }
-            else if (convertible != null)
-            {
-                switch (convertible.GetTypeCode())
-                {
-                    case TypeCode.Boolean:
-                        strValue = EwsUtilities.BoolToXsBool((bool)value);
-                        break;
+            return false;
+        }
 
-                    case TypeCode.DateTime:
-                        strValue = Service.ConvertDateTimeToUniversalDateTimeString((DateTime)value);
-                        break;
-
-                    default:
-                        strValue = convertible.ToString(CultureInfo.InvariantCulture);
-                        break;
-                }
-            }
-            else
+        // All value types should implement IConvertible. There are a couple of special cases 
+        // that need to be handled directly. Otherwise use IConvertible.ToString()
+        if (value.GetType().GetTypeInfo().IsEnum)
+        {
+            strValue = EwsUtilities.SerializeEnum((Enum)value);
+        }
+        else if (value is IConvertible convertible)
+        {
+            strValue = convertible.GetTypeCode() switch
+            {
+                TypeCode.Boolean => EwsUtilities.BoolToXsBool((bool)value),
+                TypeCode.DateTime => Service.ConvertDateTimeToUniversalDateTimeString((DateTime)value),
+                _ => convertible.ToString(CultureInfo.InvariantCulture),
+            };
+        }
+        else
+        {
+            switch (value)
             {
                 // If the value type doesn't implement IConvertible but implements IFormattable, use its
                 // ToString(format,formatProvider) method to convert to a string.
-                var formattable = value as IFormattable;
-                if (formattable != null)
+                case IFormattable formattable:
                 {
                     // Null arguments mean that we use default format and default locale.
                     strValue = formattable.ToString(null, null);
+                    break;
                 }
-                else if (value is ISearchStringProvider)
+                case ISearchStringProvider searchStringProvider:
                 {
                     // If the value type doesn't implement IConvertible or IFormattable but implements 
                     // ISearchStringProvider convert to a string.
                     // Note: if a value type implements IConvertible or IFormattable we will *not* check
                     // to see if it also implements ISearchStringProvider. We'll always use its IConvertible.ToString 
                     // or IFormattable.ToString method.
-                    var searchStringProvider = value as ISearchStringProvider;
                     strValue = searchStringProvider.GetSearchString();
+                    break;
                 }
-                else if (value is byte[])
+                case byte[] bytes:
                 {
                     // Special case for byte arrays. Convert to Base64-encoded string.
-                    strValue = Convert.ToBase64String((byte[])value);
+                    strValue = Convert.ToBase64String(bytes);
+                    break;
                 }
-                else
+                default:
                 {
                     converted = false;
+                    break;
                 }
             }
         }
@@ -146,11 +142,11 @@ internal class EwsServiceXmlWriter : IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (!isDisposed)
+        if (!_isDisposed)
         {
-            xmlWriter.Dispose();
+            InternalWriter.Dispose();
 
-            isDisposed = true;
+            _isDisposed = true;
         }
     }
 
@@ -159,7 +155,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// </summary>
     public void Flush()
     {
-        xmlWriter.Flush();
+        InternalWriter.Flush();
     }
 
     /// <summary>
@@ -169,7 +165,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="localName">The local name of the element.</param>
     public void WriteStartElement(XmlNamespace xmlNamespace, string localName)
     {
-        xmlWriter.WriteStartElement(
+        InternalWriter.WriteStartElement(
             EwsUtilities.GetNamespacePrefix(xmlNamespace),
             localName,
             EwsUtilities.GetNamespaceUri(xmlNamespace)
@@ -181,7 +177,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// </summary>
     public void WriteEndElement()
     {
-        xmlWriter.WriteEndElement();
+        InternalWriter.WriteEndElement();
     }
 
     /// <summary>
@@ -202,8 +198,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="value">The value.</param>
     public void WriteAttributeValue(string localName, bool alwaysWriteEmptyString, object value)
     {
-        string stringValue;
-        if (TryConvertObjectToString(value, out stringValue))
+        if (TryConvertObjectToString(value, out var stringValue))
         {
             if ((stringValue != null) && (alwaysWriteEmptyString || (stringValue.Length != 0)))
             {
@@ -226,8 +221,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="value">The value.</param>
     public void WriteAttributeValue(string namespacePrefix, string localName, object value)
     {
-        string stringValue;
-        if (TryConvertObjectToString(value, out stringValue))
+        if (TryConvertObjectToString(value, out var stringValue))
         {
             if (!string.IsNullOrEmpty(stringValue))
             {
@@ -252,7 +246,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         try
         {
-            xmlWriter.WriteAttributeString(localName, stringValue);
+            InternalWriter.WriteAttributeString(localName, stringValue);
         }
         catch (ArgumentException ex)
         {
@@ -275,7 +269,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         try
         {
-            xmlWriter.WriteAttributeString(namespacePrefix, localName, null, stringValue);
+            InternalWriter.WriteAttributeString(namespacePrefix, localName, null, stringValue);
         }
         catch (ArgumentException ex)
         {
@@ -297,7 +291,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         try
         {
-            xmlWriter.WriteValue(value);
+            InternalWriter.WriteValue(value);
         }
         catch (ArgumentException ex)
         {
@@ -318,8 +312,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="value">The value.</param>
     internal void WriteElementValue(XmlNamespace xmlNamespace, string localName, string displayName, object value)
     {
-        string stringValue;
-        if (TryConvertObjectToString(value, out stringValue))
+        if (TryConvertObjectToString(value, out var stringValue))
         {
             //  PS # 205106: The code here used to check IsNullOrEmpty on stringValue instead of just null.
             //  Unfortunately, that meant that if someone really needed to update a string property to be the
@@ -349,12 +342,9 @@ internal class EwsServiceXmlWriter : IDisposable
     ///     Writes the Xml Node
     /// </summary>
     /// <param name="xmlNode">The XML node.</param>
-    public void WriteNode(XmlNode xmlNode)
+    public void WriteNode(XmlNode? xmlNode)
     {
-        if (xmlNode != null)
-        {
-            xmlNode.WriteTo(xmlWriter);
-        }
+        xmlNode?.WriteTo(InternalWriter);
     }
 
     /// <summary>
@@ -374,7 +364,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="buffer">The buffer.</param>
     public void WriteBase64ElementValue(byte[] buffer)
     {
-        xmlWriter.WriteBase64(buffer, 0, buffer.Length);
+        InternalWriter.WriteBase64(buffer, 0, buffer.Length);
     }
 
     /// <summary>
@@ -384,33 +374,31 @@ internal class EwsServiceXmlWriter : IDisposable
     public void WriteBase64ElementValue(Stream stream)
     {
         var buffer = new byte[BufferSize];
+
+        using var reader = new BinaryReader(stream);
         int bytesRead;
-
-        using (var reader = new BinaryReader(stream))
+        do
         {
-            do
-            {
-                bytesRead = reader.Read(buffer, 0, BufferSize);
+            bytesRead = reader.Read(buffer, 0, BufferSize);
 
-                if (bytesRead > 0)
-                {
-                    xmlWriter.WriteBase64(buffer, 0, bytesRead);
-                }
-            } while (bytesRead > 0);
-        }
+            if (bytesRead > 0)
+            {
+                InternalWriter.WriteBase64(buffer, 0, bytesRead);
+            }
+        } while (bytesRead > 0);
     }
 
     /// <summary>
     ///     Gets the internal XML writer.
     /// </summary>
     /// <value>The internal writer.</value>
-    public XmlWriter InternalWriter => xmlWriter;
+    public XmlWriter InternalWriter { get; }
 
     /// <summary>
     ///     Gets the service.
     /// </summary>
     /// <value>The service.</value>
-    public ExchangeServiceBase Service => service;
+    public ExchangeServiceBase Service { get; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the time zone SOAP header was emitted through this writer.
@@ -418,18 +406,10 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <value>
     ///     <c>true</c> if the time zone SOAP header was emitted; otherwise, <c>false</c>.
     /// </value>
-    public bool IsTimeZoneHeaderEmitted
-    {
-        get => isTimeZoneHeaderEmitted;
-        set => isTimeZoneHeaderEmitted = value;
-    }
+    public bool IsTimeZoneHeaderEmitted { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the SOAP message need WSSecurity Utility namespace.
     /// </summary>
-    public bool RequireWSSecurityUtilityNamespace
-    {
-        get => requireWSSecurityUtilityNamespace;
-        set => requireWSSecurityUtilityNamespace = value;
-    }
+    public bool RequireWsSecurityUtilityNamespace { get; set; }
 }

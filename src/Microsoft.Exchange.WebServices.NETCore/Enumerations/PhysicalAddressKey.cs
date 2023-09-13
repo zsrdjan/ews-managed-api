@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines physical address entries for a contact.
 /// </summary>
+[PublicAPI]
 public enum PhysicalAddressKey
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum PhysicalAddressKey
     /// <summary>
     ///     An alternate address.
     /// </summary>
-    Other
+    Other,
 }

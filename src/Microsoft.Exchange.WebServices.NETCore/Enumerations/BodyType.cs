@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of body of an item.
 /// </summary>
+[PublicAPI]
 public enum BodyType
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum BodyType
     /// <summary>
     ///     The body is in plain text.
     /// </summary>
-    Text
+    Text,
 }

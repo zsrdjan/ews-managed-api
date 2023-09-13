@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an Id expressed in a specific format.
 /// </summary>
+[PublicAPI]
 public class AlternateId : AlternateIdBase
 {
     /// <summary>

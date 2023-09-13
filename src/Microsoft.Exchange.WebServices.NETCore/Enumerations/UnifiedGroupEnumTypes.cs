@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
 /// <summary>
 ///     The UnifiedGroupsSortType enum
 /// </summary>
+[PublicAPI]
 public enum UnifiedGroupsSortType
 {
     /// <summary>
@@ -59,6 +62,7 @@ public enum UnifiedGroupsSortType
 /// <summary>
 ///     The UnifiedGroupsFilterType enum
 /// </summary>
+[PublicAPI]
 public enum UnifiedGroupsFilterType
 {
     /// <summary>
@@ -74,12 +78,13 @@ public enum UnifiedGroupsFilterType
     /// <summary>
     ///     Exclude Favorites
     /// </summary>
-    ExcludeFavorites = 2
+    ExcludeFavorites = 2,
 }
 
 /// <summary>
 ///     The UnifiedGroupAccessType enum
 /// </summary>
+[PublicAPI]
 public enum UnifiedGroupAccessType
 {
     /// <summary>
@@ -106,6 +111,7 @@ public enum UnifiedGroupAccessType
 /// <summary>
 ///     The UnifiedGroupIdentityType enum
 /// </summary>
+[PublicAPI]
 public enum UnifiedGroupIdentityType
 {
     /// <summary>
@@ -121,5 +127,5 @@ public enum UnifiedGroupIdentityType
     /// <summary>
     ///     ExternalDirectoryObjectId
     /// </summary>
-    ExternalDirectoryObjectId = 2
+    ExternalDirectoryObjectId = 2,
 }

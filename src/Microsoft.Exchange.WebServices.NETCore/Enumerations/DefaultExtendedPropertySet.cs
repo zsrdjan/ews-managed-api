@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the default sets of extended properties.
 /// </summary>
+[PublicAPI]
 public enum DefaultExtendedPropertySet
 {
     /// <summary>
@@ -73,5 +76,5 @@ public enum DefaultExtendedPropertySet
     /// <summary>
     ///     The Task extended property set.
     /// </summary>
-    Task
+    Task,
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     The values indicate the types of item icons to display.
 /// </summary>
+[PublicAPI]
 public enum IconIndex
 {
     /// <summary>

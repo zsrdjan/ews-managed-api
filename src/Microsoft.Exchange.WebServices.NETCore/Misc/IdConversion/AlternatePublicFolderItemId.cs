@@ -23,22 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of a public folder item expressed in a specific format.
 /// </summary>
+[PublicAPI]
 public class AlternatePublicFolderItemId : AlternatePublicFolderId
 {
     /// <summary>
     ///     Schema type associated with AlternatePublicFolderItemId.
     /// </summary>
     internal new const string SchemaTypeName = "AlternatePublicFolderItemIdType";
-
-    /// <summary>
-    ///     Item id.
-    /// </summary>
-    private string itemId;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AlternatePublicFolderItemId" /> class.
@@ -56,17 +54,13 @@ public class AlternatePublicFolderItemId : AlternatePublicFolderId
     public AlternatePublicFolderItemId(IdFormat format, string folderId, string itemId)
         : base(format, folderId)
     {
-        this.itemId = itemId;
+        ItemId = itemId;
     }
 
     /// <summary>
     ///     The Id of the public folder item.
     /// </summary>
-    public string ItemId
-    {
-        get => itemId;
-        set => itemId = value;
-    }
+    public string ItemId { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.
@@ -96,6 +90,6 @@ public class AlternatePublicFolderItemId : AlternatePublicFolderId
     {
         base.LoadAttributesFromXml(reader);
 
-        itemId = reader.ReadAttributeValue(XmlAttributeNames.ItemId);
+        ItemId = reader.ReadAttributeValue(XmlAttributeNames.ItemId);
     }
 }

@@ -33,9 +33,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class HangingTraceStream : Stream
 {
-    private readonly Stream underlyingStream;
-    private readonly ExchangeService service;
-    private MemoryStream responseCopy;
+    private readonly Stream _underlyingStream;
+    private readonly ExchangeService _service;
+    private MemoryStream? _responseCopy;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="HangingTraceStream" /> class.
@@ -44,8 +44,8 @@ internal class HangingTraceStream : Stream
     /// <param name="service">The service.</param>
     internal HangingTraceStream(Stream stream, ExchangeService service)
     {
-        underlyingStream = stream;
-        this.service = service;
+        _underlyingStream = stream;
+        _service = service;
     }
 
     public override int ReadTimeout { get; set; }
@@ -133,7 +133,7 @@ internal class HangingTraceStream : Stream
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
     public override int Read(byte[] buffer, int offset, int count)
     {
-        var retVal = underlyingStream.Read(buffer, offset, count);
+        var retVal = _underlyingStream.Read(buffer, offset, count);
         return PostRead(buffer, offset, count, retVal);
     }
 
@@ -151,6 +151,7 @@ internal class HangingTraceStream : Stream
     ///     from the current stream.
     /// </param>
     /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     ///     The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many
     ///     bytes are not currently available, or zero (0) if the end of the stream has been reached.
@@ -170,38 +171,32 @@ internal class HangingTraceStream : Stream
     /// <exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        using (var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+        using var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        if (ReadTimeout != 0)
         {
-            if (ReadTimeout != 0)
-            {
-                linkedTokenSource.CancelAfter(TimeSpan.FromMilliseconds(ReadTimeout));
-            }
-
-            var retVal = await underlyingStream.ReadAsync(buffer, offset, count, linkedTokenSource.Token);
-            return PostRead(buffer, offset, count, retVal);
+            linkedTokenSource.CancelAfter(TimeSpan.FromMilliseconds(ReadTimeout));
         }
+
+        var retVal = await _underlyingStream.ReadAsync(buffer, offset, count, linkedTokenSource.Token);
+        return PostRead(buffer, offset, count, retVal);
     }
 
-
-    int PostRead(byte[] buffer, int offset, int count, int retVal)
+    private int PostRead(byte[] buffer, int offset, int count, int retVal)
     {
         if (HangingServiceRequestBase.LogAllWireBytes)
         {
             var readString = Encoding.UTF8.GetString(buffer, offset, retVal);
-            var logMessage = String.Format(
+            var logMessage = string.Format(
                 "HangingTraceStream ID [{0}] returned {1} bytes. Bytes returned: [{2}]",
                 GetHashCode(),
                 retVal,
                 readString
             );
 
-            service.TraceMessage(TraceFlags.DebugMessage, logMessage);
+            _service.TraceMessage(TraceFlags.DebugMessage, logMessage);
         }
 
-        if (responseCopy != null)
-        {
-            responseCopy.Write(buffer, offset, retVal);
-        }
+        _responseCopy?.Write(buffer, offset, retVal);
 
         return retVal;
     }
@@ -262,6 +257,6 @@ internal class HangingTraceStream : Stream
     /// <returns>A copy of the response.</returns>
     internal void SetResponseCopy(MemoryStream responseCopy)
     {
-        this.responseCopy = responseCopy;
+        _responseCopy = responseCopy;
     }
 }

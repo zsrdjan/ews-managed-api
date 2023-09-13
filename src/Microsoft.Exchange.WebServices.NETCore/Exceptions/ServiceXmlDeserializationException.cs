@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when the XML for a response cannot be deserialized.
 /// </summary>
+[PublicAPI]
 public sealed class ServiceXmlDeserializationException : ServiceLocalException
 {
     /// <summary>

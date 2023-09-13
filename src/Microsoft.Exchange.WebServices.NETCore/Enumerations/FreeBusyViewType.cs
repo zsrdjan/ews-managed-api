@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of free/busy information returned by a GetUserAvailability operation.
 /// </summary>
+[PublicAPI]
 public enum FreeBusyViewType
 {
     /// <summary>
@@ -69,5 +72,5 @@ public enum FreeBusyViewType
     ///     information. If only merged free/busy information is available, for example if the mailbox exists on a computer
     ///     running Exchange 2003, MergedOnly will be returned. Otherwise, FreeBusyMerged or DetailedMerged will be returned.
     /// </summary>
-    DetailedMerged
+    DetailedMerged,
 }

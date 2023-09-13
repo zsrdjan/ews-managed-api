@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when a call to the DeleteAttachment web method fails.
 /// </summary>
+[PublicAPI]
 public sealed class DeleteAttachmentException : BatchServiceResponseException<DeleteAttachmentResponse>
 {
     /// <summary>

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the offset's base point in a paged view.
 /// </summary>
+[PublicAPI]
 public enum OffsetBasePoint
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum OffsetBasePoint
     /// <summary>
     ///     The offset is from the end of the view.
     /// </summary>
-    End
+    End,
 }

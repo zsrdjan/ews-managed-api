@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
 /// <summary>
-///     Defines supported Outlook protocls.
+///     Defines supported Outlook protocols.
 /// </summary>
 internal enum OutlookProtocolType
 {

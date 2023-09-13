@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of a service object.
 /// </summary>
+[PublicAPI]
 public enum ServiceObjectType
 {
     /// <summary>
@@ -48,5 +51,5 @@ public enum ServiceObjectType
     /// <summary>
     ///     Data represents a persona
     /// </summary>
-    Persona
+    Persona,
 }

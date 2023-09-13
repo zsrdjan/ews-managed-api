@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a delegate user's permission level on a specific folder.
 /// </summary>
+[PublicAPI]
 public enum DelegateFolderPermissionLevel
 {
     /// <summary>
@@ -53,5 +56,5 @@ public enum DelegateFolderPermissionLevel
     /// <summary>
     ///     The delegate has custom permissions.
     /// </summary>
-    Custom
+    Custom,
 }

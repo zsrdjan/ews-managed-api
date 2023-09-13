@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines if/how meeting invitations or cancellations should be sent to attendees when an appointment is updated.
 /// </summary>
+[PublicAPI]
 public enum SendInvitationsOrCancellationsMode
 {
     /// <summary>
@@ -55,5 +58,5 @@ public enum SendInvitationsOrCancellationsMode
     ///     Meeting invitations/cancellations are sent only to attendees that have been added or modified and a copy is saved
     ///     in the organizer's Sent Items folder.
     /// </summary>
-    SendToChangedAndSaveCopy
+    SendToChangedAndSaveCopy,
 }

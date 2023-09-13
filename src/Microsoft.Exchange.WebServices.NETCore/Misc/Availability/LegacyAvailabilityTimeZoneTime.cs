@@ -32,12 +32,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
 {
-    private TimeSpan delta;
-    private int year;
-    private int month;
-    private int dayOrder;
-    private DayOfTheWeek dayOfTheWeek;
-    private TimeSpan timeOfDay;
+    private TimeSpan _delta;
+    private TimeSpan _timeOfDay;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="LegacyAvailabilityTimeZoneTime" /> class.
@@ -54,26 +50,26 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     internal LegacyAvailabilityTimeZoneTime(TransitionTime transitionTime, TimeSpan delta)
         : this()
     {
-        this.delta = delta;
+        _delta = delta;
 
         if (transitionTime.IsFixedDateRule)
         {
             // TimeZoneInfo doesn't support an actual year. Fixed date transitions occur at the same
             // date every year the adjustment rule the transition belongs to applies. The best thing
             // we can do here is use the current year.
-            year = DateTime.Today.Year;
-            month = transitionTime.Month;
-            dayOrder = transitionTime.Day;
-            timeOfDay = transitionTime.TimeOfDay.TimeOfDay;
+            Year = DateTime.Today.Year;
+            Month = transitionTime.Month;
+            DayOrder = transitionTime.Day;
+            _timeOfDay = transitionTime.TimeOfDay.TimeOfDay;
         }
         else
         {
             // For floating rules, the mapping is direct.
-            year = 0;
-            month = transitionTime.Month;
-            dayOfTheWeek = EwsUtilities.SystemToEwsDayOfTheWeek(transitionTime.DayOfWeek);
-            dayOrder = transitionTime.Week;
-            timeOfDay = transitionTime.TimeOfDay.TimeOfDay;
+            Year = 0;
+            Month = transitionTime.Month;
+            DayOfTheWeek = EwsUtilities.SystemToEwsDayOfTheWeek(transitionTime.DayOfWeek);
+            DayOrder = transitionTime.Week;
+            _timeOfDay = transitionTime.TimeOfDay.TimeOfDay;
         }
     }
 
@@ -83,24 +79,24 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     /// <returns>A TimeZoneInfo.TransitionTime</returns>
     internal TransitionTime ToTransitionTime()
     {
-        if (year == 0)
+        if (Year == 0)
         {
             return TransitionTime.CreateFloatingDateRule(
                 new DateTime(
                     DateTime.MinValue.Year,
                     DateTime.MinValue.Month,
                     DateTime.MinValue.Day,
-                    timeOfDay.Hours,
-                    timeOfDay.Minutes,
-                    timeOfDay.Seconds
+                    _timeOfDay.Hours,
+                    _timeOfDay.Minutes,
+                    _timeOfDay.Seconds
                 ),
-                month,
-                dayOrder,
-                EwsUtilities.EwsToSystemDayOfWeek(dayOfTheWeek)
+                Month,
+                DayOrder,
+                EwsUtilities.EwsToSystemDayOfWeek(DayOfTheWeek)
             );
         }
 
-        return TransitionTime.CreateFixedDateRule(new DateTime(timeOfDay.Ticks), month, dayOrder);
+        return TransitionTime.CreateFixedDateRule(new DateTime(_timeOfDay.Ticks), Month, DayOrder);
     }
 
     /// <summary>
@@ -113,25 +109,39 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Bias:
-                delta = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
+            {
+                _delta = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
                 return true;
+            }
             case XmlElementNames.Time:
-                timeOfDay = TimeSpan.Parse(reader.ReadElementValue());
+            {
+                _timeOfDay = TimeSpan.Parse(reader.ReadElementValue());
                 return true;
+            }
             case XmlElementNames.DayOrder:
-                dayOrder = reader.ReadElementValue<int>();
+            {
+                DayOrder = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.DayOfWeek:
-                dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
+            {
+                DayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
                 return true;
+            }
             case XmlElementNames.Month:
-                month = reader.ReadElementValue<int>();
+            {
+                Month = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.Year:
-                year = reader.ReadElementValue<int>();
+            {
+                Year = reader.ReadElementValue<int>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -141,18 +151,18 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Bias, (int)delta.TotalMinutes);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Bias, (int)_delta.TotalMinutes);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, EwsUtilities.TimeSpanToXsTime(timeOfDay));
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, EwsUtilities.TimeSpanToXsTime(_timeOfDay));
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOrder, dayOrder);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOrder, DayOrder);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, month);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, Month);
 
         // Only write DayOfWeek if this is a recurring time change
         if (Year == 0)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOfWeek, dayOfTheWeek);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOfWeek, DayOfTheWeek);
         }
 
         // Only emit year if it's non zero, otherwise AS returns "Request is invalid"
@@ -165,15 +175,15 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     /// <summary>
     ///     Gets if current time presents DST transition time
     /// </summary>
-    internal bool HasTransitionTime => month >= 1 && month <= 12;
+    internal bool HasTransitionTime => Month >= 1 && Month <= 12;
 
     /// <summary>
     ///     Gets or sets the delta.
     /// </summary>
     internal TimeSpan Delta
     {
-        get => delta;
-        set => delta = value;
+        get => _delta;
+        set => _delta = value;
     }
 
     /// <summary>
@@ -181,8 +191,8 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     /// </summary>
     internal TimeSpan TimeOfDay
     {
-        get => timeOfDay;
-        set => timeOfDay = value;
+        get => _timeOfDay;
+        set => _timeOfDay = value;
     }
 
     /// <summary>
@@ -190,37 +200,21 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     ///     - The day of the month when Year is non zero,
     ///     - The index of the week in the month if Year is equal to zero.
     /// </summary>
-    internal int DayOrder
-    {
-        get => dayOrder;
-        set => dayOrder = value;
-    }
+    internal int DayOrder { get; set; }
 
     /// <summary>
     ///     Gets or sets the month.
     /// </summary>
-    internal int Month
-    {
-        get => month;
-        set => month = value;
-    }
+    internal int Month { get; set; }
 
     /// <summary>
     ///     Gets or sets the day of the week.
     /// </summary>
-    internal DayOfTheWeek DayOfTheWeek
-    {
-        get => dayOfTheWeek;
-        set => dayOfTheWeek = value;
-    }
+    internal DayOfTheWeek DayOfTheWeek { get; set; }
 
     /// <summary>
     ///     Gets or sets the year. If Year is 0, the time change occurs every year according to a recurring pattern;
     ///     otherwise, the time change occurs at the date specified by Day, Month, Year.
     /// </summary>
-    internal int Year
-    {
-        get => year;
-        set => year = value;
-    }
+    internal int Year { get; set; }
 }

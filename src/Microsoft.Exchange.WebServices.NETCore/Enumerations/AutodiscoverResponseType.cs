@@ -48,5 +48,5 @@ internal enum AutodiscoverResponseType
     /// <summary>
     ///     The request succeeded.
     /// </summary>
-    Success
+    Success,
 }

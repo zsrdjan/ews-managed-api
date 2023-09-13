@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines phone number entries for a contact.
 /// </summary>
+[PublicAPI]
 public enum PhoneNumberKey
 {
     /// <summary>
@@ -143,5 +146,5 @@ public enum PhoneNumberKey
     /// <summary>
     ///     Msn number.
     /// </summary>
-    Msn
+    Msn,
 }

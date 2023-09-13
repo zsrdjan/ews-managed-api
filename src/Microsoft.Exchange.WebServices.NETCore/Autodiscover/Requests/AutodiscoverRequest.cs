@@ -91,7 +91,7 @@ internal abstract class AutodiscoverRequest
             {
                 using (var writer = new EwsServiceXmlWriter(Service, memoryStream))
                 {
-                    writer.RequireWSSecurityUtilityNamespace = needSignature;
+                    writer.RequireWsSecurityUtilityNamespace = needSignature;
                     WriteSoapRequest(Url, writer);
                 }
 
@@ -404,7 +404,7 @@ internal abstract class AutodiscoverRequest
             EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix,
             EwsUtilities.EwsXmlSchemaInstanceNamespace
         );
-        if (writer.RequireWSSecurityUtilityNamespace)
+        if (writer.RequireWsSecurityUtilityNamespace)
         {
             writer.WriteAttributeValue(
                 "xmlns",

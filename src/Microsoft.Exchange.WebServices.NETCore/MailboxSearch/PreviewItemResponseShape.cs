@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents preview item response shape
 /// </summary>
+[PublicAPI]
 public sealed class PreviewItemResponseShape
 {
     /// <summary>

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     The ConnectionFailureCause enumeration
 /// </summary>
+[PublicAPI]
 public enum ConnectionFailureCause
 {
     /// <summary>
@@ -53,5 +56,5 @@ public enum ConnectionFailureCause
     /// <summary>
     ///     Other
     /// </summary>
-    Other
+    Other,
 }

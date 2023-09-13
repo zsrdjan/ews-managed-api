@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     ITraceListener handles message tracing.
 /// </summary>
+[PublicAPI]
 public interface ITraceListener
 {
     /// <summary>

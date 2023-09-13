@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines supported Id formats in ConvertId operations.
 /// </summary>
+[PublicAPI]
 public enum IdFormat
 {
     /// <summary>
@@ -58,5 +61,5 @@ public enum IdFormat
     /// <summary>
     ///     The Outlook Web Access Id format.
     /// </summary>
-    OwaId
+    OwaId,
 }

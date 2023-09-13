@@ -33,11 +33,6 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 internal sealed class GetUserUnifiedGroupsResponse : ServiceResponse
 {
     /// <summary>
-    ///     The UnifiedGroups Sets associated with this response
-    /// </summary>
-    private readonly Collection<UnifiedGroupsSet> groupsSets = new Collection<UnifiedGroupsSet>();
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserUnifiedGroupsResponse" /> class.
     /// </summary>
     internal GetUserUnifiedGroupsResponse()
@@ -47,7 +42,7 @@ internal sealed class GetUserUnifiedGroupsResponse : ServiceResponse
     /// <summary>
     ///     Gets or sets the UnifiedGroupsSet associated with the response
     /// </summary>
-    public Collection<UnifiedGroupsSet> GroupsSets => groupsSets;
+    public Collection<UnifiedGroupsSet> GroupsSets { get; } = new();
 
     /// <summary>
     ///     Read Conversations from XML.
@@ -55,7 +50,8 @@ internal sealed class GetUserUnifiedGroupsResponse : ServiceResponse
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        groupsSets.Clear();
+        GroupsSets.Clear();
+
         base.ReadElementsFromXml(reader);
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.GroupsSets);
@@ -67,7 +63,7 @@ internal sealed class GetUserUnifiedGroupsResponse : ServiceResponse
             {
                 var unifiedGroupsSet = new UnifiedGroupsSet();
                 unifiedGroupsSet.LoadFromXml(reader, XmlElementNames.UnifiedGroupsSet);
-                groupsSets.Add(unifiedGroupsSet);
+                GroupsSets.Add(unifiedGroupsSet);
             }
 
             // Skip end element GroupsSets

@@ -64,5 +64,5 @@ internal delegate void PropertyBagChangedDelegate();
 /// <param name="service">Exchange service instance.</param>
 /// <param name="xmlElementName">XML element name.</param>
 /// <returns>Service object instance.</returns>
-internal delegate T GetObjectInstanceDelegate<T>(ExchangeService service, string xmlElementName)
+internal delegate T GetObjectInstanceDelegate<out T>(ExchangeService service, string xmlElementName)
     where T : ServiceObject;

@@ -65,13 +65,13 @@ internal interface IEwsHttpWebResponse : IDisposable
     ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the header information returned with the
     ///     response.
     /// </returns>
-    HttpResponseHeaders? Headers { get; }
+    HttpResponseHeaders Headers { get; }
 
     /// <summary>
     ///     Gets the URI of the Internet resource that responded to the request.
     /// </summary>
     /// <returns>A <see cref="T:System.Uri" /> that contains the URI of the Internet resource that responded to the request.</returns>
-    Uri ResponseUri { get; }
+    Uri? ResponseUri { get; }
 
     /// <summary>
     ///     Gets the status of the response.
@@ -83,7 +83,7 @@ internal interface IEwsHttpWebResponse : IDisposable
     ///     Gets the status description returned with the response.
     /// </summary>
     /// <returns>A string that describes the status of the response.</returns>
-    string StatusDescription { get; }
+    string? StatusDescription { get; }
 
     /// <summary>
     ///     Gets the version of the HTTP protocol that is used in the response.

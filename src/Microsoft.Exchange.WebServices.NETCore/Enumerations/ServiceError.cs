@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the error codes that can be returned by the Exchange Web Services.
 /// </summary>
+[PublicAPI]
 public enum ServiceError
 {
     /// <summary>

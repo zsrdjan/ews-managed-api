@@ -25,16 +25,16 @@
 
 using System.Globalization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an Out of Office response.
 /// </summary>
+[PublicAPI]
 public sealed class OofReply
 {
-    private string culture = CultureInfo.CurrentCulture.Name;
-    private string message;
-
     /// <summary>
     ///     Writes an empty OofReply to XML.
     /// </summary>
@@ -59,7 +59,7 @@ public sealed class OofReply
     /// <param name="message">The reply message.</param>
     public OofReply(string message)
     {
-        this.message = message;
+        Message = message;
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public sealed class OofReply
     /// <returns>A string containing the message of the specified OofReply.</returns>
     public static implicit operator string(OofReply oofReply)
     {
-        EwsUtilities.ValidateParam(oofReply, "oofReply");
+        EwsUtilities.ValidateParam(oofReply);
 
         return oofReply.Message;
     }
@@ -95,10 +95,10 @@ public sealed class OofReply
 
         if (reader.HasAttributes)
         {
-            culture = reader.ReadAttributeValue("xml:lang");
+            Culture = reader.ReadAttributeValue("xml:lang");
         }
 
-        message = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Message);
+        Message = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Message);
 
         reader.ReadEndElement(XmlNamespace.Types, xmlElementName);
     }
@@ -134,18 +134,10 @@ public sealed class OofReply
     /// <summary>
     ///     Gets or sets the culture of the reply.
     /// </summary>
-    public string Culture
-    {
-        get => culture;
-        set => culture = value;
-    }
+    public string Culture { get; set; } = CultureInfo.CurrentCulture.Name;
 
     /// <summary>
     ///     Gets or sets the reply message.
     /// </summary>
-    public string Message
-    {
-        get => message;
-        set => message = value;
-    }
+    public string Message { get; set; }
 }

@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
 /// <summary>
 ///     Defines the RequestedUnifiedGroupsSet class.
 /// </summary>
-public sealed class RequestedUnifiedGroupsSet : ComplexProperty, ISelfValidate
+[PublicAPI]
+public sealed class RequestedUnifiedGroupsSet : ComplexProperty
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="RequestedUnifiedGroupsSet" /> class.

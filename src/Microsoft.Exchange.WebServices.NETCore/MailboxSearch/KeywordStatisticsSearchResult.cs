@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the keyword statistics result.
 /// </summary>
+[PublicAPI]
 public sealed class KeywordStatisticsSearchResult
 {
     /// <summary>
     ///     Keyword string
     /// </summary>
-    public string Keyword { get; set; }
+    public string? Keyword { get; set; }
 
     /// <summary>
     ///     Number of item hits
@@ -43,6 +46,5 @@ public sealed class KeywordStatisticsSearchResult
     /// <summary>
     ///     Total size
     /// </summary>
-    [CLSCompliant(false)]
     public ulong Size { get; set; }
 }

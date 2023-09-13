@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the scope of FindItems operations.
 /// </summary>
+[PublicAPI]
 public enum ItemTraversal
 {
     /// <summary>
@@ -44,5 +47,5 @@ public enum ItemTraversal
     ///     Only associated items are retrieved (Exchange 2010 or later).
     /// </summary>
     [RequiredServerVersion(ExchangeVersion.Exchange2010)]
-    Associated
+    Associated,
 }

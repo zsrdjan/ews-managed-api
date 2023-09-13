@@ -1,6 +1,9 @@
-﻿namespace Microsoft.Exchange.WebServices.Data.Misc;
+using JetBrains.Annotations;
 
-public struct TransitionTime
+namespace Microsoft.Exchange.WebServices.Data.Misc;
+
+[PublicAPI]
+public readonly struct TransitionTime
 {
     public int Day { get; }
     public DayOfWeek DayOfWeek { get; }

@@ -25,12 +25,15 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when a date and time cannot be converted from one time zone
 ///     to another.
 /// </summary>
+[PublicAPI]
 public class TimeZoneConversionException : ServiceLocalException
 {
     /// <summary>

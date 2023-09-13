@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of a meeting request.
 /// </summary>
+[PublicAPI]
 public enum MeetingRequestType
 {
     /// <summary>
@@ -63,5 +66,5 @@ public enum MeetingRequestType
     /// <summary>
     ///     The meeting update was forwarded to a delegate, and this copy is informational.
     /// </summary>
-    PrincipalWantsCopy
+    PrincipalWantsCopy,
 }

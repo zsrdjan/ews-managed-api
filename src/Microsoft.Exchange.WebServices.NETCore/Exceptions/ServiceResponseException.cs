@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a remote service exception that has a single response.
 /// </summary>
+[PublicAPI]
 public class ServiceResponseException : ServiceRemoteException
 {
     /// <summary>
@@ -41,17 +44,12 @@ public class ServiceResponseException : ServiceRemoteException
     private const string StackTraceKey = "StackTrace";
 
     /// <summary>
-    ///     ServiceResponse when service operation failed remotely.
-    /// </summary>
-    private readonly ServiceResponse response;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceResponseException" /> class.
     /// </summary>
     /// <param name="response">The ServiceResponse when service operation failed remotely.</param>
     internal ServiceResponseException(ServiceResponse response)
     {
-        this.response = response;
+        Response = response;
     }
 
     /// <summary>
@@ -63,7 +61,7 @@ public class ServiceResponseException : ServiceRemoteException
     protected ServiceResponseException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        response = (ServiceResponse)info.GetValue("Response", typeof(ServiceResponse));
+        Response = (ServiceResponse)info.GetValue("Response", typeof(ServiceResponse));
     }
 
     /// <summary>
@@ -82,18 +80,18 @@ public class ServiceResponseException : ServiceRemoteException
 
         base.GetObjectData(info, context);
 
-        info.AddValue("Response", response, typeof(ServiceResponse));
+        info.AddValue("Response", Response, typeof(ServiceResponse));
     }
 
     /// <summary>
     ///     Gets the ServiceResponse for the exception.
     /// </summary>
-    public ServiceResponse Response => response;
+    public ServiceResponse Response { get; }
 
     /// <summary>
     ///     Gets the service error code.
     /// </summary>
-    public ServiceError ErrorCode => response.ErrorCode;
+    public ServiceError ErrorCode => Response.ErrorCode;
 
     /// <summary>
     ///     Gets a message that describes the current exception.
@@ -107,13 +105,9 @@ public class ServiceResponseException : ServiceRemoteException
             // stack trace information, include it in the exception message.
             if (Response.ErrorCode == ServiceError.ErrorInternalServerError)
             {
-                string exceptionClass;
-                string exceptionMessage;
-                string stackTrace;
-
-                if (Response.ErrorDetails.TryGetValue(ExceptionClassKey, out exceptionClass) &&
-                    Response.ErrorDetails.TryGetValue(ExceptionMessageKey, out exceptionMessage) &&
-                    Response.ErrorDetails.TryGetValue(StackTraceKey, out stackTrace))
+                if (Response.ErrorDetails.TryGetValue(ExceptionClassKey, out var exceptionClass) &&
+                    Response.ErrorDetails.TryGetValue(ExceptionMessageKey, out var exceptionMessage) &&
+                    Response.ErrorDetails.TryGetValue(StackTraceKey, out var stackTrace))
                 {
                     return string.Format(
                         Strings.ServerErrorAndStackTraceDetails,

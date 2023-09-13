@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents non indexable item statistic.
 /// </summary>
+[PublicAPI]
 public sealed class NonIndexableItemStatistic
 {
     /// <summary>
@@ -43,7 +46,7 @@ public sealed class NonIndexableItemStatistic
     /// <summary>
     ///     Error message
     /// </summary>
-    public string ErrorMessage { get; set; }
+    public string? ErrorMessage { get; set; }
 
     /// <summary>
     ///     Load from xml
@@ -64,7 +67,8 @@ public sealed class NonIndexableItemStatistic
                 {
                     var mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
                     var itemCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.ItemCount);
-                    string errorMessage = null;
+
+                    string? errorMessage = null;
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ErrorMessage))
                     {
                         errorMessage = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorMessage);
@@ -75,7 +79,7 @@ public sealed class NonIndexableItemStatistic
                         {
                             Mailbox = mailbox,
                             ItemCount = itemCount,
-                            ErrorMessage = errorMessage
+                            ErrorMessage = errorMessage,
                         }
                     );
                 }

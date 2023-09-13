@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines if/how meeting invitations are sent.
 /// </summary>
+[PublicAPI]
 public enum SendInvitationsMode
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum SendInvitationsMode
     /// <summary>
     ///     Meeting invitations are sent to all attendees and a copy of the invitation message is saved.
     /// </summary>
-    SendToAllAndSaveCopy
+    SendToAllAndSaveCopy,
 }

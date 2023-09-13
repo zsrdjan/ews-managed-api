@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of error handling used for service method calls.
 /// </summary>
+[PublicAPI]
 internal enum ServiceErrorHandling
 {
     /// <summary>
@@ -38,5 +41,5 @@ internal enum ServiceErrorHandling
     /// <summary>
     ///     Service method should throw exception when error occurs.
     /// </summary>
-    ThrowOnError
+    ThrowOnError,
 }

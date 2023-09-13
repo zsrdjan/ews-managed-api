@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 // TODO : Do we want to include more information about what those levels actually allow users to do?
@@ -30,6 +32,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Defines permission levels for calendar folders.
 /// </summary>
+[PublicAPI]
 public enum FolderPermissionLevel
 {
     /// <summary>
@@ -90,5 +93,5 @@ public enum FolderPermissionLevel
     /// <summary>
     ///     The Custom level.
     /// </summary>
-    Custom
+    Custom,
 }

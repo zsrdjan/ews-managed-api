@@ -23,23 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a mobile phone.
 /// </summary>
+[PublicAPI]
 public sealed class MobilePhone : ISelfValidate
 {
-    /// <summary>
-    ///     Name of the mobile phone.
-    /// </summary>
-    private string name;
-
-    /// <summary>
-    ///     Phone number of the mobile phone.
-    /// </summary>
-    private string phoneNumber;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="MobilePhone" /> class.
     /// </summary>
@@ -54,27 +47,19 @@ public sealed class MobilePhone : ISelfValidate
     /// <param name="phoneNumber">The mobile phone number.</param>
     public MobilePhone(string name, string phoneNumber)
     {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
+        Name = name;
+        PhoneNumber = phoneNumber;
     }
 
     /// <summary>
     ///     Gets or sets the name associated with this mobile phone.
     /// </summary>
-    public string Name
-    {
-        get => name;
-        set => name = value;
-    }
+    public string Name { get; set; }
 
     /// <summary>
     ///     Gets or sets the number of this mobile phone.
     /// </summary>
-    public string PhoneNumber
-    {
-        get => phoneNumber;
-        set => phoneNumber = value;
-    }
+    public string PhoneNumber { get; set; }
 
     /// <summary>
     ///     Validates this instance.

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the available properties of a rule.
 /// </summary>
+[PublicAPI]
 public enum RuleProperty
 {
     /// <summary>
@@ -574,5 +577,5 @@ public enum RuleProperty
     ///     The Exceptions property of a rule, contains all exceptions of the rule.
     /// </summary>
     [EwsEnum("Exceptions")]
-    Exceptions
+    Exceptions,
 }

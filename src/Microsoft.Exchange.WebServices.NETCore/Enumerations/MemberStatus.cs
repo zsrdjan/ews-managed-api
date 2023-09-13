@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the status of group members.
 /// </summary>
+[PublicAPI]
 public enum MemberStatus
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum MemberStatus
     /// <summary>
     ///     The member is demoted.
     /// </summary>
-    Demoted
+    Demoted,
 }

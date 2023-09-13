@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the index of a week day within a month.
 /// </summary>
+[PublicAPI]
 public enum DayOfTheWeekIndex
 {
     /// <summary>
@@ -53,5 +56,5 @@ public enum DayOfTheWeekIndex
     /// <summary>
     ///     The last specific day of the week in the month. For example, the last Tuesday of the month.
     /// </summary>
-    Last
+    Last,
 }

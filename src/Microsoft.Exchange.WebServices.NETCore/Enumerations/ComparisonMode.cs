@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the way values are compared in search filters.
 /// </summary>
+[PublicAPI]
 public enum ComparisonMode
 {
     /// <summary>
@@ -48,7 +51,7 @@ public enum ComparisonMode
     /// <summary>
     ///     The comparison ignores casing and spacing characters.
     /// </summary>
-    IgnoreCaseAndNonSpacingCharacters
+    IgnoreCaseAndNonSpacingCharacters,
 
     // Although the following four values are defined in the EWS schema, they are useless
     // as they are all technically equivalent to Loose. We are not exposing those values

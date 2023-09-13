@@ -23,16 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the effective user rights associated with an item or folder.
 /// </summary>
+[PublicAPI]
 [Flags]
 public enum EffectiveRights
 {
     /// <summary>
-    ///     The user has no acces right on the item or folder.
+    ///     The user has no access right on the item or folder.
     /// </summary>
     None = 0,
 
@@ -69,5 +72,5 @@ public enum EffectiveRights
     /// <summary>
     ///     The user can view private items.
     /// </summary>
-    ViewPrivateItems = 64
+    ViewPrivateItems = 64,
 }

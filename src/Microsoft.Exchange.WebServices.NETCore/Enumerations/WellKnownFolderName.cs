@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 // The values in this enumeration must match the values of the
@@ -31,6 +33,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Defines well known folder names.
 /// </summary>
+[PublicAPI]
 public enum WellKnownFolderName
 {
     /// <summary>

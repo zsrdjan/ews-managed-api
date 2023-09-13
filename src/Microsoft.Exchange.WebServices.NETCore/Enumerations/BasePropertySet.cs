@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines base property sets that are used as the base for custom property sets.
 /// </summary>
+[PublicAPI]
 public enum BasePropertySet
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum BasePropertySet
     /// <summary>
     ///     Includes all the first class properties of items and folders.
     /// </summary>
-    FirstClassProperties
+    FirstClassProperties,
 }

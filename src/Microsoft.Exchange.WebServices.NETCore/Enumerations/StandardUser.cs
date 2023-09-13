@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a standard delegate user.
 /// </summary>
+[PublicAPI]
 public enum StandardUser
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum StandardUser
     /// <summary>
     ///     The Anonymous delegate user, used to define delegate permissions for unauthenticated users.
     /// </summary>
-    Anonymous
+    Anonymous,
 }

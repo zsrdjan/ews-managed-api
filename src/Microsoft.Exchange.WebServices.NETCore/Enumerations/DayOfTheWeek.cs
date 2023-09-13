@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -35,6 +37,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     and
 ///     WeekendDay) are used for monthly and yearly recurrences and cannot be cast to System.DayOfWeek values.
 /// </remarks>
+[PublicAPI]
 public enum DayOfTheWeek
 {
     /// <summary>

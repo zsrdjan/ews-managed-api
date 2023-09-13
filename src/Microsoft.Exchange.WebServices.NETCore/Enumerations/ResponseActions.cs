@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the response actions that can be taken on an item.
 /// </summary>
+[PublicAPI]
 [Flags]
 public enum ResponseActions
 {
@@ -84,5 +87,5 @@ public enum ResponseActions
     /// <summary>
     ///     A reply to the item can be posted.
     /// </summary>
-    PostReply = 512
+    PostReply = 512,
 }

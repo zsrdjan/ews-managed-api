@@ -33,27 +33,27 @@ internal class FolderWrapper : AbstractFolderIdWrapper
     /// <summary>
     ///     The Folder object providing the Id.
     /// </summary>
-    private readonly Folder? folder;
+    private readonly Folder _folder;
 
     /// <summary>
     ///     Initializes a new instance of FolderWrapper.
     /// </summary>
-    /// <param name="folder">The Folder object provinding the Id.</param>
-    internal FolderWrapper(Folder? folder)
+    /// <param name="folder">The Folder object providing the Id.</param>
+    internal FolderWrapper(Folder folder)
     {
         EwsUtilities.Assert(folder != null, "FolderWrapper.ctor", "folder is null");
         EwsUtilities.Assert(!folder.IsNew, "FolderWrapper.ctor", "folder does not have an Id");
 
-        this.folder = folder;
+        _folder = folder;
     }
 
     /// <summary>
     ///     Obtains the Folder object associated with the wrapper.
     /// </summary>
     /// <returns>The Folder object associated with the wrapper.</returns>
-    public override Folder? GetFolder()
+    public override Folder GetFolder()
     {
-        return folder;
+        return _folder;
     }
 
     /// <summary>
@@ -62,6 +62,6 @@ internal class FolderWrapper : AbstractFolderIdWrapper
     /// <param name="writer">The writer to write the Id to.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer)
     {
-        folder.Id.WriteToXml(writer);
+        _folder.Id.WriteToXml(writer);
     }
 }

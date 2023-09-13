@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the types of response given to a meeting request.
 /// </summary>
+[PublicAPI]
 public enum MeetingResponseType
 {
     /// <summary>
-    ///     The response type is inknown.
+    ///     The response type is unknown.
     /// </summary>
     Unknown,
 
@@ -58,5 +61,5 @@ public enum MeetingResponseType
     /// <summary>
     ///     No response was received for the meeting.
     /// </summary>
-    NoResponseReceived
+    NoResponseReceived,
 }

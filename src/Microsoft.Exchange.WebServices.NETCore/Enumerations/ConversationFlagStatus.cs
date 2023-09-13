@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the flag status of a Conversation.
 /// </summary>
+[PublicAPI]
 public enum ConversationFlagStatus
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum ConversationFlagStatus
     /// <summary>
     ///     Complete.
     /// </summary>
-    Complete
+    Complete,
 }

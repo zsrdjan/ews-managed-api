@@ -23,23 +23,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the options of a GetAvailability request.
 /// </summary>
+[PublicAPI]
 public sealed class AvailabilityOptions
 {
-    private int mergedFreeBusyInterval = 30;
-    private FreeBusyViewType requestedFreeBusyView = FreeBusyViewType.Detailed;
-    private int goodSuggestionThreshold = 25;
-    private int maximumSuggestionsPerDay = 10;
-    private int maximumNonWorkHoursSuggestionsPerDay;
-    private int meetingDuration = 60;
-    private SuggestionQuality minimumSuggestionQuality = SuggestionQuality.Fair;
-    private TimeWindow detailedSuggestionsWindow;
-    private DateTime? currentMeetingTime;
-    private string globalObjectId;
+    private int _mergedFreeBusyInterval = 30;
+    private int _goodSuggestionThreshold = 25;
+    private int _maximumSuggestionsPerDay = 10;
+    private int _maximumNonWorkHoursSuggestionsPerDay;
+    private int _meetingDuration = 60;
 
     /// <summary>
     ///     Validates this instance against the specified time window.
@@ -55,7 +53,7 @@ public sealed class AvailabilityOptions
             );
         }
 
-        EwsUtilities.ValidateParamAllowNull(DetailedSuggestionsWindow, "DetailedSuggestionsWindow");
+        EwsUtilities.ValidateParamAllowNull(DetailedSuggestionsWindow);
     }
 
     /// <summary>
@@ -104,8 +102,7 @@ public sealed class AvailabilityOptions
                 MinimumSuggestionQuality
             );
 
-            var timeWindowToSerialize = DetailedSuggestionsWindow == null ? request.TimeWindow
-                : DetailedSuggestionsWindow;
+            var timeWindowToSerialize = DetailedSuggestionsWindow ?? request.TimeWindow;
 
             timeWindowToSerialize.WriteToXmlUnscopedDatesOnly(writer, XmlElementNames.DetailedSuggestionsWindow);
 
@@ -137,7 +134,7 @@ public sealed class AvailabilityOptions
     /// </summary>
     public int MergedFreeBusyInterval
     {
-        get => mergedFreeBusyInterval;
+        get => _mergedFreeBusyInterval;
 
         set
         {
@@ -148,18 +145,14 @@ public sealed class AvailabilityOptions
                 );
             }
 
-            mergedFreeBusyInterval = value;
+            _mergedFreeBusyInterval = value;
         }
     }
 
     /// <summary>
     ///     Gets or sets the requested type of free/busy view. The default value is FreeBusyViewType.Detailed.
     /// </summary>
-    public FreeBusyViewType RequestedFreeBusyView
-    {
-        get => requestedFreeBusyView;
-        set => requestedFreeBusyView = value;
-    }
+    public FreeBusyViewType RequestedFreeBusyView { get; set; } = FreeBusyViewType.Detailed;
 
     /// <summary>
     ///     Gets or sets the percentage of attendees that must have the time period open for the time period to qualify as a
@@ -168,7 +161,7 @@ public sealed class AvailabilityOptions
     /// </summary>
     public int GoodSuggestionThreshold
     {
-        get => goodSuggestionThreshold;
+        get => _goodSuggestionThreshold;
 
         set
         {
@@ -179,7 +172,7 @@ public sealed class AvailabilityOptions
                 );
             }
 
-            goodSuggestionThreshold = value;
+            _goodSuggestionThreshold = value;
         }
     }
 
@@ -189,7 +182,7 @@ public sealed class AvailabilityOptions
     /// </summary>
     public int MaximumSuggestionsPerDay
     {
-        get => maximumSuggestionsPerDay;
+        get => _maximumSuggestionsPerDay;
 
         set
         {
@@ -200,7 +193,7 @@ public sealed class AvailabilityOptions
                 );
             }
 
-            maximumSuggestionsPerDay = value;
+            _maximumSuggestionsPerDay = value;
         }
     }
 
@@ -210,7 +203,7 @@ public sealed class AvailabilityOptions
     /// </summary>
     public int MaximumNonWorkHoursSuggestionsPerDay
     {
-        get => maximumNonWorkHoursSuggestionsPerDay;
+        get => _maximumNonWorkHoursSuggestionsPerDay;
 
         set
         {
@@ -221,7 +214,7 @@ public sealed class AvailabilityOptions
                 );
             }
 
-            maximumNonWorkHoursSuggestionsPerDay = value;
+            _maximumNonWorkHoursSuggestionsPerDay = value;
         }
     }
 
@@ -231,7 +224,7 @@ public sealed class AvailabilityOptions
     /// </summary>
     public int MeetingDuration
     {
-        get => meetingDuration;
+        get => _meetingDuration;
 
         set
         {
@@ -242,7 +235,7 @@ public sealed class AvailabilityOptions
                 );
             }
 
-            meetingDuration = value;
+            _meetingDuration = value;
         }
     }
 
@@ -250,37 +243,21 @@ public sealed class AvailabilityOptions
     ///     Gets or sets the minimum quality of suggestions that should be returned.
     ///     The default is SuggestionQuality.Fair.
     /// </summary>
-    public SuggestionQuality MinimumSuggestionQuality
-    {
-        get => minimumSuggestionQuality;
-        set => minimumSuggestionQuality = value;
-    }
+    public SuggestionQuality MinimumSuggestionQuality { get; set; } = SuggestionQuality.Fair;
 
     /// <summary>
     ///     Gets or sets the time window for which detailed information about suggested meeting times should be returned.
     /// </summary>
-    public TimeWindow DetailedSuggestionsWindow
-    {
-        get => detailedSuggestionsWindow;
-        set => detailedSuggestionsWindow = value;
-    }
+    public TimeWindow? DetailedSuggestionsWindow { get; set; }
 
     /// <summary>
     ///     Gets or sets the start time of a meeting that you want to update with the suggested meeting times.
     /// </summary>
-    public DateTime? CurrentMeetingTime
-    {
-        get => currentMeetingTime;
-        set => currentMeetingTime = value;
-    }
+    public DateTime? CurrentMeetingTime { get; set; }
 
     /// <summary>
     ///     Gets or sets the global object Id of a meeting that will be modified based on the data returned by
     ///     GetUserAvailability.
     /// </summary>
-    public string GlobalObjectId
-    {
-        get => globalObjectId;
-        set => globalObjectId = value;
-    }
+    public string GlobalObjectId { get; set; }
 }

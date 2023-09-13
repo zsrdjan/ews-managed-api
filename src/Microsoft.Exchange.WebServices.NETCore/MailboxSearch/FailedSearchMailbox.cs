@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents failed mailbox to be searched
 /// </summary>
+[PublicAPI]
 public sealed class FailedSearchMailbox
 {
     /// <summary>
@@ -36,19 +39,8 @@ public sealed class FailedSearchMailbox
     /// <param name="mailbox">Mailbox identifier</param>
     /// <param name="errorCode">Error code</param>
     /// <param name="errorMessage">Error message</param>
-    public FailedSearchMailbox(string mailbox, int errorCode, string errorMessage)
-        : this(mailbox, errorCode, errorMessage, false)
-    {
-    }
-
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="mailbox">Mailbox identifier</param>
-    /// <param name="errorCode">Error code</param>
-    /// <param name="errorMessage">Error message</param>
     /// <param name="isArchive">True if it is mailbox archive</param>
-    public FailedSearchMailbox(string mailbox, int errorCode, string errorMessage, bool isArchive)
+    public FailedSearchMailbox(string mailbox, int errorCode, string errorMessage, bool isArchive = false)
     {
         Mailbox = mailbox;
         ErrorCode = errorCode;
@@ -82,7 +74,7 @@ public sealed class FailedSearchMailbox
     /// <param name="rootXmlNamespace">Root xml namespace</param>
     /// <param name="reader">The reader</param>
     /// <returns>Array of failed mailboxes</returns>
-    internal static FailedSearchMailbox[] LoadFailedMailboxesXml(
+    internal static FailedSearchMailbox[]? LoadFailedMailboxesXml(
         XmlNamespace rootXmlNamespace,
         EwsServiceXmlReader reader
     )
@@ -96,11 +88,17 @@ public sealed class FailedSearchMailbox
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.FailedMailbox))
             {
                 var mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
-                var errorCode = 0;
-                int.TryParse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorCode), out errorCode);
+                _ = int.TryParse(
+                    reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorCode),
+                    out var errorCode
+                );
+
                 var errorMessage = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorMessage);
-                var isArchive = false;
-                bool.TryParse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsArchive), out isArchive);
+
+                _ = bool.TryParse(
+                    reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsArchive),
+                    out var isArchive
+                );
 
                 failedMailboxes.Add(new FailedSearchMailbox(mailbox, errorCode, errorMessage, isArchive));
             }

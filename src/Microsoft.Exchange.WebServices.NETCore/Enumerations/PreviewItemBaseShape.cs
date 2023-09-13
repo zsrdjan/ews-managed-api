@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Preview item base shape
 /// </summary>
+[PublicAPI]
 public enum PreviewItemBaseShape
 {
     /// <summary>

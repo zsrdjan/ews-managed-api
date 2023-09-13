@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines how meeting requests are sent to delegates.
 /// </summary>
+[PublicAPI]
 public enum MeetingRequestsDeliveryScope
 {
     /// <summary>
@@ -50,5 +53,5 @@ public enum MeetingRequestsDeliveryScope
     ///     server versions.
     /// </summary>
     [RequiredServerVersion(ExchangeVersion.Exchange2010_SP1)]
-    NoForward
+    NoForward,
 }

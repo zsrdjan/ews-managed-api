@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the location where a ResolveName operation searches for contacts.
 /// </summary>
+[PublicAPI]
 public enum ResolveNameSearchLocation
 {
     /// <summary>
@@ -48,5 +51,5 @@ public enum ResolveNameSearchLocation
     /// <summary>
     ///     The name is resolved against the Contacts folder and then against the Global Address List if no match was found.
     /// </summary>
-    ContactsThenDirectory
+    ContactsThenDirectory,
 }

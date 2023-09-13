@@ -23,16 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an impersonated user Id.
 /// </summary>
+[PublicAPI]
 public sealed class ImpersonatedUserId
 {
-    private ConnectingIdType idType;
-    private string id;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ImpersonatedUserId" /> class.
     /// </summary>
@@ -48,8 +48,8 @@ public sealed class ImpersonatedUserId
     public ImpersonatedUserId(ConnectingIdType idType, string id)
         : this()
     {
-        this.idType = idType;
-        this.id = id;
+        IdType = idType;
+        Id = id;
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed class ImpersonatedUserId
     /// <param name="writer">The writer.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer)
     {
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(Id))
         {
             throw new ArgumentException(Strings.IdPropertyMustBeSet);
         }
@@ -68,11 +68,11 @@ public sealed class ImpersonatedUserId
 
         // For 2007 SP1, use PrimarySmtpAddress for type SmtpAddress
         var connectingIdTypeLocalName =
-            (idType == ConnectingIdType.SmtpAddress) &&
-            (writer.Service.RequestedServerVersion == ExchangeVersion.Exchange2007_SP1)
+            IdType == ConnectingIdType.SmtpAddress &&
+            writer.Service.RequestedServerVersion == ExchangeVersion.Exchange2007_SP1
                 ? XmlElementNames.PrimarySmtpAddress : IdType.ToString();
 
-        writer.WriteElementValue(XmlNamespace.Types, connectingIdTypeLocalName, id);
+        writer.WriteElementValue(XmlNamespace.Types, connectingIdTypeLocalName, Id);
 
         writer.WriteEndElement(); // ConnectingSID
         writer.WriteEndElement(); // ExchangeImpersonation
@@ -81,18 +81,10 @@ public sealed class ImpersonatedUserId
     /// <summary>
     ///     Gets or sets the type of the Id.
     /// </summary>
-    public ConnectingIdType IdType
-    {
-        get => idType;
-        set => idType = value;
-    }
+    public ConnectingIdType IdType { get; set; }
 
     /// <summary>
     ///     Gets or sets the user Id.
     /// </summary>
-    public string Id
-    {
-        get => id;
-        set => id = value;
-    }
+    public string Id { get; set; }
 }

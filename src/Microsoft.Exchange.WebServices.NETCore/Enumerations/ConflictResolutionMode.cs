@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines how conflict resolutions are handled in update operations.
 /// </summary>
+[PublicAPI]
 public enum ConflictResolutionMode
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum ConflictResolutionMode
     /// <summary>
     ///     Local property changes overwrite server-side changes.
     /// </summary>
-    AlwaysOverwrite
+    AlwaysOverwrite,
 }

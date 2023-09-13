@@ -32,9 +32,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
 {
-    private TimeSpan bias;
-    private LegacyAvailabilityTimeZoneTime standardTime;
-    private LegacyAvailabilityTimeZoneTime daylightTime;
+    private TimeSpan _bias;
+    private LegacyAvailabilityTimeZoneTime _standardTime;
+    private LegacyAvailabilityTimeZoneTime _daylightTime;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="LegacyAvailabilityTimeZone" /> class.
@@ -52,7 +52,7 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
     {
         // Availability uses the opposite sign for the bias, e.g. if TimeZoneInfo.BaseUtcOffset = 480 than
         // SerializedTimeZone.Bias must be -480.
-        bias = -timeZoneInfo.BaseUtcOffset;
+        _bias = -timeZoneInfo.BaseUtcOffset;
 
         // To convert TimeZoneInfo into SerializableTimeZone, we need two time changes: one to Standard
         // time, the other to Daylight time. TimeZoneInfo holds a list of adjustment rules that represent
@@ -65,21 +65,25 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
             // If there are no adjustment rules (which is the case for UTC), we have to come up with two
             // dummy time changes which both have a delta of zero and happen at two hard coded dates. This
             // simulates a time zone in which there are no time changes.
-            daylightTime = new LegacyAvailabilityTimeZoneTime();
-            daylightTime.Delta = TimeSpan.Zero;
-            daylightTime.DayOrder = 1;
-            daylightTime.DayOfTheWeek = DayOfTheWeek.Sunday;
-            daylightTime.Month = 10;
-            daylightTime.TimeOfDay = TimeSpan.FromHours(2);
-            daylightTime.Year = 0;
+            _daylightTime = new LegacyAvailabilityTimeZoneTime
+            {
+                Delta = TimeSpan.Zero,
+                DayOrder = 1,
+                DayOfTheWeek = DayOfTheWeek.Sunday,
+                Month = 10,
+                TimeOfDay = TimeSpan.FromHours(2),
+                Year = 0,
+            };
 
-            standardTime = new LegacyAvailabilityTimeZoneTime();
-            standardTime.Delta = TimeSpan.Zero;
-            standardTime.DayOrder = 1;
-            standardTime.DayOfTheWeek = DayOfTheWeek.Sunday;
-            standardTime.Month = 3;
-            standardTime.TimeOfDay = TimeSpan.FromHours(2);
-            daylightTime.Year = 0;
+            _standardTime = new LegacyAvailabilityTimeZoneTime
+            {
+                Delta = TimeSpan.Zero,
+                DayOrder = 1,
+                DayOfTheWeek = DayOfTheWeek.Sunday,
+                Month = 3,
+                TimeOfDay = TimeSpan.FromHours(2),
+            };
+            _daylightTime.Year = 0;
         }
         else
         {
@@ -88,10 +92,10 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
             // most recent).
             var currentRule = adjustmentRules[adjustmentRules.Length - 1];
 
-            standardTime = new LegacyAvailabilityTimeZoneTime(currentRule.DaylightTransitionEnd, TimeSpan.Zero);
+            _standardTime = new LegacyAvailabilityTimeZoneTime(currentRule.DaylightTransitionEnd, TimeSpan.Zero);
 
             // Again, TimeZoneInfo and SerializableTime use opposite signs for bias.
-            daylightTime = new LegacyAvailabilityTimeZoneTime(
+            _daylightTime = new LegacyAvailabilityTimeZoneTime(
                 currentRule.DaylightTransitionStart,
                 -currentRule.DaylightDelta
             );
@@ -100,25 +104,25 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
 
     internal TimeZoneInfo ToTimeZoneInfo()
     {
-        if (daylightTime.HasTransitionTime && standardTime.HasTransitionTime)
+        if (_daylightTime.HasTransitionTime && _standardTime.HasTransitionTime)
         {
             var adjustmentRule = AdjustmentRule.CreateAdjustmentRule(
                 DateTime.MinValue.Date,
                 DateTime.MaxValue.Date,
-                -daylightTime.Delta,
-                daylightTime.ToTransitionTime(),
-                standardTime.ToTransitionTime()
+                -_daylightTime.Delta,
+                _daylightTime.ToTransitionTime(),
+                _standardTime.ToTransitionTime()
             );
 
             return TimeZoneExtensions.CreateCustomTimeZone(
                 Guid.NewGuid().ToString(),
-                -bias,
+                -_bias,
                 "Custom time zone",
                 "Standard time",
                 "Daylight time",
                 new[]
                 {
-                    adjustmentRule
+                    adjustmentRule,
                 }
             );
         }
@@ -126,7 +130,7 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
         // Create no DST time zone
         return TimeZoneExtensions.CreateCustomTimeZone(
             Guid.NewGuid().ToString(),
-            -bias,
+            -_bias,
             "Custom time zone",
             "Standard time"
         );
@@ -142,18 +146,26 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Bias:
-                bias = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
+            {
+                _bias = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
                 return true;
+            }
             case XmlElementNames.StandardTime:
-                standardTime = new LegacyAvailabilityTimeZoneTime();
-                standardTime.LoadFromXml(reader, reader.LocalName);
+            {
+                _standardTime = new LegacyAvailabilityTimeZoneTime();
+                _standardTime.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.DaylightTime:
-                daylightTime = new LegacyAvailabilityTimeZoneTime();
-                daylightTime.LoadFromXml(reader, reader.LocalName);
+            {
+                _daylightTime = new LegacyAvailabilityTimeZoneTime();
+                _daylightTime.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -163,9 +175,9 @@ internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Bias, (int)bias.TotalMinutes);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Bias, (int)_bias.TotalMinutes);
 
-        standardTime.WriteToXml(writer, XmlElementNames.StandardTime);
-        daylightTime.WriteToXml(writer, XmlElementNames.DaylightTime);
+        _standardTime.WriteToXml(writer, XmlElementNames.StandardTime);
+        _daylightTime.WriteToXml(writer, XmlElementNames.DaylightTime);
     }
 }

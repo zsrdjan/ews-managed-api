@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a logical operator as used by search filter collections.
 /// </summary>
+[PublicAPI]
 public enum LogicalOperator
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum LogicalOperator
     /// <summary>
     ///     The OR operator.
     /// </summary>
-    Or
+    Or,
 }

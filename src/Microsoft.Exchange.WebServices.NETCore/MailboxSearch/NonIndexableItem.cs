@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Item index error
 /// </summary>
+[PublicAPI]
 public enum ItemIndexError
 {
     /// <summary>
@@ -69,12 +72,13 @@ public enum ItemIndexError
 /// <summary>
 ///     Represents non indexable item.
 /// </summary>
+[PublicAPI]
 public sealed class NonIndexableItem
 {
     /// <summary>
     ///     Item Identity
     /// </summary>
-    public ItemId ItemId { get; set; }
+    public ItemId? ItemId { get; set; }
 
     /// <summary>
     ///     Error code
@@ -84,7 +88,7 @@ public sealed class NonIndexableItem
     /// <summary>
     ///     Error description
     /// </summary>
-    public string ErrorDescription { get; set; }
+    public string? ErrorDescription { get; set; }
 
     /// <summary>
     ///     Is partially indexed
@@ -109,94 +113,92 @@ public sealed class NonIndexableItem
     /// <summary>
     ///     Additional info
     /// </summary>
-    public string AdditionalInfo { get; set; }
+    public string? AdditionalInfo { get; set; }
 
     /// <summary>
     ///     Sort value
     /// </summary>
-    public string SortValue { get; set; }
+    public string? SortValue { get; set; }
 
     /// <summary>
     ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
     /// <returns>Non indexable item object</returns>
-    internal static NonIndexableItem LoadFromXml(EwsServiceXmlReader reader)
+    internal static NonIndexableItem? LoadFromXml(EwsServiceXmlReader reader)
     {
-        NonIndexableItem result = null;
-        if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.NonIndexableItemDetail))
+        if (!reader.IsStartElement(XmlNamespace.Types, XmlElementNames.NonIndexableItemDetail))
         {
-            ItemId itemId = null;
-            var errorCode = ItemIndexError.None;
-            string errorDescription = null;
-            var isPartiallyIndexed = false;
-            var isPermanentFailure = false;
-            var attemptCount = 0;
-            DateTime? lastAttemptTime = null;
-            string additionalInfo = null;
-            string sortValue = null;
-
-            do
-            {
-                reader.Read();
-                if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ItemId))
-                {
-                    itemId = new ItemId();
-                    itemId.ReadAttributesFromXml(reader);
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ErrorDescription))
-                {
-                    errorDescription = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorDescription);
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.IsPartiallyIndexed))
-                {
-                    isPartiallyIndexed = reader.ReadElementValue<bool>(
-                        XmlNamespace.Types,
-                        XmlElementNames.IsPartiallyIndexed
-                    );
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.IsPermanentFailure))
-                {
-                    isPermanentFailure = reader.ReadElementValue<bool>(
-                        XmlNamespace.Types,
-                        XmlElementNames.IsPermanentFailure
-                    );
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.AttemptCount))
-                {
-                    attemptCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.AttemptCount);
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.LastAttemptTime))
-                {
-                    lastAttemptTime = reader.ReadElementValue<DateTime>(
-                        XmlNamespace.Types,
-                        XmlElementNames.LastAttemptTime
-                    );
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.AdditionalInfo))
-                {
-                    additionalInfo = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.AdditionalInfo);
-                }
-                else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SortValue))
-                {
-                    sortValue = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SortValue);
-                }
-            } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.NonIndexableItemDetail));
-
-            result = new NonIndexableItem
-            {
-                ItemId = itemId,
-                ErrorCode = errorCode,
-                ErrorDescription = errorDescription,
-                IsPartiallyIndexed = isPartiallyIndexed,
-                IsPermanentFailure = isPermanentFailure,
-                AttemptCount = attemptCount,
-                LastAttemptTime = lastAttemptTime,
-                AdditionalInfo = additionalInfo,
-                SortValue = sortValue,
-            };
+            return null;
         }
 
-        return result;
+        ItemId? itemId = null;
+        string? errorDescription = null;
+        var isPartiallyIndexed = false;
+        var isPermanentFailure = false;
+        var attemptCount = 0;
+        DateTime? lastAttemptTime = null;
+        string? additionalInfo = null;
+        string? sortValue = null;
+
+        do
+        {
+            reader.Read();
+            if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ItemId))
+            {
+                itemId = new ItemId();
+                itemId.ReadAttributesFromXml(reader);
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ErrorDescription))
+            {
+                errorDescription = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ErrorDescription);
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.IsPartiallyIndexed))
+            {
+                isPartiallyIndexed = reader.ReadElementValue<bool>(
+                    XmlNamespace.Types,
+                    XmlElementNames.IsPartiallyIndexed
+                );
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.IsPermanentFailure))
+            {
+                isPermanentFailure = reader.ReadElementValue<bool>(
+                    XmlNamespace.Types,
+                    XmlElementNames.IsPermanentFailure
+                );
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.AttemptCount))
+            {
+                attemptCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.AttemptCount);
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.LastAttemptTime))
+            {
+                lastAttemptTime = reader.ReadElementValue<DateTime>(
+                    XmlNamespace.Types,
+                    XmlElementNames.LastAttemptTime
+                );
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.AdditionalInfo))
+            {
+                additionalInfo = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.AdditionalInfo);
+            }
+            else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SortValue))
+            {
+                sortValue = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SortValue);
+            }
+        } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.NonIndexableItemDetail));
+
+        return new NonIndexableItem
+        {
+            ItemId = itemId,
+            ErrorCode = ItemIndexError.None,
+            ErrorDescription = errorDescription,
+            IsPartiallyIndexed = isPartiallyIndexed,
+            IsPermanentFailure = isPermanentFailure,
+            AttemptCount = attemptCount,
+            LastAttemptTime = lastAttemptTime,
+            AdditionalInfo = additionalInfo,
+            SortValue = sortValue,
+        };
     }
 }

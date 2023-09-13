@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines a file attachment content handler. Application can implement IFileAttachmentContentHandler
 ///     to provide a stream in which the content of file attachment should be written.
 /// </summary>
+[PublicAPI]
 public interface IFileAttachmentContentHandler
 {
     /// <summary>

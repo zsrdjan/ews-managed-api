@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the action of a retention policy tag.
 /// </summary>
+[PublicAPI]
 public enum RetentionActionType
 {
     /// <summary>

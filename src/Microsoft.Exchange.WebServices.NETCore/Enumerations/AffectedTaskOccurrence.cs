@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Indicates which occurrence of a recurring task should be deleted.
 /// </summary>
+[PublicAPI]
 public enum AffectedTaskOccurrence
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum AffectedTaskOccurrence
     /// <summary>
     ///     Only the current occurrence of the recurring task will be deleted.
     /// </summary>
-    SpecifiedOccurrenceOnly
+    SpecifiedOccurrenceOnly,
 }

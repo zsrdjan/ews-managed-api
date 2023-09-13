@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of an appointment.
 /// </summary>
+[PublicAPI]
 public enum AppointmentType
 {
     /// <summary>
@@ -48,5 +51,5 @@ public enum AppointmentType
     /// <summary>
     ///     The appointment is the recurring master of a series.
     /// </summary>
-    RecurringMaster
+    RecurringMaster,
 }

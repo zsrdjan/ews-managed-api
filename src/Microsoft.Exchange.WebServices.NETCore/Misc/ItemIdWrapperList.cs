@@ -33,7 +33,7 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     /// <summary>
     ///     List of <see cref="Microsoft.Exchange.WebServices.Data.Item" />.
     /// </summary>
-    private readonly List<AbstractItemIdWrapper> itemIds = new List<AbstractItemIdWrapper>();
+    private readonly List<AbstractItemIdWrapper> _itemIds = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ItemIdWrapperList" /> class.
@@ -48,7 +48,7 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     /// <param name="item">The item.</param>
     internal void Add(Item item)
     {
-        itemIds.Add(new ItemWrapper(item));
+        _itemIds.Add(new ItemWrapper(item));
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     /// <param name="itemId">The item id.</param>
     internal void Add(ItemId itemId)
     {
-        itemIds.Add(new ItemIdWrapper(itemId));
+        _itemIds.Add(new ItemIdWrapper(itemId));
     }
 
     /// <summary>
@@ -88,15 +88,15 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     ///     Writes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
-    /// <param name="ewsNamesapce">The ews namesapce.</param>
+    /// <param name="ewsNamespace">The ews namespace.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
-    internal void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace ewsNamesapce, string xmlElementName)
+    internal void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace ewsNamespace, string xmlElementName)
     {
         if (Count > 0)
         {
-            writer.WriteStartElement(ewsNamesapce, xmlElementName);
+            writer.WriteStartElement(ewsNamespace, xmlElementName);
 
-            foreach (var itemIdWrapper in itemIds)
+            foreach (var itemIdWrapper in _itemIds)
             {
                 itemIdWrapper.WriteToXml(writer);
             }
@@ -109,13 +109,13 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     ///     Gets the count.
     /// </summary>
     /// <value>The count.</value>
-    internal int Count => itemIds.Count;
+    internal int Count => _itemIds.Count;
 
     /// <summary>
     ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.Item" /> at the specified index.
     /// </summary>
     /// <param name="index">the index</param>
-    internal Item this[int index] => itemIds[index].GetItem();
+    internal Item this[int index] => _itemIds[index].GetItem();
 
 
     #region IEnumerable<AbstractItemIdWrapper> Members
@@ -126,7 +126,7 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<AbstractItemIdWrapper> GetEnumerator()
     {
-        return itemIds.GetEnumerator();
+        return _itemIds.GetEnumerator();
     }
 
     #endregion
@@ -140,7 +140,7 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return itemIds.GetEnumerator();
+        return _itemIds.GetEnumerator();
     }
 
     #endregion

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines actions applicable to Conversation.
 /// </summary>
+[PublicAPI]
 internal enum ConversationActionType
 {
     /// <summary>

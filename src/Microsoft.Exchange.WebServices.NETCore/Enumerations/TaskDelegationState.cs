@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 // This maps to the bogus TaskDelegationState in the EWS schema.
@@ -33,6 +35,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Defines the delegation state of a task.
 /// </summary>
+[PublicAPI]
 public enum TaskDelegationState
 {
     /// <summary>
@@ -53,7 +56,7 @@ public enum TaskDelegationState
     /// <summary>
     ///     The task was delegated but the delegation was declined.
     /// </summary>
-    Declined // Maps to Accepted
+    Declined, // Maps to Accepted
 
     // The original Declined value has no mapping
     // The original Max value has no mapping

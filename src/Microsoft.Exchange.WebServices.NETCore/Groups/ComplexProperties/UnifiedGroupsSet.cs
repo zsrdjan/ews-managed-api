@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data.Groups;
 
 /// <summary>
 ///     Represents a UnifiedGroupsSet
 /// </summary>
+[PublicAPI]
 public class UnifiedGroupsSet : ComplexProperty
 {
-    /// <summary>
-    ///     The list of unifiedGroups in this set.
-    /// </summary>
-    private readonly List<UnifiedGroup> unifiedGroups = new List<UnifiedGroup>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="UnifiedGroupsSet" /> class.
     /// </summary>
@@ -55,7 +53,7 @@ public class UnifiedGroupsSet : ComplexProperty
     /// <summary>
     ///     Gets the Groups contained in this set.
     /// </summary>
-    public List<UnifiedGroup> Groups => unifiedGroups;
+    public List<UnifiedGroup> Groups { get; } = new();
 
     /// <summary>
     ///     Read Conversations from XML.
@@ -69,31 +67,34 @@ public class UnifiedGroupsSet : ComplexProperty
         do
         {
             reader.Read();
+
             switch (reader.LocalName)
             {
                 case XmlElementNames.FilterType:
-                    FilterType = (UnifiedGroupsFilterType)Enum.Parse(
-                        typeof(UnifiedGroupsFilterType),
-                        reader.ReadElementValue(),
-                        false
-                    );
+                {
+                    FilterType = Enum.Parse<UnifiedGroupsFilterType>(reader.ReadElementValue(), false);
                     break;
+                }
                 case XmlElementNames.TotalGroups:
+                {
                     TotalGroups = reader.ReadElementValue<int>();
                     break;
+                }
                 case XmlElementNames.GroupsTag:
+                {
                     reader.Read();
                     while (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.UnifiedGroup))
                     {
                         var unifiedGroup = new UnifiedGroup();
                         unifiedGroup.LoadFromXml(reader, XmlElementNames.UnifiedGroup);
-                        unifiedGroups.Add(unifiedGroup);
+                        Groups.Add(unifiedGroup);
                     }
 
                     // Skip end element.
                     reader.EnsureCurrentNodeIsEndElement(XmlNamespace.NotSpecified, XmlElementNames.GroupsTag);
                     reader.Read();
                     break;
+                }
             }
         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UnifiedGroupsSet));
 

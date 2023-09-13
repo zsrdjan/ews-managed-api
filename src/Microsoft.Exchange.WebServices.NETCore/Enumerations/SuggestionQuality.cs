@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the quality of an availability suggestion.
 /// </summary>
+[PublicAPI]
 public enum SuggestionQuality
 {
     /// <summary>
@@ -48,5 +51,5 @@ public enum SuggestionQuality
     /// <summary>
     ///     The suggestion is poor.
     /// </summary>
-    Poor
+    Poor,
 }

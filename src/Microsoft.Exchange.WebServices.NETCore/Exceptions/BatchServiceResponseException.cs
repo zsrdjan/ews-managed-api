@@ -25,20 +25,18 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a remote service exception that can have multiple service responses.
 /// </summary>
 /// <typeparam name="TResponse">The type of the response.</typeparam>
+[PublicAPI]
 public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteException
     where TResponse : ServiceResponse
 {
-    /// <summary>
-    ///     The list of responses returned by the web method.
-    /// </summary>
-    private readonly ServiceResponseCollection<TResponse> responses;
-
     /// <summary>
     ///     Initializes a new instance of MultiServiceResponseException.
     /// </summary>
@@ -49,7 +47,7 @@ public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteEx
     {
         EwsUtilities.Assert(serviceResponses != null, "MultiServiceResponseException.ctor", "serviceResponses is null");
 
-        responses = serviceResponses;
+        ServiceResponses = serviceResponses;
     }
 
     /// <summary>
@@ -67,7 +65,7 @@ public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteEx
     {
         EwsUtilities.Assert(serviceResponses != null, "MultiServiceResponseException.ctor", "serviceResponses is null");
 
-        responses = serviceResponses;
+        ServiceResponses = serviceResponses;
     }
 
     /// <summary>
@@ -79,7 +77,7 @@ public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteEx
     protected BatchServiceResponseException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        responses = (ServiceResponseCollection<TResponse>)info.GetValue(
+        ServiceResponses = (ServiceResponseCollection<TResponse>)info.GetValue(
             "Responses",
             typeof(ServiceResponseCollection<TResponse>)
         );
@@ -101,11 +99,11 @@ public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteEx
 
         base.GetObjectData(info, context);
 
-        info.AddValue("Responses", responses, typeof(ServiceResponseCollection<TResponse>));
+        info.AddValue("Responses", ServiceResponses, typeof(ServiceResponseCollection<TResponse>));
     }
 
     /// <summary>
     ///     Gets a list of responses returned by the web method.
     /// </summary>
-    public ServiceResponseCollection<TResponse> ServiceResponses => responses;
+    public ServiceResponseCollection<TResponse> ServiceResponses { get; }
 }

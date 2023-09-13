@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
 /// <summary>
 ///     Defines the error codes that can be returned by the Autodiscover service.
 /// </summary>
+[PublicAPI]
 public enum AutodiscoverErrorCode
 {
     /// <summary>

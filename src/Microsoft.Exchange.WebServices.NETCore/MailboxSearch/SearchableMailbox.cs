@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents searchable mailbox object
 /// </summary>
+[PublicAPI]
 public sealed class SearchableMailbox
 {
     /// <summary>
@@ -75,24 +78,27 @@ public sealed class SearchableMailbox
     {
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.SearchableMailbox);
 
-        var searchableMailbox = new SearchableMailbox();
-        searchableMailbox.Guid = new Guid(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Guid));
-        searchableMailbox.SmtpAddress = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.PrimarySmtpAddress);
-        var isExternalMailbox = false;
-        bool.TryParse(
+        var searchableMailbox = new SearchableMailbox
+        {
+            Guid = new Guid(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Guid)),
+            SmtpAddress = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.PrimarySmtpAddress),
+        };
+
+        _ = bool.TryParse(
             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsExternalMailbox),
-            out isExternalMailbox
+            out var isExternalMailbox
         );
         searchableMailbox.IsExternalMailbox = isExternalMailbox;
         searchableMailbox.ExternalEmailAddress = reader.ReadElementValue(
             XmlNamespace.Types,
             XmlElementNames.ExternalEmailAddress
         );
+
         searchableMailbox.DisplayName = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.DisplayName);
-        var isMembershipGroup = false;
-        bool.TryParse(
+
+        _ = bool.TryParse(
             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.IsMembershipGroup),
-            out isMembershipGroup
+            out var isMembershipGroup
         );
         searchableMailbox.IsMembershipGroup = isMembershipGroup;
         searchableMailbox.ReferenceId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ReferenceId);

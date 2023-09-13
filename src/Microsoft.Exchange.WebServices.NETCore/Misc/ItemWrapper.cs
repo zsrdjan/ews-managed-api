@@ -33,18 +33,18 @@ internal class ItemWrapper : AbstractItemIdWrapper
     /// <summary>
     ///     The ItemBase object providing the Id.
     /// </summary>
-    private readonly Item item;
+    private readonly Item _item;
 
     /// <summary>
     ///     Initializes a new instance of ItemWrapper.
     /// </summary>
-    /// <param name="item">The ItemBase object provinding the Id.</param>
+    /// <param name="item">The ItemBase object providing the Id.</param>
     internal ItemWrapper(Item item)
     {
         EwsUtilities.Assert(item != null, "ItemWrapper.ctor", "item is null");
         EwsUtilities.Assert(!item.IsNew, "ItemWrapper.ctor", "item does not have an Id");
 
-        this.item = item;
+        _item = item;
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ internal class ItemWrapper : AbstractItemIdWrapper
     /// <returns>The ItemBase object associated with the wrapper.</returns>
     public override Item GetItem()
     {
-        return item;
+        return _item;
     }
 
     /// <summary>
@@ -62,6 +62,6 @@ internal class ItemWrapper : AbstractItemIdWrapper
     /// <param name="writer">The writer to write the Id to.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer)
     {
-        item.Id.WriteToXml(writer);
+        _item.Id.WriteToXml(writer);
     }
 }

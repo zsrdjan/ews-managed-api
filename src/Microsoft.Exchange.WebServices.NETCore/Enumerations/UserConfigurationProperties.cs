@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Identifies the user configuration properties to retrieve.
 /// </summary>
+[PublicAPI]
 [Flags]
 public enum UserConfigurationProperties
 {
@@ -54,5 +57,5 @@ public enum UserConfigurationProperties
     /// <summary>
     ///     Retrieve all properties.
     /// </summary>
-    All = Id | Dictionary | XmlData | BinaryData
+    All = Id | Dictionary | XmlData | BinaryData,
 }

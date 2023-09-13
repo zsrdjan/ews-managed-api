@@ -33,17 +33,17 @@ internal sealed class SetUnifiedGroupLastVisitedTimeRequest : SimpleServiceReque
     /// <summary>
     ///     The last visited time utc for the group
     /// </summary>
-    private readonly DateTime lastVisitedTimeUtc;
+    private readonly DateTime _lastVisitedTimeUtc;
 
     /// <summary>
     ///     The identify type associated with the group
     /// </summary>
-    private readonly UnifiedGroupIdentityType identityType;
+    private readonly UnifiedGroupIdentityType _identityType;
 
     /// <summary>
     ///     The value of identity associated with the group
     /// </summary>
-    private readonly string identityValue;
+    private readonly string _identityValue;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetUnifiedGroupLastVisitedTimeRequest" /> class.
@@ -60,9 +60,9 @@ internal sealed class SetUnifiedGroupLastVisitedTimeRequest : SimpleServiceReque
     )
         : base(service)
     {
-        this.lastVisitedTimeUtc = lastVisitedTimeUtc;
-        this.identityType = identityType;
-        identityValue = value;
+        _lastVisitedTimeUtc = lastVisitedTimeUtc;
+        _identityType = identityType;
+        _identityValue = value;
     }
 
     /// <summary>
@@ -101,14 +101,14 @@ internal sealed class SetUnifiedGroupLastVisitedTimeRequest : SimpleServiceReque
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        var groupIdentity = new UnifiedGroupIdentity(identityType, identityValue);
+        var groupIdentity = new UnifiedGroupIdentity(_identityType, _identityValue);
 
         groupIdentity.WriteToXml(writer, XmlElementNames.GroupIdentity);
 
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.LastVisitedTimeUtc,
-            lastVisitedTimeUtc.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ")
+            _lastVisitedTimeUtc.ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ")
         );
     }
 

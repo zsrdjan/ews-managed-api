@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of Id of a ConnectingId object.
 /// </summary>
+[PublicAPI]
 public enum ConnectingIdType
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum ConnectingIdType
     /// <summary>
     ///     The Id is an SMTP address.
     /// </summary>
-    SmtpAddress
+    SmtpAddress,
 }

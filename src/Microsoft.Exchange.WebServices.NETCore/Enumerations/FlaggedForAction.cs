@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the follow-up actions that may be stamped on a message.
 /// </summary>
+[PublicAPI]
 public enum FlaggedForAction
 {
     /// <summary>
@@ -83,5 +86,5 @@ public enum FlaggedForAction
     /// <summary>
     ///     The recipient is requested to review the message.
     /// </summary>
-    Review
+    Review,
 }

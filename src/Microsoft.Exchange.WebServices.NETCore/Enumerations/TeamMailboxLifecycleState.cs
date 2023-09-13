@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     TeamMailbox lifecycle state
 /// </summary>
+[PublicAPI]
 public enum TeamMailboxLifecycleState
 {
     /// <summary>

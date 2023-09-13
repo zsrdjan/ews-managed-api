@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the way the FileAs property of a contact is automatically formatted.
 /// </summary>
+[PublicAPI]
 public enum FileAsMapping
 {
     /// <summary>
@@ -137,5 +140,5 @@ public enum FileAsMapping
     ///     Empty (Exchange 2010 or later).
     /// </summary>
     [RequiredServerVersion(ExchangeVersion.Exchange2010)]
-    Empty
+    Empty,
 }

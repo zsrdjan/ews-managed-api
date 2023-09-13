@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines e-mail address entries for a contact.
 /// </summary>
+[PublicAPI]
 public enum EmailAddressKey
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum EmailAddressKey
     /// <summary>
     ///     The third e-mail address.
     /// </summary>
-    EmailAddress3
+    EmailAddress3,
 }

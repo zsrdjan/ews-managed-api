@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the external audience of an Out of Office notification.
 /// </summary>
+[PublicAPI]
 public enum OofExternalAudience
 {
     /// <summary>
@@ -36,12 +39,12 @@ public enum OofExternalAudience
     None,
 
     /// <summary>
-    ///     Only recipients that are in the user's Contacts frolder should receive Out of Office notifications.
+    ///     Only recipients that are in the user's Contacts folder should receive Out of Office notifications.
     /// </summary>
     Known,
 
     /// <summary>
     ///     All recipients should receive Out of Office notifications.
     /// </summary>
-    All
+    All,
 }

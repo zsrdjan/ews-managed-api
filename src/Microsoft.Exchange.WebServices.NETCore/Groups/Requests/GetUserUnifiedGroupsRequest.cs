@@ -42,7 +42,7 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the RequestedUnifiedGroupsSet
     /// </summary>
-    public IEnumerable<RequestedUnifiedGroupsSet> RequestedUnifiedGroupsSets { get; set; }
+    public IEnumerable<RequestedUnifiedGroupsSet>? RequestedUnifiedGroupsSets { get; set; }
 
     /// <summary>
     ///     Gets or sets the UserSmptAddress

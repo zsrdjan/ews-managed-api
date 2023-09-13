@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Interface defined for types that can produce a string representation for use in search filters.
 /// </summary>
+[PublicAPI]
 public interface ISearchStringProvider
 {
     /// <summary>

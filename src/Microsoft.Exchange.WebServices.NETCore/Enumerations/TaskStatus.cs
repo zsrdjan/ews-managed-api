@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the execution status of a task.
 /// </summary>
+[PublicAPI]
 public enum TaskStatus
 {
     /// <summary>
@@ -53,5 +56,5 @@ public enum TaskStatus
     /// <summary>
     ///     The execution of the task is deferred.
     /// </summary>
-    Deferred
+    Deferred,
 }

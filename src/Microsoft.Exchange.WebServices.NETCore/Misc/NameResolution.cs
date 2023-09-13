@@ -23,16 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a suggested name resolution.
 /// </summary>
+[PublicAPI]
 public sealed class NameResolution
 {
-    private readonly NameResolutionCollection owner;
-    private readonly EmailAddress mailbox = new EmailAddress();
-    private Contact contact;
+    private readonly NameResolutionCollection _owner;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="NameResolution" /> class.
@@ -42,7 +43,7 @@ public sealed class NameResolution
     {
         EwsUtilities.Assert(owner != null, "NameResolution.ctor", "owner is null.");
 
-        this.owner = owner;
+        _owner = owner;
     }
 
     /// <summary>
@@ -54,20 +55,15 @@ public sealed class NameResolution
         reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Resolution);
 
         reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Mailbox);
-        mailbox.LoadFromXml(reader, XmlElementNames.Mailbox);
+        Mailbox.LoadFromXml(reader, XmlElementNames.Mailbox);
 
         reader.Read();
         if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Contact))
         {
-            contact = new Contact(owner.Session);
+            Contact = new Contact(_owner.Session);
 
             // Contacts returned by ResolveNames should behave like Contact.Load with FirstClassPropertySet specified.
-            contact.LoadFromXml(
-                reader,
-                true, /* clearPropertyBag */
-                PropertySet.FirstClassProperties,
-                false
-            ); /* summaryPropertiesOnly */
+            Contact.LoadFromXml(reader, true, PropertySet.FirstClassProperties, false);
 
             reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.Resolution);
         }
@@ -80,11 +76,11 @@ public sealed class NameResolution
     /// <summary>
     ///     Gets the mailbox of the suggested resolved name.
     /// </summary>
-    public EmailAddress Mailbox => mailbox;
+    public EmailAddress Mailbox { get; } = new();
 
     /// <summary>
     ///     Gets the contact information of the suggested resolved name. This property is only available when
     ///     ResolveName is called with returnContactDetails = true.
     /// </summary>
-    public Contact Contact => contact;
+    public Contact Contact { get; private set; }
 }

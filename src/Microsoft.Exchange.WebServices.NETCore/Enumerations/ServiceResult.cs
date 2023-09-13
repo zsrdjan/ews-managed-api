@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the result of a call to an EWS method. Values in this enumeration have to
 ///     be ordered from lowest to highest severity.
 /// </summary>
+[PublicAPI]
 public enum ServiceResult
 {
     /// <summary>
@@ -44,5 +47,5 @@ public enum ServiceResult
     /// <summary>
     ///     The call triggered at least one error
     /// </summary>
-    Error
+    Error,
 }

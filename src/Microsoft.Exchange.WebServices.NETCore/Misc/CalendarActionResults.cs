@@ -23,29 +23,27 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of an action performed on a calendar item or meeting message,
 ///     such as accepting, tentatively accepting or declining a meeting request.
 /// </summary>
+[PublicAPI]
 public sealed class CalendarActionResults
 {
-    private readonly Appointment? appointment;
-    private readonly MeetingRequest? meetingRequest;
-    private readonly MeetingResponse? meetingResponse;
-    private readonly MeetingCancellation? meetingCancellation;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="CalendarActionResults" /> class.
     /// </summary>
     /// <param name="items">Collection of items that were created or modified as a result of a calendar action.</param>
     internal CalendarActionResults(IEnumerable<Item> items)
     {
-        appointment = EwsUtilities.FindFirstItemOfType<Appointment>(items);
-        meetingRequest = EwsUtilities.FindFirstItemOfType<MeetingRequest>(items);
-        meetingResponse = EwsUtilities.FindFirstItemOfType<MeetingResponse>(items);
-        meetingCancellation = EwsUtilities.FindFirstItemOfType<MeetingCancellation>(items);
+        Appointment = EwsUtilities.FindFirstItemOfType<Appointment>(items);
+        MeetingRequest = EwsUtilities.FindFirstItemOfType<MeetingRequest>(items);
+        MeetingResponse = EwsUtilities.FindFirstItemOfType<MeetingResponse>(items);
+        MeetingCancellation = EwsUtilities.FindFirstItemOfType<MeetingCancellation>(items);
     }
 
     /// <summary>
@@ -65,7 +63,7 @@ public sealed class CalendarActionResults
     ///     When a meeting is declined via either an Appointment or a MeetingRequest object
     ///     from the Deleted Items folder, Appointment is null.
     /// </remarks>
-    public Appointment? Appointment => appointment;
+    public Appointment? Appointment { get; }
 
     /// <summary>
     ///     Gets the meeting request that was moved to the Deleted Items folder as a result
@@ -73,18 +71,18 @@ public sealed class CalendarActionResults
     ///     If the meeting request is accepted, tentatively accepted or declined from the
     ///     Deleted Items folder, it is permanently deleted and MeetingRequest is null.
     /// </summary>
-    public MeetingRequest? MeetingRequest => meetingRequest;
+    public MeetingRequest? MeetingRequest { get; }
 
     /// <summary>
     ///     Gets the copy of the response that is sent to the organizer of a meeting when
     ///     the meeting is accepted, tentatively accepted or declined by an attendee.
     ///     MeetingResponse is null if the attendee chose not to send a response.
     /// </summary>
-    public MeetingResponse? MeetingResponse => meetingResponse;
+    public MeetingResponse? MeetingResponse { get; }
 
     /// <summary>
     ///     Gets the copy of the meeting cancellation message sent by the organizer to the
     ///     attendees of a meeting when the meeting is cancelled.
     /// </summary>
-    public MeetingCancellation? MeetingCancellation => meetingCancellation;
+    public MeetingCancellation? MeetingCancellation { get; }
 }

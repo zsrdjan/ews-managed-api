@@ -50,7 +50,7 @@ internal class ConversationAction
     /// <summary>
     ///     Gets or set conversation categories for Always Categorize action
     /// </summary>
-    internal StringList Categories { get; set; }
+    internal StringList? Categories { get; set; }
 
     /// <summary>
     ///     Gets or sets Enable Always Delete value for Always Delete action
@@ -86,12 +86,12 @@ internal class ConversationAction
     /// <summary>
     ///     Gets or sets folder id ContextFolder
     /// </summary>
-    internal FolderIdWrapper ContextFolderId { get; set; }
+    internal FolderIdWrapper? ContextFolderId { get; set; }
 
     /// <summary>
     ///     Gets or sets folder id for Move action
     /// </summary>
-    internal FolderIdWrapper DestinationFolderId { get; set; }
+    internal FolderIdWrapper? DestinationFolderId { get; set; }
 
     /// <summary>
     ///     Gets or sets the retention policy type.
@@ -129,39 +129,19 @@ internal class ConversationAction
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ConversationAction);
         try
         {
-            var actionValue = string.Empty;
-            switch (Action)
+            var actionValue = Action switch
             {
-                case ConversationActionType.AlwaysCategorize:
-                    actionValue = XmlElementNames.AlwaysCategorize;
-                    break;
-                case ConversationActionType.AlwaysDelete:
-                    actionValue = XmlElementNames.AlwaysDelete;
-                    break;
-                case ConversationActionType.AlwaysMove:
-                    actionValue = XmlElementNames.AlwaysMove;
-                    break;
-                case ConversationActionType.Delete:
-                    actionValue = XmlElementNames.Delete;
-                    break;
-                case ConversationActionType.Copy:
-                    actionValue = XmlElementNames.Copy;
-                    break;
-                case ConversationActionType.Move:
-                    actionValue = XmlElementNames.Move;
-                    break;
-                case ConversationActionType.SetReadState:
-                    actionValue = XmlElementNames.SetReadState;
-                    break;
-                case ConversationActionType.SetRetentionPolicy:
-                    actionValue = XmlElementNames.SetRetentionPolicy;
-                    break;
-                case ConversationActionType.Flag:
-                    actionValue = XmlElementNames.Flag;
-                    break;
-                default:
-                    throw new ArgumentException("ConversationAction");
-            }
+                ConversationActionType.AlwaysCategorize => XmlElementNames.AlwaysCategorize,
+                ConversationActionType.AlwaysDelete => XmlElementNames.AlwaysDelete,
+                ConversationActionType.AlwaysMove => XmlElementNames.AlwaysMove,
+                ConversationActionType.Delete => XmlElementNames.Delete,
+                ConversationActionType.Copy => XmlElementNames.Copy,
+                ConversationActionType.Move => XmlElementNames.Move,
+                ConversationActionType.SetReadState => XmlElementNames.SetReadState,
+                ConversationActionType.SetRetentionPolicy => XmlElementNames.SetRetentionPolicy,
+                ConversationActionType.Flag => XmlElementNames.Flag,
+                _ => throw new ArgumentException("ConversationAction"),
+            };
 
             // Emit the action element
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Action, actionValue);

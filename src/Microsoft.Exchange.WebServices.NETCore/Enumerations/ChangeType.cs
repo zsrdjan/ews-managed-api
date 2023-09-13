@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of change of a synchronization event.
 /// </summary>
+[PublicAPI]
 public enum ChangeType
 {
     /// <summary>

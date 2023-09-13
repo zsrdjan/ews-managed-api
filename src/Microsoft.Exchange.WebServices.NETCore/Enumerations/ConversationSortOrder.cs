@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the order in which conversation nodes should be returned by GetConversationItems.
 /// </summary>
+[PublicAPI]
 public enum ConversationSortOrder
 {
     /// <summary>

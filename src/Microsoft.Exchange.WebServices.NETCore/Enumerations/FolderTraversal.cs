@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the scope of FindFolders operations.
 /// </summary>
+[PublicAPI]
 public enum FolderTraversal
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum FolderTraversal
     /// <summary>
     ///     Only soft deleted folders are retrieved.
     /// </summary>
-    SoftDeleted
+    SoftDeleted,
 }

@@ -208,7 +208,7 @@ internal sealed class TimeChange : ComplexProperty
 
         if (Time != null)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, Time.ToXSTime());
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, Time.ToXsTime());
         }
     }
 }

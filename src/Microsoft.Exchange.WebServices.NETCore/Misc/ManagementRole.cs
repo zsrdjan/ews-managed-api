@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     ManagementRoles
 /// </summary>
+[PublicAPI]
 public sealed class ManagementRoles
 {
-    private readonly string[] userRoles;
-    private readonly string[] applicationRoles;
+    private readonly string[] _userRoles;
+    private readonly string[] _applicationRoles;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ManagementRoles" /> class.
@@ -39,10 +42,11 @@ public sealed class ManagementRoles
     /// <param name="userRole"></param>
     public ManagementRoles(string userRole)
     {
-        EwsUtilities.ValidateParam(userRole, "userRole");
-        userRoles = new[]
+        EwsUtilities.ValidateParam(userRole);
+
+        _userRoles = new[]
         {
-            userRole
+            userRole,
         };
     }
 
@@ -51,23 +55,23 @@ public sealed class ManagementRoles
     /// </summary>
     /// <param name="userRole"></param>
     /// <param name="applicationRole"></param>
-    public ManagementRoles(string userRole, string applicationRole)
+    public ManagementRoles(string? userRole, string? applicationRole)
     {
         if (userRole != null)
         {
-            EwsUtilities.ValidateParam(userRole, "userRole");
-            userRoles = new[]
+            EwsUtilities.ValidateParam(userRole);
+            _userRoles = new[]
             {
-                userRole
+                userRole,
             };
         }
 
         if (applicationRole != null)
         {
-            EwsUtilities.ValidateParam(applicationRole, "applicationRole");
-            applicationRoles = new[]
+            EwsUtilities.ValidateParam(applicationRole);
+            _applicationRoles = new[]
             {
-                applicationRole
+                applicationRole,
             };
         }
     }
@@ -77,16 +81,16 @@ public sealed class ManagementRoles
     /// </summary>
     /// <param name="userRoles"></param>
     /// <param name="applicationRoles"></param>
-    public ManagementRoles(string[] userRoles, string[] applicationRoles)
+    public ManagementRoles(string[]? userRoles, string[]? applicationRoles)
     {
         if (userRoles != null)
         {
-            this.userRoles = userRoles.ToArray();
+            _userRoles = userRoles.ToArray();
         }
 
         if (applicationRoles != null)
         {
-            this.applicationRoles = applicationRoles.ToArray();
+            _applicationRoles = applicationRoles.ToArray();
         }
     }
 
@@ -97,8 +101,8 @@ public sealed class ManagementRoles
     internal void WriteToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ManagementRole);
-        WriteRolesToXml(writer, userRoles, XmlElementNames.UserRoles);
-        WriteRolesToXml(writer, applicationRoles, XmlElementNames.ApplicationRoles);
+        WriteRolesToXml(writer, _userRoles, XmlElementNames.UserRoles);
+        WriteRolesToXml(writer, _applicationRoles, XmlElementNames.ApplicationRoles);
         writer.WriteEndElement();
     }
 
@@ -108,7 +112,7 @@ public sealed class ManagementRoles
     /// <param name="writer"></param>
     /// <param name="roles"></param>
     /// <param name="elementName"></param>
-    private void WriteRolesToXml(EwsServiceXmlWriter writer, string[] roles, string elementName)
+    private static void WriteRolesToXml(EwsServiceXmlWriter writer, string[]? roles, string elementName)
     {
         if (roles != null)
         {

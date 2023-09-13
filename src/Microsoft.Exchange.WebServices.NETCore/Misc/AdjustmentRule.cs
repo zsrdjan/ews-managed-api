@@ -1,5 +1,8 @@
-﻿namespace Microsoft.Exchange.WebServices.Data.Misc;
+using JetBrains.Annotations;
 
+namespace Microsoft.Exchange.WebServices.Data.Misc;
+
+[PublicAPI]
 public class AdjustmentRule
 {
     public DateTime DateStart { get; }

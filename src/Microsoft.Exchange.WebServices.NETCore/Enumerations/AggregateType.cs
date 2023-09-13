@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of aggregation to perform.
 /// </summary>
+[PublicAPI]
 public enum AggregateType
 {
     /// <summary>
@@ -38,5 +41,5 @@ public enum AggregateType
     /// <summary>
     ///     The minimum value is calculated.
     /// </summary>
-    Maximum
+    Maximum,
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of data that can be requested via GetUserAvailability.
 /// </summary>
+[PublicAPI]
 public enum AvailabilityData
 {
     /// <summary>
@@ -43,5 +46,5 @@ public enum AvailabilityData
     /// <summary>
     ///     Return both free/busy data and suggestions.
     /// </summary>
-    FreeBusyAndSuggestions
+    FreeBusyAndSuggestions,
 }

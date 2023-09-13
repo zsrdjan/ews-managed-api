@@ -25,11 +25,14 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when a request cannot be handled due to a service version mismatch.
 /// </summary>
+[PublicAPI]
 public sealed class ServiceVersionException : ServiceLocalException
 {
     /// <summary>

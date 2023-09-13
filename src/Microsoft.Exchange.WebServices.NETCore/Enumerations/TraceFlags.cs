@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines flags to control tracing details.
 /// </summary>
+[PublicAPI]
 [Flags]
 public enum TraceFlags : long
 {

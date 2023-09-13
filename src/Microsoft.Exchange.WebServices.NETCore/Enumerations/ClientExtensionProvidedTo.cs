@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of ClientExtensionProvidedTo.
 /// </summary>
+[PublicAPI]
 public enum ClientExtensionProvidedTo
 {
     /// <summary>

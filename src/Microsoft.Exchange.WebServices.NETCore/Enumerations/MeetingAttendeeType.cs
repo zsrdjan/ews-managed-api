@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of a meeting attendee.
 /// </summary>
+[PublicAPI]
 public enum MeetingAttendeeType
 {
     /// <summary>
@@ -53,5 +56,5 @@ public enum MeetingAttendeeType
     /// <summary>
     ///     The attendee is a resource.
     /// </summary>
-    Resource
+    Resource,
 }

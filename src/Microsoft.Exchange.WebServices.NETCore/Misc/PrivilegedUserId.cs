@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class PrivilegedUserId
 {
-    private PrivilegedLogonType logonType;
-    private ConnectingIdType idType;
-    private string id;
     private PrivilegedUserIdBudgetType? budgetType;
 
     /// <summary>
@@ -51,9 +48,9 @@ internal sealed class PrivilegedUserId
     public PrivilegedUserId(PrivilegedLogonType openType, ConnectingIdType idType, string id)
         : this()
     {
-        logonType = openType;
-        this.idType = idType;
-        this.id = id;
+        LogonType = openType;
+        IdType = idType;
+        Id = id;
     }
 
     /// <summary>
@@ -63,20 +60,20 @@ internal sealed class PrivilegedUserId
     /// <param name="requestedServerVersion">The requested server version.</param>
     internal void WriteToXml(EwsServiceXmlWriter writer, ExchangeVersion requestedServerVersion)
     {
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(Id))
         {
             throw new ArgumentException(Strings.IdPropertyMustBeSet);
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.OpenAsAdminOrSystemService);
-        writer.WriteAttributeString(XmlElementNames.LogonType, logonType.ToString());
+        writer.WriteAttributeString(XmlElementNames.LogonType, LogonType.ToString());
         if (requestedServerVersion >= ExchangeVersion.Exchange2013 && budgetType.HasValue)
         {
             writer.WriteAttributeString(XmlElementNames.BudgetType, ((int)budgetType.Value).ToString());
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ConnectingSID);
-        writer.WriteElementValue(XmlNamespace.Types, idType.ToString(), id);
+        writer.WriteElementValue(XmlNamespace.Types, IdType.ToString(), Id);
         writer.WriteEndElement(); // ConnectingSID
         writer.WriteEndElement(); // OpenAsAdminOrSystemService
     }
@@ -84,29 +81,17 @@ internal sealed class PrivilegedUserId
     /// <summary>
     ///     Gets or sets the type of the Id.
     /// </summary>
-    public ConnectingIdType IdType
-    {
-        get => idType;
-        set => idType = value;
-    }
+    public ConnectingIdType IdType { get; set; }
 
     /// <summary>
     ///     Gets or sets the user Id.
     /// </summary>
-    public string Id
-    {
-        get => id;
-        set => id = value;
-    }
+    public string Id { get; set; }
 
     /// <summary>
     ///     Gets or sets the special logon type.
     /// </summary>
-    public PrivilegedLogonType LogonType
-    {
-        get => logonType;
-        set => logonType = value;
-    }
+    public PrivilegedLogonType LogonType { get; set; }
 
     /// <summary>
     ///     Gets or sets the budget type.

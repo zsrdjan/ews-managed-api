@@ -26,11 +26,14 @@
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the standard response to an Exchange Web Services operation.
 /// </summary>
+[PublicAPI]
 public class ServiceResponse
 {
     private ServiceResult result;

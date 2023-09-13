@@ -56,8 +56,8 @@ internal abstract class ServiceRequestBase
         "RequestId", "request-id",
     };
 
-    private const string XMLSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
-    private const string XMLSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
+    private const string XmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
     private const string ClientStatisticsRequestHeader = "X-ClientStatistics";
 
     #endregion
@@ -76,7 +76,7 @@ internal abstract class ServiceRequestBase
     /// <summary>
     ///     Maintains the collection of client side statistics for requests already completed
     /// </summary>
-    private static readonly List<string> clientStatisticsCache = new List<string>();
+    private static readonly List<string> ClientStatisticsCache = new List<string>();
 
     /// <summary>
     ///     Gets the response stream (may be wrapped with GZip/Deflate stream to decompress content)
@@ -174,7 +174,7 @@ internal abstract class ServiceRequestBase
     }
 
     /// <summary>
-    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be eimitted.
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value><c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.</value>
     internal virtual bool EmitTimeZoneHeader => false;
@@ -279,7 +279,7 @@ internal abstract class ServiceRequestBase
         );
         writer.WriteAttributeValue("xmlns", EwsUtilities.EwsMessagesNamespacePrefix, EwsUtilities.EwsMessagesNamespace);
         writer.WriteAttributeValue("xmlns", EwsUtilities.EwsTypesNamespacePrefix, EwsUtilities.EwsTypesNamespace);
-        if (writer.RequireWSSecurityUtilityNamespace)
+        if (writer.RequireWsSecurityUtilityNamespace)
         {
             writer.WriteAttributeValue(
                 "xmlns",
@@ -410,7 +410,7 @@ internal abstract class ServiceRequestBase
         using var memoryStream = new MemoryStream();
         using (var writer = new EwsServiceXmlWriter(Service, memoryStream))
         {
-            writer.RequireWSSecurityUtilityNamespace = needSignature;
+            writer.RequireWsSecurityUtilityNamespace = needSignature;
             WriteToXml(writer);
         }
 
@@ -654,12 +654,12 @@ internal abstract class ServiceRequestBase
             {
                 string? clientStatisticsToAdd = null;
 
-                lock (clientStatisticsCache)
+                lock (ClientStatisticsCache)
                 {
-                    if (clientStatisticsCache.Count > 0)
+                    if (ClientStatisticsCache.Count > 0)
                     {
-                        clientStatisticsToAdd = clientStatisticsCache[0];
-                        clientStatisticsCache.RemoveAt(0);
+                        clientStatisticsToAdd = ClientStatisticsCache[0];
+                        ClientStatisticsCache.RemoveAt(0);
                     }
                 }
 
@@ -705,9 +705,9 @@ internal abstract class ServiceRequestBase
                     sb.Append(soapAction);
                     sb.Append(';');
 
-                    lock (clientStatisticsCache)
+                    lock (ClientStatisticsCache)
                     {
-                        clientStatisticsCache.Add(sb.ToString());
+                        ClientStatisticsCache.Add(sb.ToString());
                     }
                 }
             }

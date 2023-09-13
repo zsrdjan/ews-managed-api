@@ -28,13 +28,13 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 /// <summary>
 ///     Defines the UnifiedGroupIdentity class.
 /// </summary>
-internal sealed class UnifiedGroupIdentity : ComplexProperty, ISelfValidate
+internal sealed class UnifiedGroupIdentity : ComplexProperty
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="UnifiedGroupIdentity" />  class
     /// </summary>
     /// <param name="identityType">The identity type</param>
-    /// <param name="value">The value assocaited with the identity type</param>
+    /// <param name="value">The value associated with the identity type</param>
     public UnifiedGroupIdentity(UnifiedGroupIdentityType identityType, string value)
     {
         IdentityType = identityType;

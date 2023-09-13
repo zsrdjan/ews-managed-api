@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Defines the type of an EmailAddress object.
 /// </summary>
+[PublicAPI]
 public enum MailboxType
 {
     /// <summary>
@@ -56,13 +59,13 @@ public enum MailboxType
     /// <summary>
     ///     The EmailAddress represents a Public Group.
     /// </summary>
-    [EwsEnumAttribute("PublicDL")]
+    [EwsEnum("PublicDL")]
     PublicGroup,
 
     /// <summary>
     ///     The EmailAddress represents a Contact Group.
     /// </summary>
-    [EwsEnumAttribute("PrivateDL")]
+    [EwsEnum("PrivateDL")]
     ContactGroup,
 
     /// <summary>

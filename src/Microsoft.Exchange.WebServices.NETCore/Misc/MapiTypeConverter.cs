@@ -42,184 +42,182 @@ internal class MapiTypeConverter
     /// <summary>
     ///     Map from MAPI property type to converter entry.
     /// </summary>
-    private static readonly LazyMember<MapiTypeConverterMap> mapiTypeConverterMap =
-        new LazyMember<MapiTypeConverterMap>(
-            delegate
+    private static readonly LazyMember<MapiTypeConverterMap> mapiTypeConverterMap = new(
+        () =>
+        {
+            var map = new MapiTypeConverterMap
             {
-                var map = new MapiTypeConverterMap();
-
-                map.Add(MapiPropertyType.ApplicationTime, new MapiTypeConverterMapEntry(typeof(double)));
-
-                map.Add(
-                    MapiPropertyType.ApplicationTimeArray,
-                    new MapiTypeConverterMapEntry(typeof(double))
+                {
+                    MapiPropertyType.ApplicationTime, new MapiTypeConverterMapEntry(typeof(double))
+                },
+                {
+                    MapiPropertyType.ApplicationTimeArray, new MapiTypeConverterMapEntry(typeof(double))
                     {
-                        IsArray = true
+                        IsArray = true,
                     }
-                );
+                },
+            };
 
-                var byteConverter = new MapiTypeConverterMapEntry(typeof(byte[]))
-                {
-                    Parse = s => string.IsNullOrEmpty(s) ? null : Convert.FromBase64String(s),
-                    ConvertToString = o => Convert.ToBase64String((byte[])o),
-                };
+            var byteConverter = new MapiTypeConverterMapEntry(typeof(byte[]))
+            {
+                Parse = s => string.IsNullOrEmpty(s) ? null : Convert.FromBase64String(s),
+                ConvertToString = o => Convert.ToBase64String((byte[])o),
+            };
 
-                map.Add(MapiPropertyType.Binary, byteConverter);
+            map.Add(MapiPropertyType.Binary, byteConverter);
 
-                var byteArrayConverter = new MapiTypeConverterMapEntry(typeof(byte[]))
-                {
-                    Parse = s => string.IsNullOrEmpty(s) ? null : Convert.FromBase64String(s),
-                    ConvertToString = o => Convert.ToBase64String((byte[])o),
-                    IsArray = true
-                };
+            var byteArrayConverter = new MapiTypeConverterMapEntry(typeof(byte[]))
+            {
+                Parse = s => string.IsNullOrEmpty(s) ? null : Convert.FromBase64String(s),
+                ConvertToString = o => Convert.ToBase64String((byte[])o),
+                IsArray = true,
+            };
 
-                map.Add(MapiPropertyType.BinaryArray, byteArrayConverter);
+            map.Add(MapiPropertyType.BinaryArray, byteArrayConverter);
 
-                var boolConverter = new MapiTypeConverterMapEntry(typeof(bool))
-                {
-                    Parse = s => Convert.ChangeType(s, typeof(bool), CultureInfo.InvariantCulture),
-                    ConvertToString = o => ((bool)o).ToString().ToLower(),
-                };
+            var boolConverter = new MapiTypeConverterMapEntry(typeof(bool))
+            {
+                Parse = s => Convert.ChangeType(s, typeof(bool), CultureInfo.InvariantCulture),
+                ConvertToString = o => ((bool)o).ToString().ToLower(),
+            };
 
-                map.Add(MapiPropertyType.Boolean, boolConverter);
+            map.Add(MapiPropertyType.Boolean, boolConverter);
 
-                var clsidConverter = new MapiTypeConverterMapEntry(typeof(Guid))
-                {
-                    Parse = s => new Guid(s),
-                    ConvertToString = o => ((Guid)o).ToString(),
-                };
+            var clsidConverter = new MapiTypeConverterMapEntry(typeof(Guid))
+            {
+                Parse = s => new Guid(s),
+                ConvertToString = o => ((Guid)o).ToString(),
+            };
 
-                map.Add(MapiPropertyType.CLSID, clsidConverter);
+            map.Add(MapiPropertyType.CLSID, clsidConverter);
 
-                var clsidArrayConverter = new MapiTypeConverterMapEntry(typeof(Guid))
-                {
-                    Parse = s => new Guid(s),
-                    ConvertToString = o => ((Guid)o).ToString(),
-                    IsArray = true
-                };
+            var clsidArrayConverter = new MapiTypeConverterMapEntry(typeof(Guid))
+            {
+                Parse = s => new Guid(s),
+                ConvertToString = o => ((Guid)o).ToString(),
+                IsArray = true,
+            };
 
-                map.Add(MapiPropertyType.CLSIDArray, clsidArrayConverter);
+            map.Add(MapiPropertyType.CLSIDArray, clsidArrayConverter);
 
-                map.Add(MapiPropertyType.Currency, new MapiTypeConverterMapEntry(typeof(long)));
+            map.Add(MapiPropertyType.Currency, new MapiTypeConverterMapEntry(typeof(long)));
 
-                map.Add(
-                    MapiPropertyType.CurrencyArray,
-                    new MapiTypeConverterMapEntry(typeof(long))
-                    {
-                        IsArray = true
-                    }
-                );
-
-                map.Add(MapiPropertyType.Double, new MapiTypeConverterMapEntry(typeof(double)));
-
-                map.Add(
-                    MapiPropertyType.DoubleArray,
-                    new MapiTypeConverterMapEntry(typeof(double))
-                    {
-                        IsArray = true
-                    }
-                );
-
-                map.Add(MapiPropertyType.Error, new MapiTypeConverterMapEntry(typeof(int)));
-
-                map.Add(MapiPropertyType.Float, new MapiTypeConverterMapEntry(typeof(float)));
-
-                map.Add(
-                    MapiPropertyType.FloatArray,
-                    new MapiTypeConverterMapEntry(typeof(float))
-                    {
-                        IsArray = true
-                    }
-                );
-
-                map.Add(
-                    MapiPropertyType.Integer,
-                    new MapiTypeConverterMapEntry(typeof(int))
-                    {
-                        Parse = s => ParseMapiIntegerValue(s)
-                    }
-                );
-
-                map.Add(
-                    MapiPropertyType.IntegerArray,
-                    new MapiTypeConverterMapEntry(typeof(int))
-                    {
-                        IsArray = true
-                    }
-                );
-
-                map.Add(MapiPropertyType.Long, new MapiTypeConverterMapEntry(typeof(long)));
-
-                map.Add(
-                    MapiPropertyType.LongArray,
-                    new MapiTypeConverterMapEntry(typeof(long))
-                    {
-                        IsArray = true
-                    }
-                );
-
-                var objectConverter = new MapiTypeConverterMapEntry(typeof(string))
-                {
-                    Parse = s => s
-                };
-
-                map.Add(MapiPropertyType.Object, objectConverter);
-
-                var objectArrayConverter = new MapiTypeConverterMapEntry(typeof(string))
-                {
-                    Parse = s => s,
-                    IsArray = true
-                };
-
-                map.Add(MapiPropertyType.ObjectArray, objectArrayConverter);
-
-                map.Add(MapiPropertyType.Short, new MapiTypeConverterMapEntry(typeof(short)));
-
-                map.Add(
-                    MapiPropertyType.ShortArray,
-                    new MapiTypeConverterMapEntry(typeof(short))
-                    {
-                        IsArray = true
-                    }
-                );
-
-                var stringConverter = new MapiTypeConverterMapEntry(typeof(string))
-                {
-                    Parse = s => s
-                };
-
-                map.Add(MapiPropertyType.String, stringConverter);
-
-                var stringArrayConverter = new MapiTypeConverterMapEntry(typeof(string))
-                {
-                    Parse = s => s,
-                    IsArray = true
-                };
-
-                map.Add(MapiPropertyType.StringArray, stringArrayConverter);
-
-                var sysTimeConverter = new MapiTypeConverterMapEntry(typeof(DateTime))
-                {
-                    Parse = s => DateTime.Parse(s, CultureInfo.InvariantCulture, UtcDataTimeStyles),
-                    ConvertToString =
-                        o => EwsUtilities.DateTimeToXsDateTime((DateTime)o) // Can't use DataTime.ToString()
-                };
-
-                map.Add(MapiPropertyType.SystemTime, sysTimeConverter);
-
-                var sysTimeArrayConverter = new MapiTypeConverterMapEntry(typeof(DateTime))
+            map.Add(
+                MapiPropertyType.CurrencyArray,
+                new MapiTypeConverterMapEntry(typeof(long))
                 {
                     IsArray = true,
-                    Parse = s => DateTime.Parse(s, CultureInfo.InvariantCulture, UtcDataTimeStyles),
-                    ConvertToString =
-                        o => EwsUtilities.DateTimeToXsDateTime((DateTime)o) // Can't use DataTime.ToString()
-                };
+                }
+            );
 
-                map.Add(MapiPropertyType.SystemTimeArray, sysTimeArrayConverter);
+            map.Add(MapiPropertyType.Double, new MapiTypeConverterMapEntry(typeof(double)));
 
-                return map;
-            }
-        );
+            map.Add(
+                MapiPropertyType.DoubleArray,
+                new MapiTypeConverterMapEntry(typeof(double))
+                {
+                    IsArray = true,
+                }
+            );
+
+            map.Add(MapiPropertyType.Error, new MapiTypeConverterMapEntry(typeof(int)));
+
+            map.Add(MapiPropertyType.Float, new MapiTypeConverterMapEntry(typeof(float)));
+
+            map.Add(
+                MapiPropertyType.FloatArray,
+                new MapiTypeConverterMapEntry(typeof(float))
+                {
+                    IsArray = true,
+                }
+            );
+
+            map.Add(
+                MapiPropertyType.Integer,
+                new MapiTypeConverterMapEntry(typeof(int))
+                {
+                    Parse = s => ParseMapiIntegerValue(s),
+                }
+            );
+
+            map.Add(
+                MapiPropertyType.IntegerArray,
+                new MapiTypeConverterMapEntry(typeof(int))
+                {
+                    IsArray = true,
+                }
+            );
+
+            map.Add(MapiPropertyType.Long, new MapiTypeConverterMapEntry(typeof(long)));
+
+            map.Add(
+                MapiPropertyType.LongArray,
+                new MapiTypeConverterMapEntry(typeof(long))
+                {
+                    IsArray = true,
+                }
+            );
+
+            var objectConverter = new MapiTypeConverterMapEntry(typeof(string))
+            {
+                Parse = s => s,
+            };
+
+            map.Add(MapiPropertyType.Object, objectConverter);
+
+            var objectArrayConverter = new MapiTypeConverterMapEntry(typeof(string))
+            {
+                Parse = s => s,
+                IsArray = true,
+            };
+
+            map.Add(MapiPropertyType.ObjectArray, objectArrayConverter);
+
+            map.Add(MapiPropertyType.Short, new MapiTypeConverterMapEntry(typeof(short)));
+
+            map.Add(
+                MapiPropertyType.ShortArray,
+                new MapiTypeConverterMapEntry(typeof(short))
+                {
+                    IsArray = true,
+                }
+            );
+
+            var stringConverter = new MapiTypeConverterMapEntry(typeof(string))
+            {
+                Parse = s => s,
+            };
+
+            map.Add(MapiPropertyType.String, stringConverter);
+
+            var stringArrayConverter = new MapiTypeConverterMapEntry(typeof(string))
+            {
+                Parse = s => s,
+                IsArray = true,
+            };
+
+            map.Add(MapiPropertyType.StringArray, stringArrayConverter);
+
+            var sysTimeConverter = new MapiTypeConverterMapEntry(typeof(DateTime))
+            {
+                Parse = s => DateTime.Parse(s, CultureInfo.InvariantCulture, UtcDataTimeStyles),
+                ConvertToString = o => EwsUtilities.DateTimeToXsDateTime((DateTime)o), // Can't use DataTime.ToString()
+            };
+
+            map.Add(MapiPropertyType.SystemTime, sysTimeConverter);
+
+            var sysTimeArrayConverter = new MapiTypeConverterMapEntry(typeof(DateTime))
+            {
+                IsArray = true,
+                Parse = s => DateTime.Parse(s, CultureInfo.InvariantCulture, UtcDataTimeStyles),
+                ConvertToString = o => EwsUtilities.DateTimeToXsDateTime((DateTime)o), // Can't use DataTime.ToString()
+            };
+
+            map.Add(MapiPropertyType.SystemTimeArray, sysTimeArrayConverter);
+
+            return map;
+        }
+    );
 
     /// <summary>
     ///     Converts the string list to array.
@@ -229,7 +227,7 @@ internal class MapiTypeConverter
     /// <returns>Array of objects.</returns>
     internal static Array ConvertToValue(MapiPropertyType mapiPropType, IEnumerable<string> strings)
     {
-        EwsUtilities.ValidateParam(strings, "strings");
+        EwsUtilities.ValidateParam(strings);
 
         var typeConverter = MapiTypeConverterMap[mapiPropType];
         var array = Array.CreateInstance(typeConverter.Type, strings.Count());
@@ -274,7 +272,7 @@ internal class MapiTypeConverter
     /// <returns>Compatible value.</returns>
     internal static object ChangeType(MapiPropertyType mapiType, object value)
     {
-        EwsUtilities.ValidateParam(value, "value");
+        EwsUtilities.ValidateParam(value);
 
         return MapiTypeConverterMap[mapiType].ChangeType(value);
     }
@@ -290,8 +288,7 @@ internal class MapiTypeConverter
     /// <returns>Integer value or the original string if the value could not be parsed as such.</returns>
     internal static object ParseMapiIntegerValue(string s)
     {
-        int intValue;
-        if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue))
+        if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue))
         {
             return intValue;
         }
