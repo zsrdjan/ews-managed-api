@@ -39,7 +39,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     EWS utilities
 /// </summary>
-internal static class EwsUtilities
+internal static partial class EwsUtilities
 {
     #region Private members
 
@@ -74,12 +74,12 @@ internal static class EwsUtilities
     private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> SchemaToEnumDictionaries = new(
         () => new Dictionary<Type, Dictionary<string, Enum>>
         {
-                // @formatter:off
-                { typeof(EventType), BuildSchemaToEnumDict(typeof(EventType)) },
-                { typeof(MailboxType), BuildSchemaToEnumDict(typeof(MailboxType)) },
-                { typeof(FileAsMapping), BuildSchemaToEnumDict(typeof(FileAsMapping)) },
-                { typeof(RuleProperty), BuildSchemaToEnumDict(typeof(RuleProperty)) },
-                { typeof(WellKnownFolderName), BuildSchemaToEnumDict(typeof(WellKnownFolderName)) },
+            // @formatter:off
+            { typeof(EventType), BuildSchemaToEnumDict(typeof(EventType)) },
+            { typeof(MailboxType), BuildSchemaToEnumDict(typeof(MailboxType)) },
+            { typeof(FileAsMapping), BuildSchemaToEnumDict(typeof(FileAsMapping)) },
+            { typeof(RuleProperty), BuildSchemaToEnumDict(typeof(RuleProperty)) },
+            { typeof(WellKnownFolderName), BuildSchemaToEnumDict(typeof(WellKnownFolderName)) },
             // @formatter:on
         }
     );
@@ -90,12 +90,12 @@ internal static class EwsUtilities
     private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> EnumToSchemaDictionaries = new(
         () => new Dictionary<Type, Dictionary<Enum, string>>
         {
-                // @formatter:off
-                { typeof(EventType), BuildEnumToSchemaDict(typeof(EventType)) },
-                { typeof(MailboxType), BuildEnumToSchemaDict(typeof(MailboxType)) },
-                { typeof(FileAsMapping), BuildEnumToSchemaDict(typeof(FileAsMapping)) },
-                { typeof(RuleProperty), BuildEnumToSchemaDict(typeof(RuleProperty)) },
-                { typeof(WellKnownFolderName), BuildEnumToSchemaDict(typeof(WellKnownFolderName)) },
+            // @formatter:off
+            { typeof(EventType), BuildEnumToSchemaDict(typeof(EventType)) },
+            { typeof(MailboxType), BuildEnumToSchemaDict(typeof(MailboxType)) },
+            { typeof(FileAsMapping), BuildEnumToSchemaDict(typeof(FileAsMapping)) },
+            { typeof(RuleProperty), BuildEnumToSchemaDict(typeof(RuleProperty)) },
+            { typeof(WellKnownFolderName), BuildEnumToSchemaDict(typeof(WellKnownFolderName)) },
             // @formatter:on
         }
     );
@@ -106,11 +106,11 @@ internal static class EwsUtilities
     private static readonly LazyMember<Dictionary<string, string>> TypeNameToShortNameMap = new(
         () => new Dictionary<string, string>
         {
-                // @formatter:off
-                { "Boolean", "bool" },
-                { "Int16", "short" },
-                { "Int32", "int" },
-                { "String", "string" },
+            // @formatter:off
+            { "Boolean", "bool" },
+            { "Int16", "short" },
+            { "Int32", "int" },
+            { "String", "string" },
             // @formatter:on
         }
     );
@@ -153,11 +153,6 @@ internal static class EwsUtilities
 
     internal const string WsSecuritySecExtNamespace =
         "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-
-    /// <summary>
-    ///     Regular expression for legal domain names.
-    /// </summary>
-    internal const string DomainRegex = "^[-a-zA-Z0-9_.]+$";
 
     #endregion
 
@@ -280,7 +275,7 @@ internal static class EwsUtilities
     /// <param name="itemClass">The item class.</param>
     /// <param name="isNew">If true, item attachment is new.</param>
     /// <returns>New Item.</returns>
-    internal static Item? CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
+    internal static Item CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
     {
         if (ServiceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
                 itemClass,
@@ -881,17 +876,7 @@ internal static class EwsUtilities
     /// <returns>System.TimeSpan structure</returns>
     internal static TimeSpan XsDurationToTimeSpan(string xsDuration)
     {
-        var timeSpanParser = new Regex(
-            "(?<pos>-)?" +
-            "P" +
-            "((?<year>[0-9]+)Y)?" +
-            "((?<month>[0-9]+)M)?" +
-            "((?<day>[0-9]+)D)?" +
-            "(T" +
-            "((?<hour>[0-9]+)H)?" +
-            "((?<minute>[0-9]+)M)?" +
-            "((?<seconds>[0-9]+)(\\.(?<precision>[0-9]+))?S)?)?"
-        );
+        var timeSpanParser = TimeSpanParserRegex();
 
         var m = timeSpanParser.Match(xsDuration);
         if (!m.Success)
@@ -1317,7 +1302,7 @@ internal static class EwsUtilities
     {
         if (domainName != null)
         {
-            var regex = new Regex(DomainRegex);
+            var regex = DomainRegex();
 
             if (!regex.IsMatch(domainName))
             {
@@ -1537,6 +1522,29 @@ internal static class EwsUtilities
             action(entry);
         }
     }
+
+
+    /*
+       "(?<pos>-)?" +
+       "P" +
+       "((?<year>[0-9]+)Y)?" +
+       "((?<month>[0-9]+)M)?" +
+       "((?<day>[0-9]+)D)?" +
+       "(T" +
+       "((?<hour>[0-9]+)H)?" +
+       "((?<minute>[0-9]+)M)?" +
+       "((?<seconds>[0-9]+)(\\.(?<precision>[0-9]+))?S)?)?"
+     */
+    [GeneratedRegex(
+        "(?<pos>-)?P((?<year>[0-9]+)Y)?((?<month>[0-9]+)M)?((?<day>[0-9]+)D)?(T((?<hour>[0-9]+)H)?((?<minute>[0-9]+)M)?((?<seconds>[0-9]+)(\\.(?<precision>[0-9]+))?S)?)?"
+    )]
+    private static partial Regex TimeSpanParserRegex();
+
+    /// <summary>
+    ///     Regular expression for legal domain names.
+    /// </summary>
+    [GeneratedRegex("^[-a-zA-Z0-9_.]+$")]
+    private static partial Regex DomainRegex();
 
     #endregion
 }

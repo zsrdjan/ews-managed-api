@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an item attachment.
 /// </summary>
+[PublicAPI]
 public class ItemAttachment : Attachment
 {
     /// <summary>
     ///     The item associated with the attachment.
     /// </summary>
-    private Item? item;
+    private Item? _item;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
@@ -58,21 +61,22 @@ public class ItemAttachment : Attachment
     /// </summary>
     public Item? Item
     {
-        get => item;
+        get => _item;
 
         internal set
         {
             ThrowIfThisIsNotNew();
 
-            if (item != null)
+            if (_item != null)
             {
-                item.OnChange -= ItemChanged;
+                _item.OnChange -= ItemChanged;
             }
 
-            item = value;
-            if (item != null)
+            _item = value;
+
+            if (_item != null)
             {
-                item.OnChange += ItemChanged;
+                _item.OnChange += ItemChanged;
             }
         }
     }
@@ -109,11 +113,11 @@ public class ItemAttachment : Attachment
 
         if (!result)
         {
-            item = EwsUtilities.CreateItemFromXmlElementName(this, reader.LocalName);
+            _item = EwsUtilities.CreateItemFromXmlElementName(this, reader.LocalName);
 
-            if (item != null)
+            if (_item != null)
             {
-                item.LoadFromXml(reader, true /* clearPropertyBag */);
+                _item.LoadFromXml(reader, true);
             }
         }
 
@@ -135,12 +139,12 @@ public class ItemAttachment : Attachment
 
         if (itemClass != null)
         {
-            if (item == null || item.GetType() != itemClass)
+            if (_item == null || _item.GetType() != itemClass)
             {
                 throw new ServiceLocalException(Strings.AttachmentItemTypeMismatch);
             }
 
-            item.LoadFromXml(reader, false /* clearPropertyBag */);
+            _item.LoadFromXml(reader, false);
             return true;
         }
 
@@ -176,31 +180,34 @@ public class ItemAttachment : Attachment
     /// <summary>
     ///     Loads this attachment.
     /// </summary>
+    /// <param name="token"></param>
     /// <param name="additionalProperties">The optional additional properties to load.</param>
     public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
         CancellationToken token = default,
         params PropertyDefinitionBase[] additionalProperties
     )
     {
-        return InternalLoad(null /* bodyType */, additionalProperties, token);
+        return InternalLoad(null, additionalProperties, token);
     }
 
     /// <summary>
     ///     Loads this attachment.
     /// </summary>
     /// <param name="additionalProperties">The optional additional properties to load.</param>
+    /// <param name="token"></param>
     public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
         IEnumerable<PropertyDefinitionBase> additionalProperties,
         CancellationToken token = default
     )
     {
-        return InternalLoad(null /* bodyType */, additionalProperties, token);
+        return InternalLoad(null, additionalProperties, token);
     }
 
     /// <summary>
     ///     Loads this attachment.
     /// </summary>
     /// <param name="bodyType">The body type to load.</param>
+    /// <param name="token"></param>
     /// <param name="additionalProperties">The optional additional properties to load.</param>
     public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
         BodyType bodyType,
@@ -216,6 +223,7 @@ public class ItemAttachment : Attachment
     /// </summary>
     /// <param name="bodyType">The body type to load.</param>
     /// <param name="additionalProperties">The optional additional properties to load.</param>
+    /// <param name="token"></param>
     public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
         BodyType bodyType,
         IEnumerable<PropertyDefinitionBase> additionalProperties,
