@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class CreateItemResponse : CreateItemResponseBase
 {
-    private readonly Item item;
+    private readonly Item? item;
 
     /// <summary>
     ///     Gets Item instance.
@@ -38,7 +38,7 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
-    internal override Item GetObjectInstance(ExchangeService service, string xmlElementName)
+    internal override Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         return item;
     }
@@ -47,7 +47,7 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     ///     Initializes a new instance of the <see cref="CreateItemResponse" /> class.
     /// </summary>
     /// <param name="item">The item.</param>
-    internal CreateItemResponse(Item item)
+    internal CreateItemResponse(Item? item)
     {
         this.item = item;
     }

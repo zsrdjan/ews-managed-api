@@ -30,13 +30,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class CreateFolderResponse : ServiceResponse
 {
-    private Folder folder;
+    private Folder? folder;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateFolderResponse" /> class.
     /// </summary>
     /// <param name="folder">The folder.</param>
-    internal CreateFolderResponse(Folder folder)
+    internal CreateFolderResponse(Folder? folder)
     {
         this.folder = folder;
     }
@@ -47,7 +47,7 @@ internal sealed class CreateFolderResponse : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Folder.</returns>
-    private Folder GetObjectInstance(ExchangeService service, string xmlElementName)
+    private Folder? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         if (folder != null)
         {

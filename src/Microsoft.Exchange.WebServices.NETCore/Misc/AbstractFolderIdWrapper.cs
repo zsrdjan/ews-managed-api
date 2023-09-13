@@ -34,7 +34,7 @@ internal abstract class AbstractFolderIdWrapper
     ///     Obtains the Folder object associated with the wrapper.
     /// </summary>
     /// <returns>The Folder object associated with the wrapper.</returns>
-    public virtual Folder GetFolder()
+    public virtual Folder? GetFolder()
     {
         return null;
     }

@@ -31,7 +31,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class UpdateItemResponse : ServiceResponse
 {
     private readonly Item item;
-    private Item returnedItem;
+    private Item? returnedItem;
     private int conflictCount;
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed class UpdateItemResponse : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
-    private Item GetObjectInstance(ExchangeService service, string xmlElementName)
+    private Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         returnedItem = EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
 
@@ -118,7 +118,7 @@ public sealed class UpdateItemResponse : ServiceResponse
     ///     Gets the item that was returned by the update operation. ReturnedItem is set only when a recurring Task
     ///     is marked as complete or when its recurrence pattern changes.
     /// </summary>
-    public Item ReturnedItem => returnedItem;
+    public Item? ReturnedItem => returnedItem;
 
     /// <summary>
     ///     Gets the number of property conflicts that were resolved during the update operation.

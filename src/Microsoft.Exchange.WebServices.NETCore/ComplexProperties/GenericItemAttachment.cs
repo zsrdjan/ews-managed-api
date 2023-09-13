@@ -44,7 +44,7 @@ public sealed class ItemAttachment<TItem> : ItemAttachment
     /// <summary>
     ///     Gets the item associated with the attachment.
     /// </summary>
-    public new TItem Item
+    public new TItem? Item
     {
         get => (TItem)base.Item;
         internal set => base.Item = value;

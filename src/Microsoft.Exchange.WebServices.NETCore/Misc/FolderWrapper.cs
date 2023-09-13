@@ -33,13 +33,13 @@ internal class FolderWrapper : AbstractFolderIdWrapper
     /// <summary>
     ///     The Folder object providing the Id.
     /// </summary>
-    private readonly Folder folder;
+    private readonly Folder? folder;
 
     /// <summary>
     ///     Initializes a new instance of FolderWrapper.
     /// </summary>
     /// <param name="folder">The Folder object provinding the Id.</param>
-    internal FolderWrapper(Folder folder)
+    internal FolderWrapper(Folder? folder)
     {
         EwsUtilities.Assert(folder != null, "FolderWrapper.ctor", "folder is null");
         EwsUtilities.Assert(!folder.IsNew, "FolderWrapper.ctor", "folder does not have an Id");
@@ -51,7 +51,7 @@ internal class FolderWrapper : AbstractFolderIdWrapper
     ///     Obtains the Folder object associated with the wrapper.
     /// </summary>
     /// <returns>The Folder object associated with the wrapper.</returns>
-    public override Folder GetFolder()
+    public override Folder? GetFolder()
     {
         return folder;
     }

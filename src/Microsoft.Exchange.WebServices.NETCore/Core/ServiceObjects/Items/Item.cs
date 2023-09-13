@@ -240,7 +240,7 @@ public class Item : ServiceObject
     /// <param name="messageDisposition">The message disposition.</param>
     /// <param name="sendInvitationsOrCancellationsMode">The send invitations or cancellations mode.</param>
     /// <returns>Updated item.</returns>
-    internal Task<Item> InternalUpdate(
+    internal Task<Item?> InternalUpdate(
         FolderId parentFolderId,
         ConflictResolutionMode conflictResolutionMode,
         MessageDisposition? messageDisposition,
@@ -267,7 +267,7 @@ public class Item : ServiceObject
     /// <param name="sendInvitationsOrCancellationsMode">The send invitations or cancellations mode.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
     /// <returns>Updated item.</returns>
-    internal async Task<Item> InternalUpdate(
+    internal async Task<Item?> InternalUpdate(
         FolderId parentFolderId,
         ConflictResolutionMode conflictResolutionMode,
         MessageDisposition? messageDisposition,
@@ -279,7 +279,7 @@ public class Item : ServiceObject
         ThrowIfThisIsNew();
         ThrowIfThisIsAttachment();
 
-        Item returnedItem = null;
+        Item? returnedItem = null;
 
         if (IsDirty && PropertyBag.GetIsUpdateCallNecessary())
         {
@@ -397,7 +397,7 @@ public class Item : ServiceObject
     ///     Mutliple calls to EWS might be made if attachments have been added or removed.
     /// </summary>
     /// <param name="conflictResolutionMode">The conflict resolution mode.</param>
-    public Task<Item> Update(ConflictResolutionMode conflictResolutionMode, CancellationToken token = default)
+    public Task<Item?> Update(ConflictResolutionMode conflictResolutionMode, CancellationToken token = default)
     {
         return Update(conflictResolutionMode, false, token);
     }
@@ -409,7 +409,7 @@ public class Item : ServiceObject
     /// </summary>
     /// <param name="conflictResolutionMode">The conflict resolution mode.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
-    public Task<Item> Update(
+    public Task<Item?> Update(
         ConflictResolutionMode conflictResolutionMode,
         bool suppressReadReceipts,
         CancellationToken token = default

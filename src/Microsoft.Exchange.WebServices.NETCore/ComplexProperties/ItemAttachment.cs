@@ -33,7 +33,7 @@ public class ItemAttachment : Attachment
     /// <summary>
     ///     The item associated with the attachment.
     /// </summary>
-    private Item item;
+    private Item? item;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
@@ -56,7 +56,7 @@ public class ItemAttachment : Attachment
     /// <summary>
     ///     Gets the item associated with the attachment.
     /// </summary>
-    public Item Item
+    public Item? Item
     {
         get => item;
 

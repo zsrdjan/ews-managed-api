@@ -46,133 +46,74 @@ internal static class EwsUtilities
     /// <summary>
     ///     Map from XML element names to ServiceObject type and constructors.
     /// </summary>
-    private static readonly LazyMember<ServiceObjectInfo> ServiceObjectInfo = new LazyMember<ServiceObjectInfo>(
-        delegate { return new ServiceObjectInfo(); }
-    );
+    private static readonly LazyMember<ServiceObjectInfo> ServiceObjectInfo = new(() => new ServiceObjectInfo());
 
-    /// <summary>
-    ///     Version of API binary.
-    /// </summary>
-    private static readonly LazyMember<string> buildVersion = new LazyMember<string>(
-        delegate
-        {
-            try
-            {
-                return "15.0.913.15";
-                //var fileInfo = typeof(EwsUtilities).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
-                //return fileInfo.Version;
-            }
-            catch
-            {
-                // OM:2026839 When run in an environment with partial trust, fetching the build version blows up.
-                // Just return a hardcoded value on failure.
-                return "0.0";
-            }
-        }
-    );
 
     /// <summary>
     ///     Dictionary of enum type to ExchangeVersion maps.
     /// </summary>
     private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>> EnumVersionDictionaries =
-        new LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>>(
+        new(
             () => new Dictionary<Type, Dictionary<Enum, ExchangeVersion>>
             {
-                {
-                    typeof(WellKnownFolderName), BuildEnumDict(typeof(WellKnownFolderName))
-                },
-                {
-                    typeof(ItemTraversal), BuildEnumDict(typeof(ItemTraversal))
-                },
-                {
-                    typeof(ConversationQueryTraversal), BuildEnumDict(typeof(ConversationQueryTraversal))
-                },
-                {
-                    typeof(FileAsMapping), BuildEnumDict(typeof(FileAsMapping))
-                },
-                {
-                    typeof(EventType), BuildEnumDict(typeof(EventType))
-                },
-                {
-                    typeof(MeetingRequestsDeliveryScope), BuildEnumDict(typeof(MeetingRequestsDeliveryScope))
-                },
-                {
-                    typeof(ViewFilter), BuildEnumDict(typeof(ViewFilter))
-                },
+                // @formatter:off
+                { typeof(WellKnownFolderName), BuildEnumDict(typeof(WellKnownFolderName)) },
+                { typeof(ItemTraversal), BuildEnumDict(typeof(ItemTraversal)) },
+                { typeof(ConversationQueryTraversal), BuildEnumDict(typeof(ConversationQueryTraversal)) },
+                { typeof(FileAsMapping), BuildEnumDict(typeof(FileAsMapping)) },
+                { typeof(EventType), BuildEnumDict(typeof(EventType)) },
+                { typeof(MeetingRequestsDeliveryScope), BuildEnumDict(typeof(MeetingRequestsDeliveryScope)) },
+                { typeof(ViewFilter), BuildEnumDict(typeof(ViewFilter)) },
+                // @formatter:on
             }
         );
 
     /// <summary>
     ///     Dictionary of enum type to schema-name-to-enum-value maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> SchemaToEnumDictionaries =
-        new LazyMember<Dictionary<Type, Dictionary<string, Enum>>>(
-            () => new Dictionary<Type, Dictionary<string, Enum>>
-            {
-                {
-                    typeof(EventType), BuildSchemaToEnumDict(typeof(EventType))
-                },
-                {
-                    typeof(MailboxType), BuildSchemaToEnumDict(typeof(MailboxType))
-                },
-                {
-                    typeof(FileAsMapping), BuildSchemaToEnumDict(typeof(FileAsMapping))
-                },
-                {
-                    typeof(RuleProperty), BuildSchemaToEnumDict(typeof(RuleProperty))
-                },
-                {
-                    typeof(WellKnownFolderName), BuildSchemaToEnumDict(typeof(WellKnownFolderName))
-                },
-            }
-        );
+    private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> SchemaToEnumDictionaries = new(
+        () => new Dictionary<Type, Dictionary<string, Enum>>
+        {
+                // @formatter:off
+                { typeof(EventType), BuildSchemaToEnumDict(typeof(EventType)) },
+                { typeof(MailboxType), BuildSchemaToEnumDict(typeof(MailboxType)) },
+                { typeof(FileAsMapping), BuildSchemaToEnumDict(typeof(FileAsMapping)) },
+                { typeof(RuleProperty), BuildSchemaToEnumDict(typeof(RuleProperty)) },
+                { typeof(WellKnownFolderName), BuildSchemaToEnumDict(typeof(WellKnownFolderName)) },
+            // @formatter:on
+        }
+    );
 
     /// <summary>
     ///     Dictionary of enum type to enum-value-to-schema-name maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> EnumToSchemaDictionaries =
-        new LazyMember<Dictionary<Type, Dictionary<Enum, string>>>(
-            () => new Dictionary<Type, Dictionary<Enum, string>>
-            {
-                {
-                    typeof(EventType), BuildEnumToSchemaDict(typeof(EventType))
-                },
-                {
-                    typeof(MailboxType), BuildEnumToSchemaDict(typeof(MailboxType))
-                },
-                {
-                    typeof(FileAsMapping), BuildEnumToSchemaDict(typeof(FileAsMapping))
-                },
-                {
-                    typeof(RuleProperty), BuildEnumToSchemaDict(typeof(RuleProperty))
-                },
-                {
-                    typeof(WellKnownFolderName), BuildEnumToSchemaDict(typeof(WellKnownFolderName))
-                },
-            }
-        );
+    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> EnumToSchemaDictionaries = new(
+        () => new Dictionary<Type, Dictionary<Enum, string>>
+        {
+                // @formatter:off
+                { typeof(EventType), BuildEnumToSchemaDict(typeof(EventType)) },
+                { typeof(MailboxType), BuildEnumToSchemaDict(typeof(MailboxType)) },
+                { typeof(FileAsMapping), BuildEnumToSchemaDict(typeof(FileAsMapping)) },
+                { typeof(RuleProperty), BuildEnumToSchemaDict(typeof(RuleProperty)) },
+                { typeof(WellKnownFolderName), BuildEnumToSchemaDict(typeof(WellKnownFolderName)) },
+            // @formatter:on
+        }
+    );
 
     /// <summary>
     ///     Dictionary to map from special CLR type names to their "short" names.
     /// </summary>
-    private static readonly LazyMember<Dictionary<string, string>> TypeNameToShortNameMap =
-        new LazyMember<Dictionary<string, string>>(
-            () => new Dictionary<string, string>
-            {
-                {
-                    "Boolean", "bool"
-                },
-                {
-                    "Int16", "short"
-                },
-                {
-                    "Int32", "int"
-                },
-                {
-                    "String", "string"
-                },
-            }
-        );
+    private static readonly LazyMember<Dictionary<string, string>> TypeNameToShortNameMap = new(
+        () => new Dictionary<string, string>
+        {
+                // @formatter:off
+                { "Boolean", "bool" },
+                { "Int16", "short" },
+                { "Int32", "int" },
+                { "String", "string" },
+            // @formatter:on
+        }
+    );
 
     #endregion
 
@@ -203,9 +144,7 @@ internal static class EwsUtilities
     internal const string PassportSoapFaultNamespace = "http://schemas.microsoft.com/Passport/SoapServices/SOAPFault";
     internal const string WsTrustFebruary2005Namespace = "http://schemas.xmlsoap.org/ws/2005/02/trust";
 
-    internal const string
-        WsAddressingNamespace =
-            "http://www.w3.org/2005/08/addressing"; // "http://schemas.xmlsoap.org/ws/2004/08/addressing";
+    internal const string WsAddressingNamespace = "http://www.w3.org/2005/08/addressing";
 
     internal const string AutodiscoverSoapNamespace = "http://schemas.microsoft.com/exchange/2010/Autodiscover";
 
@@ -309,7 +248,7 @@ internal static class EwsUtilities
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Service object.</returns>
-    internal static TServiceObject CreateEwsObjectFromXmlElementName<TServiceObject>(
+    internal static TServiceObject? CreateEwsObjectFromXmlElementName<TServiceObject>(
         ExchangeService service,
         string xmlElementName
     )
@@ -341,7 +280,7 @@ internal static class EwsUtilities
     /// <param name="itemClass">The item class.</param>
     /// <param name="isNew">If true, item attachment is new.</param>
     /// <returns>New Item.</returns>
-    internal static Item CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
+    internal static Item? CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
     {
         if (ServiceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
                 itemClass,
@@ -360,7 +299,7 @@ internal static class EwsUtilities
     /// <param name="itemAttachment">The item attachment.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>New Item.</returns>
-    internal static Item CreateItemFromXmlElementName(ItemAttachment itemAttachment, string xmlElementName)
+    internal static Item? CreateItemFromXmlElementName(ItemAttachment itemAttachment, string xmlElementName)
     {
         if (ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
                 xmlElementName,
@@ -378,7 +317,7 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="xmlElementName"></param>
     /// <returns></returns>
-    internal static Type GetItemTypeFromXmlElementName(string xmlElementName)
+    internal static Type? GetItemTypeFromXmlElementName(string xmlElementName)
     {
         ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass);
         return itemClass;
@@ -390,7 +329,7 @@ internal static class EwsUtilities
     /// <typeparam name="TItem">The type of the item to find.</typeparam>
     /// <param name="items">The collection.</param>
     /// <returns>A TItem instance or null if no instance of TItem could be found.</returns>
-    internal static TItem FindFirstItemOfType<TItem>(IEnumerable<Item> items)
+    internal static TItem? FindFirstItemOfType<TItem>(IEnumerable<Item> items)
         where TItem : Item
     {
         var itemType = typeof(TItem);
@@ -628,7 +567,7 @@ internal static class EwsUtilities
     ///     Gets the build version.
     /// </summary>
     /// <value>The build version.</value>
-    internal static string BuildVersion => buildVersion.Member;
+    internal static string BuildVersion => "15.0.913.15";
 
 
     #region Conversion routines

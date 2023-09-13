@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 public sealed class GetFolderResponse : ServiceResponse
 {
-    private Folder folder;
+    private Folder? folder;
     private readonly PropertySet propertySet;
 
     /// <summary>
@@ -38,7 +38,7 @@ public sealed class GetFolderResponse : ServiceResponse
     /// </summary>
     /// <param name="folder">The folder.</param>
     /// <param name="propertySet">The property set from the request.</param>
-    internal GetFolderResponse(Folder folder, PropertySet propertySet)
+    internal GetFolderResponse(Folder? folder, PropertySet propertySet)
     {
         this.folder = folder;
         this.propertySet = propertySet;
@@ -71,7 +71,7 @@ public sealed class GetFolderResponse : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Folder.</returns>
-    private Folder GetObjectInstance(ExchangeService service, string xmlElementName)
+    private Folder? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         if (Folder != null)
         {
@@ -84,5 +84,5 @@ public sealed class GetFolderResponse : ServiceResponse
     /// <summary>
     ///     Gets the folder that was retrieved.
     /// </summary>
-    public Folder Folder => folder;
+    public Folder? Folder => folder;
 }

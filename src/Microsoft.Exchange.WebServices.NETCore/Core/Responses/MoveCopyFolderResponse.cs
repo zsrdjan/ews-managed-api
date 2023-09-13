@@ -45,7 +45,7 @@ public sealed class MoveCopyFolderResponse : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Folder.</returns>
-    private Folder GetObjectInstance(ExchangeService service, string xmlElementName)
+    private Folder? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Folder>(service, xmlElementName);
     }

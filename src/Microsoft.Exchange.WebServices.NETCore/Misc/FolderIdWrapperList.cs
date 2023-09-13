@@ -39,7 +39,7 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     ///     Adds the specified folder.
     /// </summary>
     /// <param name="folder">The folder.</param>
-    internal void Add(Folder folder)
+    internal void Add(Folder? folder)
     {
         ids.Add(new FolderWrapper(folder));
     }
@@ -48,7 +48,7 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     ///     Adds the range.
     /// </summary>
     /// <param name="folders">The folders.</param>
-    internal void AddRange(IEnumerable<Folder> folders)
+    internal void AddRange(IEnumerable<Folder?> folders)
     {
         if (folders != null)
         {

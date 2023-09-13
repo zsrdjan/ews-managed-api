@@ -181,7 +181,7 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item</returns>
-    private TItem CreateItemInstance(ExchangeService service, string xmlElementName)
+    private TItem? CreateItemInstance(ExchangeService service, string xmlElementName)
     {
         return EwsUtilities.CreateEwsObjectFromXmlElementName<TItem>(service, xmlElementName);
     }

@@ -391,7 +391,7 @@ public class Appointment : Item, ICalendarActionProvider
     ///     Specifies if and how invitations or cancellations should be sent if
     ///     this appointment is a meeting.
     /// </param>
-    public Task<Item> Update(
+    public Task<Item?> Update(
         ConflictResolutionMode conflictResolutionMode,
         SendInvitationsOrCancellationsMode sendInvitationsOrCancellationsMode,
         CancellationToken token = default

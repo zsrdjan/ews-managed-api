@@ -41,7 +41,7 @@ internal abstract class CreateItemResponseBase : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
-    internal abstract Item GetObjectInstance(ExchangeService service, string xmlElementName);
+    internal abstract Item? GetObjectInstance(ExchangeService service, string xmlElementName);
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateItemResponseBase" /> class.

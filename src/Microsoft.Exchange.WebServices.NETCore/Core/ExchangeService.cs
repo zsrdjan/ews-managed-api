@@ -322,7 +322,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="folder">The folder.</param>
     /// <param name="propertySet">The property set.</param>
     internal Task<ServiceResponseCollection<ServiceResponse>> LoadPropertiesForFolder(
-        Folder folder,
+        Folder? folder,
         PropertySet propertySet,
         CancellationToken token
     )
@@ -344,7 +344,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="folderId">The folder id.</param>
     /// <param name="propertySet">The property set.</param>
     /// <returns>Folder</returns>
-    internal async Task<Folder> BindToFolder(FolderId folderId, PropertySet propertySet, CancellationToken token)
+    internal async Task<Folder?> BindToFolder(FolderId folderId, PropertySet propertySet, CancellationToken token)
     {
         EwsUtilities.ValidateParam(folderId, "folderId");
         EwsUtilities.ValidateParam(propertySet, "propertySet");
@@ -778,7 +778,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     ///     for ian tem of type Appointment. Required if item is an Appointment instance.
     /// </param>
     /// <returns>Updated item.</returns>
-    internal Task<Item> UpdateItem(
+    internal Task<Item?> UpdateItem(
         Item item,
         FolderId savedItemsDestinationFolderId,
         ConflictResolutionMode conflictResolution,
@@ -817,7 +817,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// </param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
     /// <returns>Updated item.</returns>
-    internal async Task<Item> UpdateItem(
+    internal async Task<Item?> UpdateItem(
         Item item,
         FolderId savedItemsDestinationFolderId,
         ConflictResolutionMode conflictResolution,
@@ -1702,7 +1702,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="itemId">The item id.</param>
     /// <param name="propertySet">The property set.</param>
     /// <returns>Item.</returns>
-    internal async Task<Item> BindToItem(ItemId itemId, PropertySet propertySet, CancellationToken token)
+    internal async Task<Item?> BindToItem(ItemId itemId, PropertySet propertySet, CancellationToken token)
     {
         EwsUtilities.ValidateParam(itemId, "itemId");
         EwsUtilities.ValidateParam(propertySet, "propertySet");

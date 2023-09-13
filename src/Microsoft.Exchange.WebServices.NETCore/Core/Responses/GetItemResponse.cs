@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 public sealed class GetItemResponse : ServiceResponse
 {
-    private Item item;
+    private Item? item;
     private readonly PropertySet propertySet;
 
     /// <summary>
@@ -38,7 +38,7 @@ public sealed class GetItemResponse : ServiceResponse
     /// </summary>
     /// <param name="item">The item.</param>
     /// <param name="propertySet">The property set.</param>
-    internal GetItemResponse(Item item, PropertySet propertySet)
+    internal GetItemResponse(Item? item, PropertySet propertySet)
     {
         this.item = item;
         this.propertySet = propertySet;
@@ -71,7 +71,7 @@ public sealed class GetItemResponse : ServiceResponse
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
-    private Item GetObjectInstance(ExchangeService service, string xmlElementName)
+    private Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         if (Item != null)
         {
@@ -84,5 +84,5 @@ public sealed class GetItemResponse : ServiceResponse
     /// <summary>
     ///     Gets the item that was retrieved.
     /// </summary>
-    public Item Item => item;
+    public Item? Item => item;
 }

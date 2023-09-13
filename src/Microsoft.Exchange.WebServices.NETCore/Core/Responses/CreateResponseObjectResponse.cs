@@ -39,7 +39,7 @@ internal sealed class CreateResponseObjectResponse : CreateItemResponseBase
     /// <param name="service">The service.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Item.</returns>
-    internal override Item GetObjectInstance(ExchangeService service, string xmlElementName)
+    internal override Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
     }
