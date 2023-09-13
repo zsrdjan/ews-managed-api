@@ -69,54 +69,68 @@ internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
                     switch (reader.LocalName)
                     {
                         case XmlElementNames.CreateAssociated:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.CreateAssociated;
                             }
 
                             break;
+                        }
                         case XmlElementNames.CreateContents:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.CreateContents;
                             }
 
                             break;
+                        }
                         case XmlElementNames.CreateHierarchy:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.CreateHierarchy;
                             }
 
                             break;
+                        }
                         case XmlElementNames.Delete:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.Delete;
                             }
 
                             break;
+                        }
                         case XmlElementNames.Modify:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.Modify;
                             }
 
                             break;
+                        }
                         case XmlElementNames.Read:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.Read;
                             }
 
                             break;
+                        }
                         case XmlElementNames.ViewPrivateItems:
+                        {
                             if (reader.ReadElementValue<bool>())
                             {
                                 value |= EffectiveRights.ViewPrivateItems;
                             }
 
                             break;
+                        }
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementName));

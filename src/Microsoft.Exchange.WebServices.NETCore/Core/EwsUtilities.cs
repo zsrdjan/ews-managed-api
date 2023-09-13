@@ -29,6 +29,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -169,7 +170,7 @@ internal static class EwsUtilities
                 },
                 {
                     "String", "string"
-                }
+                },
             }
         );
 
@@ -415,16 +416,11 @@ internal static class EwsUtilities
     /// <param name="writer">The writer to write the start element to.</param>
     /// <param name="traceTag">The trace tag.</param>
     /// <param name="includeVersion">If true, include build version attribute.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Exchange.Usage",
-        "EX0009:DoNotUseDateTimeNowOrFromFileTime",
-        Justification = "Client API"
-    )]
     private static void WriteTraceStartElement(XmlWriter writer, string traceTag, bool includeVersion)
     {
         writer.WriteStartElement("Trace");
         writer.WriteAttributeString("Tag", traceTag);
-        writer.WriteAttributeString("Tid", Thread.CurrentThread.ManagedThreadId.ToString());
+        writer.WriteAttributeString("Tid", Environment.CurrentManagedThreadId.ToString());
         writer.WriteAttributeString("Time", DateTime.UtcNow.ToString("u", DateTimeFormatInfo.InvariantInfo));
 
         if (includeVersion)
@@ -442,25 +438,24 @@ internal static class EwsUtilities
     internal static string FormatLogMessage(string entryKind, string logEntry)
     {
         var sb = new StringBuilder();
+
         using (var writer = new StringWriter(sb))
         {
-            using (var xmlWriter = XmlWriter.Create(
-                       writer,
-                       new XmlWriterSettings
-                       {
-                           Indent = true
-                       }
-                   ))
-            {
-                WriteTraceStartElement(xmlWriter, entryKind, false);
+            using var xmlWriter = XmlWriter.Create(
+                writer,
+                new XmlWriterSettings
+                {
+                    Indent = true,
+                }
+            );
+            WriteTraceStartElement(xmlWriter, entryKind, false);
 
-                xmlWriter.WriteWhitespace(Environment.NewLine);
-                xmlWriter.WriteValue(logEntry);
-                xmlWriter.WriteWhitespace(Environment.NewLine);
+            xmlWriter.WriteWhitespace(Environment.NewLine);
+            xmlWriter.WriteValue(logEntry);
+            xmlWriter.WriteWhitespace(Environment.NewLine);
 
-                xmlWriter.WriteEndElement(); // Trace
-                xmlWriter.WriteWhitespace(Environment.NewLine);
-            }
+            xmlWriter.WriteEndElement(); // Trace
+            xmlWriter.WriteWhitespace(Environment.NewLine);
         }
 
         return sb.ToString();
@@ -474,9 +469,11 @@ internal static class EwsUtilities
     private static void FormatHttpHeaders(StringBuilder sb, HttpHeaders headers)
     {
         foreach (var item in headers)
-        foreach (var value in item.Value)
         {
-            sb.Append(string.Format("{0}: {1}\n", item.Key, value));
+            foreach (var value in item.Value)
+            {
+                sb.Append($"{item.Key}: {value}\n");
+            }
         }
     }
 
@@ -487,9 +484,9 @@ internal static class EwsUtilities
     internal static string FormatHttpRequestHeaders(IEwsHttpWebRequest request)
     {
         var sb = new StringBuilder();
-        sb.Append(string.Format("{0} {1} HTTP/1.1\n", request.Method, request.RequestUri.AbsolutePath));
+        sb.Append($"{request.Method} {request.RequestUri.AbsolutePath} HTTP/1.1\n");
         FormatHttpHeaders(sb, request.Headers);
-        sb.Append("\n");
+        sb.Append('\n');
 
         return sb.ToString();
     }
@@ -501,17 +498,10 @@ internal static class EwsUtilities
     internal static string FormatHttpResponseHeaders(IEwsHttpWebResponse response)
     {
         var sb = new StringBuilder();
-        sb.Append(
-            string.Format(
-                "HTTP/{0} {1} {2}\n",
-                response.ProtocolVersion,
-                (int)response.StatusCode,
-                response.StatusDescription
-            )
-        );
+        sb.Append($"HTTP/{response.ProtocolVersion} {(int)response.StatusCode} {response.StatusDescription}\n");
 
         sb.Append(FormatHttpHeaders(response.Headers));
-        sb.Append("\n");
+        sb.Append('\n');
         return sb.ToString();
     }
 
@@ -524,9 +514,11 @@ internal static class EwsUtilities
     {
         var sb = new StringBuilder();
         foreach (var item in headers)
-        foreach (var value in item.Value)
         {
-            sb.Append(string.Format("{0}: {1}\n", item.Key, value));
+            foreach (var value in item.Value)
+            {
+                sb.Append($"{item.Key}: {value}\n");
+            }
         }
 
         return sb.ToString();
@@ -541,11 +533,13 @@ internal static class EwsUtilities
     internal static string FormatLogMessageWithXmlContent(string entryKind, MemoryStream memoryStream)
     {
         var sb = new StringBuilder();
-        var settings = new XmlReaderSettings();
-        settings.ConformanceLevel = ConformanceLevel.Fragment;
-        settings.IgnoreComments = true;
-        settings.IgnoreWhitespace = true;
-        settings.CloseInput = false;
+        var settings = new XmlReaderSettings
+        {
+            ConformanceLevel = ConformanceLevel.Fragment,
+            IgnoreComments = true,
+            IgnoreWhitespace = true,
+            CloseInput = false,
+        };
 
 
         // Remember the current location in the MemoryStream.
@@ -556,36 +550,30 @@ internal static class EwsUtilities
 
         try
         {
-            using (var reader = XmlReader.Create(memoryStream, settings))
+            using var reader = XmlReader.Create(memoryStream, settings);
+            reader.Read();
+            if (reader.NodeType == XmlNodeType.XmlDeclaration)
             {
                 reader.Read();
-                if (reader.NodeType == XmlNodeType.XmlDeclaration)
-                {
-                    reader.Read();
-                }
-
-                using (var writer = new StringWriter(sb))
-                {
-                    using (var xmlWriter = XmlWriter.Create(
-                               writer,
-                               new XmlWriterSettings
-                               {
-                                   Indent = true
-                               }
-                           ))
-                    {
-                        WriteTraceStartElement(xmlWriter, entryKind, true);
-
-                        while (!reader.EOF)
-                        {
-                            xmlWriter.WriteNode(reader, true);
-                        }
-
-                        xmlWriter.WriteEndElement(); // Trace
-                        xmlWriter.WriteWhitespace(Environment.NewLine);
-                    }
-                }
             }
+
+            using var writer = new StringWriter(sb);
+            using var xmlWriter = XmlWriter.Create(
+                writer,
+                new XmlWriterSettings
+                {
+                    Indent = true,
+                }
+            );
+            WriteTraceStartElement(xmlWriter, entryKind, true);
+
+            while (!reader.EOF)
+            {
+                xmlWriter.WriteNode(reader, true);
+            }
+
+            xmlWriter.WriteEndElement(); // Trace
+            xmlWriter.WriteWhitespace(Environment.NewLine);
         }
         catch (XmlException)
         {
@@ -615,8 +603,7 @@ internal static class EwsUtilities
     internal static void CopyStream(Stream source, Stream target)
     {
         // See if this is a MemoryStream -- we can use WriteTo.
-        var memContentStream = source as MemoryStream;
-        if (memContentStream != null)
+        if (source is MemoryStream memContentStream)
         {
             memContentStream.WriteTo(target);
         }
@@ -688,10 +675,7 @@ internal static class EwsUtilities
     /// <returns>String representation of enum to be used in the protocol</returns>
     internal static string SerializeEnum(Enum value)
     {
-        if (enumToSchemaDictionaries.Member.TryGetValue(
-                value.GetType(),
-                out Dictionary<Enum, string> enumToStringDict
-            ) &&
+        if (enumToSchemaDictionaries.Member.TryGetValue(value.GetType(), out var enumToStringDict) &&
             enumToStringDict.TryGetValue(value, out var strValue))
         {
             return strValue;
@@ -710,13 +694,13 @@ internal static class EwsUtilities
     {
         if (typeof(T).GetTypeInfo().IsEnum)
         {
-            if (schemaToEnumDictionaries.Member.TryGetValue(typeof(T), out Dictionary<string, Enum> stringToEnumDict) &&
+            if (schemaToEnumDictionaries.Member.TryGetValue(typeof(T), out var stringToEnumDict) &&
                 stringToEnumDict.TryGetValue(value, out var enumValue))
             {
                 // This double-casting is ugly, but necessary. By this point, we know that T is an Enum
                 // (same as returned by the dictionary), but the compiler can't prove it. Thus, the 
                 // up-cast before we can down-cast.
-                return (T)((object)enumValue);
+                return (T)(object)enumValue;
             }
 
             return (T)Enum.Parse(typeof(T), value, false);
@@ -735,7 +719,7 @@ internal static class EwsUtilities
     ///     indeterminate.
     /// </param>
     /// <returns>True if value could be parsed; otherwise, false.</returns>
-    internal static bool TryParse<T>(string value, out T result)
+    internal static bool TryParse<T>(string value, [MaybeNullWhen(false)] out T result)
     {
         try
         {
@@ -747,7 +731,6 @@ internal static class EwsUtilities
         catch (Exception)
         {
             result = default;
-
             return false;
         }
     }
@@ -796,7 +779,7 @@ internal static class EwsUtilities
         var tempDate = DateTime.Parse(dateString, CultureInfo.InvariantCulture);
 
         // Set the kind according to the service's time zone
-        if (service.TimeZone == TimeZoneInfo.Utc)
+        if (service.TimeZone.Equals(TimeZoneInfo.Utc))
         {
             return new DateTime(tempDate.Ticks, DateTimeKind.Utc);
         }
@@ -818,8 +801,8 @@ internal static class EwsUtilities
     /// </returns>
     internal static bool IsLocalTimeZone(TimeZoneInfo timeZone)
     {
-        return (TimeZoneInfo.Local == timeZone) ||
-               (TimeZoneInfo.Local.Id == timeZone.Id /* && TimeZoneInfo.Local.HasSameRules(timeZone)*/);
+        return TimeZoneInfo.Local.Equals(timeZone) ||
+               TimeZoneInfo.Local.Id == timeZone.Id /* && TimeZoneInfo.Local.HasSameRules(timeZone)*/;
     }
 
     /// <summary>
@@ -838,14 +821,20 @@ internal static class EwsUtilities
         switch (date.Kind)
         {
             case DateTimeKind.Utc:
+            {
                 format = "yyyy-MM-ddZ";
                 break;
+            }
             case DateTimeKind.Unspecified:
+            {
                 format = "yyyy-MM-dd";
                 break;
+            }
             default: // DateTimeKind.Local is remaining
+            {
                 format = "yyyy-MM-ddzzz";
                 break;
+            }
         }
 
         return date.ToString(format, CultureInfo.InvariantCulture);
@@ -863,11 +852,15 @@ internal static class EwsUtilities
         switch (dateTime.Kind)
         {
             case DateTimeKind.Utc:
+            {
                 format += "Z";
                 break;
+            }
             case DateTimeKind.Local:
+            {
                 format += "zzz";
                 break;
+            }
         }
 
         // Depending on the current culture, DateTime formatter will replace ':' with 
@@ -888,8 +881,8 @@ internal static class EwsUtilities
             dayOfTheWeek == DayOfTheWeek.WeekendDay)
         {
             throw new ArgumentException(
-                string.Format("Cannot convert {0} to System.DayOfWeek enum value", dayOfTheWeek),
-                "dayOfTheWeek"
+                $"Cannot convert {dayOfTheWeek} to System.DayOfWeek enum value",
+                nameof(dayOfTheWeek)
             );
         }
 
@@ -917,12 +910,12 @@ internal static class EwsUtilities
     internal static string TimeSpanToXSDuration(TimeSpan timeSpan)
     {
         // Optional '-' offset
-        var offsetStr = (timeSpan.TotalSeconds < 0) ? "-" : string.Empty;
+        var offsetStr = timeSpan.TotalSeconds < 0 ? "-" : string.Empty;
 
         // The TimeSpan structure does not have a Year or Month 
         // property, therefore we wouldn't be able to return an xs:duration
         // string from a TimeSpan that included the nY or nM components.
-        return String.Format(
+        return string.Format(
             "{0}P{1}DT{2}H{3}M{4}S",
             offsetStr,
             Math.Abs(timeSpan.Days),
@@ -968,58 +961,54 @@ internal static class EwsUtilities
         }
 
         var token = m.Result("${pos}");
-        var negative = false;
-        if (!String.IsNullOrEmpty(token))
-        {
-            negative = true;
-        }
+        var negative = !string.IsNullOrEmpty(token);
 
         // Year
         token = m.Result("${year}");
         var year = 0;
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            year = Int32.Parse(token);
+            year = int.Parse(token);
         }
 
         // Month
         token = m.Result("${month}");
         var month = 0;
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            month = Int32.Parse(token);
+            month = int.Parse(token);
         }
 
         // Day
         token = m.Result("${day}");
         var day = 0;
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            day = Int32.Parse(token);
+            day = int.Parse(token);
         }
 
         // Hour
         token = m.Result("${hour}");
         var hour = 0;
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            hour = Int32.Parse(token);
+            hour = int.Parse(token);
         }
 
         // Minute
         token = m.Result("${minute}");
         var minute = 0;
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            minute = Int32.Parse(token);
+            minute = int.Parse(token);
         }
 
         // Seconds
         token = m.Result("${seconds}");
         var seconds = 0;
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            seconds = Int32.Parse(token);
+            seconds = int.Parse(token);
         }
 
         var milliseconds = 0;
@@ -1031,23 +1020,23 @@ internal static class EwsUtilities
             token = token.Substring(0, 4);
         }
 
-        if (!String.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(token))
         {
-            milliseconds = Int32.Parse(token);
+            milliseconds = int.Parse(token);
         }
 
         // Apply conversions of year and months to days.
         // Year = 365 days
         // Month = 30 days
-        day = day + (year * 365) + (month * 30);
-        var retval = new TimeSpan(day, hour, minute, seconds, milliseconds);
+        day = day + year * 365 + month * 30;
+        var retVal = new TimeSpan(day, hour, minute, seconds, milliseconds);
 
         if (negative)
         {
-            retval = -retval;
+            retVal = -retVal;
         }
 
-        return retval;
+        return retVal;
     }
 
     /// <summary>
@@ -1079,7 +1068,7 @@ internal static class EwsUtilities
             var nameBuilder = new StringBuilder(genericPrefix);
 
             // Note: building array of generic parameters is done recursively. Each parameter could be any type.
-            var genericArgs = type.GetGenericArguments().ToList().Select(t => GetPrintableTypeName(t)).ToArray();
+            var genericArgs = type.GetGenericArguments().ToList().Select(GetPrintableTypeName).ToArray();
 
             nameBuilder.Append("<");
             nameBuilder.Append(string.Join(",", genericArgs));
@@ -1146,27 +1135,27 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="param">The param.</param>
     /// <param name="paramName">Name of the param.</param>
-    internal static void ValidateParamAllowNull(object param, string paramName)
+    internal static void ValidateParamAllowNull(
+        [NotNull] object? param,
+        [CallerArgumentExpression(nameof(param))] string? paramName = null
+    )
     {
-        var selfValidate = param as ISelfValidate;
-
-        if (selfValidate != null)
+        switch (param)
         {
-            try
+            case ISelfValidate selfValidate:
             {
-                selfValidate.Validate();
-            }
-            catch (ServiceValidationException e)
-            {
-                throw new ArgumentException(Strings.ValidationFailed, paramName, e);
-            }
-        }
+                try
+                {
+                    selfValidate.Validate();
+                }
+                catch (ServiceValidationException e)
+                {
+                    throw new ArgumentException(Strings.ValidationFailed, paramName, e);
+                }
 
-        var ewsObject = param as ServiceObject;
-
-        if (ewsObject != null)
-        {
-            if (ewsObject.IsNew)
+                break;
+            }
+            case ServiceObject ewsObject when ewsObject.IsNew:
             {
                 throw new ArgumentException(Strings.ObjectDoesNotHaveId, paramName);
             }
@@ -1178,12 +1167,14 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="param">The param.</param>
     /// <param name="paramName">Name of the param.</param>
-    internal static void ValidateParam(object param, string paramName)
+    internal static void ValidateParam(
+        [NotNull] object? param,
+        [CallerArgumentExpression(nameof(param))] string? paramName = null
+    )
     {
         bool isValid;
 
-        var strParam = param as string;
-        if (strParam != null)
+        if (param is string strParam)
         {
             isValid = !string.IsNullOrEmpty(strParam);
         }
@@ -1205,7 +1196,10 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="collection">The collection.</param>
     /// <param name="paramName">Name of the param.</param>
-    internal static void ValidateParamCollection(IEnumerable collection, string paramName)
+    internal static void ValidateParamCollection(
+        IEnumerable collection,
+        [CallerArgumentExpression(nameof(collection))] string? paramName = null
+    )
     {
         ValidateParam(collection, paramName);
 
@@ -1215,15 +1209,11 @@ internal static class EwsUtilities
         {
             try
             {
-                ValidateParam(obj, string.Format("collection[{0}]", count));
+                ValidateParam(obj, $"collection[{count}]");
             }
             catch (ArgumentException e)
             {
-                throw new ArgumentException(
-                    string.Format("The element at position {0} is invalid", count),
-                    paramName,
-                    e
-                );
+                throw new ArgumentException($"The element at position {count} is invalid", paramName, e);
             }
 
             count++;
@@ -1240,12 +1230,15 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="param">The string parameter.</param>
     /// <param name="paramName">Name of the parameter.</param>
-    internal static void ValidateNonBlankStringParamAllowNull(string param, string paramName)
+    internal static void ValidateNonBlankStringParamAllowNull(
+        string? param,
+        [CallerArgumentExpression(nameof(param))] string? paramName = null
+    )
     {
         if (param != null)
         {
             // Non-empty string has at least one character which is *not* a whitespace character
-            if (param.Length == param.CountMatchingChars(c => Char.IsWhiteSpace(c)))
+            if (param.Length == param.CountMatchingChars(char.IsWhiteSpace))
             {
                 throw new ArgumentException(Strings.ArgumentIsBlankString, paramName);
             }
@@ -1378,7 +1371,10 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="domainName">Domain name.</param>
     /// <param name="paramName">Parameter name.</param>
-    internal static void ValidateDomainNameAllowNull(string domainName, string paramName)
+    internal static void ValidateDomainNameAllowNull(
+        string? domainName,
+        [CallerArgumentExpression(nameof(domainName))] string? paramName = null
+    )
     {
         if (domainName != null)
         {
@@ -1401,15 +1397,15 @@ internal static class EwsUtilities
     {
         var memberInfo = enumType.GetMember(enumName);
         Assert(
-            (memberInfo != null) && (memberInfo.Length > 0),
+            memberInfo != null && memberInfo.Length > 0,
             "EwsUtilities.GetEnumVersion",
             "Enum member " + enumName + " not found in " + enumType
         );
 
-        object[] attrs = memberInfo[0].GetCustomAttributes<RequiredServerVersionAttribute>(false).ToArray();
+        var attrs = memberInfo[0].GetCustomAttributes<RequiredServerVersionAttribute>(false).ToArray();
         if (attrs != null && attrs.Length > 0)
         {
-            return ((RequiredServerVersionAttribute)attrs[0]).Version;
+            return attrs[0].Version;
         }
 
         return ExchangeVersion.Exchange2007_SP1;
@@ -1440,19 +1436,19 @@ internal static class EwsUtilities
     /// <param name="enumType">Type of the enum.</param>
     /// <param name="enumName">The enum name.</param>
     /// <returns>The name for the enum used in the protocol, or null if it is the same as the enum's ToString().</returns>
-    private static string GetEnumSchemaName(Type enumType, string enumName)
+    private static string? GetEnumSchemaName(Type enumType, string enumName)
     {
         var memberInfo = enumType.GetMember(enumName);
         Assert(
-            (memberInfo != null) && (memberInfo.Length > 0),
+            memberInfo != null && memberInfo.Length > 0,
             "EwsUtilities.GetEnumSchemaName",
             "Enum member " + enumName + " not found in " + enumType
         );
 
-        object[] attrs = memberInfo[0].GetCustomAttributes<EwsEnumAttribute>(false).ToArray();
+        var attrs = memberInfo[0].GetCustomAttributes<EwsEnumAttribute>(false).ToArray();
         if (attrs != null && attrs.Length > 0)
         {
-            return ((EwsEnumAttribute)attrs[0]).SchemaName;
+            return attrs[0].SchemaName;
         }
 
         return null;
@@ -1467,12 +1463,13 @@ internal static class EwsUtilities
     {
         var dict = new Dictionary<string, Enum>();
         var names = Enum.GetNames(enumType);
+
         foreach (var name in names)
         {
             var value = (Enum)Enum.Parse(enumType, name, false);
             var schemaName = GetEnumSchemaName(enumType, name);
 
-            if (!String.IsNullOrEmpty(schemaName))
+            if (!string.IsNullOrEmpty(schemaName))
             {
                 dict.Add(schemaName, value);
             }
@@ -1495,7 +1492,7 @@ internal static class EwsUtilities
             var value = (Enum)Enum.Parse(enumType, name, false);
             var schemaName = GetEnumSchemaName(enumType, name);
 
-            if (!String.IsNullOrEmpty(schemaName))
+            if (!string.IsNullOrEmpty(schemaName))
             {
                 dict.Add(value, schemaName);
             }
@@ -1546,7 +1543,7 @@ internal static class EwsUtilities
             count++;
         }
 
-        throw new ArgumentOutOfRangeException("index", Strings.IEnumerableDoesNotContainThatManyObject);
+        throw new ArgumentOutOfRangeException(nameof(index), Strings.IEnumerableDoesNotContainThatManyObject);
     }
 
     #endregion
@@ -1560,18 +1557,9 @@ internal static class EwsUtilities
     /// <param name="str">The string.</param>
     /// <param name="charPredicate">Predicate to evaluate for each character in the string.</param>
     /// <returns>Count of characters that match condition expressed by predicate.</returns>
-    internal static int CountMatchingChars(this string str, Predicate<char> charPredicate)
+    private static int CountMatchingChars(this string str, Predicate<char> charPredicate)
     {
-        var count = 0;
-        foreach (var ch in str)
-        {
-            if (charPredicate(ch))
-            {
-                count++;
-            }
-        }
-
-        return count;
+        return str.Count(ch => charPredicate(ch));
     }
 
     /// <summary>

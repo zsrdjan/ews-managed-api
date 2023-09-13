@@ -32,7 +32,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class ContainedPropertyDefinition<TComplexProperty> : ComplexPropertyDefinition<TComplexProperty>
     where TComplexProperty : ComplexProperty, new()
 {
-    private readonly string containedXmlElementName;
+    private readonly string _containedXmlElementName;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ContainedPropertyDefinition&lt;TComplexProperty&gt;" /> class.
@@ -53,7 +53,7 @@ internal class ContainedPropertyDefinition<TComplexProperty> : ComplexPropertyDe
     )
         : base(xmlElementName, uri, flags, version, propertyCreationDelegate)
     {
-        this.containedXmlElementName = containedXmlElementName;
+        _containedXmlElementName = containedXmlElementName;
     }
 
     /// <summary>
@@ -63,11 +63,11 @@ internal class ContainedPropertyDefinition<TComplexProperty> : ComplexPropertyDe
     /// <param name="propertyBag">The property bag.</param>
     internal override void InternalLoadFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        reader.ReadStartElement(XmlNamespace.Types, containedXmlElementName);
+        reader.ReadStartElement(XmlNamespace.Types, _containedXmlElementName);
 
         base.InternalLoadFromXml(reader, propertyBag);
 
-        reader.ReadEndElementIfNecessary(XmlNamespace.Types, containedXmlElementName);
+        reader.ReadEndElementIfNecessary(XmlNamespace.Types, _containedXmlElementName);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ internal class ContainedPropertyDefinition<TComplexProperty> : ComplexPropertyDe
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementName);
 
-            complexProperty.WriteToXml(writer, containedXmlElementName);
+            complexProperty.WriteToXml(writer, _containedXmlElementName);
 
             writer.WriteEndElement(); // this.XmlElementName
         }

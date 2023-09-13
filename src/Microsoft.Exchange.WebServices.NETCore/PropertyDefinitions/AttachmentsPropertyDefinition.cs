@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<AttachmentCollection>
 {
-    private static readonly PropertyDefinitionFlags Exchange2010SP2PropertyDefinitionFlags =
+    private const PropertyDefinitionFlags Exchange2010Sp2PropertyDefinitionFlags =
         PropertyDefinitionFlags.AutoInstantiateOnRead |
         PropertyDefinitionFlags.CanSet |
         PropertyDefinitionFlags.ReuseInstance |
@@ -45,7 +45,7 @@ internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<
             "item:Attachments",
             PropertyDefinitionFlags.AutoInstantiateOnRead,
             ExchangeVersion.Exchange2007_SP1,
-            delegate { return new AttachmentCollection(); }
+            () => new AttachmentCollection()
         )
     {
     }
@@ -60,9 +60,9 @@ internal sealed class AttachmentsPropertyDefinition : ComplexPropertyDefinition<
     /// </returns>
     internal override bool HasFlag(PropertyDefinitionFlags flag, ExchangeVersion? version)
     {
-        if (version != null && version >= ExchangeVersion.Exchange2010_SP2)
+        if (version >= ExchangeVersion.Exchange2010_SP2)
         {
-            return (flag & Exchange2010SP2PropertyDefinitionFlags) == flag;
+            return (flag & Exchange2010Sp2PropertyDefinitionFlags) == flag;
         }
 
         return base.HasFlag(flag, version);

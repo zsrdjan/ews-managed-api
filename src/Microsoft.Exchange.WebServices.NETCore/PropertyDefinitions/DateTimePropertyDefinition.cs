@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class DateTimePropertyDefinition : PropertyDefinition
 {
-    private readonly bool isNullable;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DateTimePropertyDefinition" /> class.
     /// </summary>
@@ -77,7 +75,7 @@ internal class DateTimePropertyDefinition : PropertyDefinition
     )
         : base(xmlElementName, uri, flags, version)
     {
-        this.isNullable = isNullable;
+        IsNullable = isNullable;
     }
 
     /// <summary>
@@ -179,7 +177,7 @@ internal class DateTimePropertyDefinition : PropertyDefinition
     /// <summary>
     ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
     /// </summary>
-    internal override bool IsNullable => isNullable;
+    internal override bool IsNullable { get; }
 
     /// <summary>
     ///     Gets the property type.

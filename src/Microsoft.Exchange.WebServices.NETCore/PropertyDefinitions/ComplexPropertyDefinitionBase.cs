@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -87,9 +89,7 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     /// <param name="propertyBag">The property bag.</param>
     internal virtual void InternalLoadFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
-        object complexProperty;
-
-        var justCreated = GetPropertyInstance(propertyBag, out complexProperty);
+        var justCreated = GetPropertyInstance(propertyBag, out var complexProperty);
 
         if (!justCreated &&
             HasFlag(PropertyDefinitionFlags.UpdateCollectionItems, propertyBag.Owner.Service.RequestedServerVersion))
@@ -110,9 +110,8 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     /// <param name="propertyBag">The property bag.</param>
     /// <param name="complexProperty">The property instance.</param>
     /// <returns>True if the instance is newly created.</returns>
-    private bool GetPropertyInstance(PropertyBag propertyBag, out object complexProperty)
+    private bool GetPropertyInstance(PropertyBag propertyBag, [MaybeNullWhen(false)] out object complexProperty)
     {
-        complexProperty = null;
         if (!propertyBag.TryGetValue(this, out complexProperty) ||
             !HasFlag(PropertyDefinitionFlags.ReuseInstance, propertyBag.Owner.Service.RequestedServerVersion))
         {
@@ -128,7 +127,7 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
-    internal override sealed void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
+    internal sealed override void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementName);
 
