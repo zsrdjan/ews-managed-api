@@ -39,7 +39,7 @@ internal abstract class ServiceRequestBase
     #region Private Constants
 
     /// <summary>
-    ///     The two contants below are used to set the AnchorMailbox and ExplicitLogonUser values
+    ///     The two constants below are used to set the AnchorMailbox and ExplicitLogonUser values
     ///     in the request header.
     /// </summary>
     /// <remarks>
@@ -78,8 +78,6 @@ internal abstract class ServiceRequestBase
     /// </summary>
     private static readonly List<string> clientStatisticsCache = new List<string>();
 
-    private readonly ExchangeService service;
-
     /// <summary>
     ///     Gets the response stream (may be wrapped with GZip/Deflate stream to decompress content)
     /// </summary>
@@ -87,7 +85,6 @@ internal abstract class ServiceRequestBase
     /// <returns>ResponseStream</returns>
     protected static async Task<Stream> GetResponseStream(IEwsHttpWebResponse response)
     {
-        var contentEncoding = response.ContentEncoding;
         var responseStream = await response.GetResponseStream();
 
         return WrapStream(responseStream, response.ContentEncoding);
@@ -237,12 +234,7 @@ internal abstract class ServiceRequestBase
     /// <param name="service">The service.</param>
     internal ServiceRequestBase(ExchangeService service)
     {
-        if (service == null)
-        {
-            throw new ArgumentNullException("service");
-        }
-
-        this.service = service;
+        Service = service ?? throw new ArgumentNullException(nameof(service));
         ThrowIfNotSupportedByRequestedServerVersion();
     }
 
@@ -250,7 +242,7 @@ internal abstract class ServiceRequestBase
     ///     Gets the service.
     /// </summary>
     /// <value>The service.</value>
-    internal ExchangeService Service => service;
+    internal ExchangeService Service { get; }
 
     /// <summary>
     ///     Throw exception if request is not supported in requested server version.
@@ -298,10 +290,7 @@ internal abstract class ServiceRequestBase
 
         writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName);
 
-        if (Service.Credentials != null)
-        {
-            Service.Credentials.EmitExtraSoapHeaderNamespaceAliases(writer.InternalWriter);
-        }
+        Service.Credentials?.EmitExtraSoapHeaderNamespaceAliases(writer.InternalWriter);
 
         // Emit the RequestServerVersion header
         if (!Service.SuppressXmlVersionHeader)
@@ -355,15 +344,12 @@ internal abstract class ServiceRequestBase
         {
             Service.PrivilegedUserId.WriteToXml(writer, Service.RequestedServerVersion);
         }
-        else if (Service.ManagementRoles != null)
+        else
         {
-            Service.ManagementRoles.WriteToXml(writer);
+            Service.ManagementRoles?.WriteToXml(writer);
         }
 
-        if (Service.Credentials != null)
-        {
-            Service.Credentials.SerializeExtraSoapHeaders(writer.InternalWriter, GetXmlElementName());
-        }
+        Service.Credentials?.SerializeExtraSoapHeaders(writer.InternalWriter, GetXmlElementName());
 
         Service.DoOnSerializeCustomSoapHeaders(writer.InternalWriter);
 
@@ -430,7 +416,7 @@ internal abstract class ServiceRequestBase
 
         if (needSignature)
         {
-            service.Credentials.Sign(memoryStream);
+            Service.Credentials.Sign(memoryStream);
         }
 
         if (needTrace)
@@ -664,7 +650,7 @@ internal abstract class ServiceRequestBase
         var request = await BuildEwsHttpWebRequest().ConfigureAwait(false);
         try
         {
-            if (service.SendClientLatencies)
+            if (Service.SendClientLatencies)
             {
                 string? clientStatisticsToAdd = null;
 
@@ -692,7 +678,7 @@ internal abstract class ServiceRequestBase
             }
             finally
             {
-                if (service.SendClientLatencies)
+                if (Service.SendClientLatencies)
                 {
                     var clientSideLatency = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
                     var requestId = string.Empty;
@@ -962,7 +948,7 @@ internal abstract class ServiceRequestBase
     /// <param name="reader">The reader.</param>
     /// <param name="token"></param>
     private static async System.Threading.Tasks.Task ReadXmlDeclarationAsync(
-        EwsServiceXmlReader reader,
+        EwsXmlReader reader,
         CancellationToken token
     )
     {

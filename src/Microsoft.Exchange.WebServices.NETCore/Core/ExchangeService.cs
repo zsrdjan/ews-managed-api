@@ -33,6 +33,8 @@ using Microsoft.Exchange.WebServices.Autodiscover;
 using Microsoft.Exchange.WebServices.Data.Enumerations;
 using Microsoft.Exchange.WebServices.Data.Groups;
 
+// ReSharper disable PossibleMultipleEnumeration
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -50,8 +52,8 @@ public sealed class ExchangeService : ExchangeServiceBase
 
     #region Fields
 
-    private UnifiedMessaging? unifiedMessaging;
-    private string targetServerVersion;
+    private UnifiedMessaging? _unifiedMessaging;
+    private string _targetServerVersion;
 
     #endregion
 
@@ -6051,24 +6053,24 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// </remarks>
     internal static void ValidateTargetVersion(string version)
     {
-        const char ParameterSeparator = ';';
-        const string LegacyVersionPrefix = "Exchange20";
-        const char ParameterValueSeparator = '=';
-        const string ParameterName = "minimum";
+        const char parameterSeparator = ';';
+        const string legacyVersionPrefix = "Exchange20";
+        const char parameterValueSeparator = '=';
+        const string parameterName = "minimum";
 
         if (string.IsNullOrEmpty(version))
         {
             throw new ArgumentException("Target version must not be empty.");
         }
 
-        var parts = version.Trim().Split(ParameterSeparator);
+        var parts = version.Trim().Split(parameterSeparator);
         switch (parts.Length)
         {
             case 1:
             {
                 // Validate the header value. We allow X.Y or Exchange20XX.
                 var part1 = parts[0].Trim();
-                if (parts[0].StartsWith(LegacyVersionPrefix))
+                if (parts[0].StartsWith(legacyVersionPrefix))
                 {
                     // Close enough; misses corner cases like "Exchange2001". Server will do complete validation.
                 }
@@ -6088,9 +6090,9 @@ public sealed class ExchangeService : ExchangeServiceBase
             {
                 // Validate the optional minimum version parameter, "minimum=X.Y"
                 var part2 = parts[1].Trim();
-                var minParts = part2.Split(ParameterValueSeparator);
+                var minParts = part2.Split(parameterValueSeparator);
                 if (minParts.Length == 2 &&
-                    minParts[0].Trim().Equals(ParameterName, StringComparison.OrdinalIgnoreCase) &&
+                    minParts[0].Trim().Equals(parameterName, StringComparison.OrdinalIgnoreCase) &&
                     IsMajorMinor(minParts[1].Trim()))
                 {
                     goto case 1;
@@ -6108,9 +6110,9 @@ public sealed class ExchangeService : ExchangeServiceBase
 
     private static bool IsMajorMinor(string versionPart)
     {
-        const char MajorMinorSeparator = '.';
+        const char majorMinorSeparator = '.';
 
-        var parts = versionPart.Split(MajorMinorSeparator);
+        var parts = versionPart.Split(majorMinorSeparator);
         if (parts.Length != 2)
         {
             return false;
@@ -6283,21 +6285,21 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets the Id of the user that EWS should impersonate.
     /// </summary>
-    public ImpersonatedUserId ImpersonatedUserId { get; set; }
+    public ImpersonatedUserId? ImpersonatedUserId { get; set; }
 
     /// <summary>
     ///     Gets or sets the Id of the user that EWS should open his/her mailbox with privileged logon type.
     /// </summary>
-    internal PrivilegedUserId PrivilegedUserId { get; set; }
+    internal PrivilegedUserId? PrivilegedUserId { get; set; }
 
     /// <summary>
     /// </summary>
-    public ManagementRoles ManagementRoles { get; set; }
+    public ManagementRoles? ManagementRoles { get; set; }
 
     /// <summary>
     ///     Gets or sets the preferred culture for messages returned by the Exchange Web Services.
     /// </summary>
-    public CultureInfo PreferredCulture { get; set; }
+    public CultureInfo? PreferredCulture { get; set; }
 
     /// <summary>
     ///     Gets or sets the DateTime precision for DateTime values returned from Exchange Web Services.
@@ -6317,7 +6319,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Provides access to the Unified Messaging functionalities.
     /// </summary>
-    public UnifiedMessaging UnifiedMessaging => unifiedMessaging ??= new UnifiedMessaging(this);
+    public UnifiedMessaging UnifiedMessaging => _unifiedMessaging ??= new UnifiedMessaging(this);
 
     /// <summary>
     ///     Gets or sets a value indicating whether the AutodiscoverUrl method should perform SCP (Service Connection Point)
@@ -6346,12 +6348,12 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// </summary>
     internal string TargetServerVersion
     {
-        get => targetServerVersion;
+        get => _targetServerVersion;
 
         set
         {
             ValidateTargetVersion(value);
-            targetServerVersion = value;
+            _targetServerVersion = value;
         }
     }
 

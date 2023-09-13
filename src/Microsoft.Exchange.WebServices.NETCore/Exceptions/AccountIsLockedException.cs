@@ -25,12 +25,15 @@
 
 using System.Runtime.Serialization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurs when the account that is being accessed is locked and requires user interaction to
 ///     be unlocked.
 /// </summary>
+[PublicAPI]
 public class AccountIsLockedException : ServiceRemoteException
 {
     /// <summary>
@@ -39,7 +42,7 @@ public class AccountIsLockedException : ServiceRemoteException
     /// <param name="message">Error message text.</param>
     /// <param name="accountUnlockUrl">URL for client to visit to unlock account.</param>
     /// <param name="innerException">Inner exception.</param>
-    public AccountIsLockedException(string message, Uri accountUnlockUrl, Exception innerException)
+    public AccountIsLockedException(string message, Uri? accountUnlockUrl, Exception innerException)
         : base(message, innerException)
     {
         AccountUnlockUrl = accountUnlockUrl;
@@ -54,7 +57,7 @@ public class AccountIsLockedException : ServiceRemoteException
     protected AccountIsLockedException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {
-        AccountUnlockUrl = (Uri)info.GetValue("AccountUnlockUrl", typeof(Uri));
+        AccountUnlockUrl = info.GetValue("AccountUnlockUrl", typeof(Uri)) as Uri;
     }
 
     /// <summary>
@@ -79,5 +82,5 @@ public class AccountIsLockedException : ServiceRemoteException
     /// <summary>
     ///     Gets the URL of a web page where the user can navigate to unlock his or her account.
     /// </summary>
-    public Uri AccountUnlockUrl { get; private set; }
+    public Uri? AccountUnlockUrl { get; private set; }
 }

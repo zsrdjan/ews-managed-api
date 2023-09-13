@@ -257,6 +257,7 @@ internal class EwsXmlReader
     ///     Reads the specified node type.
     /// </summary>
     /// <param name="nodeType">Type of the node.</param>
+    /// <param name="token"></param>
     public async System.Threading.Tasks.Task ReadAsync(XmlNodeType nodeType, CancellationToken token)
     {
         await ReadAsync(token);

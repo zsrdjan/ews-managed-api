@@ -103,6 +103,7 @@ internal sealed class GetClientAccessTokenRequest : MultiResponseServiceRequest<
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.TokenRequest);
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Id, tokenRequestInfo.Id);
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.TokenType, tokenRequestInfo.TokenType);
+
             if (!string.IsNullOrEmpty(tokenRequestInfo.Scope))
             {
                 writer.WriteElementValue(
