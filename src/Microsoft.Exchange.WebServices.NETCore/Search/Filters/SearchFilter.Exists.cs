@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -34,17 +36,18 @@ public abstract partial class SearchFilter
     ///     Represents a search filter checking if a field is set. Applications can use
     ///     ExistsFilter to define conditions such as "Field IS SET".
     /// </summary>
+    [PublicAPI]
     public sealed class Exists : PropertyBasedFilter
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Exists" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.Exists" /> class.
         /// </summary>
         public Exists()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Exists" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.Exists" /> class.
         /// </summary>
         /// <param name="propertyDefinition">
         ///     The definition of the property to check the existence of. Property definitions are

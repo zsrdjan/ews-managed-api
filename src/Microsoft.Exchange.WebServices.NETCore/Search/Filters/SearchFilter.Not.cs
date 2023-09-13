@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -34,19 +36,20 @@ public abstract partial class SearchFilter
     ///     Represents a search filter that negates another. Applications can use NotFilter to define
     ///     conditions such as "NOT(other filter)".
     /// </summary>
+    [PublicAPI]
     public sealed class Not : SearchFilter
     {
-        private SearchFilter searchFilter;
+        private SearchFilter? _searchFilter;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Not" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.Not" /> class.
         /// </summary>
         public Not()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Not" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.Not" /> class.
         /// </summary>
         /// <param name="searchFilter">
         ///     The search filter to negate. Available search filter classes include SearchFilter.IsEqualTo,
@@ -54,7 +57,7 @@ public abstract partial class SearchFilter
         /// </param>
         public Not(SearchFilter searchFilter)
         {
-            this.searchFilter = searchFilter;
+            _searchFilter = searchFilter;
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ public abstract partial class SearchFilter
         /// </summary>
         internal override void InternalValidate()
         {
-            if (searchFilter == null)
+            if (_searchFilter == null)
             {
                 throw new ServiceValidationException(Strings.SearchFilterMustBeSet);
             }
@@ -93,7 +96,7 @@ public abstract partial class SearchFilter
         /// <returns>True if element was read.</returns>
         internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
         {
-            searchFilter = LoadFromXml(reader);
+            _searchFilter = LoadFromXml(reader);
             return true;
         }
 
@@ -110,22 +113,22 @@ public abstract partial class SearchFilter
         ///     Gets or sets the search filter to negate. Available search filter classes include
         ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
         /// </summary>
-        public SearchFilter SearchFilter
+        public SearchFilter? SearchFilter
         {
-            get => searchFilter;
+            get => _searchFilter;
 
             set
             {
-                if (searchFilter != null)
+                if (_searchFilter != null)
                 {
-                    searchFilter.OnChange -= SearchFilterChanged;
+                    _searchFilter.OnChange -= SearchFilterChanged;
                 }
 
-                SetFieldValue(ref searchFilter, value);
+                SetFieldValue(ref _searchFilter, value);
 
-                if (searchFilter != null)
+                if (_searchFilter != null)
                 {
-                    searchFilter.OnChange += SearchFilterChanged;
+                    _searchFilter.OnChange += SearchFilterChanged;
                 }
             }
         }

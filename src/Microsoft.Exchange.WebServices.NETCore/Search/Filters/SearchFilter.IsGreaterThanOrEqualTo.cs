@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -33,17 +35,18 @@ public abstract partial class SearchFilter
     /// <summary>
     ///     Represents a search filter that checks if a property is greater than or equal to a given value or other property.
     /// </summary>
+    [PublicAPI]
     public sealed class IsGreaterThanOrEqualTo : RelationalFilter
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IsGreaterThanOrEqualTo" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.IsGreaterThanOrEqualTo" /> class.
         /// </summary>
         public IsGreaterThanOrEqualTo()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IsGreaterThanOrEqualTo" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.IsGreaterThanOrEqualTo" /> class.
         /// </summary>
         /// <param name="propertyDefinition">
         ///     The definition of the property that is being compared. Property definitions are
@@ -63,7 +66,7 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="IsGreaterThanOrEqualTo" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.IsGreaterThanOrEqualTo" /> class.
         /// </summary>
         /// <param name="propertyDefinition">
         ///     The definition of the property that is being compared. Property definitions are

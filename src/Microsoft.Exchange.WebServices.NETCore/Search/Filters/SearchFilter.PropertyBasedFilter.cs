@@ -25,6 +25,8 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -35,25 +37,26 @@ public abstract partial class SearchFilter
     /// <summary>
     ///     Represents a search filter where an item or folder property is involved.
     /// </summary>
+    [PublicAPI]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class PropertyBasedFilter : SearchFilter
     {
-        private PropertyDefinitionBase propertyDefinition;
+        private PropertyDefinitionBase _propertyDefinition;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PropertyBasedFilter" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.PropertyBasedFilter" /> class.
         /// </summary>
         internal PropertyBasedFilter()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PropertyBasedFilter" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.PropertyBasedFilter" /> class.
         /// </summary>
         /// <param name="propertyDefinition">The property definition.</param>
         internal PropertyBasedFilter(PropertyDefinitionBase propertyDefinition)
         {
-            this.propertyDefinition = propertyDefinition;
+            _propertyDefinition = propertyDefinition;
         }
 
         /// <summary>
@@ -61,7 +64,7 @@ public abstract partial class SearchFilter
         /// </summary>
         internal override void InternalValidate()
         {
-            if (propertyDefinition == null)
+            if (_propertyDefinition == null)
             {
                 throw new ServiceValidationException(Strings.PropertyDefinitionPropertyMustBeSet);
             }
@@ -74,7 +77,7 @@ public abstract partial class SearchFilter
         /// <returns>True if element was read.</returns>
         internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
         {
-            return PropertyDefinitionBase.TryLoadFromXml(reader, ref propertyDefinition);
+            return PropertyDefinitionBase.TryLoadFromXml(reader, ref _propertyDefinition);
         }
 
         /// <summary>
@@ -93,8 +96,8 @@ public abstract partial class SearchFilter
         /// </summary>
         public PropertyDefinitionBase PropertyDefinition
         {
-            get => propertyDefinition;
-            set => SetFieldValue(ref propertyDefinition, value);
+            get => _propertyDefinition;
+            set => SetFieldValue(ref _propertyDefinition, value);
         }
     }
 }

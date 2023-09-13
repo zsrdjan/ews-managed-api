@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -34,13 +36,13 @@ public abstract partial class SearchFilter
     ///     Represents a collection of search filters linked by a logical operator. Applications can
     ///     use SearchFilterCollection to define complex search filters such as "Condition1 AND Condition2".
     /// </summary>
+    [PublicAPI]
     public sealed class SearchFilterCollection : SearchFilter, IEnumerable<SearchFilter>
     {
-        private readonly List<SearchFilter> searchFilters = new List<SearchFilter>();
-        private LogicalOperator logicalOperator = LogicalOperator.And;
+        private readonly List<SearchFilter> _searchFilters = new();
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SearchFilterCollection" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.SearchFilterCollection" /> class.
         ///     The LogicalOperator property is initialized to LogicalOperator.And.
         /// </summary>
         public SearchFilterCollection()
@@ -48,16 +50,16 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SearchFilterCollection" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.SearchFilterCollection" /> class.
         /// </summary>
         /// <param name="logicalOperator">The logical operator used to initialize the collection.</param>
         public SearchFilterCollection(LogicalOperator logicalOperator)
         {
-            this.logicalOperator = logicalOperator;
+            LogicalOperator = logicalOperator;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SearchFilterCollection" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.SearchFilterCollection" /> class.
         /// </summary>
         /// <param name="logicalOperator">The logical operator used to initialize the collection.</param>
         /// <param name="searchFilters">The search filters to add to the collection.</param>
@@ -68,7 +70,7 @@ public abstract partial class SearchFilter
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SearchFilterCollection" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.SearchFilterCollection" /> class.
         /// </summary>
         /// <param name="logicalOperator">The logical operator used to initialize the collection.</param>
         /// <param name="searchFilters">The search filters to add to the collection.</param>
@@ -168,11 +170,11 @@ public abstract partial class SearchFilter
         {
             if (searchFilter == null)
             {
-                throw new ArgumentNullException("searchFilter");
+                throw new ArgumentNullException(nameof(searchFilter));
             }
 
             searchFilter.OnChange += SearchFilterChanged;
-            searchFilters.Add(searchFilter);
+            _searchFilters.Add(searchFilter);
             Changed();
         }
 
@@ -187,7 +189,7 @@ public abstract partial class SearchFilter
         {
             if (searchFilters == null)
             {
-                throw new ArgumentNullException("searchFilters");
+                throw new ArgumentNullException(nameof(searchFilters));
             }
 
             foreach (var searchFilter in searchFilters)
@@ -195,7 +197,7 @@ public abstract partial class SearchFilter
                 searchFilter.OnChange += SearchFilterChanged;
             }
 
-            this.searchFilters.AddRange(searchFilters);
+            _searchFilters.AddRange(searchFilters);
             Changed();
         }
 
@@ -211,7 +213,7 @@ public abstract partial class SearchFilter
                     searchFilter.OnChange -= SearchFilterChanged;
                 }
 
-                searchFilters.Clear();
+                _searchFilters.Clear();
                 Changed();
             }
         }
@@ -223,7 +225,7 @@ public abstract partial class SearchFilter
         /// <returns>True is the search filter was found in the collection, false otherwise.</returns>
         public bool Contains(SearchFilter searchFilter)
         {
-            return searchFilters.Contains(searchFilter);
+            return _searchFilters.Contains(searchFilter);
         }
 
         /// <summary>
@@ -234,13 +236,13 @@ public abstract partial class SearchFilter
         {
             if (searchFilter == null)
             {
-                throw new ArgumentNullException("searchFilter");
+                throw new ArgumentNullException(nameof(searchFilter));
             }
 
             if (Contains(searchFilter))
             {
                 searchFilter.OnChange -= SearchFilterChanged;
-                searchFilters.Remove(searchFilter);
+                _searchFilters.Remove(searchFilter);
                 Changed();
             }
         }
@@ -253,18 +255,18 @@ public abstract partial class SearchFilter
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
             this[index].OnChange -= SearchFilterChanged;
-            searchFilters.RemoveAt(index);
+            _searchFilters.RemoveAt(index);
             Changed();
         }
 
         /// <summary>
         ///     Gets the total number of search filters in the collection.
         /// </summary>
-        public int Count => searchFilters.Count;
+        public int Count => _searchFilters.Count;
 
         /// <summary>
         ///     Gets or sets the search filter at the specified index.
@@ -277,31 +279,27 @@ public abstract partial class SearchFilter
             {
                 if (index < 0 || index >= Count)
                 {
-                    throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
                 }
 
-                return searchFilters[index];
+                return _searchFilters[index];
             }
 
             set
             {
                 if (index < 0 || index >= Count)
                 {
-                    throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
                 }
 
-                searchFilters[index] = value;
+                _searchFilters[index] = value;
             }
         }
 
         /// <summary>
-        ///     Gets or sets the logical operator that links the serach filters in this collection.
+        ///     Gets or sets the logical operator that links the search filters in this collection.
         /// </summary>
-        public LogicalOperator LogicalOperator
-        {
-            get => logicalOperator;
-            set => logicalOperator = value;
-        }
+        public LogicalOperator LogicalOperator { get; set; } = LogicalOperator.And;
 
 
         #region IEnumerable<SearchCondition> Members
@@ -312,7 +310,7 @@ public abstract partial class SearchFilter
         /// <returns>An IEnumerator for the collection.</returns>
         public IEnumerator<SearchFilter> GetEnumerator()
         {
-            return searchFilters.GetEnumerator();
+            return _searchFilters.GetEnumerator();
         }
 
         #endregion
@@ -326,7 +324,7 @@ public abstract partial class SearchFilter
         /// <returns>An IEnumerator for the collection.</returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return searchFilters.GetEnumerator();
+            return _searchFilters.GetEnumerator();
         }
 
         #endregion

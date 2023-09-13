@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base search filter class. Use descendant search filter classes such as SearchFilter.IsEqualTo,
 ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection to define search filters.
 /// </summary>
+[PublicAPI]
 public abstract partial class SearchFilter : ComplexProperty
 {
     /// <summary>
@@ -43,7 +46,7 @@ public abstract partial class SearchFilter : ComplexProperty
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>SearchFilter.</returns>
-    internal static SearchFilter LoadFromXml(EwsServiceXmlReader reader)
+    internal static SearchFilter? LoadFromXml(EwsServiceXmlReader reader)
     {
         reader.EnsureCurrentNodeIsStartElement();
 
@@ -51,10 +54,7 @@ public abstract partial class SearchFilter : ComplexProperty
 
         var searchFilter = GetSearchFilterInstance(localName);
 
-        if (searchFilter != null)
-        {
-            searchFilter.LoadFromXml(reader, reader.LocalName);
-        }
+        searchFilter?.LoadFromXml(reader, reader.LocalName);
 
         return searchFilter;
     }
@@ -64,53 +64,24 @@ public abstract partial class SearchFilter : ComplexProperty
     /// </summary>
     /// <param name="localName">Name of the local.</param>
     /// <returns></returns>
-    private static SearchFilter GetSearchFilterInstance(string localName)
+    private static SearchFilter? GetSearchFilterInstance(string localName)
     {
-        SearchFilter searchFilter;
-        switch (localName)
+        return localName switch
         {
-            case XmlElementNames.Exists:
-                searchFilter = new Exists();
-                break;
-            case XmlElementNames.Contains:
-                searchFilter = new ContainsSubstring();
-                break;
-            case XmlElementNames.Excludes:
-                searchFilter = new ExcludesBitmask();
-                break;
-            case XmlElementNames.Not:
-                searchFilter = new Not();
-                break;
-            case XmlElementNames.And:
-                searchFilter = new SearchFilterCollection(LogicalOperator.And);
-                break;
-            case XmlElementNames.Or:
-                searchFilter = new SearchFilterCollection(LogicalOperator.Or);
-                break;
-            case XmlElementNames.IsEqualTo:
-                searchFilter = new IsEqualTo();
-                break;
-            case XmlElementNames.IsNotEqualTo:
-                searchFilter = new IsNotEqualTo();
-                break;
-            case XmlElementNames.IsGreaterThan:
-                searchFilter = new IsGreaterThan();
-                break;
-            case XmlElementNames.IsGreaterThanOrEqualTo:
-                searchFilter = new IsGreaterThanOrEqualTo();
-                break;
-            case XmlElementNames.IsLessThan:
-                searchFilter = new IsLessThan();
-                break;
-            case XmlElementNames.IsLessThanOrEqualTo:
-                searchFilter = new IsLessThanOrEqualTo();
-                break;
-            default:
-                searchFilter = null;
-                break;
-        }
-
-        return searchFilter;
+            XmlElementNames.Exists => new Exists(),
+            XmlElementNames.Contains => new ContainsSubstring(),
+            XmlElementNames.Excludes => new ExcludesBitmask(),
+            XmlElementNames.Not => new Not(),
+            XmlElementNames.And => new SearchFilterCollection(LogicalOperator.And),
+            XmlElementNames.Or => new SearchFilterCollection(LogicalOperator.Or),
+            XmlElementNames.IsEqualTo => new IsEqualTo(),
+            XmlElementNames.IsNotEqualTo => new IsNotEqualTo(),
+            XmlElementNames.IsGreaterThan => new IsGreaterThan(),
+            XmlElementNames.IsGreaterThanOrEqualTo => new IsGreaterThanOrEqualTo(),
+            XmlElementNames.IsLessThan => new IsLessThan(),
+            XmlElementNames.IsLessThanOrEqualTo => new IsLessThanOrEqualTo(),
+            _ => null,
+        };
     }
 
     /// <summary>

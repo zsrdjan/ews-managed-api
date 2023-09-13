@@ -25,6 +25,8 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -35,11 +37,12 @@ public abstract partial class SearchFilter
     /// <summary>
     ///     Represents the base class for relational filters (for example, IsEqualTo, IsGreaterThan or IsLessThanOrEqualTo).
     /// </summary>
+    [PublicAPI]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class RelationalFilter : PropertyBasedFilter
     {
-        private PropertyDefinitionBase otherPropertyDefinition;
-        private object value;
+        private PropertyDefinitionBase? _otherPropertyDefinition;
+        private object? _value;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
@@ -66,7 +69,7 @@ public abstract partial class SearchFilter
         )
             : base(propertyDefinition)
         {
-            this.otherPropertyDefinition = otherPropertyDefinition;
+            _otherPropertyDefinition = otherPropertyDefinition;
         }
 
         /// <summary>
@@ -81,7 +84,7 @@ public abstract partial class SearchFilter
         internal RelationalFilter(PropertyDefinitionBase propertyDefinition, object value)
             : base(propertyDefinition)
         {
-            this.value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -91,20 +94,20 @@ public abstract partial class SearchFilter
         {
             base.InternalValidate();
 
-            if (otherPropertyDefinition == null && value == null)
+            if (_otherPropertyDefinition == null && _value == null)
             {
                 throw new ServiceValidationException(Strings.EqualityComparisonFilterIsInvalid);
             }
 
-            if (value != null)
+            if (_value != null)
             {
                 // All common value types (String, Int32, DateTime, ...) implement IConvertible.
                 // Value types that don't implement IConvertible must implement ISearchStringProvider 
                 // in order to be used in a search filter.
-                if (!((value is IConvertible) || (value is ISearchStringProvider)))
+                if (!((_value is IConvertible) || (_value is ISearchStringProvider)))
                 {
                     throw new ServiceValidationException(
-                        string.Format(Strings.SearchFilterComparisonValueTypeIsNotSupported, value.GetType().Name)
+                        string.Format(Strings.SearchFilterComparisonValueTypeIsNotSupported, _value.GetType().Name)
                     );
                 }
             }
@@ -128,13 +131,13 @@ public abstract partial class SearchFilter
 
                     if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Constant))
                     {
-                        value = reader.ReadAttributeValue(XmlAttributeNames.Value);
+                        _value = reader.ReadAttributeValue(XmlAttributeNames.Value);
 
                         result = true;
                     }
                     else
                     {
-                        result = PropertyDefinitionBase.TryLoadFromXml(reader, ref otherPropertyDefinition);
+                        result = PropertyDefinitionBase.TryLoadFromXml(reader, ref _otherPropertyDefinition);
                     }
                 }
             }
@@ -172,14 +175,14 @@ public abstract partial class SearchFilter
         ///     etc.)
         ///     The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
         /// </summary>
-        public PropertyDefinitionBase OtherPropertyDefinition
+        public PropertyDefinitionBase? OtherPropertyDefinition
         {
-            get => otherPropertyDefinition;
+            get => _otherPropertyDefinition;
 
             set
             {
-                SetFieldValue(ref otherPropertyDefinition, value);
-                this.value = null;
+                SetFieldValue(ref _otherPropertyDefinition, value);
+                _value = null;
             }
         }
 
@@ -187,14 +190,14 @@ public abstract partial class SearchFilter
         ///     Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
         ///     are mutually exclusive; setting one resets the other to null.
         /// </summary>
-        public object Value
+        public object? Value
         {
-            get => value;
+            get => _value;
 
             set
             {
-                SetFieldValue(ref this.value, value);
-                otherPropertyDefinition = null;
+                SetFieldValue(ref _value, value);
+                _otherPropertyDefinition = null;
             }
         }
     }

@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -35,21 +37,22 @@ public abstract partial class SearchFilter
     ///     Applications can use ContainsSubstring to define conditions such as "Field CONTAINS Value" or "Field IS PREFIXED
     ///     WITH Value".
     /// </summary>
+    [PublicAPI]
     public sealed class ContainsSubstring : PropertyBasedFilter
     {
-        private ContainmentMode containmentMode = ContainmentMode.Substring;
-        private ComparisonMode comparisonMode = ComparisonMode.IgnoreCase;
-        private string value;
+        private ContainmentMode _containmentMode = ContainmentMode.Substring;
+        private ComparisonMode _comparisonMode = ComparisonMode.IgnoreCase;
+        private string _value;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ContainsSubstring" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.ContainsSubstring" /> class.
         /// </summary>
         public ContainsSubstring()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ContainsSubstring" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.ContainsSubstring" /> class.
         ///     The ContainmentMode property is initialized to ContainmentMode.Substring, and
         ///     the ComparisonMode property is initialized to ComparisonMode.IgnoreCase.
         /// </summary>
@@ -62,11 +65,11 @@ public abstract partial class SearchFilter
         public ContainsSubstring(PropertyDefinitionBase propertyDefinition, string value)
             : base(propertyDefinition)
         {
-            this.value = value;
+            _value = value;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ContainsSubstring" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.ContainsSubstring" /> class.
         /// </summary>
         /// <param name="propertyDefinition">
         ///     The definition of the property that is being compared. Property definitions are
@@ -84,8 +87,8 @@ public abstract partial class SearchFilter
         )
             : this(propertyDefinition, value)
         {
-            this.containmentMode = containmentMode;
-            this.comparisonMode = comparisonMode;
+            _containmentMode = containmentMode;
+            _comparisonMode = comparisonMode;
         }
 
         /// <summary>
@@ -95,7 +98,7 @@ public abstract partial class SearchFilter
         {
             base.InternalValidate();
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(_value))
             {
                 throw new ServiceValidationException(Strings.ValuePropertyMustBeSet);
             }
@@ -123,7 +126,7 @@ public abstract partial class SearchFilter
             {
                 if (reader.LocalName == XmlElementNames.Constant)
                 {
-                    value = reader.ReadAttributeValue(XmlAttributeNames.Value);
+                    _value = reader.ReadAttributeValue(XmlAttributeNames.Value);
 
                     result = true;
                 }
@@ -140,17 +143,17 @@ public abstract partial class SearchFilter
         {
             base.ReadAttributesFromXml(reader);
 
-            containmentMode = reader.ReadAttributeValue<ContainmentMode>(XmlAttributeNames.ContainmentMode);
+            _containmentMode = reader.ReadAttributeValue<ContainmentMode>(XmlAttributeNames.ContainmentMode);
 
             try
             {
-                comparisonMode = reader.ReadAttributeValue<ComparisonMode>(XmlAttributeNames.ContainmentComparison);
+                _comparisonMode = reader.ReadAttributeValue<ComparisonMode>(XmlAttributeNames.ContainmentComparison);
             }
             catch (ArgumentException)
             {
                 // This will happen if we receive a value that is defined in the EWS schema but that is not defined
                 // in the API (see the comments in ComparisonMode.cs). We map that value to IgnoreCaseAndNonSpacingCharacters.
-                comparisonMode = ComparisonMode.IgnoreCaseAndNonSpacingCharacters;
+                _comparisonMode = ComparisonMode.IgnoreCaseAndNonSpacingCharacters;
             }
         }
 
@@ -184,8 +187,8 @@ public abstract partial class SearchFilter
         /// </summary>
         public ContainmentMode ContainmentMode
         {
-            get => containmentMode;
-            set => SetFieldValue(ref containmentMode, value);
+            get => _containmentMode;
+            set => SetFieldValue(ref _containmentMode, value);
         }
 
         /// <summary>
@@ -193,8 +196,8 @@ public abstract partial class SearchFilter
         /// </summary>
         public ComparisonMode ComparisonMode
         {
-            get => comparisonMode;
-            set => SetFieldValue(ref comparisonMode, value);
+            get => _comparisonMode;
+            set => SetFieldValue(ref _comparisonMode, value);
         }
 
         /// <summary>
@@ -202,8 +205,8 @@ public abstract partial class SearchFilter
         /// </summary>
         public string Value
         {
-            get => value;
-            set => SetFieldValue(ref this.value, value);
+            get => _value;
+            set => SetFieldValue(ref _value, value);
         }
     }
 }

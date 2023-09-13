@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -34,19 +36,20 @@ public abstract partial class SearchFilter
     ///     Represents a bitmask exclusion search filter. Applications can use ExcludesBitExcludesBitmaskFilter to define
     ///     conditions such as "(OrdinalField and 0x0010) != 0x0010"
     /// </summary>
+    [PublicAPI]
     public sealed class ExcludesBitmask : PropertyBasedFilter
     {
-        private int bitmask;
+        private int _bitmask;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExcludesBitmask" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.ExcludesBitmask" /> class.
         /// </summary>
         public ExcludesBitmask()
         {
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ExcludesBitmask" /> class.
+        ///     Initializes a new instance of the <see cref="SearchFilter.ExcludesBitmask" /> class.
         /// </summary>
         /// <param name="propertyDefinition">
         ///     The definition of the property that is being compared. Property definitions are
@@ -57,7 +60,7 @@ public abstract partial class SearchFilter
         public ExcludesBitmask(PropertyDefinitionBase propertyDefinition, int bitmask)
             : base(propertyDefinition)
         {
-            this.bitmask = bitmask;
+            _bitmask = bitmask;
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ public abstract partial class SearchFilter
                 if (reader.LocalName == XmlElementNames.Bitmask)
                 {
                     // EWS always returns the Bitmask value in hexadecimal
-                    bitmask = Convert.ToInt32(reader.ReadAttributeValue(XmlAttributeNames.Value), 16);
+                    _bitmask = Convert.ToInt32(reader.ReadAttributeValue(XmlAttributeNames.Value), 16);
                 }
             }
 
@@ -108,8 +111,8 @@ public abstract partial class SearchFilter
         /// </summary>
         public int Bitmask
         {
-            get => bitmask;
-            set => SetFieldValue(ref bitmask, value);
+            get => _bitmask;
+            set => SetFieldValue(ref _bitmask, value);
         }
     }
 }
