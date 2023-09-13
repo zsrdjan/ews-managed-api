@@ -23,17 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a date range view of appointments in calendar folder search operations.
 /// </summary>
+[PublicAPI]
 public sealed class CalendarView : ViewBase
 {
-    private ItemTraversal traversal;
-    private int? maxItemsReturned;
-    private DateTime startDate;
-    private DateTime endDate;
+    private int? _maxItemsReturned;
 
     /// <summary>
     ///     Writes the attributes to XML.
@@ -79,8 +79,8 @@ public sealed class CalendarView : ViewBase
     /// <param name="endDate">The end date.</param>
     public CalendarView(DateTime startDate, DateTime endDate)
     {
-        this.startDate = startDate;
-        this.endDate = endDate;
+        StartDate = startDate;
+        EndDate = endDate;
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public sealed class CalendarView : ViewBase
     {
         base.InternalValidate(request);
 
-        if (endDate < StartDate)
+        if (EndDate < StartDate)
         {
             throw new ServiceValidationException(Strings.EndDateMustBeGreaterThanStartDate);
         }
@@ -144,48 +144,33 @@ public sealed class CalendarView : ViewBase
     /// <summary>
     ///     Gets or sets the start date.
     /// </summary>
-    public DateTime StartDate
-    {
-        get => startDate;
-        set => startDate = value;
-    }
+    public DateTime StartDate { get; set; }
 
     /// <summary>
     ///     Gets or sets the end date.
     /// </summary>
-    public DateTime EndDate
-    {
-        get => endDate;
-        set => endDate = value;
-    }
+    public DateTime EndDate { get; set; }
 
     /// <summary>
     ///     The maximum number of items the search operation should return.
     /// </summary>
     public int? MaxItemsReturned
     {
-        get => maxItemsReturned;
+        get => _maxItemsReturned;
 
         set
         {
-            if (value.HasValue)
+            if (value <= 0)
             {
-                if (value.Value <= 0)
-                {
-                    throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
-                }
+                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
             }
 
-            maxItemsReturned = value;
+            _maxItemsReturned = value;
         }
     }
 
     /// <summary>
     ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
     /// </summary>
-    public ItemTraversal Traversal
-    {
-        get => traversal;
-        set => traversal = value;
-    }
+    public ItemTraversal Traversal { get; set; }
 }

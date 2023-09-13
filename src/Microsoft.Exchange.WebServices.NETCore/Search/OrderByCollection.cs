@@ -25,6 +25,8 @@
 
 using System.Collections;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 using PropertyDefinitionSortDirectionPair = KeyValuePair<PropertyDefinitionBase, SortDirection>;
@@ -32,16 +34,17 @@ using PropertyDefinitionSortDirectionPair = KeyValuePair<PropertyDefinitionBase,
 /// <summary>
 ///     Represents an ordered collection of property definitions qualified with a sort direction.
 /// </summary>
+[PublicAPI]
 public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirectionPair>
 {
-    private readonly List<PropertyDefinitionSortDirectionPair> propDefSortOrderPairList;
+    private readonly List<PropertyDefinitionSortDirectionPair> _propDefSortOrderPairList;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OrderByCollection" /> class.
     /// </summary>
     internal OrderByCollection()
     {
-        propDefSortOrderPairList = new List<PropertyDefinitionSortDirectionPair>();
+        _propDefSortOrderPairList = new List<PropertyDefinitionSortDirectionPair>();
     }
 
     /// <summary>
@@ -58,7 +61,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
             );
         }
 
-        propDefSortOrderPairList.Add(new PropertyDefinitionSortDirectionPair(propertyDefinition, sortDirection));
+        _propDefSortOrderPairList.Add(new PropertyDefinitionSortDirectionPair(propertyDefinition, sortDirection));
     }
 
     /// <summary>
@@ -66,7 +69,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// </summary>
     public void Clear()
     {
-        propDefSortOrderPairList.Clear();
+        _propDefSortOrderPairList.Clear();
     }
 
     /// <summary>
@@ -76,13 +79,13 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// <returns>True if the collection contains the specified property definition; otherwise, false.</returns>
     internal bool Contains(PropertyDefinitionBase propertyDefinition)
     {
-        return propDefSortOrderPairList.Exists(pair => pair.Key.Equals(propertyDefinition));
+        return _propDefSortOrderPairList.Exists(pair => pair.Key.Equals(propertyDefinition));
     }
 
     /// <summary>
     ///     Gets the number of elements contained in the collection.
     /// </summary>
-    public int Count => propDefSortOrderPairList.Count;
+    public int Count => _propDefSortOrderPairList.Count;
 
     /// <summary>
     ///     Removes the specified property definition from the collection.
@@ -91,7 +94,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// <returns>True if the property definition is successfully removed; otherwise, false</returns>
     public bool Remove(PropertyDefinitionBase propertyDefinition)
     {
-        var count = propDefSortOrderPairList.RemoveAll(pair => pair.Key.Equals(propertyDefinition));
+        var count = _propDefSortOrderPairList.RemoveAll(pair => pair.Key.Equals(propertyDefinition));
         return count > 0;
     }
 
@@ -104,7 +107,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// </exception>
     public void RemoveAt(int index)
     {
-        propDefSortOrderPairList.RemoveAt(index);
+        _propDefSortOrderPairList.RemoveAt(index);
     }
 
     /// <summary>
@@ -115,7 +118,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// <returns>True if collection contains property definition, otherwise false.</returns>
     public bool TryGetValue(PropertyDefinitionBase propertyDefinition, out SortDirection sortDirection)
     {
-        foreach (var pair in propDefSortOrderPairList)
+        foreach (var pair in _propDefSortOrderPairList)
         {
             if (pair.Value.Equals(propertyDefinition))
             {
@@ -157,7 +160,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     ///     Gets the element at the specified index from the collection.
     /// </summary>
     /// <param name="index">Index.</param>
-    public PropertyDefinitionSortDirectionPair this[int index] => propDefSortOrderPairList[index];
+    public PropertyDefinitionSortDirectionPair this[int index] => _propDefSortOrderPairList[index];
 
 
     #region IEnumerable<KeyValuePair<PropertyDefinitionBase,SortDirection>> Members
@@ -170,7 +173,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// </returns>
     public IEnumerator<KeyValuePair<PropertyDefinitionBase, SortDirection>> GetEnumerator()
     {
-        return propDefSortOrderPairList.GetEnumerator();
+        return _propDefSortOrderPairList.GetEnumerator();
     }
 
     #endregion
@@ -186,7 +189,7 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     /// </returns>
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return propDefSortOrderPairList.GetEnumerator();
+        return _propDefSortOrderPairList.GetEnumerator();
     }
 
     #endregion

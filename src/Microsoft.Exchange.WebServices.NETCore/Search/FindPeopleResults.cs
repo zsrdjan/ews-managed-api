@@ -25,11 +25,14 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of an Persona search operation.
 /// </summary>
+[PublicAPI]
 public sealed class FindPeopleResults
 {
     /// <summary>

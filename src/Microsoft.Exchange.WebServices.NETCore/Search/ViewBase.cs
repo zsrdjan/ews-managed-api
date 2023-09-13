@@ -25,16 +25,17 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base view class for search operations.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class ViewBase
 {
-    private PropertySet propertySet;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ViewBase" /> class.
     /// </summary>
@@ -139,9 +140,5 @@ public abstract class ViewBase
     ///     PropertySet is null,
     ///     all first class properties are loaded on found items.
     /// </summary>
-    public PropertySet PropertySet
-    {
-        get => propertySet;
-        set => propertySet = value;
-    }
+    public PropertySet? PropertySet { get; set; }
 }

@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the view settings in a folder search operation.
 /// </summary>
+[PublicAPI]
 public sealed class FolderView : PagedView
 {
-    private FolderTraversal traversal;
-
     /// <summary>
     ///     Gets the name of the view XML element.
     /// </summary>
@@ -92,9 +93,5 @@ public sealed class FolderView : PagedView
     /// <summary>
     ///     Gets or sets the search traversal mode. Defaults to FolderTraversal.Shallow.
     /// </summary>
-    public FolderTraversal Traversal
-    {
-        get => traversal;
-        set => traversal = value;
-    }
+    public FolderTraversal Traversal { get; set; }
 }

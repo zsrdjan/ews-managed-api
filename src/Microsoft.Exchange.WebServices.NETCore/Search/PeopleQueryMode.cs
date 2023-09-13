@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of a People Index search operation.
 /// </summary>
+[PublicAPI]
 public sealed class PeopleQueryMode
 {
     /// <summary>
@@ -35,17 +38,12 @@ public sealed class PeopleQueryMode
     ///     among the various potential sources. This is a good setting to use
     ///     by default.
     /// </summary>
-    public static PeopleQueryMode Auto => autoInstance;
+    public static PeopleQueryMode Auto { get; } = new();
 
     /// <summary>
     ///     The Source string for Auto
     /// </summary>
     private const string AutoSourceString = "Auto";
-
-    /// <summary>
-    ///     The field for the auto mode
-    /// </summary>
-    private static readonly PeopleQueryMode autoInstance = new PeopleQueryMode();
 
     /// <summary>
     ///     The sources used for this mode.
@@ -60,7 +58,7 @@ public sealed class PeopleQueryMode
         Sources = new HashSet<string>(
             new[]
             {
-                AutoSourceString
+                AutoSourceString,
             }
         );
     }
@@ -71,7 +69,7 @@ public sealed class PeopleQueryMode
     /// <param name="sources">The sources to use. See <see cref="PeopleQuerySource" /> for sources</param>
     public PeopleQueryMode(IEnumerable<string> sources)
     {
-        EwsUtilities.ValidateParam(sources, "sources");
+        EwsUtilities.ValidateParam(sources, nameof(sources));
 
         Sources = new HashSet<string>(sources);
 

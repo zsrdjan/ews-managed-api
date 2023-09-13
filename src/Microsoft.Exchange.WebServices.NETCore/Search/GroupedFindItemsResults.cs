@@ -25,24 +25,18 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of an item search operation.
 /// </summary>
 /// <typeparam name="TItem">The type of item returned by the search operation.</typeparam>
+[PublicAPI]
 public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem>>
     where TItem : Item
 {
-    private int totalCount;
-    private int? nextPageOffset;
-    private bool moreAvailable;
-
-    /// <summary>
-    ///     List of ItemGroups.
-    /// </summary>
-    private readonly Collection<ItemGroup<TItem>> itemGroups = new Collection<ItemGroup<TItem>>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GroupedFindItemsResults&lt;TItem&gt;" /> class.
     /// </summary>
@@ -53,35 +47,23 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     /// <summary>
     ///     Gets the total number of items matching the search criteria available in the searched folder.
     /// </summary>
-    public int TotalCount
-    {
-        get => totalCount;
-        internal set => totalCount = value;
-    }
+    public int TotalCount { get; internal set; }
 
     /// <summary>
     ///     Gets the offset that should be used with ItemView to retrieve the next page of items in a FindItems operation.
     /// </summary>
-    public int? NextPageOffset
-    {
-        get => nextPageOffset;
-        internal set => nextPageOffset = value;
-    }
+    public int? NextPageOffset { get; internal set; }
 
     /// <summary>
     ///     Gets a value indicating whether more items corresponding to the search criteria
     ///     are available in the searched folder.
     /// </summary>
-    public bool MoreAvailable
-    {
-        get => moreAvailable;
-        internal set => moreAvailable = value;
-    }
+    public bool MoreAvailable { get; internal set; }
 
     /// <summary>
     ///     Gets the item groups returned by the search operation.
     /// </summary>
-    public Collection<ItemGroup<TItem>> ItemGroups => itemGroups;
+    public Collection<ItemGroup<TItem>> ItemGroups { get; } = new();
 
 
     #region IEnumerable<ItemGroup<TItem>> Members
@@ -94,7 +76,7 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     /// </returns>
     public IEnumerator<ItemGroup<TItem>> GetEnumerator()
     {
-        return itemGroups.GetEnumerator();
+        return ItemGroups.GetEnumerator();
     }
 
     #endregion
@@ -110,7 +92,7 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     /// </returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return itemGroups.GetEnumerator();
+        return ItemGroups.GetEnumerator();
     }
 
     #endregion

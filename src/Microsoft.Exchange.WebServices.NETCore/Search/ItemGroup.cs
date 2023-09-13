@@ -25,12 +25,15 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a group of items as returned by grouped item search operations.
 /// </summary>
 /// <typeparam name="TItem">The type of item in the group.</typeparam>
+[PublicAPI]
 public sealed class ItemGroup<TItem>
     where TItem : Item
 {

@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 // using System.Drawing;
@@ -30,6 +32,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Represents the results of a GetUserPhoto operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetUserPhotoResults
 {
     /// <summary>
@@ -55,7 +58,7 @@ public sealed class GetUserPhotoResults
     public string ContentType { get; internal set; }
 
     /// <summary>
-    ///     Accessors for the Expries header tag
+    ///     Accessors for the Expires header tag
     /// </summary>
     public DateTime Expires { get; internal set; }
 
@@ -63,26 +66,4 @@ public sealed class GetUserPhotoResults
     ///     The status of the photo response
     /// </summary>
     public GetUserPhotoStatus Status { get; internal set; }
-
-    /// <summary>
-    /// Creates an image from the photo data
-    /// </summary>
-    /// <returns>The photo data as an Image</returns>
-    /*
-    public Image AsImage()
-    {
-        if (this.Photo == null || this.Photo.Length == 0)
-        {
-            throw new InvalidOperationException("Cannot create image when no photo data returned.");
-        }
-
-        Image img;
-        using (MemoryStream stream = new MemoryStream(this.Photo))
-        {
-            img = Image.FromStream(stream);
-        }
-
-        return img;
-    }
-    */
 }

@@ -23,16 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the view settings in a folder search operation.
 /// </summary>
+[PublicAPI]
 public sealed class ItemView : PagedView
 {
-    private ItemTraversal traversal;
-    private readonly OrderByCollection orderBy = new OrderByCollection();
-
     /// <summary>
     ///     Gets the name of the view XML element.
     /// </summary>
@@ -59,7 +59,7 @@ public sealed class ItemView : PagedView
     {
         base.InternalValidate(request);
 
-        EwsUtilities.ValidateEnumVersionValue(traversal, request.Service.RequestedServerVersion);
+        EwsUtilities.ValidateEnumVersionValue(Traversal, request.Service.RequestedServerVersion);
     }
 
     /// <summary>
@@ -71,15 +71,6 @@ public sealed class ItemView : PagedView
         writer.WriteAttributeValue(XmlAttributeNames.Traversal, Traversal);
     }
 
-    /// <summary>
-    ///     Internals the write search settings to XML.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="groupBy">The group by.</param>
-    internal override void InternalWriteSearchSettingsToXml(EwsServiceXmlWriter writer, Grouping groupBy)
-    {
-        base.InternalWriteSearchSettingsToXml(writer, groupBy);
-    }
 
     /// <summary>
     ///     Writes OrderBy property to XML.
@@ -87,7 +78,7 @@ public sealed class ItemView : PagedView
     /// <param name="writer">The writer</param>
     internal override void WriteOrderByToXml(EwsServiceXmlWriter writer)
     {
-        orderBy.WriteToXml(writer, XmlElementNames.SortOrder);
+        OrderBy.WriteToXml(writer, XmlElementNames.SortOrder);
     }
 
     /// <summary>
@@ -124,14 +115,10 @@ public sealed class ItemView : PagedView
     /// <summary>
     ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
     /// </summary>
-    public ItemTraversal Traversal
-    {
-        get => traversal;
-        set => traversal = value;
-    }
+    public ItemTraversal Traversal { get; set; }
 
     /// <summary>
     ///     Gets the properties against which the returned items should be ordered.
     /// </summary>
-    public OrderByCollection OrderBy => orderBy;
+    public OrderByCollection OrderBy { get; } = new();
 }

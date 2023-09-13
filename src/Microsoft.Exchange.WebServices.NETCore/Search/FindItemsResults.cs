@@ -25,21 +25,18 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of an item search operation.
 /// </summary>
 /// <typeparam name="TItem">The type of item returned by the search operation.</typeparam>
+[PublicAPI]
 public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     where TItem : Item
 {
-    private int totalCount;
-    private int? nextPageOffset;
-    private bool moreAvailable;
-    private readonly Collection<TItem> items = new Collection<TItem>();
-    private readonly Collection<HighlightTerm> highlightTerms = new Collection<HighlightTerm>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindItemsResults&lt;T&gt;" /> class.
     /// </summary>
@@ -50,40 +47,28 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     /// <summary>
     ///     Gets the total number of items matching the search criteria available in the searched folder.
     /// </summary>
-    public int TotalCount
-    {
-        get => totalCount;
-        internal set => totalCount = value;
-    }
+    public int TotalCount { get; internal set; }
 
     /// <summary>
     ///     Gets the offset that should be used with ItemView to retrieve the next page of items in a FindItems operation.
     /// </summary>
-    public int? NextPageOffset
-    {
-        get => nextPageOffset;
-        internal set => nextPageOffset = value;
-    }
+    public int? NextPageOffset { get; internal set; }
 
     /// <summary>
     ///     Gets a value indicating whether more items matching the search criteria
     ///     are available in the searched folder.
     /// </summary>
-    public bool MoreAvailable
-    {
-        get => moreAvailable;
-        internal set => moreAvailable = value;
-    }
+    public bool MoreAvailable { get; internal set; }
 
     /// <summary>
     ///     Gets a collection containing the items that were found by the search operation.
     /// </summary>
-    public Collection<TItem> Items => items;
+    public Collection<TItem> Items { get; } = new();
 
     /// <summary>
     ///     Gets a collection containing the highlight terms that were found by the search operation.
     /// </summary>
-    public Collection<HighlightTerm> HighlightTerms => highlightTerms;
+    public Collection<HighlightTerm> HighlightTerms { get; } = new();
 
 
     #region IEnumerable<T> Members
@@ -96,7 +81,7 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     /// </returns>
     public IEnumerator<TItem> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return Items.GetEnumerator();
     }
 
     #endregion
@@ -112,7 +97,7 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     /// </returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return Items.GetEnumerator();
     }
 
     #endregion

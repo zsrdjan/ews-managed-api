@@ -25,18 +25,16 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of a folder search operation.
 /// </summary>
+[PublicAPI]
 public sealed class FindFoldersResults : IEnumerable<Folder>
 {
-    private int totalCount;
-    private int? nextPageOffset;
-    private bool moreAvailable;
-    private readonly Collection<Folder> folders = new Collection<Folder>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindFoldersResults" /> class.
     /// </summary>
@@ -47,36 +45,24 @@ public sealed class FindFoldersResults : IEnumerable<Folder>
     /// <summary>
     ///     Gets the total number of folders matching the search criteria available in the searched folder.
     /// </summary>
-    public int TotalCount
-    {
-        get => totalCount;
-        internal set => totalCount = value;
-    }
+    public int TotalCount { get; internal set; }
 
     /// <summary>
     ///     Gets the offset that should be used with FolderView to retrieve the next page of folders in a FindFolders
     ///     operation.
     /// </summary>
-    public int? NextPageOffset
-    {
-        get => nextPageOffset;
-        internal set => nextPageOffset = value;
-    }
+    public int? NextPageOffset { get; internal set; }
 
     /// <summary>
     ///     Gets a value indicating whether more folders matching the search criteria.
     ///     are available in the searched folder.
     /// </summary>
-    public bool MoreAvailable
-    {
-        get => moreAvailable;
-        internal set => moreAvailable = value;
-    }
+    public bool MoreAvailable { get; internal set; }
 
     /// <summary>
     ///     Gets a collection containing the folders that were found by the search operation.
     /// </summary>
-    public Collection<Folder> Folders => folders;
+    public Collection<Folder> Folders { get; } = new();
 
 
     #region IEnumerable<Folder> Members
@@ -89,7 +75,7 @@ public sealed class FindFoldersResults : IEnumerable<Folder>
     /// </returns>
     public IEnumerator<Folder> GetEnumerator()
     {
-        return folders.GetEnumerator();
+        return Folders.GetEnumerator();
     }
 
     #endregion
@@ -105,7 +91,7 @@ public sealed class FindFoldersResults : IEnumerable<Folder>
     /// </returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return folders.GetEnumerator();
+        return Folders.GetEnumerator();
     }
 
     #endregion

@@ -25,17 +25,19 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a view settings that support paging in a search operation.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class PagedView : ViewBase
 {
-    private int pageSize;
-    private OffsetBasePoint offsetBasePoint = OffsetBasePoint.Beginning;
-    private int offset;
+    private int _pageSize;
+    private int _offset;
 
     /// <summary>
     ///     Write to XML.
@@ -81,15 +83,6 @@ public abstract class PagedView : ViewBase
     }
 
     /// <summary>
-    ///     Validates this view.
-    /// </summary>
-    /// <param name="request">The request using this view.</param>
-    internal override void InternalValidate(ServiceRequestBase request)
-    {
-        base.InternalValidate(request);
-    }
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="PagedView" /> class.
     /// </summary>
     /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
@@ -126,7 +119,7 @@ public abstract class PagedView : ViewBase
     /// </summary>
     public int PageSize
     {
-        get => pageSize;
+        get => _pageSize;
 
         set
         {
@@ -135,36 +128,30 @@ public abstract class PagedView : ViewBase
                 throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
             }
 
-            pageSize = value;
+            _pageSize = value;
         }
     }
 
     /// <summary>
     ///     Gets or sets the base point of the offset.
     /// </summary>
-    public OffsetBasePoint OffsetBasePoint
-    {
-        get => offsetBasePoint;
-        set => offsetBasePoint = value;
-    }
+    public OffsetBasePoint OffsetBasePoint { get; set; } = OffsetBasePoint.Beginning;
 
     /// <summary>
     ///     Gets or sets the offset.
     /// </summary>
     public int Offset
     {
-        get => offset;
+        get => _offset;
 
         set
         {
-            if (value >= 0)
-            {
-                offset = value;
-            }
-            else
+            if (value < 0)
             {
                 throw new ArgumentException(Strings.OffsetMustBeGreaterThanZero);
             }
+
+            _offset = value;
         }
     }
 }

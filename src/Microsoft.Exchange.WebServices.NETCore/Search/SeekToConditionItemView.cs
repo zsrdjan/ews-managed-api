@@ -23,19 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the view settings in a folder search operation.
 /// </summary>
+[PublicAPI]
 public sealed class SeekToConditionItemView : ViewBase
 {
-    private int pageSize;
-    private ItemTraversal traversal;
-    private SearchFilter condition;
-    private OffsetBasePoint offsetBasePoint = OffsetBasePoint.Beginning;
-    private readonly OrderByCollection orderBy = new OrderByCollection();
-    private ServiceObjectType serviceObjType;
+    private int _pageSize;
+    private SearchFilter _condition;
+    private ServiceObjectType _serviceObjType;
 
     /// <summary>
     ///     Gets the type of service object this view applies to.
@@ -43,7 +43,7 @@ public sealed class SeekToConditionItemView : ViewBase
     /// <returns>A ServiceObjectType value.</returns>
     internal override ServiceObjectType GetServiceObjectType()
     {
-        return serviceObjType;
+        return _serviceObjType;
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public sealed class SeekToConditionItemView : ViewBase
     /// <param name="objType">Service object type</param>
     internal void SetServiceObjectType(ServiceObjectType objType)
     {
-        serviceObjType = objType;
+        _serviceObjType = objType;
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public sealed class SeekToConditionItemView : ViewBase
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        if (serviceObjType == ServiceObjectType.Item)
+        if (_serviceObjType == ServiceObjectType.Item)
         {
             writer.WriteAttributeValue(XmlAttributeNames.Traversal, Traversal);
         }
@@ -76,14 +76,6 @@ public sealed class SeekToConditionItemView : ViewBase
         return XmlElementNames.SeekToConditionPageItemView;
     }
 
-    /// <summary>
-    ///     Validates this view.
-    /// </summary>
-    /// <param name="request">The request using this view.</param>
-    internal override void InternalValidate(ServiceRequestBase request)
-    {
-        base.InternalValidate(request);
-    }
 
     /// <summary>
     ///     Write to XML.
@@ -131,7 +123,7 @@ public sealed class SeekToConditionItemView : ViewBase
     /// <param name="writer">The writer</param>
     internal override void WriteOrderByToXml(EwsServiceXmlWriter writer)
     {
-        orderBy.WriteToXml(writer, XmlElementNames.SortOrder);
+        OrderBy.WriteToXml(writer, XmlElementNames.SortOrder);
     }
 
     /// <summary>
@@ -141,7 +133,7 @@ public sealed class SeekToConditionItemView : ViewBase
     /// <param name="groupBy">The group by clause.</param>
     internal override void WriteToXml(EwsServiceXmlWriter writer, Grouping groupBy)
     {
-        if (serviceObjType == ServiceObjectType.Item)
+        if (_serviceObjType == ServiceObjectType.Item)
         {
             GetPropertySetOrDefault().WriteToXml(writer, GetServiceObjectType());
         }
@@ -164,7 +156,7 @@ public sealed class SeekToConditionItemView : ViewBase
     {
         Condition = condition;
         PageSize = pageSize;
-        serviceObjType = ServiceObjectType.Item;
+        _serviceObjType = ServiceObjectType.Item;
     }
 
     /// <summary>
@@ -184,7 +176,7 @@ public sealed class SeekToConditionItemView : ViewBase
     /// </summary>
     public int PageSize
     {
-        get => pageSize;
+        get => _pageSize;
 
         set
         {
@@ -193,18 +185,14 @@ public sealed class SeekToConditionItemView : ViewBase
                 throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
             }
 
-            pageSize = value;
+            _pageSize = value;
         }
     }
 
     /// <summary>
     ///     Gets or sets the base point of the offset.
     /// </summary>
-    public OffsetBasePoint OffsetBasePoint
-    {
-        get => offsetBasePoint;
-        set => offsetBasePoint = value;
-    }
+    public OffsetBasePoint OffsetBasePoint { get; set; } = OffsetBasePoint.Beginning;
 
     /// <summary>
     ///     Gets or sets the condition for seek. Available search filter classes include SearchFilter.IsEqualTo,
@@ -213,30 +201,17 @@ public sealed class SeekToConditionItemView : ViewBase
     /// </summary>
     public SearchFilter Condition
     {
-        get => condition;
-
-        set
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException("Condition");
-            }
-
-            condition = value;
-        }
+        get => _condition;
+        set { _condition = value ?? throw new ArgumentNullException(nameof(Condition)); }
     }
 
     /// <summary>
     ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
     /// </summary>
-    public ItemTraversal Traversal
-    {
-        get => traversal;
-        set => traversal = value;
-    }
+    public ItemTraversal Traversal { get; set; }
 
     /// <summary>
     ///     Gets the properties against which the returned items should be ordered.
     /// </summary>
-    public OrderByCollection OrderBy => orderBy;
+    public OrderByCollection OrderBy { get; } = new();
 }

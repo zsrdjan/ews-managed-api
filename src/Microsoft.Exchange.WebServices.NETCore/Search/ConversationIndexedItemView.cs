@@ -23,17 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the view settings in a folder search operation.
 /// </summary>
+[PublicAPI]
 public sealed class ConversationIndexedItemView : PagedView
 {
-    private readonly OrderByCollection orderBy = new OrderByCollection();
-    private ConversationQueryTraversal? traversal;
-    private ViewFilter? viewFilter;
-
     /// <summary>
     ///     Gets the type of service object this view applies to.
     /// </summary>
@@ -79,23 +78,13 @@ public sealed class ConversationIndexedItemView : PagedView
 
         if (Traversal.HasValue)
         {
-            EwsUtilities.ValidateEnumVersionValue(traversal, request.Service.RequestedServerVersion);
+            EwsUtilities.ValidateEnumVersionValue(Traversal, request.Service.RequestedServerVersion);
         }
 
         if (ViewFilter.HasValue)
         {
-            EwsUtilities.ValidateEnumVersionValue(viewFilter, request.Service.RequestedServerVersion);
+            EwsUtilities.ValidateEnumVersionValue(ViewFilter, request.Service.RequestedServerVersion);
         }
-    }
-
-    /// <summary>
-    ///     Internals the write search settings to XML.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="groupBy">The group by.</param>
-    internal override void InternalWriteSearchSettingsToXml(EwsServiceXmlWriter writer, Grouping groupBy)
-    {
-        base.InternalWriteSearchSettingsToXml(writer, groupBy);
     }
 
     /// <summary>
@@ -104,7 +93,7 @@ public sealed class ConversationIndexedItemView : PagedView
     /// <param name="writer">The writer</param>
     internal override void WriteOrderByToXml(EwsServiceXmlWriter writer)
     {
-        orderBy.WriteToXml(writer, XmlElementNames.SortOrder);
+        OrderBy.WriteToXml(writer, XmlElementNames.SortOrder);
     }
 
     /// <summary>
@@ -155,23 +144,15 @@ public sealed class ConversationIndexedItemView : PagedView
     /// <summary>
     ///     Gets the properties against which the returned items should be ordered.
     /// </summary>
-    public OrderByCollection OrderBy => orderBy;
+    public OrderByCollection OrderBy { get; } = new();
 
     /// <summary>
     ///     Gets or sets the conversation query traversal mode.
     /// </summary>
-    public ConversationQueryTraversal? Traversal
-    {
-        get => traversal;
-        set => traversal = value;
-    }
+    public ConversationQueryTraversal? Traversal { get; set; }
 
     /// <summary>
     ///     Gets or sets the view filter.
     /// </summary>
-    public ViewFilter? ViewFilter
-    {
-        get => viewFilter;
-        set => viewFilter = value;
-    }
+    public ViewFilter? ViewFilter { get; set; }
 }

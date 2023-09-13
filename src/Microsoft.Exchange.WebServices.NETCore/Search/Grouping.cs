@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents grouping options in item search operations.
 /// </summary>
+[PublicAPI]
 public sealed class Grouping : ISelfValidate
 {
-    private SortDirection sortDirection = SortDirection.Ascending;
-    private PropertyDefinitionBase groupOn;
-    private PropertyDefinitionBase aggregateOn;
-    private AggregateType aggregateType;
-
     /// <summary>
     ///     Validates this grouping.
     /// </summary>
@@ -69,10 +67,10 @@ public sealed class Grouping : ISelfValidate
         EwsUtilities.ValidateParam(groupOn, "groupOn");
         EwsUtilities.ValidateParam(aggregateOn, "aggregateOn");
 
-        this.groupOn = groupOn;
-        this.sortDirection = sortDirection;
-        this.aggregateOn = aggregateOn;
-        this.aggregateType = aggregateType;
+        GroupOn = groupOn;
+        SortDirection = sortDirection;
+        AggregateOn = aggregateOn;
+        AggregateType = aggregateType;
     }
 
     /// <summary>
@@ -99,38 +97,22 @@ public sealed class Grouping : ISelfValidate
     /// <summary>
     ///     Gets or sets the sort direction.
     /// </summary>
-    public SortDirection SortDirection
-    {
-        get => sortDirection;
-        set => sortDirection = value;
-    }
+    public SortDirection SortDirection { get; set; } = SortDirection.Ascending;
 
     /// <summary>
     ///     Gets or sets the property to group on.
     /// </summary>
-    public PropertyDefinitionBase GroupOn
-    {
-        get => groupOn;
-        set => groupOn = value;
-    }
+    public PropertyDefinitionBase GroupOn { get; set; }
 
     /// <summary>
     ///     Gets or sets the property to aggregate on.
     /// </summary>
-    public PropertyDefinitionBase AggregateOn
-    {
-        get => aggregateOn;
-        set => aggregateOn = value;
-    }
+    public PropertyDefinitionBase AggregateOn { get; set; }
 
     /// <summary>
     ///     Gets or sets the types of aggregate to calculate.
     /// </summary>
-    public AggregateType AggregateType
-    {
-        get => aggregateType;
-        set => aggregateType = value;
-    }
+    public AggregateType AggregateType { get; set; }
 
 
     #region ISelfValidate Members
