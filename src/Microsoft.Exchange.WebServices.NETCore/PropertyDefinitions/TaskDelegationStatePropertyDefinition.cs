@@ -73,7 +73,7 @@ internal sealed class TaskDelegationStatePropertyDefinition : GenericPropertyDef
                 EwsUtilities.Assert(
                     false,
                     "TaskDelegationStatePropertyDefinition.Parse",
-                    string.Format("TaskDelegationStatePropertyDefinition.Parse(): value {0} cannot be handled.", value)
+                    $"TaskDelegationStatePropertyDefinition.Parse(): value {value} cannot be handled."
                 );
                 return null; // To keep the compiler happy
         }

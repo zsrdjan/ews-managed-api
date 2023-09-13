@@ -36,7 +36,7 @@ internal delegate PropertyDefinition GetPropertyDefinitionCallback(ExchangeVersi
 /// </summary>
 internal class ScopedDateTimePropertyDefinition : DateTimePropertyDefinition
 {
-    private readonly GetPropertyDefinitionCallback getPropertyDefinitionCallback;
+    private readonly GetPropertyDefinitionCallback _getPropertyDefinitionCallback;
 
     /// <summary>
     ///     Gets the time zone property to which to scope times.
@@ -45,7 +45,7 @@ internal class ScopedDateTimePropertyDefinition : DateTimePropertyDefinition
     /// <returns>The PropertyDefinition of the scoping time zone property.</returns>
     private PropertyDefinition GetTimeZoneProperty(ExchangeVersion version)
     {
-        var timeZoneProperty = getPropertyDefinitionCallback(version);
+        var timeZoneProperty = _getPropertyDefinitionCallback(version);
 
         EwsUtilities.Assert(
             timeZoneProperty != null,
@@ -79,7 +79,7 @@ internal class ScopedDateTimePropertyDefinition : DateTimePropertyDefinition
             "getPropertyDefinitionCallback is null."
         );
 
-        this.getPropertyDefinitionCallback = getPropertyDefinitionCallback;
+        _getPropertyDefinitionCallback = getPropertyDefinitionCallback;
     }
 
     /// <summary>
@@ -107,9 +107,8 @@ internal class ScopedDateTimePropertyDefinition : DateTimePropertyDefinition
         // Appointment, however, requires a custom scoping mechanism which is based on an
         // associated time zone property.
         var timeZoneProperty = GetTimeZoneProperty(service.RequestedServerVersion);
-        object timeZonePropertyValue = null;
 
-        var timeZonePropertyIsSet = propertyBag.TryGetProperty(timeZoneProperty, out timeZonePropertyValue);
+        propertyBag.TryGetProperty(timeZoneProperty, out var timeZonePropertyValue);
 
         if (timeZonePropertyValue != null && propertyBag.IsPropertyUpdated(timeZoneProperty))
         {

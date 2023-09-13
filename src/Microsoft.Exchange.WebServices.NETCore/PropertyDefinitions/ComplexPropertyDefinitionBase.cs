@@ -151,11 +151,8 @@ internal abstract class ComplexPropertyDefinitionBase : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        var complexProperty = (ComplexProperty)propertyBag[this];
+        var complexProperty = (ComplexProperty?)propertyBag[this];
 
-        if (complexProperty != null)
-        {
-            complexProperty.WriteToXml(writer, XmlElementName);
-        }
+        complexProperty?.WriteToXml(writer, XmlElementName);
     }
 }

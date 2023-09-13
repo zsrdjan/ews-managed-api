@@ -76,8 +76,7 @@ internal class StartTimeZonePropertyDefinition : TimeZonePropertyDefinition
         {
             if (writer.Service.RequestedServerVersion == ExchangeVersion.Exchange2007_SP1)
             {
-                var service = writer.Service as ExchangeService;
-                if (service != null && service.Exchange2007CompatibilityMode == false)
+                if (writer.Service is ExchangeService service && service.Exchange2007CompatibilityMode == false)
                 {
                     var meetingTimeZone = new MeetingTimeZone((TimeZoneInfo)value);
                     meetingTimeZone.WriteToXml(writer, XmlElementNames.MeetingTimeZone);
@@ -116,7 +115,7 @@ internal class StartTimeZonePropertyDefinition : TimeZonePropertyDefinition
     /// </returns>
     internal override bool HasFlag(PropertyDefinitionFlags flag, ExchangeVersion? version)
     {
-        if (version.HasValue && (version.Value == ExchangeVersion.Exchange2007_SP1))
+        if (version.HasValue && version.Value == ExchangeVersion.Exchange2007_SP1)
         {
             return AppointmentSchema.MeetingTimeZone.HasFlag(flag, version);
         }

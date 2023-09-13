@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-///     Represents response object property defintion.
+///     Represents response object property definition.
 /// </summary>
 internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
 {
@@ -75,43 +75,20 @@ internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
     /// <returns></returns>
     private static ResponseActions GetResponseAction(string responseActionString)
     {
-        var value = ResponseActions.None;
-
-        switch (responseActionString)
+        return responseActionString switch
         {
-            case XmlElementNames.AcceptItem:
-                value = ResponseActions.Accept;
-                break;
-            case XmlElementNames.TentativelyAcceptItem:
-                value = ResponseActions.TentativelyAccept;
-                break;
-            case XmlElementNames.DeclineItem:
-                value = ResponseActions.Decline;
-                break;
-            case XmlElementNames.ReplyToItem:
-                value = ResponseActions.Reply;
-                break;
-            case XmlElementNames.ForwardItem:
-                value = ResponseActions.Forward;
-                break;
-            case XmlElementNames.ReplyAllToItem:
-                value = ResponseActions.ReplyAll;
-                break;
-            case XmlElementNames.CancelCalendarItem:
-                value = ResponseActions.Cancel;
-                break;
-            case XmlElementNames.RemoveItem:
-                value = ResponseActions.RemoveFromCalendar;
-                break;
-            case XmlElementNames.SuppressReadReceipt:
-                value = ResponseActions.SuppressReadReceipt;
-                break;
-            case XmlElementNames.PostReplyItem:
-                value = ResponseActions.PostReply;
-                break;
-        }
-
-        return value;
+            XmlElementNames.AcceptItem => ResponseActions.Accept,
+            XmlElementNames.TentativelyAcceptItem => ResponseActions.TentativelyAccept,
+            XmlElementNames.DeclineItem => ResponseActions.Decline,
+            XmlElementNames.ReplyToItem => ResponseActions.Reply,
+            XmlElementNames.ForwardItem => ResponseActions.Forward,
+            XmlElementNames.ReplyAllToItem => ResponseActions.ReplyAll,
+            XmlElementNames.CancelCalendarItem => ResponseActions.Cancel,
+            XmlElementNames.RemoveItem => ResponseActions.RemoveFromCalendar,
+            XmlElementNames.SuppressReadReceipt => ResponseActions.SuppressReadReceipt,
+            XmlElementNames.PostReplyItem => ResponseActions.PostReply,
+            _ => ResponseActions.None,
+        };
     }
 
     /// <summary>

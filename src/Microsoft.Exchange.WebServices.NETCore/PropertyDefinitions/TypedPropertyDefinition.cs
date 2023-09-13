@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal abstract class TypedPropertyDefinition : PropertyDefinition
 {
-    private readonly bool isNullable;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="TypedPropertyDefinition" /> class.
     /// </summary>
@@ -41,7 +39,7 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     internal TypedPropertyDefinition(string xmlElementName, string uri, ExchangeVersion version)
         : base(xmlElementName, uri, version)
     {
-        isNullable = false;
+        IsNullable = false;
     }
 
     /// <summary>
@@ -78,7 +76,7 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     )
         : this(xmlElementName, uri, flags, version)
     {
-        this.isNullable = isNullable;
+        IsNullable = isNullable;
     }
 
     /// <summary>
@@ -91,7 +89,7 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     /// <summary>
     ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
     /// </summary>
-    internal override bool IsNullable => isNullable;
+    internal override bool IsNullable { get; }
 
     /// <summary>
     ///     Convert instance to string.

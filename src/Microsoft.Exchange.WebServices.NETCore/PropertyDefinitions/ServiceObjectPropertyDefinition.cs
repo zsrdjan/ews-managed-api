@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a property definition for a service object.
 /// </summary>
+[PublicAPI]
 public abstract class ServiceObjectPropertyDefinition : PropertyDefinitionBase
 {
-    private readonly string uri;
-
     /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
@@ -71,11 +72,11 @@ public abstract class ServiceObjectPropertyDefinition : PropertyDefinitionBase
     {
         EwsUtilities.Assert(!string.IsNullOrEmpty(uri), "ServiceObjectPropertyDefinition.ctor", "uri is null or empty");
 
-        this.uri = uri;
+        Uri = uri;
     }
 
     /// <summary>
     ///     Gets the URI of the property definition.
     /// </summary>
-    internal string Uri => uri;
+    internal string Uri { get; }
 }
