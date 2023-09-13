@@ -225,7 +225,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
         var securityTimestamp = new SecurityTimestamp(now, now.AddMinutes(5), "Timestamp");
 
         // Format the request string to send to the server, filling in all the bits.
-        var requestToSend = String.Format(
+        var requestToSend = string.Format(
             TokenRequest,
             windowsLiveUrl,
             windowsLiveId,

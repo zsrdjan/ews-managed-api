@@ -59,7 +59,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
 
         // query string parameter is only valid for Exchange2010 or higher
         //
-        if (!String.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2010)
+        if (!string.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2010)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -96,7 +96,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
             );
         }
 
-        if (!String.IsNullOrEmpty(queryString) && searchFilter != null)
+        if (!string.IsNullOrEmpty(queryString) && searchFilter != null)
         {
             throw new ServiceLocalException(Strings.BothSearchFilterAndQueryStringCannotBeSpecified);
         }

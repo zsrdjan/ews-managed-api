@@ -65,7 +65,7 @@ internal interface IEwsHttpWebResponse : IDisposable
     ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the header information returned with the
     ///     response.
     /// </returns>
-    HttpResponseHeaders Headers { get; }
+    HttpResponseHeaders? Headers { get; }
 
     /// <summary>
     ///     Gets the URI of the Internet resource that responded to the request.

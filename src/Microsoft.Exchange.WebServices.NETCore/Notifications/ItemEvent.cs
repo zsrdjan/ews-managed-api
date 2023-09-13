@@ -23,25 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an event that applies to an item.
 /// </summary>
+[PublicAPI]
 public sealed class ItemEvent : NotificationEvent
 {
-    /// <summary>
-    ///     Id of the item this event applies to.
-    /// </summary>
-    private ItemId itemId;
-
-    /// <summary>
-    ///     Id of the item that moved or copied. This is only meaningful when EventType
-    ///     is equal to either EventType.Moved or EventType.Copied. For all other event
-    ///     types, it's null.
-    /// </summary>
-    private ItemId oldItemId;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ItemEvent" /> class.
     /// </summary>
@@ -60,8 +51,8 @@ public sealed class ItemEvent : NotificationEvent
     {
         base.InternalLoadFromXml(reader);
 
-        itemId = new ItemId();
-        itemId.LoadFromXml(reader, reader.LocalName);
+        ItemId = new ItemId();
+        ItemId.LoadFromXml(reader, reader.LocalName);
 
         reader.Read();
 
@@ -72,28 +63,30 @@ public sealed class ItemEvent : NotificationEvent
         {
             case EventType.Moved:
             case EventType.Copied:
+            {
                 reader.Read();
 
-                oldItemId = new ItemId();
-                oldItemId.LoadFromXml(reader, reader.LocalName);
+                OldItemId = new ItemId();
+                OldItemId.LoadFromXml(reader, reader.LocalName);
 
                 reader.Read();
 
                 OldParentFolderId = new FolderId();
                 OldParentFolderId.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the Id of the item this event applies to.
     /// </summary>
-    public ItemId ItemId => itemId;
+    public ItemId ItemId { get; private set; }
 
     /// <summary>
     ///     Gets the Id of the item that was moved or copied. OldItemId is only meaningful
     ///     when EventType is equal to either EventType.Moved or EventType.Copied. For
     ///     all other event types, OldItemId is null.
     /// </summary>
-    public ItemId OldItemId => oldItemId;
+    public ItemId OldItemId { get; private set; }
 }

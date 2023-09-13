@@ -23,35 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an event as exposed by push and pull notifications.
 /// </summary>
+[PublicAPI]
 public abstract class NotificationEvent
 {
-    /// <summary>
-    ///     Type of this event.
-    /// </summary>
-    private readonly EventType eventType;
-
-    /// <summary>
-    ///     Date and time when the event occurred.
-    /// </summary>
-    private readonly DateTime timestamp;
-
-    /// <summary>
-    ///     Id of parent folder of the item or folder this event applies to.
-    /// </summary>
-    private FolderId parentFolderId;
-
-    /// <summary>
-    ///     Id of the old prarent foldero of the item or folder this event applies to.
-    ///     This property is only meaningful when EventType is equal to either EventType.Moved
-    ///     or EventType.Copied. For all other event types, oldParentFolderId will be null.
-    /// </summary>
-    private FolderId oldParentFolderId;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="NotificationEvent" /> class.
     /// </summary>
@@ -59,8 +40,8 @@ public abstract class NotificationEvent
     /// <param name="timestamp">The event timestamp.</param>
     internal NotificationEvent(EventType eventType, DateTime timestamp)
     {
-        this.eventType = eventType;
-        this.timestamp = timestamp;
+        EventType = eventType;
+        TimeStamp = timestamp;
     }
 
     /// <summary>
@@ -86,30 +67,22 @@ public abstract class NotificationEvent
     /// <summary>
     ///     Gets the type of this event.
     /// </summary>
-    public EventType EventType => eventType;
+    public EventType EventType { get; }
 
     /// <summary>
     ///     Gets the date and time when the event occurred.
     /// </summary>
-    public DateTime TimeStamp => timestamp;
+    public DateTime TimeStamp { get; }
 
     /// <summary>
-    ///     Gets the Id of the parent folder of the item or folder this event applie to.
+    ///     Gets the Id of the parent folder of the item or folder this event applies to.
     /// </summary>
-    public FolderId ParentFolderId
-    {
-        get => parentFolderId;
-        internal set => parentFolderId = value;
-    }
+    public FolderId ParentFolderId { get; internal set; }
 
     /// <summary>
     ///     Gets the Id of the old parent folder of the item or folder this event applies to.
     ///     OldParentFolderId is only meaningful when EventType is equal to either EventType.Moved or
     ///     EventType.Copied. For all other event types, OldParentFolderId is null.
     /// </summary>
-    public FolderId OldParentFolderId
-    {
-        get => oldParentFolderId;
-        internal set => oldParentFolderId = value;
-    }
+    public FolderId OldParentFolderId { get; internal set; }
 }

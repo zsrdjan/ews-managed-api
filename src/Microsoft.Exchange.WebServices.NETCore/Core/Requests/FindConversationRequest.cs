@@ -111,7 +111,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
 
         // query string parameter is only valid for Exchange2013 or higher
         //
-        if (!String.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (!string.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(

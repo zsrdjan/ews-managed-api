@@ -75,7 +75,7 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.URL, Url.ToString());
 
-        if (Service.RequestedServerVersion >= ExchangeVersion.Exchange2013 && !String.IsNullOrEmpty(callerData))
+        if (Service.RequestedServerVersion >= ExchangeVersion.Exchange2013 && !string.IsNullOrEmpty(callerData))
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.CallerData, CallerData);
         }

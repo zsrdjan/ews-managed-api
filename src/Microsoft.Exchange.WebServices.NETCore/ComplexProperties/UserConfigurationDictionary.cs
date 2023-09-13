@@ -207,12 +207,12 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         ref string valueAsString
     )
     {
-        if (dictionaryObject is Boolean)
+        if (dictionaryObject is bool)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.Boolean;
             valueAsString = EwsUtilities.BoolToXsBool((bool)dictionaryObject);
         }
-        else if (dictionaryObject is Byte)
+        else if (dictionaryObject is byte)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.Byte;
             valueAsString = ((byte)dictionaryObject).ToString();
@@ -222,27 +222,27 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             dictionaryObjectType = UserConfigurationDictionaryObjectType.DateTime;
             valueAsString = service.ConvertDateTimeToUniversalDateTimeString((DateTime)dictionaryObject);
         }
-        else if (dictionaryObject is Int32)
+        else if (dictionaryObject is int)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.Integer32;
             valueAsString = ((int)dictionaryObject).ToString();
         }
-        else if (dictionaryObject is Int64)
+        else if (dictionaryObject is long)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.Integer64;
             valueAsString = ((long)dictionaryObject).ToString();
         }
-        else if (dictionaryObject is String)
+        else if (dictionaryObject is string)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.String;
             valueAsString = (string)dictionaryObject;
         }
-        else if (dictionaryObject is UInt32)
+        else if (dictionaryObject is uint)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.UnsignedInteger32;
             valueAsString = ((uint)dictionaryObject).ToString();
         }
-        else if (dictionaryObject is UInt64)
+        else if (dictionaryObject is ulong)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.UnsignedInteger64;
             valueAsString = ((ulong)dictionaryObject).ToString();
@@ -715,8 +715,8 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
 
     static readonly Type[] ValidTypes =
     {
-        typeof(Boolean), typeof(Byte), typeof(DateTime), typeof(Int32), typeof(Int64), typeof(String), typeof(UInt32),
-        typeof(UInt64)
+        typeof(bool), typeof(byte), typeof(DateTime), typeof(int), typeof(long), typeof(string), typeof(uint),
+        typeof(ulong)
     };
 
     /// <summary>

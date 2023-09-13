@@ -52,7 +52,7 @@ internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <param name="propertyBag">The property bag.</param>
-    internal override sealed void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
+    internal sealed override void LoadPropertyValueFromXml(EwsServiceXmlReader reader, PropertyBag propertyBag)
     {
         var meetingTimeZone = new MeetingTimeZone();
         meetingTimeZone.LoadFromXml(reader, XmlElementName);
@@ -72,12 +72,9 @@ internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
         bool isUpdateOperation
     )
     {
-        var value = (MeetingTimeZone)propertyBag[this];
+        var value = (MeetingTimeZone?)propertyBag[this];
 
-        if (value != null)
-        {
-            value.WriteToXml(writer, XmlElementName);
-        }
+        value?.WriteToXml(writer, XmlElementName);
     }
 
     /// <summary>

@@ -46,7 +46,7 @@ public sealed class EnhancedLocation : ComplexProperty
     /// </summary>
     /// <param name="displayName">The location DisplayName.</param>
     public EnhancedLocation(string displayName)
-        : this(displayName, String.Empty, new PersonaPostalAddress())
+        : this(displayName, string.Empty, new PersonaPostalAddress())
     {
     }
 

@@ -44,9 +44,9 @@ internal class MapiTypeConverterMapEntry
 
             map.Add(typeof(bool), false);
             map.Add(typeof(byte[]), null);
-            map.Add(typeof(Int16), (Int16)0);
-            map.Add(typeof(Int32), 0);
-            map.Add(typeof(Int64), (Int64)0);
+            map.Add(typeof(short), (short)0);
+            map.Add(typeof(int), 0);
+            map.Add(typeof(long), (long)0);
             map.Add(typeof(float), (float)0.0);
             map.Add(typeof(double), 0.0);
             map.Add(typeof(DateTime), DateTime.MinValue);

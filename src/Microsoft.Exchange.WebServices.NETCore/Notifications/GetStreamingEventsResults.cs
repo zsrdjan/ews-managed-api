@@ -49,11 +49,6 @@ internal sealed class GetStreamingEventsResults
     }
 
     /// <summary>
-    ///     Collection of notification events.
-    /// </summary>
-    private readonly Collection<NotificationGroup> events = new Collection<NotificationGroup>();
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="GetStreamingEventsResults" /> class.
     /// </summary>
     internal GetStreamingEventsResults()
@@ -70,13 +65,15 @@ internal sealed class GetStreamingEventsResults
 
         do
         {
-            var notifications = new NotificationGroup();
-            notifications.SubscriptionId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SubscriptionId);
-            notifications.Events = new Collection<NotificationEvent>();
+            var notifications = new NotificationGroup
+            {
+                SubscriptionId = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SubscriptionId),
+                Events = new Collection<NotificationEvent>(),
+            };
 
             lock (this)
             {
-                events.Add(notifications);
+                Notifications.Add(notifications);
             }
 
             do
@@ -86,9 +83,8 @@ internal sealed class GetStreamingEventsResults
                 if (reader.IsStartElement())
                 {
                     var eventElementName = reader.LocalName;
-                    EventType eventType;
 
-                    if (GetEventsResults.XmlElementNameToEventTypeMap.TryGetValue(eventElementName, out eventType))
+                    if (GetEventsResults.XmlElementNameToEventTypeMap.TryGetValue(eventElementName, out var eventType))
                     {
                         if (eventType == EventType.Status)
                         {
@@ -118,7 +114,7 @@ internal sealed class GetStreamingEventsResults
     /// <param name="eventElementName">Name of the event XML element.</param>
     /// <param name="eventType">Type of the event.</param>
     /// <param name="notifications">Collection of notifications</param>
-    private void LoadNotificationEventFromXml(
+    private static void LoadNotificationEventFromXml(
         EwsServiceXmlReader reader,
         string eventElementName,
         EventType eventType,
@@ -148,5 +144,5 @@ internal sealed class GetStreamingEventsResults
     ///     Gets the notification collection.
     /// </summary>
     /// <value>The notification collection.</value>
-    internal Collection<NotificationGroup> Notifications => events;
+    internal Collection<NotificationGroup> Notifications { get; } = new();
 }

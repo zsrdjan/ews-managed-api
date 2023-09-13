@@ -701,7 +701,7 @@ public abstract class ExchangeServiceBase
     ///     Gets or sets the credentials used to authenticate with the Exchange Web Services. Setting the Credentials property
     ///     automatically sets the UseDefaultCredentials to false.
     /// </summary>
-    public ExchangeCredentials Credentials
+    public ExchangeCredentials? Credentials
     {
         get => credentials;
 

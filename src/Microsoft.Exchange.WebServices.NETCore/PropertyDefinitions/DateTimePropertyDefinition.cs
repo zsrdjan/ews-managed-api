@@ -159,19 +159,14 @@ internal class DateTimePropertyDefinition : PropertyDefinition
     )
     {
         var dateTime = (DateTime)value;
-        DateTime convertedDateTime;
 
         // If the date/time is unspecified, we may need to scope it to time zone.
         if (dateTime.Kind == DateTimeKind.Unspecified)
         {
-            convertedDateTime = ScopeToTimeZone(service, (DateTime)value, propertyBag, isUpdateOperation);
-        }
-        else
-        {
-            convertedDateTime = dateTime;
+            return ScopeToTimeZone(service, (DateTime)value, propertyBag, isUpdateOperation);
         }
 
-        return convertedDateTime;
+        return dateTime;
     }
 
     /// <summary>

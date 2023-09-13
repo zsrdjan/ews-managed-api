@@ -94,5 +94,5 @@ public enum TraceFlags : long
     /// <summary>
     ///     All trace types enabled.
     /// </summary>
-    All = Int64.MaxValue,
+    All = long.MaxValue,
 }

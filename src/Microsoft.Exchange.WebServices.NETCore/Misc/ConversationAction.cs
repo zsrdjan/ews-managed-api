@@ -129,7 +129,7 @@ internal class ConversationAction
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ConversationAction);
         try
         {
-            var actionValue = String.Empty;
+            var actionValue = string.Empty;
             switch (Action)
             {
                 case ConversationActionType.AlwaysCategorize:

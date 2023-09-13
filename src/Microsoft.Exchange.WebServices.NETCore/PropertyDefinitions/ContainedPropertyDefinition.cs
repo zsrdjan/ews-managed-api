@@ -82,7 +82,7 @@ internal class ContainedPropertyDefinition<TComplexProperty> : ComplexPropertyDe
         bool isUpdateOperation
     )
     {
-        var complexProperty = (ComplexProperty)propertyBag[this];
+        var complexProperty = (ComplexProperty?)propertyBag[this];
 
         if (complexProperty != null)
         {

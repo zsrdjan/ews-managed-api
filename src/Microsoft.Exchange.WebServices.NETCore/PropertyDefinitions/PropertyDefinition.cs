@@ -23,17 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the definition of a folder or item property.
 /// </summary>
+[PublicAPI]
 public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
 {
-    private readonly string xmlElementName;
-    private readonly PropertyDefinitionFlags flags;
-    private string name;
-    private readonly ExchangeVersion version;
+    private readonly PropertyDefinitionFlags _flags;
+    private string _name;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PropertyDefinition" /> class.
@@ -44,9 +45,9 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     internal PropertyDefinition(string xmlElementName, string uri, ExchangeVersion version)
         : base(uri)
     {
-        this.xmlElementName = xmlElementName;
-        flags = PropertyDefinitionFlags.None;
-        this.version = version;
+        XmlElementName = xmlElementName;
+        _flags = PropertyDefinitionFlags.None;
+        Version = version;
     }
 
     /// <summary>
@@ -57,9 +58,9 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     /// <param name="version">The version.</param>
     internal PropertyDefinition(string xmlElementName, PropertyDefinitionFlags flags, ExchangeVersion version)
     {
-        this.xmlElementName = xmlElementName;
-        this.flags = flags;
-        this.version = version;
+        XmlElementName = xmlElementName;
+        _flags = flags;
+        Version = version;
     }
 
     /// <summary>
@@ -77,7 +78,7 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     )
         : this(xmlElementName, uri, version)
     {
-        this.flags = flags;
+        _flags = flags;
     }
 
     /// <summary>
@@ -102,7 +103,7 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     /// </returns>
     internal virtual bool HasFlag(PropertyDefinitionFlags flag, ExchangeVersion? version)
     {
-        return (flags & flag) == flag;
+        return (_flags & flag) == flag;
     }
 
     /// <summary>
@@ -134,7 +135,7 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     ///     Gets the minimum Exchange version that supports this property.
     /// </summary>
     /// <value>The version.</value>
-    public override ExchangeVersion Version => version;
+    public override ExchangeVersion Version { get; }
 
     /// <summary>
     ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
@@ -164,7 +165,7 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
-    internal string XmlElementName => xmlElementName;
+    internal string XmlElementName { get; }
 
     /// <summary>
     ///     Gets the name of the property.
@@ -174,15 +175,15 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
         get
         {
             // Name is initialized at read time for all PropertyDefinition instances using Reflection.
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(_name))
             {
                 ServiceObjectSchema.InitializeSchemaPropertyNames();
             }
 
-            return name;
+            return _name;
         }
 
-        internal set => name = value;
+        internal set => _name = value;
     }
 
     /// <summary>

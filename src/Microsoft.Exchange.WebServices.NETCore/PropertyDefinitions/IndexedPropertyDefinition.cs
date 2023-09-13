@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an indexed property definition.
 /// </summary>
+[PublicAPI]
 public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
 {
-    /// <summary>
-    ///     Index attribute of IndexedFieldURI element.
-    /// </summary>
-    private readonly string index;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="IndexedPropertyDefinition" /> class.
     /// </summary>
@@ -43,7 +41,7 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     internal IndexedPropertyDefinition(string uri, string index)
         : base(uri)
     {
-        this.index = index;
+        Index = index;
     }
 
     /// <summary>
@@ -52,19 +50,19 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     /// <param name="idxPropDef1">First indexed property definition.</param>
     /// <param name="idxPropDef2">Second indexed property definition.</param>
     /// <returns>True if indexed property definitions are equal.</returns>
-    internal static bool IsEqualTo(IndexedPropertyDefinition idxPropDef1, IndexedPropertyDefinition idxPropDef2)
+    internal static bool IsEqualTo(IndexedPropertyDefinition? idxPropDef1, IndexedPropertyDefinition? idxPropDef2)
     {
         return ReferenceEquals(idxPropDef1, idxPropDef2) ||
-               ((object)idxPropDef1 != null &&
-                (object)idxPropDef2 != null &&
+               (idxPropDef1 is not null &&
+                idxPropDef2 is not null &&
                 idxPropDef1.Uri == idxPropDef2.Uri &&
                 idxPropDef1.Index == idxPropDef2.Index);
     }
 
     /// <summary>
-    ///     Gets the index of the property.
+    ///     Gets the index attribute of IndexedFieldURI element.
     /// </summary>
-    public string Index => index;
+    public string Index { get; }
 
     /// <summary>
     ///     Writes the attributes to XML.
@@ -94,7 +92,7 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     /// </returns>
     internal override string GetPrintableName()
     {
-        return string.Format("{0}:{1}", Uri, Index);
+        return $"{Uri}:{Index}";
     }
 
     /// <summary>
@@ -124,7 +122,7 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     /// </summary>
     /// <param name="obj">The object to check for equality.</param>
     /// <returns>True if the properties definitions define the same indexed property.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var propertyDefinition = obj as IndexedPropertyDefinition;
         return IsEqualTo(propertyDefinition, this);

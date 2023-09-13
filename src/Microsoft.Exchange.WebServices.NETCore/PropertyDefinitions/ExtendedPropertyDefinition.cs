@@ -25,11 +25,14 @@
 
 using System.Text;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the definition of an extended property.
 /// </summary>
+[PublicAPI]
 public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
 {
     #region Constants
@@ -51,9 +54,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     private DefaultExtendedPropertySet? _propertySet;
     private Guid? _propertySetId;
     private int? _tag;
-    private string _name;
     private int? _id;
-    private MapiPropertyType _mapiType;
 
     #endregion
 
@@ -63,7 +64,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// </summary>
     internal ExtendedPropertyDefinition()
     {
-        _mapiType = MapiPropertyType.String;
+        MapiType = MapiPropertyType.String;
     }
 
     /// <summary>
@@ -73,7 +74,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     internal ExtendedPropertyDefinition(MapiPropertyType mapiType)
         : this()
     {
-        _mapiType = mapiType;
+        MapiType = mapiType;
     }
 
     /// <summary>
@@ -84,7 +85,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     public ExtendedPropertyDefinition(int tag, MapiPropertyType mapiType)
         : this(mapiType)
     {
-        if (tag < 0 || tag > UInt16.MaxValue)
+        if (tag < 0 || tag > ushort.MaxValue)
         {
             throw new ArgumentOutOfRangeException(nameof(tag), Strings.TagValueIsOutOfRange);
         }
@@ -104,7 +105,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
         EwsUtilities.ValidateParam(name, nameof(name));
 
         _propertySet = propertySet;
-        _name = name;
+        Name = name;
     }
 
     /// <summary>
@@ -132,7 +133,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
         EwsUtilities.ValidateParam(name, nameof(name));
 
         _propertySetId = propertySetId;
-        _name = name;
+        Name = name;
     }
 
     /// <summary>
@@ -154,11 +155,11 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <param name="extPropDef1">First extended property definition.</param>
     /// <param name="extPropDef2">Second extended property definition.</param>
     /// <returns>True if extended property definitions are equal.</returns>
-    internal static bool IsEqualTo(ExtendedPropertyDefinition extPropDef1, ExtendedPropertyDefinition extPropDef2)
+    internal static bool IsEqualTo(ExtendedPropertyDefinition? extPropDef1, ExtendedPropertyDefinition? extPropDef2)
     {
         return ReferenceEquals(extPropDef1, extPropDef2) ||
-               ((object)extPropDef1 != null &&
-                (object)extPropDef2 != null &&
+               (extPropDef1 is not null &&
+                extPropDef2 is not null &&
                 extPropDef1.Id == extPropDef2.Id &&
                 extPropDef1.MapiType == extPropDef2.MapiType &&
                 extPropDef1.Tag == extPropDef2.Tag &&
@@ -203,9 +204,9 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
             writer.WriteAttributeValue(XmlAttributeNames.PropertyTag, _tag.Value);
         }
 
-        if (!string.IsNullOrEmpty(_name))
+        if (!string.IsNullOrEmpty(Name))
         {
-            writer.WriteAttributeValue(XmlAttributeNames.PropertyName, _name);
+            writer.WriteAttributeValue(XmlAttributeNames.PropertyName, Name);
         }
 
         if (_id.HasValue)
@@ -213,7 +214,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
             writer.WriteAttributeValue(XmlAttributeNames.PropertyId, _id.Value);
         }
 
-        writer.WriteAttributeValue(XmlAttributeNames.PropertyType, _mapiType);
+        writer.WriteAttributeValue(XmlAttributeNames.PropertyType, MapiType);
     }
 
     /// <summary>
@@ -222,9 +223,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <param name="reader">The reader.</param>
     internal void LoadFromXml(EwsServiceXmlReader reader)
     {
-        string attributeValue;
-
-        attributeValue = reader.ReadAttributeValue(XmlAttributeNames.DistinguishedPropertySetId);
+        var attributeValue = reader.ReadAttributeValue(XmlAttributeNames.DistinguishedPropertySetId);
         if (!string.IsNullOrEmpty(attributeValue))
         {
             _propertySet = (DefaultExtendedPropertySet)Enum.Parse(
@@ -246,7 +245,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
             _tag = Convert.ToUInt16(attributeValue, 16);
         }
 
-        _name = reader.ReadAttributeValue(XmlAttributeNames.PropertyName);
+        Name = reader.ReadAttributeValue(XmlAttributeNames.PropertyName);
 
         attributeValue = reader.ReadAttributeValue(XmlAttributeNames.PropertyId);
         if (!string.IsNullOrEmpty(attributeValue))
@@ -254,7 +253,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
             _id = int.Parse(attributeValue);
         }
 
-        _mapiType = reader.ReadAttributeValue<MapiPropertyType>(XmlAttributeNames.PropertyType);
+        MapiType = reader.ReadAttributeValue<MapiPropertyType>(XmlAttributeNames.PropertyType);
     }
 
     /// <summary>
@@ -284,7 +283,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// </summary>
     /// <param name="obj">The object to check for equality.</param>
     /// <returns>True if the properties definitions define the same extended property.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var propertyDefinition = obj as ExtendedPropertyDefinition;
         return IsEqualTo(propertyDefinition, this);
@@ -310,14 +309,14 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     internal override string GetPrintableName()
     {
         var sb = new StringBuilder();
-        sb.Append("{");
+        sb.Append('{');
         sb.Append(FormatField(NameFieldName, Name));
         sb.Append(FormatField<MapiPropertyType?>(MapiTypeFieldName, MapiType));
         sb.Append(FormatField(IdFieldName, Id));
         sb.Append(FormatField(PropertySetFieldName, PropertySet));
         sb.Append(FormatField(PropertySetIdFieldName, PropertySetId));
         sb.Append(FormatField(TagFieldName, Tag));
-        sb.Append("}");
+        sb.Append('}');
         return sb.ToString();
     }
 
@@ -328,9 +327,9 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <param name="name">The name.</param>
     /// <param name="fieldValue">The field value.</param>
     /// <returns>Formatted value.</returns>
-    internal string FormatField<T>(string name, T fieldValue)
+    internal static string FormatField<T>(string name, T fieldValue)
     {
-        return (fieldValue != null) ? string.Format(FieldFormat, name, fieldValue.ToString()) : string.Empty;
+        return fieldValue != null ? string.Format(FieldFormat, name, fieldValue.ToString()) : string.Empty;
     }
 
     /// <summary>
@@ -351,7 +350,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <summary>
     ///     Gets the name of the extended property.
     /// </summary>
-    public string Name => _name;
+    public string Name { get; private set; }
 
     /// <summary>
     ///     Gets the Id of the extended property.
@@ -361,7 +360,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <summary>
     ///     Gets the MAPI type of the extended property.
     /// </summary>
-    public MapiPropertyType MapiType => _mapiType;
+    public MapiPropertyType MapiType { get; private set; }
 
     /// <summary>
     ///     Gets the property type.

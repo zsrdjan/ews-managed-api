@@ -99,26 +99,22 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
             // MemoryStream.
             if (Service.IsTraceEnabledFor(TraceFlags.EwsResponse))
             {
-                using (var memoryStream = new MemoryStream())
+                using var memoryStream = new MemoryStream();
+                await using (var serviceResponseStream = await GetResponseStream(response))
                 {
-                    using (var serviceResponseStream = await GetResponseStream(response))
-                    {
-                        // Copy response to in-memory stream and reset position to start.
-                        EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
-                        memoryStream.Position = 0;
-                    }
-
-                    TraceResponseXml(response, memoryStream);
-
-                    serviceResponse = ReadResponseXml(memoryStream, response.Headers);
+                    // Copy response to in-memory stream and reset position to start.
+                    EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
+                    memoryStream.Position = 0;
                 }
+
+                TraceResponseXml(response, memoryStream);
+
+                serviceResponse = ReadResponseXml(memoryStream, response.Headers);
             }
             else
             {
-                using (var responseStream = await GetResponseStream(response))
-                {
-                    serviceResponse = ReadResponseXml(responseStream, response.Headers);
-                }
+                await using var responseStream = await GetResponseStream(response);
+                serviceResponse = ReadResponseXml(responseStream, response.Headers);
             }
         }
         catch (EwsHttpClientException e)
@@ -151,23 +147,11 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
     ///     Reads the response XML.
     /// </summary>
     /// <param name="responseStream">The response stream.</param>
-    /// <returns></returns>
-    private object ReadResponseXml(Stream responseStream)
-    {
-        return ReadResponseXml(responseStream, null);
-    }
-
-    /// <summary>
-    ///     Reads the response XML.
-    /// </summary>
-    /// <param name="responseStream">The response stream.</param>
     /// <param name="responseHeaders">The HTTP response headers</param>
     /// <returns></returns>
-    private object ReadResponseXml(Stream responseStream, HttpResponseHeaders responseHeaders)
+    private object ReadResponseXml(Stream responseStream, HttpResponseHeaders? responseHeaders = null)
     {
-        object serviceResponse;
         var ewsXmlReader = new EwsServiceXmlReader(responseStream, Service);
-        serviceResponse = ReadResponse(ewsXmlReader, responseHeaders);
-        return serviceResponse;
+        return ReadResponse(ewsXmlReader, responseHeaders);
     }
 }

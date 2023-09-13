@@ -23,22 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an event that applies to a folder.
 /// </summary>
+[PublicAPI]
 public class FolderEvent : NotificationEvent
 {
-    private FolderId folderId;
-    private FolderId oldFolderId;
-
-    /// <summary>
-    ///     The new number of unread messages. This is is only meaningful when EventType
-    ///     is equal to EventType.Modified. For all other event types, it's null.
-    /// </summary>
-    private int? unreadCount;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="FolderEvent" /> class.
     /// </summary>
@@ -57,8 +51,8 @@ public class FolderEvent : NotificationEvent
     {
         base.InternalLoadFromXml(reader);
 
-        folderId = new FolderId();
-        folderId.LoadFromXml(reader, reader.LocalName);
+        FolderId = new FolderId();
+        FolderId.LoadFromXml(reader, reader.LocalName);
 
         reader.Read();
 
@@ -69,45 +63,48 @@ public class FolderEvent : NotificationEvent
         {
             case EventType.Moved:
             case EventType.Copied:
+            {
                 reader.Read();
 
-                oldFolderId = new FolderId();
-                oldFolderId.LoadFromXml(reader, reader.LocalName);
+                OldFolderId = new FolderId();
+                OldFolderId.LoadFromXml(reader, reader.LocalName);
 
                 reader.Read();
 
                 OldParentFolderId = new FolderId();
                 OldParentFolderId.LoadFromXml(reader, reader.LocalName);
                 break;
-
+            }
             case EventType.Modified:
+            {
                 reader.Read();
                 if (reader.IsStartElement())
                 {
                     reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.UnreadCount);
-                    unreadCount = int.Parse(reader.ReadValue());
+                    UnreadCount = int.Parse(reader.ReadValue());
                 }
 
                 break;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the Id of the folder this event applies to.
     /// </summary>
-    public FolderId FolderId => folderId;
+    public FolderId FolderId { get; private set; }
 
     /// <summary>
     ///     Gets the Id of the folder that was moved or copied. OldFolderId is only meaningful
     ///     when EventType is equal to either EventType.Moved or EventType.Copied. For all
     ///     other event types, OldFolderId is null.
     /// </summary>
-    public FolderId OldFolderId => oldFolderId;
+    public FolderId OldFolderId { get; private set; }
 
     /// <summary>
     ///     Gets the new number of unread messages. This is is only meaningful when
     ///     EventType is equal to EventType.Modified. For all other event types,
     ///     UnreadCount is null.
     /// </summary>
-    public int? UnreadCount => unreadCount;
+    public int? UnreadCount { get; private set; }
 }

@@ -100,11 +100,11 @@ internal class MapiTypeConverter
 
                 map.Add(MapiPropertyType.CLSIDArray, clsidArrayConverter);
 
-                map.Add(MapiPropertyType.Currency, new MapiTypeConverterMapEntry(typeof(Int64)));
+                map.Add(MapiPropertyType.Currency, new MapiTypeConverterMapEntry(typeof(long)));
 
                 map.Add(
                     MapiPropertyType.CurrencyArray,
-                    new MapiTypeConverterMapEntry(typeof(Int64))
+                    new MapiTypeConverterMapEntry(typeof(long))
                     {
                         IsArray = true
                     }
@@ -120,7 +120,7 @@ internal class MapiTypeConverter
                     }
                 );
 
-                map.Add(MapiPropertyType.Error, new MapiTypeConverterMapEntry(typeof(Int32)));
+                map.Add(MapiPropertyType.Error, new MapiTypeConverterMapEntry(typeof(int)));
 
                 map.Add(MapiPropertyType.Float, new MapiTypeConverterMapEntry(typeof(float)));
 
@@ -134,7 +134,7 @@ internal class MapiTypeConverter
 
                 map.Add(
                     MapiPropertyType.Integer,
-                    new MapiTypeConverterMapEntry(typeof(Int32))
+                    new MapiTypeConverterMapEntry(typeof(int))
                     {
                         Parse = s => ParseMapiIntegerValue(s)
                     }
@@ -142,17 +142,17 @@ internal class MapiTypeConverter
 
                 map.Add(
                     MapiPropertyType.IntegerArray,
-                    new MapiTypeConverterMapEntry(typeof(Int32))
+                    new MapiTypeConverterMapEntry(typeof(int))
                     {
                         IsArray = true
                     }
                 );
 
-                map.Add(MapiPropertyType.Long, new MapiTypeConverterMapEntry(typeof(Int64)));
+                map.Add(MapiPropertyType.Long, new MapiTypeConverterMapEntry(typeof(long)));
 
                 map.Add(
                     MapiPropertyType.LongArray,
-                    new MapiTypeConverterMapEntry(typeof(Int64))
+                    new MapiTypeConverterMapEntry(typeof(long))
                     {
                         IsArray = true
                     }
@@ -173,11 +173,11 @@ internal class MapiTypeConverter
 
                 map.Add(MapiPropertyType.ObjectArray, objectArrayConverter);
 
-                map.Add(MapiPropertyType.Short, new MapiTypeConverterMapEntry(typeof(Int16)));
+                map.Add(MapiPropertyType.Short, new MapiTypeConverterMapEntry(typeof(short)));
 
                 map.Add(
                     MapiPropertyType.ShortArray,
-                    new MapiTypeConverterMapEntry(typeof(Int16))
+                    new MapiTypeConverterMapEntry(typeof(short))
                     {
                         IsArray = true
                     }
@@ -291,7 +291,7 @@ internal class MapiTypeConverter
     internal static object ParseMapiIntegerValue(string s)
     {
         int intValue;
-        if (Int32.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue))
+        if (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue))
         {
             return intValue;
         }

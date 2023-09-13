@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a pull subscription.
 /// </summary>
+[PublicAPI]
 public sealed class PullSubscription : SubscriptionBase
 {
-    private bool? moreEventsAvailable;
+    private bool? _moreEventsAvailable;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PullSubscription" /> class.
@@ -51,7 +54,7 @@ public sealed class PullSubscription : SubscriptionBase
         var results = await Service.GetEvents(Id, Watermark, token);
 
         Watermark = results.NewWatermark;
-        moreEventsAvailable = results.MoreEventsAvailable;
+        _moreEventsAvailable = results.MoreEventsAvailable;
 
         return results;
     }
@@ -68,5 +71,5 @@ public sealed class PullSubscription : SubscriptionBase
     ///     Gets a value indicating whether more events are available on the server.
     ///     MoreEventsAvailable is undefined (null) until GetEvents is called.
     /// </summary>
-    public bool? MoreEventsAvailable => moreEventsAvailable;
+    public bool? MoreEventsAvailable => _moreEventsAvailable;
 }

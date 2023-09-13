@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base class for all property definitions.
 /// </summary>
+[PublicAPI]
 public abstract class PropertyDefinitionBase
 {
     /// <summary>
@@ -48,23 +51,31 @@ public abstract class PropertyDefinitionBase
         switch (reader.LocalName)
         {
             case XmlElementNames.FieldURI:
+            {
                 propertyDefinition =
                     ServiceObjectSchema.FindPropertyDefinition(reader.ReadAttributeValue(XmlAttributeNames.FieldURI));
                 reader.SkipCurrentElement();
                 return true;
+            }
             case XmlElementNames.IndexedFieldURI:
+            {
                 propertyDefinition = new IndexedPropertyDefinition(
                     reader.ReadAttributeValue(XmlAttributeNames.FieldURI),
                     reader.ReadAttributeValue(XmlAttributeNames.FieldIndex)
                 );
                 reader.SkipCurrentElement();
                 return true;
+            }
             case XmlElementNames.ExtendedFieldURI:
+            {
                 propertyDefinition = new ExtendedPropertyDefinition();
                 (propertyDefinition as ExtendedPropertyDefinition).LoadFromXml(reader);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

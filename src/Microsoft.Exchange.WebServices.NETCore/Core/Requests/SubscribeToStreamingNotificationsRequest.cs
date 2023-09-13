@@ -46,7 +46,7 @@ internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<Strea
     {
         base.Validate();
 
-        if (!String.IsNullOrEmpty(Watermark))
+        if (!string.IsNullOrEmpty(Watermark))
         {
             throw new ArgumentException("Watermarks cannot be used with StreamingSubscriptions.", "Watermark");
         }

@@ -147,7 +147,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         );
 
         // Format the WS-Addressing headers.
-        var wsAddressingHeaders = String.Format(WsAddressingHeadersFormat, webMethodName, ewsUrl);
+        var wsAddressingHeaders = string.Format(WsAddressingHeadersFormat, webMethodName, ewsUrl);
 
         // And write them out...
         xmlWriter.WriteRaw(wsAddressingHeaders);
@@ -178,7 +178,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         }
 
         // Format the WS-Security header based on all the information we have.
-        var wsSecurityHeader = String.Format(WsSecurityHeaderFormat, timestamp + securityToken);
+        var wsSecurityHeader = string.Format(WsSecurityHeaderFormat, timestamp + securityToken);
 
         // And write the header out...
         xmlWriter.WriteRaw(wsSecurityHeader);

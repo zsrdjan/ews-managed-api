@@ -1,6 +1,6 @@
-﻿namespace Microsoft.Exchange.WebServices.Data;
+namespace Microsoft.Exchange.WebServices.Data;
 
-class EwsHttpClientException : Exception
+internal class EwsHttpClientException : Exception
 {
     public EwsHttpClientException(Exception e)
         : base(e.Message)
@@ -15,5 +15,5 @@ class EwsHttpClientException : Exception
     }
 
     public bool IsProtocolError { get; }
-    public HttpResponseMessage Response { get; }
+    public HttpResponseMessage? Response { get; }
 }

@@ -387,7 +387,7 @@ public class UserConfiguration
     {
         if (bytes == null || bytes.Length == 0)
         {
-            return String.Empty;
+            return string.Empty;
         }
 
         return Convert.ToBase64String(bytes);

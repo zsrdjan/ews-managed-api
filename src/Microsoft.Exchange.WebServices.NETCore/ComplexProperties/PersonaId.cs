@@ -52,14 +52,14 @@ public sealed class PersonaId : ServiceId
     /// </summary>
     /// <param name="PersonaId">The PersonaId to be converted</param>
     /// <returns>A PersonaId initialized with the specified unique Id.</returns>
-    public static implicit operator String(PersonaId PersonaId)
+    public static implicit operator string(PersonaId PersonaId)
     {
         if (PersonaId == null)
         {
             throw new ArgumentNullException("PersonaId");
         }
 
-        if (String.IsNullOrEmpty(PersonaId.UniqueId))
+        if (string.IsNullOrEmpty(PersonaId.UniqueId))
         {
             return string.Empty;
         }

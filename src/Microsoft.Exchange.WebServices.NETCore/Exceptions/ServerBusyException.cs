@@ -44,7 +44,7 @@ public class ServerBusyException : ServiceResponseException
     {
         if (response.ErrorDetails != null && response.ErrorDetails.ContainsKey(BackOffMillisecondsKey))
         {
-            Int32.TryParse(response.ErrorDetails[BackOffMillisecondsKey], out backOffMilliseconds);
+            int.TryParse(response.ErrorDetails[BackOffMillisecondsKey], out backOffMilliseconds);
         }
     }
 

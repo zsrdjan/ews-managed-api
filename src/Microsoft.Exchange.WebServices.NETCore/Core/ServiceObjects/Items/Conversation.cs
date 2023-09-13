@@ -552,11 +552,11 @@ public class Conversation : ServiceObject
     /// <summary>
     ///     Gets the topic of this Conversation.
     /// </summary>
-    public String Topic
+    public string Topic
     {
         get
         {
-            var returnValue = String.Empty;
+            var returnValue = string.Empty;
 
             // This property need not be present hence the property bag may not contain it.
             // Check for the presence of this property before accessing it.

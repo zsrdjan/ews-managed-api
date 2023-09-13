@@ -70,7 +70,7 @@ public sealed class AttendeeAvailability : ServiceResponse
 
                         for (var i = 0; i < mergedFreeBusy.Length; i++)
                         {
-                            mergedFreeBusyStatus.Add((LegacyFreeBusyStatus)Byte.Parse(mergedFreeBusy[i].ToString()));
+                            mergedFreeBusyStatus.Add((LegacyFreeBusyStatus)byte.Parse(mergedFreeBusy[i].ToString()));
                         }
 
                         break;
