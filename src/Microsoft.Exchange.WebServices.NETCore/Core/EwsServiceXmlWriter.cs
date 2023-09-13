@@ -94,7 +94,7 @@ internal class EwsServiceXmlWriter : IDisposable
                 switch (convertible.GetTypeCode())
                 {
                     case TypeCode.Boolean:
-                        strValue = EwsUtilities.BoolToXSBool((bool)value);
+                        strValue = EwsUtilities.BoolToXsBool((bool)value);
                         break;
 
                     case TypeCode.DateTime:

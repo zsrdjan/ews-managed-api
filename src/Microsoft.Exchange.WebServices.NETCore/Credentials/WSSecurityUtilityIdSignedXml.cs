@@ -77,9 +77,9 @@ internal class WSSecurityUtilityIdSignedXml : SignedXml
             var wsuId = GetUniqueId();
 
             var wsuIdAttribute = document.CreateAttribute(
-                EwsUtilities.WSSecurityUtilityNamespacePrefix,
+                EwsUtilities.WsSecurityUtilityNamespacePrefix,
                 "Id",
-                EwsUtilities.WSSecurityUtilityNamespace
+                EwsUtilities.WsSecurityUtilityNamespace
             );
 
             wsuIdAttribute.Value = wsuId;

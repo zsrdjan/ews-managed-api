@@ -210,7 +210,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         if (dictionaryObject is Boolean)
         {
             dictionaryObjectType = UserConfigurationDictionaryObjectType.Boolean;
-            valueAsString = EwsUtilities.BoolToXSBool((bool)dictionaryObject);
+            valueAsString = EwsUtilities.BoolToXsBool((bool)dictionaryObject);
         }
         else if (dictionaryObject is Byte)
         {
@@ -299,7 +299,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             writer.WriteAttributeValue(
                 EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix,
                 XmlAttributeNames.Nil,
-                EwsUtilities.XSTrue
+                EwsUtilities.XsTrue
             );
         }
         else

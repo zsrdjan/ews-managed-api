@@ -139,7 +139,7 @@ internal sealed class TimeChange : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Offset:
-                offset = EwsUtilities.XSDurationToTimeSpan(reader.ReadElementValue());
+                offset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
                 return true;
             case XmlElementNames.RelativeYearlyRecurrence:
                 Recurrence = new TimeChangeRecurrence();
@@ -188,7 +188,7 @@ internal sealed class TimeChange : ComplexProperty
             writer.WriteElementValue(
                 XmlNamespace.Types,
                 XmlElementNames.Offset,
-                EwsUtilities.TimeSpanToXSDuration(Offset.Value)
+                EwsUtilities.TimeSpanToXsDuration(Offset.Value)
             );
         }
 
@@ -202,7 +202,7 @@ internal sealed class TimeChange : ComplexProperty
             writer.WriteElementValue(
                 XmlNamespace.Types,
                 XmlElementNames.AbsoluteDate,
-                EwsUtilities.DateTimeToXSDate(new DateTime(AbsoluteDate.Value.Ticks, DateTimeKind.Unspecified))
+                EwsUtilities.DateTimeToXsDate(new DateTime(AbsoluteDate.Value.Ticks, DateTimeKind.Unspecified))
             );
         }
 

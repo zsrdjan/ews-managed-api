@@ -79,7 +79,7 @@ internal abstract class RecurrenceRange : ComplexProperty
         writer.WriteElementValue(
             XmlNamespace.Types,
             XmlElementNames.StartDate,
-            EwsUtilities.DateTimeToXSDate(StartDate)
+            EwsUtilities.DateTimeToXsDate(StartDate)
         );
     }
 

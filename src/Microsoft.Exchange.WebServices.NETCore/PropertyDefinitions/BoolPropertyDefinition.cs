@@ -84,6 +84,6 @@ internal sealed class BoolPropertyDefinition : GenericPropertyDefinition<bool>
     /// <returns>String representation of Boolean property.</returns>
     internal override string ToString(object value)
     {
-        return EwsUtilities.BoolToXSBool((bool)value);
+        return EwsUtilities.BoolToXsBool((bool)value);
     }
 }

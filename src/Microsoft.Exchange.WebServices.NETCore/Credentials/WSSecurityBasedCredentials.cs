@@ -104,15 +104,15 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     {
         writer.WriteAttributeString(
             "xmlns",
-            EwsUtilities.WSSecuritySecExtNamespacePrefix,
+            EwsUtilities.WsSecuritySecExtNamespacePrefix,
             null,
-            EwsUtilities.WSSecuritySecExtNamespace
+            EwsUtilities.WsSecuritySecExtNamespace
         );
         writer.WriteAttributeString(
             "xmlns",
-            EwsUtilities.WSAddressingNamespacePrefix,
+            EwsUtilities.WsAddressingNamespacePrefix,
             null,
-            EwsUtilities.WSAddressingNamespace
+            EwsUtilities.WsAddressingNamespace
         );
     }
 
@@ -223,18 +223,18 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
             {
                 namespaceManager = new XmlNamespaceManager(new NameTable());
                 namespaceManager.AddNamespace(
-                    EwsUtilities.WSSecurityUtilityNamespacePrefix,
-                    EwsUtilities.WSSecurityUtilityNamespace
+                    EwsUtilities.WsSecurityUtilityNamespacePrefix,
+                    EwsUtilities.WsSecurityUtilityNamespace
                 );
                 namespaceManager.AddNamespace(
-                    EwsUtilities.WSAddressingNamespacePrefix,
-                    EwsUtilities.WSAddressingNamespace
+                    EwsUtilities.WsAddressingNamespacePrefix,
+                    EwsUtilities.WsAddressingNamespace
                 );
                 namespaceManager.AddNamespace(EwsUtilities.EwsSoapNamespacePrefix, EwsUtilities.EwsSoapNamespace);
                 namespaceManager.AddNamespace(EwsUtilities.EwsTypesNamespacePrefix, EwsUtilities.EwsTypesNamespace);
                 namespaceManager.AddNamespace(
-                    EwsUtilities.WSSecuritySecExtNamespacePrefix,
-                    EwsUtilities.WSSecuritySecExtNamespace
+                    EwsUtilities.WsSecuritySecExtNamespacePrefix,
+                    EwsUtilities.WsSecuritySecExtNamespace
                 );
             }
 

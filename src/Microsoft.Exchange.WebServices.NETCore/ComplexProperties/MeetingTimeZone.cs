@@ -75,7 +75,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.BaseOffset:
-                baseOffset = EwsUtilities.XSDurationToTimeSpan(reader.ReadElementValue());
+                baseOffset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
                 return true;
             case XmlElementNames.Standard:
                 standard = new TimeChange();
@@ -119,7 +119,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
             writer.WriteElementValue(
                 XmlNamespace.Types,
                 XmlElementNames.BaseOffset,
-                EwsUtilities.TimeSpanToXSDuration(BaseOffset.Value)
+                EwsUtilities.TimeSpanToXsDuration(BaseOffset.Value)
             );
         }
 

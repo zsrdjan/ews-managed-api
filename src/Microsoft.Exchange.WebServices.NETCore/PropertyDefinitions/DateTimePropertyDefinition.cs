@@ -137,7 +137,7 @@ internal class DateTimePropertyDefinition : PropertyDefinition
 
             var convertedDateTime = GetConvertedDateTime(writer.Service, propertyBag, isUpdateOperation, value);
 
-            writer.WriteValue(EwsUtilities.DateTimeToXSDateTime(convertedDateTime), Name);
+            writer.WriteValue(EwsUtilities.DateTimeToXsDateTime(convertedDateTime), Name);
 
             writer.WriteEndElement();
         }

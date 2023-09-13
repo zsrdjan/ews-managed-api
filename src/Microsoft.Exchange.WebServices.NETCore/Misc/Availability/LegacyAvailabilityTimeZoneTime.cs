@@ -143,7 +143,7 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     {
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Bias, (int)delta.TotalMinutes);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, EwsUtilities.TimeSpanToXSTime(timeOfDay));
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, EwsUtilities.TimeSpanToXsTime(timeOfDay));
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOrder, dayOrder);
 

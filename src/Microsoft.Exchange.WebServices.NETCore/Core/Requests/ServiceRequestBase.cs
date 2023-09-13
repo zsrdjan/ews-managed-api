@@ -291,8 +291,8 @@ internal abstract class ServiceRequestBase
         {
             writer.WriteAttributeValue(
                 "xmlns",
-                EwsUtilities.WSSecurityUtilityNamespacePrefix,
-                EwsUtilities.WSSecurityUtilityNamespace
+                EwsUtilities.WsSecurityUtilityNamespacePrefix,
+                EwsUtilities.WsSecurityUtilityNamespace
             );
         }
 

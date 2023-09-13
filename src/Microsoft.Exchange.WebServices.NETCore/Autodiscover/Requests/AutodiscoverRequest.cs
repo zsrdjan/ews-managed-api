@@ -396,8 +396,8 @@ internal abstract class AutodiscoverRequest
         );
         writer.WriteAttributeValue(
             "xmlns",
-            EwsUtilities.WSAddressingNamespacePrefix,
-            EwsUtilities.WSAddressingNamespace
+            EwsUtilities.WsAddressingNamespacePrefix,
+            EwsUtilities.WsAddressingNamespace
         );
         writer.WriteAttributeValue(
             "xmlns",
@@ -408,8 +408,8 @@ internal abstract class AutodiscoverRequest
         {
             writer.WriteAttributeValue(
                 "xmlns",
-                EwsUtilities.WSSecurityUtilityNamespacePrefix,
-                EwsUtilities.WSSecurityUtilityNamespace
+                EwsUtilities.WsSecurityUtilityNamespacePrefix,
+                EwsUtilities.WsSecurityUtilityNamespace
             );
         }
 

@@ -54,7 +54,7 @@ internal class TimeSpanPropertyDefinition : GenericPropertyDefinition<TimeSpan>
     /// <returns>TimeSpan value.</returns>
     internal override object Parse(string value)
     {
-        return EwsUtilities.XSDurationToTimeSpan(value);
+        return EwsUtilities.XsDurationToTimeSpan(value);
     }
 
     /// <summary>
@@ -64,6 +64,6 @@ internal class TimeSpanPropertyDefinition : GenericPropertyDefinition<TimeSpan>
     /// <returns>TimeSpan value.</returns>
     internal override string ToString(object value)
     {
-        return EwsUtilities.TimeSpanToXSDuration((TimeSpan)value);
+        return EwsUtilities.TimeSpanToXsDuration((TimeSpan)value);
     }
 }

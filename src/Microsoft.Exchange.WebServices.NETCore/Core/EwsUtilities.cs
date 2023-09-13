@@ -46,7 +46,7 @@ internal static class EwsUtilities
     /// <summary>
     ///     Map from XML element names to ServiceObject type and constructors.
     /// </summary>
-    private static readonly LazyMember<ServiceObjectInfo> serviceObjectInfo = new LazyMember<ServiceObjectInfo>(
+    private static readonly LazyMember<ServiceObjectInfo> ServiceObjectInfo = new LazyMember<ServiceObjectInfo>(
         delegate { return new ServiceObjectInfo(); }
     );
 
@@ -74,7 +74,7 @@ internal static class EwsUtilities
     /// <summary>
     ///     Dictionary of enum type to ExchangeVersion maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>> enumVersionDictionaries =
+    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>> EnumVersionDictionaries =
         new LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>>(
             () => new Dictionary<Type, Dictionary<Enum, ExchangeVersion>>
             {
@@ -105,7 +105,7 @@ internal static class EwsUtilities
     /// <summary>
     ///     Dictionary of enum type to schema-name-to-enum-value maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> schemaToEnumDictionaries =
+    private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> SchemaToEnumDictionaries =
         new LazyMember<Dictionary<Type, Dictionary<string, Enum>>>(
             () => new Dictionary<Type, Dictionary<string, Enum>>
             {
@@ -130,7 +130,7 @@ internal static class EwsUtilities
     /// <summary>
     ///     Dictionary of enum type to enum-value-to-schema-name maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> enumToSchemaDictionaries =
+    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> EnumToSchemaDictionaries =
         new LazyMember<Dictionary<Type, Dictionary<Enum, string>>>(
             () => new Dictionary<Type, Dictionary<Enum, string>>
             {
@@ -155,7 +155,7 @@ internal static class EwsUtilities
     /// <summary>
     ///     Dictionary to map from special CLR type names to their "short" names.
     /// </summary>
-    private static readonly LazyMember<Dictionary<string, string>> typeNameToShortNameMap =
+    private static readonly LazyMember<Dictionary<string, string>> TypeNameToShortNameMap =
         new LazyMember<Dictionary<string, string>>(
             () => new Dictionary<string, string>
             {
@@ -179,8 +179,8 @@ internal static class EwsUtilities
 
     #region Constants
 
-    internal const string XSFalse = "false";
-    internal const string XSTrue = "true";
+    internal const string XsFalse = "false";
+    internal const string XsTrue = "true";
 
     internal const string EwsTypesNamespacePrefix = "t";
     internal const string EwsMessagesNamespacePrefix = "m";
@@ -188,11 +188,11 @@ internal static class EwsUtilities
     internal const string EwsSoapNamespacePrefix = "soap";
     internal const string EwsXmlSchemaInstanceNamespacePrefix = "xsi";
     internal const string PassportSoapFaultNamespacePrefix = "psf";
-    internal const string WSTrustFebruary2005NamespacePrefix = "wst";
-    internal const string WSAddressingNamespacePrefix = "wsa";
+    internal const string WsTrustFebruary2005NamespacePrefix = "wst";
+    internal const string WsAddressingNamespacePrefix = "wsa";
     internal const string AutodiscoverSoapNamespacePrefix = "a";
-    internal const string WSSecurityUtilityNamespacePrefix = "wsu";
-    internal const string WSSecuritySecExtNamespacePrefix = "wsse";
+    internal const string WsSecurityUtilityNamespacePrefix = "wsu";
+    internal const string WsSecuritySecExtNamespacePrefix = "wsse";
 
     internal const string EwsTypesNamespace = "http://schemas.microsoft.com/exchange/services/2006/types";
     internal const string EwsMessagesNamespace = "http://schemas.microsoft.com/exchange/services/2006/messages";
@@ -201,18 +201,18 @@ internal static class EwsUtilities
     internal const string EwsSoap12Namespace = "http://www.w3.org/2003/05/soap-envelope";
     internal const string EwsXmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
     internal const string PassportSoapFaultNamespace = "http://schemas.microsoft.com/Passport/SoapServices/SOAPFault";
-    internal const string WSTrustFebruary2005Namespace = "http://schemas.xmlsoap.org/ws/2005/02/trust";
+    internal const string WsTrustFebruary2005Namespace = "http://schemas.xmlsoap.org/ws/2005/02/trust";
 
     internal const string
-        WSAddressingNamespace =
+        WsAddressingNamespace =
             "http://www.w3.org/2005/08/addressing"; // "http://schemas.xmlsoap.org/ws/2004/08/addressing";
 
     internal const string AutodiscoverSoapNamespace = "http://schemas.microsoft.com/exchange/2010/Autodiscover";
 
-    internal const string WSSecurityUtilityNamespace =
+    internal const string WsSecurityUtilityNamespace =
         "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
-    internal const string WSSecuritySecExtNamespace =
+    internal const string WsSecuritySecExtNamespace =
         "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
 
     /// <summary>
@@ -250,8 +250,8 @@ internal static class EwsUtilities
             XmlNamespace.Soap12 => EwsSoapNamespacePrefix,
             XmlNamespace.XmlSchemaInstance => EwsXmlSchemaInstanceNamespacePrefix,
             XmlNamespace.PassportSoapFault => PassportSoapFaultNamespacePrefix,
-            XmlNamespace.WSTrustFebruary2005 => WSTrustFebruary2005NamespacePrefix,
-            XmlNamespace.WSAddressing => WSAddressingNamespacePrefix,
+            XmlNamespace.WSTrustFebruary2005 => WsTrustFebruary2005NamespacePrefix,
+            XmlNamespace.WSAddressing => WsAddressingNamespacePrefix,
             XmlNamespace.Autodiscover => AutodiscoverSoapNamespacePrefix,
             _ => string.Empty,
         };
@@ -273,8 +273,8 @@ internal static class EwsUtilities
             XmlNamespace.Soap12 => EwsSoap12Namespace,
             XmlNamespace.XmlSchemaInstance => EwsXmlSchemaInstanceNamespace,
             XmlNamespace.PassportSoapFault => PassportSoapFaultNamespace,
-            XmlNamespace.WSTrustFebruary2005 => WSTrustFebruary2005Namespace,
-            XmlNamespace.WSAddressing => WSAddressingNamespace,
+            XmlNamespace.WSTrustFebruary2005 => WsTrustFebruary2005Namespace,
+            XmlNamespace.WSAddressing => WsAddressingNamespace,
             XmlNamespace.Autodiscover => AutodiscoverSoapNamespace,
             _ => string.Empty,
         };
@@ -296,8 +296,8 @@ internal static class EwsUtilities
             EwsSoap12Namespace => XmlNamespace.Soap12,
             EwsXmlSchemaInstanceNamespace => XmlNamespace.XmlSchemaInstance,
             PassportSoapFaultNamespace => XmlNamespace.PassportSoapFault,
-            WSTrustFebruary2005Namespace => XmlNamespace.WSTrustFebruary2005,
-            WSAddressingNamespace => XmlNamespace.WSAddressing,
+            WsTrustFebruary2005Namespace => XmlNamespace.WSTrustFebruary2005,
+            WsAddressingNamespace => XmlNamespace.WSAddressing,
             _ => XmlNamespace.NotSpecified,
         };
     }
@@ -315,12 +315,12 @@ internal static class EwsUtilities
     )
         where TServiceObject : ServiceObject
     {
-        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
+        if (ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
                 xmlElementName,
                 out var itemClass
             ))
         {
-            if (serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(
+            if (ServiceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(
                     itemClass,
                     out var creationDelegate
                 ))
@@ -343,7 +343,7 @@ internal static class EwsUtilities
     /// <returns>New Item.</returns>
     internal static Item CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
     {
-        if (serviceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
+        if (ServiceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
                 itemClass,
                 out var creationDelegate
             ))
@@ -362,7 +362,7 @@ internal static class EwsUtilities
     /// <returns>New Item.</returns>
     internal static Item CreateItemFromXmlElementName(ItemAttachment itemAttachment, string xmlElementName)
     {
-        if (serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
+        if (ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
                 xmlElementName,
                 out var itemClass
             ))
@@ -380,7 +380,7 @@ internal static class EwsUtilities
     /// <returns></returns>
     internal static Type GetItemTypeFromXmlElementName(string xmlElementName)
     {
-        serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass);
+        ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass);
         return itemClass;
     }
 
@@ -638,9 +638,9 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="value">Bool value.</param>
     /// <returns>String representing bool value in XML Schema.</returns>
-    internal static string BoolToXSBool(bool value)
+    internal static string BoolToXsBool(bool value)
     {
-        return value ? XSTrue : XSFalse;
+        return value ? XsTrue : XsFalse;
     }
 
     /// <summary>
@@ -675,7 +675,7 @@ internal static class EwsUtilities
     /// <returns>String representation of enum to be used in the protocol</returns>
     internal static string SerializeEnum(Enum value)
     {
-        if (enumToSchemaDictionaries.Member.TryGetValue(value.GetType(), out var enumToStringDict) &&
+        if (EnumToSchemaDictionaries.Member.TryGetValue(value.GetType(), out var enumToStringDict) &&
             enumToStringDict.TryGetValue(value, out var strValue))
         {
             return strValue;
@@ -694,7 +694,7 @@ internal static class EwsUtilities
     {
         if (typeof(T).GetTypeInfo().IsEnum)
         {
-            if (schemaToEnumDictionaries.Member.TryGetValue(typeof(T), out var stringToEnumDict) &&
+            if (SchemaToEnumDictionaries.Member.TryGetValue(typeof(T), out var stringToEnumDict) &&
                 stringToEnumDict.TryGetValue(value, out var enumValue))
             {
                 // This double-casting is ugly, but necessary. By this point, we know that T is an Enum
@@ -757,7 +757,7 @@ internal static class EwsUtilities
             throw new TimeZoneConversionException(
                 string.Format(
                     Strings.CannotConvertBetweenTimeZones,
-                    DateTimeToXSDateTime(dateTime),
+                    DateTimeToXsDateTime(dateTime),
                     sourceTimeZone.DisplayName,
                     destinationTimeZone.DisplayName
                 ),
@@ -810,7 +810,7 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="date">The date to be converted.</param>
     /// <returns>String representation of DateTime.</returns>
-    internal static string DateTimeToXSDate(DateTime date)
+    internal static string DateTimeToXsDate(DateTime date)
     {
         // Depending on the current culture, DateTime formatter will 
         // translate dates from one culture to another (e.g. Gregorian to Lunar).  The server
@@ -845,7 +845,7 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="dateTime">The date time.</param>
     /// <returns>String representation of DateTime.</returns>
-    internal static string DateTimeToXSDateTime(DateTime dateTime)
+    internal static string DateTimeToXsDateTime(DateTime dateTime)
     {
         var format = "yyyy-MM-ddTHH:mm:ss.fff";
 
@@ -907,7 +907,7 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="timeSpan">TimeSpan structure to convert</param>
     /// <returns>xs:duration formatted string</returns>
-    internal static string TimeSpanToXSDuration(TimeSpan timeSpan)
+    internal static string TimeSpanToXsDuration(TimeSpan timeSpan)
     {
         // Optional '-' offset
         var offsetStr = timeSpan.TotalSeconds < 0 ? "-" : string.Empty;
@@ -940,7 +940,7 @@ internal static class EwsUtilities
     /// </remarks>
     /// <param name="xsDuration">xs:duration string to convert</param>
     /// <returns>System.TimeSpan structure</returns>
-    internal static TimeSpan XSDurationToTimeSpan(string xsDuration)
+    internal static TimeSpan XsDurationToTimeSpan(string xsDuration)
     {
         var timeSpanParser = new Regex(
             "(?<pos>-)?" +
@@ -1044,7 +1044,7 @@ internal static class EwsUtilities
     /// </summary>
     /// <param name="timeSpan">The time span.</param>
     /// <returns>The XSD representation of the specified time span.</returns>
-    public static string TimeSpanToXSTime(TimeSpan timeSpan)
+    public static string TimeSpanToXsTime(TimeSpan timeSpan)
     {
         return string.Format("{0:00}:{1:00}:{2:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
     }
@@ -1070,9 +1070,9 @@ internal static class EwsUtilities
             // Note: building array of generic parameters is done recursively. Each parameter could be any type.
             var genericArgs = type.GetGenericArguments().ToList().Select(GetPrintableTypeName).ToArray();
 
-            nameBuilder.Append("<");
+            nameBuilder.Append('<');
             nameBuilder.Append(string.Join(",", genericArgs));
-            nameBuilder.Append(">");
+            nameBuilder.Append('>');
             return nameBuilder.ToString();
         }
 
@@ -1100,7 +1100,7 @@ internal static class EwsUtilities
     private static string GetSimplifiedTypeName(string typeName)
     {
         // If type has a shortname (e.g. int for Int32) map to the short name.
-        return typeNameToShortNameMap.Member.TryGetValue(typeName, out var name) ? name : typeName;
+        return TypeNameToShortNameMap.Member.TryGetValue(typeName, out var name) ? name : typeName;
     }
 
     #endregion
@@ -1269,7 +1269,7 @@ internal static class EwsUtilities
     internal static void ValidateEnumVersionValue(Enum enumValue, ExchangeVersion requestVersion)
     {
         var enumType = enumValue.GetType();
-        var enumVersionDict = enumVersionDictionaries.Member[enumType];
+        var enumVersionDict = EnumVersionDictionaries.Member[enumType];
         var enumVersion = enumVersionDict[enumValue];
         if (requestVersion < enumVersion)
         {

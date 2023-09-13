@@ -47,7 +47,7 @@ internal class TimeZonePeriod : ComplexProperty
     {
         id = reader.ReadAttributeValue(XmlAttributeNames.Id);
         name = reader.ReadAttributeValue(XmlAttributeNames.Name);
-        bias = EwsUtilities.XSDurationToTimeSpan(reader.ReadAttributeValue(XmlAttributeNames.Bias));
+        bias = EwsUtilities.XsDurationToTimeSpan(reader.ReadAttributeValue(XmlAttributeNames.Bias));
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ internal class TimeZonePeriod : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.Bias, EwsUtilities.TimeSpanToXSDuration(bias));
+        writer.WriteAttributeValue(XmlAttributeNames.Bias, EwsUtilities.TimeSpanToXsDuration(bias));
         writer.WriteAttributeValue(XmlAttributeNames.Name, name);
         writer.WriteAttributeValue(XmlAttributeNames.Id, id);
     }

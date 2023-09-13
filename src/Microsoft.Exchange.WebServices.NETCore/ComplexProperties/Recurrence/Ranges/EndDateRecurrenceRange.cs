@@ -75,7 +75,7 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
     {
         base.WriteElementsToXml(writer);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EndDate, EwsUtilities.DateTimeToXSDate(EndDate));
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.EndDate, EwsUtilities.DateTimeToXsDate(EndDate));
     }
 
     /// <summary>

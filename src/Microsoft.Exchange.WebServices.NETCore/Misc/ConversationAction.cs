@@ -177,7 +177,7 @@ internal class ConversationAction
                 writer.WriteElementValue(
                     XmlNamespace.Types,
                     XmlElementNames.ProcessRightAway,
-                    EwsUtilities.BoolToXSBool(ProcessRightAway)
+                    EwsUtilities.BoolToXsBool(ProcessRightAway)
                 );
             }
 
@@ -195,7 +195,7 @@ internal class ConversationAction
                 writer.WriteElementValue(
                     XmlNamespace.Types,
                     XmlElementNames.EnableAlwaysDelete,
-                    EwsUtilities.BoolToXSBool(EnableAlwaysDelete)
+                    EwsUtilities.BoolToXsBool(EnableAlwaysDelete)
                 );
             }
             else if (Action == ConversationActionType.AlwaysMove)

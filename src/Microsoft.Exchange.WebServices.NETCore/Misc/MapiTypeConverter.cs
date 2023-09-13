@@ -202,7 +202,7 @@ internal class MapiTypeConverter
                 {
                     Parse = s => DateTime.Parse(s, CultureInfo.InvariantCulture, UtcDataTimeStyles),
                     ConvertToString =
-                        o => EwsUtilities.DateTimeToXSDateTime((DateTime)o) // Can't use DataTime.ToString()
+                        o => EwsUtilities.DateTimeToXsDateTime((DateTime)o) // Can't use DataTime.ToString()
                 };
 
                 map.Add(MapiPropertyType.SystemTime, sysTimeConverter);
@@ -212,7 +212,7 @@ internal class MapiTypeConverter
                     IsArray = true,
                     Parse = s => DateTime.Parse(s, CultureInfo.InvariantCulture, UtcDataTimeStyles),
                     ConvertToString =
-                        o => EwsUtilities.DateTimeToXSDateTime((DateTime)o) // Can't use DataTime.ToString()
+                        o => EwsUtilities.DateTimeToXsDateTime((DateTime)o) // Can't use DataTime.ToString()
                 };
 
                 map.Add(MapiPropertyType.SystemTimeArray, sysTimeArrayConverter);
