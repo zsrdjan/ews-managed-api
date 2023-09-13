@@ -32,23 +32,23 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     A wrapper class to facilitate creating XML signatures around wsu:Id.
 /// </summary>
-internal class WSSecurityUtilityIdSignedXml : SignedXml
+internal class WsSecurityUtilityIdSignedXml : SignedXml
 {
-    private static long nextId;
-    private static readonly string commonPrefix = "uuid-" + Guid.NewGuid() + "-";
+    private static long _nextId;
+    private static readonly string CommonPrefix = "uuid-" + Guid.NewGuid() + "-";
 
-    private readonly XmlDocument document;
-    private readonly Dictionary<string, XmlElement> ids;
+    private readonly XmlDocument _document;
+    private readonly Dictionary<string, XmlElement> _ids;
 
     /// <summary>
     ///     Initializes a new instance of the WSSecurityUtilityIdSignedXml class from the specified XML document.
     /// </summary>
     /// <param name="document">Xml document.</param>
-    public WSSecurityUtilityIdSignedXml(XmlDocument document)
+    public WsSecurityUtilityIdSignedXml(XmlDocument document)
         : base(document)
     {
-        this.document = document;
-        ids = new Dictionary<string, XmlElement>();
+        _document = document;
+        _ids = new Dictionary<string, XmlElement>();
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ internal class WSSecurityUtilityIdSignedXml : SignedXml
     /// <returns>The wsu id.</returns>
     public static string GetUniqueId()
     {
-        return commonPrefix + Interlocked.Increment(ref nextId).ToString(CultureInfo.InvariantCulture);
+        return CommonPrefix + Interlocked.Increment(ref _nextId).ToString(CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -66,17 +66,15 @@ internal class WSSecurityUtilityIdSignedXml : SignedXml
     /// <param name="xpath">The XPath string.</param>
     public void AddReference(string xpath)
     {
-        var element = document.SelectSingleNode(xpath, WSSecurityBasedCredentials.NamespaceManager) as XmlElement;
-
         // for now, ignore the error if the node is not found. 
         // EWS may want to sign extra header while such header is never present in autodiscover request.
         // but currently Credentials are unaware of the service type.
         // 
-        if (element != null)
+        if (_document.SelectSingleNode(xpath, WSSecurityBasedCredentials.NamespaceManager) is XmlElement element)
         {
             var wsuId = GetUniqueId();
 
-            var wsuIdAttribute = document.CreateAttribute(
+            var wsuIdAttribute = _document.CreateAttribute(
                 EwsUtilities.WsSecurityUtilityNamespacePrefix,
                 "Id",
                 EwsUtilities.WsSecurityUtilityNamespace
@@ -85,12 +83,14 @@ internal class WSSecurityUtilityIdSignedXml : SignedXml
             wsuIdAttribute.Value = wsuId;
             element.Attributes.Append(wsuIdAttribute);
 
-            var reference = new Reference();
-            reference.Uri = "#" + wsuId;
+            var reference = new Reference
+            {
+                Uri = "#" + wsuId,
+            };
             reference.AddTransform(new XmlDsigExcC14NTransform());
 
             AddReference(reference);
-            ids.Add(wsuId, element);
+            _ids.Add(wsuId, element);
         }
     }
 
@@ -102,6 +102,6 @@ internal class WSSecurityUtilityIdSignedXml : SignedXml
     /// <returns>The XmlElement object with the specified ID from the specified XmlDocument object</returns>
     public override XmlElement GetIdElement(XmlDocument document, string idValue)
     {
-        return ids[idValue];
+        return _ids[idValue];
     }
 }

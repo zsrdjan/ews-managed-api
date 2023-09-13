@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a meeting acceptance message.
 /// </summary>
+[PublicAPI]
 public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<MeetingResponse>
 {
-    private readonly bool tentative;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AcceptMeetingInvitationMessage" /> class.
     /// </summary>
@@ -40,7 +41,7 @@ public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<Mee
     internal AcceptMeetingInvitationMessage(Item referenceItem, bool tentative)
         : base(referenceItem)
     {
-        this.tentative = tentative;
+        Tentative = tentative;
     }
 
     /// <summary>
@@ -59,7 +60,7 @@ public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<Mee
     /// </remarks>
     internal override string GetXmlElementNameOverride()
     {
-        if (tentative)
+        if (Tentative)
         {
             return XmlElementNames.TentativelyAcceptItem;
         }
@@ -79,5 +80,5 @@ public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<Mee
     /// <summary>
     ///     Gets a value indicating whether the associated meeting is tentatively accepted.
     /// </summary>
-    public bool Tentative => tentative;
+    public bool Tentative { get; }
 }

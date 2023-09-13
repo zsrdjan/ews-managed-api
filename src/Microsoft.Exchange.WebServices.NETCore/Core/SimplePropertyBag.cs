@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -30,18 +32,19 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
+    where TKey : notnull
 {
-    private readonly Dictionary<TKey, object> items = new Dictionary<TKey, object>();
-    private readonly List<TKey> removedItems = new List<TKey>();
-    private readonly List<TKey> addedItems = new List<TKey>();
-    private readonly List<TKey> modifiedItems = new List<TKey>();
+    private readonly Dictionary<TKey, object> _items = new();
+    private readonly List<TKey> _removedItems = new();
+    private readonly List<TKey> _addedItems = new();
+    private readonly List<TKey> _modifiedItems = new();
 
     /// <summary>
     ///     Add item to change list.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="changeList">The change list.</param>
-    private static void InternalAddItemToChangeList(TKey key, List<TKey> changeList)
+    private static void InternalAddItemToChangeList(TKey key, ICollection<TKey> changeList)
     {
         if (!changeList.Contains(key))
         {
@@ -54,10 +57,7 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// </summary>
     private void Changed()
     {
-        if (OnChange != null)
-        {
-            OnChange();
-        }
+        OnChange?.Invoke();
     }
 
     /// <summary>
@@ -66,12 +66,10 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// <param name="key">The key.</param>
     private void InternalRemoveItem(TKey key)
     {
-        object value;
-
-        if (TryGetValue(key, out value))
+        if (TryGetValue(key, out _))
         {
-            items.Remove(key);
-            removedItems.Add(key);
+            _items.Remove(key);
+            _removedItems.Add(key);
             Changed();
         }
     }
@@ -80,19 +78,19 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     ///     Gets the added items.
     /// </summary>
     /// <value>The added items.</value>
-    internal IEnumerable<TKey> AddedItems => addedItems;
+    internal IEnumerable<TKey> AddedItems => _addedItems;
 
     /// <summary>
     ///     Gets the removed items.
     /// </summary>
     /// <value>The removed items.</value>
-    internal IEnumerable<TKey> RemovedItems => removedItems;
+    internal IEnumerable<TKey> RemovedItems => _removedItems;
 
     /// <summary>
     ///     Gets the modified items.
     /// </summary>
     /// <value>The modified items.</value>
-    internal IEnumerable<TKey> ModifiedItems => modifiedItems;
+    internal IEnumerable<TKey> ModifiedItems => _modifiedItems;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SimplePropertyBag&lt;TKey&gt;" /> class.
@@ -106,9 +104,9 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// </summary>
     public void ClearChangeLog()
     {
-        removedItems.Clear();
-        addedItems.Clear();
-        modifiedItems.Clear();
+        _removedItems.Clear();
+        _addedItems.Clear();
+        _modifiedItems.Clear();
     }
 
     /// <summary>
@@ -120,7 +118,7 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// </returns>
     public bool ContainsKey(TKey key)
     {
-        return items.ContainsKey(key);
+        return _items.ContainsKey(key);
     }
 
     /// <summary>
@@ -129,23 +127,21 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
     /// <returns>True if value exists in property bag.</returns>
-    public bool TryGetValue(TKey key, out object value)
+    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out object value)
     {
-        return items.TryGetValue(key, out value);
+        return _items.TryGetValue(key, out value);
     }
 
     /// <summary>
-    ///     Gets or sets the <see cref="System.Object" /> with the specified key.
+    ///     Gets or sets the <see cref="object" /> with the specified key.
     /// </summary>
     /// <param name="key">Key.</param>
     /// <value>Value associated with key.</value>
-    public object this[TKey key]
+    public object? this[TKey key]
     {
         get
         {
-            object value;
-
-            if (TryGetValue(key, out value))
+            if (TryGetValue(key, out var value))
             {
                 return value;
             }
@@ -162,28 +158,28 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
             else
             {
                 // If the item was to be deleted, the deletion becomes an update.
-                if (removedItems.Remove(key))
+                if (_removedItems.Remove(key))
                 {
-                    InternalAddItemToChangeList(key, modifiedItems);
+                    InternalAddItemToChangeList(key, _modifiedItems);
                 }
                 else
                 {
                     // If the property value was not set, we have a newly set property.
                     if (!ContainsKey(key))
                     {
-                        InternalAddItemToChangeList(key, addedItems);
+                        InternalAddItemToChangeList(key, _addedItems);
                     }
                     else
                     {
                         // The last case is that we have a modified property.
-                        if (!modifiedItems.Contains(key))
+                        if (!_modifiedItems.Contains(key))
                         {
-                            InternalAddItemToChangeList(key, modifiedItems);
+                            InternalAddItemToChangeList(key, _modifiedItems);
                         }
                     }
                 }
 
-                items[key] = value;
+                _items[key] = value;
                 Changed();
             }
         }
@@ -192,7 +188,7 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// <summary>
     ///     Occurs when Changed.
     /// </summary>
-    public event PropertyBagChangedDelegate OnChange;
+    public event PropertyBagChangedDelegate? OnChange;
 
 
     #region IEnumerable<KeyValuePair<TKey,object>> Members
@@ -203,7 +199,7 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<KeyValuePair<TKey, object>> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion
@@ -217,7 +213,7 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion

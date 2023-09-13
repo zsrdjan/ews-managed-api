@@ -27,6 +27,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -35,18 +37,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     base64url encoded (described in http://www.ietf.org/rfc/rfc4648.txt, section 5).
 ///     OAuthCredentials is supported for Exchange 2013 or above.
 /// </summary>
-public sealed class OAuthCredentials : ExchangeCredentials
+[PublicAPI]
+public sealed partial class OAuthCredentials : ExchangeCredentials
 {
     private const string BearerAuthenticationType = "Bearer";
 
-    private static readonly Regex validTokenPattern = new Regex(
-        @"^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$",
-        RegexOptions.Compiled
-    );
+    private static readonly Regex ValidTokenPattern = ValidTokenPatternRegex();
 
-    private readonly string token;
+    private readonly string? _token;
 
-    private readonly ICredentials credentials;
+    private readonly ICredentials _credentials;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OAuthCredentials" /> class.
@@ -64,7 +64,7 @@ public sealed class OAuthCredentials : ExchangeCredentials
     /// <param name="verbatim"></param>
     internal OAuthCredentials(string token, bool verbatim)
     {
-        EwsUtilities.ValidateParam(token, "token");
+        EwsUtilities.ValidateParam(token);
 
         string rawToken;
         if (verbatim)
@@ -89,13 +89,13 @@ public sealed class OAuthCredentials : ExchangeCredentials
                 rawToken = token.Substring(whiteSpacePosition + 1);
             }
 
-            if (!validTokenPattern.IsMatch(rawToken))
+            if (!ValidTokenPattern.IsMatch(rawToken))
             {
                 throw new ArgumentException(Strings.InvalidOAuthToken);
             }
         }
 
-        this.token = rawToken;
+        _token = rawToken;
     }
 
     /// <summary>
@@ -105,9 +105,9 @@ public sealed class OAuthCredentials : ExchangeCredentials
     /// <param name="credentials">Credentials to use.</param>
     public OAuthCredentials(ICredentials credentials)
     {
-        EwsUtilities.ValidateParam(credentials, "credentials");
+        EwsUtilities.ValidateParam(credentials);
 
-        this.credentials = credentials;
+        _credentials = credentials;
     }
 
     /// <summary>
@@ -118,14 +118,17 @@ public sealed class OAuthCredentials : ExchangeCredentials
     {
         base.PrepareWebRequest(request);
 
-        if (token != null)
+        if (_token != null)
         {
             request.Headers.Remove(HttpRequestHeader.Authorization.ToString());
-            request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, token);
+            request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, _token);
         }
         else
         {
-            request.Credentials = credentials;
+            request.Credentials = _credentials;
         }
     }
+
+    [GeneratedRegex(@"^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$", RegexOptions.Compiled)]
+    private static partial Regex ValidTokenPatternRegex();
 }

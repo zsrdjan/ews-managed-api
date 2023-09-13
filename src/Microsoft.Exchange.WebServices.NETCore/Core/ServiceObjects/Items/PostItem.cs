@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a post item. Properties available on post items are defined in the PostItemSchema class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.PostItem)]
 public sealed class PostItem : Item
@@ -58,8 +61,9 @@ public sealed class PostItem : Item
     /// <param name="service">The service to use to bind to the post item.</param>
     /// <param name="id">The Id of the post item to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>An PostItem instance representing the post item corresponding to the specified Id.</returns>
-    public static new Task<PostItem> Bind(
+    public new static Task<PostItem> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -76,7 +80,7 @@ public sealed class PostItem : Item
     /// <param name="service">The service to use to bind to the post item.</param>
     /// <param name="id">The Id of the post item to bind to.</param>
     /// <returns>An PostItem instance representing the post item corresponding to the specified Id.</returns>
-    public static new Task<PostItem> Bind(ExchangeService service, ItemId id)
+    public new static Task<PostItem> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }

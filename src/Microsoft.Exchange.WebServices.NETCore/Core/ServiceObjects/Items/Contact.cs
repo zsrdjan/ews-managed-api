@@ -325,9 +325,9 @@ public class Contact : Item
     /// <summary>
     ///     Gets or sets the birthday of the contact.
     /// </summary>
-    public DateTime? Birthday
+    public DateTime Birthday
     {
-        get => (DateTime?)PropertyBag[ContactSchema.Birthday];
+        get => (DateTime)PropertyBag[ContactSchema.Birthday];
         set => PropertyBag[ContactSchema.Birthday] = value;
     }
 
@@ -361,7 +361,7 @@ public class Contact : Item
     /// <summary>
     ///     Gets the source of the contact.
     /// </summary>
-    public ContactSource? ContactSource => (ContactSource?)PropertyBag[ContactSchema.ContactSource];
+    public ContactSource ContactSource => (ContactSource)PropertyBag[ContactSchema.ContactSource];
 
     /// <summary>
     ///     Gets or sets the department of the contact.
@@ -427,9 +427,9 @@ public class Contact : Item
     ///     Gets or sets the index of the contact's postal address. When set, PostalAddressIndex refers to
     ///     an entry in the PhysicalAddresses indexed list.
     /// </summary>
-    public PhysicalAddressIndex? PostalAddressIndex
+    public PhysicalAddressIndex PostalAddressIndex
     {
-        get => (PhysicalAddressIndex?)PropertyBag[ContactSchema.PostalAddressIndex];
+        get => (PhysicalAddressIndex)PropertyBag[ContactSchema.PostalAddressIndex];
         set => PropertyBag[ContactSchema.PostalAddressIndex] = value;
     }
 
@@ -463,9 +463,9 @@ public class Contact : Item
     /// <summary>
     ///     Gets or sets the date of the contact's wedding anniversary.
     /// </summary>
-    public DateTime? WeddingAnniversary
+    public DateTime WeddingAnniversary
     {
-        get => (DateTime?)PropertyBag[ContactSchema.WeddingAnniversary];
+        get => (DateTime)PropertyBag[ContactSchema.WeddingAnniversary];
         set => PropertyBag[ContactSchema.WeddingAnniversary] = value;
     }
 

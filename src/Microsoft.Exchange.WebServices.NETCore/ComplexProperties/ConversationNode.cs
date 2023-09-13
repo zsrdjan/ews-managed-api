@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to a GetConversationItems operation.
 /// </summary>
+[PublicAPI]
 public sealed class ConversationNode : ComplexProperty
 {
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConversationNode" /> class.
@@ -38,7 +41,7 @@ public sealed class ConversationNode : ComplexProperty
     /// <param name="propertySet">The property set.</param>
     internal ConversationNode(PropertySet propertySet)
     {
-        this.propertySet = propertySet;
+        _propertySet = propertySet;
     }
 
     /// <summary>
@@ -66,26 +69,32 @@ public sealed class ConversationNode : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.InternetMessageId:
+            {
                 InternetMessageId = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.ParentInternetMessageId:
+            {
                 ParentInternetMessageId = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.Items:
+            {
                 Items = reader.ReadServiceObjectsCollectionFromXml(
                     XmlNamespace.Types,
                     XmlElementNames.Items,
                     GetObjectInstance,
-                    true, /* clearPropertyBag */
-                    propertySet, /* requestedPropertySet */
+                    true,
+                    _propertySet,
                     false
-                ); /* summaryPropertiesOnly */
+                );
                 return true;
+            }
 
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -104,7 +113,7 @@ public sealed class ConversationNode : ComplexProperty
     ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal string GetXmlElementName()
+    internal static string GetXmlElementName()
     {
         return XmlElementNames.ConversationNode;
     }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a meeting cancellation message.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.CancelCalendarItem, ReturnedByServer = false)]
 public sealed class CancelMeetingMessage : CalendarResponseMessageBase<MeetingCancellation>
 {

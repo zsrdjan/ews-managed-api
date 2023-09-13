@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a reply to a post item.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.PostReplyItem, ReturnedByServer = false)]
 public sealed class PostReply : ServiceObject
 {
-    private readonly Item referenceItem;
+    private readonly Item _referenceItem;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PostReply" /> class.
@@ -44,7 +47,7 @@ public sealed class PostReply : ServiceObject
 
         referenceItem.ThrowIfThisIsNew();
 
-        this.referenceItem = referenceItem;
+        _referenceItem = referenceItem;
     }
 
     /// <summary>
@@ -70,14 +73,15 @@ public sealed class PostReply : ServiceObject
     /// </summary>
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
+    /// <param name="token"></param>
     /// <returns>Created PostItem.</returns>
     internal async Task<PostItem> InternalCreate(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition? messageDisposition,
         CancellationToken token
     )
     {
-        ((ItemId)PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(referenceItem.Id);
+        ((ItemId)PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(_referenceItem.Id);
 
         var items = await Service.InternalCreateResponseObject(this, parentFolderId, messageDisposition, token);
 
@@ -97,6 +101,7 @@ public sealed class PostReply : ServiceObject
     ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
         PropertySet propertySet,
         CancellationToken token
@@ -111,6 +116,7 @@ public sealed class PostReply : ServiceObject
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
     /// <param name="affectedTaskOccurrences">Indicate which occurrence of a recurring task should be deleted.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalDelete(
         DeleteMode deleteMode,
         SendCancellationsMode? sendCancellationsMode,
@@ -127,29 +133,31 @@ public sealed class PostReply : ServiceObject
     /// <returns>A PostItem representing the posted reply.</returns>
     public async Task<PostItem> Save(CancellationToken token = default)
     {
-        return (PostItem)await InternalCreate(null, null, token).ConfigureAwait(false);
+        return await InternalCreate(null, null, token).ConfigureAwait(false);
     }
 
     /// <summary>
     ///     Saves the post reply in the specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save the post reply.</param>
+    /// <param name="token"></param>
     /// <returns>A PostItem representing the posted reply.</returns>
     public async Task<PostItem> Save(FolderId destinationFolderId, CancellationToken token = default)
     {
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+        EwsUtilities.ValidateParam(destinationFolderId);
 
-        return (PostItem)await InternalCreate(destinationFolderId, null, token).ConfigureAwait(false);
+        return await InternalCreate(destinationFolderId, null, token).ConfigureAwait(false);
     }
 
     /// <summary>
     ///     Saves the post reply in a specified folder. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save the post reply.</param>
+    /// <param name="token"></param>
     /// <returns>A PostItem representing the posted reply.</returns>
     public async Task<PostItem> Save(WellKnownFolderName destinationFolderName, CancellationToken token = default)
     {
-        return (PostItem)await InternalCreate(new FolderId(destinationFolderName), null, token).ConfigureAwait(false);
+        return await InternalCreate(new FolderId(destinationFolderName), null, token).ConfigureAwait(false);
     }
 
 

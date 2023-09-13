@@ -37,9 +37,9 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     /// <summary>
     ///     Underlying HttpWebRequest.
     /// </summary>
-    readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
-    readonly HttpClientHandler _httpClientHandler;
+    private readonly HttpClientHandler _httpClientHandler;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebRequest" /> class.
@@ -49,15 +49,15 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     {
         Method = "GET";
         RequestUri = uri;
+
         _httpClientHandler = new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
         };
+
         _httpClient = new HttpClient(_httpClientHandler);
     }
 
-
-    #region IEwsHttpWebRequest Members
 
     /// <summary>
     ///     Aborts this instance.
@@ -83,8 +83,10 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     /// </returns>
     public async Task<IEwsHttpWebResponse> GetResponse(CancellationToken token)
     {
-        var message = new HttpRequestMessage(new HttpMethod(Method), RequestUri);
-        message.Content = new StringContent(Content);
+        var message = new HttpRequestMessage(new HttpMethod(Method), RequestUri)
+        {
+            Content = new StringContent(Content)
+        };
 
         if (!string.IsNullOrEmpty(ContentType))
         {
@@ -105,7 +107,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
             message.Headers.Accept.ParseAdd(Accept);
         }
 
-        HttpResponseMessage response = null;
+        HttpResponseMessage? response;
         try
         {
             response = await _httpClient.SendAsync(message, token);
@@ -177,7 +179,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     ///     An <see cref="T:System.Net.ICredentials" /> that contains the authentication credentials associated with the
     ///     request. The default is null.
     /// </returns>
-    public ICredentials Credentials
+    public ICredentials? Credentials
     {
         get => _httpClientHandler.Credentials;
         set => _httpClientHandler.Credentials = value;
@@ -202,7 +204,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     /// <summary>
     ///     Gets or sets proxy information for the request.
     /// </summary>
-    public IWebProxy Proxy
+    public IWebProxy? Proxy
     {
         get => _httpClientHandler.Proxy;
         set => _httpClientHandler.Proxy = value;
@@ -278,6 +280,4 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     ///     Gets or sets the name of the connection group for the request.
     /// </summary>
     public string ConnectionGroupName { get; set; }
-
-    #endregion
 }

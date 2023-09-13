@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a Persona. Properties available on Personas are defined in the PersonaSchema class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.Persona)]
 public class Persona : Item
@@ -71,8 +74,9 @@ public class Persona : Item
     /// <param name="service">The service to use to bind to the Persona.</param>
     /// <param name="id">The Id of the Persona to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A Persona instance representing the Persona corresponding to the specified Id.</returns>
-    public static new Task<Persona> Bind(
+    public new static Task<Persona> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -89,7 +93,7 @@ public class Persona : Item
     /// <param name="service">The service to use to bind to the Persona.</param>
     /// <param name="id">The Id of the Persona to bind to.</param>
     /// <returns>A Persona instance representing the Persona corresponding to the specified Id.</returns>
-    public static new Task<Persona> Bind(ExchangeService service, ItemId id)
+    public new static Task<Persona> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }
@@ -119,14 +123,6 @@ public class Persona : Item
     internal override PropertyDefinition GetIdPropertyDefinition()
     {
         return PersonaSchema.PersonaId;
-    }
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    internal override void Validate()
-    {
-        base.Validate();
     }
 
 

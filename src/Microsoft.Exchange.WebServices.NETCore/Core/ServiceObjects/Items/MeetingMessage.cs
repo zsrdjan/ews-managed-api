@@ -128,7 +128,7 @@ public class MeetingMessage : EmailMessage
     /// <summary>
     ///     Gets the isorganizer property for this meeting
     /// </summary>
-    public bool? IsOrganizer => (bool?)PropertyBag[MeetingMessageSchema.IsOrganizer];
+    public bool IsOrganizer => (bool)PropertyBag[MeetingMessageSchema.IsOrganizer];
 
     /// <summary>
     ///     Gets the type of response the meeting message represents.
@@ -143,12 +143,12 @@ public class MeetingMessage : EmailMessage
     /// <summary>
     ///     Gets the ICalendar RecurrenceId.
     /// </summary>
-    public DateTime? ICalRecurrenceId => (DateTime?)PropertyBag[MeetingMessageSchema.ICalRecurrenceId];
+    public DateTime ICalRecurrenceId => (DateTime)PropertyBag[MeetingMessageSchema.ICalRecurrenceId];
 
     /// <summary>
     ///     Gets the ICalendar DateTimeStamp.
     /// </summary>
-    public DateTime? ICalDateTimeStamp => (DateTime?)PropertyBag[MeetingMessageSchema.ICalDateTimeStamp];
+    public DateTime ICalDateTimeStamp => (DateTime)PropertyBag[MeetingMessageSchema.ICalDateTimeStamp];
 
     #endregion
 }

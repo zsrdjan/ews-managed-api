@@ -25,28 +25,26 @@
 
 using System.Security.Cryptography.X509Certificates;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     ClientCertificateCredentials wraps an instance of X509CertificateCollection used for client certification-based
 ///     authentication.
 /// </summary>
+[PublicAPI]
 public sealed class ClientCertificateCredentials : ExchangeCredentials
 {
-    /// <summary>
-    ///     Collection of client certificates.
-    /// </summary>
-    private readonly X509CertificateCollection clientCertificates;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClientCertificateCredentials" /> class.
     /// </summary>
     /// <param name="clientCertificates">The client certificates.</param>
     public ClientCertificateCredentials(X509CertificateCollection clientCertificates)
     {
-        EwsUtilities.ValidateParam(clientCertificates, "clientCertificates");
+        EwsUtilities.ValidateParam(clientCertificates);
 
-        this.clientCertificates = clientCertificates;
+        ClientCertificates = clientCertificates;
     }
 
     /// <summary>
@@ -61,5 +59,5 @@ public sealed class ClientCertificateCredentials : ExchangeCredentials
     /// <summary>
     ///     Gets the client certificates collection.
     /// </summary>
-    public X509CertificateCollection ClientCertificates => clientCertificates;
+    public X509CertificateCollection ClientCertificates { get; }
 }

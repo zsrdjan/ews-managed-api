@@ -70,7 +70,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <returns>The list of items created or modified as a result of the "creation" of the response object.</returns>
     internal async Task<List<Item>> InternalCreateResponseObject(
         ServiceObject responseObject,
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition? messageDisposition,
         CancellationToken token
     )

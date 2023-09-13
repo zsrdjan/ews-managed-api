@@ -25,16 +25,19 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     WSSecurityBasedCredentials is the base class for all credential classes using WS-Security.
 /// </summary>
+[PublicAPI]
 public abstract class WSSecurityBasedCredentials : ExchangeCredentials
 {
     // The WS-Addressing headers format string to use for adding the WS-Addressing headers.
     // Fill-Ins: {0} = Web method name; {1} = EWS URL
-    internal const string WsAddressingHeadersFormat =
+    private const string WsAddressingHeadersFormat =
         "<wsa:Action soap:mustUnderstand='1'>http://schemas.microsoft.com/exchange/services/2006/messages/{0}</wsa:Action>" +
         "<wsa:ReplyTo><wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address></wsa:ReplyTo>" +
         "<wsa:To soap:mustUnderstand='1'>{1}</wsa:To>";
@@ -42,24 +45,22 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     // The WS-Security header format string to use for adding the WS-Security header.
     // Fill-Ins:
     //     {0} = EncryptedData block (the token)
-    internal const string WsSecurityHeaderFormat = "<wsse:Security soap:mustUnderstand='1'>" +
-                                                   "  {0}" + // EncryptedData (token)
-                                                   "</wsse:Security>";
+    private const string WsSecurityHeaderFormat = "<wsse:Security soap:mustUnderstand='1'>" +
+                                                  "  {0}" + // EncryptedData (token)
+                                                  "</wsse:Security>";
 
-    internal const string WsuTimeStampFormat = "<wsu:Timestamp>" +
-                                               "<wsu:Created>{0:yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'}</wsu:Created>" +
-                                               "<wsu:Expires>{1:yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'}</wsu:Expires>" +
-                                               "</wsu:Timestamp>";
+    private const string WsuTimeStampFormat = "<wsu:Timestamp>" +
+                                              "<wsu:Created>{0:yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'}</wsu:Created>" +
+                                              "<wsu:Expires>{1:yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'}</wsu:Expires>" +
+                                              "</wsu:Timestamp>";
 
     /// <summary>
     ///     Path suffix for WS-Security endpoint.
     /// </summary>
     internal const string WsSecurityPathSuffix = "/wssecurity";
 
-    private readonly bool addTimestamp;
-    private static XmlNamespaceManager namespaceManager;
-    private string securityToken;
-    private Uri ewsUrl;
+    private readonly bool _addTimestamp;
+    private static XmlNamespaceManager? _namespaceManager;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="WSSecurityBasedCredentials" /> class.
@@ -74,7 +75,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// <param name="securityToken">The security token.</param>
     internal WSSecurityBasedCredentials(string securityToken)
     {
-        this.securityToken = securityToken;
+        SecurityToken = securityToken;
     }
 
     /// <summary>
@@ -82,10 +83,10 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// </summary>
     /// <param name="securityToken">The security token.</param>
     /// <param name="addTimestamp">Timestamp should be added.</param>
-    internal WSSecurityBasedCredentials(string securityToken, bool addTimestamp)
+    internal WSSecurityBasedCredentials(string? securityToken, bool addTimestamp)
     {
-        this.securityToken = securityToken;
-        this.addTimestamp = addTimestamp;
+        SecurityToken = securityToken;
+        _addTimestamp = addTimestamp;
     }
 
     /// <summary>
@@ -123,7 +124,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// <param name="webMethodName">The Web method being called.</param>
     internal override void SerializeExtraSoapHeaders(XmlWriter writer, string webMethodName)
     {
-        SerializeWSAddressingHeaders(writer, webMethodName);
+        SerializeWsAddressingHeaders(writer, webMethodName);
         SerializeWSSecurityHeaders(writer);
     }
 
@@ -132,7 +133,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// </summary>
     /// <param name="xmlWriter">The XML writer to serialize the headers to.</param>
     /// <param name="webMethodName">Web method being called</param>
-    private void SerializeWSAddressingHeaders(XmlWriter xmlWriter, string webMethodName)
+    private void SerializeWsAddressingHeaders(XmlWriter xmlWriter, string webMethodName)
     {
         EwsUtilities.Assert(
             webMethodName != null,
@@ -141,13 +142,13 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         );
 
         EwsUtilities.Assert(
-            ewsUrl != null,
+            EwsUrl != null,
             "WSSecurityBasedCredentials.SerializeWSAddressingHeaders",
             "EWS Url cannot be null!"
         );
 
         // Format the WS-Addressing headers.
-        var wsAddressingHeaders = string.Format(WsAddressingHeadersFormat, webMethodName, ewsUrl);
+        var wsAddressingHeaders = string.Format(WsAddressingHeadersFormat, webMethodName, EwsUrl);
 
         // And write them out...
         xmlWriter.WriteRaw(wsAddressingHeaders);
@@ -160,7 +161,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     internal override void SerializeWSSecurityHeaders(XmlWriter xmlWriter)
     {
         EwsUtilities.Assert(
-            securityToken != null,
+            SecurityToken != null,
             "WSSecurityBasedCredentials.SerializeWSSecurityHeaders",
             "Security token cannot be null!"
         );
@@ -170,15 +171,15 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         //   <wsu:Expires>2007-09-20T01:18:10.468Z</wsu:Expires>
         // </wsu:Timestamp>
         //
-        string timestamp = null;
-        if (addTimestamp)
+        string? timestamp = null;
+        if (_addTimestamp)
         {
             var utcNow = DateTime.UtcNow;
             timestamp = string.Format(WsuTimeStampFormat, utcNow, utcNow.AddMinutes(5));
         }
 
         // Format the WS-Security header based on all the information we have.
-        var wsSecurityHeader = string.Format(WsSecurityHeaderFormat, timestamp + securityToken);
+        var wsSecurityHeader = string.Format(WsSecurityHeaderFormat, timestamp + SecurityToken);
 
         // And write the header out...
         xmlWriter.WriteRaw(wsSecurityHeader);
@@ -197,20 +198,12 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// <summary>
     ///     Gets or sets the security token.
     /// </summary>
-    internal string SecurityToken
-    {
-        get => securityToken;
-        set => securityToken = value;
-    }
+    internal string? SecurityToken { get; set; }
 
     /// <summary>
     ///     Gets or sets the EWS URL.
     /// </summary>
-    internal Uri EwsUrl
-    {
-        get => ewsUrl;
-        set => ewsUrl = value;
-    }
+    internal Uri EwsUrl { get; set; }
 
     /// <summary>
     ///     Gets the XmlNamespaceManager which is used to select node during signing the message.
@@ -219,26 +212,26 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     {
         get
         {
-            if (namespaceManager == null)
+            if (_namespaceManager == null)
             {
-                namespaceManager = new XmlNamespaceManager(new NameTable());
-                namespaceManager.AddNamespace(
+                _namespaceManager = new XmlNamespaceManager(new NameTable());
+                _namespaceManager.AddNamespace(
                     EwsUtilities.WsSecurityUtilityNamespacePrefix,
                     EwsUtilities.WsSecurityUtilityNamespace
                 );
-                namespaceManager.AddNamespace(
+                _namespaceManager.AddNamespace(
                     EwsUtilities.WsAddressingNamespacePrefix,
                     EwsUtilities.WsAddressingNamespace
                 );
-                namespaceManager.AddNamespace(EwsUtilities.EwsSoapNamespacePrefix, EwsUtilities.EwsSoapNamespace);
-                namespaceManager.AddNamespace(EwsUtilities.EwsTypesNamespacePrefix, EwsUtilities.EwsTypesNamespace);
-                namespaceManager.AddNamespace(
+                _namespaceManager.AddNamespace(EwsUtilities.EwsSoapNamespacePrefix, EwsUtilities.EwsSoapNamespace);
+                _namespaceManager.AddNamespace(EwsUtilities.EwsTypesNamespacePrefix, EwsUtilities.EwsTypesNamespace);
+                _namespaceManager.AddNamespace(
                     EwsUtilities.WsSecuritySecExtNamespacePrefix,
                     EwsUtilities.WsSecuritySecExtNamespace
                 );
             }
 
-            return namespaceManager;
+            return _namespaceManager;
         }
     }
 }

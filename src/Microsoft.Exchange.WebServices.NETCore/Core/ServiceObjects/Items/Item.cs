@@ -208,8 +208,9 @@ public class Item : ServiceObject
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
     /// <param name="sendInvitationsMode">The send invitations mode.</param>
+    /// <param name="token"></param>
     internal async System.Threading.Tasks.Task InternalCreate(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition? messageDisposition,
         SendInvitationsMode? sendInvitationsMode,
         CancellationToken token
@@ -224,11 +225,11 @@ public class Item : ServiceObject
                 this,
                 parentFolderId,
                 messageDisposition,
-                sendInvitationsMode.HasValue ? sendInvitationsMode : DefaultSendInvitationsMode,
+                sendInvitationsMode ?? DefaultSendInvitationsMode,
                 token
             );
 
-            await Attachments.Save();
+            await Attachments.Save(token);
         }
     }
 
@@ -239,9 +240,10 @@ public class Item : ServiceObject
     /// <param name="conflictResolutionMode">The conflict resolution mode.</param>
     /// <param name="messageDisposition">The message disposition.</param>
     /// <param name="sendInvitationsOrCancellationsMode">The send invitations or cancellations mode.</param>
+    /// <param name="token"></param>
     /// <returns>Updated item.</returns>
     internal Task<Item?> InternalUpdate(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         ConflictResolutionMode conflictResolutionMode,
         MessageDisposition? messageDisposition,
         SendInvitationsOrCancellationsMode? sendInvitationsOrCancellationsMode,
@@ -266,6 +268,7 @@ public class Item : ServiceObject
     /// <param name="messageDisposition">The message disposition.</param>
     /// <param name="sendInvitationsOrCancellationsMode">The send invitations or cancellations mode.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
+    /// <param name="token"></param>
     /// <returns>Updated item.</returns>
     internal async Task<Item?> InternalUpdate(
         FolderId parentFolderId,
@@ -288,8 +291,7 @@ public class Item : ServiceObject
                 parentFolderId,
                 conflictResolutionMode,
                 messageDisposition,
-                sendInvitationsOrCancellationsMode.HasValue ? sendInvitationsOrCancellationsMode
-                    : DefaultSendInvitationsOrCancellationsMode,
+                sendInvitationsOrCancellationsMode ?? DefaultSendInvitationsOrCancellationsMode,
                 suppressReadReceipts,
                 token
             );
@@ -300,7 +302,7 @@ public class Item : ServiceObject
         if (HasUnprocessedAttachmentChanges())
         {
             Attachments.Validate();
-            await Attachments.Save();
+            await Attachments.Save(token);
         }
 
         return returnedItem;
@@ -515,7 +517,7 @@ public class Item : ServiceObject
     ///     Gets a list of extended properties defined on this object.
     /// </summary>
     /// <returns>Extended properties collection.</returns>
-    internal override ExtendedPropertyCollection GetExtendedProperties()
+    internal override ExtendedPropertyCollection? GetExtendedProperties()
     {
         return ExtendedProperties;
     }
@@ -903,7 +905,7 @@ public class Item : ServiceObject
     /// <summary>
     ///     Gets the retention date.
     /// </summary>
-    public DateTime? RetentionDate => (DateTime?)PropertyBag[ItemSchema.RetentionDate];
+    public DateTime RetentionDate => (DateTime)PropertyBag[ItemSchema.RetentionDate];
 
     /// <summary>
     ///     Gets the item Preview.
@@ -941,7 +943,7 @@ public class Item : ServiceObject
     /// <summary>
     ///     Gets a value indicating whether the item mentions me.
     /// </summary>
-    public bool? MentionedMe => (bool?)PropertyBag[ItemSchema.MentionedMe];
+    public bool MentionedMe => (bool)PropertyBag[ItemSchema.MentionedMe];
 
     /// <summary>
     ///     Gets the default setting for how to treat affected task occurrences on Delete.

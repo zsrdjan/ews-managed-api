@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base class for e-mail related responses (Reply, Reply all and Forward).
 /// </summary>
+[PublicAPI]
 public sealed class ResponseMessage : ResponseObject<EmailMessage>
 {
-    private readonly ResponseMessageType responseType;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ResponseMessage" /> class.
     /// </summary>
@@ -40,7 +41,7 @@ public sealed class ResponseMessage : ResponseObject<EmailMessage>
     internal ResponseMessage(Item referenceItem, ResponseMessageType responseType)
         : base(referenceItem)
     {
-        this.responseType = responseType;
+        ResponseType = responseType;
     }
 
     /// <summary>
@@ -77,28 +78,36 @@ public sealed class ResponseMessage : ResponseObject<EmailMessage>
     /// </remarks>
     internal override string GetXmlElementNameOverride()
     {
-        switch (responseType)
+        switch (ResponseType)
         {
             case ResponseMessageType.Reply:
+            {
                 return XmlElementNames.ReplyToItem;
+            }
             case ResponseMessageType.ReplyAll:
+            {
                 return XmlElementNames.ReplyAllToItem;
+            }
             case ResponseMessageType.Forward:
+            {
                 return XmlElementNames.ForwardItem;
+            }
             default:
+            {
                 EwsUtilities.Assert(
                     false,
                     "ResponseMessage.GetXmlElementNameOverride",
                     "An unexpected value for responseType could not be handled."
                 );
                 return null; // Because the compiler wants it
+            }
         }
     }
 
     /// <summary>
     ///     Gets a value indicating the type of response this object represents.
     /// </summary>
-    public ResponseMessageType ResponseType => responseType;
+    public ResponseMessageType ResponseType { get; }
 
 
     #region Properties

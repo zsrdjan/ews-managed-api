@@ -25,16 +25,17 @@
 
 using System.Net;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     WebCredentials wraps an instance of ICredentials used for password-based authentication schemes such as basic,
 ///     digest, NTLM, and Kerberos authentication.
 /// </summary>
+[PublicAPI]
 public sealed class WebCredentials : ExchangeCredentials
 {
-    private readonly ICredentials credentials;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="WebCredentials" /> class to use
     ///     the default network credentials.
@@ -51,9 +52,9 @@ public sealed class WebCredentials : ExchangeCredentials
     /// <param name="credentials">Credentials to use.</param>
     public WebCredentials(ICredentials credentials)
     {
-        EwsUtilities.ValidateParam(credentials, "credentials");
+        EwsUtilities.ValidateParam(credentials);
 
-        this.credentials = credentials;
+        Credentials = credentials;
     }
 
     /// <summary>
@@ -83,14 +84,14 @@ public sealed class WebCredentials : ExchangeCredentials
     /// <param name="request">The request.</param>
     internal override void PrepareWebRequest(IEwsHttpWebRequest request)
     {
-        request.Credentials = credentials;
+        request.Credentials = Credentials;
     }
 
     /// <summary>
     ///     Gets the Credentials from this instance.
     /// </summary>
     /// <value>The credentials.</value>
-    public ICredentials Credentials => credentials;
+    public ICredentials Credentials { get; }
 
     /// <summary>
     ///     Adjusts the URL endpoint based on the credentials.

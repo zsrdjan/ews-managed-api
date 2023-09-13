@@ -402,7 +402,7 @@ public abstract class ExchangeServiceBase
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>DateTime</returns>
-    internal DateTime? ConvertUniversalDateTimeStringToLocalDateTime(string value)
+    internal DateTime? ConvertUniversalDateTimeStringToLocalDateTime(string? value)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -440,7 +440,7 @@ public abstract class ExchangeServiceBase
     /// </summary>
     /// <param name="value">The string value to parse.</param>
     /// <returns>The parsed DateTime value.</returns>
-    internal static DateTime? ConvertStartDateToUnspecifiedDateTime(string value)
+    internal static DateTime? ConvertStartDateToUnspecifiedDateTime(string? value)
     {
         if (string.IsNullOrEmpty(value))
         {

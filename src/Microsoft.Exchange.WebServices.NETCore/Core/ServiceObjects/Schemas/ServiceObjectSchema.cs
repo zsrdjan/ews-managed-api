@@ -132,7 +132,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
             if (fieldInfo.FieldType == typeof(PropertyDefinition) ||
                 fieldInfo.FieldType.GetTypeInfo().IsSubclassOf(typeof(PropertyDefinition)))
             {
-                var propertyDefinition = (PropertyDefinition)fieldInfo.GetValue(null);
+                var propertyDefinition = (PropertyDefinition?)fieldInfo.GetValue(null);
                 propFieldDelegate(propertyDefinition, fieldInfo);
             }
         }
@@ -150,7 +150,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     {
         ForeachPublicStaticPropertyFieldInType(
             type,
-            delegate(PropertyDefinition propertyDefinition, FieldInfo fieldInfo)
+            (propertyDefinition, _) =>
             {
                 // Some property definitions descend from ServiceObjectPropertyDefinition but don't have
                 // a Uri, like ExtendedProperties. Ignore them.
@@ -256,9 +256,6 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
 
     private readonly Dictionary<string, PropertyDefinition> _properties = new();
     private readonly List<PropertyDefinition> _visibleProperties = new();
-    private readonly List<PropertyDefinition> _firstClassProperties = new();
-    private readonly List<PropertyDefinition> _firstClassSummaryProperties = new();
-    private readonly List<IndexedPropertyDefinition> _indexedProperties = new();
 
     /// <summary>
     ///     Registers a schema property.
@@ -278,13 +275,13 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
         // it to the list of firstClassProperties.
         if (!property.HasFlag(PropertyDefinitionFlags.MustBeExplicitlyLoaded))
         {
-            _firstClassProperties.Add(property);
+            FirstClassProperties.Add(property);
         }
 
         // If this property can be found, add it to the list of firstClassSummaryProperties
         if (property.HasFlag(PropertyDefinitionFlags.CanFind))
         {
-            _firstClassSummaryProperties.Add(property);
+            FirstClassSummaryProperties.Add(property);
         }
     }
 
@@ -312,7 +309,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     /// <param name="indexedProperty">The indexed property to register.</param>
     internal void RegisterIndexedProperty(IndexedPropertyDefinition indexedProperty)
     {
-        _indexedProperties.Add(indexedProperty);
+        IndexedProperties.Add(indexedProperty);
     }
 
     /// <summary>
@@ -325,17 +322,17 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     /// <summary>
     ///     Gets the list of first class properties for this service object type.
     /// </summary>
-    internal List<PropertyDefinition> FirstClassProperties => _firstClassProperties;
+    internal List<PropertyDefinition> FirstClassProperties { get; } = new();
 
     /// <summary>
     ///     Gets the list of first class summary properties for this service object type.
     /// </summary>
-    internal List<PropertyDefinition> FirstClassSummaryProperties => _firstClassSummaryProperties;
+    internal List<PropertyDefinition> FirstClassSummaryProperties { get; } = new();
 
     /// <summary>
     ///     Gets the list of indexed properties for this service object type.
     /// </summary>
-    internal List<IndexedPropertyDefinition> IndexedProperties => _indexedProperties;
+    internal List<IndexedPropertyDefinition> IndexedProperties { get; } = new();
 
     /// <summary>
     ///     Tries to get property definition.

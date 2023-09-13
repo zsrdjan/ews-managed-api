@@ -364,9 +364,9 @@ public class EmailMessage : Item
     /// <summary>
     ///     Gets or sets a value indicating whether a response is requested for the e-mail message.
     /// </summary>
-    public bool? IsResponseRequested
+    public bool IsResponseRequested
     {
-        get => (bool?)PropertyBag[EmailMessageSchema.IsResponseRequested];
+        get => (bool)PropertyBag[EmailMessageSchema.IsResponseRequested];
         set => PropertyBag[EmailMessageSchema.IsResponseRequested] = value;
     }
 

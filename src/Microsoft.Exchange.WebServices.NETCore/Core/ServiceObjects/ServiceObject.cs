@@ -24,29 +24,28 @@
  */
 
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base abstract class for all item and folder types.
 /// </summary>
+[PublicAPI]
 public abstract class ServiceObject
 {
-    private readonly object lockObject = new object();
-    private ExchangeService service;
-    private readonly PropertyBag propertyBag;
-    private string xmlElementName;
+    private readonly object _lockObject = new();
+    private string _xmlElementName;
 
     /// <summary>
     ///     Triggers dispatch of the change event.
     /// </summary>
     internal void Changed()
     {
-        if (OnChange != null)
-        {
-            OnChange(this);
-        }
+        OnChange?.Invoke(this);
     }
 
     /// <summary>
@@ -87,7 +86,7 @@ public abstract class ServiceObject
     /// </remarks>
     internal virtual string GetXmlElementNameOverride()
     {
-        return null;
+        return null!;
     }
 
     /// <summary>
@@ -97,21 +96,19 @@ public abstract class ServiceObject
     /// <returns>The XML element name associated with this type.</returns>
     internal string GetXmlElementName()
     {
-        if (string.IsNullOrEmpty(xmlElementName))
+        if (string.IsNullOrEmpty(_xmlElementName))
         {
-            xmlElementName = GetXmlElementNameOverride();
+            _xmlElementName = GetXmlElementNameOverride();
 
-            if (string.IsNullOrEmpty(xmlElementName))
+            if (string.IsNullOrEmpty(_xmlElementName))
             {
-                lock (lockObject)
+                lock (_lockObject)
                 {
                     foreach (Attribute attribute in GetType().GetTypeInfo().GetCustomAttributes(false))
                     {
-                        var definitionAttribute = attribute as ServiceObjectDefinitionAttribute;
-
-                        if (definitionAttribute != null)
+                        if (attribute is ServiceObjectDefinitionAttribute definitionAttribute)
                         {
-                            xmlElementName = definitionAttribute.XmlElementName;
+                            _xmlElementName = definitionAttribute.XmlElementName;
                         }
                     }
                 }
@@ -119,12 +116,12 @@ public abstract class ServiceObject
         }
 
         EwsUtilities.Assert(
-            !string.IsNullOrEmpty(xmlElementName),
+            !string.IsNullOrEmpty(_xmlElementName),
             "EwsObject.GetXmlElementName",
             string.Format("The class {0} does not have an associated XML element name.", GetType().Name)
         );
 
-        return xmlElementName;
+        return _xmlElementName;
     }
 
     /// <summary>
@@ -158,7 +155,7 @@ public abstract class ServiceObject
     ///     Gets a value indicating whether a time zone SOAP header should be emitted in a CreateItem
     ///     or UpdateItem request so this item can be property saved or updated.
     /// </summary>
-    /// <param name="isUpdateOperation">Indicates whether the operation being petrformed is an update operation.</param>
+    /// <param name="isUpdateOperation">Indicates whether the operation being performed is an update operation.</param>
     /// <returns><c>true</c> if a time zone SOAP header should be emitted; otherwise, <c>false</c>.</returns>
     internal virtual bool GetIsTimeZoneHeaderRequired(bool isUpdateOperation)
     {
@@ -179,7 +176,7 @@ public abstract class ServiceObject
     /// <summary>
     ///     The property bag holding property values for this object.
     /// </summary>
-    internal PropertyBag PropertyBag => propertyBag;
+    internal PropertyBag PropertyBag { get; }
 
     /// <summary>
     ///     Internal constructor.
@@ -187,11 +184,11 @@ public abstract class ServiceObject
     /// <param name="service">EWS service to which this object belongs.</param>
     internal ServiceObject(ExchangeService service)
     {
-        EwsUtilities.ValidateParam(service, "service");
+        EwsUtilities.ValidateParam(service);
         EwsUtilities.ValidateServiceObjectVersion(this, service.RequestedServerVersion);
 
-        this.service = service;
-        propertyBag = new PropertyBag(this);
+        Service = service;
+        PropertyBag = new PropertyBag(this);
     }
 
     /// <summary>
@@ -218,12 +215,7 @@ public abstract class ServiceObject
     /// <param name="clearPropertyBag">if set to <c>true</c> [clear property bag].</param>
     internal void LoadFromXml(EwsServiceXmlReader reader, bool clearPropertyBag)
     {
-        PropertyBag.LoadFromXml(
-            reader,
-            clearPropertyBag,
-            null, /* propertySet */
-            false
-        ); /* summaryPropertiesOnly */
+        PropertyBag.LoadFromXml(reader, clearPropertyBag, null, false);
     }
 
     /// <summary>
@@ -281,6 +273,7 @@ public abstract class ServiceObject
     ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
+    /// <param name="token"></param>
     internal abstract Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
         PropertySet propertySet,
         CancellationToken token
@@ -292,6 +285,7 @@ public abstract class ServiceObject
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
     /// <param name="affectedTaskOccurrences">Indicate which occurrence of a recurring task should be deleted.</param>
+    /// <param name="token"></param>
     internal abstract Task<ServiceResponseCollection<ServiceResponse>> InternalDelete(
         DeleteMode deleteMode,
         SendCancellationsMode? sendCancellationsMode,
@@ -303,6 +297,7 @@ public abstract class ServiceObject
     ///     Loads the specified set of properties. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
+    /// <param name="token"></param>
     public Task<ServiceResponseCollection<ServiceResponse>> Load(
         PropertySet propertySet,
         CancellationToken token = default
@@ -328,14 +323,11 @@ public abstract class ServiceObject
     ///     Raised if this property hasn't been assigned or loaded. Raised for set if property
     ///     cannot be updated or deleted.
     /// </exception>
-    public object this[PropertyDefinitionBase propertyDefinition]
+    public object? this[PropertyDefinitionBase propertyDefinition]
     {
         get
         {
-            object propertyValue;
-
-            var propDef = propertyDefinition as PropertyDefinition;
-            if (propDef != null)
+            if (propertyDefinition is PropertyDefinition propDef)
             {
                 return PropertyBag[propDef];
             }
@@ -343,7 +335,7 @@ public abstract class ServiceObject
             var extendedPropDef = propertyDefinition as ExtendedPropertyDefinition;
             if (extendedPropDef != null)
             {
-                if (TryGetExtendedProperty(extendedPropDef, out propertyValue))
+                if (TryGetExtendedProperty(extendedPropDef, out object? propertyValue))
                 {
                     return propertyValue;
                 }
@@ -368,11 +360,14 @@ public abstract class ServiceObject
     /// <param name="propertyValue">The property value.</param>
     /// <typeparam name="T">Type of expected property value.</typeparam>
     /// <returns>True if property retrieved, false otherwise.</returns>
-    internal bool TryGetExtendedProperty<T>(ExtendedPropertyDefinition propertyDefinition, out T propertyValue)
+    internal bool TryGetExtendedProperty<T>(
+        ExtendedPropertyDefinition propertyDefinition,
+        [MaybeNullWhen(false)] out T propertyValue
+    )
     {
         var propertyCollection = GetExtendedProperties();
 
-        if ((propertyCollection != null) && propertyCollection.TryGetValue(propertyDefinition, out propertyValue))
+        if (propertyCollection != null && propertyCollection.TryGetValue(propertyDefinition, out propertyValue))
         {
             return true;
         }
@@ -387,7 +382,10 @@ public abstract class ServiceObject
     /// <param name="propertyDefinition">The property definition.</param>
     /// <param name="propertyValue">The property value.</param>
     /// <returns>True if property retrieved, false otherwise.</returns>
-    public bool TryGetProperty(PropertyDefinitionBase propertyDefinition, out object propertyValue)
+    public bool TryGetProperty(
+        PropertyDefinitionBase propertyDefinition,
+        [MaybeNullWhen(false)] out object propertyValue
+    )
     {
         return TryGetProperty<object>(propertyDefinition, out propertyValue);
     }
@@ -399,10 +397,9 @@ public abstract class ServiceObject
     /// <param name="propertyValue">The property value.</param>
     /// <typeparam name="T">Type of expected property value.</typeparam>
     /// <returns>True if property retrieved, false otherwise.</returns>
-    public bool TryGetProperty<T>(PropertyDefinitionBase propertyDefinition, out T propertyValue)
+    public bool TryGetProperty<T>(PropertyDefinitionBase propertyDefinition, [MaybeNullWhen(false)] out T propertyValue)
     {
-        var propDef = propertyDefinition as PropertyDefinition;
-        if (propDef != null)
+        if (propertyDefinition is PropertyDefinition propDef)
         {
             return PropertyBag.TryGetProperty(propDef, out propertyValue);
         }
@@ -431,9 +428,10 @@ public abstract class ServiceObject
             propDefs.Add(propDef);
         }
 
-        if (GetExtendedProperties() != null)
+        var properties = GetExtendedProperties();
+        if (properties != null)
         {
-            foreach (var extProp in GetExtendedProperties())
+            foreach (var extProp in properties)
             {
                 propDefs.Add(extProp.PropertyDefinition);
             }
@@ -445,11 +443,7 @@ public abstract class ServiceObject
     /// <summary>
     ///     Gets the ExchangeService the object is bound to.
     /// </summary>
-    public ExchangeService Service
-    {
-        get => service;
-        internal set => service = value;
-    }
+    public ExchangeService Service { get; internal set; }
 
     /// <summary>
     ///     The property definition for the Id of this object.
@@ -468,7 +462,7 @@ public abstract class ServiceObject
     {
         var idPropertyDefinition = GetIdPropertyDefinition();
 
-        object serviceId = null;
+        object? serviceId = null;
 
         if (idPropertyDefinition != null)
         {
@@ -501,7 +495,7 @@ public abstract class ServiceObject
     ///     Gets the extended properties collection.
     /// </summary>
     /// <returns>Extended properties collection.</returns>
-    internal virtual ExtendedPropertyCollection GetExtendedProperties()
+    internal virtual ExtendedPropertyCollection? GetExtendedProperties()
     {
         return null;
     }
@@ -509,5 +503,5 @@ public abstract class ServiceObject
     /// <summary>
     ///     Defines an event that is triggered when the service object changes.
     /// </summary>
-    internal event ServiceObjectChangedDelegate OnChange;
+    internal event ServiceObjectChangedDelegate? OnChange;
 }

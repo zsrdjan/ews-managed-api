@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an appointment or a meeting. Properties available on appointments are defined in the AppointmentSchema
 ///     class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.CalendarItem)]
 public class Appointment : Item, ICalendarActionProvider
@@ -77,8 +80,9 @@ public class Appointment : Item, ICalendarActionProvider
     /// <param name="service">The service to use to bind to the appointment.</param>
     /// <param name="id">The Id of the appointment to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>An Appointment instance representing the appointment corresponding to the specified Id.</returns>
-    public static new Task<Appointment> Bind(
+    public new static Task<Appointment> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -95,7 +99,7 @@ public class Appointment : Item, ICalendarActionProvider
     /// <param name="service">The service to use to bind to the appointment.</param>
     /// <param name="id">The Id of the appointment to bind to.</param>
     /// <returns>An Appointment instance representing the appointment corresponding to the specified Id.</returns>
-    public static new Task<Appointment> Bind(ExchangeService service, ItemId id)
+    public new static Task<Appointment> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }
@@ -216,11 +220,9 @@ public class Appointment : Item, ICalendarActionProvider
         {
             // If both StartTimeZone and EndTimeZone have been set or updated and are the same as the service's
             // time zone, we emit the time zone header and StartTimeZone and EndTimeZone are not emitted.
-            TimeZoneInfo startTimeZone;
-            TimeZoneInfo endTimeZone;
 
-            PropertyBag.TryGetProperty(AppointmentSchema.StartTimeZone, out startTimeZone);
-            PropertyBag.TryGetProperty(AppointmentSchema.EndTimeZone, out endTimeZone);
+            PropertyBag.TryGetProperty(AppointmentSchema.StartTimeZone, out TimeZoneInfo? startTimeZone);
+            PropertyBag.TryGetProperty(AppointmentSchema.EndTimeZone, out TimeZoneInfo? endTimeZone);
 
             return startTimeZone == Service.TimeZone || endTimeZone == Service.TimeZone;
         }
@@ -345,6 +347,7 @@ public class Appointment : Item, ICalendarActionProvider
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save this appointment.</param>
     /// <param name="sendInvitationsMode">Specifies if and how invitations should be sent if this appointment is a meeting.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task Save(
         WellKnownFolderName destinationFolderName,
         SendInvitationsMode sendInvitationsMode,
@@ -360,13 +363,14 @@ public class Appointment : Item, ICalendarActionProvider
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save this appointment.</param>
     /// <param name="sendInvitationsMode">Specifies if and how invitations should be sent if this appointment is a meeting.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task Save(
         FolderId destinationFolderId,
         SendInvitationsMode sendInvitationsMode,
         CancellationToken token = default
     )
     {
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+        EwsUtilities.ValidateParam(destinationFolderId);
 
         return InternalCreate(destinationFolderId, null, sendInvitationsMode, token);
     }
@@ -376,6 +380,7 @@ public class Appointment : Item, ICalendarActionProvider
     ///     Mutliple calls to EWS might be made if attachments have been added.
     /// </summary>
     /// <param name="sendInvitationsMode">Specifies if and how invitations should be sent if this appointment is a meeting.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task Save(SendInvitationsMode sendInvitationsMode, CancellationToken token = default)
     {
         return InternalCreate(null, null, sendInvitationsMode, token);
@@ -384,13 +389,14 @@ public class Appointment : Item, ICalendarActionProvider
     /// <summary>
     ///     Applies the local changes that have been made to this appointment. Calling this method results in at least one call
     ///     to EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added or removed.
+    ///     Multiple calls to EWS might be made if attachments have been added or removed.
     /// </summary>
     /// <param name="conflictResolutionMode">Specifies how conflicts should be resolved.</param>
     /// <param name="sendInvitationsOrCancellationsMode">
     ///     Specifies if and how invitations or cancellations should be sent if
     ///     this appointment is a meeting.
     /// </param>
+    /// <param name="token"></param>
     public Task<Item?> Update(
         ConflictResolutionMode conflictResolutionMode,
         SendInvitationsOrCancellationsMode sendInvitationsOrCancellationsMode,
@@ -405,6 +411,7 @@ public class Appointment : Item, ICalendarActionProvider
     /// </summary>
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Specifies if and how cancellations should be sent if this appointment is a meeting.</param>
+    /// <param name="token"></param>
     public Task<ServiceResponseCollection<ServiceResponse>> Delete(
         DeleteMode deleteMode,
         SendCancellationsMode sendCancellationsMode,
@@ -840,12 +847,12 @@ public class Appointment : Item, ICalendarActionProvider
     /// <summary>
     ///     Gets the ICalendar RecurrenceId.
     /// </summary>
-    public DateTime? ICalRecurrenceId => (DateTime?)PropertyBag[AppointmentSchema.ICalRecurrenceId];
+    public DateTime ICalRecurrenceId => (DateTime)PropertyBag[AppointmentSchema.ICalRecurrenceId];
 
     /// <summary>
     ///     Gets the ICalendar DateTimeStamp.
     /// </summary>
-    public DateTime? ICalDateTimeStamp => (DateTime?)PropertyBag[AppointmentSchema.ICalDateTimeStamp];
+    public DateTime ICalDateTimeStamp => (DateTime)PropertyBag[AppointmentSchema.ICalDateTimeStamp];
 
     /// <summary>
     ///     Gets or sets the Enhanced location object.

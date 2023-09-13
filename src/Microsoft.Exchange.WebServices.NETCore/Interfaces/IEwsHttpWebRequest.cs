@@ -91,7 +91,7 @@ internal interface IEwsHttpWebRequest : IDisposable
     ///     An <see cref="T:System.Net.ICredentials" /> that contains the authentication credentials associated with the
     ///     request. The default is null.
     /// </returns>
-    ICredentials Credentials { get; set; }
+    ICredentials? Credentials { get; set; }
 
     /// <summary>
     ///     Specifies a collection of the name/value pairs that make up the HTTP headers.
@@ -121,7 +121,7 @@ internal interface IEwsHttpWebRequest : IDisposable
     /// <summary>
     ///     Gets or sets proxy information for the request.
     /// </summary>
-    IWebProxy Proxy { get; set; }
+    IWebProxy? Proxy { get; set; }
 
     /// <summary>
     ///     Gets the original Uniform Resource Identifier (URI) of the request.

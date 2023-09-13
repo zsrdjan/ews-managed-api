@@ -30,15 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class EwsServiceXmlReader : EwsXmlReader
 {
-    #region Private members
-
-    private readonly ExchangeService service;
-
-    #endregion
-
-
-    #region Constructor
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsServiceXmlReader" /> class.
     /// </summary>
@@ -47,10 +38,8 @@ internal class EwsServiceXmlReader : EwsXmlReader
     internal EwsServiceXmlReader(Stream stream, ExchangeService service)
         : base(stream)
     {
-        this.service = service;
+        Service = service;
     }
-
-    #endregion
 
 
     /// <summary>
@@ -58,7 +47,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
     /// </summary>
     /// <param name="dateTimeString">The date time string to convert.</param>
     /// <returns>A DateTime representing the converted string.</returns>
-    private DateTime? ConvertStringToDateTime(string dateTimeString)
+    private DateTime? ConvertStringToDateTime(string? dateTimeString)
     {
         return Service.ConvertUniversalDateTimeStringToLocalDateTime(dateTimeString);
     }
@@ -68,7 +57,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
     /// </summary>
     /// <param name="dateTimeString">The date time string to convert.</param>
     /// <returns>A DateTime representing the converted string.</returns>
-    private DateTime? ConvertStringToUnspecifiedDate(string dateTimeString)
+    private static DateTime? ConvertStringToUnspecifiedDate(string? dateTimeString)
     {
         return ExchangeServiceBase.ConvertStartDateToUnspecifiedDateTime(dateTimeString);
     }
@@ -127,7 +116,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
     public List<TServiceObject> ReadServiceObjectsCollectionFromXml<TServiceObject>(
         XmlNamespace collectionXmlNamespace,
         string collectionXmlElementName,
-        GetObjectInstanceDelegate<TServiceObject> getObjectInstanceDelegate,
+        GetObjectInstanceDelegate<TServiceObject?> getObjectInstanceDelegate,
         bool clearPropertyBag,
         PropertySet requestedPropertySet,
         bool summaryPropertiesOnly
@@ -135,7 +124,6 @@ internal class EwsServiceXmlReader : EwsXmlReader
         where TServiceObject : ServiceObject
     {
         var serviceObjects = new List<TServiceObject>();
-        TServiceObject serviceObject = null;
 
         if (!IsStartElement(collectionXmlNamespace, collectionXmlElementName))
         {
@@ -150,7 +138,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
 
                 if (IsStartElement())
                 {
-                    serviceObject = getObjectInstanceDelegate(Service, LocalName);
+                    var serviceObject = getObjectInstanceDelegate(Service, LocalName);
 
                     if (serviceObject == null)
                     {
@@ -213,5 +201,5 @@ internal class EwsServiceXmlReader : EwsXmlReader
     ///     Gets the service.
     /// </summary>
     /// <value>The service.</value>
-    public ExchangeService Service => service;
+    public ExchangeService Service { get; }
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents retention policy tag object.
 /// </summary>
+[PublicAPI]
 public sealed class RetentionPolicyTag
 {
     /// <summary>
@@ -78,19 +81,17 @@ public sealed class RetentionPolicyTag
     {
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, XmlElementNames.RetentionPolicyTag);
 
-        var retentionPolicyTag = new RetentionPolicyTag();
-        retentionPolicyTag.DisplayName = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.DisplayName);
-        retentionPolicyTag.RetentionId =
-            new Guid(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.RetentionId));
-        retentionPolicyTag.RetentionPeriod = reader.ReadElementValue<int>(
-            XmlNamespace.Types,
-            XmlElementNames.RetentionPeriod
-        );
-        retentionPolicyTag.Type = reader.ReadElementValue<ElcFolderType>(XmlNamespace.Types, XmlElementNames.Type);
-        retentionPolicyTag.RetentionAction = reader.ReadElementValue<RetentionActionType>(
-            XmlNamespace.Types,
-            XmlElementNames.RetentionAction
-        );
+        var retentionPolicyTag = new RetentionPolicyTag
+        {
+            DisplayName = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.DisplayName),
+            RetentionId = new Guid(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.RetentionId)),
+            RetentionPeriod = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.RetentionPeriod),
+            Type = reader.ReadElementValue<ElcFolderType>(XmlNamespace.Types, XmlElementNames.Type),
+            RetentionAction = reader.ReadElementValue<RetentionActionType>(
+                XmlNamespace.Types,
+                XmlElementNames.RetentionAction
+            ),
+        };
 
         // Description is not a required property.
         reader.Read();
@@ -109,7 +110,7 @@ public sealed class RetentionPolicyTag
     /// <summary>
     ///     Retention policy tag display name.
     /// </summary>
-    public string DisplayName { get; set; }
+    public string? DisplayName { get; set; }
 
     /// <summary>
     ///     Retention Id.
@@ -134,7 +135,7 @@ public sealed class RetentionPolicyTag
     /// <summary>
     ///     Retention policy tag description.
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     ///     Is this a visible tag?

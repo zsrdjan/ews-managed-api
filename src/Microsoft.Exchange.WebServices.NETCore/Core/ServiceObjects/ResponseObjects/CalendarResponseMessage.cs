@@ -25,12 +25,15 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base class for accept, tentatively accept and decline response messages.
 /// </summary>
 /// <typeparam name="TMessage">The type of message that is created when this response message is saved.</typeparam>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class CalendarResponseMessage<TMessage> : CalendarResponseMessageBase<TMessage>
     where TMessage : EmailMessage

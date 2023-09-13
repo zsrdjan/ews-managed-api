@@ -31,7 +31,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 [ServiceObjectDefinition(XmlElementNames.RemoveItem, ReturnedByServer = false)]
 internal sealed class RemoveFromCalendar : ServiceObject
 {
-    private readonly Item referenceItem;
+    private readonly Item _referenceItem;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RemoveFromCalendar" /> class.
@@ -44,7 +44,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
 
         referenceItem.ThrowIfThisIsNew();
 
-        this.referenceItem = referenceItem;
+        _referenceItem = referenceItem;
     }
 
     /// <summary>
@@ -69,6 +69,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
         PropertySet propertySet,
         CancellationToken token
@@ -83,6 +84,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
     /// <param name="affectedTaskOccurrences">Indicate which occurrence of a recurring task should be deleted.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalDelete(
         DeleteMode deleteMode,
         SendCancellationsMode? sendCancellationsMode,
@@ -98,6 +100,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     /// </summary>
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
+    /// <param name="token"></param>
     /// <returns>A list of items that were created or modified as a results of this operation.</returns>
     internal Task<List<Item>> InternalCreate(
         FolderId parentFolderId,
@@ -105,7 +108,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
         CancellationToken token
     )
     {
-        ((ItemId)PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(referenceItem.Id);
+        ((ItemId)PropertyBag[ResponseObjectSchema.ReferenceItemId]).Assign(_referenceItem.Id);
 
         return Service.InternalCreateResponseObject(this, parentFolderId, messageDisposition, token);
     }

@@ -35,20 +35,14 @@ internal delegate object CreateServiceObjectWithAttachmentParam(ItemAttachment i
 /// </summary>
 internal class ServiceObjectInfo
 {
-    private readonly Dictionary<string, Type> xmlElementNameToServiceObjectClassMap;
-    private readonly Dictionary<Type, CreateServiceObjectWithServiceParam> serviceObjectConstructorsWithServiceParam;
-
-    private readonly Dictionary<Type, CreateServiceObjectWithAttachmentParam>
-        serviceObjectConstructorsWithAttachmentParam;
-
     /// <summary>
     ///     Default constructor
     /// </summary>
     internal ServiceObjectInfo()
     {
-        xmlElementNameToServiceObjectClassMap = new Dictionary<string, Type>();
-        serviceObjectConstructorsWithServiceParam = new Dictionary<Type, CreateServiceObjectWithServiceParam>();
-        serviceObjectConstructorsWithAttachmentParam = new Dictionary<Type, CreateServiceObjectWithAttachmentParam>();
+        XmlElementNameToServiceObjectClassMap = new Dictionary<string, Type>();
+        ServiceObjectConstructorsWithServiceParam = new Dictionary<Type, CreateServiceObjectWithServiceParam>();
+        ServiceObjectConstructorsWithAttachmentParam = new Dictionary<Type, CreateServiceObjectWithAttachmentParam>();
 
         InitializeServiceObjectClassMap();
     }
@@ -66,15 +60,15 @@ internal class ServiceObjectInfo
         AddServiceObjectType(
             XmlElementNames.CalendarItem,
             typeof(Appointment),
-            delegate(ExchangeService srv) { return new Appointment(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new Appointment(itemAttachment, isNew); }
+            srv => new Appointment(srv),
+            (itemAttachment, isNew) => new Appointment(itemAttachment, isNew)
         );
 
         // CalendarFolder
         AddServiceObjectType(
             XmlElementNames.CalendarFolder,
             typeof(CalendarFolder),
-            delegate(ExchangeService srv) { return new CalendarFolder(srv); },
+            srv => new CalendarFolder(srv),
             null
         );
 
@@ -82,15 +76,15 @@ internal class ServiceObjectInfo
         AddServiceObjectType(
             XmlElementNames.Contact,
             typeof(Contact),
-            delegate(ExchangeService srv) { return new Contact(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new Contact(itemAttachment); }
+            srv => new Contact(srv),
+            (itemAttachment, _) => new Contact(itemAttachment)
         );
 
         // ContactsFolder
         AddServiceObjectType(
             XmlElementNames.ContactsFolder,
             typeof(ContactsFolder),
-            delegate(ExchangeService srv) { return new ContactsFolder(srv); },
+            srv => new ContactsFolder(srv),
             null
         );
 
@@ -98,113 +92,88 @@ internal class ServiceObjectInfo
         AddServiceObjectType(
             XmlElementNames.DistributionList,
             typeof(ContactGroup),
-            delegate(ExchangeService srv) { return new ContactGroup(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new ContactGroup(itemAttachment); }
+            srv => new ContactGroup(srv),
+            (itemAttachment, _) => new ContactGroup(itemAttachment)
         );
 
         // Conversation
-        AddServiceObjectType(
-            XmlElementNames.Conversation,
-            typeof(Conversation),
-            delegate(ExchangeService srv) { return new Conversation(srv); },
-            null
-        );
+        AddServiceObjectType(XmlElementNames.Conversation, typeof(Conversation), srv => new Conversation(srv), null);
 
         // EmailMessage
         AddServiceObjectType(
             XmlElementNames.Message,
             typeof(EmailMessage),
-            delegate(ExchangeService srv) { return new EmailMessage(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new EmailMessage(itemAttachment); }
+            srv => new EmailMessage(srv),
+            (itemAttachment, _) => new EmailMessage(itemAttachment)
         );
 
         // Folder
-        AddServiceObjectType(
-            XmlElementNames.Folder,
-            typeof(Folder),
-            delegate(ExchangeService srv) { return new Folder(srv); },
-            null
-        );
+        AddServiceObjectType(XmlElementNames.Folder, typeof(Folder), srv => new Folder(srv), null);
 
         // Item
         AddServiceObjectType(
             XmlElementNames.Item,
             typeof(Item),
-            delegate(ExchangeService srv) { return new Item(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new Item(itemAttachment); }
+            srv => new Item(srv),
+            (itemAttachment, _) => new Item(itemAttachment)
         );
 
         // MeetingCancellation
         AddServiceObjectType(
             XmlElementNames.MeetingCancellation,
             typeof(MeetingCancellation),
-            delegate(ExchangeService srv) { return new MeetingCancellation(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new MeetingCancellation(itemAttachment); }
+            srv => new MeetingCancellation(srv),
+            (itemAttachment, _) => new MeetingCancellation(itemAttachment)
         );
 
         // MeetingMessage
         AddServiceObjectType(
             XmlElementNames.MeetingMessage,
             typeof(MeetingMessage),
-            delegate(ExchangeService srv) { return new MeetingMessage(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new MeetingMessage(itemAttachment); }
+            srv => new MeetingMessage(srv),
+            (itemAttachment, _) => new MeetingMessage(itemAttachment)
         );
 
         // MeetingRequest
         AddServiceObjectType(
             XmlElementNames.MeetingRequest,
             typeof(MeetingRequest),
-            delegate(ExchangeService srv) { return new MeetingRequest(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new MeetingRequest(itemAttachment); }
+            srv => new MeetingRequest(srv),
+            (itemAttachment, _) => new MeetingRequest(itemAttachment)
         );
 
         // MeetingResponse
         AddServiceObjectType(
             XmlElementNames.MeetingResponse,
             typeof(MeetingResponse),
-            delegate(ExchangeService srv) { return new MeetingResponse(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new MeetingResponse(itemAttachment); }
+            srv => new MeetingResponse(srv),
+            (itemAttachment, _) => new MeetingResponse(itemAttachment)
         );
 
         // Persona
-        AddServiceObjectType(
-            XmlElementNames.Persona,
-            typeof(Persona),
-            delegate(ExchangeService srv) { return new Persona(srv); },
-            null
-        );
+        AddServiceObjectType(XmlElementNames.Persona, typeof(Persona), srv => new Persona(srv), null);
 
         // PostItem
         AddServiceObjectType(
             XmlElementNames.PostItem,
             typeof(PostItem),
-            delegate(ExchangeService srv) { return new PostItem(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new PostItem(itemAttachment); }
+            srv => new PostItem(srv),
+            (itemAttachment, _) => new PostItem(itemAttachment)
         );
 
         // SearchFolder
-        AddServiceObjectType(
-            XmlElementNames.SearchFolder,
-            typeof(SearchFolder),
-            delegate(ExchangeService srv) { return new SearchFolder(srv); },
-            null
-        );
+        AddServiceObjectType(XmlElementNames.SearchFolder, typeof(SearchFolder), srv => new SearchFolder(srv), null);
 
         // Task
         AddServiceObjectType(
             XmlElementNames.Task,
             typeof(Task),
-            delegate(ExchangeService srv) { return new Task(srv); },
-            delegate(ItemAttachment itemAttachment, bool isNew) { return new Task(itemAttachment); }
+            srv => new Task(srv),
+            (itemAttachment, _) => new Task(itemAttachment)
         );
 
         // TasksFolder
-        AddServiceObjectType(
-            XmlElementNames.TasksFolder,
-            typeof(TasksFolder),
-            delegate(ExchangeService srv) { return new TasksFolder(srv); },
-            null
-        );
+        AddServiceObjectType(XmlElementNames.TasksFolder, typeof(TasksFolder), srv => new TasksFolder(srv), null);
     }
 
     /// <summary>
@@ -218,33 +187,35 @@ internal class ServiceObjectInfo
         string xmlElementName,
         Type type,
         CreateServiceObjectWithServiceParam createServiceObjectWithServiceParam,
-        CreateServiceObjectWithAttachmentParam createServiceObjectWithAttachmentParam
+        CreateServiceObjectWithAttachmentParam? createServiceObjectWithAttachmentParam
     )
     {
-        xmlElementNameToServiceObjectClassMap.Add(xmlElementName, type);
-        serviceObjectConstructorsWithServiceParam.Add(type, createServiceObjectWithServiceParam);
+        XmlElementNameToServiceObjectClassMap.Add(xmlElementName, type);
+        ServiceObjectConstructorsWithServiceParam.Add(type, createServiceObjectWithServiceParam);
+
         if (createServiceObjectWithAttachmentParam != null)
         {
-            serviceObjectConstructorsWithAttachmentParam.Add(type, createServiceObjectWithAttachmentParam);
+            ServiceObjectConstructorsWithAttachmentParam.Add(type, createServiceObjectWithAttachmentParam);
         }
     }
 
     /// <summary>
     ///     Return Dictionary that maps from element name to ServiceObject Type.
     /// </summary>
-    internal Dictionary<string, Type> XmlElementNameToServiceObjectClassMap => xmlElementNameToServiceObjectClassMap;
+    internal Dictionary<string, Type> XmlElementNameToServiceObjectClassMap { get; }
 
     /// <summary>
     ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithServiceParam delegate with
     ///     ExchangeService parameter.
     /// </summary>
-    internal Dictionary<Type, CreateServiceObjectWithServiceParam> ServiceObjectConstructorsWithServiceParam =>
-        serviceObjectConstructorsWithServiceParam;
+    internal Dictionary<Type, CreateServiceObjectWithServiceParam> ServiceObjectConstructorsWithServiceParam { get; }
 
     /// <summary>
     ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithAttachmentParam delegate with
     ///     ItemAttachment parameter.
     /// </summary>
-    internal Dictionary<Type, CreateServiceObjectWithAttachmentParam> ServiceObjectConstructorsWithAttachmentParam =>
-        serviceObjectConstructorsWithAttachmentParam;
+    internal Dictionary<Type, CreateServiceObjectWithAttachmentParam> ServiceObjectConstructorsWithAttachmentParam
+    {
+        get;
+    }
 }

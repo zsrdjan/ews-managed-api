@@ -262,7 +262,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <param name="extPropDef1">First extended property definition.</param>
     /// <param name="extPropDef2">Second extended property definition.</param>
     /// <returns>True if extended property definitions are equal.</returns>
-    public static bool operator ==(ExtendedPropertyDefinition extPropDef1, ExtendedPropertyDefinition extPropDef2)
+    public static bool operator ==(ExtendedPropertyDefinition? extPropDef1, ExtendedPropertyDefinition? extPropDef2)
     {
         return IsEqualTo(extPropDef1, extPropDef2);
     }
@@ -273,7 +273,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <param name="extPropDef1">First extended property definition.</param>
     /// <param name="extPropDef2">Second extended property definition.</param>
     /// <returns>True if extended property definitions are equal.</returns>
-    public static bool operator !=(ExtendedPropertyDefinition extPropDef1, ExtendedPropertyDefinition extPropDef2)
+    public static bool operator !=(ExtendedPropertyDefinition? extPropDef1, ExtendedPropertyDefinition? extPropDef2)
     {
         return !IsEqualTo(extPropDef1, extPropDef2);
     }
@@ -350,7 +350,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     /// <summary>
     ///     Gets the name of the extended property.
     /// </summary>
-    public string Name { get; private set; }
+    public string? Name { get; private set; }
 
     /// <summary>
     ///     Gets the Id of the extended property.

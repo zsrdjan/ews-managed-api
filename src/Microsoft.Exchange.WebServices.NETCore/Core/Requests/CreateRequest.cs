@@ -34,9 +34,6 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     where TServiceObject : ServiceObject
     where TResponse : ServiceResponse
 {
-    private FolderId parentFolderId;
-    private IEnumerable<TServiceObject> objects;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
@@ -53,6 +50,7 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     internal override void Validate()
     {
         base.Validate();
+
         if (ParentFolderId != null)
         {
             ParentFolderId.Validate(Service.RequestedServerVersion);
@@ -65,7 +63,7 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     /// <returns>Number of responses expected.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return EwsUtilities.GetEnumeratedObjectCount(objects);
+        return EwsUtilities.GetEnumeratedObjectCount(Objects);
     }
 
     /// <summary>
@@ -94,7 +92,7 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
         }
 
         writer.WriteStartElement(XmlNamespace.Messages, GetObjectCollectionXmlElementName());
-        foreach (ServiceObject obj in objects)
+        foreach (var obj in Objects)
         {
             obj.WriteToXml(writer);
         }
@@ -106,19 +104,11 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     ///     Gets or sets the service objects.
     /// </summary>
     /// <value>The objects.</value>
-    internal IEnumerable<TServiceObject> Objects
-    {
-        get => objects;
-        set => objects = value;
-    }
+    internal IEnumerable<TServiceObject> Objects { get; set; }
 
     /// <summary>
     ///     Gets or sets the parent folder id.
     /// </summary>
     /// <value>The parent folder id.</value>
-    public FolderId ParentFolderId
-    {
-        get => parentFolderId;
-        set => parentFolderId = value;
-    }
+    public FolderId? ParentFolderId { get; set; }
 }

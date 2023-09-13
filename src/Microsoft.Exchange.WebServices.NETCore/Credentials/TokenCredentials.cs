@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     TokenCredentials provides credentials if you already have a token.
 /// </summary>
+[PublicAPI]
 public sealed class TokenCredentials : WSSecurityBasedCredentials
 {
     /// <summary>
@@ -37,7 +40,7 @@ public sealed class TokenCredentials : WSSecurityBasedCredentials
     public TokenCredentials(string securityToken)
         : base(securityToken)
     {
-        EwsUtilities.ValidateParam(securityToken, "securityToken");
+        EwsUtilities.ValidateParam(securityToken);
     }
 
     /// <summary>

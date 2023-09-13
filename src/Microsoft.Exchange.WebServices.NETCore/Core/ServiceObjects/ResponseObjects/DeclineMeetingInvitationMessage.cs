@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a meeting declination message.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.DeclineItem, ReturnedByServer = false)]
 public sealed class DeclineMeetingInvitationMessage : CalendarResponseMessage<MeetingResponse>
 {

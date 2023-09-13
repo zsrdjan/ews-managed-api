@@ -41,8 +41,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </remarks>
 internal class EwsServiceMultiResponseXmlReader : EwsServiceXmlReader
 {
-    #region Constructor
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsServiceMultiResponseXmlReader" /> class.
     /// </summary>
@@ -66,8 +64,6 @@ internal class EwsServiceMultiResponseXmlReader : EwsServiceXmlReader
         return reader;
     }
 
-    #endregion
-
 
     /// <summary>
     ///     Creates the XML reader.
@@ -88,7 +84,7 @@ internal class EwsServiceMultiResponseXmlReader : EwsServiceXmlReader
             DtdProcessing = DtdProcessing.Prohibit,
             IgnoreComments = true,
             IgnoreProcessingInstructions = true,
-            IgnoreWhitespace = true
+            IgnoreWhitespace = true,
         };
 
         return XmlReader.Create(stream, settings);

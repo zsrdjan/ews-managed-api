@@ -34,12 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
 {
-    private readonly string windowsLiveId;
-    private readonly string password;
-    private Uri windowsLiveUrl;
-    private bool isAuthenticated;
-    private bool traceEnabled;
-    private ITraceListener traceListener = new EwsTraceListener();
+    private readonly string _windowsLiveId;
+    private readonly string _password;
+    private Uri _windowsLiveUrl;
+    private bool _traceEnabled;
+    private ITraceListener _traceListener = new EwsTraceListener();
 
     // XML-Encryption Namespace.
     internal const string XmlEncNamespace = "http://www.w3.org/2001/04/xmlenc#";
@@ -70,19 +69,9 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// <param name="password">The password.</param>
     public WindowsLiveCredentials(string windowsLiveId, string password)
     {
-        if (windowsLiveId == null)
-        {
-            throw new ArgumentNullException("windowsLiveId");
-        }
-
-        if (password == null)
-        {
-            throw new ArgumentNullException("password");
-        }
-
-        this.windowsLiveId = windowsLiveId;
-        this.password = password;
-        windowsLiveUrl = DefaultWindowsLiveUrl;
+        _windowsLiveId = windowsLiveId ?? throw new ArgumentNullException(nameof(windowsLiveId));
+        _password = password ?? throw new ArgumentNullException(nameof(password));
+        _windowsLiveUrl = DefaultWindowsLiveUrl;
     }
 
     /// <summary>
@@ -90,14 +79,14 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// </summary>
     public bool TraceEnabled
     {
-        get => traceEnabled;
+        get => _traceEnabled;
 
         set
         {
-            traceEnabled = value;
-            if (traceEnabled && (traceListener == null))
+            _traceEnabled = value;
+            if (_traceEnabled && _traceListener == null)
             {
-                traceListener = new EwsTraceListener();
+                _traceListener = new EwsTraceListener();
             }
         }
     }
@@ -108,12 +97,12 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// <value>The trace listener.</value>
     public ITraceListener TraceListener
     {
-        get => traceListener;
+        get => _traceListener;
 
         set
         {
-            traceListener = value;
-            traceEnabled = value != null;
+            _traceListener = value;
+            _traceEnabled = value != null;
         }
     }
 
@@ -122,14 +111,14 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// </summary>
     public Uri WindowsLiveUrl
     {
-        get => windowsLiveUrl;
+        get => _windowsLiveUrl;
 
         set
         {
             // Reset the EWS URL to make sure we go back and re-authenticate next time.
             EwsUrl = null;
             IsAuthenticated = false;
-            windowsLiveUrl = value;
+            _windowsLiveUrl = value;
         }
     }
 
@@ -139,7 +128,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// <param name="request">The request.</param>
     internal override void PrepareWebRequest(IEwsHttpWebRequest request)
     {
-        if ((EwsUrl == null) || (EwsUrl != request.RequestUri))
+        if (EwsUrl == null || EwsUrl != request.RequestUri)
         {
             IsAuthenticated = false;
             MakeTokenRequestToWindowsLive(request.RequestUri);
@@ -153,11 +142,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     Gets or sets a value indicating whether this <see cref="WindowsLiveCredentials" /> has been authenticated.
     /// </summary>
     /// <value><c>true</c> if authenticated; otherwise, <c>false</c>.</value>
-    public bool IsAuthenticated
-    {
-        get => isAuthenticated;
-        internal set => isAuthenticated = value;
-    }
+    public bool IsAuthenticated { get; internal set; }
 
     /// <summary>
     ///     Function that sends the token request to Windows Live.
@@ -166,7 +151,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// <returns>Response to token request.</returns>
     private HttpWebResponse EmitTokenRequest(Uri uriForTokenEndpointReference)
     {
-        const string TokenRequest = "<?xml version='1.0' encoding='UTF-8'?>" +
+        const string tokenRequest = "<?xml version='1.0' encoding='UTF-8'?>" +
                                     "<s:Envelope xmlns:s='http://www.w3.org/2003/05/soap-envelope' " +
                                     "            xmlns:wsse='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' " +
                                     "            xmlns:saml='urn:oasis:names:tc:SAML:1.0:assertion' " +
@@ -226,17 +211,17 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
 
         // Format the request string to send to the server, filling in all the bits.
         var requestToSend = string.Format(
-            TokenRequest,
-            windowsLiveUrl,
-            windowsLiveId,
-            password,
+            tokenRequest,
+            _windowsLiveUrl,
+            _windowsLiveId,
+            _password,
             securityTimestamp.GetCreationTimeChars(),
             securityTimestamp.GetExpiryTimeChars(),
             uriForTokenEndpointReference
         );
 
         // Create and send the request.
-        var webRequest = (HttpWebRequest)WebRequest.Create(windowsLiveUrl);
+        var webRequest = (HttpWebRequest)WebRequest.Create(_windowsLiveUrl);
 
         webRequest.Method = "POST";
         webRequest.ContentType = "text/xml; charset=utf-8";
@@ -294,7 +279,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             if (TraceEnabled)
             {
                 var logMessage = string.Format("Exception Received when sending Windows Live token request: {0}", e);
-                traceListener.Trace("WindowsLiveResponse", logMessage);
+                _traceListener.Trace("WindowsLiveResponse", logMessage);
             }
 
             return;
@@ -344,7 +329,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
                 if (TraceEnabled)
                 {
                     var traceString = string.Format("Error occurred sending request - exception {0}", e);
-                    traceListener.Trace("WindowsLiveCredentials", traceString);
+                    _traceListener.Trace("WindowsLiveCredentials", traceString);
                 }
             }
 
@@ -360,7 +345,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             if (TraceEnabled)
             {
                 var traceString = string.Format("Error occurred sending request - exception {0}", e);
-                traceListener.Trace("WindowsLiveCredentials", traceString);
+                _traceListener.Trace("WindowsLiveCredentials", traceString);
             }
 
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, e.Message), e);
@@ -371,7 +356,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     Function that parses the SOAP headers from the response to the RST to Windows Live.
     /// </summary>
     /// <param name="rstResponse">The Windows Live response, positioned at the beginning of the SOAP headers.</param>
-    private void ReadWindowsLiveRSTResponseHeaders(EwsXmlReader rstResponse)
+    private void ReadWindowsLiveRstResponseHeaders(EwsXmlReader rstResponse)
     {
         // Read the beginning of the SOAP header, then go looking for the Passport SOAP fault section...
         rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPHeaderElementName);
@@ -385,7 +370,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             // something went wrong.  Trace and throw.
             if (TraceEnabled)
             {
-                traceListener.Trace(
+                _traceListener.Trace(
                     "WindowsLiveResponse",
                     "Could not find Passport SOAP fault information in Windows Live response"
                 );
@@ -403,7 +388,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             // something went wrong.  Trace and throw.
             if (TraceEnabled)
             {
-                traceListener.Trace(
+                _traceListener.Trace(
                     "WindowsLiveResponse",
                     "Could not find reqstatus element in Passport SOAP fault information in Windows Live response"
                 );
@@ -432,12 +417,12 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
                     reqstatus,
                     SuccessfulReqstatus
                 );
-                traceListener.Trace("WindowsLiveResponse", logMessage);
+                _traceListener.Trace("WindowsLiveResponse", logMessage);
 
                 rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPBodyElementName);
 
                 // Trace Fault Information
-                traceListener.Trace(
+                _traceListener.Trace(
                     "WindowsLiveResponse",
                     string.Format("Windows Live reported Fault : {0}", rstResponse.ReadInnerXml())
                 );
@@ -454,7 +439,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     of data from it.
     /// </summary>
     /// <param name="rstResponse">The RSTR, positioned at the beginning of the SOAP body.</param>
-    private void ParseWindowsLiveRSTResponseBody(EwsXmlReader rstResponse)
+    private void ParseWindowsLiveRstResponseBody(EwsXmlReader rstResponse)
     {
         // Read the WS-Trust RequestSecurityTokenResponseCollection node.
         rstResponse.ReadStartElement(
@@ -475,8 +460,8 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             // Also watch for the "pp" element in the Passport SOAP fault namespace, which indicates that
             // something went wrong with the token request.  If we find it, trace and throw accordingly.
             if (rstResponse.IsStartElement() &&
-                (rstResponse.LocalName == EncryptedDataElementName) &&
-                (rstResponse.NamespaceUri == XmlEncNamespace))
+                rstResponse.LocalName == EncryptedDataElementName &&
+                rstResponse.NamespaceUri == XmlEncNamespace)
             {
                 SecurityToken = rstResponse.ReadOuterXml();
             }
@@ -488,7 +473,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
                         "Windows Live reported an error retrieving the token - {0}",
                         rstResponse.ReadOuterXml()
                     );
-                    traceListener.Trace("WindowsLiveResponse", logMessage);
+                    _traceListener.Trace("WindowsLiveResponse", logMessage);
                 }
 
                 throw new ServiceRequestException(
@@ -507,9 +492,9 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             {
                 var logMessage = string.Format(
                     "Did not find all required parts of the Windows Live response - " + "Security Token - {0}",
-                    (SecurityToken == null) ? "NOT FOUND" : "found"
+                    SecurityToken == null ? "NOT FOUND" : "found"
                 );
-                traceListener.Trace("WindowsLiveResponse", logMessage);
+                _traceListener.Trace("WindowsLiveResponse", logMessage);
             }
 
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, "No security token found."));
@@ -538,12 +523,12 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPEnvelopeElementName);
 
             // Process the SOAP headers from the response.
-            ReadWindowsLiveRSTResponseHeaders(rstResponse);
+            ReadWindowsLiveRstResponseHeaders(rstResponse);
 
             rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPBodyElementName);
 
             // Process the SOAP body from the response.
-            ParseWindowsLiveRSTResponseBody(rstResponse);
+            ParseWindowsLiveRstResponseBody(rstResponse);
         }
     }
 }

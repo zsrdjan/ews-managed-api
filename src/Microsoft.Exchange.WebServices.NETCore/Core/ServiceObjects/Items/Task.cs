@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a Task item. Properties available on tasks are defined in the TaskSchema class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.Task)]
 public class Task : Item
@@ -57,8 +60,9 @@ public class Task : Item
     /// <param name="service">The service to use to bind to the task.</param>
     /// <param name="id">The Id of the task to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A Task instance representing the task corresponding to the specified Id.</returns>
-    public static new Task<Task> Bind(
+    public new static Task<Task> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -75,7 +79,7 @@ public class Task : Item
     /// <param name="service">The service to use to bind to the task.</param>
     /// <param name="id">The Id of the task to bind to.</param>
     /// <returns>A Task instance representing the task corresponding to the specified Id.</returns>
-    public static new Task<Task> Bind(ExchangeService service, ItemId id)
+    public new static Task<Task> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }
@@ -102,7 +106,7 @@ public class Task : Item
     ///     Gets a value indicating whether a time zone SOAP header should be emitted in a CreateItem
     ///     or UpdateItem request so this item can be property saved or updated.
     /// </summary>
-    /// <param name="isUpdateOperation">Indicates whether the operation being petrformed is an update operation.</param>
+    /// <param name="isUpdateOperation">Indicates whether the operation being performed is an update operation.</param>
     /// <returns>
     ///     <c>true</c> if a time zone SOAP header should be emitted; otherwise, <c>false</c>.
     /// </returns>
@@ -117,6 +121,7 @@ public class Task : Item
     ///     values of the task. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="deleteMode">The deletion mode.</param>
+    /// <param name="token"></param>
     public Task<ServiceResponseCollection<ServiceResponse>> DeleteCurrentOccurrence(
         DeleteMode deleteMode,
         CancellationToken token = default
@@ -131,6 +136,7 @@ public class Task : Item
     ///     Mutliple calls to EWS might be made if attachments have been added or removed.
     /// </summary>
     /// <param name="conflictResolutionMode">Specifies how conflicts should be resolved.</param>
+    /// <param name="token"></param>
     /// <returns>
     ///     A Task object representing the completed occurrence if the task is recurring and the update marks it as completed;
     ///     or
@@ -154,16 +160,16 @@ public class Task : Item
     /// <summary>
     ///     Gets or sets the actual amount of time that is spent on the task.
     /// </summary>
-    public int? ActualWork
+    public int ActualWork
     {
-        get => (int?)PropertyBag[TaskSchema.ActualWork];
+        get => (int)PropertyBag[TaskSchema.ActualWork];
         set => PropertyBag[TaskSchema.ActualWork] = value;
     }
 
     /// <summary>
     ///     Gets the date and time the task was assigned.
     /// </summary>
-    public DateTime? AssignedTime => (DateTime?)PropertyBag[TaskSchema.AssignedTime];
+    public DateTime AssignedTime => (DateTime)PropertyBag[TaskSchema.AssignedTime];
 
     /// <summary>
     ///     Gets or sets the billing information of the task.
@@ -191,9 +197,9 @@ public class Task : Item
     /// <summary>
     ///     Gets or sets the date and time on which the task was completed.
     /// </summary>
-    public DateTime? CompleteDate
+    public DateTime CompleteDate
     {
-        get => (DateTime?)PropertyBag[TaskSchema.CompleteDate];
+        get => (DateTime)PropertyBag[TaskSchema.CompleteDate];
         set => PropertyBag[TaskSchema.CompleteDate] = value;
     }
 
@@ -219,9 +225,9 @@ public class Task : Item
     /// <summary>
     ///     Gets or sets the date and time on which the task is due.
     /// </summary>
-    public DateTime? DueDate
+    public DateTime DueDate
     {
-        get => (DateTime?)PropertyBag[TaskSchema.DueDate];
+        get => (DateTime)PropertyBag[TaskSchema.DueDate];
         set => PropertyBag[TaskSchema.DueDate] = value;
     }
 
@@ -281,9 +287,9 @@ public class Task : Item
     /// <summary>
     ///     Gets or sets the date and time on which the task starts.
     /// </summary>
-    public DateTime? StartDate
+    public DateTime StartDate
     {
-        get => (DateTime?)PropertyBag[TaskSchema.StartDate];
+        get => (DateTime)PropertyBag[TaskSchema.StartDate];
         set => PropertyBag[TaskSchema.StartDate] = value;
     }
 
@@ -305,9 +311,9 @@ public class Task : Item
     /// <summary>
     ///     Gets or sets the total amount of work spent on the task.
     /// </summary>
-    public int? TotalWork
+    public int TotalWork
     {
-        get => (int?)PropertyBag[TaskSchema.TotalWork];
+        get => (int)PropertyBag[TaskSchema.TotalWork];
         set => PropertyBag[TaskSchema.TotalWork] = value;
     }
 

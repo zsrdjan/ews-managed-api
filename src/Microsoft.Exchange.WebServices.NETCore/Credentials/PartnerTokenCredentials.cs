@@ -35,7 +35,7 @@ internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
 {
     private const string WsSecuritySymmetricKeyPathSuffix = "/wssecurity/symmetrickey";
 
-    private readonly KeyInfoNode keyInfoNode;
+    private readonly KeyInfoNode _keyInfoNode;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PartnerTokenCredentials" /> class.
@@ -43,15 +43,17 @@ internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
     /// <param name="securityToken">The token.</param>
     /// <param name="securityTokenReference">The token reference.</param>
     internal PartnerTokenCredentials(string securityToken, string securityTokenReference)
-        : base(securityToken, true /* addTimestamp */)
+        : base(securityToken, true)
     {
-        EwsUtilities.ValidateParam(securityToken, "securityToken");
-        EwsUtilities.ValidateParam(securityTokenReference, "securityTokenReference");
+        EwsUtilities.ValidateParam(securityToken);
+        EwsUtilities.ValidateParam(securityTokenReference);
 
-        var doc = new SafeXmlDocument();
-        doc.PreserveWhitespace = true;
+        var doc = new SafeXmlDocument
+        {
+            PreserveWhitespace = true,
+        };
         doc.LoadXml(securityTokenReference);
-        keyInfoNode = new KeyInfoNode(doc.DocumentElement);
+        _keyInfoNode = new KeyInfoNode(doc.DocumentElement);
     }
 
     /// <summary>
@@ -86,17 +88,24 @@ internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
     {
         memoryStream.Position = 0;
 
-        var document = new SafeXmlDocument();
-        document.PreserveWhitespace = true;
+        var document = new SafeXmlDocument
+        {
+            PreserveWhitespace = true,
+        };
         document.Load(memoryStream);
 
-        var signedXml = new WSSecurityUtilityIdSignedXml(document);
-        signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
+        var signedXml = new WsSecurityUtilityIdSignedXml(document)
+        {
+            SignedInfo =
+            {
+                CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl,
+            },
+        };
 
         //signedXml.AddReference("/soap:Envelope/soap:Header/t:ExchangeImpersonation");
         signedXml.AddReference("/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp");
 
-        signedXml.KeyInfo.AddClause(keyInfoNode);
+        signedXml.KeyInfo.AddClause(_keyInfoNode);
         using (var hashedAlgorithm = new HMACSHA1(ExchangeServiceBase.SessionKey))
         {
             signedXml.ComputeSignature(hashedAlgorithm);
@@ -104,9 +113,9 @@ internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
 
         var signature = signedXml.GetXml();
 
-        var wssecurityNode = document.SelectSingleNode("/soap:Envelope/soap:Header/wsse:Security", NamespaceManager);
+        var wsSecurityNode = document.SelectSingleNode("/soap:Envelope/soap:Header/wsse:Security", NamespaceManager);
 
-        wssecurityNode.AppendChild(signature);
+        wsSecurityNode.AppendChild(signature);
 
         memoryStream.Position = 0;
         document.Save(memoryStream);

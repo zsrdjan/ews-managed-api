@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright(c) Microsoft Corporation
@@ -26,20 +26,18 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data.Credentials;
 
 /// <summary>
 ///     DualAuthCredentials wraps an instance of X509CertificateCollection and basic auth credentials used for client dual
 ///     authentication.
 /// </summary>
+[PublicAPI]
 public sealed class DualAuthCredentials : ExchangeCredentials
 {
-    /// <summary>
-    ///     Collection of client certificates.
-    /// </summary>
-    private readonly X509CertificateCollection clientCertificates;
-
-    private readonly ICredentials credentials;
+    private readonly ICredentials _credentials;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DualAuthCredentials" /> class.
@@ -49,10 +47,10 @@ public sealed class DualAuthCredentials : ExchangeCredentials
     /// <param name="password">The password.</param>
     public DualAuthCredentials(X509CertificateCollection clientCertificates, string userName, string password)
     {
-        EwsUtilities.ValidateParam(clientCertificates, "clientCertificates");
+        EwsUtilities.ValidateParam(clientCertificates);
 
-        this.clientCertificates = clientCertificates;
-        credentials = new NetworkCredential(userName, password);
+        ClientCertificates = clientCertificates;
+        _credentials = new NetworkCredential(userName, password);
     }
 
     /// <summary>
@@ -62,11 +60,11 @@ public sealed class DualAuthCredentials : ExchangeCredentials
     internal override void PrepareWebRequest(IEwsHttpWebRequest request)
     {
         request.ClientCertificates = ClientCertificates;
-        request.Credentials = credentials;
+        request.Credentials = _credentials;
     }
 
     /// <summary>
     ///     Gets the client certificates collection.
     /// </summary>
-    public X509CertificateCollection ClientCertificates => clientCertificates;
+    public X509CertificateCollection ClientCertificates { get; }
 }

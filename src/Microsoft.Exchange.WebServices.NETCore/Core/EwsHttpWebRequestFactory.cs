@@ -49,7 +49,7 @@ internal class EwsHttpWebRequestFactory : IEwsHttpWebRequestFactory
     /// <returns>Instance of IEwsHttpWebResponse.</returns>
     IEwsHttpWebResponse IEwsHttpWebRequestFactory.CreateExceptionResponse(EwsHttpClientException exception)
     {
-        EwsUtilities.ValidateParam(exception, "exception");
+        EwsUtilities.ValidateParam(exception);
 
         if (exception.Response == null)
         {

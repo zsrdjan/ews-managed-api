@@ -23,19 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents Exchange server information.
 /// </summary>
+[PublicAPI]
 public sealed class ExchangeServerInfo
 {
-    private int majorVersion;
-    private int minorVersion;
-    private int majorBuildNumber;
-    private int minorBuildNumber;
-    private string versionString;
-
     /// <summary>
     ///     Default constructor
     /// </summary>
@@ -56,50 +53,35 @@ public sealed class ExchangeServerInfo
             "Current element doesn't have attributes"
         );
 
-        var info = new ExchangeServerInfo();
-        info.MajorVersion = reader.ReadAttributeValue<int>("MajorVersion");
-        info.MinorVersion = reader.ReadAttributeValue<int>("MinorVersion");
-        info.MajorBuildNumber = reader.ReadAttributeValue<int>("MajorBuildNumber");
-        info.MinorBuildNumber = reader.ReadAttributeValue<int>("MinorBuildNumber");
-        info.VersionString = reader.ReadAttributeValue("Version");
-        return info;
+        return new ExchangeServerInfo
+        {
+            MajorVersion = reader.ReadAttributeValue<int>("MajorVersion"),
+            MinorVersion = reader.ReadAttributeValue<int>("MinorVersion"),
+            MajorBuildNumber = reader.ReadAttributeValue<int>("MajorBuildNumber"),
+            MinorBuildNumber = reader.ReadAttributeValue<int>("MinorBuildNumber"),
+            VersionString = reader.ReadAttributeValue("Version"),
+        };
     }
 
     /// <summary>
     ///     Gets the Major Exchange server version number
     /// </summary>
-    public int MajorVersion
-    {
-        get => majorVersion;
-        internal set => majorVersion = value;
-    }
+    public int MajorVersion { get; internal set; }
 
     /// <summary>
     ///     Gets the Minor Exchange server version number
     /// </summary>
-    public int MinorVersion
-    {
-        get => minorVersion;
-        internal set => minorVersion = value;
-    }
+    public int MinorVersion { get; internal set; }
 
     /// <summary>
     ///     Gets the Major Exchange server build number
     /// </summary>
-    public int MajorBuildNumber
-    {
-        get => majorBuildNumber;
-        internal set => majorBuildNumber = value;
-    }
+    public int MajorBuildNumber { get; internal set; }
 
     /// <summary>
     ///     Gets the Minor Exchange server build number
     /// </summary>
-    public int MinorBuildNumber
-    {
-        get => minorBuildNumber;
-        internal set => minorBuildNumber = value;
-    }
+    public int MinorBuildNumber { get; internal set; }
 
     /// <summary>
     ///     Gets the Exchange server version string (e.g. "Exchange2010")
@@ -108,11 +90,7 @@ public sealed class ExchangeServerInfo
     ///     The version is a string rather than an enum since its possible for the client to
     ///     be connected to a later server for which there would be no appropriate enum value.
     /// </remarks>
-    public string VersionString
-    {
-        get => versionString;
-        internal set => versionString = value;
-    }
+    public string VersionString { get; internal set; }
 
     /// <summary>
     ///     Override ToString method
@@ -120,12 +98,6 @@ public sealed class ExchangeServerInfo
     /// <returns>Canonical ExchangeService version string</returns>
     public override string ToString()
     {
-        return String.Format(
-            "{0:d}.{1:d2}.{2:d4}.{3:d3}",
-            MajorVersion,
-            MinorVersion,
-            MajorBuildNumber,
-            MinorBuildNumber
-        );
+        return $"{MajorVersion:d}.{MinorVersion:d2}.{MajorBuildNumber:d4}.{MinorBuildNumber:d3}";
     }
 }

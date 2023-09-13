@@ -293,14 +293,14 @@ internal class PropertyBag
     ///     Raised for get if property hasn't been assigned or loaded. Raised for
     ///     set if property cannot be updated or deleted.
     /// </exception>
-    internal object? this[PropertyDefinition propertyDefinition]
+    internal object this[PropertyDefinition propertyDefinition]
     {
         get
         {
             var propertyValue = GetPropertyValueOrException(propertyDefinition, out var serviceException);
             if (serviceException == null)
             {
-                return propertyValue;
+                return propertyValue!;
             }
 
             throw serviceException;
@@ -513,7 +513,7 @@ internal class PropertyBag
     internal void LoadFromXml(
         EwsServiceXmlReader reader,
         bool clear,
-        PropertySet requestedPropertySet,
+        PropertySet? requestedPropertySet,
         bool onlySummaryPropertiesRequested
     )
     {

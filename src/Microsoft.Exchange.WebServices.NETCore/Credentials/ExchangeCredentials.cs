@@ -26,17 +26,20 @@
 using System.Net;
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Base class of Exchange credential types.
 /// </summary>
+[PublicAPI]
 public abstract class ExchangeCredentials
 {
     /// <summary>
     ///     Performs an implicit conversion from <see cref="System.Net.NetworkCredential" /> to
     ///     <see cref="Microsoft.Exchange.WebServices.Data.ExchangeCredentials" />.
-    ///     This allows a NetworkCredential object to be implictly converted to an ExchangeCredential which is useful when
+    ///     This allows a NetworkCredential object to be implicitly converted to an ExchangeCredential which is useful when
     ///     setting
     ///     credentials on an ExchangeService.
     /// </summary>
@@ -56,7 +59,7 @@ public abstract class ExchangeCredentials
     /// <summary>
     ///     Performs an implicit conversion from <see cref="System.Net.CredentialCache" /> to
     ///     <see cref="Microsoft.Exchange.WebServices.Data.ExchangeCredentials" />.
-    ///     This allows a CredentialCache object to be implictly converted to an ExchangeCredential which is useful when
+    ///     This allows a CredentialCache object to be implicitly converted to an ExchangeCredential which is useful when
     ///     setting
     ///     credentials on an ExchangeService.
     /// </summary>

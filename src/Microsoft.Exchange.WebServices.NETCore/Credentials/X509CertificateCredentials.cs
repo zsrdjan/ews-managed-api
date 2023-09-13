@@ -26,12 +26,15 @@
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     X509CertificateCredentials wraps an instance of X509Certificate2, it can be used for WS-Security/X509
 ///     certificate-based authentication.
 /// </summary>
+[PublicAPI]
 public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
 {
     private const string BinarySecurityTokenFormat = "<wsse:BinarySecurityToken " +
@@ -48,9 +51,9 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
 
     private const string WsSecurityX509CertPathSuffix = "/wssecurity/x509cert";
 
-    private readonly X509Certificate2 certificate;
+    private readonly X509Certificate2 _certificate;
 
-    private readonly KeyInfoClause keyInfoClause;
+    private readonly KeyInfoClause _keyInfoClause;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="X509CertificateCredentials" /> class.
@@ -60,27 +63,29 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
     public X509CertificateCredentials(X509Certificate2 certificate)
         : base(null, true)
     {
-        EwsUtilities.ValidateParam(certificate, "certificate");
+        EwsUtilities.ValidateParam(certificate);
 
         if (!certificate.HasPrivateKey)
         {
             throw new ServiceValidationException(Strings.CertificateHasNoPrivateKey);
         }
 
-        this.certificate = certificate;
+        _certificate = certificate;
 
-        var certId = WSSecurityUtilityIdSignedXml.GetUniqueId();
+        var certId = WsSecurityUtilityIdSignedXml.GetUniqueId();
 
         SecurityToken = string.Format(
             BinarySecurityTokenFormat,
             certId,
-            Convert.ToBase64String(this.certificate.GetRawCertData())
+            Convert.ToBase64String(_certificate.GetRawCertData())
         );
 
-        var doc = new SafeXmlDocument();
-        doc.PreserveWhitespace = true;
+        var doc = new SafeXmlDocument
+        {
+            PreserveWhitespace = true,
+        };
         doc.LoadXml(string.Format(KeyInfoClauseFormat, certId));
-        keyInfoClause = new KeyInfoNode(doc.DocumentElement);
+        _keyInfoClause = new KeyInfoNode(doc.DocumentElement);
     }
 
     /// <summary>
@@ -115,24 +120,31 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
     {
         memoryStream.Position = 0;
 
-        var document = new SafeXmlDocument();
-        document.PreserveWhitespace = true;
+        var document = new SafeXmlDocument
+        {
+            PreserveWhitespace = true,
+        };
         document.Load(memoryStream);
 
-        var signedXml = new WSSecurityUtilityIdSignedXml(document);
-        signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
+        var signedXml = new WsSecurityUtilityIdSignedXml(document)
+        {
+            SignedInfo =
+            {
+                CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl,
+            },
+            SigningKey = _certificate.PrivateKey,
+        };
 
-        signedXml.SigningKey = certificate.PrivateKey;
         signedXml.AddReference("/soap:Envelope/soap:Header/wsa:To");
         signedXml.AddReference("/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp");
 
-        signedXml.KeyInfo.AddClause(keyInfoClause);
+        signedXml.KeyInfo.AddClause(_keyInfoClause);
         signedXml.ComputeSignature();
         var signature = signedXml.GetXml();
 
-        var wssecurityNode = document.SelectSingleNode("/soap:Envelope/soap:Header/wsse:Security", NamespaceManager);
+        var wsSecurityNode = document.SelectSingleNode("/soap:Envelope/soap:Header/wsse:Security", NamespaceManager);
 
-        wssecurityNode.AppendChild(signature);
+        wsSecurityNode.AppendChild(signature);
 
         memoryStream.Position = 0;
         document.Save(memoryStream);
@@ -144,6 +156,6 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
     /// <returns>The string.</returns>
     public override string ToString()
     {
-        return string.Format("X509:<I>={0},<S>={1}", certificate.Issuer, certificate.Subject);
+        return $"X509:<I>={_certificate.Issuer},<S>={_certificate.Subject}";
     }
 }

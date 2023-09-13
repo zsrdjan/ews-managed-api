@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -30,7 +32,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 /// <typeparam name="T">Wrapped lazy member type</typeparam>
 /// <returns>Newly instantiated and initialized member</returns>
-internal delegate T InitializeLazyMember<T>();
+internal delegate T InitializeLazyMember<out T>();
 
 /// <summary>
 ///     Wrapper class for lazy members.  Does lazy initialization of member on first access.
@@ -43,10 +45,10 @@ internal delegate T InitializeLazyMember<T>();
 /// </remarks>
 internal class LazyMember<T>
 {
-    private T lazyMember;
-    private readonly InitializeLazyMember<T> initializationDelegate;
-    private readonly object lockObject = new object();
-    private bool initialized;
+    private T? _lazyMember;
+    private readonly InitializeLazyMember<T> _initializationDelegate;
+    private readonly object _lockObject = new();
+    private bool _initialized;
 
     /// <summary>
     ///     Constructor
@@ -56,7 +58,7 @@ internal class LazyMember<T>
     /// </param>
     public LazyMember(InitializeLazyMember<T> initializationDelegate)
     {
-        this.initializationDelegate = initializationDelegate;
+        _initializationDelegate = initializationDelegate;
     }
 
     /// <summary>
@@ -66,20 +68,20 @@ internal class LazyMember<T>
     {
         get
         {
-            if (!initialized)
+            if (!_initialized)
             {
-                lock (lockObject)
+                lock (_lockObject)
                 {
-                    if (!initialized)
+                    if (!_initialized)
                     {
-                        lazyMember = initializationDelegate();
+                        _lazyMember = _initializationDelegate();
                     }
 
-                    initialized = true;
+                    _initialized = true;
                 }
             }
 
-            return lazyMember;
+            return _lazyMember;
         }
     }
 }
