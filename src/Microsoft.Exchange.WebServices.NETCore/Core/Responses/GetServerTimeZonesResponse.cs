@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class GetServerTimeZonesResponse : ServiceResponse
 {
-    private readonly Collection<TimeZoneInfo> timeZones = new Collection<TimeZoneInfo>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetServerTimeZonesResponse" /> class.
     /// </summary>
@@ -62,7 +60,7 @@ internal class GetServerTimeZonesResponse : ServiceResponse
                     var timeZoneDefinition = new TimeZoneDefinition();
                     timeZoneDefinition.LoadFromXml(reader);
 
-                    timeZones.Add(timeZoneDefinition.ToTimeZoneInfo(reader.Service));
+                    TimeZones.Add(timeZoneDefinition.ToTimeZoneInfo(reader.Service));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.TimeZoneDefinitions));
         }
@@ -72,5 +70,5 @@ internal class GetServerTimeZonesResponse : ServiceResponse
     ///     Gets the time zones returned by the associated GetServerTimeZones request.
     /// </summary>
     /// <value>The time zones.</value>
-    public Collection<TimeZoneInfo> TimeZones => timeZones;
+    public Collection<TimeZoneInfo> TimeZones { get; } = new Collection<TimeZoneInfo>();
 }

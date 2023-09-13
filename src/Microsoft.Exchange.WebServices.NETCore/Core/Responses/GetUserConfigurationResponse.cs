@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetUserConfigurationResponse : ServiceResponse
 {
-    private readonly UserConfiguration userConfiguration;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserConfigurationResponse" /> class.
     /// </summary>
@@ -44,7 +42,7 @@ internal sealed class GetUserConfigurationResponse : ServiceResponse
             "userConfiguration is null"
         );
 
-        this.userConfiguration = userConfiguration;
+        UserConfiguration = userConfiguration;
     }
 
     /// <summary>
@@ -55,11 +53,11 @@ internal sealed class GetUserConfigurationResponse : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        userConfiguration.LoadFromXml(reader);
+        UserConfiguration.LoadFromXml(reader);
     }
 
     /// <summary>
     ///     Gets the user configuration that was created.
     /// </summary>
-    public UserConfiguration UserConfiguration => userConfiguration;
+    public UserConfiguration UserConfiguration { get; }
 }

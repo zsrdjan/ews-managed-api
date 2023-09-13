@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private IEnumerable<Item> items;
-    private FolderId savedCopyDestinationFolderId;
-
     /// <summary>
     ///     Asserts the valid.
     /// </summary>
@@ -151,19 +148,11 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     ///     Gets or sets the items.
     /// </summary>
     /// <value>The items.</value>
-    public IEnumerable<Item> Items
-    {
-        get => items;
-        set => items = value;
-    }
+    public IEnumerable<Item> Items { get; set; }
 
     /// <summary>
     ///     Gets or sets the saved copy destination folder id.
     /// </summary>
     /// <value>The saved copy destination folder id.</value>
-    public FolderId SavedCopyDestinationFolderId
-    {
-        get => savedCopyDestinationFolderId;
-        set => savedCopyDestinationFolderId = value;
-    }
+    public FolderId SavedCopyDestinationFolderId { get; set; }
 }

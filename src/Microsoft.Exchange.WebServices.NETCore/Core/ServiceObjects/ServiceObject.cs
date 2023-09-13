@@ -236,7 +236,7 @@ public abstract class ServiceObject
     internal void LoadFromXml(
         EwsServiceXmlReader reader,
         bool clearPropertyBag,
-        PropertySet requestedPropertySet,
+        PropertySet? requestedPropertySet,
         bool summaryPropertiesOnly
     )
     {

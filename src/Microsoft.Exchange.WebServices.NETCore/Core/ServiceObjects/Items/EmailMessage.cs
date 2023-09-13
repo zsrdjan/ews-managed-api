@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an e-mail message. Properties available on e-mail messages are defined in the EmailMessageSchema class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.Message)]
 public class EmailMessage : Item
@@ -58,8 +61,9 @@ public class EmailMessage : Item
     /// <param name="service">The service to use to bind to the e-mail message.</param>
     /// <param name="id">The Id of the e-mail message to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>An EmailMessage instance representing the e-mail message corresponding to the specified Id.</returns>
-    public static new Task<EmailMessage> Bind(
+    public new static Task<EmailMessage> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -76,7 +80,7 @@ public class EmailMessage : Item
     /// <param name="service">The service to use to bind to the e-mail message.</param>
     /// <param name="id">The Id of the e-mail message to bind to.</param>
     /// <returns>An EmailMessage instance representing the e-mail message corresponding to the specified Id.</returns>
-    public static new Task<EmailMessage> Bind(ExchangeService service, ItemId id)
+    public new static Task<EmailMessage> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }
@@ -104,8 +108,9 @@ public class EmailMessage : Item
     /// </summary>
     /// <param name="parentFolderId">The parent folder id.</param>
     /// <param name="messageDisposition">The message disposition.</param>
+    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalSend(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition messageDisposition,
         CancellationToken token
     )
@@ -140,7 +145,7 @@ public class EmailMessage : Item
             if (HasUnprocessedAttachmentChanges())
             {
                 Attachments.Validate();
-                await Attachments.Save();
+                await Attachments.Save(token);
             }
 
             if (PropertyBag.GetIsUpdateCallNecessary())
@@ -236,9 +241,10 @@ public class EmailMessage : Item
     ///     results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save the copy.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task SendAndSaveCopy(FolderId destinationFolderId, CancellationToken token = default)
     {
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+        EwsUtilities.ValidateParam(destinationFolderId);
 
         return InternalSend(destinationFolderId, MessageDisposition.SendAndSaveCopy, token);
     }
@@ -249,6 +255,7 @@ public class EmailMessage : Item
     ///     results in a call to EWS.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save the copy.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task SendAndSaveCopy(
         WellKnownFolderName destinationFolderName,
         CancellationToken token = default

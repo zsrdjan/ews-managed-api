@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class CreateItemResponse : CreateItemResponseBase
 {
-    private readonly Item? item;
+    private readonly Item? _item;
 
     /// <summary>
     ///     Gets Item instance.
@@ -40,7 +40,7 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     /// <returns>Item.</returns>
     internal override Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        return item;
+        return _item;
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     /// <param name="item">The item.</param>
     internal CreateItemResponse(Item? item)
     {
-        this.item = item;
+        _item = item;
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     {
         if (Result == ServiceResult.Success)
         {
-            item.ClearChangeLog();
+            _item.ClearChangeLog();
         }
     }
 }

@@ -25,17 +25,16 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to a GetClientExtension operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetClientExtensionResponse : ServiceResponse
 {
-    private readonly Collection<ClientExtension> clientExtension = new Collection<ClientExtension>();
-
-    private string rawMasterTableXml;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetClientExtensionResponse" /> class.
     /// </summary>
@@ -46,12 +45,12 @@ public sealed class GetClientExtensionResponse : ServiceResponse
     /// <summary>
     ///     Gets all ClientExtension returned
     /// </summary>
-    public Collection<ClientExtension> ClientExtensions => clientExtension;
+    public Collection<ClientExtension> ClientExtensions { get; } = new();
 
     /// <summary>
     ///     Gets org raw master table xml
     /// </summary>
-    public string RawMasterTableXml => rawMasterTableXml;
+    public string RawMasterTableXml { get; private set; }
 
     /// <summary>
     ///     Reads response elements from XML.
@@ -86,7 +85,7 @@ public sealed class GetClientExtensionResponse : ServiceResponse
         reader.Read();
         if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.ClientExtensionRawMasterTableXml))
         {
-            rawMasterTableXml = reader.ReadElementValue();
+            RawMasterTableXml = reader.ReadElementValue();
         }
     }
 }

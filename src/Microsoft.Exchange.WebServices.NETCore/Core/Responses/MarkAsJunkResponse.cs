@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Definition for MarkAsJunkResponse
 /// </summary>
+[PublicAPI]
 public class MarkAsJunkResponse : ServiceResponse
 {
     /// <summary>

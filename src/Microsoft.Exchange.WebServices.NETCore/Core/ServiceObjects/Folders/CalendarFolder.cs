@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a folder containing appointments.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.CalendarFolder)]
 public class CalendarFolder : Folder
 {
@@ -38,8 +41,9 @@ public class CalendarFolder : Folder
     /// <param name="service">The service to use to bind to the calendar folder.</param>
     /// <param name="id">The Id of the calendar folder to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A CalendarFolder instance representing the calendar folder corresponding to the specified Id.</returns>
-    public static new Task<CalendarFolder> Bind(
+    public new static Task<CalendarFolder> Bind(
         ExchangeService service,
         FolderId id,
         PropertySet propertySet,
@@ -55,8 +59,9 @@ public class CalendarFolder : Folder
     /// </summary>
     /// <param name="service">The service to use to bind to the calendar folder.</param>
     /// <param name="id">The Id of the calendar folder to bind to.</param>
+    /// <param name="token"></param>
     /// <returns>A CalendarFolder instance representing the calendar folder corresponding to the specified Id.</returns>
-    public static new Task<CalendarFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
+    public new static Task<CalendarFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
     {
         return Bind(service, id, PropertySet.FirstClassProperties, token);
     }
@@ -68,8 +73,9 @@ public class CalendarFolder : Folder
     /// <param name="service">The service to use to bind to the calendar folder.</param>
     /// <param name="name">The name of the calendar folder to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A CalendarFolder instance representing the calendar folder with the specified name.</returns>
-    public static new Task<CalendarFolder> Bind(
+    public new static Task<CalendarFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
         PropertySet propertySet,
@@ -85,8 +91,9 @@ public class CalendarFolder : Folder
     /// </summary>
     /// <param name="service">The service to use to bind to the calendar folder.</param>
     /// <param name="name">The name of the calendar folder to bind to.</param>
+    /// <param name="token"></param>
     /// <returns>A CalendarFolder instance representing the calendar folder with the specified name.</returns>
-    public static new Task<CalendarFolder> Bind(
+    public new static Task<CalendarFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
         CancellationToken token = default
@@ -110,15 +117,16 @@ public class CalendarFolder : Folder
     ///     for recurring appointments. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="view">The view controlling the range of appointments returned.</param>
+    /// <param name="token"></param>
     /// <returns>An object representing the results of the search operation.</returns>
     public async Task<FindItemsResults<Appointment>> FindAppointments(
         CalendarView view,
         CancellationToken token = default
     )
     {
-        EwsUtilities.ValidateParam(view, "view");
+        EwsUtilities.ValidateParam(view);
 
-        var responses = await InternalFindItems<Appointment>((SearchFilter)null, view, null /* groupBy */, token)
+        var responses = await InternalFindItems<Appointment>((SearchFilter)null, view, null, token)
             .ConfigureAwait(false);
 
         return responses[0].Results;

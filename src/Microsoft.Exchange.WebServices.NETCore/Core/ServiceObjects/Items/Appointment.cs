@@ -40,7 +40,7 @@ public class Appointment : Item, ICalendarActionProvider
     ///     Initializes an unsaved local instance of <see cref="Appointment" />. To bind to an existing appointment, use
     ///     Appointment.Bind() instead.
     /// </summary>
-    /// <param name="service">The ExchangeService instance to which this appointmtnt is bound.</param>
+    /// <param name="service">The ExchangeService instance to which this appointment is bound.</param>
     public Appointment(ExchangeService service)
         : base(service)
     {
@@ -259,7 +259,7 @@ public class Appointment : Item, ICalendarActionProvider
         //  in the property bag, then throw, because clients must supply the proper time zone - either by
         //  loading it from a currently-existing appointment, or by setting it directly.  Otherwise, to dirty
         //  the StartTimeZone property, we just set it to its current value.
-        if ((Service.RequestedServerVersion == ExchangeVersion.Exchange2007_SP1) &&
+        if (Service.RequestedServerVersion == ExchangeVersion.Exchange2007_SP1 &&
             !Service.Exchange2007CompatibilityMode)
         {
             if (PropertyBag.IsPropertyUpdated(AppointmentSchema.Start) ||
@@ -343,7 +343,7 @@ public class Appointment : Item, ICalendarActionProvider
 
     /// <summary>
     ///     Saves this appointment in the specified folder. Calling this method results in at least one call to EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added.
+    ///     Multiple calls to EWS might be made if attachments have been added.
     /// </summary>
     /// <param name="destinationFolderName">The name of the folder in which to save this appointment.</param>
     /// <param name="sendInvitationsMode">Specifies if and how invitations should be sent if this appointment is a meeting.</param>
@@ -359,7 +359,7 @@ public class Appointment : Item, ICalendarActionProvider
 
     /// <summary>
     ///     Saves this appointment in the specified folder. Calling this method results in at least one call to EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added.
+    ///     Multiple calls to EWS might be made if attachments have been added.
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to save this appointment.</param>
     /// <param name="sendInvitationsMode">Specifies if and how invitations should be sent if this appointment is a meeting.</param>
@@ -377,7 +377,7 @@ public class Appointment : Item, ICalendarActionProvider
 
     /// <summary>
     ///     Saves this appointment in the Calendar folder. Calling this method results in at least one call to EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added.
+    ///     Multiple calls to EWS might be made if attachments have been added.
     /// </summary>
     /// <param name="sendInvitationsMode">Specifies if and how invitations should be sent if this appointment is a meeting.</param>
     /// <param name="token"></param>

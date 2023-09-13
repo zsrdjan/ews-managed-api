@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetAppMarketplaceUrlResponse : ServiceResponse
 {
-    private string appMarketplaceUrl;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetAppMarketplaceUrlResponse" /> class.
     /// </summary>
@@ -46,7 +44,7 @@ internal sealed class GetAppMarketplaceUrlResponse : ServiceResponse
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
-        appMarketplaceUrl = reader.ReadElementValue<string>(
+        AppMarketplaceUrl = reader.ReadElementValue<string>(
             XmlNamespace.NotSpecified,
             XmlElementNames.AppMarketplaceUrl
         );
@@ -55,5 +53,5 @@ internal sealed class GetAppMarketplaceUrlResponse : ServiceResponse
     /// <summary>
     ///     App Marketplace Url
     /// </summary>
-    public string AppMarketplaceUrl => appMarketplaceUrl;
+    public string AppMarketplaceUrl { get; private set; }
 }

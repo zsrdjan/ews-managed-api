@@ -33,7 +33,7 @@ internal sealed class SetClientExtensionRequest : MultiResponseServiceRequest<Se
     /// <summary>
     ///     Set action such as install, uninstall and configure.
     /// </summary>
-    private readonly List<SetClientExtensionAction> actions;
+    private readonly List<SetClientExtensionAction> _actions;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetClientExtensionRequest" /> class.
@@ -43,7 +43,7 @@ internal sealed class SetClientExtensionRequest : MultiResponseServiceRequest<Se
     internal SetClientExtensionRequest(ExchangeService service, List<SetClientExtensionAction> actions)
         : base(service, ServiceErrorHandling.ThrowOnError)
     {
-        this.actions = actions;
+        this._actions = actions;
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ internal sealed class SetClientExtensionRequest : MultiResponseServiceRequest<Se
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(actions, "actions");
+        EwsUtilities.ValidateParam(_actions);
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ internal sealed class SetClientExtensionRequest : MultiResponseServiceRequest<Se
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return actions.Count;
+        return _actions.Count;
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ internal sealed class SetClientExtensionRequest : MultiResponseServiceRequest<Se
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SetClientExtensionActions);
 
-        foreach (var action in actions)
+        foreach (var action in _actions)
         {
             action.WriteToXml(writer, XmlElementNames.SetClientExtensionAction);
         }

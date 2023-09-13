@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a response to a Move or Copy operation.
 /// </summary>
+[PublicAPI]
 public sealed class ArchiveItemResponse : ServiceResponse
 {
-    private Item item;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ArchiveItemResponse" /> class.
     /// </summary>
@@ -61,19 +62,19 @@ public sealed class ArchiveItemResponse : ServiceResponse
         var items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
             GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
+            false,
+            null,
             false
-        ); /* summaryPropertiesOnly */
+        );
 
         if (items.Count > 0)
         {
-            item = items[0];
+            Item = items[0];
         }
     }
 
     /// <summary>
     ///     Gets the copied or moved item.
     /// </summary>
-    public Item Item => item;
+    public Item Item { get; private set; }
 }

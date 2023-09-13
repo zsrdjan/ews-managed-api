@@ -30,12 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItemResponse>
 {
-    private readonly List<Item> items = new List<Item>();
-    private FolderId savedItemsDestinationFolder;
-    private ConflictResolutionMode conflictResolutionMode;
-    private MessageDisposition? messageDisposition;
-    private SendInvitationsOrCancellationsMode? sendInvitationsOrCancellationsMode;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateItemRequest" /> class.
     /// </summary>
@@ -58,7 +52,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
         {
             foreach (var item in Items)
             {
-                if (item.GetIsTimeZoneHeaderRequired(true /* isUpdateOperation */))
+                if (item.GetIsTimeZoneHeaderRequired(true))
                 {
                     return true;
                 }
@@ -74,7 +68,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(Items, "Items");
+        EwsUtilities.ValidateParamCollection(Items);
         for (var i = 0; i < Items.Count; i++)
         {
             if ((Items[i] == null) || Items[i].IsNew)
@@ -150,7 +144,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     /// <returns>Number of items in response.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return items.Count;
+        return Items.Count;
     }
 
     /// <summary>
@@ -197,7 +191,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
 
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ItemChanges);
 
-        foreach (var item in items)
+        foreach (var item in Items)
         {
             item.WriteToXmlForUpdate(writer);
         }
@@ -218,31 +212,19 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     ///     Gets or sets the message disposition.
     /// </summary>
     /// <value>The message disposition.</value>
-    public MessageDisposition? MessageDisposition
-    {
-        get => messageDisposition;
-        set => messageDisposition = value;
-    }
+    public MessageDisposition? MessageDisposition { get; set; }
 
     /// <summary>
     ///     Gets or sets the conflict resolution mode.
     /// </summary>
     /// <value>The conflict resolution mode.</value>
-    public ConflictResolutionMode ConflictResolutionMode
-    {
-        get => conflictResolutionMode;
-        set => conflictResolutionMode = value;
-    }
+    public ConflictResolutionMode ConflictResolutionMode { get; set; }
 
     /// <summary>
     ///     Gets or sets the send invitations or cancellations mode.
     /// </summary>
     /// <value>The send invitations or cancellations mode.</value>
-    public SendInvitationsOrCancellationsMode? SendInvitationsOrCancellationsMode
-    {
-        get => sendInvitationsOrCancellationsMode;
-        set => sendInvitationsOrCancellationsMode = value;
-    }
+    public SendInvitationsOrCancellationsMode? SendInvitationsOrCancellationsMode { get; set; }
 
     /// <summary>
     ///     Gets or sets whether to suppress read receipts
@@ -254,15 +236,11 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     ///     Gets the items.
     /// </summary>
     /// <value>The items.</value>
-    public List<Item> Items => items;
+    public List<Item> Items { get; } = new();
 
     /// <summary>
     ///     Gets or sets the saved items destination folder.
     /// </summary>
     /// <value>The saved items destination folder.</value>
-    public FolderId SavedItemsDestinationFolder
-    {
-        get => savedItemsDestinationFolder;
-        set => savedItemsDestinationFolder = value;
-    }
+    public FolderId? SavedItemsDestinationFolder { get; set; }
 }

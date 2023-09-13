@@ -26,16 +26,17 @@
 using System.ComponentModel;
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a property that can be sent to or retrieved from EWS.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class ComplexProperty : ISelfValidate
 {
-    private XmlNamespace xmlNamespace = XmlNamespace.Types;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ComplexProperty" /> class.
     /// </summary>
@@ -47,21 +48,14 @@ public abstract class ComplexProperty : ISelfValidate
     ///     Gets or sets the namespace.
     /// </summary>
     /// <value>The namespace.</value>
-    internal XmlNamespace Namespace
-    {
-        get => xmlNamespace;
-        set => xmlNamespace = value;
-    }
+    internal XmlNamespace Namespace { get; set; } = XmlNamespace.Types;
 
     /// <summary>
     ///     Instance was changed.
     /// </summary>
     internal virtual void Changed()
     {
-        if (OnChange != null)
-        {
-            OnChange(this);
-        }
+        OnChange?.Invoke(this);
     }
 
     /// <summary>
@@ -80,9 +74,9 @@ public abstract class ComplexProperty : ISelfValidate
         }
         else
         {
-            if (field is IComparable)
+            if (field is IComparable comparable)
             {
-                applyChange = (field as IComparable).CompareTo(value) != 0;
+                applyChange = comparable.CompareTo(value) != 0;
             }
             else
             {
@@ -205,15 +199,19 @@ public abstract class ComplexProperty : ISelfValidate
                 switch (reader.NodeType)
                 {
                     case XmlNodeType.Element:
+                    {
                         if (!readAction(reader))
                         {
                             reader.SkipCurrentElement();
                         }
 
                         break;
+                    }
                     case XmlNodeType.Text:
+                    {
                         ReadTextValueFromXml(reader);
                         break;
+                    }
                 }
             } while (!reader.IsEndElement(xmlNamespace, xmlElementName));
         }
@@ -266,7 +264,7 @@ public abstract class ComplexProperty : ISelfValidate
     /// <summary>
     ///     Occurs when property changed.
     /// </summary>
-    internal event ComplexPropertyChangedDelegate OnChange;
+    internal event ComplexPropertyChangedDelegate? OnChange;
 
     /// <summary>
     ///     Implements ISelfValidate.Validate. Validates this instance.

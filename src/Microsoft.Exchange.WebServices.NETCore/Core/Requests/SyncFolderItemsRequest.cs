@@ -30,13 +30,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderItemsResponse>
 {
-    private PropertySet propertySet;
-    private FolderId syncFolderId;
-    private SyncFolderItemsScope syncScope;
-    private string syncState;
-    private readonly ItemIdWrapperList ignoredItemIds = new ItemIdWrapperList();
-    private int maxChangesReturned = 100;
-    private int numberOfDays;
+    private int _maxChangesReturned = 100;
+    private int _numberOfDays;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SyncFolderItemsRequest" /> class.
@@ -100,20 +95,20 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(PropertySet, "PropertySet");
-        EwsUtilities.ValidateParam(SyncFolderId, "SyncFolderId");
+        EwsUtilities.ValidateParam(PropertySet);
+        EwsUtilities.ValidateParam(SyncFolderId);
         SyncFolderId.Validate(Service.RequestedServerVersion);
 
         // SyncFolderItemsScope enum was introduced with Exchange2010.  Only
         // value NormalItems is valid with previous server versions.
         if (Service.RequestedServerVersion < ExchangeVersion.Exchange2010 &&
-            syncScope != SyncFolderItemsScope.NormalItems)
+            SyncScope != SyncFolderItemsScope.NormalItems)
         {
             throw new ServiceVersionException(
                 string.Format(
                     Strings.EnumValueIncompatibleWithRequestVersion,
-                    syncScope.ToString(),
-                    syncScope.GetType().Name,
+                    SyncScope.ToString(),
+                    SyncScope.GetType().Name,
                     ExchangeVersion.Exchange2010
                 )
             );
@@ -155,12 +150,12 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
 
         if (Service.RequestedServerVersion >= ExchangeVersion.Exchange2010)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SyncScope, syncScope);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SyncScope, SyncScope);
         }
 
         if (NumberOfDays != 0)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.NumberOfDays, numberOfDays);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.NumberOfDays, _numberOfDays);
         }
     }
 
@@ -177,47 +172,31 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     ///     Gets or sets the property set.
     /// </summary>
     /// <value>The property set.</value>
-    public PropertySet PropertySet
-    {
-        get => propertySet;
-        set => propertySet = value;
-    }
+    public PropertySet PropertySet { get; set; }
 
     /// <summary>
     ///     Gets or sets the sync folder id.
     /// </summary>
     /// <value>The sync folder id.</value>
-    public FolderId SyncFolderId
-    {
-        get => syncFolderId;
-        set => syncFolderId = value;
-    }
+    public FolderId SyncFolderId { get; set; }
 
     /// <summary>
     ///     Gets or sets the scope of the sync.
     /// </summary>
     /// <value>The scope of the sync.</value>
-    public SyncFolderItemsScope SyncScope
-    {
-        get => syncScope;
-        set => syncScope = value;
-    }
+    public SyncFolderItemsScope SyncScope { get; set; }
 
     /// <summary>
     ///     Gets or sets the state of the sync.
     /// </summary>
     /// <value>The state of the sync.</value>
-    public string SyncState
-    {
-        get => syncState;
-        set => syncState = value;
-    }
+    public string SyncState { get; set; }
 
     /// <summary>
     ///     Gets the list of ignored item ids.
     /// </summary>
     /// <value>The ignored item ids.</value>
-    public ItemIdWrapperList IgnoredItemIds => ignoredItemIds;
+    public ItemIdWrapperList IgnoredItemIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets the maximum number of changes returned by SyncFolderItems.
@@ -226,13 +205,13 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     /// </summary>
     public int MaxChangesReturned
     {
-        get => maxChangesReturned;
+        get => _maxChangesReturned;
 
         set
         {
             if (value >= 1 && value <= 512)
             {
-                maxChangesReturned = value;
+                _maxChangesReturned = value;
             }
             else
             {
@@ -248,13 +227,13 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     /// </summary>
     public int NumberOfDays
     {
-        get => numberOfDays;
+        get => _numberOfDays;
 
         set
         {
             if (value >= 0)
             {
-                numberOfDays = value;
+                _numberOfDays = value;
             }
             else
             {

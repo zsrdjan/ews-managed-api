@@ -30,8 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetStreamingEventsResponse : ServiceResponse
 {
-    private readonly GetStreamingEventsResults results = new GetStreamingEventsResults();
-    private readonly HangingServiceRequestBase request;
+    private readonly HangingServiceRequestBase _request;
 
     /// <summary>
     ///     Enumeration of ConnectionStatus that can be returned by the server.
@@ -41,12 +40,12 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
         /// <summary>
         ///     Simple heartbeat
         /// </summary>
-        OK,
+        Ok,
 
         /// <summary>
         ///     Server is closing the connection.
         /// </summary>
-        Closed
+        Closed,
     }
 
     /// <summary>
@@ -56,7 +55,7 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
     internal GetStreamingEventsResponse(HangingServiceRequestBase request)
     {
         ErrorSubscriptionIds = new List<string>();
-        this.request = request;
+        _request = request;
     }
 
     /// <summary>
@@ -71,7 +70,7 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
 
         if (reader.LocalName == XmlElementNames.Notifications)
         {
-            results.LoadFromXml(reader);
+            Results.LoadFromXml(reader);
         }
         else if (reader.LocalName == XmlElementNames.ConnectionStatus)
         {
@@ -79,7 +78,7 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
 
             if (connectionStatus.Equals(ConnectionStatus.Closed.ToString()))
             {
-                request.Disconnect(HangingRequestDisconnectReason.Clean, null);
+                _request.Disconnect(HangingRequestDisconnectReason.Clean, null);
             }
         }
     }
@@ -121,7 +120,7 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
     /// <summary>
     ///     Gets event results from subscription.
     /// </summary>
-    internal GetStreamingEventsResults Results => results;
+    internal GetStreamingEventsResults Results { get; } = new();
 
     /// <summary>
     ///     Gets the error subscription ids.

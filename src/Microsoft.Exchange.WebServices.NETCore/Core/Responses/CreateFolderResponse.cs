@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class CreateFolderResponse : ServiceResponse
 {
-    private Folder? folder;
+    private Folder? _folder;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateFolderResponse" /> class.
@@ -38,7 +38,7 @@ internal sealed class CreateFolderResponse : ServiceResponse
     /// <param name="folder">The folder.</param>
     internal CreateFolderResponse(Folder? folder)
     {
-        this.folder = folder;
+        _folder = folder;
     }
 
     /// <summary>
@@ -49,9 +49,9 @@ internal sealed class CreateFolderResponse : ServiceResponse
     /// <returns>Folder.</returns>
     private Folder? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        if (folder != null)
+        if (_folder != null)
         {
-            return folder;
+            return _folder;
         }
 
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Folder>(service, xmlElementName);
@@ -68,12 +68,12 @@ internal sealed class CreateFolderResponse : ServiceResponse
         var folders = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Folders,
             GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
+            false,
+            null,
             false
-        ); /* summaryPropertiesOnly */
+        );
 
-        folder = folders[0];
+        _folder = folders[0];
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ internal sealed class CreateFolderResponse : ServiceResponse
     {
         if (Result == ServiceResult.Success)
         {
-            folder.ClearChangeLog();
+            _folder.ClearChangeLog();
         }
     }
 }

@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetRoomListsResponse : ServiceResponse
 {
-    private readonly EmailAddressCollection roomLists = new EmailAddressCollection();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetRoomListsResponse" /> class.
     /// </summary>
@@ -42,7 +40,7 @@ internal sealed class GetRoomListsResponse : ServiceResponse
     /// <summary>
     ///     Gets all room list returned
     /// </summary>
-    public EmailAddressCollection RoomLists => roomLists;
+    public EmailAddressCollection RoomLists { get; } = new();
 
     /// <summary>
     ///     Reads response elements from XML.

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a folder containing task items.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.TasksFolder)]
 public class TasksFolder : Folder
 {
@@ -48,8 +51,9 @@ public class TasksFolder : Folder
     /// <param name="service">The service to use to bind to the tasks folder.</param>
     /// <param name="id">The Id of the tasks folder to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A TasksFolder instance representing the task folder corresponding to the specified Id.</returns>
-    public static new Task<TasksFolder> Bind(
+    public new static Task<TasksFolder> Bind(
         ExchangeService service,
         FolderId id,
         PropertySet propertySet,
@@ -65,8 +69,9 @@ public class TasksFolder : Folder
     /// </summary>
     /// <param name="service">The service to use to bind to the tasks folder.</param>
     /// <param name="id">The Id of the tasks folder to bind to.</param>
+    /// <param name="token"></param>
     /// <returns>A TasksFolder instance representing the task folder corresponding to the specified Id.</returns>
-    public static new Task<TasksFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
+    public new static Task<TasksFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
     {
         return Bind(service, id, PropertySet.FirstClassProperties, token);
     }
@@ -78,8 +83,9 @@ public class TasksFolder : Folder
     /// <param name="service">The service to use to bind to the tasks folder.</param>
     /// <param name="name">The name of the tasks folder to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A TasksFolder instance representing the tasks folder with the specified name.</returns>
-    public static new Task<TasksFolder> Bind(
+    public new static Task<TasksFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
         PropertySet propertySet,
@@ -95,8 +101,9 @@ public class TasksFolder : Folder
     /// </summary>
     /// <param name="service">The service to use to bind to the tasks folder.</param>
     /// <param name="name">The name of the tasks folder to bind to.</param>
+    /// <param name="token"></param>
     /// <returns>A TasksFolder instance representing the tasks folder with the specified name.</returns>
-    public static new Task<TasksFolder> Bind(
+    public new static Task<TasksFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
         CancellationToken token = default

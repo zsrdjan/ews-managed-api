@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class SuggestionsResponse : ServiceResponse
 {
-    private readonly Collection<Suggestion> daySuggestions = new Collection<Suggestion>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SuggestionsResponse" /> class.
     /// </summary>
@@ -59,7 +57,7 @@ internal sealed class SuggestionsResponse : ServiceResponse
 
                 daySuggestion.LoadFromXml(reader, reader.LocalName);
 
-                daySuggestions.Add(daySuggestion);
+                Suggestions.Add(daySuggestion);
             }
         } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SuggestionDayResultArray));
     }
@@ -67,5 +65,5 @@ internal sealed class SuggestionsResponse : ServiceResponse
     /// <summary>
     ///     Gets a list of suggested days.
     /// </summary>
-    internal Collection<Suggestion> Suggestions => daySuggestions;
+    internal Collection<Suggestion> Suggestions { get; } = new();
 }

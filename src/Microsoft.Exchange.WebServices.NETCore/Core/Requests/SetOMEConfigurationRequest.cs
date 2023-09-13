@@ -33,12 +33,7 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     /// <summary>
     ///     The XML representation of EncryptionConfigurationData
     /// </summary>
-    private readonly string xml;
-
-    /// <summary>
-    ///     The XML representation of EncryptionConfigurationData
-    /// </summary>
-    public string Xml => xml;
+    public string Xml { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetOMEConfigurationRequest" /> class.
@@ -48,7 +43,7 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     internal SetOMEConfigurationRequest(ExchangeService service, string xml)
         : base(service)
     {
-        this.xml = xml;
+        Xml = xml;
     }
 
     /// <summary>

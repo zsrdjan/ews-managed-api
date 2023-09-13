@@ -23,16 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to an individual item update operation.
 /// </summary>
+[PublicAPI]
 public sealed class UpdateItemResponse : ServiceResponse
 {
-    private readonly Item item;
-    private Item? returnedItem;
-    private int conflictCount;
+    private readonly Item _item;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateItemResponse" /> class.
@@ -42,7 +43,7 @@ public sealed class UpdateItemResponse : ServiceResponse
     {
         EwsUtilities.Assert(item != null, "UpdateItemResponse.ctor", "item is null");
 
-        this.item = item;
+        _item = item;
     }
 
     /// <summary>
@@ -53,19 +54,13 @@ public sealed class UpdateItemResponse : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        reader.ReadServiceObjectsCollectionFromXml(
-            XmlElementNames.Items,
-            GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
-            false
-        ); /* summaryPropertiesOnly */
+        reader.ReadServiceObjectsCollectionFromXml(XmlElementNames.Items, GetObjectInstance, false, null, false);
 
         // ConflictResults was only added in 2007 SP1 so if this was a 2007 RTM request we shouldn't expect to find the element
         if (!reader.Service.Exchange2007CompatibilityMode)
         {
             reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ConflictResults);
-            conflictCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.Count);
+            ConflictCount = reader.ReadElementValue<int>(XmlNamespace.Types, XmlElementNames.Count);
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.ConflictResults);
         }
 
@@ -80,12 +75,12 @@ public sealed class UpdateItemResponse : ServiceResponse
         //
         // Note that there can be no returned item at all, as in an UpdateItem call
         // with MessageDisposition set to SendOnly or SendAndSaveCopy.
-        if (returnedItem != null)
+        if (ReturnedItem != null)
         {
-            if (item.Id.UniqueId == returnedItem.Id.UniqueId)
+            if (_item.Id.UniqueId == ReturnedItem.Id.UniqueId)
             {
-                item.Id.ChangeKey = returnedItem.Id.ChangeKey;
-                returnedItem = null;
+                _item.Id.ChangeKey = ReturnedItem.Id.ChangeKey;
+                ReturnedItem = null;
             }
         }
     }
@@ -97,7 +92,7 @@ public sealed class UpdateItemResponse : ServiceResponse
     {
         if (Result == ServiceResult.Success)
         {
-            item.ClearChangeLog();
+            _item.ClearChangeLog();
         }
     }
 
@@ -109,19 +104,19 @@ public sealed class UpdateItemResponse : ServiceResponse
     /// <returns>Item.</returns>
     private Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        returnedItem = EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
+        ReturnedItem = EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
 
-        return returnedItem;
+        return ReturnedItem;
     }
 
     /// <summary>
     ///     Gets the item that was returned by the update operation. ReturnedItem is set only when a recurring Task
     ///     is marked as complete or when its recurrence pattern changes.
     /// </summary>
-    public Item? ReturnedItem => returnedItem;
+    public Item? ReturnedItem { get; private set; }
 
     /// <summary>
     ///     Gets the number of property conflicts that were resolved during the update operation.
     /// </summary>
-    public int ConflictCount => conflictCount;
+    public int ConflictCount { get; private set; }
 }

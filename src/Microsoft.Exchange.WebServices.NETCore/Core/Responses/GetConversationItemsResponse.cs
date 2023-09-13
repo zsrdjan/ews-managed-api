@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to a GetConversationItems operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetConversationItemsResponse : ServiceResponse
 {
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetConversationItemsResponse" /> class.
@@ -38,7 +41,7 @@ public sealed class GetConversationItemsResponse : ServiceResponse
     /// <param name="propertySet">The property set.</param>
     internal GetConversationItemsResponse(PropertySet propertySet)
     {
-        this.propertySet = propertySet;
+        _propertySet = propertySet;
     }
 
     /// <summary>
@@ -53,7 +56,7 @@ public sealed class GetConversationItemsResponse : ServiceResponse
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        Conversation = new ConversationResponse(propertySet);
+        Conversation = new ConversationResponse(_propertySet);
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Conversation);
         Conversation.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.Conversation);

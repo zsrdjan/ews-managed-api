@@ -38,12 +38,12 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(FolderIds, "FolderIds");
-        EwsUtilities.ValidateParamCollection(EventTypes, "EventTypes");
+        EwsUtilities.ValidateParam(FolderIds);
+        EwsUtilities.ValidateParamCollection(EventTypes);
         FolderIds.Validate(Service.RequestedServerVersion);
 
         // Check that caller isn't trying to subscribe to Status events.
-        if (EventTypes.Count(eventType => (eventType == EventType.Status)) > 0)
+        if (EventTypes.Any(eventType => eventType == EventType.Status))
         {
             throw new ServiceValidationException(Strings.CannotSubscribeToStatusEvents);
         }

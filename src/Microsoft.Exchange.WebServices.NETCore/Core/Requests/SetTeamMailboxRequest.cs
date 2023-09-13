@@ -33,17 +33,17 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     /// <summary>
     ///     TeamMailbox email address
     /// </summary>
-    private readonly EmailAddress emailAddress;
+    private readonly EmailAddress _emailAddress;
 
     /// <summary>
     ///     SharePoint site URL
     /// </summary>
-    private readonly Uri sharePointSiteUrl;
+    private readonly Uri _sharePointSiteUrl;
 
     /// <summary>
     ///     TeamMailbox lifecycle state
     /// </summary>
-    private readonly TeamMailboxLifecycleState state;
+    private readonly TeamMailboxLifecycleState _state;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetTeamMailboxRequest" /> class.
@@ -60,19 +60,9 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     )
         : base(service)
     {
-        if (emailAddress == null)
-        {
-            throw new ArgumentNullException("emailAddress");
-        }
-
-        if (sharePointSiteUrl == null)
-        {
-            throw new ArgumentNullException("sharePointSiteUrl");
-        }
-
-        this.emailAddress = emailAddress;
-        this.sharePointSiteUrl = sharePointSiteUrl;
-        this.state = state;
+        _emailAddress = emailAddress ?? throw new ArgumentNullException(nameof(emailAddress));
+        _sharePointSiteUrl = sharePointSiteUrl ?? throw new ArgumentNullException(nameof(sharePointSiteUrl));
+        _state = state;
     }
 
     /// <summary>
@@ -90,13 +80,13 @@ internal sealed class SetTeamMailboxRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        emailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.EmailAddress);
+        _emailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.EmailAddress);
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.SharePointSiteUrl,
-            sharePointSiteUrl.ToString()
+            _sharePointSiteUrl.ToString()
         );
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.State, state.ToString());
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.State, _state.ToString());
     }
 
     /// <summary>

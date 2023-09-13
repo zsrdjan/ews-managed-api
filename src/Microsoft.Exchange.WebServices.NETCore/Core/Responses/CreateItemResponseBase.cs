@@ -33,8 +33,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal abstract class CreateItemResponseBase : ServiceResponse
 {
-    private List<Item> items;
-
     /// <summary>
     ///     Gets Item instance.
     /// </summary>
@@ -58,17 +56,17 @@ internal abstract class CreateItemResponseBase : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        items = reader.ReadServiceObjectsCollectionFromXml(
+        Items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
             GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
+            false,
+            null,
             false
-        ); /* summaryPropertiesOnly */
+        );
     }
 
     /// <summary>
     ///     Gets the items.
     /// </summary>
-    public List<Item> Items => items;
+    public List<Item> Items { get; private set; }
 }

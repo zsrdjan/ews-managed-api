@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the GetHoldOnMailboxes response.
 /// </summary>
+[PublicAPI]
 public sealed class GetHoldOnMailboxesResponse : ServiceResponse
 {
-    MailboxHoldResult holdResult;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetHoldOnMailboxesResponse" /> class.
     /// </summary>
@@ -47,11 +48,11 @@ public sealed class GetHoldOnMailboxesResponse : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        holdResult = MailboxHoldResult.LoadFromXml(reader);
+        HoldResult = MailboxHoldResult.LoadFromXml(reader);
     }
 
     /// <summary>
     ///     Mailbox hold result
     /// </summary>
-    public MailboxHoldResult HoldResult => holdResult;
+    public MailboxHoldResult HoldResult { get; private set; }
 }

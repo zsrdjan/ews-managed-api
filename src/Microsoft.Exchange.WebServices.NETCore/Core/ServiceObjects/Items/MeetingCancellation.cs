@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a meeting cancellation message. Properties available on meeting messages are defined in the
 ///     MeetingMessageSchema class.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.MeetingCancellation)]
 public class MeetingCancellation : MeetingMessage
 {
@@ -57,11 +60,12 @@ public class MeetingCancellation : MeetingMessage
     /// <param name="service">The service to use to bind to the meeting cancellation message.</param>
     /// <param name="id">The Id of the meeting cancellation message to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>
     ///     A MeetingCancellation instance representing the meeting cancellation message corresponding to the specified
     ///     Id.
     /// </returns>
-    public static new Task<MeetingCancellation> Bind(
+    public new static Task<MeetingCancellation> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -81,7 +85,7 @@ public class MeetingCancellation : MeetingMessage
     ///     A MeetingCancellation instance representing the meeting cancellation message corresponding to the specified
     ///     Id.
     /// </returns>
-    public static new Task<MeetingCancellation> Bind(ExchangeService service, ItemId id)
+    public new static Task<MeetingCancellation> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }

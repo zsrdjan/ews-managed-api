@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the GetNonIndexableItemStatistics response.
 /// </summary>
+[PublicAPI]
 public sealed class GetNonIndexableItemStatisticsResponse : ServiceResponse
 {
     /// <summary>

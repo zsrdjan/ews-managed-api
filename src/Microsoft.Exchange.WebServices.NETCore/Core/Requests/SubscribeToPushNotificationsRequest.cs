@@ -30,10 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscription>
 {
-    private int frequency = 30;
-    private Uri url;
-    private string callerData;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeToPushNotificationsRequest" /> class.
     /// </summary>
@@ -49,8 +45,8 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(Url, "Url");
-        if ((Frequency < 1) || (Frequency > 1440))
+        EwsUtilities.ValidateParam(Url);
+        if (Frequency < 1 || Frequency > 1440)
         {
             throw new ArgumentException(string.Format(Strings.InvalidFrequencyValue, Frequency));
         }
@@ -75,7 +71,7 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.URL, Url.ToString());
 
-        if (Service.RequestedServerVersion >= ExchangeVersion.Exchange2013 && !string.IsNullOrEmpty(callerData))
+        if (Service.RequestedServerVersion >= ExchangeVersion.Exchange2013 && !string.IsNullOrEmpty(CallerData))
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.CallerData, CallerData);
         }
@@ -108,29 +104,17 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
     ///     Gets or sets the frequency.
     /// </summary>
     /// <value>The frequency.</value>
-    public int Frequency
-    {
-        get => frequency;
-        set => frequency = value;
-    }
+    public int Frequency { get; set; } = 30;
 
     /// <summary>
     ///     Gets or sets the URL.
     /// </summary>
     /// <value>The URL.</value>
-    public Uri Url
-    {
-        get => url;
-        set => url = value;
-    }
+    public Uri Url { get; set; }
 
     /// <summary>
     ///     Gets or sets the URL.
     /// </summary>
     /// <value>The URL.</value>
-    public string CallerData
-    {
-        get => callerData;
-        set => callerData = value;
-    }
+    public string CallerData { get; set; }
 }

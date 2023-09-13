@@ -30,14 +30,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Represents the response to a item search operation.
 /// </summary>
-/// <typeparam name="TItem">The type of items that the opeartion returned.</typeparam>
+/// <typeparam name="TItem">The type of items that the operation returned.</typeparam>
 internal sealed class FindItemResponse<TItem> : ServiceResponse
     where TItem : Item
 {
-    private FindItemsResults<TItem> results;
-    private readonly bool isGrouped;
-    private GroupedFindItemsResults<TItem> groupedFindResults;
-    private readonly PropertySet propertySet;
+    private readonly bool _isGrouped;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindItemResponse&lt;TItem&gt;" /> class.
@@ -46,10 +44,10 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     /// <param name="propertySet">The property set.</param>
     internal FindItemResponse(bool isGrouped, PropertySet propertySet)
     {
-        this.isGrouped = isGrouped;
-        this.propertySet = propertySet;
+        _isGrouped = isGrouped;
+        _propertySet = propertySet;
 
-        EwsUtilities.Assert(this.propertySet != null, "FindItemResponse.ctor", "PropertySet should not be null");
+        EwsUtilities.Assert(_propertySet != null, "FindItemResponse.ctor", "PropertySet should not be null");
     }
 
     /// <summary>
@@ -67,20 +65,24 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
         var nextPageOffset = moreItemsAvailable
             ? reader.ReadNullableAttributeValue<int>(XmlAttributeNames.IndexedPagingOffset) : null;
 
-        if (!isGrouped)
+        if (!_isGrouped)
         {
-            results = new FindItemsResults<TItem>();
-            results.TotalCount = totalItemsInView;
-            results.NextPageOffset = nextPageOffset;
-            results.MoreAvailable = moreItemsAvailable;
-            InternalReadItemsFromXml(reader, propertySet, results.Items);
+            Results = new FindItemsResults<TItem>
+            {
+                TotalCount = totalItemsInView,
+                NextPageOffset = nextPageOffset,
+                MoreAvailable = moreItemsAvailable,
+            };
+            InternalReadItemsFromXml(reader, _propertySet, Results.Items);
         }
         else
         {
-            groupedFindResults = new GroupedFindItemsResults<TItem>();
-            groupedFindResults.TotalCount = totalItemsInView;
-            groupedFindResults.NextPageOffset = nextPageOffset;
-            groupedFindResults.MoreAvailable = moreItemsAvailable;
+            GroupedFindResults = new GroupedFindItemsResults<TItem>
+            {
+                TotalCount = totalItemsInView,
+                NextPageOffset = nextPageOffset,
+                MoreAvailable = moreItemsAvailable,
+            };
 
             reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Groups);
 
@@ -95,11 +97,11 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
                         var groupIndex = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.GroupIndex);
 
                         var itemList = new List<TItem>();
-                        InternalReadItemsFromXml(reader, propertySet, itemList);
+                        InternalReadItemsFromXml(reader, _propertySet, itemList);
 
                         reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.GroupedItems);
 
-                        groupedFindResults.ItemGroups.Add(new ItemGroup<TItem>(groupIndex, itemList));
+                        GroupedFindResults.ItemGroups.Add(new ItemGroup<TItem>(groupIndex, itemList));
                     }
                 } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.Groups));
             }
@@ -120,7 +122,7 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
                     var term = new HighlightTerm();
 
                     term.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.HighlightTerm);
-                    results.HighlightTerms.Add(term);
+                    Results.HighlightTerms.Add(term);
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.HighlightTerms));
         }
@@ -161,12 +163,7 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
                     }
                     else
                     {
-                        item.LoadFromXml(
-                            reader,
-                            true, /* clearPropertyBag */
-                            propertySet,
-                            true /* summaryPropertiesOnly */
-                        );
+                        item.LoadFromXml(reader, true, propertySet, true);
 
                         destinationList.Add(item);
                     }
@@ -190,10 +187,10 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     ///     Gets a grouped list of items matching the specified search criteria that were found in Exchange. ItemGroups is
     ///     null if the search operation did not specify grouping options.
     /// </summary>
-    public GroupedFindItemsResults<TItem> GroupedFindResults => groupedFindResults;
+    public GroupedFindItemsResults<TItem> GroupedFindResults { get; private set; }
 
     /// <summary>
     ///     Gets the results of the search operation.
     /// </summary>
-    public FindItemsResults<TItem> Results => results;
+    public FindItemsResults<TItem> Results { get; private set; }
 }

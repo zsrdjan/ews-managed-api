@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the GetDiscoverySearchConfiguration response.
 /// </summary>
+[PublicAPI]
 public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
 {
-    readonly List<DiscoverySearchConfiguration> configurations = new List<DiscoverySearchConfiguration>();
+    private readonly List<DiscoverySearchConfiguration> _configurations = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationResponse" /> class.
@@ -45,7 +48,7 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        configurations.Clear();
+        _configurations.Clear();
 
         base.ReadElementsFromXml(reader);
 
@@ -57,7 +60,7 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
                 reader.Read();
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.DiscoverySearchConfiguration))
                 {
-                    configurations.Add(DiscoverySearchConfiguration.LoadFromXml(reader));
+                    _configurations.Add(DiscoverySearchConfiguration.LoadFromXml(reader));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations));
         }
@@ -68,5 +71,5 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
     /// <summary>
     ///     Searchable mailboxes result
     /// </summary>
-    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations => configurations.ToArray();
+    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations => _configurations.ToArray();
 }

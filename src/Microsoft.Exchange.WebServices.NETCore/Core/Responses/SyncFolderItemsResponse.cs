@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to a folder items synchronization operation.
 /// </summary>
+[PublicAPI]
 public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
 {
     /// <summary>

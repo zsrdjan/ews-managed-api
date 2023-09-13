@@ -23,17 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a generic item. Properties available on items are defined in the ItemSchema class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.Item)]
 public class Item : ServiceObject
 {
-    private readonly ItemAttachment parentAttachment;
-
     /// <summary>
     ///     Initializes an unsaved local instance of <see cref="Item" />. To bind to an existing item, use Item.Bind() instead.
     /// </summary>
@@ -52,7 +53,7 @@ public class Item : ServiceObject
     {
         EwsUtilities.Assert(parentAttachment != null, "Item.ctor", "parentAttachment is null");
 
-        this.parentAttachment = parentAttachment;
+        ParentAttachment = parentAttachment;
     }
 
     /// <summary>
@@ -62,6 +63,7 @@ public class Item : ServiceObject
     /// <param name="service">The service to use to bind to the item.</param>
     /// <param name="id">The Id of the item to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>An Item instance representing the item corresponding to the specified Id.</returns>
     public static Task<Item> Bind(
         ExchangeService service,
@@ -127,6 +129,7 @@ public class Item : ServiceObject
     ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
         PropertySet propertySet,
         CancellationToken token
@@ -138,7 +141,7 @@ public class Item : ServiceObject
         return Service.InternalLoadPropertiesForItems(
             new[]
             {
-                this
+                this,
             },
             propertySet,
             ServiceErrorHandling.ThrowOnError,
@@ -152,6 +155,7 @@ public class Item : ServiceObject
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
     /// <param name="affectedTaskOccurrences">Indicate which occurrence of a recurring task should be deleted.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalDelete(
         DeleteMode deleteMode,
         SendCancellationsMode? sendCancellationsMode,
@@ -169,6 +173,7 @@ public class Item : ServiceObject
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
     /// <param name="affectedTaskOccurrences">Indicate which occurrence of a recurring task should be deleted.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
+    /// <param name="token"></param>
     internal Task<ServiceResponseCollection<ServiceResponse>> InternalDelete(
         DeleteMode deleteMode,
         SendCancellationsMode? sendCancellationsMode,
@@ -271,7 +276,7 @@ public class Item : ServiceObject
     /// <param name="token"></param>
     /// <returns>Updated item.</returns>
     internal async Task<Item?> InternalUpdate(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         ConflictResolutionMode conflictResolutionMode,
         MessageDisposition? messageDisposition,
         SendInvitationsOrCancellationsMode? sendInvitationsOrCancellationsMode,
@@ -319,7 +324,7 @@ public class Item : ServiceObject
     /// <summary>
     ///     Gets the parent attachment of this item.
     /// </summary>
-    internal ItemAttachment ParentAttachment => parentAttachment;
+    internal ItemAttachment ParentAttachment { get; }
 
     /// <summary>
     ///     Gets Id of the root item for this item.
@@ -581,7 +586,7 @@ public class Item : ServiceObject
     /// <summary>
     ///     Gets a value indicating whether the item is an attachment.
     /// </summary>
-    public bool IsAttachment => parentAttachment != null;
+    public bool IsAttachment => ParentAttachment != null;
 
     /// <summary>
     ///     Gets a value indicating whether this object is a real store item, or if it's a local object

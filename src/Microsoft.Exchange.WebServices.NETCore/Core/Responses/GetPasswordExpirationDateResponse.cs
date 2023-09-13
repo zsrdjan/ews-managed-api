@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetPasswordExpirationDateResponse : ServiceResponse
 {
-    private DateTime? passwordExpirationDate;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetPasswordExpirationDateResponse" /> class.
     /// </summary>
@@ -46,7 +44,7 @@ internal sealed class GetPasswordExpirationDateResponse : ServiceResponse
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         base.ReadElementsFromXml(reader);
-        passwordExpirationDate = reader.ReadElementValueAsDateTime(
+        PasswordExpirationDate = reader.ReadElementValueAsDateTime(
             XmlNamespace.NotSpecified,
             XmlElementNames.PasswordExpirationDate
         );
@@ -55,5 +53,5 @@ internal sealed class GetPasswordExpirationDateResponse : ServiceResponse
     /// <summary>
     ///     Password expiration date
     /// </summary>
-    public DateTime? PasswordExpirationDate => passwordExpirationDate;
+    public DateTime? PasswordExpirationDate { get; private set; }
 }

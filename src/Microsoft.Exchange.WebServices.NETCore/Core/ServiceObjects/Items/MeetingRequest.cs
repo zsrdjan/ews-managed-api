@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a meeting request that an attendee can accept or decline. Properties available on meeting requests are
 ///     defined in the MeetingRequestSchema class.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.MeetingRequest)]
 public class MeetingRequest : MeetingMessage, ICalendarActionProvider
 {
@@ -57,8 +60,9 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     /// <param name="service">The service to use to bind to the meeting request.</param>
     /// <param name="id">The Id of the meeting request to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A MeetingRequest instance representing the meeting request corresponding to the specified Id.</returns>
-    public static new Task<MeetingRequest> Bind(
+    public new static Task<MeetingRequest> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -75,7 +79,7 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     /// <param name="service">The service to use to bind to the meeting request.</param>
     /// <param name="id">The Id of the meeting request to bind to.</param>
     /// <returns>A MeetingRequest instance representing the meeting request corresponding to the specified Id.</returns>
-    public static new Task<MeetingRequest> Bind(ExchangeService service, ItemId id)
+    public new static Task<MeetingRequest> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }

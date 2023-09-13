@@ -25,18 +25,16 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the availability of an individual attendee.
 /// </summary>
+[PublicAPI]
 public sealed class AttendeeAvailability : ServiceResponse
 {
-    private readonly Collection<CalendarEvent> calendarEvents = new Collection<CalendarEvent>();
-    private readonly Collection<LegacyFreeBusyStatus> mergedFreeBusyStatus = new Collection<LegacyFreeBusyStatus>();
-    private FreeBusyViewType viewType;
-    private WorkingHours workingHours;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AttendeeAvailability" /> class.
     /// </summary>
@@ -55,7 +53,7 @@ public sealed class AttendeeAvailability : ServiceResponse
 
         var viewTypeString = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.FreeBusyViewType);
 
-        this.viewType = (FreeBusyViewType)Enum.Parse(typeof(FreeBusyViewType), viewTypeString, false);
+        ViewType = Enum.Parse<FreeBusyViewType>(viewTypeString, false);
 
         do
         {
@@ -66,15 +64,18 @@ public sealed class AttendeeAvailability : ServiceResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.MergedFreeBusy:
+                    {
                         var mergedFreeBusy = reader.ReadElementValue();
 
                         for (var i = 0; i < mergedFreeBusy.Length; i++)
                         {
-                            mergedFreeBusyStatus.Add((LegacyFreeBusyStatus)byte.Parse(mergedFreeBusy[i].ToString()));
+                            MergedFreeBusyStatus.Add((LegacyFreeBusyStatus)byte.Parse(mergedFreeBusy[i].ToString()));
                         }
 
                         break;
+                    }
                     case XmlElementNames.CalendarEventArray:
+                    {
                         do
                         {
                             reader.Read();
@@ -100,16 +101,19 @@ public sealed class AttendeeAvailability : ServiceResponse
 
                                 calendarEvent.LoadFromXml(reader, XmlElementNames.CalendarEvent);
 
-                                calendarEvents.Add(calendarEvent);
+                                CalendarEvents.Add(calendarEvent);
                             }
                         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.CalendarEventArray));
 
                         break;
+                    }
                     case XmlElementNames.WorkingHours:
-                        workingHours = new WorkingHours();
-                        workingHours.LoadFromXml(reader, reader.LocalName);
+                    {
+                        WorkingHours = new WorkingHours();
+                        WorkingHours.LoadFromXml(reader, reader.LocalName);
 
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView));
@@ -118,20 +122,20 @@ public sealed class AttendeeAvailability : ServiceResponse
     /// <summary>
     ///     Gets a collection of calendar events for the attendee.
     /// </summary>
-    public Collection<CalendarEvent> CalendarEvents => calendarEvents;
+    public Collection<CalendarEvent> CalendarEvents { get; } = new();
 
     /// <summary>
     ///     Gets the free/busy view type that wes retrieved for the attendee.
     /// </summary>
-    public FreeBusyViewType ViewType => viewType;
+    public FreeBusyViewType ViewType { get; private set; }
 
     /// <summary>
     ///     Gets a collection of merged free/busy status for the attendee.
     /// </summary>
-    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus => mergedFreeBusyStatus;
+    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus { get; } = new();
 
     /// <summary>
     ///     Gets the working hours of the attendee.
     /// </summary>
-    public WorkingHours WorkingHours => workingHours;
+    public WorkingHours WorkingHours { get; private set; }
 }

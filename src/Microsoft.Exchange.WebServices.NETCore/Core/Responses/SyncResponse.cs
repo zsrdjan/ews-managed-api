@@ -40,8 +40,7 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     where TServiceObject : ServiceObject
     where TChange : Change
 {
-    private readonly ChangeCollection<TChange> changes = new ChangeCollection<TChange>();
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SyncResponse&lt;TServiceObject, TChange&gt;" /> class.
@@ -49,9 +48,9 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     /// <param name="propertySet">Property set.</param>
     internal SyncResponse(PropertySet propertySet)
     {
-        this.propertySet = propertySet;
+        _propertySet = propertySet;
 
-        EwsUtilities.Assert(this.propertySet != null, "SyncResponse.ctor", "PropertySet should not be null");
+        EwsUtilities.Assert(_propertySet != null, "SyncResponse.ctor", "PropertySet should not be null");
     }
 
     /// <summary>
@@ -104,20 +103,30 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
                     switch (reader.LocalName)
                     {
                         case XmlElementNames.Create:
+                        {
                             change.ChangeType = ChangeType.Create;
                             break;
+                        }
                         case XmlElementNames.Update:
+                        {
                             change.ChangeType = ChangeType.Update;
                             break;
+                        }
                         case XmlElementNames.Delete:
+                        {
                             change.ChangeType = ChangeType.Delete;
                             break;
+                        }
                         case XmlElementNames.ReadFlagChange:
+                        {
                             change.ChangeType = ChangeType.ReadFlagChange;
                             break;
+                        }
                         default:
+                        {
                             reader.SkipCurrentElement();
                             break;
+                        }
                     }
 
                     if (change != null)
@@ -129,6 +138,7 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
                         {
                             case ChangeType.Delete:
                             case ChangeType.ReadFlagChange:
+                            {
                                 change.Id = change.CreateId();
                                 change.Id.LoadFromXml(reader, change.Id.GetXmlElementName());
 
@@ -152,24 +162,22 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
                                 }
 
                                 break;
+                            }
                             default:
+                            {
                                 change.ServiceObject = EwsUtilities.CreateEwsObjectFromXmlElementName<TServiceObject>(
                                     reader.Service,
                                     reader.LocalName
                                 );
 
-                                change.ServiceObject.LoadFromXml(
-                                    reader,
-                                    true, /* clearPropertyBag */
-                                    propertySet,
-                                    SummaryPropertiesOnly
-                                );
+                                change.ServiceObject.LoadFromXml(reader, true, _propertySet, SummaryPropertiesOnly);
                                 break;
+                            }
                         }
 
                         reader.ReadEndElementIfNecessary(XmlNamespace.Types, change.ChangeType.ToString());
 
-                        changes.Add(change);
+                        Changes.Add(change);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.Changes));
@@ -179,7 +187,7 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     /// <summary>
     ///     Gets a list of changes that occurred on the synchronized folder.
     /// </summary>
-    public ChangeCollection<TChange> Changes => changes;
+    public ChangeCollection<TChange> Changes { get; } = new();
 
     /// <summary>
     ///     Gets a value indicating whether this request returns full or summary properties.

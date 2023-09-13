@@ -182,7 +182,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
         string collectionXmlElementName,
         GetObjectInstanceDelegate<TServiceObject> getObjectInstanceDelegate,
         bool clearPropertyBag,
-        PropertySet requestedPropertySet,
+        PropertySet? requestedPropertySet,
         bool summaryPropertiesOnly
     )
         where TServiceObject : ServiceObject

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a Contact Group. Properties available on contact groups are defined in the ContactGroupSchema class.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.DistributionList)]
 public class ContactGroup : Item
 {
@@ -64,7 +67,6 @@ public class ContactGroup : Item
     public string DisplayName
     {
         get => (string)PropertyBag[ContactSchema.DisplayName];
-
         set => PropertyBag[ContactSchema.DisplayName] = value;
     }
 
@@ -84,8 +86,9 @@ public class ContactGroup : Item
     /// <param name="service">The service to use to bind to the contact group.</param>
     /// <param name="id">The Id of the contact group to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A ContactGroup instance representing the contact group corresponding to the specified Id.</returns>
-    public static new Task<ContactGroup> Bind(
+    public new static Task<ContactGroup> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -102,7 +105,7 @@ public class ContactGroup : Item
     /// <param name="service">The service to use to bind to the contact group.</param>
     /// <param name="id">The Id of the contact group to bind to.</param>
     /// <returns>A ContactGroup instance representing the contact group corresponding to the specified Id.</returns>
-    public static new Task<ContactGroup> Bind(ExchangeService service, ItemId id)
+    public new static Task<ContactGroup> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }

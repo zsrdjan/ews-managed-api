@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the results of a GetUserPhoto operation.
 /// </summary>
+[PublicAPI]
 public sealed class SetUserPhotoResults
 {
     /// <summary>

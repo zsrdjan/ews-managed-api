@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class SetUserOofSettingsRequest : SimpleServiceRequestBase
 {
-    private string smtpAddress;
-    private OofSettings oofSettings;
-
     /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
@@ -49,8 +46,8 @@ internal sealed class SetUserOofSettingsRequest : SimpleServiceRequestBase
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(SmtpAddress, "SmtpAddress");
-        EwsUtilities.ValidateParam(OofSettings, "OofSettings");
+        EwsUtilities.ValidateParam(SmtpAddress);
+        EwsUtilities.ValidateParam(OofSettings);
     }
 
     /// <summary>
@@ -123,18 +120,10 @@ internal sealed class SetUserOofSettingsRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the SMTP address.
     /// </summary>
-    public string SmtpAddress
-    {
-        get => smtpAddress;
-        set => smtpAddress = value;
-    }
+    public string SmtpAddress { get; set; }
 
     /// <summary>
     ///     Gets or sets the oof settings.
     /// </summary>
-    public OofSettings OofSettings
-    {
-        get => oofSettings;
-        set => oofSettings = value;
-    }
+    public OofSettings OofSettings { get; set; }
 }

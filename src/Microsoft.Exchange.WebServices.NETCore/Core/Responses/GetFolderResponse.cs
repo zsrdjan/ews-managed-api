@@ -23,15 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to an individual folder retrieval operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetFolderResponse : ServiceResponse
 {
-    private Folder? folder;
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetFolderResponse" /> class.
@@ -40,10 +42,10 @@ public sealed class GetFolderResponse : ServiceResponse
     /// <param name="propertySet">The property set from the request.</param>
     internal GetFolderResponse(Folder? folder, PropertySet propertySet)
     {
-        this.folder = folder;
-        this.propertySet = propertySet;
+        Folder = folder;
+        _propertySet = propertySet;
 
-        EwsUtilities.Assert(this.propertySet != null, "GetFolderResponse.ctor", "PropertySet should not be null");
+        EwsUtilities.Assert(_propertySet != null, "GetFolderResponse.ctor", "PropertySet should not be null");
     }
 
     /// <summary>
@@ -57,12 +59,12 @@ public sealed class GetFolderResponse : ServiceResponse
         var folders = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Folders,
             GetObjectInstance,
-            true, /* clearPropertyBag */
-            propertySet, /* requestedPropertySet */
+            true,
+            _propertySet,
             false
-        ); /* summaryPropertiesOnly */
+        );
 
-        folder = folders[0];
+        Folder = folders[0];
     }
 
     /// <summary>
@@ -84,5 +86,5 @@ public sealed class GetFolderResponse : ServiceResponse
     /// <summary>
     ///     Gets the folder that was retrieved.
     /// </summary>
-    public Folder? Folder => folder;
+    public Folder? Folder { get; private set; }
 }

@@ -90,12 +90,7 @@ internal sealed class FindConversationResponse : ServiceResponse
                     }
                     else
                     {
-                        item.LoadFromXml(
-                            reader,
-                            true, /* clearPropertyBag */
-                            null,
-                            false /* summaryPropertiesOnly */
-                        );
+                        item.LoadFromXml(reader, true, null, false);
 
                         Results.Conversations.Add(item);
                     }

@@ -632,7 +632,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <param name="token"></param>
     internal System.Threading.Tasks.Task CreateItem(
         Item item,
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition? messageDisposition,
         SendInvitationsMode? sendInvitationsMode,
         CancellationToken token
@@ -846,7 +846,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <returns>Updated item.</returns>
     internal async Task<Item?> UpdateItem(
         Item item,
-        FolderId savedItemsDestinationFolderId,
+        FolderId? savedItemsDestinationFolderId,
         ConflictResolutionMode conflictResolution,
         MessageDisposition? messageDisposition,
         SendInvitationsOrCancellationsMode? sendInvitationsOrCancellationsMode,
@@ -2366,7 +2366,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     internal Task<ServiceResponseCollection<GetAttachmentResponse>> GetAttachment(
         Attachment attachment,
         BodyType? bodyType,
-        IEnumerable<PropertyDefinitionBase> additionalProperties,
+        IEnumerable<PropertyDefinitionBase>? additionalProperties,
         CancellationToken token
     )
     {

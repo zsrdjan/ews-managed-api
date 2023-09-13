@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private readonly List<Folder> folders = new List<Folder>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateFolderRequest" /> class.
     /// </summary>
@@ -48,7 +46,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(Folders, "Folders");
+        EwsUtilities.ValidateParamCollection(Folders);
         for (var i = 0; i < Folders.Count; i++)
         {
             var folder = Folders[i];
@@ -106,7 +104,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return folders.Count;
+        return Folders.Count;
     }
 
     /// <summary>
@@ -117,7 +115,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.FolderChanges);
 
-        foreach (var folder in folders)
+        foreach (var folder in Folders)
         {
             folder.WriteToXmlForUpdate(writer);
         }
@@ -138,5 +136,5 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     ///     Gets the list of folders.
     /// </summary>
     /// <value>The folders.</value>
-    public List<Folder> Folders => folders;
+    public List<Folder> Folders { get; } = new();
 }

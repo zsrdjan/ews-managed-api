@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscription>
 {
-    private int timeout = 30;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeToPullNotificationsRequest" /> class.
     /// </summary>
@@ -47,7 +45,7 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     internal override void Validate()
     {
         base.Validate();
-        if ((Timeout < 1) || (Timeout > 1440))
+        if (Timeout < 1 || Timeout > 1440)
         {
             throw new ArgumentException(string.Format(Strings.InvalidTimeoutValue, Timeout));
         }
@@ -98,9 +96,5 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     ///     Gets or sets the timeout.
     /// </summary>
     /// <value>The timeout.</value>
-    public int Timeout
-    {
-        get => timeout;
-        set => timeout = value;
-    }
+    public int Timeout { get; set; } = 30;
 }

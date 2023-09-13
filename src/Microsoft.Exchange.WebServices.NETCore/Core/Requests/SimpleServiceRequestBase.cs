@@ -65,15 +65,13 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
     /// <param name="webAsyncResult">An IAsyncResult that references the asynchronous request.</param>
     private static void WebRequestAsyncCallback(IAsyncResult webAsyncResult)
     {
-        var wrappedState = webAsyncResult.AsyncState as WebAsyncCallStateAnchor;
-
-        if (wrappedState != null && wrappedState.AsyncCallback != null)
+        if (webAsyncResult.AsyncState is WebAsyncCallStateAnchor wrappedState && wrappedState.AsyncCallback != null)
         {
             var asyncRequestResult = new AsyncRequestResult(
                 wrappedState.ServiceRequest,
                 wrappedState.WebRequest,
-                webAsyncResult, /* web async result */
-                wrappedState.AsyncState /* user state */
+                webAsyncResult,
+                wrappedState.AsyncState
             );
 
             // Call user's call back

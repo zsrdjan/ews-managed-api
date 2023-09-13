@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the GetUserRetentionPolicyTagsResponse response.
 /// </summary>
+[PublicAPI]
 public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
 {
-    readonly List<RetentionPolicyTag> retentionPolicyTags = new List<RetentionPolicyTag>();
+    readonly List<RetentionPolicyTag> _retentionPolicyTags = new List<RetentionPolicyTag>();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsResponse" /> class.
@@ -45,7 +48,7 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        retentionPolicyTags.Clear();
+        _retentionPolicyTags.Clear();
 
         base.ReadElementsFromXml(reader);
 
@@ -57,7 +60,7 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
                 reader.Read();
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.RetentionPolicyTag))
                 {
-                    retentionPolicyTags.Add(RetentionPolicyTag.LoadFromXml(reader));
+                    _retentionPolicyTags.Add(RetentionPolicyTag.LoadFromXml(reader));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags));
 
@@ -68,5 +71,5 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
     /// <summary>
     ///     Retention policy tags result.
     /// </summary>
-    public RetentionPolicyTag[] RetentionPolicyTags => retentionPolicyTags.ToArray();
+    public RetentionPolicyTag[] RetentionPolicyTags => _retentionPolicyTags.ToArray();
 }

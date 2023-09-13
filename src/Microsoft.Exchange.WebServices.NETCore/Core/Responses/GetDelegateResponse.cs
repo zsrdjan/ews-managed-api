@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetDelegateResponse : DelegateManagementResponse
 {
-    private MeetingRequestsDeliveryScope meetingRequestsDeliveryScope = MeetingRequestsDeliveryScope.NoForward;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetDelegateResponse" /> class.
     /// </summary>
@@ -62,7 +60,7 @@ internal sealed class GetDelegateResponse : DelegateManagementResponse
             // In error cases, the element may not have been returned.
             if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.DeliverMeetingRequests))
             {
-                meetingRequestsDeliveryScope = reader.ReadElementValue<MeetingRequestsDeliveryScope>();
+                MeetingRequestsDeliveryScope = reader.ReadElementValue<MeetingRequestsDeliveryScope>();
             }
         }
     }
@@ -70,5 +68,6 @@ internal sealed class GetDelegateResponse : DelegateManagementResponse
     /// <summary>
     ///     Gets a value indicating if and how meeting requests are delivered to delegates.
     /// </summary>
-    internal MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope => meetingRequestsDeliveryScope;
+    internal MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope { get; private set; } =
+        MeetingRequestsDeliveryScope.NoForward;
 }

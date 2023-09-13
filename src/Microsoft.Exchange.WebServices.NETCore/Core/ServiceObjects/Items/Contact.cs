@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a contact. Properties available on contacts are defined in the ContactSchema class.
 /// </summary>
+[PublicAPI]
 [Attachable]
 [ServiceObjectDefinition(XmlElementNames.Contact)]
 public class Contact : Item
@@ -60,8 +63,9 @@ public class Contact : Item
     /// <param name="service">The service to use to bind to the contact.</param>
     /// <param name="id">The Id of the contact to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A Contact instance representing the contact corresponding to the specified Id.</returns>
-    public static new Task<Contact> Bind(
+    public new static Task<Contact> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -78,7 +82,7 @@ public class Contact : Item
     /// <param name="service">The service to use to bind to the contact.</param>
     /// <param name="id">The Id of the contact to bind to.</param>
     /// <returns>A Contact instance representing the contact corresponding to the specified Id.</returns>
-    public static new Task<Contact> Bind(ExchangeService service, ItemId id)
+    public new static Task<Contact> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }
@@ -144,7 +148,7 @@ public class Contact : Item
     ///     Retrieves the file attachment that holds the contact's picture.
     /// </summary>
     /// <returns>The file attachment that holds the contact's picture.</returns>
-    public FileAttachment GetContactPictureAttachment()
+    public FileAttachment? GetContactPictureAttachment()
     {
         EwsUtilities.ValidateMethodVersion(Service, ExchangeVersion.Exchange2010, "GetContactPictureAttachment");
 
@@ -153,8 +157,9 @@ public class Contact : Item
             throw new PropertyException(Strings.AttachmentCollectionNotLoaded);
         }
 
-        foreach (FileAttachment fileAttachment in Attachments)
+        foreach (var attachment in Attachments)
         {
+            var fileAttachment = (FileAttachment)attachment;
             if (fileAttachment.IsContactPhoto)
             {
                 return fileAttachment;
@@ -172,8 +177,7 @@ public class Contact : Item
         // Iterates in reverse order to remove file attachments that have IsContactPhoto set to true.
         for (var index = Attachments.Count - 1; index >= 0; index--)
         {
-            var fileAttachment = Attachments[index] as FileAttachment;
-            if (fileAttachment != null)
+            if (Attachments[index] is FileAttachment fileAttachment)
             {
                 if (fileAttachment.IsContactPhoto)
                 {
@@ -205,8 +209,7 @@ public class Contact : Item
     {
         base.Validate();
 
-        object fileAsMapping;
-        if (TryGetProperty(ContactSchema.FileAsMapping, out fileAsMapping))
+        if (TryGetProperty(ContactSchema.FileAsMapping, out var fileAsMapping))
         {
             // FileAsMapping is extended by 5 new values in 2010 mode. Validate that they are used according the version.
             EwsUtilities.ValidateEnumVersionValue((FileAsMapping)fileAsMapping, Service.RequestedServerVersion);
@@ -286,7 +289,7 @@ public class Contact : Item
     public CompleteName CompleteName => (CompleteName)PropertyBag[ContactSchema.CompleteName];
 
     /// <summary>
-    ///     Gets or sets the compnay name of the contact.
+    ///     Gets or sets the company name of the contact.
     /// </summary>
     public string CompanyName
     {

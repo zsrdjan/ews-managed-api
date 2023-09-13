@@ -36,11 +36,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public class ServiceResponse
 {
-    private ServiceResult result;
-    private ServiceError errorCode;
-    private string errorMessage;
-    private readonly Dictionary<string, string> errorDetails = new Dictionary<string, string>();
-    private readonly Collection<PropertyDefinitionBase> errorProperties = new Collection<PropertyDefinitionBase>();
+    private readonly Dictionary<string, string> _errorDetails = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceResponse" /> class.
@@ -55,10 +51,10 @@ public class ServiceResponse
     /// <param name="soapFaultDetails">The SOAP fault details.</param>
     internal ServiceResponse(SoapFaultDetails soapFaultDetails)
     {
-        result = ServiceResult.Error;
-        errorCode = soapFaultDetails.ResponseCode;
-        errorMessage = soapFaultDetails.FaultString;
-        errorDetails = soapFaultDetails.ErrorDetails;
+        Result = ServiceResult.Error;
+        ErrorCode = soapFaultDetails.ResponseCode;
+        ErrorMessage = soapFaultDetails.FaultString;
+        _errorDetails = soapFaultDetails.ErrorDetails;
     }
 
     /// <summary>
@@ -69,10 +65,10 @@ public class ServiceResponse
     /// <param name="errorMessage">Detailed error message</param>
     internal ServiceResponse(ServiceError responseCode, string errorMessage)
     {
-        result = ServiceResult.Error;
-        errorCode = responseCode;
-        this.errorMessage = errorMessage;
-        errorDetails = null;
+        Result = ServiceResult.Error;
+        ErrorCode = responseCode;
+        ErrorMessage = errorMessage;
+        _errorDetails = null;
     }
 
     /// <summary>
@@ -87,18 +83,18 @@ public class ServiceResponse
             reader.ReadStartElement(XmlNamespace.Messages, xmlElementName);
         }
 
-        result = reader.ReadAttributeValue<ServiceResult>(XmlAttributeNames.ResponseClass);
+        Result = reader.ReadAttributeValue<ServiceResult>(XmlAttributeNames.ResponseClass);
 
-        if (result == ServiceResult.Success || result == ServiceResult.Warning)
+        if (Result == ServiceResult.Success || Result == ServiceResult.Warning)
         {
-            if (result == ServiceResult.Warning)
+            if (Result == ServiceResult.Warning)
             {
-                errorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
+                ErrorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
             }
 
-            errorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
+            ErrorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
 
-            if (result == ServiceResult.Warning)
+            if (Result == ServiceResult.Warning)
             {
                 reader.ReadElementValue<int>(XmlNamespace.Messages, XmlElementNames.DescriptiveLinkKey);
             }
@@ -120,8 +116,8 @@ public class ServiceResponse
         }
         else
         {
-            errorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
-            errorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
+            ErrorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
+            ErrorCode = reader.ReadElementValue<ServiceError>(XmlNamespace.Messages, XmlElementNames.ResponseCode);
             reader.ReadElementValue<int>(XmlNamespace.Messages, XmlElementNames.DescriptiveLinkKey);
 
             while (!reader.IsEndElement(XmlNamespace.Messages, xmlElementName))
@@ -158,31 +154,36 @@ public class ServiceResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.Value:
-                        errorDetails.Add(reader.ReadAttributeValue(XmlAttributeNames.Name), reader.ReadElementValue());
+                    {
+                        _errorDetails.Add(reader.ReadAttributeValue(XmlAttributeNames.Name), reader.ReadElementValue());
                         break;
-
+                    }
                     case XmlElementNames.FieldURI:
-                        errorProperties.Add(
+                    {
+                        ErrorProperties.Add(
                             ServiceObjectSchema.FindPropertyDefinition(
                                 reader.ReadAttributeValue(XmlAttributeNames.FieldURI)
                             )
                         );
                         break;
-
+                    }
                     case XmlElementNames.IndexedFieldURI:
-                        errorProperties.Add(
+                    {
+                        ErrorProperties.Add(
                             new IndexedPropertyDefinition(
                                 reader.ReadAttributeValue(XmlAttributeNames.FieldURI),
                                 reader.ReadAttributeValue(XmlAttributeNames.FieldIndex)
                             )
                         );
                         break;
-
+                    }
                     case XmlElementNames.ExtendedFieldURI:
+                    {
                         var extendedPropDef = new ExtendedPropertyDefinition();
                         extendedPropDef.LoadFromXml(reader);
-                        errorProperties.Add(extendedPropDef);
+                        ErrorProperties.Add(extendedPropDef);
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.MessageXml));
@@ -267,28 +268,24 @@ public class ServiceResponse
     ///     Gets a value indicating whether a batch request stopped processing before the end.
     /// </summary>
     internal bool BatchProcessingStopped =>
-        (result == ServiceResult.Warning) && (errorCode == ServiceError.ErrorBatchProcessingStopped);
+        Result == ServiceResult.Warning && ErrorCode == ServiceError.ErrorBatchProcessingStopped;
 
     /// <summary>
     ///     Gets the result associated with this response.
     /// </summary>
-    public ServiceResult Result => result;
+    public ServiceResult Result { get; private set; }
 
     /// <summary>
     ///     Gets the error code associated with this response.
     /// </summary>
-    public ServiceError ErrorCode => errorCode;
+    public ServiceError ErrorCode { get; private set; }
 
     /// <summary>
     ///     Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null.
     ///     ErrorMessage is localized according to the PreferredCulture property of the ExchangeService object that
     ///     was used to call the method that generated the response.
     /// </summary>
-    public string ErrorMessage
-    {
-        get => errorMessage;
-        internal set => errorMessage = value;
-    }
+    public string ErrorMessage { get; internal set; }
 
     /// <summary>
     ///     Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null.
@@ -297,7 +294,7 @@ public class ServiceResponse
     ///     the ErrorDetailsDictionary will contain keys for EffectiveStartDate and EffectiveEndDate.
     /// </summary>
     /// <value>The error details dictionary.</value>
-    public IDictionary<string, string> ErrorDetails => errorDetails;
+    public IDictionary<string, string> ErrorDetails => _errorDetails;
 
     /// <summary>
     ///     Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties
@@ -307,5 +304,5 @@ public class ServiceResponse
     ///     ErrorProperties will contain the definition of the property that was invalid for the request.
     /// </summary>
     /// <value>The error properties list.</value>
-    public Collection<PropertyDefinitionBase> ErrorProperties => errorProperties;
+    public Collection<PropertyDefinitionBase> ErrorProperties { get; } = new();
 }

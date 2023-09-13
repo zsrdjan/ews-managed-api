@@ -33,7 +33,7 @@ internal sealed class UnpinTeamMailboxRequest : SimpleServiceRequestBase
     /// <summary>
     ///     TeamMailbox email address
     /// </summary>
-    private readonly EmailAddress emailAddress;
+    private readonly EmailAddress _emailAddress;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UnpinTeamMailboxRequest" /> class.
@@ -43,12 +43,7 @@ internal sealed class UnpinTeamMailboxRequest : SimpleServiceRequestBase
     public UnpinTeamMailboxRequest(ExchangeService service, EmailAddress emailAddress)
         : base(service)
     {
-        if (emailAddress == null)
-        {
-            throw new ArgumentNullException("emailAddress");
-        }
-
-        this.emailAddress = emailAddress;
+        _emailAddress = emailAddress ?? throw new ArgumentNullException(nameof(emailAddress));
     }
 
     /// <summary>
@@ -66,7 +61,7 @@ internal sealed class UnpinTeamMailboxRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        emailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.EmailAddress);
+        _emailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.EmailAddress);
     }
 
     /// <summary>

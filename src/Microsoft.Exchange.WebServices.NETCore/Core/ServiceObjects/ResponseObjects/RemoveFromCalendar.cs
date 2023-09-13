@@ -103,7 +103,7 @@ internal sealed class RemoveFromCalendar : ServiceObject
     /// <param name="token"></param>
     /// <returns>A list of items that were created or modified as a results of this operation.</returns>
     internal Task<List<Item>> InternalCreate(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition? messageDisposition,
         CancellationToken token
     )

@@ -23,15 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a list of strings.
 /// </summary>
+[PublicAPI]
 public sealed class StringList : ComplexProperty, IEnumerable<string>
 {
-    private readonly List<string> items = new List<string>();
-    private readonly string itemXmlElementName = XmlElementNames.String;
+    private readonly List<string> _items = new();
+
+    private readonly string _itemXmlElementName = XmlElementNames.String;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="StringList" /> class.
@@ -55,7 +59,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <param name="itemXmlElementName">Name of the item XML element.</param>
     internal StringList(string itemXmlElementName)
     {
-        this.itemXmlElementName = itemXmlElementName;
+        _itemXmlElementName = itemXmlElementName;
     }
 
     /// <summary>
@@ -65,7 +69,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <returns>True if element was read.</returns>
     internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        if (reader.LocalName == itemXmlElementName)
+        if (reader.LocalName == _itemXmlElementName)
         {
             Add(reader.ReadValue());
 
@@ -83,8 +87,8 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     {
         foreach (var item in this)
         {
-            writer.WriteStartElement(XmlNamespace.Types, itemXmlElementName);
-            writer.WriteValue(item, itemXmlElementName);
+            writer.WriteStartElement(XmlNamespace.Types, _itemXmlElementName);
+            writer.WriteValue(item, _itemXmlElementName);
             writer.WriteEndElement();
         }
     }
@@ -95,7 +99,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <param name="s">The string to add.</param>
     public void Add(string s)
     {
-        items.Add(s);
+        _items.Add(s);
         Changed();
     }
 
@@ -111,7 +115,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
         {
             if (!Contains(s))
             {
-                items.Add(s);
+                _items.Add(s);
                 changed = true;
             }
         }
@@ -129,7 +133,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <returns>True if s is present in the list, false otherwise.</returns>
     public bool Contains(string s)
     {
-        return items.Contains(s);
+        return _items.Contains(s);
     }
 
     /// <summary>
@@ -139,7 +143,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <returns>True is s was removed, false otherwise.</returns>
     public bool Remove(string s)
     {
-        var result = items.Remove(s);
+        var result = _items.Remove(s);
 
         if (result)
         {
@@ -157,10 +161,10 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
-        items.RemoveAt(index);
+        _items.RemoveAt(index);
 
         Changed();
     }
@@ -170,7 +174,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// </summary>
     public void Clear()
     {
-        items.Clear();
+        _items.Clear();
         Changed();
     }
 
@@ -180,13 +184,13 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <returns>A comma-separated list of the strings present in the list.</returns>
     public override string ToString()
     {
-        return string.Join(",", items.ToArray());
+        return string.Join(",", _items.ToArray());
     }
 
     /// <summary>
     ///     Gets the number of strings in the list.
     /// </summary>
-    public int Count => items.Count;
+    public int Count => _items.Count;
 
     /// <summary>
     ///     Gets or sets the string at the specified index.
@@ -199,22 +203,22 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            return items[index];
+            return _items[index];
         }
 
         set
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            if (items[index] != value)
+            if (_items[index] != value)
             {
-                items[index] = value;
+                _items[index] = value;
                 Changed();
             }
         }
@@ -229,7 +233,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<string> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion
@@ -243,7 +247,7 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion
@@ -259,10 +263,9 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     ///     otherwise, false.
     /// </returns>
     /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
-        var other = obj as StringList;
-        if (other != null)
+        if (obj is StringList other)
         {
             return ToString().Equals(other.ToString());
         }

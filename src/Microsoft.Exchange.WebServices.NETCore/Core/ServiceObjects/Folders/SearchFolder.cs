@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a search folder.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.SearchFolder)]
 public class SearchFolder : Folder
 {
@@ -38,8 +41,9 @@ public class SearchFolder : Folder
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="id">The Id of the search folder to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A SearchFolder instance representing the search folder corresponding to the specified Id.</returns>
-    public static new Task<SearchFolder> Bind(
+    public new static Task<SearchFolder> Bind(
         ExchangeService service,
         FolderId id,
         PropertySet propertySet,
@@ -56,7 +60,7 @@ public class SearchFolder : Folder
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="id">The Id of the search folder to bind to.</param>
     /// <returns>A SearchFolder instance representing the search folder corresponding to the specified Id.</returns>
-    public static new Task<SearchFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
+    public new static Task<SearchFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
     {
         return Bind(service, id, PropertySet.FirstClassProperties, token);
     }
@@ -68,8 +72,9 @@ public class SearchFolder : Folder
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="name">The name of the search folder to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A SearchFolder instance representing the search folder with the specified name.</returns>
-    public static new Task<SearchFolder> Bind(
+    public new static Task<SearchFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
         PropertySet propertySet,
@@ -85,8 +90,9 @@ public class SearchFolder : Folder
     /// </summary>
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="name">The name of the search folder to bind to.</param>
+    /// <param name="token"></param>
     /// <returns>A SearchFolder instance representing the search folder with the specified name.</returns>
-    public static new Task<SearchFolder> Bind(
+    public new static Task<SearchFolder> Bind(
         ExchangeService service,
         WellKnownFolderName name,
         CancellationToken token = default

@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to an individual attachment deletion operation.
 /// </summary>
+[PublicAPI]
 public sealed class DeleteAttachmentResponse : ServiceResponse
 {
-    private readonly Attachment attachment;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteAttachmentResponse" /> class.
     /// </summary>
@@ -40,7 +41,7 @@ public sealed class DeleteAttachmentResponse : ServiceResponse
     {
         EwsUtilities.Assert(attachment != null, "DeleteAttachmentResponse.ctor", "attachment is null");
 
-        this.attachment = attachment;
+        Attachment = attachment;
     }
 
     /// <summary>
@@ -54,9 +55,9 @@ public sealed class DeleteAttachmentResponse : ServiceResponse
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootItemId);
 
         var changeKey = reader.ReadAttributeValue(XmlAttributeNames.RootItemChangeKey);
-        if (!string.IsNullOrEmpty(changeKey) && attachment.Owner != null)
+        if (!string.IsNullOrEmpty(changeKey) && Attachment.Owner != null)
         {
-            attachment.Owner.RootItemId.ChangeKey = changeKey;
+            Attachment.Owner.RootItemId.ChangeKey = changeKey;
         }
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RootItemId);
@@ -65,5 +66,5 @@ public sealed class DeleteAttachmentResponse : ServiceResponse
     /// <summary>
     ///     Gets the attachment that was deleted.
     /// </summary>
-    internal Attachment Attachment => attachment;
+    internal Attachment Attachment { get; }
 }

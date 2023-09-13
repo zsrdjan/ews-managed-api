@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetPhoneCallResponse : ServiceResponse
 {
-    private readonly PhoneCall phoneCall;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetPhoneCallResponse" /> class.
     /// </summary>
@@ -40,7 +38,7 @@ internal sealed class GetPhoneCallResponse : ServiceResponse
     {
         EwsUtilities.Assert(service != null, "GetPhoneCallResponse.ctor", "service is null");
 
-        phoneCall = new PhoneCall(service);
+        PhoneCall = new PhoneCall(service);
     }
 
     /// <summary>
@@ -50,12 +48,12 @@ internal sealed class GetPhoneCallResponse : ServiceResponse
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.PhoneCallInformation);
-        phoneCall.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.PhoneCallInformation);
+        PhoneCall.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.PhoneCallInformation);
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.PhoneCallInformation);
     }
 
     /// <summary>
     ///     Gets the phone call.
     /// </summary>
-    internal PhoneCall PhoneCall => phoneCall;
+    internal PhoneCall PhoneCall { get; }
 }

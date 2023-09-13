@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base response class for individual folder move and copy operations.
 /// </summary>
+[PublicAPI]
 public sealed class MoveCopyFolderResponse : ServiceResponse
 {
-    private Folder folder;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyFolderResponse" /> class.
     /// </summary>
@@ -61,16 +62,16 @@ public sealed class MoveCopyFolderResponse : ServiceResponse
         var folders = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Folders,
             GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
+            false,
+            null,
             false
-        ); /* summaryPropertiesOnly */
+        );
 
-        folder = folders[0];
+        Folder = folders[0];
     }
 
     /// <summary>
     ///     Gets the new (moved or copied) folder.
     /// </summary>
-    public Folder Folder => folder;
+    public Folder Folder { get; private set; }
 }

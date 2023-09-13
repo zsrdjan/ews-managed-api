@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
     where TSubscription : SubscriptionBase
 {
-    private readonly TSubscription subscription;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeResponse&lt;TSubscription&gt;" /> class.
     /// </summary>
@@ -42,7 +40,7 @@ internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
     {
         EwsUtilities.Assert(subscription != null, "SubscribeResponse.ctor", "subscription is null");
 
-        this.subscription = subscription;
+        Subscription = subscription;
     }
 
     /// <summary>
@@ -53,11 +51,11 @@ internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        subscription.LoadFromXml(reader);
+        Subscription.LoadFromXml(reader);
     }
 
     /// <summary>
     ///     Gets the subscription that was created.
     /// </summary>
-    public TSubscription Subscription => subscription;
+    public TSubscription Subscription { get; }
 }

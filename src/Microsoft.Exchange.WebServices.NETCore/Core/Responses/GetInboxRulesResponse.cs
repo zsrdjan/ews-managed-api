@@ -31,16 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetInboxRulesResponse : ServiceResponse
 {
     /// <summary>
-    ///     Rule collection.
-    /// </summary>
-    private readonly RuleCollection ruleCollection;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="GetInboxRulesResponse" /> class.
     /// </summary>
     internal GetInboxRulesResponse()
     {
-        ruleCollection = new RuleCollection();
+        Rules = new RuleCollection();
     }
 
     /// <summary>
@@ -50,19 +45,20 @@ internal sealed class GetInboxRulesResponse : ServiceResponse
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
         reader.Read();
-        ruleCollection.OutlookRuleBlobExists = reader.ReadElementValue<bool>(
+        Rules.OutlookRuleBlobExists = reader.ReadElementValue<bool>(
             XmlNamespace.Messages,
             XmlElementNames.OutlookRuleBlobExists
         );
+
         reader.Read();
         if (reader.IsStartElement(XmlNamespace.NotSpecified, XmlElementNames.InboxRules))
         {
-            ruleCollection.LoadFromXml(reader, XmlNamespace.NotSpecified, XmlElementNames.InboxRules);
+            Rules.LoadFromXml(reader, XmlNamespace.NotSpecified, XmlElementNames.InboxRules);
         }
     }
 
     /// <summary>
     ///     Gets the rule collection in the response.
     /// </summary>
-    internal RuleCollection Rules => ruleCollection;
+    internal RuleCollection Rules { get; }
 }

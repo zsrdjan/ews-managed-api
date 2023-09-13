@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class UpdateFolderResponse : ServiceResponse
 {
-    private readonly Folder folder;
+    private readonly Folder _folder;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateFolderResponse" /> class.
@@ -40,7 +40,7 @@ internal sealed class UpdateFolderResponse : ServiceResponse
     {
         EwsUtilities.Assert(folder != null, "UpdateFolderResponse.ctor", "folder is null");
 
-        this.folder = folder;
+        _folder = folder;
     }
 
     /// <summary>
@@ -51,13 +51,7 @@ internal sealed class UpdateFolderResponse : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        reader.ReadServiceObjectsCollectionFromXml(
-            XmlElementNames.Folders,
-            GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
-            false
-        ); /* summaryPropertiesOnly */
+        reader.ReadServiceObjectsCollectionFromXml(XmlElementNames.Folders, GetObjectInstance, false, null, false);
     }
 
     /// <summary>
@@ -67,7 +61,7 @@ internal sealed class UpdateFolderResponse : ServiceResponse
     {
         if (Result == ServiceResult.Success)
         {
-            folder.ClearChangeLog();
+            _folder.ClearChangeLog();
         }
     }
 
@@ -79,6 +73,6 @@ internal sealed class UpdateFolderResponse : ServiceResponse
     /// <returns>Folder.</returns>
     private Folder GetObjectInstance(ExchangeService session, string xmlElementName)
     {
-        return folder;
+        return _folder;
     }
 }

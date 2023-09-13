@@ -23,17 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-///     Represents a strogly typed list of service responses.
+///     Represents a strongly typed list of service responses.
 /// </summary>
 /// <typeparam name="TResponse">The type of response stored in the list.</typeparam>
+[PublicAPI]
 public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse>
     where TResponse : ServiceResponse
 {
-    private readonly List<TResponse> responses = new List<TResponse>();
-    private ServiceResult overallResult = ServiceResult.Success;
+    private readonly List<TResponse> _responses = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceResponseCollection&lt;TResponse&gt;" /> class.
@@ -50,18 +52,18 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     {
         EwsUtilities.Assert(response != null, "EwsResponseList.Add", "response is null");
 
-        if (response.Result > overallResult)
+        if (response.Result > OverallResult)
         {
-            overallResult = response.Result;
+            OverallResult = response.Result;
         }
 
-        responses.Add(response);
+        _responses.Add(response);
     }
 
     /// <summary>
     ///     Gets the total number of responses in the list.
     /// </summary>
-    public int Count => responses.Count;
+    public int Count => _responses.Count;
 
     /// <summary>
     ///     Gets the response at the specified index.
@@ -74,10 +76,10 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            return responses[index];
+            return _responses[index];
         }
     }
 
@@ -88,7 +90,7 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     ///     property set to Success, OverallResult returns Warning. If at least one response has a its Result set to
     ///     Error, OverallResult returns Error.
     /// </summary>
-    public ServiceResult OverallResult => overallResult;
+    public ServiceResult OverallResult { get; private set; } = ServiceResult.Success;
 
 
     #region IEnumerable<TResponse>
@@ -99,7 +101,7 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TResponse> GetEnumerator()
     {
-        return responses.GetEnumerator();
+        return _responses.GetEnumerator();
     }
 
     #endregion
@@ -113,7 +115,7 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return (responses as System.Collections.IEnumerable).GetEnumerator();
+        return (_responses as System.Collections.IEnumerable).GetEnumerator();
     }
 
     #endregion

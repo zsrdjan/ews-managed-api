@@ -92,7 +92,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateNonBlankStringParam(SubscriptionId, "SubscriptionId");
+        EwsUtilities.ValidateNonBlankStringParam(SubscriptionId, nameof(SubscriptionId));
     }
 
     /// <summary>

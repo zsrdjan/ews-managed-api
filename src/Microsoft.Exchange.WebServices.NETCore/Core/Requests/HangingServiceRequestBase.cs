@@ -42,7 +42,7 @@ internal enum HangingRequestDisconnectReason
     Timeout,
 
     /// <summary>An exception occurred on the connection</summary>
-    Exception
+    Exception,
 }
 
 /// <summary>
@@ -56,7 +56,7 @@ internal class HangingRequestDisconnectEventArgs : EventArgs
     /// </summary>
     /// <param name="reason">The reason.</param>
     /// <param name="exception">The exception.</param>
-    internal HangingRequestDisconnectEventArgs(HangingRequestDisconnectReason reason, Exception exception)
+    internal HangingRequestDisconnectEventArgs(HangingRequestDisconnectReason reason, Exception? exception)
     {
         Reason = reason;
         Exception = exception;
@@ -70,7 +70,7 @@ internal class HangingRequestDisconnectEventArgs : EventArgs
     /// <summary>
     ///     Gets the exception that caused the disconnection. Can be null.
     /// </summary>
-    public Exception Exception { get; internal set; }
+    public Exception? Exception { get; internal set; }
 }
 
 /// <summary>
@@ -95,27 +95,27 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <summary>
     ///     Callback delegate to handle response objects
     /// </summary>
-    private readonly HandleResponseObject responseHandler;
+    private readonly HandleResponseObject _responseHandler;
 
     /// <summary>
     ///     Response from the server.
     /// </summary>
-    private IEwsHttpWebResponse response;
+    private IEwsHttpWebResponse _response;
 
     /// <summary>
     ///     Request to the server.
     /// </summary>
-    private IEwsHttpWebRequest request;
+    private IEwsHttpWebRequest _request;
 
     /// <summary>
     ///     Expected minimum frequency in responses, in milliseconds.
     /// </summary>
-    protected readonly int heartbeatFrequencyMilliseconds;
+    protected readonly int _heartbeatFrequencyMilliseconds;
 
     /// <summary>
     ///     lock object
     /// </summary>
-    private readonly object lockObject = new object();
+    private readonly object _lockObject = new();
 
     /// <summary>
     ///     Delegate method to handle a hanging request disconnection.
@@ -138,20 +138,20 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     internal HangingServiceRequestBase(ExchangeService service, HandleResponseObject handler, int heartbeatFrequency)
         : base(service)
     {
-        responseHandler = handler;
-        heartbeatFrequencyMilliseconds = heartbeatFrequency;
+        _responseHandler = handler;
+        _heartbeatFrequencyMilliseconds = heartbeatFrequency;
     }
 
     /// <summary>
-    ///     Exectures the request.
+    ///     Executes the request.
     /// </summary>
     internal void InternalExecute(CancellationToken token)
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
             var tuple = ValidateAndEmitRequest(token).Result;
-            request = tuple.Item1;
-            response = tuple.Item2;
+            _request = tuple.Item1;
+            _response = tuple.Item2;
 
             InternalOnConnect();
         }
@@ -160,69 +160,64 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <summary>
     ///     Parses the responses.
     /// </summary>
-    /// <param name="state">The state.</param>
-    private async void ParseResponses(object state)
+    private async System.Threading.Tasks.Task ParseResponses()
     {
         try
         {
-            var traceId = Guid.Empty;
-            HangingTraceStream tracingStream = null;
-            MemoryStream responseCopy = null;
+            MemoryStream? responseCopy = null;
 
             try
             {
                 var traceEwsResponse = Service.IsTraceEnabledFor(TraceFlags.EwsResponse);
 
-                using (var responseStream = await response.GetResponseStream())
+                await using var responseStream = await _response.GetResponseStream();
+                var tracingStream = new HangingTraceStream(responseStream, Service)
                 {
-                    tracingStream = new HangingTraceStream(responseStream, Service)
-                    {
-                        ReadTimeout = 2 * heartbeatFrequencyMilliseconds
-                    };
+                    ReadTimeout = 2 * _heartbeatFrequencyMilliseconds,
+                };
 
-                    // EwsServiceMultiResponseXmlReader.Create causes a read.
+                // EwsServiceMultiResponseXmlReader.Create causes a read.
+                if (traceEwsResponse)
+                {
+                    responseCopy = new MemoryStream();
+                    tracingStream.SetResponseCopy(responseCopy);
+                }
+
+                var ewsXmlReader = EwsServiceMultiResponseXmlReader.Create(tracingStream, Service);
+
+                while (IsConnected)
+                {
+                    object? responseObject;
                     if (traceEwsResponse)
                     {
-                        responseCopy = new MemoryStream();
-                        tracingStream.SetResponseCopy(responseCopy);
-                    }
-
-                    var ewsXmlReader = EwsServiceMultiResponseXmlReader.Create(tracingStream, Service);
-
-                    while (IsConnected)
-                    {
-                        object responseObject = null;
-                        if (traceEwsResponse)
-                        {
-                            try
-                            {
-                                responseObject = await ReadResponseAsync(
-                                    ewsXmlReader,
-                                    response.Headers,
-                                    CancellationToken.None
-                                );
-                            }
-                            finally
-                            {
-                                Service.TraceXml(TraceFlags.EwsResponse, responseCopy);
-                            }
-
-                            // reset the stream collector.
-                            responseCopy.Dispose();
-                            responseCopy = new MemoryStream();
-                            tracingStream.SetResponseCopy(responseCopy);
-                        }
-                        else
+                        try
                         {
                             responseObject = await ReadResponseAsync(
                                 ewsXmlReader,
-                                response.Headers,
+                                _response.Headers,
                                 CancellationToken.None
                             );
                         }
+                        finally
+                        {
+                            Service.TraceXml(TraceFlags.EwsResponse, responseCopy);
+                        }
 
-                        responseHandler(responseObject);
+                        // reset the stream collector.
+                        await responseCopy.DisposeAsync();
+                        responseCopy = new MemoryStream();
+                        tracingStream.SetResponseCopy(responseCopy);
                     }
+                    else
+                    {
+                        responseObject = await ReadResponseAsync(
+                            ewsXmlReader,
+                            _response.Headers,
+                            CancellationToken.None
+                        );
+                    }
+
+                    _responseHandler(responseObject);
                 }
             }
             catch (TimeoutException ex)
@@ -268,7 +263,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
             {
                 if (responseCopy != null)
                 {
-                    responseCopy.Dispose();
+                    await responseCopy.DisposeAsync();
                     responseCopy = null;
                 }
             }
@@ -294,10 +289,10 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// </summary>
     internal void Disconnect()
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
-            request.Abort();
-            response.Close();
+            _request.Abort();
+            _response.Close();
             Disconnect(HangingRequestDisconnectReason.UserInitiated, null);
         }
     }
@@ -307,11 +302,11 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// </summary>
     /// <param name="reason">The reason.</param>
     /// <param name="exception">The exception.</param>
-    internal void Disconnect(HangingRequestDisconnectReason reason, Exception exception)
+    internal void Disconnect(HangingRequestDisconnectReason reason, Exception? exception)
     {
         if (IsConnected)
         {
-            response.Close();
+            _response.Close();
             InternalOnDisconnect(reason, exception);
         }
     }
@@ -326,9 +321,10 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
             IsConnected = true;
 
             // Trace Http headers
-            Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, response);
+            Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
 
-            System.Threading.Tasks.Task.Run(() => ParseResponses(null));
+            // TODO: async?
+            ParseResponses().GetAwaiter().GetResult();
         }
     }
 
@@ -337,7 +333,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// </summary>
     /// <param name="reason"></param>
     /// <param name="exception"></param>
-    private void InternalOnDisconnect(HangingRequestDisconnectReason reason, Exception exception)
+    private void InternalOnDisconnect(HangingRequestDisconnectReason reason, Exception? exception)
     {
         if (IsConnected)
         {
@@ -360,6 +356,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     ///     Reads any preamble data not part of the core response.
     /// </summary>
     /// <param name="ewsXmlReader">The EwsServiceXmlReader.</param>
+    /// <param name="token"></param>
     protected override System.Threading.Tasks.Task ReadPreambleAsync(
         EwsServiceXmlReader ewsXmlReader,
         CancellationToken token

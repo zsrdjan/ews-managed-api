@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to a GetOMEConfiguration operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetOMEConfigurationResponse : ServiceResponse
 {
-    /// <summary>
-    ///     The XML representation of EncryptionConfigurationData
-    /// </summary>
-    private string xml;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetOMEConfigurationResponse" /> class.
     /// </summary>
@@ -45,7 +43,7 @@ public sealed class GetOMEConfigurationResponse : ServiceResponse
     /// <summary>
     ///     The XML representation of EncryptionConfigurationData
     /// </summary>
-    public string Xml => xml;
+    public string? Xml { get; private set; }
 
     /// <summary>
     ///     Reads response elements from XML.
@@ -55,6 +53,6 @@ public sealed class GetOMEConfigurationResponse : ServiceResponse
     {
         base.ReadElementsFromXml(reader);
 
-        xml = reader.ReadElementValue<string>(XmlNamespace.Messages, XmlElementNames.OMEConfigurationXml);
+        Xml = reader.ReadElementValue<string>(XmlNamespace.Messages, XmlElementNames.OMEConfigurationXml);
     }
 }

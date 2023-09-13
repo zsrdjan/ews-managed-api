@@ -25,15 +25,16 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to an individual attachment creation operation.
 /// </summary>
+[PublicAPI]
 public sealed class CreateAttachmentResponse : ServiceResponse
 {
-    private readonly Attachment attachment;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateAttachmentResponse" /> class.
     /// </summary>
@@ -42,7 +43,7 @@ public sealed class CreateAttachmentResponse : ServiceResponse
     {
         EwsUtilities.Assert(attachment != null, "CreateAttachmentResponse.ctor", "attachment is null");
 
-        this.attachment = attachment;
+        Attachment = attachment;
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ public sealed class CreateAttachmentResponse : ServiceResponse
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Attachments);
 
         reader.Read(XmlNodeType.Element);
-        attachment.LoadFromXml(reader, reader.LocalName);
+        Attachment.LoadFromXml(reader, reader.LocalName);
 
         reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
     }
@@ -64,5 +65,5 @@ public sealed class CreateAttachmentResponse : ServiceResponse
     /// <summary>
     ///     Gets the attachment that was created.
     /// </summary>
-    internal Attachment Attachment => attachment;
+    internal Attachment Attachment { get; }
 }

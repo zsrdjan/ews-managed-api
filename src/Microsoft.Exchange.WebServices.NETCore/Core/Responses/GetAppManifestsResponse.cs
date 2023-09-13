@@ -34,16 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetAppManifestsResponse : ServiceResponse
 {
     /// <summary>
-    ///     List of manifests returned in the response.
-    /// </summary>
-    private readonly Collection<XmlDocument> manifests = new Collection<XmlDocument>();
-
-    /// <summary>
-    ///     List of extensions returned in the response.
-    /// </summary>
-    private readonly Collection<ClientApp> apps = new Collection<ClientApp>();
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="GetAppManifestsResponse" /> class.
     /// </summary>
     internal GetAppManifestsResponse()
@@ -54,13 +44,13 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
     ///     Gets all manifests returned
     /// </summary>
     /// <remarks>Provided for backwards compatibility with Exchange 2013.</remarks>
-    public Collection<XmlDocument> Manifests => manifests;
+    public Collection<XmlDocument> Manifests { get; } = new();
 
     /// <summary>
     ///     Gets all apps returned.
     /// </summary>
     /// <remarks>Introduced for Exchange 2013 Sp1 to return additional metadata.</remarks>
-    public Collection<ClientApp> Apps => apps;
+    public Collection<ClientApp> Apps { get; } = new();
 
     /// <summary>
     ///     Reads response elements from XML.
@@ -142,7 +132,7 @@ internal sealed class GetAppManifestsResponse : ServiceResponse
             Apps.Add(
                 new ClientApp
                 {
-                    Manifest = manifest
+                    Manifest = manifest,
                 }
             );
         }

@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a response to a Move or Copy operation.
 /// </summary>
+[PublicAPI]
 public sealed class MoveCopyItemResponse : ServiceResponse
 {
-    private Item item;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyItemResponse" /> class.
     /// </summary>
@@ -61,17 +62,17 @@ public sealed class MoveCopyItemResponse : ServiceResponse
         var items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
             GetObjectInstance,
-            false, /* clearPropertyBag */
-            null, /* requestedPropertySet */
+            false,
+            null,
             false
-        ); /* summaryPropertiesOnly */
+        );
 
         // We only receive the copied or moved items if the copy or move operation was within
         // a single mailbox. No item is returned if the operation is cross-mailbox, from a
         // mailbox to a public folder or from a public folder to a mailbox.
         if (items.Count > 0)
         {
-            item = items[0];
+            Item = items[0];
         }
     }
 
@@ -79,5 +80,5 @@ public sealed class MoveCopyItemResponse : ServiceResponse
     ///     Gets the copied or moved item. Item is null if the copy or move operation was between
     ///     two mailboxes or between a mailbox and a public folder.
     /// </summary>
-    public Item Item => item;
+    public Item Item { get; private set; }
 }

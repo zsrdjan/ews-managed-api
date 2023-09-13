@@ -23,35 +23,35 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an attachment to an item.
 /// </summary>
+[PublicAPI]
 public abstract class Attachment : ComplexProperty
 {
-    private readonly Item owner;
-    private string id;
-    private string name;
-    private string contentType;
-    private string contentId;
-    private string contentLocation;
-    private int size;
-    private DateTime lastModifiedTime;
-    private bool isInline;
-    private readonly ExchangeService service;
+    private string _name;
+    private string _contentType;
+    private string _contentId;
+    private string _contentLocation;
+    private int _size;
+    private DateTime _lastModifiedTime;
+    private bool _isInline;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Attachment" /> class.
     /// </summary>
     /// <param name="owner">The owner.</param>
-    internal Attachment(Item owner)
+    internal Attachment(Item? owner)
     {
-        this.owner = owner;
+        Owner = owner;
 
-        if (owner != null)
+        if (Owner != null)
         {
-            service = this.owner.Service;
+            Service = Owner.Service;
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class Attachment : ComplexProperty
     /// <param name="service">The service.</param>
     internal Attachment(ExchangeService service)
     {
-        this.service = service;
+        Service = service;
     }
 
     /// <summary>
@@ -94,19 +94,15 @@ public abstract class Attachment : ComplexProperty
     /// <summary>
     ///     Gets the Id of the attachment.
     /// </summary>
-    public string Id
-    {
-        get => id;
-        internal set => id = value;
-    }
+    public string Id { get; internal set; }
 
     /// <summary>
     ///     Gets or sets the name of the attachment.
     /// </summary>
     public string Name
     {
-        get => name;
-        set => SetFieldValue(ref name, value);
+        get => _name;
+        set => SetFieldValue(ref _name, value);
     }
 
     /// <summary>
@@ -114,8 +110,8 @@ public abstract class Attachment : ComplexProperty
     /// </summary>
     public string ContentType
     {
-        get => contentType;
-        set => SetFieldValue(ref contentType, value);
+        get => _contentType;
+        set => SetFieldValue(ref _contentType, value);
     }
 
     /// <summary>
@@ -124,8 +120,8 @@ public abstract class Attachment : ComplexProperty
     /// </summary>
     public string ContentId
     {
-        get => contentId;
-        set => SetFieldValue(ref contentId, value);
+        get => _contentId;
+        set => SetFieldValue(ref _contentId, value);
     }
 
     /// <summary>
@@ -134,8 +130,8 @@ public abstract class Attachment : ComplexProperty
     /// </summary>
     public string ContentLocation
     {
-        get => contentLocation;
-        set => SetFieldValue(ref contentLocation, value);
+        get => _contentLocation;
+        set => SetFieldValue(ref _contentLocation, value);
     }
 
     /// <summary>
@@ -145,16 +141,16 @@ public abstract class Attachment : ComplexProperty
     {
         get
         {
-            EwsUtilities.ValidatePropertyVersion(service, ExchangeVersion.Exchange2010, "Size");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, nameof(Size));
 
-            return size;
+            return _size;
         }
 
         internal set
         {
-            EwsUtilities.ValidatePropertyVersion(service, ExchangeVersion.Exchange2010, "Size");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, nameof(Size));
 
-            SetFieldValue(ref size, value);
+            SetFieldValue(ref _size, value);
         }
     }
 
@@ -165,16 +161,16 @@ public abstract class Attachment : ComplexProperty
     {
         get
         {
-            EwsUtilities.ValidatePropertyVersion(service, ExchangeVersion.Exchange2010, "LastModifiedTime");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, nameof(LastModifiedTime));
 
-            return lastModifiedTime;
+            return _lastModifiedTime;
         }
 
         internal set
         {
-            EwsUtilities.ValidatePropertyVersion(service, ExchangeVersion.Exchange2010, "LastModifiedTime");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, nameof(LastModifiedTime));
 
-            SetFieldValue(ref lastModifiedTime, value);
+            SetFieldValue(ref _lastModifiedTime, value);
         }
     }
 
@@ -186,16 +182,16 @@ public abstract class Attachment : ComplexProperty
     {
         get
         {
-            EwsUtilities.ValidatePropertyVersion(service, ExchangeVersion.Exchange2010, "IsInline");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, nameof(IsInline));
 
-            return isInline;
+            return _isInline;
         }
 
         set
         {
-            EwsUtilities.ValidatePropertyVersion(service, ExchangeVersion.Exchange2010, "IsInline");
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, nameof(IsInline));
 
-            SetFieldValue(ref isInline, value);
+            SetFieldValue(ref _isInline, value);
         }
     }
 
@@ -207,12 +203,12 @@ public abstract class Attachment : ComplexProperty
     /// <summary>
     ///     Gets the owner of the attachment.
     /// </summary>
-    internal Item Owner => owner;
+    internal Item? Owner { get; }
 
     /// <summary>
     ///     Gets the related exchange service.
     /// </summary>
-    internal ExchangeService Service => service;
+    internal ExchangeService Service { get; }
 
     /// <summary>
     ///     Gets the name of the XML element.
@@ -230,7 +226,8 @@ public abstract class Attachment : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.AttachmentId:
-                id = reader.ReadAttributeValue(XmlAttributeNames.Id);
+            {
+                Id = reader.ReadAttributeValue(XmlAttributeNames.Id);
 
                 if (Owner != null)
                 {
@@ -244,29 +241,46 @@ public abstract class Attachment : ComplexProperty
 
                 reader.ReadEndElementIfNecessary(XmlNamespace.Types, XmlElementNames.AttachmentId);
                 return true;
+            }
             case XmlElementNames.Name:
-                name = reader.ReadElementValue();
+            {
+                _name = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.ContentType:
-                contentType = reader.ReadElementValue();
+            {
+                _contentType = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.ContentId:
-                contentId = reader.ReadElementValue();
+            {
+                _contentId = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.ContentLocation:
-                contentLocation = reader.ReadElementValue();
+            {
+                _contentLocation = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Size:
-                size = reader.ReadElementValue<int>();
+            {
+                _size = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.LastModifiedTime:
-                lastModifiedTime = reader.ReadElementValueAsDateTime().Value;
+            {
+                _lastModifiedTime = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             case XmlElementNames.IsInline:
-                isInline = reader.ReadElementValue<bool>();
+            {
+                _isInline = reader.ReadElementValue<bool>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -280,6 +294,7 @@ public abstract class Attachment : ComplexProperty
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.ContentType, ContentType);
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.ContentId, ContentId);
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.ContentLocation, ContentLocation);
+
         if (writer.Service.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsInline, IsInline);
@@ -291,13 +306,14 @@ public abstract class Attachment : ComplexProperty
     /// </summary>
     /// <param name="bodyType">Type of the body.</param>
     /// <param name="additionalProperties">The additional properties.</param>
+    /// <param name="token"></param>
     internal Task<ServiceResponseCollection<GetAttachmentResponse>> InternalLoad(
         BodyType? bodyType,
-        IEnumerable<PropertyDefinitionBase> additionalProperties,
+        IEnumerable<PropertyDefinitionBase>? additionalProperties,
         CancellationToken token
     )
     {
-        return service.GetAttachment(this, bodyType, additionalProperties, token);
+        return Service.GetAttachment(this, bodyType, additionalProperties, token);
     }
 
     /// <summary>

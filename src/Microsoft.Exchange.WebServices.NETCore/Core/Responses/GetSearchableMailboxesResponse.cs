@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the GetSearchableMailboxes response.
 /// </summary>
+[PublicAPI]
 public sealed class GetSearchableMailboxesResponse : ServiceResponse
 {
-    readonly List<SearchableMailbox> searchableMailboxes = new List<SearchableMailbox>();
+    readonly List<SearchableMailbox> _searchableMailboxes = new List<SearchableMailbox>();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetSearchableMailboxesResponse" /> class.
@@ -45,7 +48,7 @@ public sealed class GetSearchableMailboxesResponse : ServiceResponse
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        searchableMailboxes.Clear();
+        _searchableMailboxes.Clear();
 
         base.ReadElementsFromXml(reader);
 
@@ -57,7 +60,7 @@ public sealed class GetSearchableMailboxesResponse : ServiceResponse
                 reader.Read();
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SearchableMailbox))
                 {
-                    searchableMailboxes.Add(SearchableMailbox.LoadFromXml(reader));
+                    _searchableMailboxes.Add(SearchableMailbox.LoadFromXml(reader));
                 }
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SearchableMailboxes));
         }
@@ -72,7 +75,7 @@ public sealed class GetSearchableMailboxesResponse : ServiceResponse
     /// <summary>
     ///     Searchable mailboxes result
     /// </summary>
-    public SearchableMailbox[] SearchableMailboxes => searchableMailboxes.ToArray();
+    public SearchableMailbox[] SearchableMailboxes => _searchableMailboxes.ToArray();
 
     /// <summary>
     ///     Failed mailboxes

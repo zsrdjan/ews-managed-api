@@ -25,12 +25,15 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a meeting-related message. Properties available on meeting messages are defined in the
 ///     MeetingMessageSchema class.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.MeetingMessage)]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class MeetingMessage : EmailMessage
@@ -60,8 +63,9 @@ public class MeetingMessage : EmailMessage
     /// <param name="service">The service to use to bind to the meeting message.</param>
     /// <param name="id">The Id of the meeting message to bind to.</param>
     /// <param name="propertySet">The set of properties to load.</param>
+    /// <param name="token"></param>
     /// <returns>A MeetingMessage instance representing the meeting message corresponding to the specified Id.</returns>
-    public static new Task<MeetingMessage> Bind(
+    public new static Task<MeetingMessage> Bind(
         ExchangeService service,
         ItemId id,
         PropertySet propertySet,
@@ -78,7 +82,7 @@ public class MeetingMessage : EmailMessage
     /// <param name="service">The service to use to bind to the meeting message.</param>
     /// <param name="id">The Id of the meeting message to bind to.</param>
     /// <returns>A MeetingMessage instance representing the meeting message corresponding to the specified Id.</returns>
-    public static new Task<MeetingMessage> Bind(ExchangeService service, ItemId id)
+    public new static Task<MeetingMessage> Bind(ExchangeService service, ItemId id)
     {
         return Bind(service, id, PropertySet.FirstClassProperties);
     }

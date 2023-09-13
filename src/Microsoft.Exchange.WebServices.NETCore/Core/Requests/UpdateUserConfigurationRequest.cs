@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class UpdateUserConfigurationRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    protected UserConfiguration userConfiguration;
+    protected UserConfiguration _userConfiguration;
 
     /// <summary>
     ///     Validate request.
@@ -38,7 +38,7 @@ internal class UpdateUserConfigurationRequest : MultiResponseServiceRequest<Serv
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
+        EwsUtilities.ValidateParam(_userConfiguration);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ internal class UpdateUserConfigurationRequest : MultiResponseServiceRequest<Serv
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // Write UserConfiguration element
-        userConfiguration.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.UserConfiguration);
+        _userConfiguration.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.UserConfiguration);
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ internal class UpdateUserConfigurationRequest : MultiResponseServiceRequest<Serv
     /// <value>The user configuration.</value>
     public UserConfiguration UserConfiguration
     {
-        get => userConfiguration;
-        set => userConfiguration = value;
+        get => _userConfiguration;
+        set => _userConfiguration = value;
     }
 }

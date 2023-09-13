@@ -31,21 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     The smtp address of the mailbox from which to get the inbox rules.
-    /// </summary>
-    private string mailboxSmtpAddress;
-
-    /// <summary>
-    ///     Remove OutlookRuleBlob or not.
-    /// </summary>
-    private bool removeOutlookRuleBlob;
-
-    /// <summary>
-    ///     InboxRule operation collection.
-    /// </summary>
-    private IEnumerable<RuleOperation> inboxRuleOperations;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateInboxRulesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -69,14 +54,14 @@ internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (!string.IsNullOrEmpty(mailboxSmtpAddress))
+        if (!string.IsNullOrEmpty(MailboxSmtpAddress))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxSmtpAddress, mailboxSmtpAddress);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxSmtpAddress, MailboxSmtpAddress);
         }
 
         writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.RemoveOutlookRuleBlob, RemoveOutlookRuleBlob);
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Operations);
-        foreach (var operation in inboxRuleOperations)
+        foreach (var operation in InboxRuleOperations)
         {
             operation.WriteToXml(writer, operation.XmlElementName);
         }
@@ -119,13 +104,13 @@ internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
     /// </summary>
     internal override void Validate()
     {
-        if (inboxRuleOperations == null)
+        if (InboxRuleOperations == null)
         {
             throw new ArgumentException("RuleOperations cannot be null.", "Operations");
         }
 
         var operationCount = 0;
-        foreach (var operation in inboxRuleOperations)
+        foreach (var operation in InboxRuleOperations)
         {
             EwsUtilities.ValidateParam(operation, "RuleOperation");
             operationCount++;
@@ -148,7 +133,7 @@ internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
         var serviceResponse = (UpdateInboxRulesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
         if (serviceResponse.Result == ServiceResult.Error)
         {
-            throw new UpdateInboxRulesException(serviceResponse, inboxRuleOperations.GetEnumerator());
+            throw new UpdateInboxRulesException(serviceResponse, InboxRuleOperations.GetEnumerator());
         }
 
         return serviceResponse;
@@ -157,28 +142,16 @@ internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the address of the mailbox in which to update the inbox rules.
     /// </summary>
-    internal string MailboxSmtpAddress
-    {
-        get => mailboxSmtpAddress;
-        set => mailboxSmtpAddress = value;
-    }
+    internal string MailboxSmtpAddress { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether or not to remove OutlookRuleBlob from
     ///     the rule collection.
     /// </summary>
-    internal bool RemoveOutlookRuleBlob
-    {
-        get => removeOutlookRuleBlob;
-        set => removeOutlookRuleBlob = value;
-    }
+    internal bool RemoveOutlookRuleBlob { get; set; }
 
     /// <summary>
     ///     Gets or sets the RuleOperation collection.
     /// </summary>
-    internal IEnumerable<RuleOperation> InboxRuleOperations
-    {
-        get => inboxRuleOperations;
-        set => inboxRuleOperations = value;
-    }
+    internal IEnumerable<RuleOperation> InboxRuleOperations { get; set; }
 }

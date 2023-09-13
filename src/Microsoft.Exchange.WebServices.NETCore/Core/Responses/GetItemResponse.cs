@@ -23,15 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a response to an individual item retrieval operation.
 /// </summary>
+[PublicAPI]
 public sealed class GetItemResponse : ServiceResponse
 {
-    private Item? item;
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetItemResponse" /> class.
@@ -40,10 +42,10 @@ public sealed class GetItemResponse : ServiceResponse
     /// <param name="propertySet">The property set.</param>
     internal GetItemResponse(Item? item, PropertySet propertySet)
     {
-        this.item = item;
-        this.propertySet = propertySet;
+        Item = item;
+        _propertySet = propertySet;
 
-        EwsUtilities.Assert(this.propertySet != null, "GetItemResponse.ctor", "PropertySet should not be null");
+        EwsUtilities.Assert(_propertySet != null, "GetItemResponse.ctor", "PropertySet should not be null");
     }
 
     /// <summary>
@@ -57,12 +59,12 @@ public sealed class GetItemResponse : ServiceResponse
         var items = reader.ReadServiceObjectsCollectionFromXml(
             XmlElementNames.Items,
             GetObjectInstance,
-            true, /* clearPropertyBag */
-            propertySet, /* requestedPropertySet */
+            true,
+            _propertySet,
             false
-        ); /* summaryPropertiesOnly */
+        );
 
-        item = items[0];
+        Item = items[0];
     }
 
     /// <summary>
@@ -84,5 +86,5 @@ public sealed class GetItemResponse : ServiceResponse
     /// <summary>
     ///     Gets the item that was retrieved.
     /// </summary>
-    public Item? Item => item;
+    public Item? Item { get; private set; }
 }

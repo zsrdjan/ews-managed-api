@@ -31,16 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UpdateInboxRulesResponse : ServiceResponse
 {
     /// <summary>
-    ///     Rule operation error collection.
-    /// </summary>
-    private readonly RuleOperationErrorCollection errors;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateInboxRulesResponse" /> class.
     /// </summary>
     internal UpdateInboxRulesResponse()
     {
-        errors = new RuleOperationErrorCollection();
+        Errors = new RuleOperationErrorCollection();
     }
 
     /// <summary>
@@ -61,7 +56,7 @@ internal sealed class UpdateInboxRulesResponse : ServiceResponse
 
         if (xmlElementName.Equals(XmlElementNames.RuleOperationErrors))
         {
-            errors.LoadFromXml(reader, XmlNamespace.Messages, xmlElementName);
+            Errors.LoadFromXml(reader, XmlNamespace.Messages, xmlElementName);
             return true;
         }
 
@@ -71,5 +66,5 @@ internal sealed class UpdateInboxRulesResponse : ServiceResponse
     /// <summary>
     ///     Gets the rule operation errors in the response.
     /// </summary>
-    internal RuleOperationErrorCollection Errors => errors;
+    internal RuleOperationErrorCollection Errors { get; }
 }

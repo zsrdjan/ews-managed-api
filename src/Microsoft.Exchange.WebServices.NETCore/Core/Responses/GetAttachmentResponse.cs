@@ -25,22 +25,23 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to an individual attachment retrieval request.
 /// </summary>
+[PublicAPI]
 public sealed class GetAttachmentResponse : ServiceResponse
 {
-    private Attachment attachment;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
     internal GetAttachmentResponse(Attachment attachment)
     {
-        this.attachment = attachment;
+        Attachment = attachment;
     }
 
     /// <summary>
@@ -56,11 +57,11 @@ public sealed class GetAttachmentResponse : ServiceResponse
         {
             reader.Read(XmlNodeType.Element);
 
-            if (attachment == null)
+            if (Attachment == null)
             {
                 if (string.Equals(reader.LocalName, XmlElementNames.FileAttachment, StringComparison.OrdinalIgnoreCase))
                 {
-                    attachment = new FileAttachment(reader.Service);
+                    Attachment = new FileAttachment(reader.Service);
                 }
                 else if (string.Equals(
                              reader.LocalName,
@@ -68,14 +69,11 @@ public sealed class GetAttachmentResponse : ServiceResponse
                              StringComparison.OrdinalIgnoreCase
                          ))
                 {
-                    attachment = new ItemAttachment(reader.Service);
+                    Attachment = new ItemAttachment(reader.Service);
                 }
             }
 
-            if (attachment != null)
-            {
-                attachment.LoadFromXml(reader, reader.LocalName);
-            }
+            Attachment?.LoadFromXml(reader, reader.LocalName);
 
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
         }
@@ -84,5 +82,5 @@ public sealed class GetAttachmentResponse : ServiceResponse
     /// <summary>
     ///     Gets the attachment that was retrieved.
     /// </summary>
-    public Attachment Attachment => attachment;
+    public Attachment? Attachment { get; private set; }
 }

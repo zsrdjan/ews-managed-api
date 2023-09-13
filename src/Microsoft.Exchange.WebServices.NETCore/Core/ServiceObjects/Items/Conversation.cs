@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of Conversation related properties.
 ///     Properties available on this object are defined in the ConversationSchema class.
 /// </summary>
+[PublicAPI]
 [ServiceObjectDefinition(XmlElementNames.Conversation)]
 public class Conversation : ServiceObject
 {
@@ -76,6 +79,7 @@ public class Conversation : ServiceObject
     ///     Loads the specified set of properties on the object.
     /// </summary>
     /// <param name="propertySet">The properties to load.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalLoad(
         PropertySet propertySet,
         CancellationToken token
@@ -91,6 +95,7 @@ public class Conversation : ServiceObject
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="sendCancellationsMode">Indicates whether meeting cancellation messages should be sent.</param>
     /// <param name="affectedTaskOccurrences">Indicate which occurrence of a recurring task should be deleted.</param>
+    /// <param name="token"></param>
     internal override Task<ServiceResponseCollection<ServiceResponse>> InternalDelete(
         DeleteMode deleteMode,
         SendCancellationsMode? sendCancellationsMode,
@@ -162,16 +167,17 @@ public class Conversation : ServiceObject
         bool processSynchronously
     )
     {
-        (await Service.EnableAlwaysCategorizeItemsInConversations(
-                    new[]
-                    {
-                        Id
-                    },
-                    categories,
-                    processSynchronously
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.EnableAlwaysCategorizeItemsInConversations(
+                new[]
+                {
+                    Id,
+                },
+                categories,
+                processSynchronously
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -185,15 +191,16 @@ public class Conversation : ServiceObject
     /// </param>
     public async System.Threading.Tasks.Task DisableAlwaysCategorizeItems(bool processSynchronously)
     {
-        (await Service.DisableAlwaysCategorizeItemsInConversations(
-                    new[]
-                    {
-                        Id
-                    },
-                    processSynchronously
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.DisableAlwaysCategorizeItemsInConversations(
+                new[]
+                {
+                    Id,
+                },
+                processSynchronously
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -206,15 +213,16 @@ public class Conversation : ServiceObject
     /// </param>
     public async System.Threading.Tasks.Task EnableAlwaysDeleteItems(bool processSynchronously)
     {
-        (await Service.EnableAlwaysDeleteItemsInConversations(
-                    new[]
-                    {
-                        Id
-                    },
-                    processSynchronously
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.EnableAlwaysDeleteItemsInConversations(
+                new[]
+                {
+                    Id,
+                },
+                processSynchronously
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -228,15 +236,15 @@ public class Conversation : ServiceObject
     /// </param>
     public async System.Threading.Tasks.Task DisableAlwaysDeleteItems(bool processSynchronously)
     {
-        (await Service.DisableAlwaysDeleteItemsInConversations(
-                    new[]
-                    {
-                        Id
-                    },
-                    processSynchronously
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.DisableAlwaysDeleteItemsInConversations(
+                new[]
+                {
+                    Id,
+                },
+                processSynchronously
+            )
+            .ConfigureAwait(false);
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -254,16 +262,17 @@ public class Conversation : ServiceObject
         bool processSynchronously
     )
     {
-        (await Service.EnableAlwaysMoveItemsInConversations(
-                    new[]
-                    {
-                        Id
-                    },
-                    destinationFolderId,
-                    processSynchronously
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.EnableAlwaysMoveItemsInConversations(
+                new[]
+                {
+                    Id,
+                },
+                destinationFolderId,
+                processSynchronously
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -276,15 +285,16 @@ public class Conversation : ServiceObject
     /// </param>
     public async System.Threading.Tasks.Task DisableAlwaysMoveItemsInConversation(bool processSynchronously)
     {
-        (await Service.DisableAlwaysMoveItemsInConversations(
-                    new[]
-                    {
-                        Id
-                    },
-                    processSynchronously
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.DisableAlwaysMoveItemsInConversations(
+                new[]
+                {
+                    Id,
+                },
+                processSynchronously
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -298,16 +308,17 @@ public class Conversation : ServiceObject
     /// <param name="deleteMode">The deletion mode.</param>
     public async System.Threading.Tasks.Task DeleteItems(FolderId contextFolderId, DeleteMode deleteMode)
     {
-        (await Service.DeleteItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    deleteMode
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.DeleteItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                deleteMode
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -324,16 +335,17 @@ public class Conversation : ServiceObject
         FolderId destinationFolderId
     )
     {
-        (await Service.MoveItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    destinationFolderId
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.MoveItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                destinationFolderId
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -349,16 +361,17 @@ public class Conversation : ServiceObject
         FolderId destinationFolderId
     )
     {
-        (await Service.CopyItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    destinationFolderId
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.CopyItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                destinationFolderId
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -374,16 +387,17 @@ public class Conversation : ServiceObject
     /// </param>
     public async System.Threading.Tasks.Task SetReadStateForItemsInConversation(FolderId contextFolderId, bool isRead)
     {
-        (await Service.SetReadStateForItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    isRead
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.SetReadStateForItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                isRead
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -404,17 +418,18 @@ public class Conversation : ServiceObject
         bool suppressReadReceipts
     )
     {
-        (await Service.SetReadStateForItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    isRead,
-                    suppressReadReceipts
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.SetReadStateForItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                isRead,
+                suppressReadReceipts
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -432,17 +447,18 @@ public class Conversation : ServiceObject
         Guid? retentionPolicyTagId
     )
     {
-        (await Service.SetRetentionPolicyForItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    retentionPolicyType,
-                    retentionPolicyTagId
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.SetRetentionPolicyForItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                retentionPolicyType,
+                retentionPolicyTagId
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -457,23 +473,25 @@ public class Conversation : ServiceObject
     {
         var flag = new Flag
         {
-            FlagStatus = ItemFlagStatus.Complete
+            FlagStatus = ItemFlagStatus.Complete,
         };
+
         if (completeDate.HasValue)
         {
             flag.CompleteDate = completeDate.Value;
         }
 
-        (await Service.SetFlagStatusForItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    flag
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.SetFlagStatusForItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                flag
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -487,19 +505,20 @@ public class Conversation : ServiceObject
     {
         var flag = new Flag
         {
-            FlagStatus = ItemFlagStatus.NotFlagged
+            FlagStatus = ItemFlagStatus.NotFlagged,
         };
 
-        (await Service.SetFlagStatusForItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    flag
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.SetFlagStatusForItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                flag
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     /// <summary>
@@ -515,7 +534,7 @@ public class Conversation : ServiceObject
     {
         var flag = new Flag
         {
-            FlagStatus = ItemFlagStatus.Flagged
+            FlagStatus = ItemFlagStatus.Flagged,
         };
         if (startDate.HasValue)
         {
@@ -527,16 +546,17 @@ public class Conversation : ServiceObject
             flag.DueDate = dueDate.Value;
         }
 
-        (await Service.SetFlagStatusForItemsInConversations(
-                    new[]
-                    {
-                        new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime)
-                    },
-                    contextFolderId,
-                    flag
-                )
-                .ConfigureAwait(false))[0]
-            .ThrowIfNecessary();
+        var responses = await Service.SetFlagStatusForItemsInConversations(
+                new[]
+                {
+                    new KeyValuePair<ConversationId, DateTime?>(Id, GlobalLastDeliveryTime),
+                },
+                contextFolderId,
+                flag
+            )
+            .ConfigureAwait(false);
+
+        responses[0].ThrowIfNecessary();
     }
 
     #endregion
@@ -587,7 +607,7 @@ public class Conversation : ServiceObject
     {
         get
         {
-            StringList unreadSenders = null;
+            StringList? unreadSenders = null;
 
             // This property need not be present hence the property bag may not contain it.
             // Check for the presence of this property before accessing it.
@@ -608,7 +628,7 @@ public class Conversation : ServiceObject
     {
         get
         {
-            StringList unreadSenders = null;
+            StringList? unreadSenders = null;
 
             // This property need not be present hence the property bag may not contain it.
             // Check for the presence of this property before accessing it.
@@ -649,7 +669,7 @@ public class Conversation : ServiceObject
     {
         get
         {
-            StringList returnValue = null;
+            StringList? returnValue = null;
 
             // This property need not be present hence the property bag may not contain it.
             // Check for the presence of this property before accessing it.
@@ -669,7 +689,7 @@ public class Conversation : ServiceObject
     {
         get
         {
-            StringList returnValue = null;
+            StringList? returnValue = null;
 
             // This property need not be present hence the property bag may not contain it.
             // Check for the presence of this property before accessing it.

@@ -25,15 +25,17 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the response to a folder search operation.
 /// </summary>
+[PublicAPI]
 public sealed class FindFolderResponse : ServiceResponse
 {
-    private readonly FindFoldersResults results = new FindFoldersResults();
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Reads response elements from XML.
@@ -43,11 +45,11 @@ public sealed class FindFolderResponse : ServiceResponse
     {
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootFolder);
 
-        results.TotalCount = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-        results.MoreAvailable = !reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+        Results.TotalCount = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
+        Results.MoreAvailable = !reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
 
         // Ignore IndexedPagingOffset attribute if MoreAvailable is false.
-        results.NextPageOffset = results.MoreAvailable
+        Results.NextPageOffset = Results.MoreAvailable
             ? reader.ReadNullableAttributeValue<int>(XmlAttributeNames.IndexedPagingOffset) : null;
 
         reader.ReadStartElement(XmlNamespace.Types, XmlElementNames.Folders);
@@ -68,14 +70,9 @@ public sealed class FindFolderResponse : ServiceResponse
                     }
                     else
                     {
-                        folder.LoadFromXml(
-                            reader,
-                            true, /* clearPropertyBag */
-                            propertySet,
-                            true /* summaryPropertiesOnly */
-                        );
+                        folder.LoadFromXml(reader, true, _propertySet, true);
 
-                        results.Folders.Add(folder);
+                        Results.Folders.Add(folder);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.Folders));
@@ -101,13 +98,13 @@ public sealed class FindFolderResponse : ServiceResponse
     /// <param name="propertySet">The property set from, the request.</param>
     internal FindFolderResponse(PropertySet propertySet)
     {
-        this.propertySet = propertySet;
+        _propertySet = propertySet;
 
-        EwsUtilities.Assert(this.propertySet != null, "FindFolderResponse.ctor", "PropertySet should not be null");
+        EwsUtilities.Assert(_propertySet != null, "FindFolderResponse.ctor", "PropertySet should not be null");
     }
 
     /// <summary>
     ///     Gets the results of the search operation.
     /// </summary>
-    public FindFoldersResults Results => results;
+    public FindFoldersResults Results { get; } = new();
 }

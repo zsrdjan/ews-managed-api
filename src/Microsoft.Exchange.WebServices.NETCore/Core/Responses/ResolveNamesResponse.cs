@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class ResolveNamesResponse : ServiceResponse
 {
-    private readonly NameResolutionCollection resolutions;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ResolveNamesResponse" /> class.
     /// </summary>
@@ -40,7 +38,7 @@ internal sealed class ResolveNamesResponse : ServiceResponse
     {
         EwsUtilities.Assert(service != null, "ResolveNamesResponse.ctor", "service is null");
 
-        resolutions = new NameResolutionCollection(service);
+        Resolutions = new NameResolutionCollection(service);
     }
 
     /// <summary>
@@ -69,5 +67,5 @@ internal sealed class ResolveNamesResponse : ServiceResponse
     /// <summary>
     ///     Gets a list of name resolution suggestions.
     /// </summary>
-    public NameResolutionCollection Resolutions => resolutions;
+    public NameResolutionCollection Resolutions { get; }
 }

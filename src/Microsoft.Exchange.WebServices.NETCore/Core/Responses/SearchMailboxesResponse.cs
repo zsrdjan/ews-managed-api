@@ -23,15 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the SearchMailboxes response.
 /// </summary>
+[PublicAPI]
 public sealed class SearchMailboxesResponse : ServiceResponse
 {
-    SearchMailboxesResult searchResult;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SearchMailboxesResponse" /> class.
     /// </summary>
@@ -45,19 +46,15 @@ public sealed class SearchMailboxesResponse : ServiceResponse
     /// <param name="reader">The reader.</param>
     internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        searchResult = new SearchMailboxesResult();
+        SearchResult = new SearchMailboxesResult();
 
         base.ReadElementsFromXml(reader);
 
-        searchResult = SearchMailboxesResult.LoadFromXml(reader);
+        SearchResult = SearchMailboxesResult.LoadFromXml(reader);
     }
 
     /// <summary>
     ///     Search mailboxes result
     /// </summary>
-    public SearchMailboxesResult SearchResult
-    {
-        get => searchResult;
-        internal set => searchResult = value;
-    }
+    public SearchMailboxesResult SearchResult { get; internal set; }
 }

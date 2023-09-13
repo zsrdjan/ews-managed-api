@@ -102,7 +102,7 @@ internal sealed class SuppressReadReceipt : ServiceObject
     /// <param name="messageDisposition">The message disposition.</param>
     /// <param name="token"></param>
     internal System.Threading.Tasks.Task InternalCreate(
-        FolderId parentFolderId,
+        FolderId? parentFolderId,
         MessageDisposition? messageDisposition,
         CancellationToken token
     )

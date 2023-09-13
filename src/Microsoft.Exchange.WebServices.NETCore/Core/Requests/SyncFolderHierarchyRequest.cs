@@ -30,10 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFolderHierarchyResponse>
 {
-    private PropertySet propertySet;
-    private FolderId syncFolderId;
-    private string syncState;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SyncFolderHierarchyRequest" /> class.
     /// </summary>
@@ -96,13 +92,13 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(PropertySet, "PropertySet");
+        EwsUtilities.ValidateParam(PropertySet);
         if (SyncFolderId != null)
         {
             SyncFolderId.Validate(Service.RequestedServerVersion);
         }
 
-        PropertySet.ValidateForRequest(this, false /*summaryPropertiesOnly*/);
+        PropertySet.ValidateForRequest(this, false);
     }
 
     /// <summary>
@@ -136,29 +132,17 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     ///     Gets or sets the property set.
     /// </summary>
     /// <value>The property set.</value>
-    public PropertySet PropertySet
-    {
-        get => propertySet;
-        set => propertySet = value;
-    }
+    public PropertySet PropertySet { get; set; }
 
     /// <summary>
     ///     Gets or sets the sync folder id.
     /// </summary>
     /// <value>The sync folder id.</value>
-    public FolderId SyncFolderId
-    {
-        get => syncFolderId;
-        set => syncFolderId = value;
-    }
+    public FolderId SyncFolderId { get; set; }
 
     /// <summary>
     ///     Gets or sets the state of the sync.
     /// </summary>
     /// <value>The state of the sync.</value>
-    public string SyncState
-    {
-        get => syncState;
-        set => syncState = value;
-    }
+    public string SyncState { get; set; }
 }

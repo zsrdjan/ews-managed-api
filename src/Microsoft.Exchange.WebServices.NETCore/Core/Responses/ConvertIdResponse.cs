@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 public sealed class ConvertIdResponse : ServiceResponse
 {
-    private AlternateIdBase convertedId;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConvertIdResponse" /> class.
     /// </summary>
@@ -62,24 +60,32 @@ public sealed class ConvertIdResponse : ServiceResponse
         switch (alternateIdClass)
         {
             case AlternateId.SchemaTypeName:
-                convertedId = new AlternateId();
+            {
+                ConvertedId = new AlternateId();
                 break;
+            }
             case AlternatePublicFolderId.SchemaTypeName:
-                convertedId = new AlternatePublicFolderId();
+            {
+                ConvertedId = new AlternatePublicFolderId();
                 break;
+            }
             case AlternatePublicFolderItemId.SchemaTypeName:
-                convertedId = new AlternatePublicFolderItemId();
+            {
+                ConvertedId = new AlternatePublicFolderItemId();
                 break;
+            }
             default:
+            {
                 EwsUtilities.Assert(
                     false,
                     "ConvertIdResponse.ReadElementsFromXml",
-                    string.Format("Unknown alternate Id class: {0}", alternateIdClass)
+                    $"Unknown alternate Id class: {alternateIdClass}"
                 );
                 break;
+            }
         }
 
-        convertedId.LoadAttributesFromXml(reader);
+        ConvertedId.LoadAttributesFromXml(reader);
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.AlternateId);
     }
@@ -87,5 +93,5 @@ public sealed class ConvertIdResponse : ServiceResponse
     /// <summary>
     ///     Gets the converted Id.
     /// </summary>
-    public AlternateIdBase ConvertedId => convertedId;
+    public AlternateIdBase ConvertedId { get; private set; }
 }
