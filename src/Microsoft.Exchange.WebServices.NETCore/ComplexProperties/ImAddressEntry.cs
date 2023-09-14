@@ -53,7 +53,7 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     internal ImAddressEntry(ImAddressKey key, string imAddress)
         : base(key)
     {
-        this._imAddress = imAddress;
+        _imAddress = imAddress;
     }
 
     /// <summary>

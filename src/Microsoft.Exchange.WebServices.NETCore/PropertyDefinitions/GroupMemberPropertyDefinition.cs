@@ -42,7 +42,7 @@ internal sealed class GroupMemberPropertyDefinition : ServiceObjectPropertyDefin
     public GroupMemberPropertyDefinition(string key)
         : base(FieldUri)
     {
-        this.Key = key;
+        Key = key;
     }
 
     /// <summary>

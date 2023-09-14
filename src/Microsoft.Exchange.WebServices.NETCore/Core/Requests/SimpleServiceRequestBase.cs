@@ -23,6 +23,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics;
 using System.Net.Http.Headers;
 
 namespace Microsoft.Exchange.WebServices.Data;
@@ -45,37 +46,19 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
     ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
-    internal async Task<object> InternalExecuteAsync(CancellationToken token)
+    internal async Task<TResponse> InternalExecuteAsync<TResponse>(CancellationToken token)
+        where TResponse : class
     {
         var tuple = await ValidateAndEmitRequest(token).ConfigureAwait(false);
         try
         {
-            return await ReadResponse(tuple.Item2);
+            var result = await ReadResponse(tuple.Item2).ConfigureAwait(false) as TResponse;
+            return result!;
         }
         finally
         {
             tuple.Item1.Dispose();
             tuple.Item2.Dispose();
-        }
-    }
-
-    /// <summary>
-    ///     Async callback method for HttpWebRequest async requests.
-    /// </summary>
-    /// <param name="webAsyncResult">An IAsyncResult that references the asynchronous request.</param>
-    private static void WebRequestAsyncCallback(IAsyncResult webAsyncResult)
-    {
-        if (webAsyncResult.AsyncState is WebAsyncCallStateAnchor wrappedState && wrappedState.AsyncCallback != null)
-        {
-            var asyncRequestResult = new AsyncRequestResult(
-                wrappedState.ServiceRequest,
-                wrappedState.WebRequest,
-                webAsyncResult,
-                wrappedState.AsyncState
-            );
-
-            // Call user's call back
-            wrappedState.AsyncCallback(asyncRequestResult);
         }
     }
 

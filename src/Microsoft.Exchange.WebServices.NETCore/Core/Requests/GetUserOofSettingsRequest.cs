@@ -120,10 +120,8 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetUserOofSettingsResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetUserOofSettingsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
-
+        var serviceResponse = await InternalExecuteAsync<GetUserOofSettingsResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
-
         return serviceResponse;
     }
 

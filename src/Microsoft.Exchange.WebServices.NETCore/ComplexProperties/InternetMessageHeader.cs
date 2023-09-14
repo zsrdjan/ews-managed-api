@@ -103,6 +103,6 @@ public sealed class InternetMessageHeader : ComplexProperty
     public string Value
     {
         get => _value;
-        set => SetFieldValue(ref this._value, value);
+        set => SetFieldValue(ref _value, value);
     }
 }

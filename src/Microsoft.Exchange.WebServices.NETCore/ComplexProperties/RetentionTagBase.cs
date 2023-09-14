@@ -54,7 +54,7 @@ public class RetentionTagBase : ComplexProperty
     /// <param name="xmlElementName">Xml element name.</param>
     public RetentionTagBase(string xmlElementName)
     {
-        this._xmlElementName = xmlElementName;
+        _xmlElementName = xmlElementName;
     }
 
     /// <summary>

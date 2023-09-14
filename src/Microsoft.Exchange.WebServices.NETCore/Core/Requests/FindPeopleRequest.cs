@@ -227,7 +227,7 @@ internal sealed class FindPeopleRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<FindPeopleResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (FindPeopleResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<FindPeopleResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

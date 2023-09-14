@@ -130,7 +130,7 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<SetHoldOnMailboxesResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (SetHoldOnMailboxesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<SetHoldOnMailboxesResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
 

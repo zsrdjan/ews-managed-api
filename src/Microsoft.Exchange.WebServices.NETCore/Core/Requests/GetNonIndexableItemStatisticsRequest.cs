@@ -115,7 +115,7 @@ internal sealed class GetNonIndexableItemStatisticsRequest : SimpleServiceReques
     internal async Task<GetNonIndexableItemStatisticsResponse> Execute(CancellationToken token)
     {
         var serviceResponse =
-            (GetNonIndexableItemStatisticsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+            await InternalExecuteAsync<GetNonIndexableItemStatisticsResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
 

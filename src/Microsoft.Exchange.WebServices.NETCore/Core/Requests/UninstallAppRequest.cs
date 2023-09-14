@@ -95,7 +95,7 @@ internal sealed class UninstallAppRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<UninstallAppResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (UninstallAppResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<UninstallAppResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

@@ -126,5 +126,5 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
     ///     Gets the error subscription ids.
     /// </summary>
     /// <value>The error subscription ids.</value>
-    internal List<string> ErrorSubscriptionIds { get; private set; }
+    internal List<string>? ErrorSubscriptionIds { get; private set; }
 }

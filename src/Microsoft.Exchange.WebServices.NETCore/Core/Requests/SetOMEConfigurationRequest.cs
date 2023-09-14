@@ -100,7 +100,7 @@ internal sealed class SetOMEConfigurationRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<ServiceResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (SetOMEConfigurationResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<SetOMEConfigurationResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

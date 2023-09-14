@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Provides data to a StreamingSubscriptionConnection's OnSubscriptionError and OnDisconnect events.
 /// </summary>
+[PublicAPI]
 public class SubscriptionErrorEventArgs : EventArgs
 {
     /// <summary>
@@ -41,7 +44,7 @@ public class SubscriptionErrorEventArgs : EventArgs
     ///     The exception representing the error. If exception is null, the connection was cleanly closed
     ///     by the server.
     /// </param>
-    internal SubscriptionErrorEventArgs(StreamingSubscription subscription, Exception exception)
+    internal SubscriptionErrorEventArgs(StreamingSubscription? subscription, Exception exception)
     {
         Subscription = subscription;
         Exception = exception;
@@ -51,7 +54,7 @@ public class SubscriptionErrorEventArgs : EventArgs
     ///     Gets the subscription for which an error occurred. If Subscription is null, the error applies to the entire
     ///     connection.
     /// </summary>
-    public StreamingSubscription Subscription { get; internal set; }
+    public StreamingSubscription? Subscription { get; internal set; }
 
     /// <summary>
     ///     Gets the exception representing the error. If Exception is null, the connection was cleanly closed by the server.

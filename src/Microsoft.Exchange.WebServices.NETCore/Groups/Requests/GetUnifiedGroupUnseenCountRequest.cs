@@ -126,6 +126,6 @@ internal sealed class GetUnifiedGroupUnseenCountRequest : SimpleServiceRequestBa
     /// <returns>Service response.</returns>
     internal async Task<GetUnifiedGroupUnseenCountResponse> Execute(CancellationToken token)
     {
-        return (GetUnifiedGroupUnseenCountResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        return await InternalExecuteAsync<GetUnifiedGroupUnseenCountResponse>(token).ConfigureAwait(false);
     }
 }

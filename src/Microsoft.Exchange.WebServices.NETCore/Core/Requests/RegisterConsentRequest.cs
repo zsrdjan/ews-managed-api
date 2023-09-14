@@ -110,7 +110,7 @@ internal sealed class RegisterConsentRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<RegisterConsentResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (RegisterConsentResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<RegisterConsentResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

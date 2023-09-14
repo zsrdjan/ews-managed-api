@@ -127,7 +127,7 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<InstallAppResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (InstallAppResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<InstallAppResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

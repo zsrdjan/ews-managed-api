@@ -101,7 +101,7 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetInboxRulesResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetInboxRulesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetInboxRulesResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

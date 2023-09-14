@@ -94,7 +94,7 @@ internal sealed class PlayOnPhoneRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<PlayOnPhoneResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (PlayOnPhoneResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<PlayOnPhoneResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

@@ -25,27 +25,26 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the base class for event subscriptions.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class SubscriptionBase
 {
-    private readonly ExchangeService service;
-    private string id;
-    private string watermark;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SubscriptionBase" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
     internal SubscriptionBase(ExchangeService service)
     {
-        EwsUtilities.ValidateParam(service, "service");
+        EwsUtilities.ValidateParam(service);
 
-        this.service = service;
+        Service = service;
     }
 
     /// <summary>
@@ -56,9 +55,9 @@ public abstract class SubscriptionBase
     internal SubscriptionBase(ExchangeService service, string id)
         : this(service)
     {
-        EwsUtilities.ValidateParam(id, "id");
+        EwsUtilities.ValidateParam(id);
 
-        this.id = id;
+        Id = id;
     }
 
     /// <summary>
@@ -70,7 +69,7 @@ public abstract class SubscriptionBase
     internal SubscriptionBase(ExchangeService service, string id, string watermark)
         : this(service, id)
     {
-        this.watermark = watermark;
+        Watermark = watermark;
     }
 
     /// <summary>
@@ -79,11 +78,11 @@ public abstract class SubscriptionBase
     /// <param name="reader">The reader.</param>
     internal virtual void LoadFromXml(EwsServiceXmlReader reader)
     {
-        id = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId);
+        Id = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId);
 
         if (UsesWatermark)
         {
-            watermark = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.Watermark);
+            Watermark = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.Watermark);
         }
     }
 
@@ -91,25 +90,17 @@ public abstract class SubscriptionBase
     ///     Gets the session.
     /// </summary>
     /// <value>The session.</value>
-    internal ExchangeService Service => service;
+    internal ExchangeService Service { get; }
 
     /// <summary>
     ///     Gets the Id of the subscription.
     /// </summary>
-    public string Id
-    {
-        get => id;
-        internal set => id = value;
-    }
+    public string Id { get; internal set; }
 
     /// <summary>
     ///     Gets the latest watermark of the subscription. Watermark is always null for streaming subscriptions.
     /// </summary>
-    public string Watermark
-    {
-        get => watermark;
-        internal set => watermark = value;
-    }
+    public string Watermark { get; internal set; }
 
     /// <summary>
     ///     Gets whether or not this subscription uses watermarks.

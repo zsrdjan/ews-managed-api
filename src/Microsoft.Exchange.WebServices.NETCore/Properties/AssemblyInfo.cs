@@ -25,9 +25,6 @@
 
 using System.Runtime.InteropServices;
 
-// CLS Compliant
-[assembly: CLSCompliant(true)]
-
 // COM Visible
 [assembly: ComVisible(false)]
 

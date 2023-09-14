@@ -126,7 +126,7 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     internal async Task<ServiceResponseCollection<TResponse>> ExecuteAsync(CancellationToken token)
     {
         var serviceResponses =
-            (ServiceResponseCollection<TResponse>)await InternalExecuteAsync(token).ConfigureAwait(false);
+            await InternalExecuteAsync<ServiceResponseCollection<TResponse>>(token).ConfigureAwait(false);
 
         if (ErrorHandlingMode == ServiceErrorHandling.ThrowOnError)
         {

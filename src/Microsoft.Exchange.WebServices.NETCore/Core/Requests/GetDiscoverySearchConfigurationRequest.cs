@@ -104,7 +104,7 @@ internal sealed class GetDiscoverySearchConfigurationRequest : SimpleServiceRequ
     internal async Task<GetDiscoverySearchConfigurationResponse> Execute(CancellationToken token)
     {
         var serviceResponse =
-            (GetDiscoverySearchConfigurationResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+            await InternalExecuteAsync<GetDiscoverySearchConfigurationResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
 

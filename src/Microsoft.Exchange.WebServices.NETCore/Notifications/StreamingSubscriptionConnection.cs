@@ -23,42 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a connection to an ongoing stream of events.
 /// </summary>
+[PublicAPI]
 public sealed class StreamingSubscriptionConnection : IDisposable
 {
     /// <summary>
     ///     Mapping of streaming id to subscriptions currently on the connection.
     /// </summary>
-    private Dictionary<string, StreamingSubscription> subscriptions;
+    private Dictionary<string, StreamingSubscription> _subscriptions = new();
 
     /// <summary>
     ///     connection lifetime, in minutes
     /// </summary>
-    private readonly int connectionTimeout;
+    private readonly int _connectionTimeout;
 
     /// <summary>
     ///     ExchangeService instance used to make the EWS call.
     /// </summary>
-    private ExchangeService session;
+    private ExchangeService _session;
 
     /// <summary>
     ///     Value indicating whether the class is disposed.
     /// </summary>
-    private bool isDisposed;
+    private bool _isDisposed;
 
     /// <summary>
     ///     Currently used instance of a GetStreamingEventsRequest connected to EWS.
     /// </summary>
-    private GetStreamingEventsRequest currentHangingRequest;
+    private GetStreamingEventsRequest? _currentHangingRequest;
 
     /// <summary>
     ///     Lock object
     /// </summary>
-    private readonly object lockObject = new object();
+    private readonly object _lockObject = new();
 
     /// <summary>
     ///     Represents a delegate that is invoked when notifications are received from the server
@@ -77,17 +80,17 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// <summary>
     ///     Occurs when notifications are received from the server.
     /// </summary>
-    public event NotificationEventDelegate OnNotificationEvent;
+    public event NotificationEventDelegate? OnNotificationEvent;
 
     /// <summary>
     ///     Occurs when a subscription encounters an error.
     /// </summary>
-    public event SubscriptionErrorDelegate OnSubscriptionError;
+    public event SubscriptionErrorDelegate? OnSubscriptionError;
 
     /// <summary>
     ///     Occurs when a streaming subscription connection is disconnected from the server.
     /// </summary>
-    public event SubscriptionErrorDelegate OnDisconnect;
+    public event SubscriptionErrorDelegate? OnDisconnect;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="StreamingSubscriptionConnection" /> class.
@@ -99,18 +102,17 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// </param>
     public StreamingSubscriptionConnection(ExchangeService service, int lifetime)
     {
-        EwsUtilities.ValidateParam(service, "service");
+        EwsUtilities.ValidateParam(service);
 
         EwsUtilities.ValidateClassVersion(service, ExchangeVersion.Exchange2010_SP1, GetType().Name);
 
         if (lifetime < 1 || lifetime > 30)
         {
-            throw new ArgumentOutOfRangeException("lifetime");
+            throw new ArgumentOutOfRangeException(nameof(lifetime));
         }
 
-        session = service;
-        subscriptions = new Dictionary<string, StreamingSubscription>();
-        connectionTimeout = lifetime;
+        _session = service;
+        _connectionTimeout = lifetime;
     }
 
     /// <summary>
@@ -129,11 +131,11 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     )
         : this(service, lifetime)
     {
-        EwsUtilities.ValidateParamCollection(subscriptions, "subscriptions");
+        EwsUtilities.ValidateParamCollection(subscriptions);
 
         foreach (var subscription in subscriptions)
         {
-            this.subscriptions.Add(subscription.Id, subscription);
+            _subscriptions.Add(subscription.Id, subscription);
         }
     }
 
@@ -145,9 +147,9 @@ public sealed class StreamingSubscriptionConnection : IDisposable
         get
         {
             var result = new List<StreamingSubscription>();
-            lock (lockObject)
+            lock (_lockObject)
             {
-                result.AddRange(subscriptions.Values);
+                result.AddRange(_subscriptions.Values);
             }
 
             return result;
@@ -163,18 +165,18 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     {
         ThrowIfDisposed();
 
-        EwsUtilities.ValidateParam(subscription, "subscription");
+        EwsUtilities.ValidateParam(subscription);
 
         ValidateConnectionState(false, Strings.CannotAddSubscriptionToLiveConnection);
 
-        lock (lockObject)
+        lock (_lockObject)
         {
-            if (subscriptions.ContainsKey(subscription.Id))
+            if (_subscriptions.ContainsKey(subscription.Id))
             {
                 return;
             }
 
-            subscriptions.Add(subscription.Id, subscription);
+            _subscriptions.Add(subscription.Id, subscription);
         }
     }
 
@@ -187,13 +189,13 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     {
         ThrowIfDisposed();
 
-        EwsUtilities.ValidateParam(subscription, "subscription");
+        EwsUtilities.ValidateParam(subscription);
 
         ValidateConnectionState(false, Strings.CannotRemoveSubscriptionFromLiveConnection);
 
-        lock (lockObject)
+        lock (_lockObject)
         {
-            subscriptions.Remove(subscription.Id);
+            _subscriptions.Remove(subscription.Id);
         }
     }
 
@@ -204,27 +206,27 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// <exception cref="InvalidOperationException">Thrown when Open is called while connected.</exception>
     public void Open(CancellationToken token = default)
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
             ThrowIfDisposed();
 
             ValidateConnectionState(false, Strings.CannotCallConnectDuringLiveConnection);
 
-            if (subscriptions.Count == 0)
+            if (_subscriptions.Count == 0)
             {
                 throw new ServiceLocalException(Strings.NoSubscriptionsOnConnection);
             }
 
-            currentHangingRequest = new GetStreamingEventsRequest(
-                session,
+            _currentHangingRequest = new GetStreamingEventsRequest(
+                _session,
                 HandleServiceResponseObject,
-                subscriptions.Keys,
-                connectionTimeout
+                _subscriptions.Keys,
+                _connectionTimeout
             );
 
-            currentHangingRequest.OnDisconnect += OnRequestDisconnect;
+            _currentHangingRequest.OnDisconnect += OnRequestDisconnect;
 
-            currentHangingRequest.InternalExecute(token);
+            _currentHangingRequest.InternalExecute(token);
         }
     }
 
@@ -248,7 +250,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// <exception cref="InvalidOperationException">Thrown when Close is called while not connected.</exception>
     public void Close()
     {
-        lock (lockObject)
+        lock (_lockObject)
         {
             ThrowIfDisposed();
 
@@ -256,7 +258,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
 
             // Further down in the stack, this will result in a call to our OnRequestDisconnect event handler,
             // doing the necessary cleanup.
-            currentHangingRequest.Disconnect();
+            _currentHangingRequest.Disconnect();
         }
     }
 
@@ -264,9 +266,9 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     ///     Internal helper method called when the request disconnects.
     /// </summary>
     /// <param name="ex">The exception that caused the disconnection. May be null.</param>
-    private void InternalOnDisconnect(Exception ex)
+    private void InternalOnDisconnect(Exception? ex)
     {
-        currentHangingRequest = null;
+        _currentHangingRequest = null;
 
         if (OnDisconnect != null)
         {
@@ -282,12 +284,12 @@ public sealed class StreamingSubscriptionConnection : IDisposable
         get
         {
             ThrowIfDisposed();
-            if (currentHangingRequest == null)
+            if (_currentHangingRequest == null)
             {
                 return false;
             }
 
-            return currentHangingRequest.IsConnected;
+            return _currentHangingRequest.IsConnected;
         }
     }
 
@@ -310,11 +312,9 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// <param name="response">The response.</param>
     private void HandleServiceResponseObject(object response)
     {
-        var gseResponse = response as GetStreamingEventsResponse;
-
-        if (gseResponse == null)
+        if (response is not GetStreamingEventsResponse gseResponse)
         {
-            throw new ArgumentException();
+            throw new ArgumentException(nameof(response));
         }
 
         if (gseResponse.Result == ServiceResult.Success || gseResponse.Result == ServiceResult.Warning)
@@ -353,12 +353,12 @@ public sealed class StreamingSubscriptionConnection : IDisposable
         {
             StreamingSubscription subscription = null;
 
-            lock (lockObject)
+            lock (_lockObject)
             {
                 // Client can do any good or bad things in the below event handler
-                if (subscriptions != null && subscriptions.ContainsKey(id))
+                if (_subscriptions != null && _subscriptions.ContainsKey(id))
                 {
-                    subscription = subscriptions[id];
+                    subscription = _subscriptions[id];
                 }
             }
 
@@ -375,12 +375,12 @@ public sealed class StreamingSubscriptionConnection : IDisposable
             if (gseResponse.ErrorCode != ServiceError.ErrorMissedNotificationEvents)
             {
                 // Client can do any good or bad things in the above event handler
-                lock (lockObject)
+                lock (_lockObject)
                 {
-                    if (subscriptions != null && subscriptions.ContainsKey(id))
+                    if (_subscriptions != null && _subscriptions.ContainsKey(id))
                     {
                         // We are no longer servicing the subscription.
-                        subscriptions.Remove(id);
+                        _subscriptions.Remove(id);
                     }
                 }
             }
@@ -409,14 +409,14 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     {
         foreach (var events in gseResponse.Results.Notifications)
         {
-            StreamingSubscription subscription = null;
+            StreamingSubscription? subscription = null;
 
-            lock (lockObject)
+            lock (_lockObject)
             {
                 // Client can do any good or bad things in the below event handler
-                if (subscriptions != null && subscriptions.ContainsKey(events.SubscriptionId))
+                if (_subscriptions != null && _subscriptions.ContainsKey(events.SubscriptionId))
                 {
-                    subscription = subscriptions[events.SubscriptionId];
+                    subscription = _subscriptions[events.SubscriptionId];
                 }
             }
 
@@ -462,19 +462,15 @@ public sealed class StreamingSubscriptionConnection : IDisposable
             GC.SuppressFinalize(this);
         }
 
-        lock (lockObject)
+        lock (_lockObject)
         {
-            if (!isDisposed)
+            if (!_isDisposed)
             {
-                if (currentHangingRequest != null)
-                {
-                    currentHangingRequest = null;
-                }
+                _currentHangingRequest = null;
+                _subscriptions = null;
+                _session = null;
 
-                subscriptions = null;
-                session = null;
-
-                isDisposed = true;
+                _isDisposed = true;
             }
         }
     }
@@ -484,7 +480,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// </summary>
     private void ThrowIfDisposed()
     {
-        if (isDisposed)
+        if (_isDisposed)
         {
             throw new ObjectDisposedException(GetType().FullName);
         }

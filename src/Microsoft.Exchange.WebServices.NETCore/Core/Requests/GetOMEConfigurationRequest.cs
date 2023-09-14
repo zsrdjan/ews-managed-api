@@ -93,7 +93,7 @@ internal sealed class GetOMEConfigurationRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetOMEConfigurationResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetOMEConfigurationResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetOMEConfigurationResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

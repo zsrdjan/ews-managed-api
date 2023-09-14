@@ -98,7 +98,7 @@ internal sealed class GetSearchableMailboxesRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetSearchableMailboxesResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetSearchableMailboxesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetSearchableMailboxesResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
 

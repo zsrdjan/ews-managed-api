@@ -205,7 +205,7 @@ internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetClientExtensionResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetClientExtensionResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetClientExtensionResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

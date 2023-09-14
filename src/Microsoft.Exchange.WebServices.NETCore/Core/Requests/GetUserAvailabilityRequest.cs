@@ -181,7 +181,7 @@ internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetUserAvailabilityResults> Execute(CancellationToken token)
     {
-        return (GetUserAvailabilityResults)await InternalExecuteAsync(token).ConfigureAwait(false);
+        return await InternalExecuteAsync<GetUserAvailabilityResults>(token).ConfigureAwait(false);
     }
 
     /// <summary>

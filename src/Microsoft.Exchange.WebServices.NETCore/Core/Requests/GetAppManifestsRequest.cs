@@ -125,7 +125,7 @@ internal sealed class GetAppManifestsRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetAppManifestsResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetAppManifestsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetAppManifestsResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

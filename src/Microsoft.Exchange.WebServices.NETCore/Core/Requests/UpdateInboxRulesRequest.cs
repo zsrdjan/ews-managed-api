@@ -130,7 +130,7 @@ internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<UpdateInboxRulesResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (UpdateInboxRulesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<UpdateInboxRulesResponse>(token).ConfigureAwait(false);
         if (serviceResponse.Result == ServiceResult.Error)
         {
             throw new UpdateInboxRulesException(serviceResponse, InboxRuleOperations.GetEnumerator());

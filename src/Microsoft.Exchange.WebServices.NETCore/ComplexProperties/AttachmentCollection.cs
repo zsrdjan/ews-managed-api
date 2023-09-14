@@ -239,7 +239,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to determine the type of attachment to create.</param>
     /// <returns>An Attachment instance.</returns>
-    internal override Attachment? CreateComplexProperty(string xmlElementName)
+    internal override Attachment CreateComplexProperty(string xmlElementName)
     {
         return xmlElementName switch
         {

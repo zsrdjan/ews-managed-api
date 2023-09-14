@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class PhoneCallId : ComplexProperty
 {
-    private string id;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="PhoneCallId" /> class.
     /// </summary>
@@ -45,7 +43,7 @@ internal sealed class PhoneCallId : ComplexProperty
     /// <param name="id">The Id of the phone call.</param>
     internal PhoneCallId(string id)
     {
-        this.id = id;
+        Id = id;
     }
 
     /// <summary>
@@ -54,7 +52,7 @@ internal sealed class PhoneCallId : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        id = reader.ReadAttributeValue(XmlAttributeNames.Id);
+        Id = reader.ReadAttributeValue(XmlAttributeNames.Id);
     }
 
     /// <summary>
@@ -63,7 +61,7 @@ internal sealed class PhoneCallId : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.Id, id);
+        writer.WriteAttributeValue(XmlAttributeNames.Id, Id);
     }
 
     /// <summary>
@@ -78,10 +76,5 @@ internal sealed class PhoneCallId : ComplexProperty
     /// <summary>
     ///     Gets or sets the Id of the phone call.
     /// </summary>
-    internal string Id
-    {
-        get => id;
-
-        set => id = value;
-    }
+    internal string Id { get; set; }
 }

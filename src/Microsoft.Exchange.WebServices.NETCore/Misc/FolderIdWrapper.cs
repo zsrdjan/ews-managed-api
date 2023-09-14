@@ -43,7 +43,7 @@ internal class FolderIdWrapper : AbstractFolderIdWrapper
     {
         EwsUtilities.Assert(folderId != null, "FolderIdWrapper.ctor", "folderId is null");
 
-        this._folderId = folderId;
+        _folderId = folderId;
     }
 
     /// <summary>

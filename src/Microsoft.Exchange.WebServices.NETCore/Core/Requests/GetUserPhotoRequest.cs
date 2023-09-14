@@ -178,16 +178,11 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
     ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
-    internal Task<GetUserPhotoResponse> Execute(CancellationToken token)
-    {
-        return GetResultOrDefault(() => InternalExecuteAsync(token));
-    }
-
-    private static async Task<GetUserPhotoResponse> GetResultOrDefault(Func<Task<object>> serviceResponseFactory)
+    internal async Task<GetUserPhotoResponse> Execute(CancellationToken token)
     {
         try
         {
-            return (GetUserPhotoResponse)await serviceResponseFactory().ConfigureAwait(false);
+            return await InternalExecuteAsync<GetUserPhotoResponse>(token).ConfigureAwait(false);
         }
         catch (ServiceRequestException ex)
         {

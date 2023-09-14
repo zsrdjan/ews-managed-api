@@ -94,7 +94,7 @@ internal sealed class GetUserRetentionPolicyTagsRequest : SimpleServiceRequestBa
     internal async Task<GetUserRetentionPolicyTagsResponse> Execute(CancellationToken token)
     {
         var serviceResponse =
-            (GetUserRetentionPolicyTagsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+            await InternalExecuteAsync<GetUserRetentionPolicyTagsResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
 }

@@ -127,7 +127,7 @@ internal sealed class DisableAppRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<DisableAppResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (DisableAppResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<DisableAppResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

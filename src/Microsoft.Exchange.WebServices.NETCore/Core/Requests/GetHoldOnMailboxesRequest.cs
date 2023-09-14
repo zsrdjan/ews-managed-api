@@ -106,7 +106,7 @@ internal sealed class GetHoldOnMailboxesRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetHoldOnMailboxesResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetHoldOnMailboxesResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetHoldOnMailboxesResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
 

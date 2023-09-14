@@ -63,10 +63,7 @@ public sealed class SearchMailboxesResult
                         var searchScope = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.SearchScope);
                         reader.ReadEndElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScope);
                         mailboxSearchScopes.Add(
-                            new MailboxSearchScope(
-                                mailbox,
-                                (MailboxSearchLocation)Enum.Parse(typeof(MailboxSearchLocation), searchScope)
-                            )
+                            new MailboxSearchScope(mailbox, Enum.Parse<MailboxSearchLocation>(searchScope))
                         );
                     }
                 } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScopes));

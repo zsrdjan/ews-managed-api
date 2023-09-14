@@ -117,7 +117,7 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetPeopleInsightsResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetPeopleInsightsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetPeopleInsightsResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

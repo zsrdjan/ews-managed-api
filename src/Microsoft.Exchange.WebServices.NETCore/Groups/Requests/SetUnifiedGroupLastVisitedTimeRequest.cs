@@ -127,6 +127,6 @@ internal sealed class SetUnifiedGroupLastVisitedTimeRequest : SimpleServiceReque
     /// <returns>Service response.</returns>
     internal async Task<ServiceResponse> Execute(CancellationToken token)
     {
-        return (ServiceResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        return await InternalExecuteAsync<ServiceResponse>(token).ConfigureAwait(false);
     }
 }

@@ -94,7 +94,7 @@ internal sealed class GetPasswordExpirationDateRequest : SimpleServiceRequestBas
     internal async Task<GetPasswordExpirationDateResponse> Execute(CancellationToken token)
     {
         var serviceResponse =
-            (GetPasswordExpirationDateResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+            await InternalExecuteAsync<GetPasswordExpirationDateResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

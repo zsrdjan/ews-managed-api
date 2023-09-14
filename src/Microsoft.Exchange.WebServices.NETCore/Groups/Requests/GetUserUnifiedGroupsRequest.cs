@@ -117,6 +117,6 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetUserUnifiedGroupsResponse> Execute(CancellationToken token)
     {
-        return (GetUserUnifiedGroupsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        return await InternalExecuteAsync<GetUserUnifiedGroupsResponse>(token).ConfigureAwait(false);
     }
 }

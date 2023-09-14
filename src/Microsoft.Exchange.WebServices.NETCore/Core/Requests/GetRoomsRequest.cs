@@ -93,7 +93,7 @@ internal sealed class GetRoomsRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetRoomsResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetRoomsResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetRoomsResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

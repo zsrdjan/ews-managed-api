@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 public sealed class UnifiedMessaging
 {
-    private readonly ExchangeService service;
+    private readonly ExchangeService _service;
 
     /// <summary>
     ///     Constructor
@@ -38,7 +38,7 @@ public sealed class UnifiedMessaging
     /// <param name="service">EWS service to which this object belongs.</param>
     internal UnifiedMessaging(ExchangeService service)
     {
-        this.service = service;
+        _service = service;
     }
 
     /// <summary>
@@ -46,18 +46,22 @@ public sealed class UnifiedMessaging
     /// </summary>
     /// <param name="itemId">The Id of the message to read.</param>
     /// <param name="dialString">The full dial string used to call the phone.</param>
+    /// <param name="token"></param>
     /// <returns>An object providing status for the phone call.</returns>
     public async Task<PhoneCall> PlayOnPhone(ItemId itemId, string dialString, CancellationToken token = default)
     {
-        EwsUtilities.ValidateParam(itemId, "itemId");
-        EwsUtilities.ValidateParam(dialString, "dialString");
+        EwsUtilities.ValidateParam(itemId);
+        EwsUtilities.ValidateParam(dialString);
 
-        var request = new PlayOnPhoneRequest(service);
-        request.DialString = dialString;
-        request.ItemId = itemId;
+        var request = new PlayOnPhoneRequest(_service)
+        {
+            DialString = dialString,
+            ItemId = itemId,
+        };
+
         var serviceResponse = await request.Execute(token).ConfigureAwait(false);
 
-        var callInformation = new PhoneCall(service, serviceResponse.PhoneCallId);
+        var callInformation = new PhoneCall(_service, serviceResponse.PhoneCallId);
 
         return callInformation;
     }
@@ -66,13 +70,16 @@ public sealed class UnifiedMessaging
     ///     Retrieves information about a current phone call.
     /// </summary>
     /// <param name="id">The Id of the phone call.</param>
+    /// <param name="token"></param>
     /// <returns>An object providing status for the phone call.</returns>
     internal async Task<PhoneCall> GetPhoneCallInformation(PhoneCallId id, CancellationToken token)
     {
-        var request = new GetPhoneCallRequest(service);
-        request.Id = id;
-        var response = await request.Execute(token).ConfigureAwait(false);
+        var request = new GetPhoneCallRequest(_service)
+        {
+            Id = id,
+        };
 
+        var response = await request.Execute(token).ConfigureAwait(false);
         return response.PhoneCall;
     }
 
@@ -80,10 +87,14 @@ public sealed class UnifiedMessaging
     ///     Disconnects a phone call.
     /// </summary>
     /// <param name="id">The Id of the phone call.</param>
+    /// <param name="token"></param>
     internal System.Threading.Tasks.Task DisconnectPhoneCall(PhoneCallId id, CancellationToken token)
     {
-        var request = new DisconnectPhoneCallRequest(service);
-        request.Id = id;
+        var request = new DisconnectPhoneCallRequest(_service)
+        {
+            Id = id,
+        };
+
         return request.Execute(token);
     }
 }

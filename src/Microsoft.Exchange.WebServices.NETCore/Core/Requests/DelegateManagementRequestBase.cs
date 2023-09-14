@@ -85,7 +85,7 @@ internal abstract class DelegateManagementRequestBase<TResponse> : SimpleService
     /// <returns>Response object.</returns>
     internal async Task<TResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (TResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<TResponse>(token).ConfigureAwait(false);
 
         serviceResponse.ThrowIfNecessary();
 

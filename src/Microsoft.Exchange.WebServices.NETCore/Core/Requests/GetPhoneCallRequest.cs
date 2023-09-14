@@ -93,7 +93,7 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetPhoneCallResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetPhoneCallResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetPhoneCallResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }

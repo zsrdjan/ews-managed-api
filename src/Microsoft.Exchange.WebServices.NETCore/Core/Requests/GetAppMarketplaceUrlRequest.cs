@@ -125,7 +125,7 @@ internal sealed class GetAppMarketplaceUrlRequest : SimpleServiceRequestBase
     /// <returns>Service response.</returns>
     internal async Task<GetAppMarketplaceUrlResponse> Execute(CancellationToken token)
     {
-        var serviceResponse = (GetAppMarketplaceUrlResponse)await InternalExecuteAsync(token).ConfigureAwait(false);
+        var serviceResponse = await InternalExecuteAsync<GetAppMarketplaceUrlResponse>(token).ConfigureAwait(false);
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
