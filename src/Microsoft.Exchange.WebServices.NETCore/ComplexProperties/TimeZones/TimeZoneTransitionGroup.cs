@@ -121,7 +121,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
             // create one transition to one group with one transition to the standard period.
             var standardPeriodToSet = new TimeZonePeriod
             {
-                Id = string.Format("{0}/{1}", standardPeriod.Id, adjustmentRule.DateStart.Year),
+                Id = $"{standardPeriod.Id}/{adjustmentRule.DateStart.Year}",
                 Name = standardPeriod.Name,
                 Bias = standardPeriod.Bias,
             };
@@ -135,7 +135,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
             var daylightPeriod = new TimeZonePeriod
             {
                 // Generate an Id of the form "Daylight/2008"
-                Id = string.Format("{0}/{1}", TimeZonePeriod.DaylightPeriodId, adjustmentRule.DateStart.Year),
+                Id = $"{TimeZonePeriod.DaylightPeriodId}/{adjustmentRule.DateStart.Year}",
                 Name = TimeZonePeriod.DaylightPeriodName,
                 Bias = standardPeriod.Bias - adjustmentRule.DaylightDelta,
             };
@@ -150,7 +150,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
 
             var standardPeriodToSet = new TimeZonePeriod
             {
-                Id = string.Format("{0}/{1}", standardPeriod.Id, adjustmentRule.DateStart.Year),
+                Id = $"{standardPeriod.Id}/{adjustmentRule.DateStart.Year}",
                 Name = standardPeriod.Name,
                 Bias = standardPeriod.Bias,
             };

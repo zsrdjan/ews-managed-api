@@ -25,6 +25,8 @@
 
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 using JetBrains.Annotations;
@@ -6236,6 +6238,11 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         var request = PrepareHttpWebRequestForUrl(endpoint, AcceptGzipEncoding, true);
 
+        if (ServerCertificateValidationCallback != null)
+        {
+            request.ServerCertificateCustomValidationCallback = ServerCertificateValidationCallback;
+        }
+
         if (!string.IsNullOrEmpty(TargetServerVersion))
         {
             request.Headers.TryAddWithoutValidation(TargetServerVersionHeaderName, TargetServerVersion);
@@ -6280,7 +6287,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets the URL of the Exchange Web Services.
     /// </summary>
-    public Uri Url { get; set; }
+    public required Uri Url { get; set; }
 
     /// <summary>
     ///     Gets or sets the Id of the user that EWS should impersonate.
@@ -6309,7 +6316,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets a file attachment content handler.
     /// </summary>
-    public IFileAttachmentContentHandler FileAttachmentContentHandler { get; set; }
+    public IFileAttachmentContentHandler? FileAttachmentContentHandler { get; set; }
 
     /// <summary>
     ///     Gets the time zone this service is scoped to.
@@ -6356,6 +6363,12 @@ public sealed class ExchangeService : ExchangeServiceBase
             _targetServerVersion = value;
         }
     }
+
+    /// <summary>
+    /// Optional client specified SSL certificate validation callback.
+    /// </summary>
+    public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
+        ServerCertificateValidationCallback { get; set; }
 
     #endregion
 }

@@ -155,7 +155,10 @@ public abstract class ExchangeServiceBase
 
             if (HttpHeaders.Count > 0)
             {
-                HttpHeaders.ForEach(kv => request.Headers.TryAddWithoutValidation(kv.Key, kv.Value));
+                foreach (var (key, value) in HttpHeaders)
+                {
+                    request.Headers.TryAddWithoutValidation(key, value);
+                }
             }
 
             request.UseDefaultCredentials = UseDefaultCredentials;

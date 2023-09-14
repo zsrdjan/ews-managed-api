@@ -25,6 +25,7 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.Exchange.WebServices.Data;
@@ -52,7 +53,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
 
         _httpClientHandler = new HttpClientHandler
         {
-            AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip
+            AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
         };
 
         _httpClient = new HttpClient(_httpClientHandler);
@@ -85,7 +86,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     {
         var message = new HttpRequestMessage(new HttpMethod(Method), RequestUri)
         {
-            Content = new StringContent(Content)
+            Content = new StringContent(Content),
         };
 
         if (!string.IsNullOrEmpty(ContentType))
@@ -280,4 +281,11 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     ///     Gets or sets the name of the connection group for the request.
     /// </summary>
     public string ConnectionGroupName { get; set; }
+
+    public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
+        ServerCertificateCustomValidationCallback
+    {
+        get => _httpClientHandler.ServerCertificateCustomValidationCallback;
+        set => _httpClientHandler.ServerCertificateCustomValidationCallback = value;
+    }
 }

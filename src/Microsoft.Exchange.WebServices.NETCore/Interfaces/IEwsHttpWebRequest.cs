@@ -25,6 +25,7 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.Exchange.WebServices.Data;
@@ -168,4 +169,10 @@ internal interface IEwsHttpWebRequest : IDisposable
     ///     Gets or sets the name of the connection group for the request.
     /// </summary>
     string ConnectionGroupName { get; set; }
+
+    /// <summary>
+    /// User specified certificate validation callback
+    /// </summary>
+    Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
+        ServerCertificateCustomValidationCallback { get; set; }
 }
