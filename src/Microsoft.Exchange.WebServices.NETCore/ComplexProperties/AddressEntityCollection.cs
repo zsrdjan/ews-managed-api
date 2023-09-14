@@ -49,10 +49,7 @@ public sealed class AddressEntityCollection : ComplexPropertyCollection<AddressE
     /// <param name="collection">The collection of objects to include.</param>
     internal AddressEntityCollection(IEnumerable<AddressEntity>? collection)
     {
-        if (collection != null)
-        {
-            collection.ForEach(InternalAdd);
-        }
+        collection?.ForEach(InternalAdd);
     }
 
     /// <summary>

@@ -209,14 +209,12 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
 
         set
         {
-            if (value >= 1 && value <= 512)
-            {
-                _maxChangesReturned = value;
-            }
-            else
+            if (value < 1 || value > 512)
             {
                 throw new ArgumentException(Strings.MaxChangesMustBeBetween1And512);
             }
+
+            _maxChangesReturned = value;
         }
     }
 
@@ -231,14 +229,12 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
 
         set
         {
-            if (value >= 0)
-            {
-                _numberOfDays = value;
-            }
-            else
+            if (value < 0)
             {
                 throw new ArgumentException(Strings.NumberOfDaysMustBePositive);
             }
+
+            _numberOfDays = value;
         }
     }
 }
