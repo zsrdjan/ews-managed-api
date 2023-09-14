@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the scope of a search folder.
+/// </summary>
+[PublicAPI]
+public enum SearchFolderTraversal
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Items belonging to the root folder are retrieved.
+    /// </summary>
+    Shallow,
 
     /// <summary>
-    /// Defines the scope of a search folder.
+    ///     Items belonging to the root folder and its sub-folders are retrieved.
     /// </summary>
-    public enum SearchFolderTraversal
-    {
-        /// <summary>
-        /// Items belonging to the root folder are retrieved.
-        /// </summary>
-        Shallow,
-
-        /// <summary>
-        /// Items belonging to the root folder and its sub-folders are retrieved.
-        /// </summary>
-        Deep
-    }
+    Deep,
 }

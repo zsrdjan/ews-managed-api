@@ -23,31 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the keyword statistics result.
+/// </summary>
+[PublicAPI]
+public sealed class KeywordStatisticsSearchResult
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Keyword string
+    /// </summary>
+    public string? Keyword { get; set; }
 
     /// <summary>
-    /// Represents the keyword statistics result.
+    ///     Number of item hits
     /// </summary>
-    public sealed class KeywordStatisticsSearchResult
-    {
-        /// <summary>
-        /// Keyword string
-        /// </summary>
-        public string Keyword { get; set; }
+    public int ItemHits { get; set; }
 
-        /// <summary>
-        /// Number of item hits
-        /// </summary>
-        public int ItemHits { get; set; }
-
-        /// <summary>
-        /// Total size
-        /// </summary>
-        [CLSCompliant(false)]
-        public ulong Size { get; set; }
-    }
+    /// <summary>
+    ///     Total size
+    /// </summary>
+    public ulong Size { get; set; }
 }

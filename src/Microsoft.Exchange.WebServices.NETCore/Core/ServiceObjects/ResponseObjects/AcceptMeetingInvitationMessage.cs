@@ -23,71 +23,62 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a meeting acceptance message.
+/// </summary>
+[PublicAPI]
+public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<MeetingResponse>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AcceptMeetingInvitationMessage" /> class.
+    /// </summary>
+    /// <param name="referenceItem">The reference item.</param>
+    /// <param name="tentative">if set to <c>true</c> accept invitation tentatively.</param>
+    internal AcceptMeetingInvitationMessage(Item referenceItem, bool tentative)
+        : base(referenceItem)
+    {
+        Tentative = tentative;
+    }
 
     /// <summary>
-    /// Represents a meeting acceptance message.
+    ///     This methods lets subclasses of ServiceObject override the default mechanism
+    ///     by which the XML element name associated with their type is retrieved.
     /// </summary>
-    public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<MeetingResponse>
+    /// <returns>
+    ///     The XML element name associated with this type.
+    ///     If this method returns null or empty, the XML element name associated with this
+    ///     type is determined by the EwsObjectDefinition attribute that decorates the type,
+    ///     if present.
+    /// </returns>
+    /// <remarks>
+    ///     Item and folder classes that can be returned by EWS MUST rely on the EwsObjectDefinition
+    ///     attribute for XML element name determination.
+    /// </remarks>
+    internal override string GetXmlElementNameOverride()
     {
-        private bool tentative;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AcceptMeetingInvitationMessage"/> class.
-        /// </summary>
-        /// <param name="referenceItem">The reference item.</param>
-        /// <param name="tentative">if set to <c>true</c> accept invitation tentatively.</param>
-        internal AcceptMeetingInvitationMessage(Item referenceItem, bool tentative)
-            : base(referenceItem)
+        if (Tentative)
         {
-            this.tentative = tentative;
+            return XmlElementNames.TentativelyAcceptItem;
         }
 
-        /// <summary>
-        /// This methods lets subclasses of ServiceObject override the default mechanism
-        /// by which the XML element name associated with their type is retrieved.
-        /// </summary>
-        /// <returns>
-        /// The XML element name associated with this type.
-        /// If this method returns null or empty, the XML element name associated with this
-        /// type is determined by the EwsObjectDefinition attribute that decorates the type,
-        /// if present.
-        /// </returns>
-        /// <remarks>
-        /// Item and folder classes that can be returned by EWS MUST rely on the EwsObjectDefinition
-        /// attribute for XML element name determination.
-        /// </remarks>
-        internal override string GetXmlElementNameOverride()
-        {
-            if (this.tentative)
-            {
-                return XmlElementNames.TentativelyAcceptItem;
-            }
-            else
-            {
-                return XmlElementNames.AcceptItem;
-            }
-        }
-
-        /// <summary>
-        /// Gets the minimum required server version.
-        /// </summary>
-        /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
-        internal override ExchangeVersion GetMinimumRequiredServerVersion()
-        {
-            return ExchangeVersion.Exchange2007_SP1;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the associated meeting is tentatively accepted.
-        /// </summary>
-        public bool Tentative
-        {
-            get { return this.tentative; }
-        }
+        return XmlElementNames.AcceptItem;
     }
+
+    /// <summary>
+    ///     Gets the minimum required server version.
+    /// </summary>
+    /// <returns>Earliest Exchange version in which this service object type is supported.</returns>
+    internal override ExchangeVersion GetMinimumRequiredServerVersion()
+    {
+        return ExchangeVersion.Exchange2007_SP1;
+    }
+
+    /// <summary>
+    ///     Gets a value indicating whether the associated meeting is tentatively accepted.
+    /// </summary>
+    public bool Tentative { get; }
 }

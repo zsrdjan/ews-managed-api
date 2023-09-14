@@ -23,43 +23,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a GetOMEConfiguration operation.
+/// </summary>
+[PublicAPI]
+public sealed class GetOMEConfigurationResponse : ServiceResponse
 {
     /// <summary>
-    /// Represents the response to a GetOMEConfiguration operation.
+    ///     Initializes a new instance of the <see cref="GetOMEConfigurationResponse" /> class.
     /// </summary>
-    public sealed class GetOMEConfigurationResponse : ServiceResponse
+    internal GetOMEConfigurationResponse()
     {
-        /// <summary>
-        /// The XML representation of EncryptionConfigurationData
-        /// </summary>
-        private string xml;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetOMEConfigurationResponse"/> class.
-        /// </summary>
-        internal GetOMEConfigurationResponse()
-            : base()
-        {
-        }
+    /// <summary>
+    ///     The XML representation of EncryptionConfigurationData
+    /// </summary>
+    public string? Xml { get; private set; }
 
-        /// <summary>
-        /// The XML representation of EncryptionConfigurationData
-        /// </summary>
-        public string Xml
-        {
-            get { return this.xml; }
-        }
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            this.xml = reader.ReadElementValue<string>(XmlNamespace.Messages, XmlElementNames.OMEConfigurationXml);
-        }
+        Xml = reader.ReadElementValue<string>(XmlNamespace.Messages, XmlElementNames.OMEConfigurationXml);
     }
 }

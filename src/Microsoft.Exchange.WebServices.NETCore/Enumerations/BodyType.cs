@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the type of body of an item.
+/// </summary>
+[PublicAPI]
+public enum BodyType
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The body is formatted in HTML.
+    /// </summary>
+    HTML,
 
     /// <summary>
-    /// Defines the type of body of an item.
+    ///     The body is in plain text.
     /// </summary>
-    public enum BodyType
-    {
-        /// <summary>
-        /// The body is formatted in HTML.
-        /// </summary>
-        HTML,
-
-        /// <summary>
-        /// The body is in plain text.
-        /// </summary>
-        Text
-    }
+    Text,
 }

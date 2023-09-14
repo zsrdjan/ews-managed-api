@@ -23,44 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a subscription event retrieval operation.
+/// </summary>
+internal sealed class GetEventsResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetEventsResponse" /> class.
+    /// </summary>
+    internal GetEventsResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents the response to a subscription event retrieval operation.
+    ///     Reads response elements from XML.
     /// </summary>
-    internal sealed class GetEventsResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        private GetEventsResults results = new GetEventsResults();
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetEventsResponse"/> class.
-        /// </summary>
-        internal GetEventsResponse()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            this.results.LoadFromXml(reader);
-        }
-
-        /// <summary>
-        /// Gets event results from subscription.
-        /// </summary>
-        internal GetEventsResults Results
-        {
-            get { return this.results; }
-        }
+        Results.LoadFromXml(reader);
     }
+
+    /// <summary>
+    ///     Gets event results from subscription.
+    /// </summary>
+    internal GetEventsResults Results { get; } = new();
 }

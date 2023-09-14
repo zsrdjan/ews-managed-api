@@ -23,103 +23,101 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     PartnerTokenCredentials can be used to send EWS or autodiscover requests to the managed tenant.
+/// </summary>
+internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
 {
-    using System;
-    using System.Globalization;
-    using System.IO;
-    using System.Net;
-    using System.Security.Cryptography;
-    using System.Security.Cryptography.Xml;
-    using System.Xml;
+    private const string WsSecuritySymmetricKeyPathSuffix = "/wssecurity/symmetrickey";
+
+    private readonly KeyInfoNode _keyInfoNode;
 
     /// <summary>
-    /// PartnerTokenCredentials can be used to send EWS or autodiscover requests to the managed tenant.
+    ///     Initializes a new instance of the <see cref="PartnerTokenCredentials" /> class.
     /// </summary>
-    internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
+    /// <param name="securityToken">The token.</param>
+    /// <param name="securityTokenReference">The token reference.</param>
+    internal PartnerTokenCredentials(string securityToken, string securityTokenReference)
+        : base(securityToken, true)
     {
-        private const string WsSecuritySymmetricKeyPathSuffix = "/wssecurity/symmetrickey";
+        EwsUtilities.ValidateParam(securityToken);
+        EwsUtilities.ValidateParam(securityTokenReference);
 
-        private readonly KeyInfoNode keyInfoNode;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PartnerTokenCredentials"/> class.
-        /// </summary>
-        /// <param name="securityToken">The token.</param>
-        /// <param name="securityTokenReference">The token reference.</param>
-        internal PartnerTokenCredentials(string securityToken, string securityTokenReference)
-            : base(securityToken, true /* addTimestamp */)
+        var doc = new SafeXmlDocument
         {
-            EwsUtilities.ValidateParam(securityToken, "securityToken");
-            EwsUtilities.ValidateParam(securityTokenReference, "securityTokenReference");
+            PreserveWhitespace = true,
+        };
+        doc.LoadXml(securityTokenReference);
+        _keyInfoNode = new KeyInfoNode(doc.DocumentElement);
+    }
 
-            SafeXmlDocument doc = new SafeXmlDocument();
-            doc.PreserveWhitespace = true;
-            doc.LoadXml(securityTokenReference);
-            this.keyInfoNode = new KeyInfoNode(doc.DocumentElement);
-        }
+    /// <summary>
+    ///     This method is called to apply credentials to a service request before the request is made.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    internal override void PrepareWebRequest(IEwsHttpWebRequest request)
+    {
+        EwsUrl = request.RequestUri;
+    }
 
-        /// <summary>
-        /// This method is called to apply credentials to a service request before the request is made.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        internal override void PrepareWebRequest(IEwsHttpWebRequest request)
+    /// <summary>
+    ///     Adjusts the URL based on the credentials.
+    /// </summary>
+    /// <param name="url">The URL.</param>
+    /// <returns>Adjust URL.</returns>
+    internal override Uri AdjustUrl(Uri url)
+    {
+        return new Uri(GetUriWithoutSuffix(url) + WsSecuritySymmetricKeyPathSuffix);
+    }
+
+    /// <summary>
+    ///     Gets the flag indicating whether any sign action need taken.
+    /// </summary>
+    internal override bool NeedSignature => true;
+
+    /// <summary>
+    ///     Add the signature element to the memory stream.
+    /// </summary>
+    /// <param name="memoryStream">The memory stream.</param>
+    internal override void Sign(MemoryStream memoryStream)
+    {
+        memoryStream.Position = 0;
+
+        var document = new SafeXmlDocument
         {
-            this.EwsUrl = request.RequestUri;
-        }
+            PreserveWhitespace = true,
+        };
+        document.Load(memoryStream);
 
-        /// <summary>
-        /// Adjusts the URL based on the credentials.
-        /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <returns>Adjust URL.</returns>
-        internal override Uri AdjustUrl(Uri url)
+        var signedXml = new WsSecurityUtilityIdSignedXml(document)
         {
-            return new Uri(GetUriWithoutSuffix(url) + PartnerTokenCredentials.WsSecuritySymmetricKeyPathSuffix);
-        }
-
-        /// <summary>
-        /// Gets the flag indicating whether any sign action need taken.
-        /// </summary>
-        internal override bool NeedSignature
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// Add the signature element to the memory stream.
-        /// </summary>
-        /// <param name="memoryStream">The memory stream.</param>
-        internal override void Sign(MemoryStream memoryStream)
-        {
-            memoryStream.Position = 0;
-
-            SafeXmlDocument document = new SafeXmlDocument();
-            document.PreserveWhitespace = true;
-            document.Load(memoryStream);
-
-            WSSecurityUtilityIdSignedXml signedXml = new WSSecurityUtilityIdSignedXml(document);
-            signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
-
-            //signedXml.AddReference("/soap:Envelope/soap:Header/t:ExchangeImpersonation");
-            signedXml.AddReference("/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp");
-
-            signedXml.KeyInfo.AddClause(this.keyInfoNode);
-            using (var hashedAlgorithm = new HMACSHA1(ExchangeServiceBase.SessionKey))
+            SignedInfo =
             {
-                signedXml.ComputeSignature(hashedAlgorithm);
-            }
+                CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl,
+            },
+        };
 
-            XmlElement signature = signedXml.GetXml();
+        //signedXml.AddReference("/soap:Envelope/soap:Header/t:ExchangeImpersonation");
+        signedXml.AddReference("/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp");
 
-            XmlNode wssecurityNode = document.SelectSingleNode(
-                "/soap:Envelope/soap:Header/wsse:Security",
-                WSSecurityBasedCredentials.NamespaceManager);
-
-            wssecurityNode.AppendChild(signature);
-
-            memoryStream.Position = 0;
-            document.Save(memoryStream);
+        signedXml.KeyInfo.AddClause(_keyInfoNode);
+        using (var hashedAlgorithm = new HMACSHA1(ExchangeServiceBase.SessionKey))
+        {
+            signedXml.ComputeSignature(hashedAlgorithm);
         }
+
+        var signature = signedXml.GetXml();
+
+        var wsSecurityNode = document.SelectSingleNode("/soap:Envelope/soap:Header/wsse:Security", NamespaceManager);
+
+        wsSecurityNode.AppendChild(signature);
+
+        memoryStream.Position = 0;
+        document.Save(memoryStream);
     }
 }

@@ -23,70 +23,55 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an AQS highlight term.
+/// </summary>
+[PublicAPI]
+public sealed class HighlightTerm : ComplexProperty
 {
     /// <summary>
-    /// Represents an AQS highlight term. 
+    ///     Initializes a new instance of the <see cref="HighlightTerm" /> class.
     /// </summary>
-    public sealed class HighlightTerm : ComplexProperty
+    internal HighlightTerm()
     {
-        /// <summary>
-        /// Term scope.
-        /// </summary>
-        private string scope;
+    }
 
-        /// <summary>
-        /// Term value.
-        /// </summary>
-        private string value;
+    /// <summary>
+    ///     Gets term scope.
+    /// </summary>
+    public string Scope { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HighlightTerm"/> class.
-        /// </summary>
-        internal HighlightTerm()
-            : base()
+    /// <summary>
+    ///     Gets term value.
+    /// </summary>
+    public string Value { get; private set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Gets term scope.
-        /// </summary>
-        public string Scope
-        {
-            get
+            case XmlElementNames.HighlightTermScope:
             {
-                return this.scope;
+                Scope = reader.ReadElementValue();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets term value.
-        /// </summary>
-        public string Value
-        {
-            get
+            case XmlElementNames.HighlightTermValue:
             {
-                return this.value;
+                Value = reader.ReadElementValue();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            default:
             {
-                case XmlElementNames.HighlightTermScope:
-                    this.scope = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.HighlightTermValue:
-                    this.value = reader.ReadElementValue();
-                    return true;
-                default:
-                    return false;
+                return false;
             }
         }
     }

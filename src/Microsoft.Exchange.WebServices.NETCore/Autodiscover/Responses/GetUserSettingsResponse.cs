@@ -23,238 +23,249 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Xml;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents the response to a GetUsersSettings call for an individual user.
+/// </summary>
+[PublicAPI]
+public sealed class GetUserSettingsResponse : AutodiscoverResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserSettingsResponse" /> class.
+    /// </summary>
+    public GetUserSettingsResponse()
+    {
+        SmtpAddress = string.Empty;
+        Settings = new Dictionary<UserSettingName, object>();
+        UserSettingErrors = new Collection<UserSettingError>();
+    }
 
     /// <summary>
-    /// Represents the response to a GetUsersSettings call for an individual user.
+    ///     Tries the get the user setting value.
     /// </summary>
-    public sealed class GetUserSettingsResponse : AutodiscoverResponse
+    /// <typeparam name="T">Type of user setting.</typeparam>
+    /// <param name="setting">The setting.</param>
+    /// <param name="value">The setting value.</param>
+    /// <returns>True if setting was available.</returns>
+    public bool TryGetSettingValue<T>(UserSettingName setting, [MaybeNullWhen(false)] out T value)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetUserSettingsResponse"/> class.
-        /// </summary>
-        public GetUserSettingsResponse()
-            : base()
+        if (Settings.TryGetValue(setting, out var objValue))
         {
-            this.SmtpAddress = string.Empty;
-            this.Settings = new Dictionary<UserSettingName, object>();
-            this.UserSettingErrors = new Collection<UserSettingError>();
+            value = (T)objValue;
+            return true;
         }
 
-        /// <summary>
-        /// Tries the get the user setting value.
-        /// </summary>
-        /// <typeparam name="T">Type of user setting.</typeparam>
-        /// <param name="setting">The setting.</param>
-        /// <param name="value">The setting value.</param>
-        /// <returns>True if setting was available.</returns>
-        public bool TryGetSettingValue<T>(UserSettingName setting, out T value)
+        value = default;
+        return false;
+    }
+
+    /// <summary>
+    ///     Gets the SMTP address this response applies to.
+    /// </summary>
+    public string SmtpAddress { get; internal set; }
+
+    /// <summary>
+    ///     Gets the redirectionTarget (URL or email address)
+    /// </summary>
+    public string RedirectTarget { get; internal set; }
+
+    /// <summary>
+    ///     Gets the requested settings for the user.
+    /// </summary>
+    public IDictionary<UserSettingName, object> Settings { get; internal set; }
+
+    /// <summary>
+    ///     Gets error information for settings that could not be returned.
+    /// </summary>
+    public Collection<UserSettingError> UserSettingErrors { get; internal set; }
+
+    /// <summary>
+    ///     Loads response from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <param name="endElementName">End element name.</param>
+    internal override void LoadFromXml(EwsXmlReader reader, string endElementName)
+    {
+        do
         {
-            object objValue;
-            if (this.Settings.TryGetValue(setting, out objValue))
+            reader.Read();
+
+            if (reader.NodeType == XmlNodeType.Element)
             {
-                value = (T)objValue;
-                return true;
+                switch (reader.LocalName)
+                {
+                    case XmlElementNames.RedirectTarget:
+                    {
+                        RedirectTarget = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.UserSettingErrors:
+                    {
+                        LoadUserSettingErrorsFromXml(reader);
+                        break;
+                    }
+                    case XmlElementNames.UserSettings:
+                    {
+                        LoadUserSettingsFromXml(reader);
+                        break;
+                    }
+                    default:
+                    {
+                        base.LoadFromXml(reader, endElementName);
+                        break;
+                    }
+                }
             }
-            else
-            {
-                value = default(T);
-                return false;
-            }
-        }
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
+    }
 
-        /// <summary>
-        /// Gets the SMTP address this response applies to.
-        /// </summary>
-        public string SmtpAddress
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        /// Gets the redirectionTarget (URL or email address)
-        /// </summary>
-        public string RedirectTarget
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        /// Gets the requested settings for the user.
-        /// </summary>
-        public IDictionary<UserSettingName, object> Settings
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        /// Gets error information for settings that could not be returned.
-        /// </summary>
-        public Collection<UserSettingError> UserSettingErrors
-        {
-            get; internal set;
-        }
-
-        /// <summary>
-        /// Loads response from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="endElementName">End element name.</param>
-        internal override void LoadFromXml(EwsXmlReader reader, string endElementName)
+    /// <summary>
+    ///     Loads from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal void LoadUserSettingsFromXml(EwsXmlReader reader)
+    {
+        if (!reader.IsEmptyElement)
         {
             do
             {
                 reader.Read();
 
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.UserSetting)
                 {
-                    switch (reader.LocalName)
+                    var settingClass = reader.ReadAttributeValue(
+                        XmlNamespace.XmlSchemaInstance,
+                        XmlAttributeNames.Type
+                    );
+
+                    switch (settingClass)
                     {
-                        case XmlElementNames.RedirectTarget:
-                            this.RedirectTarget = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.UserSettingErrors:
-                            this.LoadUserSettingErrorsFromXml(reader);
-                            break;
-                        case XmlElementNames.UserSettings:
-                            this.LoadUserSettingsFromXml(reader);
-                            break;
-                        default:
-                            base.LoadFromXml(reader, endElementName);
-                            break;
-                    }
-                }
-            }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
-        }
-
-        /// <summary>
-        /// Loads from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal void LoadUserSettingsFromXml(EwsXmlReader reader)
-        {
-            if (!reader.IsEmptyElement)
-            {
-                do
-                {
-                    reader.Read();
-
-                    if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.UserSetting))
-                    {
-                        string settingClass = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
-
-                        switch (settingClass)
+                        case XmlElementNames.StringSetting:
+                        case XmlElementNames.WebClientUrlCollectionSetting:
+                        case XmlElementNames.AlternateMailboxCollectionSetting:
+                        case XmlElementNames.ProtocolConnectionCollectionSetting:
+                        case XmlElementNames.DocumentSharingLocationCollectionSetting:
                         {
-                            case XmlElementNames.StringSetting:
-                            case XmlElementNames.WebClientUrlCollectionSetting:
-                            case XmlElementNames.AlternateMailboxCollectionSetting:
-                            case XmlElementNames.ProtocolConnectionCollectionSetting:
-                            case XmlElementNames.DocumentSharingLocationCollectionSetting:
-                                this.ReadSettingFromXml(reader);
-                                break;
+                            ReadSettingFromXml(reader);
+                            break;
+                        }
 
-                            default:
-                                EwsUtilities.Assert(
-                                    false,
-                                    "GetUserSettingsResponse.LoadUserSettingsFromXml",
-                                    string.Format("Invalid setting class '{0}' returned", settingClass));
-                                break;
+                        default:
+                        {
+                            EwsUtilities.Assert(
+                                false,
+                                "GetUserSettingsResponse.LoadUserSettingsFromXml",
+                                $"Invalid setting class '{settingClass}' returned"
+                            );
+                            break;
                         }
                     }
                 }
-                while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettings));
-            }
+            } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettings));
         }
+    }
 
-        /// <summary>
-        /// Reads user setting from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        private void ReadSettingFromXml(EwsXmlReader reader)
+    /// <summary>
+    ///     Reads user setting from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    private void ReadSettingFromXml(EwsXmlReader reader)
+    {
+        string? name = null;
+        object? value = null;
+
+        do
         {
-            string name = null;
-            object value = null;
+            reader.Read();
 
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.LocalName)
+                {
+                    case XmlElementNames.Name:
+                    {
+                        name = reader.ReadElementValue<string>();
+                        break;
+                    }
+                    case XmlElementNames.Value:
+                    {
+                        value = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.WebClientUrls:
+                    {
+                        value = WebClientUrlCollection.LoadFromXml(reader);
+                        break;
+                    }
+                    case XmlElementNames.ProtocolConnections:
+                    {
+                        value = ProtocolConnectionCollection.LoadFromXml(reader);
+                        break;
+                    }
+                    case XmlElementNames.AlternateMailboxes:
+                    {
+                        value = AlternateMailboxCollection.LoadFromXml(reader);
+                        break;
+                    }
+                    case XmlElementNames.DocumentSharingLocations:
+                    {
+                        value = DocumentSharingLocationCollection.LoadFromXml(reader);
+                        break;
+                    }
+                }
+            }
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSetting));
+
+        // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
+        try
+        {
+            var userSettingName = EwsUtilities.Parse<UserSettingName>(name);
+            Settings.Add(userSettingName, value);
+        }
+        catch (ArgumentException)
+        {
+            // ignore unexpected UserSettingName in the response (due to the server-side bugs).
+            // it'd be better if this is hooked into ITraceListener, but that is unavailable here.
+            //
+            // in case "name" is null, EwsUtilities.Parse throws ArgumentNullException 
+            // (which derives from ArgumentException).
+            //
+            EwsUtilities.Assert(
+                false,
+                "GetUserSettingsResponse.ReadSettingFromXml",
+                "Unexpected or empty name element in user setting"
+            );
+        }
+    }
+
+    /// <summary>
+    ///     Loads the user setting errors.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    private void LoadUserSettingErrorsFromXml(EwsXmlReader reader)
+    {
+        if (!reader.IsEmptyElement)
+        {
             do
             {
                 reader.Read();
 
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.UserSettingError)
                 {
-                    switch (reader.LocalName)
-                    {
-                        case XmlElementNames.Name:
-                            name = reader.ReadElementValue<string>();
-                            break;
-                        case XmlElementNames.Value:
-                            value = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.WebClientUrls:
-                            value = WebClientUrlCollection.LoadFromXml(reader);
-                            break;
-                        case XmlElementNames.ProtocolConnections:
-                            value = ProtocolConnectionCollection.LoadFromXml(reader);
-                            break;
-                        case XmlElementNames.AlternateMailboxes:
-                            value = AlternateMailboxCollection.LoadFromXml(reader);
-                            break;
-                        case XmlElementNames.DocumentSharingLocations:
-                            value = DocumentSharingLocationCollection.LoadFromXml(reader);
-                            break;
-                    }
+                    var error = new UserSettingError();
+                    error.LoadFromXml(reader);
+                    UserSettingErrors.Add(error);
                 }
-            }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSetting));
-
-            // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
-            try
-            {
-                UserSettingName userSettingName = EwsUtilities.Parse<UserSettingName>(name);
-                this.Settings.Add(userSettingName, value);
-            }
-            catch (ArgumentException)
-            {
-                // ignore unexpected UserSettingName in the response (due to the server-side bugs).
-                // it'd be better if this is hooked into ITraceListener, but that is unavailable here.
-                //
-                // in case "name" is null, EwsUtilities.Parse throws ArgumentNullException 
-                // (which derives from ArgumentException).
-                //
-                EwsUtilities.Assert(
-                    false,
-                    "GetUserSettingsResponse.ReadSettingFromXml",
-                    "Unexpected or empty name element in user setting");
-            }
-        }
-
-        /// <summary>
-        /// Loads the user setting errors.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        private void LoadUserSettingErrorsFromXml(EwsXmlReader reader)
-        {
-            if (!reader.IsEmptyElement)
-            {
-                do
-                {
-                    reader.Read();
-
-                    if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.UserSettingError))
-                    {
-                        UserSettingError error = new UserSettingError();
-                        error.LoadFromXml(reader);
-                        this.UserSettingErrors.Add(error);
-                    }
-                }
-                while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettingErrors));
-            }
+            } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettingErrors));
         }
     }
 }

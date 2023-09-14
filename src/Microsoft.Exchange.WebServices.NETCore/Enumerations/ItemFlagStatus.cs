@@ -23,26 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the flag status of an Item.
+/// </summary>
+[PublicAPI]
+public enum ItemFlagStatus
 {
     /// <summary>
-    /// Defines the flag status of an Item.
+    ///     Not Flagged.
     /// </summary>
-    public enum ItemFlagStatus
-    {
-        /// <summary>
-        /// Not Flagged.
-        /// </summary>
-        NotFlagged,
+    NotFlagged,
 
-        /// <summary>
-        /// Flagged.
-        /// </summary>
-        Flagged,
+    /// <summary>
+    ///     Flagged.
+    /// </summary>
+    Flagged,
 
-        /// <summary>
-        /// Complete.
-        /// </summary>
-        Complete
-    }
+    /// <summary>
+    ///     Complete.
+    /// </summary>
+    Complete,
 }

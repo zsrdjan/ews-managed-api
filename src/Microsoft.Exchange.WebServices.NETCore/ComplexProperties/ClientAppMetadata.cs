@@ -23,73 +23,66 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a ClientAppMetadata object.
+/// </summary>
+[PublicAPI]
+public sealed class ClientAppMetadata : ComplexProperty
 {
-    using System;
-    using System.IO;
-    using System.Xml;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientAppMetadata" /> class.
+    /// </summary>
+    internal ClientAppMetadata()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
-    /// Represents a ClientAppMetadata object.
+    ///     The End node url for the app.
     /// </summary>
-    public sealed class ClientAppMetadata : ComplexProperty
+    public string EndNodeUrl { get; private set; }
+
+    /// <summary>
+    ///     The action url for the app.
+    /// </summary>
+    public string ActionUrl { get; private set; }
+
+    /// <summary>
+    ///     The app status for the app.
+    /// </summary>
+    public string AppStatus { get; private set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClientAppMetadata"/> class.
-        /// </summary>
-        internal ClientAppMetadata()
-            : base()
+        switch (reader.LocalName)
         {
-            this.Namespace = XmlNamespace.Types;
-        }
-
-        /// <summary>
-        /// The End node url for the app.
-        /// </summary>
-        public string EndNodeUrl
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// The action url for the app.
-        /// </summary>
-        public string ActionUrl
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// The app status for the app.
-        /// </summary>
-        public string AppStatus
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.EndNodeUrl:
             {
-                case XmlElementNames.EndNodeUrl:
-                    this.EndNodeUrl = reader.ReadElementValue<string>();
-                    return true;
-                case XmlElementNames.ActionUrl:
-                    this.ActionUrl = reader.ReadElementValue<string>();
-                    return true;
-                case XmlElementNames.AppStatus:
-                    this.AppStatus = reader.ReadElementValue<string>();
-                    return true;
-                default:
-                    return false;
+                EndNodeUrl = reader.ReadElementValue<string>();
+                return true;
+            }
+            case XmlElementNames.ActionUrl:
+            {
+                ActionUrl = reader.ReadElementValue<string>();
+                return true;
+            }
+            case XmlElementNames.AppStatus:
+            {
+                AppStatus = reader.ReadElementValue<string>();
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
     }

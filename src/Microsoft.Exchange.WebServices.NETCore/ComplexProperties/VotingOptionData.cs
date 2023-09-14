@@ -23,59 +23,56 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents voting option information.
+/// </summary>
+[PublicAPI]
+public sealed class VotingOptionData : ComplexProperty
 {
-    using System;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="VotingOptionData" /> class.
+    /// </summary>
+    internal VotingOptionData()
+    {
+    }
 
     /// <summary>
-    /// Represents voting option information.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class VotingOptionData : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private string displayName;
-        private SendPrompt sendPrompt;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VotingOptionData"/> class.
-        /// </summary>
-        internal VotingOptionData()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.VotingOptionDisplayName:
             {
-                case XmlElementNames.VotingOptionDisplayName:
-                    this.displayName = reader.ReadElementValue<string>();
-                    return true;
-                case XmlElementNames.SendPrompt:
-                    this.sendPrompt = reader.ReadElementValue<SendPrompt>();
-                    return true;
-                default:
-                    return false;
+                DisplayName = reader.ReadElementValue<string>();
+                return true;
+            }
+            case XmlElementNames.SendPrompt:
+            {
+                SendPrompt = reader.ReadElementValue<SendPrompt>();
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Gets the display name for the voting option.
-        /// </summary>
-        public string DisplayName
-        {
-            get { return this.displayName; }
-        }
-
-        /// <summary>
-        /// Gets the send prompt.
-        /// </summary>
-        public SendPrompt SendPrompt
-        {
-            get { return this.sendPrompt; }
-        }
     }
+
+    /// <summary>
+    ///     Gets the display name for the voting option.
+    /// </summary>
+    public string DisplayName { get; private set; }
+
+    /// <summary>
+    ///     Gets the send prompt.
+    /// </summary>
+    public SendPrompt SendPrompt { get; private set; }
 }

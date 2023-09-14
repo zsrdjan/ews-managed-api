@@ -23,84 +23,77 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Encapsulates information on the occurrence of a recurring appointment.
+/// </summary>
+[PublicAPI]
+public sealed class OccurrenceInfo : ComplexProperty
 {
-    using System;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="OccurrenceInfo" /> class.
+    /// </summary>
+    internal OccurrenceInfo()
+    {
+    }
 
     /// <summary>
-    /// Encapsulates information on the occurrence of a recurring appointment.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class OccurrenceInfo : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private ItemId itemId;
-        private DateTime start;
-        private DateTime end;
-        private DateTime originalStart;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OccurrenceInfo"/> class.
-        /// </summary>
-        internal OccurrenceInfo()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.ItemId:
             {
-                case XmlElementNames.ItemId:
-                    this.itemId = new ItemId();
-                    this.itemId.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.Start:
-                    this.start = reader.ReadElementValueAsDateTime().Value;
-                    return true;
-                case XmlElementNames.End:
-                    this.end = reader.ReadElementValueAsDateTime().Value;
-                    return true;
-                case XmlElementNames.OriginalStart:
-                    this.originalStart = reader.ReadElementValueAsDateTime().Value;
-                    return true;
-                default:
-                    return false;
+                ItemId = new ItemId();
+                ItemId.LoadFromXml(reader, reader.LocalName);
+                return true;
+            }
+            case XmlElementNames.Start:
+            {
+                Start = reader.ReadElementValueAsDateTime().Value;
+                return true;
+            }
+            case XmlElementNames.End:
+            {
+                End = reader.ReadElementValueAsDateTime().Value;
+                return true;
+            }
+            case XmlElementNames.OriginalStart:
+            {
+                OriginalStart = reader.ReadElementValueAsDateTime().Value;
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Gets the Id of the occurrence.
-        /// </summary>
-        public ItemId ItemId
-        {
-            get { return this.itemId; }
-        }
-
-        /// <summary>
-        /// Gets the start date and time of the occurrence.
-        /// </summary>
-        public DateTime Start
-        {
-            get { return this.start; }
-        }
-
-        /// <summary>
-        /// Gets the end date and time of the occurrence.
-        /// </summary>
-        public DateTime End
-        {
-            get { return this.end; }
-        }
-
-        /// <summary>
-        /// Gets the original start date and time of the occurrence.
-        /// </summary>
-        public DateTime OriginalStart
-        {
-            get { return this.originalStart; }
-        }
     }
+
+    /// <summary>
+    ///     Gets the Id of the occurrence.
+    /// </summary>
+    public ItemId ItemId { get; private set; }
+
+    /// <summary>
+    ///     Gets the start date and time of the occurrence.
+    /// </summary>
+    public DateTime Start { get; private set; }
+
+    /// <summary>
+    ///     Gets the end date and time of the occurrence.
+    /// </summary>
+    public DateTime End { get; private set; }
+
+    /// <summary>
+    ///     Gets the original start date and time of the occurrence.
+    /// </summary>
+    public DateTime OriginalStart { get; private set; }
 }

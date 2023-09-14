@@ -23,63 +23,58 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an array of byte arrays
+/// </summary>
+[PublicAPI]
+public sealed class ByteArrayArray : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    private const string ItemXmlElementName = "Base64Binary";
+
+    private readonly List<byte[]> _content = new();
+
+
+    #region Properties
 
     /// <summary>
-    /// Represents an array of byte arrays
+    ///     Gets the content of the array of byte arrays
     /// </summary>
-    public sealed class ByteArrayArray : ComplexProperty
+    public byte[][] Content => _content.ToArray();
+
+    #endregion
+
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private const string ItemXmlElementName = "Base64Binary";
-        private List<byte[]> content = new List<byte[]>();
-
-        #region Properties
-
-        /// <summary>
-        /// Gets the content of the arrray of byte arrays
-        /// </summary>
-        public byte[][] Content
+        if (reader.LocalName == ItemXmlElementName)
         {
-            get { return this.content.ToArray(); }
+            _content.Add(reader.ReadBase64ElementValue());
+            return true;
         }
 
-        #endregion
+        return false;
+    }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    /// <summary>
+    ///     Writes the elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        foreach (var item in _content)
         {
-            if (reader.LocalName == ByteArrayArray.ItemXmlElementName)
-            {
-                this.content.Add(reader.ReadBase64ElementValue());
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Writes the elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            foreach (byte[] item in this.content)
-            {
-                writer.WriteStartElement(XmlNamespace.Types, ByteArrayArray.ItemXmlElementName);
-                writer.WriteBase64ElementValue(item);
-                writer.WriteEndElement();
-            }
+            writer.WriteStartElement(XmlNamespace.Types, ItemXmlElementName);
+            writer.WriteBase64ElementValue(item);
+            writer.WriteEndElement();
         }
     }
 }

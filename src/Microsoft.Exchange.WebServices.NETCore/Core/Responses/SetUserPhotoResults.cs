@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,25 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
-{
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Drawing;
-    using System.IO;
-    using Microsoft.Exchange.WebServices.Data.Enumerations;
+using JetBrains.Annotations;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the results of a GetUserPhoto operation.
+/// </summary>
+[PublicAPI]
+public sealed class SetUserPhotoResults
+{
     /// <summary>
-    /// Represents the results of a GetUserPhoto operation.
+    ///     Creates a new instance of the <see cref="Microsoft.Exchange.WebServices.Data.GetUserPhotoResults" /> class.
     /// </summary>
-    public sealed class SetUserPhotoResults
+    internal SetUserPhotoResults()
     {
-        /// <summary>
-        /// Creates a new instance of the <see cref="Microsoft.Exchange.WebServices.Data.GetUserPhotoResults"/> class.
-        /// </summary>
-        internal SetUserPhotoResults()
-        {
-        }
-        
     }
 }

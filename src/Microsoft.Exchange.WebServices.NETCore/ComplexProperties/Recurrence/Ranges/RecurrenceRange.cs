@@ -23,119 +23,111 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents recurrence range with start and end dates.
+/// </summary>
+internal abstract class RecurrenceRange : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    private DateTime _startDate;
 
     /// <summary>
-    /// Represents recurrence range with start and end dates.
+    ///     Initializes a new instance of the <see cref="RecurrenceRange" /> class.
     /// </summary>
-    internal abstract class RecurrenceRange : ComplexProperty
+    internal RecurrenceRange()
     {
-        private DateTime startDate;
-        private Recurrence recurrence;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RecurrenceRange"/> class.
-        /// </summary>
-        internal RecurrenceRange()
-            : base()
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RecurrenceRange" /> class.
+    /// </summary>
+    /// <param name="startDate">The start date.</param>
+    internal RecurrenceRange(DateTime startDate)
+        : this()
+    {
+        _startDate = startDate;
+    }
+
+    /// <summary>
+    ///     Changes handler.
+    /// </summary>
+    internal override void Changed()
+    {
+        if (Recurrence != null)
         {
+            Recurrence.Changed();
         }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RecurrenceRange"/> class.
-        /// </summary>
-        /// <param name="startDate">The start date.</param>
-        internal RecurrenceRange(DateTime startDate)
-            : this()
-        {
-            this.startDate = startDate;
-        }
+    /// <summary>
+    ///     Setup the recurrence.
+    /// </summary>
+    /// <param name="recurrence">The recurrence.</param>
+    internal virtual void SetupRecurrence(Recurrence recurrence)
+    {
+        recurrence.StartDate = StartDate;
+    }
 
-        /// <summary>
-        /// Changes handler.
-        /// </summary>
-        internal override void Changed()
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteElementValue(
+            XmlNamespace.Types,
+            XmlElementNames.StartDate,
+            EwsUtilities.DateTimeToXsDate(StartDate)
+        );
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            if (this.Recurrence != null)
+            case XmlElementNames.StartDate:
             {
-                this.Recurrence.Changed();
+                var startDate = reader.ReadElementValueAsUnspecifiedDate();
+                if (startDate.HasValue)
+                {
+                    _startDate = startDate.Value;
+                    return true;
+                }
+
+                return false;
+            }
+            default:
+            {
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Setup the recurrence.
-        /// </summary>
-        /// <param name="recurrence">The recurrence.</param>
-        internal virtual void SetupRecurrence(Recurrence recurrence)
-        {
-            recurrence.StartDate = this.StartDate;
-        }
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal abstract string XmlElementName { get; }
 
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.StartDate,
-                EwsUtilities.DateTimeToXSDate(this.StartDate));
-        }
+    /// <summary>
+    ///     Gets or sets the recurrence.
+    /// </summary>
+    /// <value>The recurrence.</value>
+    internal Recurrence? Recurrence { get; set; }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.StartDate:
-
-                    DateTime? startDate = reader.ReadElementValueAsUnspecifiedDate();
-                    if (startDate.HasValue)
-                    {
-                        this.startDate = startDate.Value;
-                        return true;
-                    }
-
-                    return false;
-
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal abstract string XmlElementName { get; }
-
-        /// <summary>
-        /// Gets or sets the recurrence.
-        /// </summary>
-        /// <value>The recurrence.</value>
-        internal Recurrence Recurrence
-        {
-            get { return this.recurrence; }
-            set { this.recurrence = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the start date.
-        /// </summary>
-        /// <value>The start date.</value>
-        internal DateTime StartDate
-        {
-            get { return this.startDate; }
-            set { this.SetFieldValue<DateTime>(ref this.startDate, value); }
-        }
+    /// <summary>
+    ///     Gets or sets the start date.
+    /// </summary>
+    /// <value>The start date.</value>
+    internal DateTime StartDate
+    {
+        get => _startDate;
+        set => SetFieldValue(ref _startDate, value);
     }
 }

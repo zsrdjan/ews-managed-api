@@ -23,58 +23,47 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Collections.ObjectModel;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a meeting time suggestion availability request.
+/// </summary>
+internal sealed class SuggestionsResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SuggestionsResponse" /> class.
+    /// </summary>
+    internal SuggestionsResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents the response to a meeting time suggestion availability request.
+    ///     Loads the suggested days from XML.
     /// </summary>
-    internal sealed class SuggestionsResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal void LoadSuggestedDaysFromXml(EwsServiceXmlReader reader)
     {
-        private Collection<Suggestion> daySuggestions = new Collection<Suggestion>();
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.SuggestionDayResultArray);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SuggestionsResponse"/> class.
-        /// </summary>
-        internal SuggestionsResponse()
-            : base()
+        do
         {
-        }
+            reader.Read();
 
-        /// <summary>
-        /// Loads the suggested days from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal void LoadSuggestedDaysFromXml(EwsServiceXmlReader reader)
-        {
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.SuggestionDayResultArray);
-
-            do
+            if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SuggestionDayResult))
             {
-                reader.Read();
+                var daySuggestion = new Suggestion();
 
-                if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SuggestionDayResult))
-                {
-                    Suggestion daySuggestion = new Suggestion();
+                daySuggestion.LoadFromXml(reader, reader.LocalName);
 
-                    daySuggestion.LoadFromXml(reader, reader.LocalName);
-
-                    this.daySuggestions.Add(daySuggestion);
-                }
+                Suggestions.Add(daySuggestion);
             }
-            while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SuggestionDayResultArray));
-        }
-
-        /// <summary>
-        /// Gets a list of suggested days.
-        /// </summary>
-        internal Collection<Suggestion> Suggestions
-        {
-            get { return this.daySuggestions; }
-        }
+        } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SuggestionDayResultArray));
     }
+
+    /// <summary>
+    ///     Gets a list of suggested days.
+    /// </summary>
+    internal Collection<Suggestion> Suggestions { get; } = new();
 }

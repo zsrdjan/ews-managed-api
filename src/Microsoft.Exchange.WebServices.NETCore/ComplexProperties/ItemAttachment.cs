@@ -23,212 +23,213 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an item attachment.
+/// </summary>
+[PublicAPI]
+public class ItemAttachment : Attachment
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
+    /// <summary>
+    ///     The item associated with the attachment.
+    /// </summary>
+    private Item? _item;
 
     /// <summary>
-    /// Represents an item attachment.
+    ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
     /// </summary>
-    public class ItemAttachment : Attachment
+    /// <param name="owner">The owner of the attachment.</param>
+    internal ItemAttachment(Item owner)
+        : base(owner)
     {
-        /// <summary>
-        /// The item associated with the attachment.
-        /// </summary>
-        private Item item;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemAttachment"/> class.
-        /// </summary>
-        /// <param name="owner">The owner of the attachment.</param>
-        internal ItemAttachment(Item owner)
-            : base(owner)
-        {
-        }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ItemAttachment(ExchangeService service)
+        : base(service)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemAttachment"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        internal ItemAttachment(ExchangeService service)
-            : base(service)
-        {
-        }
+    /// <summary>
+    ///     Gets the item associated with the attachment.
+    /// </summary>
+    public Item? Item
+    {
+        get => _item;
 
-        /// <summary>
-        /// Gets the item associated with the attachment.
-        /// </summary>
-        public Item Item
+        internal set
         {
-            get
+            ThrowIfThisIsNotNew();
+
+            if (_item != null)
             {
-                return this.item;
+                _item.OnChange -= ItemChanged;
             }
 
-            internal set
-            {
-                this.ThrowIfThisIsNotNew();
+            _item = value;
 
-                if (this.item != null)
-                {
-                    this.item.OnChange -= this.ItemChanged;
-                }
-                this.item = value;
-                if (this.item != null)
-                {
-                    this.item.OnChange += this.ItemChanged;
-                }
+            if (_item != null)
+            {
+                _item.OnChange += ItemChanged;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Implements the OnChange event handler for the item associated with the attachment.
+    /// </summary>
+    /// <param name="serviceObject">The service object that triggered the OnChange event.</param>
+    private void ItemChanged(ServiceObject serviceObject)
+    {
+        if (Owner != null)
+        {
+            Owner.PropertyBag.Changed();
+        }
+    }
+
+    /// <summary>
+    ///     Obtains EWS XML element name for this object.
+    /// </summary>
+    /// <returns>The XML element name.</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.ItemAttachment;
+    }
+
+    /// <summary>
+    ///     Tries to read the element at the current position of the reader.
+    /// </summary>
+    /// <param name="reader">The reader to read the element from.</param>
+    /// <returns>True if the element was read, false otherwise.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        var result = base.TryReadElementFromXml(reader);
+
+        if (!result)
+        {
+            _item = EwsUtilities.CreateItemFromXmlElementName(this, reader.LocalName);
+
+            if (_item != null)
+            {
+                _item.LoadFromXml(reader, true);
             }
         }
 
-        /// <summary>
-        /// Implements the OnChange event handler for the item associated with the attachment.
-        /// </summary>
-        /// <param name="serviceObject">The service object that triggered the OnChange event.</param>
-        private void ItemChanged(ServiceObject serviceObject)
+        return result;
+    }
+
+    /// <summary>
+    ///     For ItemAttachment, AttachmentId and Item should be patched.
+    /// </summary>
+    /// <param name="reader"></param>
+    /// <returns></returns>
+    internal override bool TryReadElementFromXmlToPatch(EwsServiceXmlReader reader)
+    {
+        // update the attachment id.
+        base.TryReadElementFromXml(reader);
+
+        reader.Read();
+        var itemClass = EwsUtilities.GetItemTypeFromXmlElementName(reader.LocalName);
+
+        if (itemClass != null)
         {
-            if (this.Owner != null)
+            if (_item == null || _item.GetType() != itemClass)
             {
-                this.Owner.PropertyBag.Changed();
-            }
-        }
-
-        /// <summary>
-        /// Obtains EWS XML element name for this object.
-        /// </summary>
-        /// <returns>The XML element name.</returns>
-        internal override string GetXmlElementName()
-        {
-            return XmlElementNames.ItemAttachment;
-        }
-
-        /// <summary>
-        /// Tries to read the element at the current position of the reader.
-        /// </summary>
-        /// <param name="reader">The reader to read the element from.</param>
-        /// <returns>True if the element was read, false otherwise.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            bool result = base.TryReadElementFromXml(reader);
-
-            if (!result)
-            {
-                this.item = EwsUtilities.CreateItemFromXmlElementName(this, reader.LocalName);
-
-                if (this.item != null)
-                {
-                    this.item.LoadFromXml(reader, true /* clearPropertyBag */);
-                }
+                throw new ServiceLocalException(Strings.AttachmentItemTypeMismatch);
             }
 
-            return result;
+            _item.LoadFromXml(reader, false);
+            return true;
         }
 
-        /// <summary>
-        /// For ItemAttachment, AttachmentId and Item should be patched. 
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
-        internal override bool TryReadElementFromXmlToPatch(EwsServiceXmlReader reader)
+        return false;
+    }
+
+    /// <summary>
+    ///     Writes the properties of this object as XML elements.
+    /// </summary>
+    /// <param name="writer">The writer to write the elements to.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        base.WriteElementsToXml(writer);
+
+        Item.WriteToXml(writer);
+    }
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    /// <param name="attachmentIndex">Index of this attachment.</param>
+    internal override void Validate(int attachmentIndex)
+    {
+        if (string.IsNullOrEmpty(Name))
         {
-            // update the attachment id.
-            base.TryReadElementFromXml(reader);
-
-            reader.Read();
-            Type itemClass = EwsUtilities.GetItemTypeFromXmlElementName(reader.LocalName);
-
-            if (itemClass != null)
-            {
-                if (this.item == null || this.item.GetType() != itemClass)
-                {
-                    throw new ServiceLocalException(Strings.AttachmentItemTypeMismatch);
-                }
-
-                this.item.LoadFromXml(reader, false /* clearPropertyBag */);
-                return true;
-            }
-
-            return false;
+            throw new ServiceValidationException(string.Format(Strings.ItemAttachmentMustBeNamed, attachmentIndex));
         }
 
-        /// <summary>
-        /// Writes the properties of this object as XML elements.
-        /// </summary>
-        /// <param name="writer">The writer to write the elements to.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            base.WriteElementsToXml(writer);
+        // Recurse through any items attached to item attachment.
+        Item.Attachments.Validate();
+    }
 
-            this.Item.WriteToXml(writer);
-        }
+    /// <summary>
+    ///     Loads this attachment.
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="additionalProperties">The optional additional properties to load.</param>
+    public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
+        CancellationToken token = default,
+        params PropertyDefinitionBase[] additionalProperties
+    )
+    {
+        return InternalLoad(null, additionalProperties, token);
+    }
 
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        /// <param name="attachmentIndex">Index of this attachment.</param>
-        internal override void Validate(int attachmentIndex)
-        {
-            if (string.IsNullOrEmpty(this.Name))
-            {
-                throw new ServiceValidationException(string.Format(Strings.ItemAttachmentMustBeNamed, attachmentIndex));
-            }
+    /// <summary>
+    ///     Loads this attachment.
+    /// </summary>
+    /// <param name="additionalProperties">The optional additional properties to load.</param>
+    /// <param name="token"></param>
+    public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
+        IEnumerable<PropertyDefinitionBase> additionalProperties,
+        CancellationToken token = default
+    )
+    {
+        return InternalLoad(null, additionalProperties, token);
+    }
 
-            // Recurse through any items attached to item attachment.
-            this.Item.Attachments.Validate();
-        }
+    /// <summary>
+    ///     Loads this attachment.
+    /// </summary>
+    /// <param name="bodyType">The body type to load.</param>
+    /// <param name="token"></param>
+    /// <param name="additionalProperties">The optional additional properties to load.</param>
+    public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
+        BodyType bodyType,
+        CancellationToken token = default,
+        params PropertyDefinitionBase[] additionalProperties
+    )
+    {
+        return InternalLoad(bodyType, additionalProperties, token);
+    }
 
-        /// <summary>
-        /// Loads this attachment.
-        /// </summary>
-        /// <param name="additionalProperties">The optional additional properties to load.</param>
-        public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(CancellationToken token = default(CancellationToken), params PropertyDefinitionBase[] additionalProperties)
-        {
-            return this.InternalLoad(
-                null /* bodyType */,
-                additionalProperties,
-                token);
-        }
-
-        /// <summary>
-        /// Loads this attachment.
-        /// </summary>
-        /// <param name="additionalProperties">The optional additional properties to load.</param>
-        public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(IEnumerable<PropertyDefinitionBase> additionalProperties, CancellationToken token = default(CancellationToken))
-        {
-            return this.InternalLoad(
-                null /* bodyType */,
-                additionalProperties,
-                token);
-        }
-
-        /// <summary>
-        /// Loads this attachment.
-        /// </summary>
-        /// <param name="bodyType">The body type to load.</param>
-        /// <param name="additionalProperties">The optional additional properties to load.</param>
-        public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(BodyType bodyType, CancellationToken token = default(CancellationToken), params PropertyDefinitionBase[] additionalProperties)
-        {
-            return this.InternalLoad(
-                bodyType,
-                additionalProperties,
-                token);
-        }
-
-        /// <summary>
-        /// Loads this attachment.
-        /// </summary>
-        /// <param name="bodyType">The body type to load.</param>
-        /// <param name="additionalProperties">The optional additional properties to load.</param>
-        public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(BodyType bodyType, IEnumerable<PropertyDefinitionBase> additionalProperties, CancellationToken token = default(CancellationToken))
-        {
-            return this.InternalLoad(
-                bodyType,
-                additionalProperties,
-                token);
-        }
+    /// <summary>
+    ///     Loads this attachment.
+    /// </summary>
+    /// <param name="bodyType">The body type to load.</param>
+    /// <param name="additionalProperties">The optional additional properties to load.</param>
+    /// <param name="token"></param>
+    public Task<ServiceResponseCollection<GetAttachmentResponse>> Load(
+        BodyType bodyType,
+        IEnumerable<PropertyDefinitionBase> additionalProperties,
+        CancellationToken token = default
+    )
+    {
+        return InternalLoad(bodyType, additionalProperties, token);
     }
 }

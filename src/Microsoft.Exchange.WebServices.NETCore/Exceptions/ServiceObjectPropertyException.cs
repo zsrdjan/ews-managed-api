@@ -23,87 +23,92 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Runtime.Serialization;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an error that occurs when an operation on a property fails.
+/// </summary>
+[PublicAPI]
+public class ServiceObjectPropertyException : PropertyException
 {
-    using System;
-    using System.Runtime.Serialization;
+    /// <summary>
+    ///     ServiceObjectPropertyException constructor.
+    /// </summary>
+    /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
+    public ServiceObjectPropertyException(PropertyDefinitionBase propertyDefinition)
+        : base(propertyDefinition.GetPrintableName())
+    {
+        PropertyDefinition = propertyDefinition;
+    }
 
     /// <summary>
-    /// Represents an error that occurs when an operation on a property fails.
+    ///     ServiceObjectPropertyException Constructor.
     /// </summary>
-    public class ServiceObjectPropertyException : PropertyException
+    /// <param name="message">Error message text.</param>
+    /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
+    public ServiceObjectPropertyException(string message, PropertyDefinitionBase propertyDefinition)
+        : base(message, propertyDefinition.GetPrintableName())
     {
-        /// <summary>
-        /// The definition of the property that is at the origin of the exception.
-        /// </summary>
-        private readonly PropertyDefinitionBase propertyDefinition;
-
-        /// <summary>
-        /// ServiceObjectPropertyException constructor.
-        /// </summary>
-        /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
-        public ServiceObjectPropertyException(PropertyDefinitionBase propertyDefinition)
-            : base(propertyDefinition.GetPrintableName())
-        {
-            this.propertyDefinition = propertyDefinition;
-        }
-
-        /// <summary>
-        /// ServiceObjectPropertyException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
-        public ServiceObjectPropertyException(string message, PropertyDefinitionBase propertyDefinition)
-            : base(message, propertyDefinition.GetPrintableName())
-        {
-            this.propertyDefinition = propertyDefinition;
-        }
-
-        /// <summary>
-        /// ServiceObjectPropertyException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
-        /// <param name="innerException">Inner exception.</param>
-        public ServiceObjectPropertyException(
-            string message,
-            PropertyDefinitionBase propertyDefinition,
-            Exception innerException)
-            : base(message, propertyDefinition.GetPrintableName(), innerException)
-        {
-            this.propertyDefinition = propertyDefinition;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceObjectPropertyException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		protected ServiceObjectPropertyException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-			this.propertyDefinition = (PropertyDefinitionBase)info.GetValue("PropertyDefinition", typeof(PropertyDefinitionBase));
-		}
-
-		/// <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and additional exception information.</summary>
-		/// <param name="info">The object that holds the serialized object data. </param>
-		/// <param name="context">The contextual information about the source or destination. </param>
-		/// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> object is a null reference (Nothing in Visual Basic). </exception>
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			EwsUtilities.Assert(info != null, "ServiceObjectPropertyException.GetObjectData", "info is null");
-
-			base.GetObjectData(info, context);
-
-			info.AddValue("PropertyDefinition", this.propertyDefinition, typeof(PropertyDefinitionBase));
-		}
-
-		/// <summary>
-		/// Gets the definition of the property that caused the exception.
-		/// </summary>
-		public PropertyDefinitionBase PropertyDefinition
-        {
-            get { return this.propertyDefinition; }
-        }
+        PropertyDefinition = propertyDefinition;
     }
+
+    /// <summary>
+    ///     ServiceObjectPropertyException Constructor.
+    /// </summary>
+    /// <param name="message">Error message text.</param>
+    /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
+    /// <param name="innerException">Inner exception.</param>
+    public ServiceObjectPropertyException(
+        string message,
+        PropertyDefinitionBase propertyDefinition,
+        Exception innerException
+    )
+        : base(message, propertyDefinition.GetPrintableName(), innerException)
+    {
+        PropertyDefinition = propertyDefinition;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the
+    ///     <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceObjectPropertyException" /> class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected ServiceObjectPropertyException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+        PropertyDefinition = (PropertyDefinitionBase)info.GetValue(
+            "PropertyDefinition",
+            typeof(PropertyDefinitionBase)
+        );
+    }
+
+    /// <summary>
+    ///     Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and
+    ///     additional exception information.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data. </param>
+    /// <param name="context">The contextual information about the source or destination. </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///     The <paramref name="info" /> object is a null reference (Nothing in
+    ///     Visual Basic).
+    /// </exception>
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        EwsUtilities.Assert(info != null, "ServiceObjectPropertyException.GetObjectData", "info is null");
+
+        base.GetObjectData(info, context);
+
+        info.AddValue("PropertyDefinition", PropertyDefinition, typeof(PropertyDefinitionBase));
+    }
+
+    /// <summary>
+    ///     Gets the definition of the property that caused the exception.
+    /// </summary>
+    /// <remarks>The definition of the property that is at the origin of the exception.</remarks>
+    public PropertyDefinitionBase PropertyDefinition { get; }
 }

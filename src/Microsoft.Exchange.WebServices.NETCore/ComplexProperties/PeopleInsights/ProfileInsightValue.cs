@@ -23,159 +23,123 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the ProfileInsightValue.
+/// </summary>
+[PublicAPI]
+public sealed class ProfileInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    /// <summary>
+    ///     Gets the FullName
+    /// </summary>
+    public string FullName { get; private set; }
 
     /// <summary>
-    /// Represents the ProfileInsightValue.
+    ///     Gets the FirstName
     /// </summary>
-    public sealed class ProfileInsightValue : InsightValue
+    public string FirstName { get; private set; }
+
+    /// <summary>
+    ///     Gets the LastName
+    /// </summary>
+    public string LastName { get; private set; }
+
+    /// <summary>
+    ///     Gets the EmailAddress
+    /// </summary>
+    public string EmailAddress { get; private set; }
+
+    /// <summary>
+    ///     Gets the Avatar
+    /// </summary>
+    public string Avatar { get; private set; }
+
+    /// <summary>
+    ///     Gets the JoinedUtcTicks
+    /// </summary>
+    public long JoinedUtcTicks { get; private set; }
+
+    /// <summary>
+    ///     Gets the ProfilePicture
+    /// </summary>
+    public UserProfilePicture ProfilePicture { get; private set; }
+
+    /// <summary>
+    ///     Gets the Title
+    /// </summary>
+    public string Title { get; private set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private string fullName;
-        private string firstName;
-        private string lastName;
-        private string emailAddress;
-        private string avatar;
-        private long joinedUtcTicks;
-        private UserProfilePicture profilePicture;
-        private string title;
-
-        /// <summary>
-        /// Gets the FullName
-        /// </summary>
-        public string FullName
+        switch (reader.LocalName)
         {
-            get
+            case XmlElementNames.InsightSource:
             {
-                return this.fullName;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
+            }
+            case XmlElementNames.UpdatedUtcTicks:
+            {
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.FullName:
+            {
+                FullName = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.FirstName:
+            {
+                FirstName = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.LastName:
+            {
+                LastName = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.EmailAddress:
+            {
+                EmailAddress = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Avatar:
+            {
+                Avatar = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.JoinedUtcTicks:
+            {
+                JoinedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.ProfilePicture:
+            {
+                var picture = new UserProfilePicture();
+                picture.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ProfilePicture);
+                ProfilePicture = picture;
+                break;
+            }
+            case XmlElementNames.Title:
+            {
+                Title = reader.ReadElementValue();
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        /// <summary>
-        /// Gets the FirstName
-        /// </summary>
-        public string FirstName
-        {
-            get
-            {
-                return this.firstName;
-            }
-        }
-
-        /// <summary>
-        /// Gets the LastName
-        /// </summary>
-        public string LastName
-        {
-            get
-            {
-                return this.lastName;
-            }
-        }
-
-        /// <summary>
-        /// Gets the EmailAddress
-        /// </summary>
-        public string EmailAddress
-        {
-            get
-            {
-                return this.emailAddress;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Avatar
-        /// </summary>
-        public string Avatar
-        {
-            get
-            {
-                return this.avatar;
-            }
-        }
-
-        /// <summary>
-        /// Gets the JoinedUtcTicks
-        /// </summary>
-        public long JoinedUtcTicks
-        {
-            get
-            {
-                return this.joinedUtcTicks;
-            }
-        }
-
-        /// <summary>
-        /// Gets the ProfilePicture
-        /// </summary>
-        public UserProfilePicture ProfilePicture
-        {
-            get
-            {
-                return this.profilePicture;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Title
-        /// </summary>
-        public string Title
-        {
-            get
-            {
-                return this.title;
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.FullName:
-                    this.fullName = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.FirstName:
-                    this.firstName = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.LastName:
-                    this.lastName = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.EmailAddress:
-                    this.emailAddress = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Avatar:
-                    this.avatar = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.JoinedUtcTicks:
-                    this.joinedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.ProfilePicture:
-                    var picture = new UserProfilePicture();
-                    picture.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ProfilePicture);
-                    this.profilePicture = picture;
-                    break;
-                case XmlElementNames.Title:
-                    this.title = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

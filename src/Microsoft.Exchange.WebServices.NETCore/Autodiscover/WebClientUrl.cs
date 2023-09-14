@@ -23,84 +23,75 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.Xml;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents the URL of the Exchange web client.
+/// </summary>
+[PublicAPI]
+public sealed class WebClientUrl
 {
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="WebClientUrl" /> class.
+    /// </summary>
+    private WebClientUrl()
+    {
+    }
 
     /// <summary>
-    /// Represents the URL of the Exchange web client.
+    ///     Initializes a new instance of the <see cref="WebClientUrl" /> class.
     /// </summary>
-    public sealed class WebClientUrl
+    /// <param name="authenticationMethods">The authentication methods.</param>
+    /// <param name="url">The URL.</param>
+    internal WebClientUrl(string authenticationMethods, string url)
     {
-        private string authenticationMethods;
-        private string url;
+        AuthenticationMethods = authenticationMethods;
+        Url = url;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebClientUrl"/> class.
-        /// </summary>
-        private WebClientUrl()
+    /// <summary>
+    ///     Loads WebClientUrl instance from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>WebClientUrl.</returns>
+    internal static WebClientUrl LoadFromXml(EwsXmlReader reader)
+    {
+        var webClientUrl = new WebClientUrl();
+
+        do
         {
-        }
+            reader.Read();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebClientUrl"/> class.
-        /// </summary>
-        /// <param name="authenticationMethods">The authentication methods.</param>
-        /// <param name="url">The URL.</param>
-        internal WebClientUrl(string authenticationMethods, string url)
-        {
-            this.authenticationMethods = authenticationMethods;
-            this.url = url;
-        }
-
-        /// <summary>
-        /// Loads WebClientUrl instance from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>WebClientUrl.</returns>
-        internal static WebClientUrl LoadFromXml(EwsXmlReader reader)
-        {
-            WebClientUrl webClientUrl = new WebClientUrl();
-
-            do
+            if (reader.NodeType == XmlNodeType.Element)
             {
-                reader.Read();
-
-                if (reader.NodeType == XmlNodeType.Element)
+                switch (reader.LocalName)
                 {
-                    switch (reader.LocalName)
-                    {
-                        case XmlElementNames.AuthenticationMethods:
-                            webClientUrl.AuthenticationMethods = reader.ReadElementValue<string>();
-                            break;
-                        case XmlElementNames.Url:
-                            webClientUrl.Url = reader.ReadElementValue<string>();
-                            break;
-                    }
+                    case XmlElementNames.AuthenticationMethods:
+                        webClientUrl.AuthenticationMethods = reader.ReadElementValue<string>();
+                        break;
+                    case XmlElementNames.Url:
+                        webClientUrl.Url = reader.ReadElementValue<string>();
+                        break;
                 }
             }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.WebClientUrl));
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.WebClientUrl));
 
-            return webClientUrl;
-        }
-
-        /// <summary>
-        /// Gets the authentication methods.
-        /// </summary>
-        public string AuthenticationMethods
-        {
-            get { return this.authenticationMethods; }
-            internal set { this.authenticationMethods = value; }
-        }
-
-        /// <summary>
-        /// Gets the URL.
-        /// </summary>
-        public string Url
-        {
-            get { return this.url; }
-            internal set { this.url = value; }
-        }
+        return webClientUrl;
     }
+
+    /// <summary>
+    ///     Gets the authentication methods.
+    /// </summary>
+    public string AuthenticationMethods { get; internal set; }
+
+    /// <summary>
+    ///     Gets the URL.
+    /// </summary>
+    public string Url { get; internal set; }
 }

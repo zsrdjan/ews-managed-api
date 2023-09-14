@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the offset's base point in a paged view.
+/// </summary>
+[PublicAPI]
+public enum OffsetBasePoint
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The offset is from the beginning of the view.
+    /// </summary>
+    Beginning,
 
     /// <summary>
-    /// Defines the offset's base point in a paged view.
+    ///     The offset is from the end of the view.
     /// </summary>
-    public enum OffsetBasePoint
-    {
-        /// <summary>
-        /// The offset is from the beginning of the view.
-        /// </summary>
-        Beginning,
-
-        /// <summary>
-        /// The offset is from the end of the view.
-        /// </summary>
-        End
-    }
+    End,
 }

@@ -23,113 +23,105 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the minimum and maximum size of a message.
+/// </summary>
+[PublicAPI]
+public sealed class RulePredicateSizeRange : ComplexProperty
 {
     /// <summary>
-    /// Represents the minimum and maximum size of a message.
+    ///     Minimum Size.
     /// </summary>
-    public sealed class RulePredicateSizeRange : ComplexProperty
+    private int? _minimumSize;
+
+    /// <summary>
+    ///     Mamixmum Size.
+    /// </summary>
+    private int? _maximumSize;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RulePredicateSizeRange" /> class.
+    /// </summary>
+    internal RulePredicateSizeRange()
     {
-        /// <summary>
-        /// Minimum Size.
-        /// </summary>
-        private int? minimumSize;
+    }
 
-        /// <summary>
-        /// Mamixmum Size.
-        /// </summary>
-        private int? maximumSize;
+    /// <summary>
+    ///     Gets or sets the minimum size, in kilobytes. If MinimumSize is set to
+    ///     null, no minimum size applies.
+    /// </summary>
+    public int? MinimumSize
+    {
+        get => _minimumSize;
+        set => SetFieldValue(ref _minimumSize, value);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RulePredicateSizeRange"/> class.
-        /// </summary>
-        internal RulePredicateSizeRange()
-            : base()
+    /// <summary>
+    ///     Gets or sets the maximum size, in kilobytes. If MaximumSize is set to
+    ///     null, no maximum size applies.
+    /// </summary>
+    public int? MaximumSize
+    {
+        get => _maximumSize;
+        set => SetFieldValue(ref _maximumSize, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Gets or sets the minimum size, in kilobytes. If MinimumSize is set to 
-        /// null, no minimum size applies.
-        /// </summary>
-        public int? MinimumSize
-        {
-            get
+            case XmlElementNames.MinimumSize:
             {
-                return this.minimumSize;
+                _minimumSize = reader.ReadElementValue<int>();
+                return true;
             }
-
-            set
+            case XmlElementNames.MaximumSize:
             {
-                this.SetFieldValue<int?>(ref this.minimumSize, value);
+                _maximumSize = reader.ReadElementValue<int>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum size, in kilobytes. If MaximumSize is set to 
-        /// null, no maximum size applies.
-        /// </summary>
-        public int? MaximumSize
-        {
-            get
+            default:
             {
-                return this.maximumSize;
-            }
-
-            set
-            {
-                this.SetFieldValue<int?>(ref this.maximumSize, value);
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (MinimumSize.HasValue)
         {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.MinimumSize:
-                    this.minimumSize = reader.ReadElementValue<int>();
-                    return true;
-                case XmlElementNames.MaximumSize:
-                    this.maximumSize = reader.ReadElementValue<int>();
-                    return true;
-                default:
-                    return false;
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MinimumSize, MinimumSize.Value);
         }
 
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+        if (MaximumSize.HasValue)
         {
-            if (this.MinimumSize.HasValue)
-            {
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MinimumSize, this.MinimumSize.Value);
-            }
-            if (this.MaximumSize.HasValue)
-            {
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MaximumSize, this.MaximumSize.Value);
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MaximumSize, MaximumSize.Value);
         }
+    }
 
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        internal override void InternalValidate()
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+        if (_minimumSize.HasValue && _maximumSize.HasValue && _minimumSize.Value > _maximumSize.Value)
         {
-            base.InternalValidate();
-            if (this.minimumSize.HasValue &&
-                this.maximumSize.HasValue &&
-                this.minimumSize.Value > this.maximumSize.Value)
-            {
-                throw new ServiceValidationException("MinimumSize cannot be larger than MaximumSize.");
-            }
+            throw new ServiceValidationException("MinimumSize cannot be larger than MaximumSize.");
         }
     }
 }

@@ -23,69 +23,62 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the GetSearchableMailboxes response.
+/// </summary>
+[PublicAPI]
+public sealed class GetSearchableMailboxesResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    readonly List<SearchableMailbox> _searchableMailboxes = new List<SearchableMailbox>();
 
     /// <summary>
-    /// Represents the GetSearchableMailboxes response.
+    ///     Initializes a new instance of the <see cref="GetSearchableMailboxesResponse" /> class.
     /// </summary>
-    public sealed class GetSearchableMailboxesResponse : ServiceResponse
+    internal GetSearchableMailboxesResponse()
     {
-        List<SearchableMailbox> searchableMailboxes = new List<SearchableMailbox>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetSearchableMailboxesResponse"/> class.
-        /// </summary>
-        internal GetSearchableMailboxesResponse()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            this.searchableMailboxes.Clear();
-
-            base.ReadElementsFromXml(reader);
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.SearchableMailboxes);
-            if (!reader.IsEmptyElement)
-            {
-                do
-                {
-                    reader.Read();
-                    if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SearchableMailbox))
-                    {
-                        this.searchableMailboxes.Add(SearchableMailbox.LoadFromXml(reader));
-                    }
-                }
-                while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SearchableMailboxes));
-            }
-
-            reader.Read();
-            if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.FailedMailboxes))
-            {
-                this.FailedMailboxes = FailedSearchMailbox.LoadFailedMailboxesXml(XmlNamespace.Messages, reader);
-            }
-        }
-
-        /// <summary>
-        /// Searchable mailboxes result
-        /// </summary>
-        public SearchableMailbox[] SearchableMailboxes
-        {
-            get { return this.searchableMailboxes.ToArray(); }
-        }
-
-        /// <summary>
-        /// Failed mailboxes
-        /// </summary>
-        public FailedSearchMailbox[] FailedMailboxes { get; set; }
     }
+
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        _searchableMailboxes.Clear();
+
+        base.ReadElementsFromXml(reader);
+
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.SearchableMailboxes);
+        if (!reader.IsEmptyElement)
+        {
+            do
+            {
+                reader.Read();
+                if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.SearchableMailbox))
+                {
+                    _searchableMailboxes.Add(SearchableMailbox.LoadFromXml(reader));
+                }
+            } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SearchableMailboxes));
+        }
+
+        reader.Read();
+        if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.FailedMailboxes))
+        {
+            FailedMailboxes = FailedSearchMailbox.LoadFailedMailboxesXml(XmlNamespace.Messages, reader);
+        }
+    }
+
+    /// <summary>
+    ///     Searchable mailboxes result
+    /// </summary>
+    public SearchableMailbox[] SearchableMailboxes => _searchableMailboxes.ToArray();
+
+    /// <summary>
+    ///     Failed mailboxes
+    /// </summary>
+    public FailedSearchMailbox[] FailedMailboxes { get; set; }
 }

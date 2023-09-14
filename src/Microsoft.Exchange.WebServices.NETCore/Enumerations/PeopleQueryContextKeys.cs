@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,33 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Lists different keys that can be passed to the people query context dictionary
+/// </summary>
+[PublicAPI]
+public sealed class PeopleQueryContextKeys
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+    /// <summary> Topic Query </summary>
+    public const string TopicQuery = "TopicQuery";
 
-    /// <summary>
-    /// Lists different keys that can be passed to the people query context dictionary
-    /// </summary>
-    public sealed class PeopleQueryContextKeys
-    {
-        /// <summary> Topic Query </summary>
-        public static readonly string TopicQuery = "TopicQuery";
+    /// <summary> Guid for client session </summary>
+    public const string ClientSessionId = "ClientSessionId";
 
-        /// <summary> Guid for client session </summary>
-        public static readonly string ClientSessionId = "ClientSessionId";
+    /// <summary> Client Flight Number </summary>
+    public const string ClientFlightNumber = "ClientFlightNumber";
 
-        /// <summary> Client Flight Number </summary>
-        public static readonly string ClientFlightNumber = "ClientFlightNumber";
+    /// <summary> User Agent </summary>
+    public const string UserAgent = "UserAgent";
 
-        /// <summary> User Agent </summary>
-        public static readonly string UserAgent = "UserAgent";
+    /// <summary> App Name </summary>
+    public const string AppName = "AppName";
 
-        /// <summary> App Name </summary>
-        public static readonly string AppName = "AppName";
-
-        /// <summary> App Scenario </summary>
-        public static readonly string AppScenario = "AppScenario";
-    }
+    /// <summary> App Scenario </summary>
+    public const string AppScenario = "AppScenario";
 }

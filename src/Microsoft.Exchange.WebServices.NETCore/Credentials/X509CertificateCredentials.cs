@@ -23,139 +23,139 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     X509CertificateCredentials wraps an instance of X509Certificate2, it can be used for WS-Security/X509
+///     certificate-based authentication.
+/// </summary>
+[PublicAPI]
+public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
 {
-    using System;
-    using System.IO;
-    using System.Net;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Security.Cryptography.Xml;
-    using System.Xml;
+    private const string BinarySecurityTokenFormat = "<wsse:BinarySecurityToken " +
+                                                     "EncodingType=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary\" " +
+                                                     "ValueType=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3\" " +
+                                                     "wsu:Id=\"{0}\">" +
+                                                     "{1}" +
+                                                     "</wsse:BinarySecurityToken>";
+
+    private const string KeyInfoClauseFormat =
+        "<wsse:SecurityTokenReference xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" >" +
+        "<wsse:Reference URI=\"#{0}\" ValueType=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3\" />" +
+        "</wsse:SecurityTokenReference>";
+
+    private const string WsSecurityX509CertPathSuffix = "/wssecurity/x509cert";
+
+    private readonly X509Certificate2 _certificate;
+
+    private readonly KeyInfoClause _keyInfoClause;
 
     /// <summary>
-    /// X509CertificateCredentials wraps an instance of X509Certificate2, it can be used for WS-Security/X509 certificate-based authentication.
+    ///     Initializes a new instance of the <see cref="X509CertificateCredentials" /> class.
     /// </summary>
-    public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
+    /// <remarks>The X509Certificate2 argument should have private key in order to sign the message.</remarks>
+    /// <param name="certificate">The X509Certificate2 object.</param>
+    public X509CertificateCredentials(X509Certificate2 certificate)
+        : base(null, true)
     {
-        private const string BinarySecurityTokenFormat =
-            "<wsse:BinarySecurityToken " +
-            "EncodingType=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary\" " +
-            "ValueType=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3\" " +
-            "wsu:Id=\"{0}\">" +
-            "{1}" +
-            "</wsse:BinarySecurityToken>";
+        EwsUtilities.ValidateParam(certificate);
 
-        private const string KeyInfoClauseFormat =
-            "<wsse:SecurityTokenReference xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" >" +
-            "<wsse:Reference URI=\"#{0}\" ValueType=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3\" />" +
-            "</wsse:SecurityTokenReference>";
-
-        private const string WsSecurityX509CertPathSuffix = "/wssecurity/x509cert";
-
-        private readonly X509Certificate2 certificate;
-
-        private readonly KeyInfoClause keyInfoClause;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="X509CertificateCredentials"/> class.
-        /// </summary>
-        /// <remarks>The X509Certificate2 argument should have private key in order to sign the message.</remarks>
-        /// <param name="certificate">The X509Certificate2 object.</param>
-        public X509CertificateCredentials(X509Certificate2 certificate)
-            : base(null, true)
+        if (!certificate.HasPrivateKey)
         {
-            EwsUtilities.ValidateParam(certificate, "certificate");
+            throw new ServiceValidationException(Strings.CertificateHasNoPrivateKey);
+        }
 
-            if (!certificate.HasPrivateKey)
+        _certificate = certificate;
+
+        var certId = WsSecurityUtilityIdSignedXml.GetUniqueId();
+
+        SecurityToken = string.Format(
+            BinarySecurityTokenFormat,
+            certId,
+            Convert.ToBase64String(_certificate.GetRawCertData())
+        );
+
+        var doc = new SafeXmlDocument
+        {
+            PreserveWhitespace = true,
+        };
+        doc.LoadXml(string.Format(KeyInfoClauseFormat, certId));
+        _keyInfoClause = new KeyInfoNode(doc.DocumentElement);
+    }
+
+    /// <summary>
+    ///     This method is called to apply credentials to a service request before the request is made.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    internal override void PrepareWebRequest(IEwsHttpWebRequest request)
+    {
+        EwsUrl = request.RequestUri;
+    }
+
+    /// <summary>
+    ///     Adjusts the URL based on the credentials.
+    /// </summary>
+    /// <param name="url">The URL.</param>
+    /// <returns>Adjust URL.</returns>
+    internal override Uri AdjustUrl(Uri url)
+    {
+        return new Uri(GetUriWithoutSuffix(url) + WsSecurityX509CertPathSuffix);
+    }
+
+    /// <summary>
+    ///     Gets the flag indicating whether any sign action need taken.
+    /// </summary>
+    internal override bool NeedSignature => true;
+
+    /// <summary>
+    ///     Add the signature element to the memory stream.
+    /// </summary>
+    /// <param name="memoryStream">The memory stream.</param>
+    internal override void Sign(MemoryStream memoryStream)
+    {
+        memoryStream.Position = 0;
+
+        var document = new SafeXmlDocument
+        {
+            PreserveWhitespace = true,
+        };
+        document.Load(memoryStream);
+
+        var signedXml = new WsSecurityUtilityIdSignedXml(document)
+        {
+            SignedInfo =
             {
-                throw new ServiceValidationException(Strings.CertificateHasNoPrivateKey);
-            }
+                CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl,
+            },
+            SigningKey = _certificate.PrivateKey,
+        };
 
-            this.certificate = certificate;
+        signedXml.AddReference("/soap:Envelope/soap:Header/wsa:To");
+        signedXml.AddReference("/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp");
 
-            string certId = WSSecurityUtilityIdSignedXml.GetUniqueId();
+        signedXml.KeyInfo.AddClause(_keyInfoClause);
+        signedXml.ComputeSignature();
+        var signature = signedXml.GetXml();
 
-            this.SecurityToken = string.Format(
-                X509CertificateCredentials.BinarySecurityTokenFormat,
-                certId,
-                Convert.ToBase64String(this.certificate.GetRawCertData()));
+        var wsSecurityNode = document.SelectSingleNode("/soap:Envelope/soap:Header/wsse:Security", NamespaceManager);
 
-            SafeXmlDocument doc = new SafeXmlDocument();
-            doc.PreserveWhitespace = true;
-            doc.LoadXml(string.Format(X509CertificateCredentials.KeyInfoClauseFormat, certId));
-            this.keyInfoClause = new KeyInfoNode(doc.DocumentElement);
-        }
+        wsSecurityNode.AppendChild(signature);
 
-        /// <summary>
-        /// This method is called to apply credentials to a service request before the request is made.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        internal override void PrepareWebRequest(IEwsHttpWebRequest request)
-        {
-            this.EwsUrl = request.RequestUri;
-        }
+        memoryStream.Position = 0;
+        document.Save(memoryStream);
+    }
 
-        /// <summary>
-        /// Adjusts the URL based on the credentials.
-        /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <returns>Adjust URL.</returns>
-        internal override Uri AdjustUrl(Uri url)
-        {
-            return new Uri(GetUriWithoutSuffix(url) + X509CertificateCredentials.WsSecurityX509CertPathSuffix);
-        }
-
-        /// <summary>
-        /// Gets the flag indicating whether any sign action need taken.
-        /// </summary>
-        internal override bool NeedSignature
-        {
-            get { return true; }
-        }
-
-        /// <summary>
-        /// Add the signature element to the memory stream.
-        /// </summary>
-        /// <param name="memoryStream">The memory stream.</param>
-        internal override void Sign(MemoryStream memoryStream)
-        {
-            memoryStream.Position = 0;
-
-            SafeXmlDocument document = new SafeXmlDocument();
-            document.PreserveWhitespace = true;
-            document.Load(memoryStream);
-
-            WSSecurityUtilityIdSignedXml signedXml = new WSSecurityUtilityIdSignedXml(document);
-            signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
-
-            signedXml.SigningKey = this.certificate.PrivateKey;
-            signedXml.AddReference("/soap:Envelope/soap:Header/wsa:To");
-            signedXml.AddReference("/soap:Envelope/soap:Header/wsse:Security/wsu:Timestamp");
-
-            signedXml.KeyInfo.AddClause(this.keyInfoClause);
-            signedXml.ComputeSignature();
-            XmlElement signature = signedXml.GetXml();
-
-            XmlNode wssecurityNode = document.SelectSingleNode(
-                "/soap:Envelope/soap:Header/wsse:Security",
-                WSSecurityBasedCredentials.NamespaceManager);
-
-            wssecurityNode.AppendChild(signature);
-
-            memoryStream.Position = 0;
-            document.Save(memoryStream);
-        }
-
-        /// <summary>
-        /// Gets the credentials string presentation.
-        /// </summary>
-        /// <returns>The string.</returns>
-        public override string ToString()
-        {
-            return string.Format(
-                "X509:<I>={0},<S>={1}",
-                this.certificate.Issuer,
-                this.certificate.Subject);
-        }
+    /// <summary>
+    ///     Gets the credentials string presentation.
+    /// </summary>
+    /// <returns>The string.</returns>
+    public override string ToString()
+    {
+        return $"X509:<I>={_certificate.Issuer},<S>={_certificate.Subject}";
     }
 }

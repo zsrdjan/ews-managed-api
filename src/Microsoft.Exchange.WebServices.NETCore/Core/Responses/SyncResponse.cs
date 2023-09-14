@@ -23,169 +23,174 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.ComponentModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the base response class for synchronuization operations.
+/// </summary>
+/// <typeparam name="TServiceObject">ServiceObject type.</typeparam>
+/// <typeparam name="TChange">Change type.</typeparam>
+[PublicAPI]
+[EditorBrowsable(EditorBrowsableState.Never)]
+public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
+    where TServiceObject : ServiceObject
+    where TChange : Change
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
-    /// Represents the base response class for synchronuization operations.
+    ///     Initializes a new instance of the <see cref="SyncResponse&lt;TServiceObject, TChange&gt;" /> class.
     /// </summary>
-    /// <typeparam name="TServiceObject">ServiceObject type.</typeparam>
-    /// <typeparam name="TChange">Change type.</typeparam>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
-        where TServiceObject : ServiceObject
-        where TChange : Change
+    /// <param name="propertySet">Property set.</param>
+    internal SyncResponse(PropertySet propertySet)
     {
-        private ChangeCollection<TChange> changes = new ChangeCollection<TChange>();
-        private PropertySet propertySet;
+        _propertySet = propertySet;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SyncResponse&lt;TServiceObject, TChange&gt;"/> class.
-        /// </summary>
-        /// <param name="propertySet">Property set.</param>
-        internal SyncResponse(PropertySet propertySet)
-            : base()
+        EwsUtilities.Assert(_propertySet != null, "SyncResponse.ctor", "PropertySet should not be null");
+    }
+
+    /// <summary>
+    ///     Gets the name of the includes last in range XML element.
+    /// </summary>
+    /// <returns>XML element name.</returns>
+    internal abstract string GetIncludesLastInRangeXmlElementName();
+
+    /// <summary>
+    ///     Creates the change instance.
+    /// </summary>
+    /// <returns>TChange instance</returns>
+    internal abstract TChange CreateChangeInstance();
+
+    /// <summary>
+    ///     Gets the name of the change element.
+    /// </summary>
+    /// <returns>Change element name.</returns>
+    internal abstract string GetChangeElementName();
+
+    /// <summary>
+    ///     Gets the name of the change id element.
+    /// </summary>
+    /// <returns>Change id element name.</returns>
+    internal abstract string GetChangeIdElementName();
+
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        Changes.SyncState = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SyncState);
+        Changes.MoreChangesAvailable = !reader.ReadElementValue<bool>(
+            XmlNamespace.Messages,
+            GetIncludesLastInRangeXmlElementName()
+        );
+
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Changes);
+        if (!reader.IsEmptyElement)
         {
-            this.propertySet = propertySet;
-
-            EwsUtilities.Assert(
-                this.propertySet != null,
-                "SyncResponse.ctor",
-                "PropertySet should not be null");
-        }
-
-        /// <summary>
-        /// Gets the name of the includes last in range XML element.
-        /// </summary>
-        /// <returns>XML element name.</returns>
-        internal abstract string GetIncludesLastInRangeXmlElementName();
-
-        /// <summary>
-        /// Creates the change instance.
-        /// </summary>
-        /// <returns>TChange instance</returns>
-        internal abstract TChange CreateChangeInstance();
-
-        /// <summary>
-        /// Gets the name of the change element.
-        /// </summary>
-        /// <returns>Change element name.</returns>
-        internal abstract string GetChangeElementName();
-
-        /// <summary>
-        /// Gets the name of the change id element.
-        /// </summary>
-        /// <returns>Change id element name.</returns>
-        internal abstract string GetChangeIdElementName();
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            this.Changes.SyncState = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SyncState);
-            this.Changes.MoreChangesAvailable = !reader.ReadElementValue<bool>(XmlNamespace.Messages, this.GetIncludesLastInRangeXmlElementName());
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Changes);
-            if (!reader.IsEmptyElement)
+            do
             {
-                do
+                reader.Read();
+
+                if (reader.IsStartElement())
                 {
-                    reader.Read();
+                    var change = CreateChangeInstance();
 
-                    if (reader.IsStartElement())
+                    switch (reader.LocalName)
                     {
-                        TChange change = this.CreateChangeInstance();
-
-                        switch (reader.LocalName)
+                        case XmlElementNames.Create:
                         {
-                            case XmlElementNames.Create:
-                                change.ChangeType = ChangeType.Create;
-                                break;
-                            case XmlElementNames.Update:
-                                change.ChangeType = ChangeType.Update;
-                                break;
-                            case XmlElementNames.Delete:
-                                change.ChangeType = ChangeType.Delete;
-                                break;
-                            case XmlElementNames.ReadFlagChange:
-                                change.ChangeType = ChangeType.ReadFlagChange;
-                                break;
-                            default:
-                                reader.SkipCurrentElement();
-                                break;
+                            change.ChangeType = ChangeType.Create;
+                            break;
                         }
-
-                        if (change != null)
+                        case XmlElementNames.Update:
                         {
-                            reader.Read();
-                            reader.EnsureCurrentNodeIsStartElement();
-
-                            switch (change.ChangeType)
-                            {
-                                case ChangeType.Delete:
-                                case ChangeType.ReadFlagChange:
-                                    change.Id = change.CreateId();
-                                    change.Id.LoadFromXml(reader, change.Id.GetXmlElementName());
-
-                                    if (change.ChangeType == ChangeType.ReadFlagChange)
-                                    {
-                                        reader.Read();
-                                        reader.EnsureCurrentNodeIsStartElement();
-
-                                        ItemChange itemChange = change as ItemChange;
-
-                                        EwsUtilities.Assert(
-                                            itemChange != null,
-                                            "SyncResponse.ReadElementsFromXml",
-                                            "ReadFlagChange is only valid on ItemChange");
-
-                                        itemChange.IsRead = reader.ReadElementValue<bool>(XmlNamespace.Types, XmlElementNames.IsRead);
-                                    }
-
-                                    break;
-                                default:
-                                    change.ServiceObject = EwsUtilities.CreateEwsObjectFromXmlElementName<TServiceObject>(
-                                        reader.Service,
-                                        reader.LocalName);
-
-                                    change.ServiceObject.LoadFromXml(
-                                                            reader,
-                                                            true, /* clearPropertyBag */
-                                                            this.propertySet,
-                                                            this.SummaryPropertiesOnly);
-                                    break;
-                            }
-
-                            reader.ReadEndElementIfNecessary(XmlNamespace.Types, change.ChangeType.ToString());
-
-                            this.changes.Add(change);
+                            change.ChangeType = ChangeType.Update;
+                            break;
+                        }
+                        case XmlElementNames.Delete:
+                        {
+                            change.ChangeType = ChangeType.Delete;
+                            break;
+                        }
+                        case XmlElementNames.ReadFlagChange:
+                        {
+                            change.ChangeType = ChangeType.ReadFlagChange;
+                            break;
+                        }
+                        default:
+                        {
+                            reader.SkipCurrentElement();
+                            break;
                         }
                     }
+
+                    if (change != null)
+                    {
+                        reader.Read();
+                        reader.EnsureCurrentNodeIsStartElement();
+
+                        switch (change.ChangeType)
+                        {
+                            case ChangeType.Delete:
+                            case ChangeType.ReadFlagChange:
+                            {
+                                change.Id = change.CreateId();
+                                change.Id.LoadFromXml(reader, change.Id.GetXmlElementName());
+
+                                if (change.ChangeType == ChangeType.ReadFlagChange)
+                                {
+                                    reader.Read();
+                                    reader.EnsureCurrentNodeIsStartElement();
+
+                                    var itemChange = change as ItemChange;
+
+                                    EwsUtilities.Assert(
+                                        itemChange != null,
+                                        "SyncResponse.ReadElementsFromXml",
+                                        "ReadFlagChange is only valid on ItemChange"
+                                    );
+
+                                    itemChange.IsRead = reader.ReadElementValue<bool>(
+                                        XmlNamespace.Types,
+                                        XmlElementNames.IsRead
+                                    );
+                                }
+
+                                break;
+                            }
+                            default:
+                            {
+                                change.ServiceObject = EwsUtilities.CreateEwsObjectFromXmlElementName<TServiceObject>(
+                                    reader.Service,
+                                    reader.LocalName
+                                );
+
+                                change.ServiceObject.LoadFromXml(reader, true, _propertySet, SummaryPropertiesOnly);
+                                break;
+                            }
+                        }
+
+                        reader.ReadEndElementIfNecessary(XmlNamespace.Types, change.ChangeType.ToString());
+
+                        Changes.Add(change);
+                    }
                 }
-                while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.Changes));
-            }
-        }
-
-        /// <summary>
-        /// Gets a list of changes that occurred on the synchronized folder.
-        /// </summary>
-        public ChangeCollection<TChange> Changes
-        {
-            get { return this.changes; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this request returns full or summary properties.
-        /// </summary>
-        internal abstract bool SummaryPropertiesOnly
-        {
-            get; 
+            } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.Changes));
         }
     }
+
+    /// <summary>
+    ///     Gets a list of changes that occurred on the synchronized folder.
+    /// </summary>
+    public ChangeCollection<TChange> Changes { get; } = new();
+
+    /// <summary>
+    ///     Gets a value indicating whether this request returns full or summary properties.
+    /// </summary>
+    internal abstract bool SummaryPropertiesOnly { get; }
 }

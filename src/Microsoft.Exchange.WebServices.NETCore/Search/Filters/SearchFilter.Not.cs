@@ -23,116 +23,112 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <content>
+///     Contains nested type SearchFilter.Not.
+/// </content>
+public abstract partial class SearchFilter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
-    /// <content>
-    /// Contains nested type SearchFilter.Not.
-    /// </content>
-    public abstract partial class SearchFilter
+    /// <summary>
+    ///     Represents a search filter that negates another. Applications can use NotFilter to define
+    ///     conditions such as "NOT(other filter)".
+    /// </summary>
+    [PublicAPI]
+    public sealed class Not : SearchFilter
     {
+        private SearchFilter? _searchFilter;
+
         /// <summary>
-        /// Represents a search filter that negates another. Applications can use NotFilter to define
-        /// conditions such as "NOT(other filter)".
+        ///     Initializes a new instance of the <see cref="SearchFilter.Not" /> class.
         /// </summary>
-        public sealed class Not : SearchFilter
+        public Not()
         {
-            private SearchFilter searchFilter;
+        }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Not"/> class.
-            /// </summary>
-            public Not()
-                : base()
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SearchFilter.Not" /> class.
+        /// </summary>
+        /// <param name="searchFilter">
+        ///     The search filter to negate. Available search filter classes include SearchFilter.IsEqualTo,
+        ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
+        /// </param>
+        public Not(SearchFilter searchFilter)
+        {
+            _searchFilter = searchFilter;
+        }
+
+        /// <summary>
+        ///     A search filter has changed.
+        /// </summary>
+        /// <param name="complexProperty">The complex property.</param>
+        private void SearchFilterChanged(ComplexProperty complexProperty)
+        {
+            Changed();
+        }
+
+        /// <summary>
+        ///     Validate instance.
+        /// </summary>
+        internal override void InternalValidate()
+        {
+            if (_searchFilter == null)
             {
+                throw new ServiceValidationException(Strings.SearchFilterMustBeSet);
             }
+        }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Not"/> class.
-            /// </summary>
-            /// <param name="searchFilter">The search filter to negate. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.</param>
-            public Not(SearchFilter searchFilter)
-                : base()
-            {
-                this.searchFilter = searchFilter;
-            }
+        /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <returns>XML element name.</returns>
+        internal override string GetXmlElementName()
+        {
+            return XmlElementNames.Not;
+        }
 
-            /// <summary>
-            /// A search filter has changed.
-            /// </summary>
-            /// <param name="complexProperty">The complex property.</param>
-            private void SearchFilterChanged(ComplexProperty complexProperty)
-            {
-                this.Changed();
-            }
+        /// <summary>
+        ///     Tries to read element from XML.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <returns>True if element was read.</returns>
+        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+        {
+            _searchFilter = LoadFromXml(reader);
+            return true;
+        }
 
-            /// <summary>
-            /// Validate instance.
-            /// </summary>
-            internal override void InternalValidate()
+        /// <summary>
+        ///     Writes the elements to XML.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+        {
+            SearchFilter.WriteToXml(writer);
+        }
+
+        /// <summary>
+        ///     Gets or sets the search filter to negate. Available search filter classes include
+        ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
+        /// </summary>
+        public SearchFilter? SearchFilter
+        {
+            get => _searchFilter;
+
+            set
             {
-                if (this.searchFilter == null)
+                if (_searchFilter != null)
                 {
-                    throw new ServiceValidationException(Strings.SearchFilterMustBeSet);
-                }
-            }
-
-            /// <summary>
-            /// Gets the name of the XML element.
-            /// </summary>
-            /// <returns>XML element name.</returns>
-            internal override string GetXmlElementName()
-            {
-                return XmlElementNames.Not;
-            }
-
-            /// <summary>
-            /// Tries to read element from XML.
-            /// </summary>
-            /// <param name="reader">The reader.</param>
-            /// <returns>True if element was read.</returns>
-            internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-            {
-                this.searchFilter = SearchFilter.LoadFromXml(reader);
-                return true;
-            }
-
-            /// <summary>
-            /// Writes the elements to XML.
-            /// </summary>
-            /// <param name="writer">The writer.</param>
-            internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-            {
-                this.SearchFilter.WriteToXml(writer);
-            }
-
-            /// <summary>
-            /// Gets or sets the search filter to negate. Available search filter classes include
-            /// SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
-            /// </summary>
-            public SearchFilter SearchFilter
-            {
-                get
-                {
-                    return this.searchFilter;
+                    _searchFilter.OnChange -= SearchFilterChanged;
                 }
 
-                set
+                SetFieldValue(ref _searchFilter, value);
+
+                if (_searchFilter != null)
                 {
-                    if (this.searchFilter != null)
-                    {
-                        this.searchFilter.OnChange -= this.SearchFilterChanged;
-                    }
-
-                    this.SetFieldValue<SearchFilter>(ref this.searchFilter, value);
-
-                    if (this.searchFilter != null)
-                    {
-                        this.searchFilter.OnChange += this.SearchFilterChanged;
-                    }
+                    _searchFilter.OnChange += SearchFilterChanged;
                 }
             }
         }

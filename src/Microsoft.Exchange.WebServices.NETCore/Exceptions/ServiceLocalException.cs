@@ -23,50 +23,52 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Runtime.Serialization;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an error that occurs when a service operation fails locally (e.g. validation error).
+/// </summary>
+[PublicAPI]
+public class ServiceLocalException : Exception
 {
-    using System;
-	using System.Runtime.Serialization;
+    /// <summary>
+    ///     ServiceLocalException Constructor.
+    /// </summary>
+    public ServiceLocalException()
+    {
+    }
 
     /// <summary>
-    /// Represents an error that occurs when a service operation fails locally (e.g. validation error).
+    ///     ServiceLocalException Constructor.
     /// </summary>
-    public class ServiceLocalException : Exception
+    /// <param name="message">Error message text.</param>
+    public ServiceLocalException(string message)
+        : base(message)
     {
-        /// <summary>
-        /// ServiceLocalException Constructor.
-        /// </summary>
-        public ServiceLocalException()
-            : base()
-        {
-        }
+    }
 
-        /// <summary>
-        /// ServiceLocalException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        public ServiceLocalException(string message)
-            : base(message)
-        {
-        }
+    /// <summary>
+    ///     ServiceLocalException Constructor.
+    /// </summary>
+    /// <param name="message">Error message text.</param>
+    /// <param name="innerException">Inner exception.</param>
+    public ServiceLocalException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        /// <summary>
-        /// ServiceLocalException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="innerException">Inner exception.</param>
-        public ServiceLocalException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceLocalException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		protected ServiceLocalException(SerializationInfo info, StreamingContext context) : base(info, context)
-	    {
-		}
-	}
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceLocalException" /> class
+    ///     with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected ServiceLocalException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
 }

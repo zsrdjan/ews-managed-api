@@ -25,6 +25,18 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[module: SuppressMessage("Exchange.Usage", "EX0031:DoNotUseUnsafeXmlParsers", Scope = "type", Target = "Microsoft.Exchange.WebServices.Data.EwsServiceMultiResponseXmlReader")]
+[module:
+    SuppressMessage(
+        "Exchange.Usage",
+        "EX0031:DoNotUseUnsafeXmlParsers",
+        Scope = "type",
+        Target = "Microsoft.Exchange.WebServices.Data.EwsServiceMultiResponseXmlReader"
+    )]
 
-[module: SuppressMessage("Exchange.Usage", "EX0031:DoNotUseUnsafeXmlParsers", Scope = "type", Target = "Microsoft.Exchange.WebServices.Data.EwsXmlReader")]
+[module:
+    SuppressMessage(
+        "Exchange.Usage",
+        "EX0031:DoNotUseUnsafeXmlParsers",
+        Scope = "type",
+        Target = "Microsoft.Exchange.WebServices.Data.EwsXmlReader"
+    )]

@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the type of aggregation to perform.
+/// </summary>
+[PublicAPI]
+public enum AggregateType
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The maximum value is calculated.
+    /// </summary>
+    Minimum,
 
     /// <summary>
-    /// Defines the type of aggregation to perform.
+    ///     The minimum value is calculated.
     /// </summary>
-    public enum AggregateType
-    {
-        /// <summary>
-        /// The maximum value is calculated.
-        /// </summary>
-        Minimum,
-
-        /// <summary>
-        /// The minimum value is calculated.
-        /// </summary>
-        Maximum
-    }
+    Maximum,
 }

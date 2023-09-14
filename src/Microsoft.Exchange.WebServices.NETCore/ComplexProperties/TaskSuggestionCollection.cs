@@ -23,56 +23,52 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.ComponentModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a collection of TaskSuggestion objects.
+/// </summary>
+[PublicAPI]
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed class TaskSuggestionCollection : ComplexPropertyCollection<TaskSuggestion>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TaskSuggestionCollection" /> class.
+    /// </summary>
+    internal TaskSuggestionCollection()
+    {
+    }
 
     /// <summary>
-    /// Represents a collection of TaskSuggestion objects.
+    ///     Initializes a new instance of the <see cref="TaskSuggestionCollection" /> class.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public sealed class TaskSuggestionCollection : ComplexPropertyCollection<TaskSuggestion>
+    /// <param name="collection">The collection of objects to include.</param>
+    internal TaskSuggestionCollection(IEnumerable<TaskSuggestion>? collection)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TaskSuggestionCollection"/> class.
-        /// </summary>
-        internal TaskSuggestionCollection()
-            : base()
-        {
-        }
+        collection?.ForEach(InternalAdd);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TaskSuggestionCollection"/> class.
-        /// </summary>
-        /// <param name="collection">The collection of objects to include.</param>
-        internal TaskSuggestionCollection(IEnumerable<TaskSuggestion> collection)
-        {
-            if (collection != null)
-            {
-                collection.ForEach(this.InternalAdd);
-            }
-        }
+    /// <summary>
+    ///     Creates the complex property.
+    /// </summary>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    /// <returns>TaskSuggestion.</returns>
+    internal override TaskSuggestion CreateComplexProperty(string xmlElementName)
+    {
+        return new TaskSuggestion();
+    }
 
-        /// <summary>
-        /// Creates the complex property.
-        /// </summary>
-        /// <param name="xmlElementName">Name of the XML element.</param>
-        /// <returns>TaskSuggestion.</returns>
-        internal override TaskSuggestion CreateComplexProperty(string xmlElementName)
-        {
-            return new TaskSuggestion();
-        }
-
-        /// <summary>
-        /// Gets the name of the collection item XML element.
-        /// </summary>
-        /// <param name="complexProperty">The complex property.</param>
-        /// <returns>XML element name.</returns>
-        internal override string GetCollectionItemXmlElementName(TaskSuggestion complexProperty)
-        {
-            return XmlElementNames.NlgTaskSuggestion;
-        }
+    /// <summary>
+    ///     Gets the name of the collection item XML element.
+    /// </summary>
+    /// <param name="complexProperty">The complex property.</param>
+    /// <returns>XML element name.</returns>
+    internal override string GetCollectionItemXmlElementName(TaskSuggestion complexProperty)
+    {
+        return XmlElementNames.NlgTaskSuggestion;
     }
 }

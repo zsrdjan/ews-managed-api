@@ -23,65 +23,41 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a client token access request
+/// </summary>
+[PublicAPI]
+public class ClientAccessTokenRequest : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
+    /// </summary>
+    /// <param name="id">id</param>
+    /// <param name="tokenType">The tokenType.</param>
+    /// <param name="scope">The scope.</param>
+    public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType, string? scope = null)
+    {
+        Id = id;
+        TokenType = tokenType;
+        Scope = scope;
+    }
 
     /// <summary>
-    /// Represents a client token access request
+    ///     Gets the App Id.
     /// </summary>
-    public class ClientAccessTokenRequest : ComplexProperty
-    {
-        private readonly string id;
-        private readonly ClientAccessTokenType tokenType;
-        private readonly string scope;
+    public string Id { get; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClientAccessTokenRequest"/> class.
-        /// </summary>
-        /// <param name="id">id</param>
-        /// <param name="tokenType">The tokenType.</param>
-        public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType): this(id, tokenType, null)
-        {
-        }
+    /// <summary>
+    ///     Gets token type.
+    /// </summary>
+    public ClientAccessTokenType TokenType { get; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClientAccessTokenRequest"/> class.
-        /// </summary>
-        /// <param name="id">id</param>
-        /// <param name="tokenType">The tokenType.</param>
-        /// <param name="scope">The scope.</param>
-        public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType, string scope)
-        {
-            this.id = id;
-            this.tokenType = tokenType;
-            this.scope = scope;
-        }
-
-        /// <summary>
-        /// Gets the App Id.
-        /// </summary>
-        public string Id
-        {
-            get { return this.id; }
-        }
-
-        /// <summary>
-        /// Gets token type.
-        /// </summary>
-        public ClientAccessTokenType TokenType
-        {
-            get { return this.tokenType; }
-        }
-
-        /// <summary>
-        /// Gets the token scope.
-        /// </summary>
-        public string Scope
-        {
-            get { return this.scope; }
-        }
-    }
+    /// <summary>
+    ///     Gets the token scope.
+    /// </summary>
+    public string? Scope { get; }
 }

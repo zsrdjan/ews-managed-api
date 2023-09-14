@@ -23,49 +23,39 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a InstallApp operation.
+///     Today this class doesn't add extra functionality. Keep this class here so future
+///     we can return extension info up-on installation complete.
+/// </summary>
+internal sealed class InstallAppResponse : ServiceResponse
 {
-    using System.Collections.ObjectModel;
-    using System.IO;
-    using System.Xml;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InstallAppResponse" /> class.
+    /// </summary>
+    public InstallAppResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents the response to a InstallApp operation.
-    /// Today this class doesn't add extra functionality. Keep this class here so future
-    /// we can return extension info up-on installation complete. 
+    ///     Reads response elements from XML.
     /// </summary>
-    internal sealed class InstallAppResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        private bool? wasFirstInstall;
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InstallAppResponse"/> class.
-        /// </summary>
-        public InstallAppResponse()
-            : base()
+        if (ErrorCode == ServiceError.NoError &&
+            reader.IsStartElement(XmlNamespace.NotSpecified, XmlElementNames.WasFirstInstall))
         {
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            if (this.ErrorCode == ServiceError.NoError && reader.IsStartElement(XmlNamespace.NotSpecified, XmlElementNames.WasFirstInstall))
-            {
-                this.wasFirstInstall = reader.ReadElementValue<bool>(XmlNamespace.NotSpecified, XmlElementNames.WasFirstInstall);
-            }
-        }
-
-        /// <summary>
-        /// Was this first install
-        /// </summary>
-        public bool? WasFirstInstall
-        {
-            get { return this.wasFirstInstall; }
+            WasFirstInstall = reader.ReadElementValue<bool>(XmlNamespace.NotSpecified, XmlElementNames.WasFirstInstall);
         }
     }
+
+    /// <summary>
+    ///     Was this first install
+    /// </summary>
+    public bool? WasFirstInstall { get; private set; }
 }

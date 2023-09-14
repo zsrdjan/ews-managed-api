@@ -23,25 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
-{
-    using System.Collections.ObjectModel;
-    using System.IO;
-    using System.Xml;
+namespace Microsoft.Exchange.WebServices.Data;
 
+/// <summary>
+///     Represents the response to a RegisterResponse operation.
+///     Today this class doesn't add extra functionality. Keep this class here so in the future
+///     we can return extension info upon installation complete.
+/// </summary>
+internal sealed class RegisterConsentResponse : ServiceResponse
+{
     /// <summary>
-    /// Represents the response to a RegisterResponse operation.
-    /// Today this class doesn't add extra functionality. Keep this class here so in the future
-    /// we can return extension info upon installation complete. 
+    ///     Initializes a new instance of the <see cref="RegisterConsentResponse" /> class.
     /// </summary>
-    internal sealed class RegisterConsentResponse : ServiceResponse
+    public RegisterConsentResponse()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RegisterConsentResponse"/> class.
-        /// </summary>
-        public RegisterConsentResponse()
-            : base()
-        {
-        }
     }
 }

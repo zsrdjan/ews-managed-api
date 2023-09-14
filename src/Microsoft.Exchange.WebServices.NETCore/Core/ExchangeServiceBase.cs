@@ -23,951 +23,823 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Xml;
+using System.Runtime.InteropServices;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an abstract binding to an Exchange Service.
+/// </summary>
+[PublicAPI]
+public abstract class ExchangeServiceBase
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-#if NETSTANDARD2_0
-    using System.Runtime.InteropServices;
-#endif
-    using System.Security.Cryptography;
-    using System.Xml;
+    #region Const members
+
+    private static readonly object LockObj = new();
 
     /// <summary>
-    /// Represents an abstract binding to an Exchange Service.
+    ///     Special HTTP status code that indicates that the account is locked.
     /// </summary>
-    public abstract class ExchangeServiceBase
+    internal const HttpStatusCode AccountIsLocked = (HttpStatusCode)456;
+
+    /// <summary>
+    ///     The binary secret.
+    /// </summary>
+    private static byte[]? _binarySecret;
+
+    #endregion
+
+
+    #region Static members
+
+    /// <summary>
+    ///     Default UserAgent
+    /// </summary>
+    private static readonly string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
+
+    #endregion
+
+
+    #region Fields
+
+    /// <summary>
+    ///     Occurs when the http response headers of a server call is captured.
+    /// </summary>
+    public event ResponseHeadersCapturedHandler? OnResponseHeadersCaptured;
+
+    private ExchangeCredentials? _credentials;
+    private bool _useDefaultCredentials;
+    private int _timeout = 100000;
+    private bool _traceEnabled;
+    private ITraceListener? _traceListener = new EwsTraceListener();
+    private string _userAgent = DefaultUserAgent;
+    private TimeZoneDefinition? _timeZoneDefinition;
+    private IEwsHttpWebRequestFactory _ewsHttpWebRequestFactory = new EwsHttpWebRequestFactory();
+
+    #endregion
+
+
+    #region Event handlers
+
+    /// <summary>
+    ///     Calls the custom SOAP header serialization event handlers, if defined.
+    /// </summary>
+    /// <param name="writer">The XmlWriter to which to write the custom SOAP headers.</param>
+    internal void DoOnSerializeCustomSoapHeaders(XmlWriter writer)
     {
-        #region Const members
-        private static readonly object lockObj = new object();
+        EwsUtilities.Assert(writer != null, "ExchangeService.DoOnSerializeCustomSoapHeaders", "writer is null");
 
-        private readonly ExchangeVersion requestedServerVersion = ExchangeVersion.Exchange2013_SP1;
+        OnSerializeCustomSoapHeaders?.Invoke(writer);
+    }
 
-        /// <summary>
-        /// Special HTTP status code that indicates that the account is locked.
-        /// </summary>
-        internal const HttpStatusCode AccountIsLocked = (HttpStatusCode)456;
-        
-        /// <summary>
-        /// The binary secret.
-        /// </summary>
-        private static byte[] binarySecret;
-        #endregion
+    #endregion
 
-        #region Static members
 
-        /// <summary>
-        /// Default UserAgent
-        /// </summary>
-        private static string defaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
+    #region Utilities
 
-        #endregion
-
-        #region Fields        
-
-        /// <summary>
-        /// Occurs when the http response headers of a server call is captured.
-        /// </summary>
-        public event ResponseHeadersCapturedHandler OnResponseHeadersCaptured;
-        
-        private ExchangeCredentials credentials;
-        private bool useDefaultCredentials;
-        private int timeout = 100000;
-        private bool traceEnabled;
-        private bool sendClientLatencies = true;
-        private TraceFlags traceFlags = TraceFlags.All;
-        private ITraceListener traceListener = new EwsTraceListener();
-        private bool preAuthenticate;
-        private string userAgent = ExchangeService.defaultUserAgent;
-        private bool acceptGzipEncoding = true;
-        private bool keepAlive = true;
-        private string connectionGroupName;
-        private string clientRequestId;
-        private bool returnClientRequestId;
-        private CookieContainer cookieContainer = new CookieContainer();
-        private TimeZoneInfo timeZone;
-        private TimeZoneDefinition timeZoneDefinition;
-        private ExchangeServerInfo serverInfo;
-        private IWebProxy webProxy;
-        private IDictionary<string, string> httpHeaders = new Dictionary<string, string>();
-        private IDictionary<string, string> httpResponseHeaders = new Dictionary<string, string>();
-        private IEwsHttpWebRequestFactory ewsHttpWebRequestFactory = new EwsHttpWebRequestFactory();  
-        #endregion
-
-        #region Event handlers
-
-        /// <summary>
-        /// Calls the custom SOAP header serialization event handlers, if defined.
-        /// </summary>
-        /// <param name="writer">The XmlWriter to which to write the custom SOAP headers.</param>
-        internal void DoOnSerializeCustomSoapHeaders(XmlWriter writer)
+    /// <summary>
+    ///     Creates an HttpWebRequest instance and initializes it with the appropriate parameters,
+    ///     based on the configuration of this service object.
+    /// </summary>
+    /// <param name="url">The URL that the HttpWebRequest should target.</param>
+    /// <param name="acceptGzipEncoding">If true, ask server for GZip compressed content.</param>
+    /// <param name="allowAutoRedirect">If true, redirection responses will be automatically followed.</param>
+    /// <returns>A initialized instance of HttpWebRequest.</returns>
+    internal IEwsHttpWebRequest PrepareHttpWebRequestForUrl(Uri url, bool acceptGzipEncoding, bool allowAutoRedirect)
+    {
+        // Verify that the protocol is something that we can handle
+        if (url.Scheme != "http" && url.Scheme != "https")
         {
-            EwsUtilities.Assert(
-                writer != null,
-                "ExchangeService.DoOnSerializeCustomSoapHeaders",
-                "writer is null");
-
-            if (this.OnSerializeCustomSoapHeaders != null)
-            {
-                this.OnSerializeCustomSoapHeaders(writer);
-            }
+            throw new ServiceLocalException(string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
         }
 
-        #endregion
-
-        #region Utilities
-
-        /// <summary>
-        /// Creates an HttpWebRequest instance and initializes it with the appropriate parameters,
-        /// based on the configuration of this service object.
-        /// </summary>
-        /// <param name="url">The URL that the HttpWebRequest should target.</param>
-        /// <param name="acceptGzipEncoding">If true, ask server for GZip compressed content.</param>
-        /// <param name="allowAutoRedirect">If true, redirection responses will be automatically followed.</param>
-        /// <returns>A initialized instance of HttpWebRequest.</returns>
-        internal IEwsHttpWebRequest PrepareHttpWebRequestForUrl(
-            Uri url,
-            bool acceptGzipEncoding,
-            bool allowAutoRedirect)
+        var request = HttpWebRequestFactory.CreateRequest(url);
+        try
         {
-            // Verify that the protocol is something that we can handle
-            if ((url.Scheme != "http") && (url.Scheme != "https"))
+            request.PreAuthenticate = PreAuthenticate;
+            request.Timeout = Timeout;
+            SetContentType(request);
+            request.Method = "POST";
+            request.UserAgent = UserAgent;
+            request.AllowAutoRedirect = allowAutoRedirect;
+            request.CookieContainer = CookieContainer;
+            request.KeepAlive = KeepAlive;
+            request.ConnectionGroupName = ConnectionGroupName;
+
+            if (acceptGzipEncoding)
             {
-                throw new ServiceLocalException(string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
+                request.Headers.AcceptEncoding.ParseAdd("gzip,deflate");
             }
 
-            IEwsHttpWebRequest request = this.HttpWebRequestFactory.CreateRequest(url);
-            try
+            if (!string.IsNullOrEmpty(ClientRequestId))
             {
-
-                request.PreAuthenticate = this.PreAuthenticate;
-                request.Timeout = this.Timeout;
-                this.SetContentType(request);
-                request.Method = "POST";
-                request.UserAgent = this.UserAgent;
-                request.AllowAutoRedirect = allowAutoRedirect;
-                request.CookieContainer = this.CookieContainer;
-                request.KeepAlive = this.keepAlive;
-                request.ConnectionGroupName = this.connectionGroupName;
-
-                if (acceptGzipEncoding)
+                request.Headers.TryAddWithoutValidation("client-request-id", ClientRequestId);
+                if (ReturnClientRequestId)
                 {
-                    request.Headers.AcceptEncoding.ParseAdd("gzip,deflate");
+                    request.Headers.TryAddWithoutValidation("return-client-request-id", "true");
+                }
+            }
+
+            if (WebProxy != null)
+            {
+                request.Proxy = WebProxy;
+            }
+
+            if (HttpHeaders.Count > 0)
+            {
+                foreach (var (key, value) in HttpHeaders)
+                {
+                    request.Headers.TryAddWithoutValidation(key, value);
+                }
+            }
+
+            request.UseDefaultCredentials = UseDefaultCredentials;
+            if (!request.UseDefaultCredentials)
+            {
+                var serviceCredentials = Credentials;
+                if (serviceCredentials == null)
+                {
+                    throw new ServiceLocalException(Strings.CredentialsRequired);
                 }
 
-                if (!string.IsNullOrEmpty(this.clientRequestId))
-                {
-                    request.Headers.TryAddWithoutValidation("client-request-id", this.clientRequestId);
-                    if (this.returnClientRequestId)
-                    {
-                        request.Headers.TryAddWithoutValidation("return-client-request-id", "true");
-                    }
-                }
-
-                if (this.webProxy != null)
-                {
-                    request.Proxy = this.webProxy;
-                }
-
-                if (this.HttpHeaders.Count > 0)
-                {
-                    this.HttpHeaders.ForEach((kv) => request.Headers.TryAddWithoutValidation(kv.Key, kv.Value));
-                }
-
-                request.UseDefaultCredentials = this.UseDefaultCredentials;
-                if (!request.UseDefaultCredentials)
-                {
-                    ExchangeCredentials serviceCredentials = this.Credentials;
-                    if (serviceCredentials == null)
-                    {
-                        throw new ServiceLocalException(Strings.CredentialsRequired);
-                    }
-
-#if NETSTANDARD2_0
                 // Temporary fix for authentication on Linux platform
                 if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
-#endif
-
-                    // Make sure that credentials have been authenticated if required
-                    serviceCredentials.PreAuthenticate();
-
-                    // Apply credentials to the request
-                    serviceCredentials.PrepareWebRequest(request);
-                }
-
-                lock (this.httpResponseHeaders)
                 {
-                    this.httpResponseHeaders.Clear();
+                    serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
                 }
 
-                return request;
+                // Make sure that credentials have been authenticated if required
+                serviceCredentials.PreAuthenticate();
+
+                // Apply credentials to the request
+                serviceCredentials.PrepareWebRequest(request);
             }
-            catch (Exception)
+
+            lock (HttpResponseHeaders)
             {
-                request.Dispose();
-                throw;
+                HttpResponseHeaders.Clear();
             }
+
+            return request;
         }
-
-        internal ExchangeCredentials AdjustLinuxAuthentication(Uri url, ExchangeCredentials serviceCredentials)
+        catch (Exception)
         {
-            if (!(serviceCredentials is WebCredentials))
-                // Nothing to adjust
-                return serviceCredentials;
+            request.Dispose();
+            throw;
+        }
+    }
 
-            var networkCredentials = ((WebCredentials)serviceCredentials).Credentials as NetworkCredential;
-            if (networkCredentials != null)
-            {
-                CredentialCache credentialCache = new CredentialCache();
-                credentialCache.Add(url, "NTLM", networkCredentials);
-                credentialCache.Add(url, "Digest", networkCredentials);
-                credentialCache.Add(url, "Basic", networkCredentials);
-
-                serviceCredentials = credentialCache;
-            }
+    internal static ExchangeCredentials AdjustLinuxAuthentication(Uri url, ExchangeCredentials serviceCredentials)
+    {
+        if (serviceCredentials is not WebCredentials webCredentials)
+        {
+            // Nothing to adjust
             return serviceCredentials;
         }
 
-        internal virtual void SetContentType(IEwsHttpWebRequest request)
+        if (webCredentials.Credentials is NetworkCredential networkCredentials)
         {
-            request.ContentType = "text/xml; charset=utf-8";
-            request.Accept = "text/xml";
+            var credentialCache = new CredentialCache
+            {
+                // @formatter:off
+                { url, "NTLM", networkCredentials },
+                { url, "Digest", networkCredentials },
+                { url, "Basic", networkCredentials },
+                // @formatter:on
+            };
+
+            serviceCredentials = credentialCache;
         }
 
-        /// <summary>
-        /// Processes an HTTP error response
-        /// </summary>
-        /// <param name="httpWebResponse">The HTTP web response.</param>
-        /// <param name="webException">The web exception.</param>
-        /// <param name="responseHeadersTraceFlag">The trace flag for response headers.</param>
-        /// <param name="responseTraceFlag">The trace flag for responses.</param>
-        /// <remarks>
-        /// This method doesn't handle 500 ISE errors. This is handled by the caller since
-        /// 500 ISE typically indicates that a SOAP fault has occurred and the handling of
-        /// a SOAP fault is currently service specific.
-        /// </remarks>
-        internal void InternalProcessHttpErrorResponse(
-                            IEwsHttpWebResponse httpWebResponse,
-                            EwsHttpClientException webException,
-                            TraceFlags responseHeadersTraceFlag,
-                            TraceFlags responseTraceFlag)
+        return serviceCredentials;
+    }
+
+    internal virtual void SetContentType(IEwsHttpWebRequest request)
+    {
+        request.ContentType = "text/xml; charset=utf-8";
+        request.Accept = "text/xml";
+    }
+
+    /// <summary>
+    ///     Processes an HTTP error response
+    /// </summary>
+    /// <param name="httpWebResponse">The HTTP web response.</param>
+    /// <param name="webException">The web exception.</param>
+    /// <param name="responseHeadersTraceFlag">The trace flag for response headers.</param>
+    /// <param name="responseTraceFlag">The trace flag for responses.</param>
+    /// <remarks>
+    ///     This method doesn't handle 500 ISE errors. This is handled by the caller since
+    ///     500 ISE typically indicates that a SOAP fault has occurred and the handling of
+    ///     a SOAP fault is currently service specific.
+    /// </remarks>
+    internal void InternalProcessHttpErrorResponse(
+        IEwsHttpWebResponse httpWebResponse,
+        EwsHttpClientException webException,
+        TraceFlags responseHeadersTraceFlag,
+        TraceFlags responseTraceFlag
+    )
+    {
+        EwsUtilities.Assert(
+            httpWebResponse.StatusCode != HttpStatusCode.InternalServerError,
+            "ExchangeServiceBase.InternalProcessHttpErrorResponse",
+            "InternalProcessHttpErrorResponse does not handle 500 ISE errors, the caller is supposed to handle this."
+        );
+
+        ProcessHttpResponseHeaders(responseHeadersTraceFlag, httpWebResponse);
+
+        // Deal with new HTTP error code indicating that account is locked.
+        // The "unlock" URL is returned as the status description in the response.
+        if (httpWebResponse.StatusCode == AccountIsLocked)
         {
-            EwsUtilities.Assert(
-                httpWebResponse.StatusCode != HttpStatusCode.InternalServerError,
-                "ExchangeServiceBase.InternalProcessHttpErrorResponse",
-                "InternalProcessHttpErrorResponse does not handle 500 ISE errors, the caller is supposed to handle this.");
+            var location = httpWebResponse.StatusDescription;
 
-            this.ProcessHttpResponseHeaders(responseHeadersTraceFlag, httpWebResponse);
-
-            // Deal with new HTTP error code indicating that account is locked.
-            // The "unlock" URL is returned as the status description in the response.
-            if (httpWebResponse.StatusCode == ExchangeServiceBase.AccountIsLocked)
+            Uri? accountUnlockUrl = null;
+            if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
             {
-                string location = httpWebResponse.StatusDescription;
+                accountUnlockUrl = new Uri(location);
+            }
 
-                Uri accountUnlockUrl = null;
-                if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
+            TraceMessage(responseTraceFlag, $"Account is locked. Unlock URL is {accountUnlockUrl}");
+
+            throw new AccountIsLockedException(
+                string.Format(Strings.AccountIsLocked, accountUnlockUrl),
+                accountUnlockUrl,
+                webException
+            );
+        }
+    }
+
+    /// <summary>
+    ///     Processes an HTTP error response.
+    /// </summary>
+    /// <param name="httpWebResponse">The HTTP web response.</param>
+    /// <param name="webException">The web exception.</param>
+    internal abstract void ProcessHttpErrorResponse(
+        IEwsHttpWebResponse httpWebResponse,
+        EwsHttpClientException webException
+    );
+
+    /// <summary>
+    ///     Determines whether tracing is enabled for specified trace flag(s).
+    /// </summary>
+    /// <param name="traceFlags">The trace flags.</param>
+    /// <returns>
+    ///     True if tracing is enabled for specified trace flag(s).
+    /// </returns>
+    [MemberNotNullWhen(true, nameof(TraceListener))]
+    internal bool IsTraceEnabledFor(TraceFlags traceFlags)
+    {
+        return TraceEnabled && (TraceFlags & traceFlags) != 0;
+    }
+
+    /// <summary>
+    ///     Logs the specified string to the TraceListener if tracing is enabled.
+    /// </summary>
+    /// <param name="traceType">Kind of trace entry.</param>
+    /// <param name="logEntry">The entry to log.</param>
+    internal void TraceMessage(TraceFlags traceType, string logEntry)
+    {
+        if (IsTraceEnabledFor(traceType))
+        {
+            var traceTypeStr = traceType.ToString();
+            var logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, logEntry);
+            TraceListener.Trace(traceTypeStr, logMessage);
+        }
+    }
+
+    /// <summary>
+    ///     Logs the specified XML to the TraceListener if tracing is enabled.
+    /// </summary>
+    /// <param name="traceType">Kind of trace entry.</param>
+    /// <param name="stream">The stream containing XML.</param>
+    internal void TraceXml(TraceFlags traceType, MemoryStream stream)
+    {
+        if (IsTraceEnabledFor(traceType))
+        {
+            var traceTypeStr = traceType.ToString();
+            var logMessage = EwsUtilities.FormatLogMessageWithXmlContent(traceTypeStr, stream);
+            TraceListener.Trace(traceTypeStr, logMessage);
+        }
+    }
+
+    /// <summary>
+    ///     Traces the HTTP request headers.
+    /// </summary>
+    /// <param name="traceType">Kind of trace entry.</param>
+    /// <param name="request">The request.</param>
+    internal void TraceHttpRequestHeaders(TraceFlags traceType, IEwsHttpWebRequest request)
+    {
+        if (IsTraceEnabledFor(traceType))
+        {
+            var traceTypeStr = traceType.ToString();
+            var headersAsString = EwsUtilities.FormatHttpRequestHeaders(request);
+            var logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
+            TraceListener.Trace(traceTypeStr, logMessage);
+        }
+    }
+
+    /// <summary>
+    ///     Traces the HTTP response headers.
+    /// </summary>
+    /// <param name="traceType">Kind of trace entry.</param>
+    /// <param name="response">The response.</param>
+    internal void ProcessHttpResponseHeaders(TraceFlags traceType, IEwsHttpWebResponse response)
+    {
+        TraceHttpResponseHeaders(traceType, response);
+
+        SaveHttpResponseHeaders(response.Headers);
+    }
+
+    /// <summary>
+    ///     Traces the HTTP response headers.
+    /// </summary>
+    /// <param name="traceType">Kind of trace entry.</param>
+    /// <param name="response">The response.</param>
+    private void TraceHttpResponseHeaders(TraceFlags traceType, IEwsHttpWebResponse response)
+    {
+        if (IsTraceEnabledFor(traceType))
+        {
+            var traceTypeStr = traceType.ToString();
+            var headersAsString = EwsUtilities.FormatHttpResponseHeaders(response);
+            var logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
+            TraceListener.Trace(traceTypeStr, logMessage);
+        }
+    }
+
+    /// <summary>
+    ///     Save the HTTP response headers.
+    /// </summary>
+    /// <param name="headers">The response headers</param>
+    private void SaveHttpResponseHeaders(HttpResponseHeaders headers)
+    {
+        lock (HttpResponseHeaders)
+        {
+            HttpResponseHeaders.Clear();
+
+            foreach (var (key, value) in headers)
+            {
+                if (HttpResponseHeaders.TryGetValue(key, out var existingValue))
                 {
-                    accountUnlockUrl = new Uri(location);
-                }
-
-                this.TraceMessage(responseTraceFlag, string.Format("Account is locked. Unlock URL is {0}", accountUnlockUrl));
-
-                throw new AccountIsLockedException(
-                    string.Format(Strings.AccountIsLocked, accountUnlockUrl),
-                    accountUnlockUrl,
-                    webException);
-            }
-        }
-
-        /// <summary>
-        /// Processes an HTTP error response.
-        /// </summary>
-        /// <param name="httpWebResponse">The HTTP web response.</param>
-        /// <param name="webException">The web exception.</param>
-        internal abstract void ProcessHttpErrorResponse(IEwsHttpWebResponse httpWebResponse, EwsHttpClientException webException);
-
-        /// <summary>
-        /// Determines whether tracing is enabled for specified trace flag(s).
-        /// </summary>
-        /// <param name="traceFlags">The trace flags.</param>
-        /// <returns>True if tracing is enabled for specified trace flag(s).
-        /// </returns>
-        internal bool IsTraceEnabledFor(TraceFlags traceFlags)
-        {
-            return this.TraceEnabled && ((this.TraceFlags & traceFlags) != 0);
-        }
-
-        /// <summary>
-        /// Logs the specified string to the TraceListener if tracing is enabled.
-        /// </summary>
-        /// <param name="traceType">Kind of trace entry.</param>
-        /// <param name="logEntry">The entry to log.</param>
-        internal void TraceMessage(TraceFlags traceType, string logEntry)
-        {
-            if (this.IsTraceEnabledFor(traceType))
-            {
-                string traceTypeStr = traceType.ToString();
-                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, logEntry);
-                this.TraceListener.Trace(traceTypeStr, logMessage);
-            }
-        }
-
-        /// <summary>
-        /// Logs the specified XML to the TraceListener if tracing is enabled.
-        /// </summary>
-        /// <param name="traceType">Kind of trace entry.</param>
-        /// <param name="stream">The stream containing XML.</param>
-        internal void TraceXml(TraceFlags traceType, MemoryStream stream)
-        {
-            if (this.IsTraceEnabledFor(traceType))
-            {
-                string traceTypeStr = traceType.ToString();
-                string logMessage = EwsUtilities.FormatLogMessageWithXmlContent(traceTypeStr, stream);
-                this.TraceListener.Trace(traceTypeStr, logMessage);
-            }
-        }
-
-        /// <summary>
-        /// Traces the HTTP request headers.
-        /// </summary>
-        /// <param name="traceType">Kind of trace entry.</param>
-        /// <param name="request">The request.</param>
-        internal void TraceHttpRequestHeaders(TraceFlags traceType, IEwsHttpWebRequest request)
-        {
-            if (this.IsTraceEnabledFor(traceType))
-            {
-                string traceTypeStr = traceType.ToString();
-                string headersAsString = EwsUtilities.FormatHttpRequestHeaders(request);
-                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
-                this.TraceListener.Trace(traceTypeStr, logMessage);
-            }
-        }
-
-        /// <summary>
-        /// Traces the HTTP response headers.
-        /// </summary>
-        /// <param name="traceType">Kind of trace entry.</param>
-        /// <param name="response">The response.</param>
-        internal void ProcessHttpResponseHeaders(TraceFlags traceType, IEwsHttpWebResponse response)
-        {
-            this.TraceHttpResponseHeaders(traceType, response);
-
-            this.SaveHttpResponseHeaders(response.Headers);
-        }
-
-        /// <summary>
-        /// Traces the HTTP response headers.
-        /// </summary>
-        /// <param name="traceType">Kind of trace entry.</param>
-        /// <param name="response">The response.</param>
-        private void TraceHttpResponseHeaders(TraceFlags traceType, IEwsHttpWebResponse response)
-        {
-            if (this.IsTraceEnabledFor(traceType))
-            {
-                string traceTypeStr = traceType.ToString();
-                string headersAsString = EwsUtilities.FormatHttpResponseHeaders(response);
-                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
-                this.TraceListener.Trace(traceTypeStr, logMessage);
-            }
-        }
-
-        /// <summary>
-        /// Save the HTTP response headers.
-        /// </summary>
-        /// <param name="headers">The response headers</param>
-        private void SaveHttpResponseHeaders(HttpResponseHeaders headers)
-        {
-            lock (this.httpResponseHeaders)
-            {
-                this.httpResponseHeaders.Clear();
-
-                foreach (var item in headers)
-                {
-                    var key = item.Key;
-                    string existingValue;
-
-                    if (this.httpResponseHeaders.TryGetValue(key, out existingValue))
-                    {
-                        this.httpResponseHeaders[key] = existingValue + "," + string.Join(",", item.Value);
-                    }
-                    else
-                    {
-                        this.httpResponseHeaders.Add(key, string.Join(",", item.Value));
-                    }
-                }
-            }
-
-            if (this.OnResponseHeadersCaptured != null)
-            {
-                this.OnResponseHeadersCaptured(headers);
-            }
-        }
-
-        /// <summary>
-        /// Converts the universal date time string to local date time.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>DateTime</returns>
-        internal DateTime? ConvertUniversalDateTimeStringToLocalDateTime(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-            else
-            {
-                // Assume an unbiased date/time is in UTC. Convert to UTC otherwise.
-                DateTime dateTime = DateTime.Parse(
-                    value,
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal);
-
-                if (this.TimeZone == TimeZoneInfo.Utc)
-                {
-                    // This returns a DateTime with Kind.Utc
-                    return dateTime;
+                    HttpResponseHeaders[key] = existingValue + "," + string.Join(",", value);
                 }
                 else
                 {
-                    DateTime localTime = EwsUtilities.ConvertTime(
-                        dateTime,
-                        TimeZoneInfo.Utc,
-                        this.TimeZone);
-
-                    if (EwsUtilities.IsLocalTimeZone(this.TimeZone))
-                    {
-                        // This returns a DateTime with Kind.Local
-                        return new DateTime(localTime.Ticks, DateTimeKind.Local);
-                    }
-                    else
-                    {
-                        // This returns a DateTime with Kind.Unspecified
-                        return localTime;
-                    }
+                    HttpResponseHeaders.Add(key, string.Join(",", value));
                 }
             }
         }
 
-        /// <summary>
-        /// Converts xs:dateTime string with either "Z", "-00:00" bias, or "" suffixes to 
-        /// unspecified StartDate value ignoring the suffix.
-        /// </summary>
-        /// <param name="value">The string value to parse.</param>
-        /// <returns>The parsed DateTime value.</returns>
-        internal DateTime? ConvertStartDateToUnspecifiedDateTime(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-            else
-            {
-                DateTimeOffset dateTimeOffset = DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
-
-                // Return only the date part with the kind==Unspecified.
-                return dateTimeOffset.Date;
-            }
-        }
-
-        /// <summary>
-        /// Converts the date time to universal date time string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>String representation of DateTime.</returns>
-        internal string ConvertDateTimeToUniversalDateTimeString(DateTime value)
-        {
-            DateTime dateTime;
-
-            switch (value.Kind)
-            {
-                case DateTimeKind.Unspecified:
-                    dateTime = EwsUtilities.ConvertTime(
-                        value,
-                        this.TimeZone,
-                        TimeZoneInfo.Utc);
-
-                    break;
-                case DateTimeKind.Local:
-                    dateTime = EwsUtilities.ConvertTime(
-                        value,
-                        TimeZoneInfo.Local,
-                        TimeZoneInfo.Utc);
-
-                    break;
-                default:
-                    // The date is already in UTC, no need to convert it.
-                    dateTime = value;
-
-                    break;
-            }
-            return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// Register the custom auth module to support non-ascii upn authentication if the server supports that 
-        /// </summary>
-        internal void RegisterCustomBasicAuthModule()
-        {
-            if (this.RequestedServerVersion >= ExchangeVersion.Exchange2013_SP1)
-            {
-                //BasicAuthModuleForUTF8.InstantiateIfNeeded();
-            }
-        }
-
-        /// <summary>
-        /// Sets the user agent to a custom value
-        /// </summary>
-        /// <param name="userAgent">User agent string to set on the service</param>
-        internal void SetCustomUserAgent(string userAgent)
-        {
-            this.userAgent = userAgent;
-        }
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExchangeServiceBase"/> class.
-        /// </summary>
-        internal ExchangeServiceBase()
-            : this(TimeZoneInfo.Local)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExchangeServiceBase"/> class.
-        /// </summary>
-        /// <param name="timeZone">The time zone to which the service is scoped.</param>
-        internal ExchangeServiceBase(TimeZoneInfo timeZone)
-        {
-            this.timeZone = timeZone;
-            this.UseDefaultCredentials = true;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExchangeServiceBase"/> class.
-        /// </summary>
-        /// <param name="requestedServerVersion">The requested server version.</param>
-        internal ExchangeServiceBase(ExchangeVersion requestedServerVersion)
-            : this(requestedServerVersion, TimeZoneInfo.Local)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExchangeServiceBase"/> class.
-        /// </summary>
-        /// <param name="requestedServerVersion">The requested server version.</param>
-        /// <param name="timeZone">The time zone to which the service is scoped.</param>
-        internal ExchangeServiceBase(ExchangeVersion requestedServerVersion, TimeZoneInfo timeZone)
-            : this(timeZone)
-        {
-            this.requestedServerVersion = requestedServerVersion;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExchangeServiceBase"/> class.
-        /// </summary>
-        /// <param name="service">The other service.</param>
-        /// <param name="requestedServerVersion">The requested server version.</param>
-        internal ExchangeServiceBase(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
-            : this(requestedServerVersion)
-        {
-            this.useDefaultCredentials = service.useDefaultCredentials;
-            this.credentials = service.credentials;
-            this.traceEnabled = service.traceEnabled;
-            this.traceListener = service.traceListener;
-            this.traceFlags = service.traceFlags;
-            this.timeout = service.timeout;
-            this.preAuthenticate = service.preAuthenticate;
-            this.userAgent = service.userAgent;
-            this.acceptGzipEncoding = service.acceptGzipEncoding;
-            this.keepAlive = service.keepAlive;
-            this.connectionGroupName = service.connectionGroupName;
-            this.timeZone = service.timeZone;
-            this.httpHeaders = service.httpHeaders;
-            this.ewsHttpWebRequestFactory = service.ewsHttpWebRequestFactory;
-            this.webProxy = service.webProxy;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExchangeServiceBase"/> class from existing one.
-        /// </summary>
-        /// <param name="service">The other service.</param>
-        internal ExchangeServiceBase(ExchangeServiceBase service)
-            : this(service, service.RequestedServerVersion)
-        {
-        }
-
-        #endregion
-
-        #region Validation
-
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        internal virtual void Validate()
-        {            
-        }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the cookie container.
-        /// </summary>
-        /// <value>The cookie container.</value>
-        public CookieContainer CookieContainer
-        {
-            get { return this.cookieContainer; }
-            set { this.cookieContainer = value; }
-        }
-
-        /// <summary>
-        /// Gets the time zone this service is scoped to.
-        /// </summary>
-        internal TimeZoneInfo TimeZone
-        {
-            get { return this.timeZone; }
-        }
-
-        /// <summary>
-        /// Gets a time zone definition generated from the time zone info to which this service is scoped.
-        /// </summary>
-        public TimeZoneDefinition TimeZoneDefinition
-        {
-            get
-            {
-                if (this.timeZoneDefinition == null)
-                {
-                    this.timeZoneDefinition = new TimeZoneDefinition(this.TimeZone);
-                }
-
-                return this.timeZoneDefinition;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether client latency info is push to server.
-        /// </summary>
-        public bool SendClientLatencies
-        {
-            get
-            {
-                return this.sendClientLatencies;
-            }
-
-            set
-            {
-                this.sendClientLatencies = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether tracing is enabled.
-        /// </summary>
-        public bool TraceEnabled
-        {
-            get
-            {
-                return this.traceEnabled;
-            }
-
-            set
-            {
-                this.traceEnabled = value;
-                if (this.traceEnabled && (this.traceListener == null))
-                {
-                    this.traceListener = new EwsTraceListener();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the trace flags.
-        /// </summary>
-        /// <value>The trace flags.</value>
-        public TraceFlags TraceFlags
-        {
-            get
-            {
-                return this.traceFlags;
-            }
-
-            set
-            {
-                this.traceFlags = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the trace listener.
-        /// </summary>
-        /// <value>The trace listener.</value>
-        public ITraceListener TraceListener
-        {
-            get
-            {
-                return this.traceListener;
-            }
-
-            set
-            {
-                this.traceListener = value;
-                this.traceEnabled = value != null;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the credentials used to authenticate with the Exchange Web Services. Setting the Credentials property
-        /// automatically sets the UseDefaultCredentials to false.
-        /// </summary>
-        public ExchangeCredentials Credentials
-        {
-            get
-            {
-                return this.credentials;
-            }
-
-            set
-            {
-                this.credentials = value;
-                this.useDefaultCredentials = false;
-                this.cookieContainer = new CookieContainer();       // Changing credentials resets the Cookie container
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the credentials of the user currently logged into Windows should be used to
-        /// authenticate with the Exchange Web Services. Setting UseDefaultCredentials to true automatically sets the Credentials
-        /// property to null.
-        /// </summary>
-        public bool UseDefaultCredentials
-        {
-            get
-            {
-                return this.useDefaultCredentials;
-            }
-
-            set
-            {
-                this.useDefaultCredentials = value;
-
-                if (value)
-                {
-                    this.credentials = null;
-                    this.cookieContainer = new CookieContainer();   // Changing credentials resets the Cookie container
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds.
-        /// Defaults to 100000.
-        /// </summary>
-        public int Timeout
-        {
-            get
-            {
-                return this.timeout;
-            }
-
-            set
-            {
-                if (value < 1)
-                {
-                    throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
-                }
-
-                this.timeout = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value that indicates whether HTTP pre-authentication should be performed.
-        /// </summary>
-        public bool PreAuthenticate
-        {
-            get { return this.preAuthenticate; }
-            set { this.preAuthenticate = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether GZip compression encoding should be accepted.
-        /// </summary>
-        /// <remarks>
-        /// This value will tell the server that the client is able to handle GZip compression encoding. The server
-        /// will only send Gzip compressed content if it has been configured to do so.
-        /// </remarks>
-        public bool AcceptGzipEncoding
-        {
-            get { return this.acceptGzipEncoding; }
-            set { this.acceptGzipEncoding = value; }
-        }
-
-        /// <summary>
-        /// Gets the requested server version.
-        /// </summary>
-        /// <value>The requested server version.</value>
-        public ExchangeVersion RequestedServerVersion
-        {
-            get { return this.requestedServerVersion; }
-        }
-
-        /// <summary>
-        /// Gets or sets the user agent.
-        /// </summary>
-        /// <value>The user agent.</value>
-        public string UserAgent
-        {
-            get { return this.userAgent; }
-            set { this.userAgent = value + " (" + ExchangeService.defaultUserAgent + ")"; }
-        }
-
-        /// <summary>
-        /// Gets information associated with the server that processed the last request.
-        /// Will be null if no requests have been processed.
-        /// </summary>
-        public ExchangeServerInfo ServerInfo
-        {
-            get { return this.serverInfo; }
-            internal set { this.serverInfo = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the web proxy that should be used when sending requests to EWS.
-        /// Set this property to null to use the default web proxy.
-        /// </summary>
-        public IWebProxy WebProxy
-        {
-            get { return this.webProxy; }
-            set { this.webProxy = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value Keep-alive
-        /// </summary>
-        public bool KeepAlive
-        {
-            get
-            {
-                return this.keepAlive;
-            }
-
-            set
-            {
-                this.keepAlive = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of the connection group for the request. 
-        /// </summary>
-        public string ConnectionGroupName
-        {
-            get
-            {
-                return this.connectionGroupName;
-            }
-
-            set
-            {
-                this.connectionGroupName = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the request id for the request.
-        /// </summary>
-        public string ClientRequestId
-        {
-            get { return this.clientRequestId; }
-            set { this.clientRequestId = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a flag to indicate whether the client requires the server side to return the  request id.
-        /// </summary>
-        public bool ReturnClientRequestId
-        {
-            get { return this.returnClientRequestId; }
-            set { this.returnClientRequestId = value; }
-        }
-
-        /// <summary>
-        /// Gets a collection of HTTP headers that will be sent with each request to EWS.
-        /// </summary>
-        public IDictionary<string, string> HttpHeaders
-        {
-            get { return this.httpHeaders; }
-        }
-
-        /// <summary>
-        /// Gets a collection of HTTP headers from the last response.
-        /// </summary>
-        public IDictionary<string, string> HttpResponseHeaders
-        {
-            get { return this.httpResponseHeaders; }
-        }
-
-        /// <summary>
-        /// Gets the session key.
-        /// </summary>
-        internal static byte[] SessionKey
-        {
-            get
-            {
-                // this has to be computed only once.
-                lock (ExchangeServiceBase.lockObj)
-                {
-                    if (ExchangeServiceBase.binarySecret == null)
-                    {
-                        RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
-                        ExchangeServiceBase.binarySecret = new byte[256 / 8];
-                        randomNumberGenerator.GetBytes(binarySecret);
-                    }
-
-                    return ExchangeServiceBase.binarySecret;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the HTTP web request factory.
-        /// </summary>
-        internal IEwsHttpWebRequestFactory HttpWebRequestFactory
-        {
-            get { return this.ewsHttpWebRequestFactory; }
-
-            set
-            {
-                // If new value is null, reset to default factory.
-                this.ewsHttpWebRequestFactory = (value == null) ? new EwsHttpWebRequestFactory() : value;
-            }
-        }
-
-        /// <summary>
-        /// For testing: suppresses generation of the SOAP version header.
-        /// </summary>
-        internal bool SuppressXmlVersionHeader { get; set; }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to Exchange.
-        /// </summary>
-        public event CustomXmlSerializationDelegate OnSerializeCustomSoapHeaders;
-
-        #endregion
+        OnResponseHeadersCaptured?.Invoke(headers);
     }
+
+    /// <summary>
+    ///     Converts the universal date time string to local date time.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>DateTime</returns>
+    internal DateTime? ConvertUniversalDateTimeStringToLocalDateTime(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
+        }
+
+        // Assume an unbiased date/time is in UTC. Convert to UTC otherwise.
+        var dateTime = DateTime.Parse(
+            value,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal
+        );
+
+        if (TimeZone.Equals(TimeZoneInfo.Utc))
+        {
+            // This returns a DateTime with Kind.Utc
+            return dateTime;
+        }
+
+        var localTime = EwsUtilities.ConvertTime(dateTime, TimeZoneInfo.Utc, TimeZone);
+
+        if (EwsUtilities.IsLocalTimeZone(TimeZone))
+        {
+            // This returns a DateTime with Kind.Local
+            return new DateTime(localTime.Ticks, DateTimeKind.Local);
+        }
+
+        // This returns a DateTime with Kind.Unspecified
+        return localTime;
+    }
+
+    /// <summary>
+    ///     Converts xs:dateTime string with either "Z", "-00:00" bias, or "" suffixes to
+    ///     unspecified StartDate value ignoring the suffix.
+    /// </summary>
+    /// <param name="value">The string value to parse.</param>
+    /// <returns>The parsed DateTime value.</returns>
+    internal static DateTime? ConvertStartDateToUnspecifiedDateTime(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
+        }
+
+        var dateTimeOffset = DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
+
+        // Return only the date part with the kind==Unspecified.
+        return dateTimeOffset.Date;
+    }
+
+    /// <summary>
+    ///     Converts the date time to universal date time string.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>String representation of DateTime.</returns>
+    internal string ConvertDateTimeToUniversalDateTimeString(DateTime value)
+    {
+        DateTime dateTime;
+
+        switch (value.Kind)
+        {
+            case DateTimeKind.Unspecified:
+            {
+                dateTime = EwsUtilities.ConvertTime(value, TimeZone, TimeZoneInfo.Utc);
+                break;
+            }
+            case DateTimeKind.Local:
+            {
+                dateTime = EwsUtilities.ConvertTime(value, TimeZoneInfo.Local, TimeZoneInfo.Utc);
+                break;
+            }
+            default:
+            {
+                // The date is already in UTC, no need to convert it.
+                dateTime = value;
+                break;
+            }
+        }
+
+        return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    ///     Register the custom auth module to support non-ascii upn authentication if the server supports that
+    /// </summary>
+    internal void RegisterCustomBasicAuthModule()
+    {
+        if (RequestedServerVersion >= ExchangeVersion.Exchange2013_SP1)
+        {
+            //BasicAuthModuleForUTF8.InstantiateIfNeeded();
+        }
+    }
+
+    /// <summary>
+    ///     Sets the user agent to a custom value
+    /// </summary>
+    /// <param name="userAgent">User agent string to set on the service</param>
+    internal void SetCustomUserAgent(string userAgent)
+    {
+        _userAgent = userAgent;
+    }
+
+    #endregion
+
+
+    #region Constructors
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    internal ExchangeServiceBase()
+        : this(TimeZoneInfo.Local)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    internal ExchangeServiceBase(TimeZoneInfo timeZone)
+    {
+        TimeZone = timeZone;
+        UseDefaultCredentials = true;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="requestedServerVersion">The requested server version.</param>
+    internal ExchangeServiceBase(ExchangeVersion requestedServerVersion)
+        : this(requestedServerVersion, TimeZoneInfo.Local)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="requestedServerVersion">The requested server version.</param>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    internal ExchangeServiceBase(ExchangeVersion requestedServerVersion, TimeZoneInfo timeZone)
+        : this(timeZone)
+    {
+        RequestedServerVersion = requestedServerVersion;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="service">The other service.</param>
+    /// <param name="requestedServerVersion">The requested server version.</param>
+    internal ExchangeServiceBase(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
+        : this(requestedServerVersion)
+    {
+        _useDefaultCredentials = service._useDefaultCredentials;
+        _credentials = service._credentials;
+        _traceEnabled = service._traceEnabled;
+        _traceListener = service._traceListener;
+        TraceFlags = service.TraceFlags;
+        _timeout = service._timeout;
+        PreAuthenticate = service.PreAuthenticate;
+        _userAgent = service._userAgent;
+        AcceptGzipEncoding = service.AcceptGzipEncoding;
+        KeepAlive = service.KeepAlive;
+        ConnectionGroupName = service.ConnectionGroupName;
+        TimeZone = service.TimeZone;
+        HttpHeaders = service.HttpHeaders;
+        _ewsHttpWebRequestFactory = service._ewsHttpWebRequestFactory;
+        WebProxy = service.WebProxy;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class from existing one.
+    /// </summary>
+    /// <param name="service">The other service.</param>
+    internal ExchangeServiceBase(ExchangeServiceBase service)
+        : this(service, service.RequestedServerVersion)
+    {
+    }
+
+    #endregion
+
+
+    #region Validation
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal virtual void Validate()
+    {
+    }
+
+    #endregion
+
+
+    #region Properties
+
+    /// <summary>
+    ///     Gets or sets the cookie container.
+    /// </summary>
+    /// <value>The cookie container.</value>
+    public CookieContainer CookieContainer { get; set; } = new();
+
+    /// <summary>
+    ///     Gets the time zone this service is scoped to.
+    /// </summary>
+    internal TimeZoneInfo TimeZone { get; }
+
+    /// <summary>
+    ///     Gets a time zone definition generated from the time zone info to which this service is scoped.
+    /// </summary>
+    public TimeZoneDefinition TimeZoneDefinition => _timeZoneDefinition ??= new TimeZoneDefinition(TimeZone);
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether client latency info is push to server.
+    /// </summary>
+    public bool SendClientLatencies { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether tracing is enabled.
+    /// </summary>
+    [MemberNotNullWhen(true, nameof(_traceListener))]
+    public bool TraceEnabled
+    {
+        get => _traceEnabled;
+
+        set
+        {
+            _traceEnabled = value;
+            if (_traceEnabled && _traceListener == null)
+            {
+                _traceListener = new EwsTraceListener();
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the trace flags.
+    /// </summary>
+    /// <value>The trace flags.</value>
+    public TraceFlags TraceFlags { get; set; } = TraceFlags.All;
+
+    /// <summary>
+    ///     Gets or sets the trace listener.
+    /// </summary>
+    /// <value>The trace listener.</value>
+    public ITraceListener? TraceListener
+    {
+        get => _traceListener;
+
+        set
+        {
+            _traceListener = value;
+            _traceEnabled = value != null;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the credentials used to authenticate with the Exchange Web Services. Setting the Credentials property
+    ///     automatically sets the UseDefaultCredentials to false.
+    /// </summary>
+    public ExchangeCredentials? Credentials
+    {
+        get => _credentials;
+
+        set
+        {
+            _credentials = value;
+            _useDefaultCredentials = false;
+            CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the credentials of the user currently logged into Windows should be used to
+    ///     authenticate with the Exchange Web Services. Setting UseDefaultCredentials to true automatically sets the
+    ///     Credentials
+    ///     property to null.
+    /// </summary>
+    public bool UseDefaultCredentials
+    {
+        get => _useDefaultCredentials;
+
+        set
+        {
+            _useDefaultCredentials = value;
+
+            if (value)
+            {
+                _credentials = null;
+                CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds.
+    ///     Defaults to 100000.
+    /// </summary>
+    public int Timeout
+    {
+        get => _timeout;
+
+        set
+        {
+            if (value < 1)
+            {
+                throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
+            }
+
+            _timeout = value;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets a value that indicates whether HTTP pre-authentication should be performed.
+    /// </summary>
+    public bool PreAuthenticate { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether GZip compression encoding should be accepted.
+    /// </summary>
+    /// <remarks>
+    ///     This value will tell the server that the client is able to handle GZip compression encoding. The server
+    ///     will only send Gzip compressed content if it has been configured to do so.
+    /// </remarks>
+    public bool AcceptGzipEncoding { get; set; } = true;
+
+    /// <summary>
+    ///     Gets the requested server version.
+    /// </summary>
+    /// <value>The requested server version.</value>
+    public ExchangeVersion RequestedServerVersion { get; } = ExchangeVersion.Exchange2013_SP1;
+
+    /// <summary>
+    ///     Gets or sets the user agent.
+    /// </summary>
+    /// <value>The user agent.</value>
+    public string UserAgent
+    {
+        get => _userAgent;
+        set => _userAgent = value + " (" + DefaultUserAgent + ")";
+    }
+
+    /// <summary>
+    ///     Gets information associated with the server that processed the last request.
+    ///     Will be null if no requests have been processed.
+    /// </summary>
+    public ExchangeServerInfo ServerInfo { get; internal set; }
+
+    /// <summary>
+    ///     Gets or sets the web proxy that should be used when sending requests to EWS.
+    ///     Set this property to null to use the default web proxy.
+    /// </summary>
+    public IWebProxy? WebProxy { get; set; }
+
+    /// <summary>
+    ///     Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value
+    ///     Keep-alive
+    /// </summary>
+    public bool KeepAlive { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets the name of the connection group for the request.
+    /// </summary>
+    public string ConnectionGroupName { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the request id for the request.
+    /// </summary>
+    public string ClientRequestId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a flag to indicate whether the client requires the server side to return the  request id.
+    /// </summary>
+    public bool ReturnClientRequestId { get; set; }
+
+    /// <summary>
+    ///     Gets a collection of HTTP headers that will be sent with each request to EWS.
+    /// </summary>
+    public IDictionary<string, string> HttpHeaders { get; } = new Dictionary<string, string>();
+
+    /// <summary>
+    ///     Gets a collection of HTTP headers from the last response.
+    /// </summary>
+    public IDictionary<string, string> HttpResponseHeaders { get; } = new Dictionary<string, string>();
+
+    /// <summary>
+    ///     Gets the session key.
+    /// </summary>
+    internal static byte[] SessionKey
+    {
+        get
+        {
+            // this has to be computed only once.
+            lock (LockObj)
+            {
+                if (_binarySecret == null)
+                {
+                    var randomNumberGenerator = RandomNumberGenerator.Create();
+                    _binarySecret = new byte[256 / 8];
+                    randomNumberGenerator.GetBytes(_binarySecret);
+                }
+
+                return _binarySecret;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the HTTP web request factory.
+    /// </summary>
+    internal IEwsHttpWebRequestFactory? HttpWebRequestFactory
+    {
+        get => _ewsHttpWebRequestFactory;
+
+        // If new value is null, reset to default factory.
+        set => _ewsHttpWebRequestFactory = value ?? new EwsHttpWebRequestFactory();
+    }
+
+    /// <summary>
+    ///     For testing: suppresses generation of the SOAP version header.
+    /// </summary>
+    internal bool SuppressXmlVersionHeader { get; set; }
+
+    #endregion
+
+
+    #region Events
+
+    /// <summary>
+    ///     Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to
+    ///     Exchange.
+    /// </summary>
+    public event CustomXmlSerializationDelegate? OnSerializeCustomSoapHeaders;
+
+    #endregion
 }

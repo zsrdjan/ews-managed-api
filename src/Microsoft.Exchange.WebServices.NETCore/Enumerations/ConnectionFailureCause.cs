@@ -23,40 +23,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     The ConnectionFailureCause enumeration
+/// </summary>
+[PublicAPI]
+public enum ConnectionFailureCause
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     None
+    /// </summary>
+    None,
 
     /// <summary>
-    /// The ConnectionFailureCause enumeration
+    ///     UserBusy
     /// </summary>
-    public enum ConnectionFailureCause
-    {
-        /// <summary>
-        /// None
-        /// </summary>
-        None,
+    UserBusy,
 
-        /// <summary>
-        /// UserBusy
-        /// </summary>
-        UserBusy,
+    /// <summary>
+    ///     NoAnswer
+    /// </summary>
+    NoAnswer,
 
-        /// <summary>
-        /// NoAnswer
-        /// </summary>
-        NoAnswer,
+    /// <summary>
+    ///     Unavailable
+    /// </summary>
+    Unavailable,
 
-        /// <summary>
-        /// Unavailable
-        /// </summary>
-        Unavailable,
-
-        /// <summary>
-        /// Other
-        /// </summary>
-        Other
-    }
+    /// <summary>
+    ///     Other
+    /// </summary>
+    Other,
 }

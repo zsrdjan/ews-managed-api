@@ -23,20 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
-{
-    using System;
+using JetBrains.Annotations;
 
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     ITraceListener handles message tracing.
+/// </summary>
+[PublicAPI]
+public interface ITraceListener
+{
     /// <summary>
-    /// ITraceListener handles message tracing.
+    ///     Handles a trace message
     /// </summary>
-    public interface ITraceListener
-    {
-        /// <summary>
-        /// Handles a trace message
-        /// </summary>
-        /// <param name="traceType">Type of trace message.</param>
-        /// <param name="traceMessage">The trace message.</param>
-        void Trace(string traceType, string traceMessage);
-    }
+    /// <param name="traceType">Type of trace message.</param>
+    /// <param name="traceMessage">The trace message.</param>
+    void Trace(string traceType, string traceMessage);
 }

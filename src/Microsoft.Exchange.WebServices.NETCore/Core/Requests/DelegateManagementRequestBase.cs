@@ -23,94 +23,78 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an abstract delegate management request.
+/// </summary>
+/// <typeparam name="TResponse">The type of the response.</typeparam>
+internal abstract class DelegateManagementRequestBase<TResponse> : SimpleServiceRequestBase
+    where TResponse : DelegateManagementResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DelegateManagementRequestBase&lt;TResponse&gt;" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal DelegateManagementRequestBase(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
-    /// Represents an abstract delegate management request.
+    ///     Validate request.
     /// </summary>
-    /// <typeparam name="TResponse">The type of the response.</typeparam>
-    internal abstract class DelegateManagementRequestBase<TResponse> : SimpleServiceRequestBase
-        where TResponse : DelegateManagementResponse
+    internal override void Validate()
     {
-        private Mailbox mailbox;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateManagementRequestBase&lt;TResponse&gt;"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        internal DelegateManagementRequestBase(ExchangeService service)
-            : base(service)
-        {
-        }
-
-        /// <summary>
-        /// Validate request.
-        /// </summary>
-        internal override void Validate()
-        {
-            base.Validate();
-            EwsUtilities.ValidateParam(this.Mailbox, "Mailbox");
-        }
-
-        /// <summary>
-        /// Writes XML elements.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            this.Mailbox.WriteToXml(
-                writer,
-                XmlNamespace.Messages,
-                XmlElementNames.Mailbox);
-        }
-
-        /// <summary>
-        /// Creates the response.
-        /// </summary>
-        /// <returns>Response object.</returns>
-        internal abstract TResponse CreateResponse();
-
-        /// <summary>
-        /// Parses the response.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>Response object.</returns>
-        internal override object ParseResponse(EwsServiceXmlReader reader)
-        {
-            DelegateManagementResponse response = this.CreateResponse();
-
-            response.LoadFromXml(reader, this.GetResponseXmlElementName());
-
-            return response;
-        }
-
-        /// <summary>
-        /// Executes this request.
-        /// </summary>
-        /// <returns>Response object.</returns>
-        internal async Task<TResponse> Execute(CancellationToken token)
-        {
-            TResponse serviceResponse = (TResponse)await this.InternalExecuteAsync(token).ConfigureAwait(false);
-
-            serviceResponse.ThrowIfNecessary();
-
-            return serviceResponse;
-        }
-
-        /// <summary>
-        /// Gets or sets the mailbox.
-        /// </summary>
-        /// <value>The mailbox.</value>
-        public Mailbox Mailbox
-        {
-            get { return this.mailbox; }
-            set { this.mailbox = value; }
-        }
+        base.Validate();
+        EwsUtilities.ValidateParam(Mailbox);
     }
+
+    /// <summary>
+    ///     Writes XML elements.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        Mailbox.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.Mailbox);
+    }
+
+    /// <summary>
+    ///     Creates the response.
+    /// </summary>
+    /// <returns>Response object.</returns>
+    internal abstract TResponse CreateResponse();
+
+    /// <summary>
+    ///     Parses the response.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>Response object.</returns>
+    internal override object ParseResponse(EwsServiceXmlReader reader)
+    {
+        DelegateManagementResponse response = CreateResponse();
+
+        response.LoadFromXml(reader, GetResponseXmlElementName());
+
+        return response;
+    }
+
+    /// <summary>
+    ///     Executes this request.
+    /// </summary>
+    /// <returns>Response object.</returns>
+    internal async Task<TResponse> Execute(CancellationToken token)
+    {
+        var serviceResponse = await InternalExecuteAsync<TResponse>(token).ConfigureAwait(false);
+
+        serviceResponse.ThrowIfNecessary();
+
+        return serviceResponse;
+    }
+
+    /// <summary>
+    ///     Gets or sets the mailbox.
+    /// </summary>
+    /// <value>The mailbox.</value>
+    public Mailbox Mailbox { get; set; }
 }

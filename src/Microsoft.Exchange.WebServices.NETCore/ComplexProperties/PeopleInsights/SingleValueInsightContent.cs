@@ -23,75 +23,96 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the SingleValueInsightContent.
+/// </summary>
+[PublicAPI]
+public sealed class SingleValueInsightContent : ComplexProperty
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    /// <summary>
+    ///     Gets the Item
+    /// </summary>
+    public InsightValue? Item { get; internal set; }
 
     /// <summary>
-    /// Represents the SingleValueInsightContent.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class SingleValueInsightContent : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Gets the Item
-        /// </summary>
-        public InsightValue Item { get; internal set; }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+        switch (reader.ReadAttributeValue("xsi:type"))
         {
-            switch (reader.ReadAttributeValue("xsi:type"))
+            case XmlElementNames.StringInsightValue:
             {
-                case XmlElementNames.StringInsightValue:
-                    this.Item = new StringInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.ProfileInsightValue:
-                    this.Item = new ProfileInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.JobInsightValue:
-                    this.Item = new JobInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.UserProfilePicture:
-                    this.Item = new UserProfilePicture();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.EducationInsightValue:
-                    this.Item = new EducationInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.SkillInsightValue:
-                    this.Item = new SkillInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.DelveDocument:
-                    this.Item = new DelveDocument();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.CompanyInsightValue:
-                    this.Item = new CompanyInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.ComputedInsightValue:
-                    this.Item = new ComputedInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.OutOfOfficeInsightValue:
-                    this.Item = new OutOfOfficeInsightValue();
-                    this.Item.LoadFromXml(reader, reader.LocalName);
-                    break;
-                default:
-                    return false;
+                Item = new StringInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
             }
-
-            return true;
+            case XmlElementNames.ProfileInsightValue:
+            {
+                Item = new ProfileInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.JobInsightValue:
+            {
+                Item = new JobInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.UserProfilePicture:
+            {
+                Item = new UserProfilePicture();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.EducationInsightValue:
+            {
+                Item = new EducationInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.SkillInsightValue:
+            {
+                Item = new SkillInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.DelveDocument:
+            {
+                Item = new DelveDocument();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.CompanyInsightValue:
+            {
+                Item = new CompanyInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.ComputedInsightValue:
+            {
+                Item = new ComputedInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.OutOfOfficeInsightValue:
+            {
+                Item = new OutOfOfficeInsightValue();
+                Item.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            default:
+            {
+                return false;
+            }
         }
-    }   
+
+        return true;
+    }
 }

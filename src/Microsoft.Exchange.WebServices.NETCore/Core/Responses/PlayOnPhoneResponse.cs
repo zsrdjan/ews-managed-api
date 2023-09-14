@@ -23,54 +23,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a PlayOnPhone operation
+/// </summary>
+internal sealed class PlayOnPhoneResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PlayOnPhoneResponse" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal PlayOnPhoneResponse(ExchangeService service)
+    {
+        EwsUtilities.Assert(service != null, "PlayOnPhoneResponse.ctor", "service is null");
+
+        PhoneCallId = new PhoneCallId();
+    }
 
     /// <summary>
-    /// Represents the response to a PlayOnPhone operation
+    ///     Reads response elements from XML.
     /// </summary>
-    internal sealed class PlayOnPhoneResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        private PhoneCallId phoneCallId;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PlayOnPhoneResponse"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        internal PlayOnPhoneResponse(ExchangeService service)
-            : base()
-        {
-            EwsUtilities.Assert(
-                service != null,
-                "PlayOnPhoneResponse.ctor",
-                "service is null");
-
-            this.phoneCallId = new PhoneCallId();
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.PhoneCallId);
-            this.phoneCallId.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
-            reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.PhoneCallId);
-        }
-
-        /// <summary>
-        /// Gets the Id of the phone call.
-        /// </summary>
-        internal PhoneCallId PhoneCallId
-        {
-            get
-            {
-                return this.phoneCallId;
-            }
-        }
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.PhoneCallId);
+        PhoneCallId.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
+        reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.PhoneCallId);
     }
+
+    /// <summary>
+    ///     Gets the Id of the phone call.
+    /// </summary>
+    internal PhoneCallId PhoneCallId { get; }
 }

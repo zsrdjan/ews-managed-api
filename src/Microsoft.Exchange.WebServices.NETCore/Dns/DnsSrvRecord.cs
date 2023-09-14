@@ -23,112 +23,82 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Dns
+using System.Runtime.InteropServices;
+
+namespace Microsoft.Exchange.WebServices.Dns;
+
+/// <summary>
+///     Represents a DNS SRV Record.
+/// </summary>
+internal class DnsSrvRecord : DnsRecord
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
+    /// <summary>
+    ///     Initializes a new instance of the DnsSrvRecord class.
+    /// </summary>
+    /// <param name="header">Dns dnsRecord header</param>
+    /// <param name="dataPointer">Pointer to the data portion of the dnsRecord</param>
+    internal override void Load(DnsRecordHeader header, IntPtr dataPointer)
+    {
+        base.Load(header, dataPointer);
+
+        var record = Marshal.PtrToStructure<Win32DnsSrvRecord>(dataPointer);
+        NameTarget = record.NameTarget;
+        Priority = record.Priority;
+        Weight = record.Weight;
+        Port = record.Port;
+    }
 
     /// <summary>
-    /// Represents a DNS SRV Record.
+    ///     Gets the matching type of DNS dnsRecord.
     /// </summary>
-    internal class DnsSrvRecord : DnsRecord
+    /// <value>The type of the dnsRecord.</value>
+    internal override DnsRecordType RecordType => DnsRecordType.SRV;
+
+    /// <summary>
+    ///     Get the name target field of the DNS dnsRecord.
+    /// </summary>
+    internal string NameTarget { get; private set; }
+
+    /// <summary>
+    ///     Get the priority field of this DNS SRV Record.
+    /// </summary>
+    internal int Priority { get; private set; }
+
+    /// <summary>
+    ///     Get the weight field of this DNS SRV Record.
+    /// </summary>
+    internal int Weight { get; private set; }
+
+    /// <summary>
+    ///     Gets the port field of the DNS SRV dnsRecord.
+    /// </summary>
+    internal int Port { get; private set; }
+
+    /// <summary>
+    ///     Win32DnsSrvRecord - native format SRV dnsRecord returned by DNS API
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct Win32DnsSrvRecord
     {
-        /// <summary>The string representing the target host</summary>
-        private string target;
+        /// <summary>Represents the common DNS record header.</summary>
+        public DnsRecordHeader Header;
 
-        /// <summary>priority of the target host specified in the owner name.</summary>
-        private int priority;
+        /// <summary>Represents the target host.</summary>
+        public string NameTarget;
 
-        /// <summary>weight of the target host</summary>
-        private int weight;
-
-        /// <summary>port used on the target for the service.</summary>
-        private int port;
+        /// <summary>Priority of the target host specified in the owner name. Lower numbers imply higher priority.</summary>
+        public ushort Priority;
 
         /// <summary>
-        /// Initializes a new instance of the DnsSrvRecord class.
+        ///     Weight of the target host. Useful when selecting among hosts with the same priority.
+        ///     The chances of using this host should be proportional to its weight
         /// </summary>
-        /// <param name="header">Dns dnsRecord header</param>
-        /// <param name="dataPointer">Pointer to the data portion of the dnsRecord</param>
-        internal override void Load(DnsRecordHeader header, IntPtr dataPointer)
-        {
-            base.Load(header, dataPointer);
+        public ushort Weight;
 
-            Win32DnsSrvRecord record = Marshal.PtrToStructure<Win32DnsSrvRecord>(dataPointer);
-            this.target = record.NameTarget;
-            this.priority = record.Priority;
-            this.weight = record.Weight;
-            this.port = record.Port;
-        }
+        /// <summary>Port used on the target host for the service.</summary>
+        public ushort Port;
 
-        /// <summary>
-        /// Gets the matching type of DNS dnsRecord.
-        /// </summary>
-        /// <value>The type of the dnsRecord.</value>
-        internal override DnsRecordType RecordType
-        {
-            get { return DnsRecordType.SRV; }
-        }
-
-        /// <summary>
-        /// Get the name target field of the DNS dnsRecord.
-        /// </summary>
-        internal string NameTarget
-        {
-            get { return this.target; }
-        }
-
-        /// <summary>
-        /// Gwet the priority field of this DNS SRV Record.
-        /// </summary>
-        internal int Priority
-        {
-            get { return this.priority; }
-        }
-
-        /// <summary>
-        /// Get the weight field of this DNS SRV Record.
-        /// </summary>
-        internal int Weight
-        {
-            get { return this.weight; }
-        }
-
-        /// <summary>
-        /// Gets the port field of the DNS SRV dnsRecord.
-        /// </summary>
-        internal int Port
-        {
-            get { return this.port; }
-        }
-
-        /// <summary>
-        ///  Win32DnsSrvRecord - native format SRV dnsRecord returned by DNS API
-        /// </summary>
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct Win32DnsSrvRecord
-        {
-            /// <summary>Represents the common DNS record header.</summary>
-            public DnsRecordHeader Header;
-
-            /// <summary>Represents the target host.</summary>
-            public string NameTarget;
-
-            /// <summary>Priority of the target host specified in the owner name. Lower numbers imply higher priority.</summary>
-            public UInt16 Priority;
-
-            /// <summary>
-            /// Weight of the target host. Useful when selecting among hosts with the same priority. 
-            /// The chances of using this host should be proportional to its weight
-            /// </summary>
-            public UInt16 Weight;
-
-            /// <summary>Port used on the target host for the service.</summary>
-            public UInt16 Port;
-
-            /// <summary>Reserved. Used to keep pointers DWORD aligned.</summary>
-            public UInt16 Pad; // keep ptrs ulong aligned
-        }
+        /// <summary>Reserved. Used to keep pointers DWORD aligned.</summary>
+        public ushort Pad; // keep ptrs ulong aligned
     }
 }

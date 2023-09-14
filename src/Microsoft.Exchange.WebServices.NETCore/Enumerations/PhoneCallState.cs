@@ -23,55 +23,53 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     The PhoneCallState enumeration
+/// </summary>
+[PublicAPI]
+public enum PhoneCallState
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Idle
+    /// </summary>
+    Idle,
 
     /// <summary>
-    /// The PhoneCallState enumeration
+    ///     Connecting
     /// </summary>
-    public enum PhoneCallState
-    {
-        /// <summary>
-        /// Idle
-        /// </summary>
-        Idle,
+    Connecting,
 
-        /// <summary>
-        /// Connecting
-        /// </summary>
-        Connecting,
+    /// <summary>
+    ///     Alerted
+    /// </summary>
+    Alerted,
 
-        /// <summary>
-        /// Alerted
-        /// </summary>
-        Alerted,
+    /// <summary>
+    ///     Connected
+    /// </summary>
+    Connected,
 
-        /// <summary>
-        /// Connected
-        /// </summary>
-        Connected,
+    /// <summary>
+    ///     Disconnected
+    /// </summary>
+    Disconnected,
 
-        /// <summary>
-        /// Disconnected
-        /// </summary>
-        Disconnected,
+    /// <summary>
+    ///     Incoming
+    /// </summary>
+    Incoming,
 
-        /// <summary>
-        /// Incoming
-        /// </summary>
-        Incoming,
+    /// <summary>
+    ///     Transferring
+    /// </summary>
+    Transferring,
 
-        /// <summary>
-        /// Transferring
-        /// </summary>
-        Transferring,
-
-        /// <summary>
-        /// Forwarding
-        /// </summary>
-        Forwarding
-    }
+    /// <summary>
+    ///     Forwarding
+    /// </summary>
+    Forwarding,
 }

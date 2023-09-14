@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,21 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Lists the names of various sources of people
+/// </summary>
+[PublicAPI]
+public sealed class PeopleQuerySource
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
+    /// <summary>The users mailbox</summary>
+    public const string Mailbox = "Mailbox";
 
-    /// <summary>
-    /// Lists the names of various sources of people
-    /// </summary>
-    public sealed class PeopleQuerySource
-    {
-        /// <summary>The users mailbox</summary>
-        public static readonly string Mailbox = "Mailbox";
-
-        /// <summary>The users directory</summary>
-        public static readonly string Directory = "Directory";
-    }
+    /// <summary>The users directory</summary>
+    public const string Directory = "Directory";
 }

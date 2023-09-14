@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines a logical operator as used by search filter collections.
+/// </summary>
+[PublicAPI]
+public enum LogicalOperator
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The AND operator.
+    /// </summary>
+    And,
 
     /// <summary>
-    /// Defines a logical operator as used by search filter collections.
+    ///     The OR operator.
     /// </summary>
-    public enum LogicalOperator
-    {
-        /// <summary>
-        /// The AND operator.
-        /// </summary>
-        And,
-
-        /// <summary>
-        /// The OR operator.
-        /// </summary>
-        Or
-    }
+    Or,
 }

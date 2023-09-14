@@ -23,59 +23,48 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to an individual attachment deletion operation.
+/// </summary>
+[PublicAPI]
+public sealed class DeleteAttachmentResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DeleteAttachmentResponse" /> class.
+    /// </summary>
+    /// <param name="attachment">The attachment.</param>
+    internal DeleteAttachmentResponse(Attachment attachment)
+    {
+        EwsUtilities.Assert(attachment != null, "DeleteAttachmentResponse.ctor", "attachment is null");
+
+        Attachment = attachment;
+    }
 
     /// <summary>
-    /// Represents the response to an individual attachment deletion operation.
+    ///     Reads response elements from XML.
     /// </summary>
-    public sealed class DeleteAttachmentResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        private Attachment attachment;
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteAttachmentResponse"/> class.
-        /// </summary>
-        /// <param name="attachment">The attachment.</param>
-        internal DeleteAttachmentResponse(Attachment attachment)
-            : base()
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootItemId);
+
+        var changeKey = reader.ReadAttributeValue(XmlAttributeNames.RootItemChangeKey);
+        if (!string.IsNullOrEmpty(changeKey) && Attachment.Owner != null)
         {
-            EwsUtilities.Assert(
-                attachment != null,
-                "DeleteAttachmentResponse.ctor",
-                "attachment is null");
-
-            this.attachment = attachment;
+            Attachment.Owner.RootItemId.ChangeKey = changeKey;
         }
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RootItemId);
-
-            string changeKey = reader.ReadAttributeValue(XmlAttributeNames.RootItemChangeKey);
-            if (!string.IsNullOrEmpty(changeKey) && this.attachment.Owner != null)
-            {
-                this.attachment.Owner.RootItemId.ChangeKey = changeKey;
-            }
-
-            reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RootItemId);
-        }
-
-        /// <summary>
-        /// Gets the attachment that was deleted.
-        /// </summary>
-        internal Attachment Attachment
-        {
-            get { return this.attachment; }
-        }
+        reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RootItemId);
     }
+
+    /// <summary>
+    ///     Gets the attachment that was deleted.
+    /// </summary>
+    internal Attachment Attachment { get; }
 }

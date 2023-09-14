@@ -23,290 +23,217 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a rule that automatically handles incoming messages.
+///     A rule consists of a set of conditions and exceptions that determine whether or
+///     not a set of actions should be executed on incoming messages.
+/// </summary>
+[PublicAPI]
+public sealed class Rule : ComplexProperty
 {
     /// <summary>
-    /// Represents a rule that automatically handles incoming messages.
-    /// A rule consists of a set of conditions and exceptions that determine whether or 
-    /// not a set of actions should be executed on incoming messages.
+    ///     The rule ID.
     /// </summary>
-    public sealed class Rule : ComplexProperty
+    private string _ruleId;
+
+    /// <summary>
+    ///     The rule display name.
+    /// </summary>
+    private string _displayName;
+
+    /// <summary>
+    ///     The rule priority.
+    /// </summary>
+    private int _priority;
+
+    /// <summary>
+    ///     The rule status of enabled or not.
+    /// </summary>
+    private bool _isEnabled;
+
+    /// <summary>
+    ///     The rule status of in error or not.
+    /// </summary>
+    private bool _isInError;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Rule" /> class.
+    /// </summary>
+    public Rule()
     {
-        /// <summary>
-        /// The rule ID.
-        /// </summary>
-        private string ruleId;
+        //// New rule has priority as 0 by default
+        _priority = 1;
+        //// New rule is enabled by default
+        _isEnabled = true;
+        Conditions = new RulePredicates();
+        Actions = new RuleActions();
+        Exceptions = new RulePredicates();
+    }
 
-        /// <summary>
-        /// The rule display name.
-        /// </summary>
-        private string displayName;
+    /// <summary>
+    ///     Gets or sets the Id of this rule.
+    /// </summary>
+    public string Id
+    {
+        get => _ruleId;
+        set => SetFieldValue(ref _ruleId, value);
+    }
 
-        /// <summary>
-        /// The rule priority.
-        /// </summary>
-        private int priority;
+    /// <summary>
+    ///     Gets or sets the name of this rule as it should be displayed to the user.
+    /// </summary>
+    public string DisplayName
+    {
+        get => _displayName;
+        set => SetFieldValue(ref _displayName, value);
+    }
 
-        /// <summary>
-        /// The rule status of enabled or not.
-        /// </summary>
-        private bool isEnabled;
+    /// <summary>
+    ///     Gets or sets the priority of this rule, which determines its execution order.
+    /// </summary>
+    public int Priority
+    {
+        get => _priority;
+        set => SetFieldValue(ref _priority, value);
+    }
 
-        /// <summary>
-        /// The rule status of is supported or not.
-        /// </summary>
-        private bool isNotSupported;
+    /// <summary>
+    ///     Gets or sets a value indicating whether this rule is enabled.
+    /// </summary>
+    public bool IsEnabled
+    {
+        get => _isEnabled;
+        set => SetFieldValue(ref _isEnabled, value);
+    }
 
-        /// <summary>
-        /// The rule status of in error or not.
-        /// </summary>
-        private bool isInError;
-        
-        /// <summary>
-        /// The rule conditions. 
-        /// </summary>
-        private RulePredicates conditions;
+    /// <summary>
+    ///     Gets a value indicating whether this rule can be modified via EWS.
+    ///     If IsNotSupported is true, the rule cannot be modified via EWS.
+    /// </summary>
+    public bool IsNotSupported { get; private set; }
 
-        /// <summary>
-        /// The rule actions. 
-        /// </summary>
-        private RuleActions actions;
-        
-        /// <summary>
-        /// The rule exceptions. 
-        /// </summary>
-        private RulePredicates exceptions;
+    /// <summary>
+    ///     Gets or sets a value indicating whether this rule has errors. A rule that is in error
+    ///     cannot be processed unless it is updated and the error is corrected.
+    /// </summary>
+    public bool IsInError
+    {
+        get => _isInError;
+        set => SetFieldValue(ref _isInError, value);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Rule"/> class.
-        /// </summary>
-        public Rule()
-            : base()
+    /// <summary>
+    ///     Gets the conditions that determine whether or not this rule should be
+    ///     executed against incoming messages.
+    /// </summary>
+    public RulePredicates Conditions { get; }
+
+    /// <summary>
+    ///     Gets the actions that should be executed against incoming messages if the
+    ///     conditions evaluate as true.
+    /// </summary>
+    public RuleActions Actions { get; }
+
+    /// <summary>
+    ///     Gets the exceptions that determine if this rule should be skipped even if
+    ///     its conditions evaluate to true.
+    /// </summary>
+    public RulePredicates Exceptions { get; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            //// New rule has priority as 0 by default
-            this.priority = 1;
-            //// New rule is enabled by default
-            this.isEnabled = true;
-            this.conditions = new RulePredicates();
-            this.actions = new RuleActions();
-            this.exceptions = new RulePredicates();
-        }
-
-        /// <summary>
-        /// Gets or sets the Id of this rule.
-        /// </summary>
-        public string Id
-        {
-            get
+            case XmlElementNames.DisplayName:
             {
-                return this.ruleId;
+                _displayName = reader.ReadElementValue();
+                return true;
             }
-
-            set
+            case XmlElementNames.RuleId:
             {
-                this.SetFieldValue<string>(ref this.ruleId, value);
+                _ruleId = reader.ReadElementValue();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of this rule as it should be displayed to the user.
-        /// </summary>
-        public string DisplayName
-        {
-            get
+            case XmlElementNames.Priority:
             {
-                return this.displayName;
+                _priority = reader.ReadElementValue<int>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsEnabled:
             {
-                this.SetFieldValue<string>(ref this.displayName, value);
+                _isEnabled = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the priority of this rule, which determines its execution order.
-        /// </summary>
-        public int Priority
-        {
-            get
+            case XmlElementNames.IsNotSupported:
             {
-                return this.priority;
+                IsNotSupported = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsInError:
             {
-                this.SetFieldValue<int>(ref this.priority, value);
+                _isInError = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this rule is enabled.
-        /// </summary>
-        public bool IsEnabled
-        {
-            get
+            case XmlElementNames.Conditions:
             {
-                return this.isEnabled;
+                Conditions.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-
-            set
+            case XmlElementNames.Actions:
             {
-                this.SetFieldValue<bool>(ref this.isEnabled, value);
+                Actions.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this rule can be modified via EWS. 
-        /// If IsNotSupported is true, the rule cannot be modified via EWS.
-        /// </summary>
-        public bool IsNotSupported
-        {
-            get
+            case XmlElementNames.Exceptions:
             {
-                return this.isNotSupported;
+                Exceptions.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this rule has errors. A rule that is in error 
-        /// cannot be processed unless it is updated and the error is corrected.
-        /// </summary>
-        public bool IsInError
-        {
-            get
+            default:
             {
-                return this.isInError;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.isInError, value);
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets the conditions that determine whether or not this rule should be
-        /// executed against incoming messages.
-        /// </summary>
-        public RulePredicates Conditions
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (!string.IsNullOrEmpty(Id))
         {
-            get
-            {
-                return this.conditions;
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RuleId, Id);
         }
 
-        /// <summary>
-        /// Gets the actions that should be executed against incoming messages if the
-        /// conditions evaluate as true.
-        /// </summary>
-        public RuleActions Actions
-        {
-            get
-            {
-                return this.actions;
-            }
-        }
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DisplayName, DisplayName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Priority, Priority);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsEnabled, IsEnabled);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsInError, IsInError);
+        Conditions.WriteToXml(writer, XmlElementNames.Conditions);
+        Exceptions.WriteToXml(writer, XmlElementNames.Exceptions);
+        Actions.WriteToXml(writer, XmlElementNames.Actions);
+    }
 
-        /// <summary>
-        /// Gets the exceptions that determine if this rule should be skipped even if 
-        /// its conditions evaluate to true.
-        /// </summary>
-        public RulePredicates Exceptions
-        {
-            get
-            {
-                return this.exceptions;
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.DisplayName:
-                    this.displayName = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.RuleId:
-                    this.ruleId = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.Priority:
-                    this.priority = reader.ReadElementValue<int>();
-                    return true;
-                case XmlElementNames.IsEnabled:
-                    this.isEnabled = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsNotSupported:
-                    this.isNotSupported = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsInError:
-                    this.isInError = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.Conditions:
-                    this.conditions.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.Actions:
-                    this.actions.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.Exceptions:
-                    this.exceptions.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            if (!string.IsNullOrEmpty(this.Id))
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.RuleId, 
-                    this.Id);
-            }
-
-            writer.WriteElementValue(
-                XmlNamespace.Types, 
-                XmlElementNames.DisplayName, 
-                this.DisplayName);
-            writer.WriteElementValue(
-                XmlNamespace.Types, 
-                XmlElementNames.Priority, 
-                this.Priority);
-            writer.WriteElementValue(
-                XmlNamespace.Types, 
-                XmlElementNames.IsEnabled, 
-                this.IsEnabled);
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.IsInError,
-                this.IsInError);
-            this.Conditions.WriteToXml(writer, XmlElementNames.Conditions);
-            this.Exceptions.WriteToXml(writer, XmlElementNames.Exceptions);
-            this.Actions.WriteToXml(writer, XmlElementNames.Actions);
-        }
-
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        internal override void InternalValidate()
-        {
-            base.InternalValidate();
-            EwsUtilities.ValidateParam(this.displayName, "DisplayName");
-            EwsUtilities.ValidateParam(this.conditions, "Conditions");
-            EwsUtilities.ValidateParam(this.exceptions, "Exceptions");
-            EwsUtilities.ValidateParam(this.actions, "Actions");
-        }
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+        EwsUtilities.ValidateParam(_displayName, "DisplayName");
+        EwsUtilities.ValidateParam(Conditions);
+        EwsUtilities.ValidateParam(Exceptions);
+        EwsUtilities.ValidateParam(Actions);
     }
 }

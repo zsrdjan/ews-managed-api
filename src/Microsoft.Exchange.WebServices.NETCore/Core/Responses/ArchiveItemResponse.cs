@@ -23,66 +23,58 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a response to a Move or Copy operation.
+/// </summary>
+[PublicAPI]
+public sealed class ArchiveItemResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ArchiveItemResponse" /> class.
+    /// </summary>
+    internal ArchiveItemResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents a response to a Move or Copy operation.
+    ///     Gets Item instance.
     /// </summary>
-    public sealed class ArchiveItemResponse : ServiceResponse
+    /// <param name="service">The service.</param>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    /// <returns>Item.</returns>
+    private Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        private Item item;
+        return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ArchiveItemResponse"/> class.
-        /// </summary>
-        internal ArchiveItemResponse()
-            : base()
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        base.ReadElementsFromXml(reader);
+
+        var items = reader.ReadServiceObjectsCollectionFromXml(
+            XmlElementNames.Items,
+            GetObjectInstance,
+            false,
+            null,
+            false
+        );
+
+        if (items.Count > 0)
         {
-        }
-
-        /// <summary>
-        /// Gets Item instance.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="xmlElementName">Name of the XML element.</param>
-        /// <returns>Item.</returns>
-        private Item GetObjectInstance(ExchangeService service, string xmlElementName)
-        {
-            return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            List<Item> items = reader.ReadServiceObjectsCollectionFromXml<Item>(
-                XmlElementNames.Items,
-                this.GetObjectInstance,
-                false,  /* clearPropertyBag */
-                null,   /* requestedPropertySet */
-                false); /* summaryPropertiesOnly */
-
-            if (items.Count > 0)
-            {
-                this.item = items[0];
-            }
-        }
-
-        /// <summary>
-        /// Gets the copied or moved item.
-        /// </summary>
-        public Item Item
-        {
-            get { return this.item; }
+            Item = items[0];
         }
     }
+
+    /// <summary>
+    ///     Gets the copied or moved item.
+    /// </summary>
+    public Item Item { get; private set; }
 }

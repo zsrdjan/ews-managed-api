@@ -23,117 +23,115 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the retention tag of an item.
+/// </summary>
+[PublicAPI]
+public class RetentionTagBase : ComplexProperty
 {
-    using System;
-    using System.Text;
+    /// <summary>
+    ///     Xml element name.
+    /// </summary>
+    private readonly string _xmlElementName;
 
     /// <summary>
-    /// Represents the retention tag of an item.
+    ///     Is explicit.
     /// </summary>
-    public class RetentionTagBase : ComplexProperty
+    private bool _isExplicit;
+
+    /// <summary>
+    ///     Retention id.
+    /// </summary>
+    private Guid _retentionId;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RetentionTagBase" /> class.
+    /// </summary>
+    /// <param name="xmlElementName">Xml element name.</param>
+    public RetentionTagBase(string xmlElementName)
     {
-        /// <summary>
-        /// Xml element name.
-        /// </summary>
-        private readonly string xmlElementName;
-
-        /// <summary>
-        /// Is explicit.
-        /// </summary>
-        private bool isExplicit;
-
-        /// <summary>
-        /// Retention id.
-        /// </summary>
-        private Guid retentionId;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RetentionTagBase"/> class.
-        /// </summary>
-        /// <param name="xmlElementName">Xml element name.</param>
-        public RetentionTagBase(string xmlElementName)
-        {
-            this.xmlElementName = xmlElementName;
-        }
-
-        /// <summary>
-        /// Gets or sets if the tag is explicit.
-        /// </summary>
-        public bool IsExplicit
-        {
-            get { return this.isExplicit; }
-            set { this.SetFieldValue<bool>(ref this.isExplicit, value); }
-        }
-
-        /// <summary>
-        /// Gets or sets the retention id.
-        /// </summary>
-        public Guid RetentionId
-        {
-            get { return this.retentionId; }
-            set { this.SetFieldValue<Guid>(ref this.retentionId, value); }
-        }
-
-        /// <summary>
-        /// Reads attributes from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
-        {
-            this.isExplicit = reader.ReadAttributeValue<bool>(XmlAttributeNames.IsExplicit);
-        }
-
-        /// <summary>
-        /// Reads text value from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
-        {
-            this.retentionId = new Guid(reader.ReadValue());
-        }
-
-        /// <summary>
-        /// Writes attributes to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteAttributeValue(XmlAttributeNames.IsExplicit, this.isExplicit);
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            if (this.retentionId != Guid.Empty)
-            {
-                writer.WriteValue(this.retentionId.ToString(), this.xmlElementName);
-            }
-        }
-
-        #region Object method overrides
-
-        /// <summary>
-        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-        /// </returns>
-        public override string ToString()
-        {
-            if (this.retentionId == Guid.Empty)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return this.retentionId.ToString();
-            }
-        }
-
-        #endregion
+        _xmlElementName = xmlElementName;
     }
+
+    /// <summary>
+    ///     Gets or sets if the tag is explicit.
+    /// </summary>
+    public bool IsExplicit
+    {
+        get => _isExplicit;
+        set => SetFieldValue(ref _isExplicit, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the retention id.
+    /// </summary>
+    public Guid RetentionId
+    {
+        get => _retentionId;
+        set => SetFieldValue(ref _retentionId, value);
+    }
+
+    /// <summary>
+    ///     Reads attributes from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
+    {
+        _isExplicit = reader.ReadAttributeValue<bool>(XmlAttributeNames.IsExplicit);
+    }
+
+    /// <summary>
+    ///     Reads text value from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
+    {
+        _retentionId = new Guid(reader.ReadValue());
+    }
+
+    /// <summary>
+    ///     Writes attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteAttributeValue(XmlAttributeNames.IsExplicit, _isExplicit);
+    }
+
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (_retentionId != Guid.Empty)
+        {
+            writer.WriteValue(_retentionId.ToString(), _xmlElementName);
+        }
+    }
+
+
+    #region Object method overrides
+
+    /// <summary>
+    ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+    /// </returns>
+    public override string ToString()
+    {
+        if (_retentionId == Guid.Empty)
+        {
+            return string.Empty;
+        }
+
+        return _retentionId.ToString();
+    }
+
+    #endregion
 }

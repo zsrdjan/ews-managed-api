@@ -23,69 +23,56 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an abstract Move/Copy Folder request.
+/// </summary>
+/// <typeparam name="TResponse">The type of the response.</typeparam>
+internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folder, TResponse>
+    where TResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Validates request.
+    /// </summary>
+    internal override void Validate()
+    {
+        base.Validate();
+        EwsUtilities.ValidateParamCollection(FolderIds);
+        FolderIds.Validate(Service.RequestedServerVersion);
+    }
 
     /// <summary>
-    /// Represents an abstract Move/Copy Folder request.
+    ///     Initializes a new instance of the <see cref="MoveCopyFolderRequest&lt;TResponse&gt;" /> class.
     /// </summary>
-    /// <typeparam name="TResponse">The type of the response.</typeparam>
-    internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folder, TResponse>
-        where TResponse : ServiceResponse
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
+    internal MoveCopyFolderRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service, errorHandlingMode)
     {
-        private FolderIdWrapperList folderIds = new FolderIdWrapperList();
-
-        /// <summary>
-        /// Validates request.
-        /// </summary>
-        internal override void Validate()
-        {
-            base.Validate();
-            EwsUtilities.ValidateParamCollection(this.FolderIds, "FolderIds");
-            this.FolderIds.Validate(this.Service.RequestedServerVersion);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MoveCopyFolderRequest&lt;TResponse&gt;"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
-        internal MoveCopyFolderRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-            : base(service, errorHandlingMode)
-        {
-        }
-
-        /// <summary>
-        /// Writes the ids as XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteIdsToXml(EwsServiceXmlWriter writer)
-        {
-            this.folderIds.WriteToXml(
-                writer,
-                XmlNamespace.Messages,
-                XmlElementNames.FolderIds);
-        }
-
-        /// <summary>
-        /// Gets the expected response message count.
-        /// </summary>
-        /// <returns>Number of expected response messages.</returns>
-        internal override int GetExpectedResponseMessageCount()
-        {
-            return this.FolderIds.Count;
-        }
-
-        /// <summary>
-        /// Gets the folder ids.
-        /// </summary>
-        /// <value>The folder ids.</value>
-        internal FolderIdWrapperList FolderIds
-        {
-            get { return this.folderIds; }
-        }
     }
+
+    /// <summary>
+    ///     Writes the ids as XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteIdsToXml(EwsServiceXmlWriter writer)
+    {
+        FolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FolderIds);
+    }
+
+    /// <summary>
+    ///     Gets the expected response message count.
+    /// </summary>
+    /// <returns>Number of expected response messages.</returns>
+    internal override int GetExpectedResponseMessageCount()
+    {
+        return FolderIds.Count;
+    }
+
+    /// <summary>
+    ///     Gets the folder ids.
+    /// </summary>
+    /// <value>The folder ids.</value>
+    internal FolderIdWrapperList FolderIds { get; } = new();
 }

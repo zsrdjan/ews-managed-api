@@ -23,51 +23,52 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Runtime.Serialization;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an error that occurs when a validation check fails.
+/// </summary>
+[PublicAPI]
+public sealed class ServiceValidationException : ServiceLocalException
 {
-    using System;
-    using System.Runtime.Serialization;
+    /// <summary>
+    ///     ServiceValidationException Constructor.
+    /// </summary>
+    public ServiceValidationException()
+    {
+    }
 
     /// <summary>
-    /// Represents an error that occurs when a validation check fails.
+    ///     ServiceValidationException Constructor.
     /// </summary>
-    public sealed class ServiceValidationException : ServiceLocalException
+    /// <param name="message">Error message text.</param>
+    public ServiceValidationException(string message)
+        : base(message)
     {
-        /// <summary>
-        /// ServiceValidationException Constructor.
-        /// </summary>
-        public ServiceValidationException()
-            : base()
-        {
-        }
+    }
 
-        /// <summary>
-        /// ServiceValidationException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        public ServiceValidationException(string message)
-            : base(message)
-        {
-        }
+    /// <summary>
+    ///     ServiceValidationException Constructor.
+    /// </summary>
+    /// <param name="message">Error message text.</param>
+    /// <param name="innerException">Inner exception.</param>
+    public ServiceValidationException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        /// <summary>
-        /// ServiceValidationException Constructor.
-        /// </summary>
-        /// <param name="message">Error message text.</param>
-        /// <param name="innerException">Inner exception.</param>
-        public ServiceValidationException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceValidationException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		private ServiceValidationException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-	    {
-		}
-	}
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceValidationException" />
+    ///     class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    private ServiceValidationException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
 }

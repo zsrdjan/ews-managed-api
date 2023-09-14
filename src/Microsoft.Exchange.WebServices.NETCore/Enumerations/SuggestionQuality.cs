@@ -23,35 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the quality of an availability suggestion.
+/// </summary>
+[PublicAPI]
+public enum SuggestionQuality
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The suggestion is excellent.
+    /// </summary>
+    Excellent,
 
     /// <summary>
-    /// Defines the quality of an availability suggestion.
+    ///     The suggestion is good.
     /// </summary>
-    public enum SuggestionQuality
-    {
-        /// <summary>
-        /// The suggestion is excellent.
-        /// </summary>
-        Excellent,
+    Good,
 
-        /// <summary>
-        /// The suggestion is good.
-        /// </summary>
-        Good,
+    /// <summary>
+    ///     The suggestion is fair.
+    /// </summary>
+    Fair,
 
-        /// <summary>
-        /// The suggestion is fair.
-        /// </summary>
-        Fair,
-
-        /// <summary>
-        /// The suggestion is poor.
-        /// </summary>
-        Poor
-    }
+    /// <summary>
+    ///     The suggestion is poor.
+    /// </summary>
+    Poor,
 }

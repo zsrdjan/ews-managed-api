@@ -23,49 +23,43 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to an individual item creation operation.
+/// </summary>
+internal sealed class CreateItemResponse : CreateItemResponseBase
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    private readonly Item? _item;
 
     /// <summary>
-    /// Represents the response to an individual item creation operation.
+    ///     Gets Item instance.
     /// </summary>
-    internal sealed class CreateItemResponse : CreateItemResponseBase
+    /// <param name="service">The service.</param>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    /// <returns>Item.</returns>
+    internal override Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        private Item item;
+        return _item;
+    }
 
-        /// <summary>
-        /// Gets Item instance.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="xmlElementName">Name of the XML element.</param>
-        /// <returns>Item.</returns>
-        internal override Item GetObjectInstance(ExchangeService service, string xmlElementName)
-        {
-            return this.item;
-        }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CreateItemResponse" /> class.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    internal CreateItemResponse(Item? item)
+    {
+        _item = item;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateItemResponse"/> class.
-        /// </summary>
-        /// <param name="item">The item.</param>
-        internal CreateItemResponse(Item item)
-            : base()
+    /// <summary>
+    ///     Clears the change log of the created folder if the creation succeeded.
+    /// </summary>
+    internal override void Loaded()
+    {
+        if (Result == ServiceResult.Success)
         {
-            this.item = item;
-        }
-
-        /// <summary>
-        /// Clears the change log of the created folder if the creation succeeded.
-        /// </summary>
-        internal override void Loaded()
-        {
-            if (this.Result == ServiceResult.Success)
-            {
-                this.item.ClearChangeLog();
-            }
+            _item.ClearChangeLog();
         }
     }
 }

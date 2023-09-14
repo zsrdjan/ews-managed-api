@@ -23,50 +23,54 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Runtime.Serialization;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an error that occurs when a call to the CreateAttachment web method fails.
+/// </summary>
+[PublicAPI]
+public sealed class CreateAttachmentException : BatchServiceResponseException<CreateAttachmentResponse>
 {
-    using System;
-    using System.Runtime.Serialization;
+    /// <summary>
+    ///     Initializes a new instance of CreateAttachmentException.
+    /// </summary>
+    /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
+    /// <param name="message">The message that describes the error.</param>
+    internal CreateAttachmentException(
+        ServiceResponseCollection<CreateAttachmentResponse> serviceResponses,
+        string message
+    )
+        : base(serviceResponses, message)
+    {
+    }
 
     /// <summary>
-    /// Represents an error that occurs when a call to the CreateAttachment web method fails.
+    ///     Initializes a new instance of CreateAttachmentException.
     /// </summary>
-    public sealed class CreateAttachmentException : BatchServiceResponseException<CreateAttachmentResponse>
+    /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
+    internal CreateAttachmentException(
+        ServiceResponseCollection<CreateAttachmentResponse> serviceResponses,
+        string message,
+        Exception innerException
+    )
+        : base(serviceResponses, message, innerException)
     {
-        /// <summary>
-        /// Initializes a new instance of CreateAttachmentException.
-        /// </summary>
-        /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
-        /// <param name="message">The message that describes the error.</param>
-        internal CreateAttachmentException(
-            ServiceResponseCollection<CreateAttachmentResponse> serviceResponses,
-            string message)
-            : base(serviceResponses, message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of CreateAttachmentException.
-        /// </summary>
-        /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
-        /// <param name="message">The message that describes the error.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception.</param>
-        internal CreateAttachmentException(
-            ServiceResponseCollection<CreateAttachmentResponse> serviceResponses,
-            string message,
-            Exception innerException)
-            : base(serviceResponses, message, innerException)
-        {
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.CreateAttachmentException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		private CreateAttachmentException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	}
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.CreateAttachmentException" />
+    ///     class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    private CreateAttachmentException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
 }

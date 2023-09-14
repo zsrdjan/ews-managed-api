@@ -23,82 +23,75 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Xml;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a app in GetAppManifests response.
+/// </summary>
+[PublicAPI]
+public sealed class ClientApp : ComplexProperty
 {
-    using System;
-    using System.IO;
-    using System.Xml;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientApp" /> class.
+    /// </summary>
+    internal ClientApp()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
-    /// Represents a app in GetAppManifests response.
+    ///     The manifest for the app.
     /// </summary>
-    public sealed class ClientApp : ComplexProperty
+    public XmlDocument Manifest { get; internal set; }
+
+    /// <summary>
+    ///     Metadata related to the app.
+    /// </summary>
+    public ClientAppMetadata Metadata { get; internal set; }
+
+    /// <summary>
+    ///     Helper to convert to xml dcouemnt from the current value.
+    /// </summary>
+    /// <param name="reader">the reader.</param>
+    /// <returns>The xml document</returns>
+    internal static SafeXmlDocument ReadToXmlDocument(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClientApp"/> class.
-        /// </summary>
-        internal ClientApp()
-            : base()
-        {
-            this.Namespace = XmlNamespace.Types;
-        }
+        using var stream = new MemoryStream();
+        reader.ReadBase64ElementValue(stream);
+        stream.Position = 0;
 
-        /// <summary>
-        /// The manifest for the app.
-        /// </summary>
-        public XmlDocument Manifest 
-        { 
-            get; 
-            internal set; 
-        }
+        var manifest = new SafeXmlDocument();
+        manifest.Load(stream);
+        return manifest;
+    }
 
-        /// <summary>
-        /// Metadata related to the app.
-        /// </summary>
-        public ClientAppMetadata Metadata
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Helper to convert to xml dcouemnt from the current value.
-        /// </summary>
-        /// <param name="reader">the reader.</param>
-        /// <returns>The xml document</returns>
-        internal static SafeXmlDocument ReadToXmlDocument(EwsServiceXmlReader reader)
-        {
-            using (MemoryStream stream = new MemoryStream())
+            case XmlElementNames.Manifest:
             {
-                reader.ReadBase64ElementValue(stream);
-                stream.Position = 0;
-
-                SafeXmlDocument manifest = new SafeXmlDocument();
-                manifest.Load(stream);
-                return manifest;
+                Manifest = ReadToXmlDocument(reader);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.Metadata:
             {
-                case XmlElementNames.Manifest:
-                    this.Manifest = ClientApp.ReadToXmlDocument(reader);
-                    return true;
-
-                case XmlElementNames.Metadata:
-                    this.Metadata = new ClientAppMetadata();
-                    this.Metadata.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Metadata);
-                    return true;
-
-                default:
-                    return false;
+                Metadata = new ClientAppMetadata();
+                Metadata.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Metadata);
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
     }

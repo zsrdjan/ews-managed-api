@@ -23,45 +23,43 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the modes of a Task.
+/// </summary>
+[PublicAPI]
+public enum TaskMode
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The task is normal
+    /// </summary>
+    Normal = 0,
 
     /// <summary>
-    /// Defines the modes of a Task.
+    ///     The task is a task assignment request
     /// </summary>
-    public enum TaskMode
-    {
-        /// <summary>
-        /// The task is normal
-        /// </summary>
-        Normal = 0,
+    Request = 1,
 
-        /// <summary>
-        /// The task is a task assignment request
-        /// </summary>
-        Request = 1,
+    /// <summary>
+    ///     The task assignment request was accepted
+    /// </summary>
+    RequestAccepted = 2,
 
-        /// <summary>
-        /// The task assignment request was accepted
-        /// </summary>
-        RequestAccepted = 2,
+    /// <summary>
+    ///     The task assignment request was declined
+    /// </summary>
+    RequestDeclined = 3,
 
-        /// <summary>
-        /// The task assignment request was declined
-        /// </summary>
-        RequestDeclined = 3,
+    /// <summary>
+    ///     The task has been updated
+    /// </summary>
+    Update = 4,
 
-        /// <summary>
-        /// The task has been updated
-        /// </summary>
-        Update = 4,
-
-        /// <summary>
-        /// The task is self delegated
-        /// </summary>
-        SelfDelegated = 5
-    }
+    /// <summary>
+    ///     The task is self delegated
+    /// </summary>
+    SelfDelegated = 5,
 }

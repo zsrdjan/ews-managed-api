@@ -23,75 +23,60 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a property definition for a service object.
+/// </summary>
+[PublicAPI]
+public abstract class ServiceObjectPropertyDefinition : PropertyDefinitionBase
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <returns>XML element name.</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.FieldURI;
+    }
 
     /// <summary>
-    /// Represents a property definition for a service object.
+    ///     Gets the minimum Exchange version that supports this property.
     /// </summary>
-    public abstract class ServiceObjectPropertyDefinition : PropertyDefinitionBase
+    /// <value>The version.</value>
+    public override ExchangeVersion Version => ExchangeVersion.Exchange2007_SP1;
+
+    /// <summary>
+    ///     Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        private string uri;
-
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <returns>XML element name.</returns>
-        internal override string GetXmlElementName()
-        {
-            return XmlElementNames.FieldURI;
-        }
-
-        /// <summary>
-        /// Gets the minimum Exchange version that supports this property.
-        /// </summary>
-        /// <value>The version.</value>
-        public override ExchangeVersion Version
-        {
-            get { return ExchangeVersion.Exchange2007_SP1; }
-        }
-
-        /// <summary>
-        /// Writes the attributes to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteAttributeValue(XmlAttributeNames.FieldURI, this.Uri);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceObjectPropertyDefinition"/> class.
-        /// </summary>
-        internal ServiceObjectPropertyDefinition()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceObjectPropertyDefinition"/> class.
-        /// </summary>
-        /// <param name="uri">The URI.</param>
-        internal ServiceObjectPropertyDefinition(string uri)
-            : base()
-        {
-            EwsUtilities.Assert(
-                !string.IsNullOrEmpty(uri),
-                "ServiceObjectPropertyDefinition.ctor",
-                "uri is null or empty");
-
-            this.uri = uri;
-        }
-
-        /// <summary>
-        /// Gets the URI of the property definition.
-        /// </summary>
-        internal string Uri
-        {
-            get { return this.uri; }
-        }
+        writer.WriteAttributeValue(XmlAttributeNames.FieldURI, Uri);
     }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceObjectPropertyDefinition" /> class.
+    /// </summary>
+    internal ServiceObjectPropertyDefinition()
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceObjectPropertyDefinition" /> class.
+    /// </summary>
+    /// <param name="uri">The URI.</param>
+    internal ServiceObjectPropertyDefinition(string uri)
+    {
+        EwsUtilities.Assert(!string.IsNullOrEmpty(uri), "ServiceObjectPropertyDefinition.ctor", "uri is null or empty");
+
+        Uri = uri;
+    }
+
+    /// <summary>
+    ///     Gets the URI of the property definition.
+    /// </summary>
+    internal string Uri { get; }
 }

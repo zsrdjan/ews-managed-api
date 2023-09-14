@@ -23,59 +23,53 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the GetUserRetentionPolicyTagsResponse response.
+/// </summary>
+[PublicAPI]
+public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    readonly List<RetentionPolicyTag> _retentionPolicyTags = new List<RetentionPolicyTag>();
 
     /// <summary>
-    /// Represents the GetUserRetentionPolicyTagsResponse response.
+    ///     Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsResponse" /> class.
     /// </summary>
-    public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
+    internal GetUserRetentionPolicyTagsResponse()
     {
-        List<RetentionPolicyTag> retentionPolicyTags = new List<RetentionPolicyTag>();
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsResponse"/> class.
-        /// </summary>
-        internal GetUserRetentionPolicyTagsResponse()
-            : base()
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        _retentionPolicyTags.Clear();
+
+        base.ReadElementsFromXml(reader);
+
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags);
+        if (!reader.IsEmptyElement)
         {
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            this.retentionPolicyTags.Clear();
-
-            base.ReadElementsFromXml(reader);
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags);
-            if (!reader.IsEmptyElement)
+            do
             {
-                do
+                reader.Read();
+                if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.RetentionPolicyTag))
                 {
-                    reader.Read();
-                    if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.RetentionPolicyTag))
-                    {
-                        this.retentionPolicyTags.Add(RetentionPolicyTag.LoadFromXml(reader));
-                    }
+                    _retentionPolicyTags.Add(RetentionPolicyTag.LoadFromXml(reader));
                 }
-                while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags));
-                reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags);
-            }
-        }
+            } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags));
 
-        /// <summary>
-        /// Retention policy tags result.
-        /// </summary>
-        public RetentionPolicyTag[] RetentionPolicyTags
-        {
-            get { return this.retentionPolicyTags.ToArray(); }
+            reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags);
         }
     }
+
+    /// <summary>
+    ///     Retention policy tags result.
+    /// </summary>
+    public RetentionPolicyTag[] RetentionPolicyTags => _retentionPolicyTags.ToArray();
 }

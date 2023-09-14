@@ -23,65 +23,63 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.ComponentModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an entry of an ImAddressDictionary.
+/// </summary>
+[PublicAPI]
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    private string _imAddress;
 
     /// <summary>
-    /// Represents an entry of an ImAddressDictionary.
+    ///     Initializes a new instance of the <see cref="ImAddressEntry" /> class.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
+    internal ImAddressEntry()
     {
-        private string imAddress;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImAddressEntry"/> class.
-        /// </summary>
-        internal ImAddressEntry()
-            : base()
-        {
-        }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ImAddressEntry" /> class.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="imAddress">The im address.</param>
+    internal ImAddressEntry(ImAddressKey key, string imAddress)
+        : base(key)
+    {
+        _imAddress = imAddress;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImAddressEntry"/> class.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="imAddress">The im address.</param>
-        internal ImAddressEntry(ImAddressKey key, string imAddress)
-            : base(key)
-        {
-            this.imAddress = imAddress;
-        }
+    /// <summary>
+    ///     Gets or sets the Instant Messaging address of the entry.
+    /// </summary>
+    public string ImAddress
+    {
+        get => _imAddress;
+        set => SetFieldValue(ref _imAddress, value);
+    }
 
-        /// <summary>
-        /// Gets or sets the Instant Messaging address of the entry.
-        /// </summary>
-        public string ImAddress
-        {
-            get { return this.imAddress; }
-            set { this.SetFieldValue<string>(ref this.imAddress, value); }
-        }
+    /// <summary>
+    ///     Reads the text value from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
+    {
+        _imAddress = reader.ReadValue();
+    }
 
-        /// <summary>
-        /// Reads the text value from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
-        {
-            this.imAddress = reader.ReadValue();
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteValue(this.ImAddress, XmlElementNames.ImAddress);
-        }
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteValue(ImAddress, XmlElementNames.ImAddress);
     }
 }

@@ -23,62 +23,65 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an ContactPhoneEntity object.
+/// </summary>
+[PublicAPI]
+public sealed class ContactPhoneEntity : ComplexProperty
 {
-    using System;
-    using System.IO;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ContactPhoneEntity" /> class.
+    /// </summary>
+    internal ContactPhoneEntity()
+    {
+    }
 
     /// <summary>
-    /// Represents an ContactPhoneEntity object.
+    ///     Gets the phone entity OriginalPhoneString.
     /// </summary>
-    public sealed class ContactPhoneEntity : ComplexProperty
+    public string OriginalPhoneString { get; internal set; }
+
+    /// <summary>
+    ///     Gets the phone entity PhoneString.
+    /// </summary>
+    public string PhoneString { get; internal set; }
+
+    /// <summary>
+    ///     Gets the phone entity Type.
+    /// </summary>
+    public string Type { get; internal set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ContactPhoneEntity"/> class.
-        /// </summary>
-        internal ContactPhoneEntity()
-            : base()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Gets the phone entity OriginalPhoneString.
-        /// </summary>
-        public string OriginalPhoneString { get; internal set; }
-
-        /// <summary>
-        /// Gets the phone entity PhoneString.
-        /// </summary>
-        public string PhoneString { get; internal set; }
-
-        /// <summary>
-        /// Gets the phone entity Type.
-        /// </summary>
-        public string Type { get; internal set; }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.NlgOriginalPhoneString:
             {
-                case XmlElementNames.NlgOriginalPhoneString:
-                    this.OriginalPhoneString = reader.ReadElementValue();
-                    return true;
-
-                case XmlElementNames.NlgPhoneString:
-                    this.PhoneString = reader.ReadElementValue();
-                    return true;
-
-                case XmlElementNames.NlgType:
-                    this.Type = reader.ReadElementValue();
-                    return true;
-
-                default:
-                    return base.TryReadElementFromXml(reader);
+                OriginalPhoneString = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.NlgPhoneString:
+            {
+                PhoneString = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.NlgType:
+            {
+                Type = reader.ReadElementValue();
+                return true;
+            }
+            default:
+            {
+                return base.TryReadElementFromXml(reader);
             }
         }
     }

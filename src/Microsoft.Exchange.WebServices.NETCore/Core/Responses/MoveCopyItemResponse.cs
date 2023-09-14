@@ -23,70 +23,62 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a response to a Move or Copy operation.
+/// </summary>
+[PublicAPI]
+public sealed class MoveCopyItemResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MoveCopyItemResponse" /> class.
+    /// </summary>
+    internal MoveCopyItemResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents a response to a Move or Copy operation.
+    ///     Gets Item instance.
     /// </summary>
-    public sealed class MoveCopyItemResponse : ServiceResponse
+    /// <param name="service">The service.</param>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    /// <returns>Item.</returns>
+    private Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
-        private Item item;
+        return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MoveCopyItemResponse"/> class.
-        /// </summary>
-        internal MoveCopyItemResponse()
-            : base()
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        base.ReadElementsFromXml(reader);
+
+        var items = reader.ReadServiceObjectsCollectionFromXml(
+            XmlElementNames.Items,
+            GetObjectInstance,
+            false,
+            null,
+            false
+        );
+
+        // We only receive the copied or moved items if the copy or move operation was within
+        // a single mailbox. No item is returned if the operation is cross-mailbox, from a
+        // mailbox to a public folder or from a public folder to a mailbox.
+        if (items.Count > 0)
         {
-        }
-
-        /// <summary>
-        /// Gets Item instance.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="xmlElementName">Name of the XML element.</param>
-        /// <returns>Item.</returns>
-        private Item GetObjectInstance(ExchangeService service, string xmlElementName)
-        {
-            return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            List<Item> items = reader.ReadServiceObjectsCollectionFromXml<Item>(
-                XmlElementNames.Items,
-                this.GetObjectInstance,
-                false,  /* clearPropertyBag */
-                null,   /* requestedPropertySet */
-                false); /* summaryPropertiesOnly */
-
-            // We only receive the copied or moved items if the copy or move operation was within
-            // a single mailbox. No item is returned if the operation is cross-mailbox, from a
-            // mailbox to a public folder or from a public folder to a mailbox.
-            if (items.Count > 0)
-            {
-                this.item = items[0];
-            }
-        }
-
-        /// <summary>
-        /// Gets the copied or moved item. Item is null if the copy or move operation was between
-        /// two mailboxes or between a mailbox and a public folder.
-        /// </summary>
-        public Item Item
-        {
-            get { return this.item; }
+            Item = items[0];
         }
     }
+
+    /// <summary>
+    ///     Gets the copied or moved item. Item is null if the copy or move operation was between
+    ///     two mailboxes or between a mailbox and a public folder.
+    /// </summary>
+    public Item Item { get; private set; }
 }

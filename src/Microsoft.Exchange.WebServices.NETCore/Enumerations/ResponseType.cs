@@ -23,45 +23,43 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the types of response given to a meeting request.
+/// </summary>
+[PublicAPI]
+public enum MeetingResponseType
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The response type is unknown.
+    /// </summary>
+    Unknown,
 
     /// <summary>
-    /// Defines the types of response given to a meeting request.
+    ///     There was no response. The authenticated is the organizer of the meeting.
     /// </summary>
-    public enum MeetingResponseType
-    {
-        /// <summary>
-        /// The response type is inknown.
-        /// </summary>
-        Unknown,
+    Organizer,
 
-        /// <summary>
-        /// There was no response. The authenticated is the organizer of the meeting.
-        /// </summary>
-        Organizer,
+    /// <summary>
+    ///     The meeting was tentatively accepted.
+    /// </summary>
+    Tentative,
 
-        /// <summary>
-        /// The meeting was tentatively accepted.
-        /// </summary>
-        Tentative,
+    /// <summary>
+    ///     The meeting was accepted.
+    /// </summary>
+    Accept,
 
-        /// <summary>
-        /// The meeting was accepted.
-        /// </summary>
-        Accept,
+    /// <summary>
+    ///     The meeting was declined.
+    /// </summary>
+    Decline,
 
-        /// <summary>
-        /// The meeting was declined.
-        /// </summary>
-        Decline,
-
-        /// <summary>
-        /// No response was received for the meeting.
-        /// </summary>
-        NoResponseReceived
-    }
+    /// <summary>
+    ///     No response was received for the meeting.
+    /// </summary>
+    NoResponseReceived,
 }

@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Preview item base shape
+/// </summary>
+[PublicAPI]
+public enum PreviewItemBaseShape
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Default (all properties required for showing preview by default)
+    /// </summary>
+    Default,
 
     /// <summary>
-    /// Preview item base shape
+    ///     Compact (only a set of core properties)
     /// </summary>
-    public enum PreviewItemBaseShape
-    {
-        /// <summary>
-        /// Default (all properties required for showing preview by default)
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Compact (only a set of core properties)
-        /// </summary>
-        Compact,
-    }
+    Compact,
 }

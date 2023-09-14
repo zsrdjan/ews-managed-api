@@ -23,40 +23,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines a delegate user's permission level on a specific folder.
+/// </summary>
+[PublicAPI]
+public enum DelegateFolderPermissionLevel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The delegate has no permission.
+    /// </summary>
+    None,
 
     /// <summary>
-    /// Defines a delegate user's permission level on a specific folder.
+    ///     The delegate has Editor permissions.
     /// </summary>
-    public enum DelegateFolderPermissionLevel
-    {
-        /// <summary>
-        /// The delegate has no permission.
-        /// </summary>
-        None,
+    Editor,
 
-        /// <summary>
-        /// The delegate has Editor permissions.
-        /// </summary>
-        Editor,
+    /// <summary>
+    ///     The delegate has Reviewer permissions.
+    /// </summary>
+    Reviewer,
 
-        /// <summary>
-        /// The delegate has Reviewer permissions.
-        /// </summary>
-        Reviewer,
+    /// <summary>
+    ///     The delegate has Author permissions.
+    /// </summary>
+    Author,
 
-        /// <summary>
-        /// The delegate has Author permissions.
-        /// </summary>
-        Author,
-
-        /// <summary>
-        /// The delegate has custom permissions.
-        /// </summary>
-        Custom
-    }
+    /// <summary>
+    ///     The delegate has custom permissions.
+    /// </summary>
+    Custom,
 }

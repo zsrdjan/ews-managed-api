@@ -23,217 +23,177 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the CompanyInsightValue.
+/// </summary>
+[PublicAPI]
+public sealed class CompanyInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private string _name;
+    private string _satoriId;
+    private string _description;
+    private string _descriptionAttribution;
+    private string _imageUrl;
+    private string _imageUrlAttribution;
+    private string _yearFound;
+    private string _financeSymbol;
+    private string _websiteUrl;
 
     /// <summary>
-    /// Represents the CompanyInsightValue.
+    ///     Gets the Name
     /// </summary>
-    public sealed class CompanyInsightValue : InsightValue
+    public string Name
     {
-        private string name;
-        private string satoriId;
-        private string description;
-        private string descriptionAttribution;
-        private string imageUrl;
-        private string imageUrlAttribution;
-        private string yearFound;
-        private string financeSymbol;
-        private string websiteUrl;
-        
-        /// <summary>
-        /// Gets the Name
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
+        get => _name;
+        set => SetFieldValue(ref _name, value);
+    }
 
-            set
+    /// <summary>
+    ///     Gets the SatoriId
+    /// </summary>
+    public string SatoriId
+    {
+        get => _satoriId;
+        set => SetFieldValue(ref _satoriId, value);
+    }
+
+    /// <summary>
+    ///     Gets the Description
+    /// </summary>
+    public string Description
+    {
+        get => _description;
+        set => SetFieldValue(ref _description, value);
+    }
+
+    /// <summary>
+    ///     Gets the DescriptionAttribution
+    /// </summary>
+    public string DescriptionAttribution
+    {
+        get => _descriptionAttribution;
+        set => SetFieldValue(ref _descriptionAttribution, value);
+    }
+
+    /// <summary>
+    ///     Gets the ImageUrl
+    /// </summary>
+    public string ImageUrl
+    {
+        get => _imageUrl;
+        set => SetFieldValue(ref _imageUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets the ImageUrlAttribution
+    /// </summary>
+    public string ImageUrlAttribution
+    {
+        get => _imageUrlAttribution;
+        set => SetFieldValue(ref _imageUrlAttribution, value);
+    }
+
+    /// <summary>
+    ///     Gets the YearFound
+    /// </summary>
+    public string YearFound
+    {
+        get => _yearFound;
+        set => SetFieldValue(ref _yearFound, value);
+    }
+
+    /// <summary>
+    ///     Gets the FinanceSymbol
+    /// </summary>
+    public string FinanceSymbol
+    {
+        get => _financeSymbol;
+        set => SetFieldValue(ref _financeSymbol, value);
+    }
+
+    /// <summary>
+    ///     Gets the WebsiteUrl
+    /// </summary>
+    public string WebsiteUrl
+    {
+        get => _websiteUrl;
+        set => SetFieldValue(ref _websiteUrl, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
+        {
+            case XmlElementNames.InsightSource:
             {
-                this.SetFieldValue<string>(ref this.name, value);
+                InsightSource = reader.ReadElementValue<string>();
+                break;
+            }
+            case XmlElementNames.UpdatedUtcTicks:
+            {
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Name:
+            {
+                Name = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.SatoriId:
+            {
+                SatoriId = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Description:
+            {
+                Description = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.DescriptionAttribution:
+            {
+                DescriptionAttribution = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.ImageUrl:
+            {
+                ImageUrl = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.ImageUrlAttribution:
+            {
+                ImageUrlAttribution = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.YearFound:
+            {
+                YearFound = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.FinanceSymbol:
+            {
+                FinanceSymbol = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.WebsiteUrl:
+            {
+                WebsiteUrl = reader.ReadElementValue();
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        /// <summary>
-        /// Gets the SatoriId
-        /// </summary>
-        public string SatoriId
-        {
-            get
-            {
-                return this.satoriId;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.satoriId, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Description
-        /// </summary>
-        public string Description
-        {
-            get
-            {
-                return this.description;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.description, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the DescriptionAttribution
-        /// </summary>
-        public string DescriptionAttribution
-        {
-            get
-            {
-                return this.descriptionAttribution;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.descriptionAttribution, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the ImageUrl
-        /// </summary>
-        public string ImageUrl
-        {
-            get
-            {
-                return this.imageUrl;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.imageUrl, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the ImageUrlAttribution
-        /// </summary>
-        public string ImageUrlAttribution
-        {
-            get
-            {
-                return this.imageUrlAttribution;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.imageUrlAttribution, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the YearFound
-        /// </summary>
-        public string YearFound
-        {
-            get
-            {
-                return this.yearFound;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.yearFound, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the FinanceSymbol
-        /// </summary>
-        public string FinanceSymbol
-        {
-            get
-            {
-                return this.financeSymbol;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.financeSymbol, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the WebsiteUrl
-        /// </summary>
-        public string WebsiteUrl
-        {
-            get
-            {
-                return this.websiteUrl;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.websiteUrl, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Name:
-                    this.Name = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.SatoriId:
-                    this.SatoriId = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Description:
-                    this.Description = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.DescriptionAttribution:
-                    this.DescriptionAttribution = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.ImageUrl:
-                    this.ImageUrl = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.ImageUrlAttribution:
-                    this.ImageUrlAttribution = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.YearFound:
-                    this.YearFound = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.FinanceSymbol:
-                    this.FinanceSymbol = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.WebsiteUrl:
-                    this.WebsiteUrl = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

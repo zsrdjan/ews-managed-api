@@ -23,57 +23,47 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Xml;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to an individual attachment creation operation.
+/// </summary>
+[PublicAPI]
+public sealed class CreateAttachmentResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Xml;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CreateAttachmentResponse" /> class.
+    /// </summary>
+    /// <param name="attachment">The attachment.</param>
+    internal CreateAttachmentResponse(Attachment attachment)
+    {
+        EwsUtilities.Assert(attachment != null, "CreateAttachmentResponse.ctor", "attachment is null");
+
+        Attachment = attachment;
+    }
 
     /// <summary>
-    /// Represents the response to an individual attachment creation operation.
+    ///     Reads response elements from XML.
     /// </summary>
-    public sealed class CreateAttachmentResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        private Attachment attachment;
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateAttachmentResponse"/> class.
-        /// </summary>
-        /// <param name="attachment">The attachment.</param>
-        internal CreateAttachmentResponse(Attachment attachment)
-            : base()
-        {
-            EwsUtilities.Assert(
-                attachment != null,
-                "CreateAttachmentResponse.ctor",
-                "attachment is null");
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Attachments);
 
-            this.attachment = attachment;
-        }
+        reader.Read(XmlNodeType.Element);
+        Attachment.LoadFromXml(reader, reader.LocalName);
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Attachments);
-
-            reader.Read(XmlNodeType.Element);
-            this.attachment.LoadFromXml(reader, reader.LocalName);
-
-            reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
-        }
-
-        /// <summary>
-        /// Gets the attachment that was created.
-        /// </summary>
-        internal Attachment Attachment
-        {
-            get { return this.attachment; }
-        }
+        reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
     }
+
+    /// <summary>
+    ///     Gets the attachment that was created.
+    /// </summary>
+    internal Attachment Attachment { get; }
 }

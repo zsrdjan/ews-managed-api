@@ -23,117 +23,102 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the UserProfilePicture.
+/// </summary>
+[PublicAPI]
+public sealed class UserProfilePicture : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private string _blob;
+    private string _photoSize;
+    private string _url;
+    private string _imageType;
 
     /// <summary>
-    /// Represents the UserProfilePicture.
+    ///     Gets the Blob
     /// </summary>
-    public sealed class UserProfilePicture : InsightValue
+    public string Blob
     {
-        private string blob;
-        private string photoSize;
-        private string url;
-        private string imageType;
+        get => _blob;
+        set => SetFieldValue(ref _blob, value);
+    }
 
-        /// <summary>
-        /// Gets the Blob
-        /// </summary>
-        public string Blob
+    /// <summary>
+    ///     Gets the PhotoSize
+    /// </summary>
+    public string PhotoSize
+    {
+        get => _photoSize;
+        set => SetFieldValue(ref _photoSize, value);
+    }
+
+    /// <summary>
+    ///     Gets the Url
+    /// </summary>
+    public string Url
+    {
+        get => _url;
+        set => SetFieldValue(ref _url, value);
+    }
+
+    /// <summary>
+    ///     Gets the ImageType
+    /// </summary>
+    public string ImageType
+    {
+        get => _imageType;
+        set => SetFieldValue(ref _imageType, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get
+            case XmlElementNames.InsightSource:
             {
-                return this.blob;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
             }
-
-            set
+            case XmlElementNames.UpdatedUtcTicks:
             {
-                this.SetFieldValue<string>(ref this.blob, value);
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Blob:
+            {
+                Blob = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.PhotoSize:
+            {
+                PhotoSize = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Url:
+            {
+                Url = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.ImageType:
+            {
+                ImageType = reader.ReadElementValue();
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        /// <summary>
-        /// Gets the PhotoSize
-        /// </summary>
-        public string PhotoSize
-        {
-            get
-            {
-                return this.photoSize;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.photoSize, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Url
-        /// </summary>
-        public string Url
-        {
-            get
-            {
-                return this.url;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.url, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the ImageType
-        /// </summary>
-        public string ImageType
-        {
-            get
-            {
-                return this.imageType;   
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.imageType, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Blob:
-                    this.Blob = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.PhotoSize:
-                    this.PhotoSize = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Url:
-                    this.Url = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.ImageType:
-                    this.ImageType = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

@@ -23,30 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the precision for returned DateTime values
+/// </summary>
+[PublicAPI]
+public enum DateTimePrecision
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Default value.  No SOAP header emitted.
+    /// </summary>
+    Default,
 
     /// <summary>
-    /// Defines the precision for returned DateTime values
+    ///     Seconds
     /// </summary>
-    public enum DateTimePrecision
-    {
-        /// <summary>
-        /// Default value.  No SOAP header emitted.
-        /// </summary>
-        Default,
+    Seconds,
 
-        /// <summary>
-        /// Seconds
-        /// </summary>
-        Seconds,
-
-        /// <summary>
-        /// Milliseconds
-        /// </summary>
-        Milliseconds
-    }
+    /// <summary>
+    ///     Milliseconds
+    /// </summary>
+    Milliseconds,
 }

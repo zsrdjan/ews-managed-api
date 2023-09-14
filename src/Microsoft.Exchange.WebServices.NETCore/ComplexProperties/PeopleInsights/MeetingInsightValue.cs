@@ -23,131 +23,121 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the MeetingInsightValue.
+/// </summary>
+[PublicAPI]
+public sealed class MeetingInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MeetingInsightValue" /> class.
+    /// </summary>
+    public MeetingInsightValue()
+    {
+        Attendees = new ProfileInsightValueCollection();
+    }
 
     /// <summary>
-    /// Represents the MeetingInsightValue.
+    ///     Gets the Id
     /// </summary>
-    public sealed class MeetingInsightValue : InsightValue
+    public string Id { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Subject
+    /// </summary>
+    public string Subject { get; internal set; }
+
+    /// <summary>
+    ///     Gets the StartUtcTicks
+    /// </summary>
+    public long StartUtcTicks { get; internal set; }
+
+    /// <summary>
+    ///     Gets the EndUtcTicks
+    /// </summary>
+    public long EndUtcTicks { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Location
+    /// </summary>
+    public string Location { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Organizer
+    /// </summary>
+    public ProfileInsightValue Organizer { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Attendees
+    /// </summary>
+    public ProfileInsightValueCollection Attendees { get; internal set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MeetingInsightValue"/> class.
-        /// </summary>
-        public MeetingInsightValue()
-            : base()
+        switch (reader.LocalName)
         {
-            this.Attendees = new ProfileInsightValueCollection();
-        }
-
-        /// <summary>
-        /// Gets the Id
-        /// </summary>
-        public string Id
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the Subject
-        /// </summary>
-        public string Subject
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the StartUtcTicks
-        /// </summary>
-        public long StartUtcTicks
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the EndUtcTicks
-        /// </summary>
-        public long EndUtcTicks
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the Location
-        /// </summary>
-        public string Location
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the Organizer
-        /// </summary>
-        public ProfileInsightValue Organizer
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Gets the Attendees
-        /// </summary>
-        public ProfileInsightValueCollection Attendees
-        {
-            get;
-            internal set;
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.InsightSource:
             {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Id:
-                    this.Id = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Subject:
-                    this.Subject = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.StartUtcTicks:
-                    this.StartUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.EndUtcTicks:
-                    this.EndUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Location:
-                    this.Location = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Organizer:
-                    this.Organizer = new ProfileInsightValue();
-                    this.Organizer.LoadFromXml(reader, reader.LocalName);
-                    break;
-                case XmlElementNames.Attendees:
-                    this.Attendees = new ProfileInsightValueCollection(XmlElementNames.Item);
-                    this.Attendees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Attendees);
-                    break;
-                default:
-                    return false;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
             }
-
-            return true;
+            case XmlElementNames.UpdatedUtcTicks:
+            {
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Id:
+            {
+                Id = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Subject:
+            {
+                Subject = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.StartUtcTicks:
+            {
+                StartUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.EndUtcTicks:
+            {
+                EndUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Location:
+            {
+                Location = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Organizer:
+            {
+                Organizer = new ProfileInsightValue();
+                Organizer.LoadFromXml(reader, reader.LocalName);
+                break;
+            }
+            case XmlElementNames.Attendees:
+            {
+                Attendees = new ProfileInsightValueCollection(XmlElementNames.Item);
+                Attendees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Attendees);
+                break;
+            }
+            default:
+            {
+                return false;
+            }
         }
+
+        return true;
     }
 }

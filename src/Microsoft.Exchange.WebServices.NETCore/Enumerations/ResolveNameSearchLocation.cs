@@ -23,35 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the location where a ResolveName operation searches for contacts.
+/// </summary>
+[PublicAPI]
+public enum ResolveNameSearchLocation
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The name is resolved against the Global Address List.
+    /// </summary>
+    DirectoryOnly,
 
     /// <summary>
-    /// Defines the location where a ResolveName operation searches for contacts.
+    ///     The name is resolved against the Global Address List and then against the Contacts folder if no match was found.
     /// </summary>
-    public enum ResolveNameSearchLocation
-    {
-        /// <summary>
-        /// The name is resolved against the Global Address List.
-        /// </summary>
-        DirectoryOnly,
+    DirectoryThenContacts,
 
-        /// <summary>
-        /// The name is resolved against the Global Address List and then against the Contacts folder if no match was found.
-        /// </summary>
-        DirectoryThenContacts,
+    /// <summary>
+    ///     The name is resolved against the Contacts folder.
+    /// </summary>
+    ContactsOnly,
 
-        /// <summary>
-        /// The name is resolved against the Contacts folder.
-        /// </summary>
-        ContactsOnly,
-
-        /// <summary>
-        /// The name is resolved against the Contacts folder and then against the Global Address List if no match was found.
-        /// </summary>
-        ContactsThenDirectory
-    }
+    /// <summary>
+    ///     The name is resolved against the Contacts folder and then against the Global Address List if no match was found.
+    /// </summary>
+    ContactsThenDirectory,
 }

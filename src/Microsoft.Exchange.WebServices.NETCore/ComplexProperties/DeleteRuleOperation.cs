@@ -23,78 +23,65 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an operation to delete an existing rule.
+/// </summary>
+[PublicAPI]
+public sealed class DeleteRuleOperation : RuleOperation
 {
     /// <summary>
-    /// Represents an operation to delete an existing rule.
+    ///     Id of the inbox rule to delete.
     /// </summary>
-    public sealed class DeleteRuleOperation : RuleOperation
+    private string _ruleId;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DeleteRuleOperation" /> class.
+    /// </summary>
+    public DeleteRuleOperation()
     {
-        /// <summary>
-        /// Id of the inbox rule to delete.
-        /// </summary>
-        private string ruleId;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteRuleOperation"/> class.
-        /// </summary>
-        public DeleteRuleOperation()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteRuleOperation"/> class.
-        /// </summary>
-        /// <param name="ruleId">The Id of the inbox rule to delete.</param>
-        public DeleteRuleOperation(string ruleId)
-            : base()
-        {
-            this.ruleId = ruleId;
-        }
-
-        /// <summary>
-        /// Gets or sets the Id of the rule to delete.
-        /// </summary>
-        public string RuleId
-        {
-            get
-            {
-                return this.ruleId;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.ruleId, value);
-            }
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RuleId, this.RuleId);
-        }
-
-        /// <summary>
-        ///  Validates this instance.
-        /// </summary>
-        internal override void InternalValidate()
-        {
-            EwsUtilities.ValidateParam(this.ruleId, "RuleId");
-        }
-
-        /// <summary>
-        /// Gets the Xml element name of the DeleteRuleOperation object.
-        /// </summary>
-        internal override string XmlElementName
-        {
-            get
-            {
-                return XmlElementNames.DeleteRuleOperation;
-            }
-        }
     }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DeleteRuleOperation" /> class.
+    /// </summary>
+    /// <param name="ruleId">The Id of the inbox rule to delete.</param>
+    public DeleteRuleOperation(string ruleId)
+    {
+        _ruleId = ruleId;
+    }
+
+    /// <summary>
+    ///     Gets or sets the Id of the rule to delete.
+    /// </summary>
+    public string RuleId
+    {
+        get => _ruleId;
+        set => SetFieldValue(ref _ruleId, value);
+    }
+
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RuleId, RuleId);
+    }
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        EwsUtilities.ValidateParam(_ruleId, "RuleId");
+    }
+
+    /// <summary>
+    ///     Gets the Xml element name of the DeleteRuleOperation object.
+    /// </summary>
+    internal override string XmlElementName => XmlElementNames.DeleteRuleOperation;
 }

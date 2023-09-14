@@ -23,96 +23,76 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the definition of the GroupMember property.
+/// </summary>
+internal sealed class GroupMemberPropertyDefinition : ServiceObjectPropertyDefinition
 {
-    using System;
+    /// <summary>
+    ///     FieldUri of IndexedFieldURI for a group member.
+    /// </summary>
+    private const string FieldUri = "distributionlist:Members:Member";
 
     /// <summary>
-    /// Represents the definition of the GroupMember property.
+    ///     Initializes a new instance of the <see cref="GroupMemberPropertyDefinition" /> class.
     /// </summary>
-    internal sealed class GroupMemberPropertyDefinition : ServiceObjectPropertyDefinition
+    /// <param name="key">The member's key.</param>
+    public GroupMemberPropertyDefinition(string key)
+        : base(FieldUri)
     {
-        /// <summary>
-        /// FieldUri of IndexedFieldURI for a group member.
-        /// </summary>
-        private const string FieldUri = "distributionlist:Members:Member";
-
-        /// <summary>
-        /// Member key.
-        /// Maps to the Index attribute of IndexedFieldURI element.
-        /// </summary>
-        private string key;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GroupMemberPropertyDefinition"/> class.
-        /// </summary>
-        /// <param name="key">The member's key.</param>
-        public GroupMemberPropertyDefinition(string key)
-            : base(FieldUri)
-        {
-            this.key = key;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GroupMemberPropertyDefinition"/> class without key.
-        /// </summary>
-        internal GroupMemberPropertyDefinition()
-            : base(FieldUri)
-        {
-        }
-
-        /// <summary>
-        /// Gets or sets the member's key.
-        /// </summary>
-        public string Key
-        {
-            get
-            {
-                return this.key;
-            }
-
-            set
-            {
-                this.key = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <returns>XML element name.</returns>
-        internal override string GetXmlElementName()
-        {
-            return XmlElementNames.IndexedFieldURI;
-        }
-
-        /// <summary>
-        /// Writes the attributes to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-        {
-            base.WriteAttributesToXml(writer);
-            writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, this.Key);
-        }
-
-        /// <summary>
-        /// Gets the property definition's printable name.
-        /// </summary>
-        /// <returns>
-        /// The property definition's printable name.
-        /// </returns>
-        internal override string GetPrintableName()
-        {
-            return string.Format("{0}:{1}", FieldUri, this.Key);
-        }
-
-        /// <summary>
-        /// Gets the property type.
-        /// </summary>
-        public override Type Type
-        {
-            get { return typeof(string); }
-        }
+        Key = key;
     }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GroupMemberPropertyDefinition" /> class without key.
+    /// </summary>
+    internal GroupMemberPropertyDefinition()
+        : base(FieldUri)
+    {
+    }
+
+    /// <summary>
+    ///     Gets or sets the member's key.
+    /// </summary>
+    /// <remarks>
+    ///     Maps to the Index attribute of IndexedFieldURI element.
+    /// </remarks>
+    public string Key { get; set; }
+
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <returns>XML element name.</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.IndexedFieldURI;
+    }
+
+    /// <summary>
+    ///     Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        base.WriteAttributesToXml(writer);
+        writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, Key);
+    }
+
+    /// <summary>
+    ///     Gets the property definition's printable name.
+    /// </summary>
+    /// <returns>
+    ///     The property definition's printable name.
+    /// </returns>
+    internal override string GetPrintableName()
+    {
+        return $"{FieldUri}:{Key}";
+    }
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(string);
 }

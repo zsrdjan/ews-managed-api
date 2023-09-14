@@ -23,44 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an EmailAddressEntity object.
+/// </summary>
+[PublicAPI]
+public sealed class EmailAddressEntity : ExtractedEntity
 {
-    using System;
-    using System.IO;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EmailAddressEntity" /> class.
+    /// </summary>
+    internal EmailAddressEntity()
+    {
+    }
 
     /// <summary>
-    /// Represents an EmailAddressEntity object.
+    ///     Gets the meeting suggestion Location.
     /// </summary>
-    public sealed class EmailAddressEntity : ExtractedEntity
+    public string EmailAddress { get; internal set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EmailAddressEntity"/> class.
-        /// </summary>
-        internal EmailAddressEntity()
-            : base()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Gets the meeting suggestion Location.
-        /// </summary>
-        public string EmailAddress { get; internal set; }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.NlgEmailAddress:
             {
-                case XmlElementNames.NlgEmailAddress:
-                    this.EmailAddress = reader.ReadElementValue();
-                    return true;
-                
-                default:
-                    return base.TryReadElementFromXml(reader);
+                EmailAddress = reader.ReadElementValue();
+                return true;
+            }
+            default:
+            {
+                return base.TryReadElementFromXml(reader);
             }
         }
     }

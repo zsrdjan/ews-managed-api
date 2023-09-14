@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,66 +23,60 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the results of a People Index search operation.
+/// </summary>
+[PublicAPI]
+public sealed class PeopleQueryMode
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
+    /// <summary>
+    ///     This mode will attempt to find a good match as quickly as possible
+    ///     among the various potential sources. This is a good setting to use
+    ///     by default.
+    /// </summary>
+    public static PeopleQueryMode Auto { get; } = new();
 
     /// <summary>
-    /// Represents the results of a People Index search operation.
+    ///     The Source string for Auto
     /// </summary>
-    public sealed class PeopleQueryMode
+    private const string AutoSourceString = "Auto";
+
+    /// <summary>
+    ///     The sources used for this mode.
+    /// </summary>
+    internal readonly HashSet<string> Sources;
+
+    /// <summary>
+    ///     Creates a new instance of the <see cref="PeopleQueryMode" /> class.
+    /// </summary>
+    private PeopleQueryMode()
     {
-        /// <summary>
-        /// This mode will attempt to find a good match as quickly as possible
-        /// among the various potential sources. This is a good setting to use
-        /// by default.
-        /// </summary>
-        public static PeopleQueryMode Auto
-        {
-            get { return autoInstance; }
-        }
-
-        /// <summary>
-        /// The Source string for Auto
-        /// </summary>
-        private const string AutoSourceString = "Auto";
-
-        /// <summary>
-        /// The field for the auto mode
-        /// </summary>
-        private static PeopleQueryMode autoInstance = new PeopleQueryMode();
-
-        /// <summary>
-        /// The sources used for this mode.
-        /// </summary>
-        internal HashSet<string> Sources;
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="PeopleQueryMode"/> class.
-        /// </summary>
-        private PeopleQueryMode()
-        {
-            this.Sources = new HashSet<string>(new string[] { AutoSourceString });
-        }
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="PeopleQueryMode"/> class.
-        /// </summary>
-        /// <param name="sources">The sources to use. See <see cref="PeopleQuerySource"/> for sources</param>
-        public PeopleQueryMode(IEnumerable<string> sources)
-        {
-            EwsUtilities.ValidateParam(sources, "sources");
-
-            this.Sources = new HashSet<string>(sources);
-
-            // The call should either be auto or a list of real sources, so disallow this constructor from passing Auto
-            if (this.Sources.Contains(AutoSourceString))
+        Sources = new HashSet<string>(
+            new[]
             {
-                throw new ArgumentException("Cannot pass 'Auto' as a source");
+                AutoSourceString,
             }
+        );
+    }
+
+    /// <summary>
+    ///     Creates a new instance of the <see cref="PeopleQueryMode" /> class.
+    /// </summary>
+    /// <param name="sources">The sources to use. See <see cref="PeopleQuerySource" /> for sources</param>
+    public PeopleQueryMode(IEnumerable<string> sources)
+    {
+        EwsUtilities.ValidateParam(sources, nameof(sources));
+
+        Sources = new HashSet<string>(sources);
+
+        // The call should either be auto or a list of real sources, so disallow this constructor from passing Auto
+        if (Sources.Contains(AutoSourceString))
+        {
+            throw new ArgumentException("Cannot pass 'Auto' as a source");
         }
     }
 }

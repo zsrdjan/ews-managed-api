@@ -23,63 +23,64 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.Runtime.Serialization;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents an exception from an autodiscover error response.
+/// </summary>
+[PublicAPI]
+public class AutodiscoverResponseException : ServiceRemoteException
 {
-    using System;
-	using System.Runtime.Serialization;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AutodiscoverResponseException" /> class.
+    /// </summary>
+    /// <param name="errorCode">The error code.</param>
+    /// <param name="message">The message.</param>
+    internal AutodiscoverResponseException(AutodiscoverErrorCode errorCode, string message)
+        : base(message)
+    {
+        ErrorCode = errorCode;
+    }
 
     /// <summary>
-    /// Represents an exception from an autodiscover error response.
+    ///     Initializes a new instance of the
+    ///     <see cref="T:Microsoft.Exchange.WebServices.Data.AutodiscoverResponseException" /> class with serialized data.
     /// </summary>
-    public class AutodiscoverResponseException : ServiceRemoteException
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected AutodiscoverResponseException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
-        /// <summary>
-        /// Error code when Autodiscover service operation failed remotely.
-        /// </summary>
-        private readonly AutodiscoverErrorCode errorCode;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutodiscoverResponseException"/> class.
-        /// </summary>
-        /// <param name="errorCode">The error code.</param>
-        /// <param name="message">The message.</param>
-        internal AutodiscoverResponseException(AutodiscoverErrorCode errorCode, string message)
-            : base(message)
-        {
-            this.errorCode = errorCode;
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.AutodiscoverResponseException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		protected AutodiscoverResponseException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-			this.errorCode = (AutodiscoverErrorCode)info.GetInt32("ErrorCode");
-		}
-
-		/// <summary>Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and additional exception information.</summary>
-		/// <param name="info">The object that holds the serialized object data. </param>
-		/// <param name="context">The contextual information about the source or destination. </param>
-		/// <exception cref="T:System.ArgumentNullException">The <paramref name="info" /> object is a null reference (Nothing in Visual Basic). </exception>
-		public override void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			EwsUtilities.Assert(info != null, "AutodiscoverResponseException.GetObjectData", "info is null");
-
-			base.GetObjectData(info, context);
-
-			info.AddValue("ErrorCode", (int)this.errorCode);
-		}
-
-		/// <summary>
-		/// Gets the ErrorCode for the exception.
-		/// </summary>
-		public AutodiscoverErrorCode ErrorCode
-        {
-            get { return this.errorCode; }
-        }
+        ErrorCode = (AutodiscoverErrorCode)info.GetInt32("ErrorCode");
     }
+
+    /// <summary>
+    ///     Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and
+    ///     additional exception information.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data. </param>
+    /// <param name="context">The contextual information about the source or destination. </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///     The <paramref name="info" /> object is a null reference (Nothing in
+    ///     Visual Basic).
+    /// </exception>
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        EwsUtilities.Assert(info != null, "AutodiscoverResponseException.GetObjectData", "info is null");
+
+        base.GetObjectData(info, context);
+
+        info.AddValue("ErrorCode", (int)ErrorCode);
+    }
+
+    /// <summary>
+    ///     Gets the ErrorCode for the exception.
+    /// </summary>
+    public AutodiscoverErrorCode ErrorCode { get; }
 }

@@ -23,82 +23,79 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the Id of a Persona.
+/// </summary>
+[PublicAPI]
+public sealed class PersonaId : ServiceId
 {
-    using System;
+    /// <summary>
+    ///     Creates a new instance of the <see cref="PersonaId" /> class.
+    /// </summary>
+    internal PersonaId()
+    {
+    }
 
     /// <summary>
-    /// Represents the Id of a Persona.
+    ///     Defines an implicit conversion from Id string to PersonaId.
     /// </summary>
-    public sealed class PersonaId : ServiceId
+    /// <param name="uniqueId">The unique Id to convert to PersonaId.</param>
+    /// <returns>A PersonaId initialized with the specified unique Id.</returns>
+    public static implicit operator PersonaId(string uniqueId)
     {
-        /// <summary>
-        /// Creates a new instance of the <see cref="PersonaId"/> class.
-        /// </summary>
-        internal PersonaId()
-            : base()
+        return new PersonaId(uniqueId);
+    }
+
+    /// <summary>
+    ///     Defines an implicit conversion from PersonaId to a Id string.
+    /// </summary>
+    /// <param name="personaId">The PersonaId to be converted</param>
+    /// <returns>A PersonaId initialized with the specified unique Id.</returns>
+    public static implicit operator string(PersonaId personaId)
+    {
+        if (personaId == null)
         {
+            throw new ArgumentNullException(nameof(personaId));
         }
 
-        /// <summary>
-        /// Defines an implicit conversion from Id string to PersonaId.
-        /// </summary>
-        /// <param name="uniqueId">The unique Id to convert to PersonaId.</param>
-        /// <returns>A PersonaId initialized with the specified unique Id.</returns>
-        public static implicit operator PersonaId(string uniqueId)
+        if (string.IsNullOrEmpty(personaId.UniqueId))
         {
-            return new PersonaId(uniqueId);
+            return string.Empty;
         }
 
-        /// <summary>
-        /// Defines an implicit conversion from PersonaId to a Id string.
-        /// </summary>
-        /// <param name="PersonaId">The PersonaId to be converted</param>
-        /// <returns>A PersonaId initialized with the specified unique Id.</returns>
-        public static implicit operator String(PersonaId PersonaId)
-        {
-            if (PersonaId == null)
-            {
-                throw new ArgumentNullException("PersonaId");
-            }
+        // Ignoring the change key info
+        return personaId.UniqueId;
+    }
 
-            if (String.IsNullOrEmpty(PersonaId.UniqueId))
-            {
-                return string.Empty;
-            }
-            else
-            {
-                // Ignoring the change key info
-                return PersonaId.UniqueId;
-            }
-        }
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <returns>XML element name.</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.PersonaId;
+    }
 
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <returns>XML element name.</returns>
-        internal override string GetXmlElementName()
-        {
-            return XmlElementNames.PersonaId;
-        }
+    /// <summary>
+    ///     Creates a new instance of PersonaId.
+    /// </summary>
+    /// <param name="uniqueId">The unique Id used to initialize the <see cref="PersonaId" />.</param>
+    public PersonaId(string uniqueId)
+        : base(uniqueId)
+    {
+    }
 
-        /// <summary>
-        /// Creates a new instance of PersonaId.
-        /// </summary>
-        /// <param name="uniqueId">The unique Id used to initialize the <see cref="PersonaId"/>.</param>
-        public PersonaId(string uniqueId)
-            : base(uniqueId)
-        {
-        }
-
-        /// <summary>
-        /// Gets a string representation of the Persona Id.
-        /// </summary>
-        /// <returns>The string representation of the Persona id.</returns>
-        public override string ToString()
-        {
-            // We have ignored the change key portion
-            return this.UniqueId;
-        }
+    /// <summary>
+    ///     Gets a string representation of the Persona Id.
+    /// </summary>
+    /// <returns>The string representation of the Persona id.</returns>
+    public override string ToString()
+    {
+        // We have ignored the change key portion
+        return UniqueId;
     }
 }

@@ -23,77 +23,72 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the SkillInsightValue.
+/// </summary>
+[PublicAPI]
+public sealed class SkillInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private string _name;
+    private string _strength;
 
     /// <summary>
-    /// Represents the SkillInsightValue.
+    ///     Gets the Name
     /// </summary>
-    public sealed class SkillInsightValue : InsightValue
+    public string Name
     {
-        private string name;
-        private string strength;
+        get => _name;
+        set => SetFieldValue(ref _name, value);
+    }
 
-        /// <summary>
-        /// Gets the Name
-        /// </summary>
-        public string Name
+    /// <summary>
+    ///     Gets the Strength
+    /// </summary>
+    public string Strength
+    {
+        get => _strength;
+        set => SetFieldValue(ref _strength, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get
+            case XmlElementNames.InsightSource:
             {
-                return this.name;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
             }
-
-            set
+            case XmlElementNames.UpdatedUtcTicks:
             {
-                this.SetFieldValue<string>(ref this.name, value);
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Name:
+            {
+                Name = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Strength:
+            {
+                Strength = reader.ReadElementValue();
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        /// <summary>
-        /// Gets the Strength
-        /// </summary>
-        public string Strength
-        {
-            get
-            {
-                return this.strength;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.strength, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Name:
-                    this.Name = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Strength:
-                    this.Strength = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

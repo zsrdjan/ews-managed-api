@@ -23,112 +23,100 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.ComponentModel;
+using System.Xml;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents an error returned by the Autodiscover service.
+/// </summary>
+[PublicAPI]
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed class AutodiscoverError
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AutodiscoverError" /> class.
+    /// </summary>
+    private AutodiscoverError()
+    {
+    }
 
     /// <summary>
-    /// Represents an error returned by the Autodiscover service.
+    ///     Parses the XML through the specified reader and creates an Autodiscover error.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public sealed class AutodiscoverError
+    /// <param name="reader">The reader.</param>
+    /// <returns>An Autodiscover error.</returns>
+    internal static AutodiscoverError Parse(EwsXmlReader reader)
     {
-        private string time;
-        private string id;
-        private int errorCode;
-        private string message;
-        private string debugData;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutodiscoverError"/> class.
-        /// </summary>
-        private AutodiscoverError()
+        var error = new AutodiscoverError
         {
-        }
+            Time = reader.ReadAttributeValue(XmlAttributeNames.Time),
+            Id = reader.ReadAttributeValue(XmlAttributeNames.Id),
+        };
 
-        /// <summary>
-        /// Parses the XML through the specified reader and creates an Autodiscover error.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>An Autodiscover error.</returns>
-        internal static AutodiscoverError Parse(EwsXmlReader reader)
+        do
         {
-            AutodiscoverError error = new AutodiscoverError();
+            reader.Read();
 
-            error.time = reader.ReadAttributeValue(XmlAttributeNames.Time);
-            error.id = reader.ReadAttributeValue(XmlAttributeNames.Id);
-
-            do
+            if (reader.NodeType == XmlNodeType.Element)
             {
-                reader.Read();
-
-                if (reader.NodeType == XmlNodeType.Element)
+                switch (reader.LocalName)
                 {
-                    switch (reader.LocalName)
+                    case XmlElementNames.ErrorCode:
                     {
-                        case XmlElementNames.ErrorCode:
-                            error.errorCode = reader.ReadElementValue<int>();
-                            break;
-                        case XmlElementNames.Message:
-                            error.message = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.DebugData:
-                            error.debugData = reader.ReadElementValue();
-                            break;
-                        default:
-                            reader.SkipCurrentElement();
-                            break;
+                        error.ErrorCode = reader.ReadElementValue<int>();
+                        break;
+                    }
+                    case XmlElementNames.Message:
+                    {
+                        error.Message = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.DebugData:
+                    {
+                        error.DebugData = reader.ReadElementValue();
+                        break;
+                    }
+                    default:
+                    {
+                        reader.SkipCurrentElement();
+                        break;
                     }
                 }
             }
-            while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.Error));
+        } while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.Error));
 
-            return error;
-        }
-
-        /// <summary>
-        /// Gets the time when the error was returned.
-        /// </summary>
-        public string Time
-        {
-            get { return this.time; }
-        }
-
-        /// <summary>
-        /// Gets a hash of the name of the computer that is running Microsoft Exchange Server that has the Client Access server role installed.
-        /// </summary>
-        public string Id
-        {
-            get { return this.id; }
-        }
-
-        /// <summary>
-        /// Gets the error code.
-        /// </summary>
-        public int ErrorCode
-        {
-            get { return this.errorCode; }
-        }
-
-        /// <summary>
-        /// Gets the error message.
-        /// </summary>
-        public string Message
-        {
-            get { return this.message; }
-        }
-
-        /// <summary>
-        /// Gets the debug data.
-        /// </summary>
-        public string DebugData
-        {
-            get { return this.debugData; }
-        }
+        return error;
     }
+
+    /// <summary>
+    ///     Gets the time when the error was returned.
+    /// </summary>
+    public string Time { get; private set; }
+
+    /// <summary>
+    ///     Gets a hash of the name of the computer that is running Microsoft Exchange Server that has the Client Access server
+    ///     role installed.
+    /// </summary>
+    public string Id { get; private set; }
+
+    /// <summary>
+    ///     Gets the error code.
+    /// </summary>
+    public int ErrorCode { get; private set; }
+
+    /// <summary>
+    ///     Gets the error message.
+    /// </summary>
+    public string Message { get; private set; }
+
+    /// <summary>
+    ///     Gets the debug data.
+    /// </summary>
+    public string DebugData { get; private set; }
 }

@@ -23,35 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the sensitivity of an item.
+/// </summary>
+[PublicAPI]
+public enum Sensitivity
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The item has a normal sensitivity.
+    /// </summary>
+    Normal,
 
     /// <summary>
-    /// Defines the sensitivity of an item.
+    ///     The item is personal.
     /// </summary>
-    public enum Sensitivity
-    {
-        /// <summary>
-        /// The item has a normal sensitivity.
-        /// </summary>
-        Normal,
+    Personal,
 
-        /// <summary>
-        /// The item is personal.
-        /// </summary>
-        Personal,
+    /// <summary>
+    ///     The item is private.
+    /// </summary>
+    Private,
 
-        /// <summary>
-        /// The item is private.
-        /// </summary>
-        Private,
-
-        /// <summary>
-        /// The item is confidential.
-        /// </summary>
-        Confidential
-    }
+    /// <summary>
+    ///     The item is confidential.
+    /// </summary>
+    Confidential,
 }

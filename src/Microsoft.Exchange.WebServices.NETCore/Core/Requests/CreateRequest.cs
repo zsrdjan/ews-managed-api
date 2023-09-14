@@ -23,106 +23,92 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an abstract Create request.
+/// </summary>
+/// <typeparam name="TServiceObject">The type of the service object.</typeparam>
+/// <typeparam name="TResponse">The type of the response.</typeparam>
+internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponseServiceRequest<TResponse>
+    where TServiceObject : ServiceObject
+    where TResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CreateRequest&lt;TServiceObject, TResponse&gt;" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
+    protected CreateRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service, errorHandlingMode)
+    {
+    }
 
     /// <summary>
-    /// Represents an abstract Create request.
+    ///     Validate request.
     /// </summary>
-    /// <typeparam name="TServiceObject">The type of the service object.</typeparam>
-    /// <typeparam name="TResponse">The type of the response.</typeparam>
-    internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponseServiceRequest<TResponse>
-        where TServiceObject : ServiceObject
-        where TResponse : ServiceResponse
+    internal override void Validate()
     {
-        private FolderId parentFolderId;
-        private IEnumerable<TServiceObject> objects;
+        base.Validate();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateRequest&lt;TServiceObject, TResponse&gt;"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
-        protected CreateRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-            : base(service, errorHandlingMode)
+        if (ParentFolderId != null)
         {
+            ParentFolderId.Validate(Service.RequestedServerVersion);
         }
+    }
 
-        /// <summary>
-        /// Validate request.
-        /// </summary>
-        internal override void Validate()
+    /// <summary>
+    ///     Gets the expected response message count.
+    /// </summary>
+    /// <returns>Number of responses expected.</returns>
+    internal override int GetExpectedResponseMessageCount()
+    {
+        return EwsUtilities.GetEnumeratedObjectCount(Objects);
+    }
+
+    /// <summary>
+    ///     Gets the name of the parent folder XML element.
+    /// </summary>
+    /// <returns>XML element name.</returns>
+    internal abstract string GetParentFolderXmlElementName();
+
+    /// <summary>
+    ///     Gets the name of the object collection XML element.
+    /// </summary>
+    /// <returns>XML element name.</returns>
+    internal abstract string GetObjectCollectionXmlElementName();
+
+    /// <summary>
+    ///     Writes XML elements.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (ParentFolderId != null)
         {
-            base.Validate();
-            if (this.ParentFolderId != null)
-            {
-                this.ParentFolderId.Validate(this.Service.RequestedServerVersion);
-            }
-        }
-
-        /// <summary>
-        /// Gets the expected response message count.
-        /// </summary>
-        /// <returns>Number of responses expected.</returns>
-        internal override int GetExpectedResponseMessageCount()
-        {
-            return EwsUtilities.GetEnumeratedObjectCount(this.objects);
-        }
-
-        /// <summary>
-        /// Gets the name of the parent folder XML element.
-        /// </summary>
-        /// <returns>XML element name.</returns>
-        internal abstract string GetParentFolderXmlElementName();
-
-        /// <summary>
-        /// Gets the name of the object collection XML element.
-        /// </summary>
-        /// <returns>XML element name.</returns>
-        internal abstract string GetObjectCollectionXmlElementName();
-
-        /// <summary>
-        /// Writes XML elements.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            if (this.ParentFolderId != null)
-            {
-                writer.WriteStartElement(XmlNamespace.Messages, this.GetParentFolderXmlElementName());
-                this.ParentFolderId.WriteToXml(writer);
-                writer.WriteEndElement();
-            }
-
-            writer.WriteStartElement(XmlNamespace.Messages, this.GetObjectCollectionXmlElementName());
-            foreach (ServiceObject obj in this.objects)
-            {
-                obj.WriteToXml(writer);
-            }
+            writer.WriteStartElement(XmlNamespace.Messages, GetParentFolderXmlElementName());
+            ParentFolderId.WriteToXml(writer);
             writer.WriteEndElement();
         }
 
-        /// <summary>
-        /// Gets or sets the service objects.
-        /// </summary>
-        /// <value>The objects.</value>
-        internal IEnumerable<TServiceObject> Objects
+        writer.WriteStartElement(XmlNamespace.Messages, GetObjectCollectionXmlElementName());
+        foreach (var obj in Objects)
         {
-            get { return this.objects; }
-            set { this.objects = value; }
+            obj.WriteToXml(writer);
         }
 
-        /// <summary>
-        /// Gets or sets the parent folder id.
-        /// </summary>
-        /// <value>The parent folder id.</value>
-        public FolderId ParentFolderId
-        {
-            get { return this.parentFolderId; }
-            set { this.parentFolderId = value; }
-        }
+        writer.WriteEndElement();
     }
+
+    /// <summary>
+    ///     Gets or sets the service objects.
+    /// </summary>
+    /// <value>The objects.</value>
+    internal IEnumerable<TServiceObject> Objects { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the parent folder id.
+    /// </summary>
+    /// <value>The parent folder id.</value>
+    public FolderId? ParentFolderId { get; set; }
 }

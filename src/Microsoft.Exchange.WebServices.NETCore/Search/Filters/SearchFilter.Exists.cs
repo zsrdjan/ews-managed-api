@@ -23,48 +23,49 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+using JetBrains.Annotations;
 
-    /// <content>
-    /// Contains nested type SearchFilter.Exists.
-    /// </content>
-    public abstract partial class SearchFilter
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <content>
+///     Contains nested type SearchFilter.Exists.
+/// </content>
+public abstract partial class SearchFilter
+{
+    /// <summary>
+    ///     Represents a search filter checking if a field is set. Applications can use
+    ///     ExistsFilter to define conditions such as "Field IS SET".
+    /// </summary>
+    [PublicAPI]
+    public sealed class Exists : PropertyBasedFilter
     {
         /// <summary>
-        /// Represents a search filter checking if a field is set. Applications can use
-        /// ExistsFilter to define conditions such as "Field IS SET".
+        ///     Initializes a new instance of the <see cref="SearchFilter.Exists" /> class.
         /// </summary>
-        public sealed class Exists : PropertyBasedFilter
+        public Exists()
         {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Exists"/> class.
-            /// </summary>
-            public Exists()
-                : base()
-            {
-            }
+        }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Exists"/> class.
-            /// </summary>
-            /// <param name="propertyDefinition">The definition of the property to check the existence of. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)</param>
-            public Exists(PropertyDefinitionBase propertyDefinition)
-                : base(propertyDefinition)
-            {
-            }
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="SearchFilter.Exists" /> class.
+        /// </summary>
+        /// <param name="propertyDefinition">
+        ///     The definition of the property to check the existence of. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+        ///     ContactSchema.GivenName, etc.)
+        /// </param>
+        public Exists(PropertyDefinitionBase propertyDefinition)
+            : base(propertyDefinition)
+        {
+        }
 
-            /// <summary>
-            /// Gets the name of the XML element.
-            /// </summary>
-            /// <returns>XML element name.</returns>
-            internal override string GetXmlElementName()
-            {
-                return XmlElementNames.Exists;
-            }
+        /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <returns>XML element name.</returns>
+        internal override string GetXmlElementName()
+        {
+            return XmlElementNames.Exists;
         }
     }
 }

@@ -23,202 +23,152 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the JobInsightValue.
+/// </summary>
+[PublicAPI]
+public sealed class JobInsightValue : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private string _company;
+    private string _companyDescription;
+    private string _companyTicker;
+    private string _companyLogoUrl;
+    private string _companyWebsiteUrl;
+    private string _companyLinkedInUrl;
+    private string _title;
+    private long _startUtcTicks;
+    private long _endUtcTicks;
 
     /// <summary>
-    /// Represents the JobInsightValue.
+    ///     Gets the Company
     /// </summary>
-    public sealed class JobInsightValue : InsightValue
+    public string Company
     {
-        private string company;
-        private string companyDescription;
-        private string companyTicker;
-        private string companyLogoUrl;
-        private string companyWebsiteUrl;
-        private string companyLinkedInUrl;
-        private string title;
-        private long startUtcTicks;
-        private long endUtcTicks;
+        get => _company;
+        set => SetFieldValue(ref _company, value);
+    }
 
-        /// <summary>
-        /// Gets the Company
-        /// </summary>
-        public string Company
+    /// <summary>
+    ///     Gets the CompanyDescription
+    /// </summary>
+    public string CompanyDescription
+    {
+        get => _companyDescription;
+        set => SetFieldValue(ref _companyDescription, value);
+    }
+
+    /// <summary>
+    ///     Gets the CompanyTicker
+    /// </summary>
+    public string CompanyTicker
+    {
+        get => _companyTicker;
+        set => SetFieldValue(ref _companyTicker, value);
+    }
+
+    /// <summary>
+    ///     Gets the CompanyLogoUrl
+    /// </summary>
+    public string CompanyLogoUrl
+    {
+        get => _companyLogoUrl;
+        set => SetFieldValue(ref _companyLogoUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets the CompanyWebsiteUrl
+    /// </summary>
+    public string CompanyWebsiteUrl
+    {
+        get => _companyWebsiteUrl;
+        set => SetFieldValue(ref _companyWebsiteUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets the CompanyLinkedInUrl
+    /// </summary>
+    public string CompanyLinkedInUrl
+    {
+        get => _companyLinkedInUrl;
+        set => SetFieldValue(ref _companyLinkedInUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets the Title
+    /// </summary>
+    public string Title
+    {
+        get => _title;
+        set => SetFieldValue(ref _title, value);
+    }
+
+    /// <summary>
+    ///     Gets the StartUtcTicks
+    /// </summary>
+    public long StartUtcTicks
+    {
+        get => _startUtcTicks;
+        set => SetFieldValue(ref _startUtcTicks, value);
+    }
+
+    /// <summary>
+    ///     Gets the EndUtcTicks
+    /// </summary>
+    public long EndUtcTicks
+    {
+        get => _endUtcTicks;
+        set => SetFieldValue(ref _endUtcTicks, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get
+            case XmlElementNames.InsightSource:
             {
-                return this.company;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
             }
-
-            set
+            case XmlElementNames.UpdatedUtcTicks:
             {
-                this.SetFieldValue<string>(ref this.company, value);
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Company:
+            {
+                Company = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Title:
+            {
+                Title = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.StartUtcTicks:
+            {
+                StartUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.EndUtcTicks:
+            {
+                EndUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        /// <summary>
-        /// Gets the CompanyDescription
-        /// </summary>
-        public string CompanyDescription
-        {
-            get
-            {
-                return this.companyDescription;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.companyDescription, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the CompanyTicker
-        /// </summary>
-        public string CompanyTicker
-        {
-            get
-            {
-                return this.companyTicker;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.companyTicker, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the CompanyLogoUrl
-        /// </summary>
-        public string CompanyLogoUrl
-        {
-            get
-            {
-                return this.companyLogoUrl;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.companyLogoUrl, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the CompanyWebsiteUrl
-        /// </summary>
-        public string CompanyWebsiteUrl
-        {
-            get
-            {
-                return this.companyWebsiteUrl;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.companyWebsiteUrl, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the CompanyLinkedInUrl
-        /// </summary>
-        public string CompanyLinkedInUrl
-        {
-            get
-            {
-                return this.companyLinkedInUrl;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.companyLinkedInUrl, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Title
-        /// </summary>
-        public string Title
-        {
-            get
-            {
-                return this.title;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.title, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the StartUtcTicks
-        /// </summary>
-        public long StartUtcTicks
-        {
-            get
-            {
-                return this.startUtcTicks;
-            }
-
-            set
-            {
-                this.SetFieldValue<long>(ref this.startUtcTicks, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the EndUtcTicks
-        /// </summary>
-        public long EndUtcTicks
-        {
-            get
-            {
-                return this.endUtcTicks;
-            }
-
-            set
-            {
-                this.SetFieldValue<long>(ref this.endUtcTicks, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Company:
-                    this.Company = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Title:
-                    this.Title = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.StartUtcTicks:
-                    this.StartUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.EndUtcTicks:
-                    this.EndUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

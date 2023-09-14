@@ -23,37 +23,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the InsightValue.
+/// </summary>
+[PublicAPI]
+public class InsightValue : ComplexProperty
 {
-    using System.Collections.Generic;
-    using System.Xml;
-    
+    private long _updatedUtcTicks;
+
     /// <summary>
-    /// Represents the InsightValue.
+    ///     Gets the InsightSource
     /// </summary>
-    public class InsightValue : ComplexProperty
+    public string InsightSource { get; set; }
+
+    /// <summary>
+    ///     Gets the UpdatedUtcTicks
+    /// </summary>
+    public long UpdatedUtcTicks
     {
-        private long updatedUtcTicks;
-
-        /// <summary>
-        /// Gets the InsightSource
-        /// </summary>
-        public string InsightSource { get; set; }
-
-        /// <summary>
-        /// Gets the UpdatedUtcTicks
-        /// </summary>
-        public long UpdatedUtcTicks
-        {
-            get
-            {
-                return this.updatedUtcTicks;
-            }
-
-            set
-            {
-                this.SetFieldValue<long>(ref this.updatedUtcTicks, value);
-            }
-        }
+        get => _updatedUtcTicks;
+        set => SetFieldValue(ref _updatedUtcTicks, value);
     }
 }

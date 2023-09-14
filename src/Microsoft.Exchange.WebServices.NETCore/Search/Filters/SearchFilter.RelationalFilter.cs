@@ -23,172 +23,181 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.ComponentModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <content>
+///     Contains nested type SearchFilter.RelationalFilter.
+/// </content>
+public abstract partial class SearchFilter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
-
-    /// <content>
-    /// Contains nested type SearchFilter.RelationalFilter.
-    /// </content>
-    public abstract partial class SearchFilter
+    /// <summary>
+    ///     Represents the base class for relational filters (for example, IsEqualTo, IsGreaterThan or IsLessThanOrEqualTo).
+    /// </summary>
+    [PublicAPI]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public abstract class RelationalFilter : PropertyBasedFilter
     {
+        private PropertyDefinitionBase? _otherPropertyDefinition;
+        private object? _value;
+
         /// <summary>
-        /// Represents the base class for relational filters (for example, IsEqualTo, IsGreaterThan or IsLessThanOrEqualTo).
+        ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public abstract class RelationalFilter : PropertyBasedFilter
+        internal RelationalFilter()
         {
-            private PropertyDefinitionBase otherPropertyDefinition;
-            private object value;
+        }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="RelationalFilter"/> class.
-            /// </summary>
-            internal RelationalFilter()
-                : base()
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
+        /// </summary>
+        /// <param name="propertyDefinition">
+        ///     The definition of the property that is being compared. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+        ///     ContactSchema.GivenName, etc.)
+        /// </param>
+        /// <param name="otherPropertyDefinition">
+        ///     The definition of the property to compare with. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema, AppointmentSchema, etc.)
+        /// </param>
+        internal RelationalFilter(
+            PropertyDefinitionBase propertyDefinition,
+            PropertyDefinitionBase otherPropertyDefinition
+        )
+            : base(propertyDefinition)
+        {
+            _otherPropertyDefinition = otherPropertyDefinition;
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
+        /// </summary>
+        /// <param name="propertyDefinition">
+        ///     The definition of the property that is being compared. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+        ///     ContactSchema.GivenName, etc.)
+        /// </param>
+        /// <param name="value">The value to compare with.</param>
+        internal RelationalFilter(PropertyDefinitionBase propertyDefinition, object value)
+            : base(propertyDefinition)
+        {
+            _value = value;
+        }
+
+        /// <summary>
+        ///     Validate instance.
+        /// </summary>
+        internal override void InternalValidate()
+        {
+            base.InternalValidate();
+
+            if (_otherPropertyDefinition == null && _value == null)
             {
+                throw new ServiceValidationException(Strings.EqualityComparisonFilterIsInvalid);
             }
 
-            /// <summary>
-            /// Initializes a new instance of the <see cref="RelationalFilter"/> class.
-            /// </summary>
-            /// <param name="propertyDefinition">The definition of the property that is being compared. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)</param>
-            /// <param name="otherPropertyDefinition">The definition of the property to compare with. Property definitions are available as static members from schema classes (for example, EmailMessageSchema, AppointmentSchema, etc.)</param>
-            internal RelationalFilter(PropertyDefinitionBase propertyDefinition, PropertyDefinitionBase otherPropertyDefinition)
-                : base(propertyDefinition)
+            if (_value != null)
             {
-                this.otherPropertyDefinition = otherPropertyDefinition;
-            }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="RelationalFilter"/> class.
-            /// </summary>
-            /// <param name="propertyDefinition">The definition of the property that is being compared. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)</param>
-            /// <param name="value">The value to compare with.</param>
-            internal RelationalFilter(PropertyDefinitionBase propertyDefinition, object value)
-                : base(propertyDefinition)
-            {
-                this.value = value;
-            }
-
-            /// <summary>
-            /// Validate instance.
-            /// </summary>
-            internal override void InternalValidate()
-            {
-                base.InternalValidate();
-
-                if (this.otherPropertyDefinition == null && this.value == null)
+                // All common value types (String, Int32, DateTime, ...) implement IConvertible.
+                // Value types that don't implement IConvertible must implement ISearchStringProvider 
+                // in order to be used in a search filter.
+                if (!((_value is IConvertible) || (_value is ISearchStringProvider)))
                 {
-                    throw new ServiceValidationException(Strings.EqualityComparisonFilterIsInvalid);
+                    throw new ServiceValidationException(
+                        string.Format(Strings.SearchFilterComparisonValueTypeIsNotSupported, _value.GetType().Name)
+                    );
                 }
-                else if (value != null)
+            }
+        }
+
+        /// <summary>
+        ///     Tries to read element from XML.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <returns>True if element was read.</returns>
+        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+        {
+            var result = base.TryReadElementFromXml(reader);
+
+            if (!result)
+            {
+                if (reader.LocalName == XmlElementNames.FieldURIOrConstant)
                 {
-                    // All common value types (String, Int32, DateTime, ...) implement IConvertible.
-                    // Value types that don't implement IConvertible must implement ISearchStringProvider 
-                    // in order to be used in a search filter.
-                    if (!((value is IConvertible) || (value is ISearchStringProvider)))
+                    reader.Read();
+                    reader.EnsureCurrentNodeIsStartElement();
+
+                    if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Constant))
                     {
-                        throw new ServiceValidationException(
-                            string.Format(Strings.SearchFilterComparisonValueTypeIsNotSupported, value.GetType().Name));
+                        _value = reader.ReadAttributeValue(XmlAttributeNames.Value);
+
+                        result = true;
+                    }
+                    else
+                    {
+                        result = PropertyDefinitionBase.TryLoadFromXml(reader, ref _otherPropertyDefinition);
                     }
                 }
             }
 
-            /// <summary>
-            /// Tries to read element from XML.
-            /// </summary>
-            /// <param name="reader">The reader.</param>
-            /// <returns>True if element was read.</returns>
-            internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+            return result;
+        }
+
+        /// <summary>
+        ///     Writes the elements to XML.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+        {
+            base.WriteElementsToXml(writer);
+
+            writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldURIOrConstant);
+
+            if (Value != null)
             {
-                bool result = base.TryReadElementFromXml(reader);
-
-                if (!result)
-                {
-                    if (reader.LocalName == XmlElementNames.FieldURIOrConstant)
-                    {
-                        reader.Read();
-                        reader.EnsureCurrentNodeIsStartElement();
-
-                        if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Constant))
-                        {
-                            this.value = reader.ReadAttributeValue(XmlAttributeNames.Value);
-
-                            result = true;
-                        }
-                        else
-                        {
-                            result = PropertyDefinitionBase.TryLoadFromXml(reader, ref this.otherPropertyDefinition);
-                        }
-                    }
-                }
-
-                return result;
+                writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Constant);
+                writer.WriteAttributeValue(XmlAttributeNames.Value, true /* alwaysWriteEmptyString */, Value);
+                writer.WriteEndElement(); // Constant
+            }
+            else
+            {
+                OtherPropertyDefinition.WriteToXml(writer);
             }
 
-            /// <summary>
-            /// Writes the elements to XML.
-            /// </summary>
-            /// <param name="writer">The writer.</param>
-            internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+            writer.WriteEndElement(); // FieldURIOrConstant
+        }
+
+        /// <summary>
+        ///     Gets or sets the definition of the property to compare with. Property definitions are available as static members
+        ///     from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName,
+        ///     etc.)
+        ///     The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
+        /// </summary>
+        public PropertyDefinitionBase? OtherPropertyDefinition
+        {
+            get => _otherPropertyDefinition;
+
+            set
             {
-                base.WriteElementsToXml(writer);
-
-                writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldURIOrConstant);
-
-                if (this.Value != null)
-                {
-                    writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Constant);
-                    writer.WriteAttributeValue(XmlAttributeNames.Value, true /* alwaysWriteEmptyString */, this.Value);
-                    writer.WriteEndElement(); // Constant
-                }
-                else
-                {
-                    this.OtherPropertyDefinition.WriteToXml(writer);
-                }
-
-                writer.WriteEndElement(); // FieldURIOrConstant
+                SetFieldValue(ref _otherPropertyDefinition, value);
+                _value = null;
             }
+        }
 
-            /// <summary>
-            /// Gets or sets the definition of the property to compare with. Property definitions are available as static members
-            /// from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)
-            /// The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
-            /// </summary>
-            public PropertyDefinitionBase OtherPropertyDefinition
+        /// <summary>
+        ///     Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
+        ///     are mutually exclusive; setting one resets the other to null.
+        /// </summary>
+        public object? Value
+        {
+            get => _value;
+
+            set
             {
-                get
-                {
-                    return this.otherPropertyDefinition;
-                }
-
-                set
-                {
-                    this.SetFieldValue<PropertyDefinitionBase>(ref this.otherPropertyDefinition, value);
-                    this.value = null;
-                }
-            }
-
-            /// <summary>
-            /// Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
-            /// are mutually exclusive; setting one resets the other to null.
-            /// </summary>
-            public object Value
-            {
-                get
-                {
-                    return this.value;
-                }
-
-                set
-                {
-                    this.SetFieldValue<object>(ref this.value, value);
-                    this.otherPropertyDefinition = null;
-                }
+                SetFieldValue(ref _value, value);
+                _otherPropertyDefinition = null;
             }
         }
     }

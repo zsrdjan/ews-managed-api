@@ -23,27 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an operation to be performed on a rule.
+/// </summary>
+[PublicAPI]
+public abstract class RuleOperation : ComplexProperty
 {
     /// <summary>
-    /// Represents an operation to be performed on a rule.
+    ///     Initializes a new instance of the <see cref="RuleOperation" /> class.
     /// </summary>
-    public abstract class RuleOperation : ComplexProperty
+    internal RuleOperation()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RuleOperation"/> class.
-        /// </summary>
-        internal RuleOperation()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Gets the XML element name of the rule operation.
-        /// </summary>
-        internal abstract string XmlElementName
-        {
-            get;
-        }
     }
+
+    /// <summary>
+    ///     Gets the XML element name of the rule operation.
+    /// </summary>
+    internal abstract string XmlElementName { get; }
 }

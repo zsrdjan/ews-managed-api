@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the type of search result.
+/// </summary>
+[PublicAPI]
+public enum SearchResultType
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Keyword statistics only.
+    /// </summary>
+    StatisticsOnly,
 
     /// <summary>
-    /// Defines the type of search result.
+    ///     Preview only.
     /// </summary>
-    public enum SearchResultType
-    {
-        /// <summary>
-        /// Keyword statistics only.
-        /// </summary>
-        StatisticsOnly,
-
-        /// <summary>
-        /// Preview only.
-        /// </summary>
-        PreviewOnly,
-    }
+    PreviewOnly,
 }

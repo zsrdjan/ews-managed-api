@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,96 +23,78 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Globalization;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the OutOfOfficeInsightValue.
+/// </summary>
+[PublicAPI]
+public sealed class OutOfOfficeInsightValue : InsightValue
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Xml;
+    /// <summary>
+    ///     Get the start date and time.
+    /// </summary>
+    public DateTime StartTime { get; private set; }
 
     /// <summary>
-    /// Represents the OutOfOfficeInsightValue.
+    ///     Get the end date and time.
     /// </summary>
-    public sealed class OutOfOfficeInsightValue : InsightValue
+    public DateTime EndTime { get; private set; }
+
+    /// <summary>
+    ///     Get the culture of the reply.
+    /// </summary>
+    public string Culture { get; private set; } = CultureInfo.CurrentCulture.Name;
+
+    /// <summary>
+    ///     Get the reply message.
+    /// </summary>
+    public string Message { get; private set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private DateTime startTime;
-        private DateTime endTime;
-        private string culture = CultureInfo.CurrentCulture.Name;
-        private string message;
-
-        /// <summary>
-        /// Get the start date and time.
-        /// </summary>
-        public DateTime StartTime
+        switch (reader.LocalName)
         {
-            get
+            case XmlElementNames.InsightSource:
             {
-                return this.startTime;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
             }
-        }
-
-        /// <summary>
-        /// Get the end date and time.
-        /// </summary>
-        public DateTime EndTime
-        {
-            get
-            { 
-                return this.endTime; 
-            }
-        }
-
-        /// <summary>
-        /// Get the culture of the reply.
-        /// </summary>
-        public string Culture
-        {
-            get 
-            { 
-                return this.culture; 
-            }
-        }
-
-        /// <summary>
-        /// Get the reply message.
-        /// </summary>
-        public string Message
-        {
-            get
-            { 
-                return this.message; 
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.StartTime:
             {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.StartTime:
-                    this.startTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
-                    break;
-                case XmlElementNames.EndTime:
-                    this.endTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
-                    break;
-                case XmlElementNames.Culture:
-                    this.culture = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Message:
-                    this.message = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
+                StartTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
+                break;
             }
-
-            return true;
+            case XmlElementNames.EndTime:
+            {
+                EndTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
+                break;
+            }
+            case XmlElementNames.Culture:
+            {
+                Culture = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Message:
+            {
+                Message = reader.ReadElementValue();
+                break;
+            }
+            default:
+            {
+                return false;
+            }
         }
+
+        return true;
     }
 }

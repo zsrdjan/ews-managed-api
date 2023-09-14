@@ -23,25 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using JetBrains.Annotations;
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Domain setting names.
+/// </summary>
+[PublicAPI]
+public enum DomainSettingName
 {
     /// <summary>
-    /// Domain setting names.
+    ///     The external URL of the Exchange Web Services.
     /// </summary>
-    public enum DomainSettingName
-    {
-        /// <summary>
-        /// The external URL of the Exchange Web Services.
-        /// </summary>
-        ExternalEwsUrl,
+    ExternalEwsUrl,
 
-        /// <summary>
-        /// The version of the Exchange server hosting the URL of the Exchange Web Services.
-        /// </summary>
-        ExternalEwsVersion,
-    }
+    /// <summary>
+    ///     The version of the Exchange server hosting the URL of the Exchange Web Services.
+    /// </summary>
+    ExternalEwsVersion,
 }

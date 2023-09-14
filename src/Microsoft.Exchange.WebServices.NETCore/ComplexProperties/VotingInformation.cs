@@ -23,74 +23,72 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Collections.ObjectModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents voting information.
+/// </summary>
+[PublicAPI]
+public sealed class VotingInformation : ComplexProperty
 {
-    using System;
-    using System.Collections.ObjectModel;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="VotingInformation" /> class.
+    /// </summary>
+    internal VotingInformation()
+    {
+    }
 
     /// <summary>
-    /// Represents voting information.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class VotingInformation : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private Collection<VotingOptionData> userOptions = new Collection<VotingOptionData>();
-        private string votingResponse;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="VotingInformation"/> class.
-        /// </summary>
-        internal VotingInformation()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.UserOptions:
             {
-                case XmlElementNames.UserOptions:
-                    if (!reader.IsEmptyElement)
+                if (!reader.IsEmptyElement)
+                {
+                    do
                     {
-                        do
-                        {
-                            reader.Read();
+                        reader.Read();
 
-                            if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.VotingOptionData))
-                            {
-                                VotingOptionData option = new VotingOptionData();
-                                option.LoadFromXml(reader, reader.LocalName);
-                                this.userOptions.Add(option);
-                            }
+                        if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.VotingOptionData))
+                        {
+                            var option = new VotingOptionData();
+                            option.LoadFromXml(reader, reader.LocalName);
+                            UserOptions.Add(option);
                         }
-                        while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UserOptions));
-                    }
-                    return true;
-                case XmlElementNames.VotingResponse:
-                    this.votingResponse = reader.ReadElementValue<string>();
-                    return true;
-                default:
-                    return false;
+                    } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UserOptions));
+                }
+
+                return true;
+            }
+            case XmlElementNames.VotingResponse:
+            {
+                VotingResponse = reader.ReadElementValue<string>();
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Gets the list of user options.
-        /// </summary>
-        public Collection<VotingOptionData> UserOptions
-        {
-            get { return this.userOptions; }
-        }
-
-        /// <summary>
-        /// Gets the voting response.
-        /// </summary>
-        public string VotingResponse
-        {
-            get { return this.votingResponse; }
-        }
     }
+
+    /// <summary>
+    ///     Gets the list of user options.
+    /// </summary>
+    public Collection<VotingOptionData> UserOptions { get; } = new();
+
+    /// <summary>
+    ///     Gets the voting response.
+    /// </summary>
+    public string VotingResponse { get; private set; }
 }

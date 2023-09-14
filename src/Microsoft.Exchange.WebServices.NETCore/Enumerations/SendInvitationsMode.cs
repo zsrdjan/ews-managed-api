@@ -23,30 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines if/how meeting invitations are sent.
+/// </summary>
+[PublicAPI]
+public enum SendInvitationsMode
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     No meeting invitation is sent.
+    /// </summary>
+    SendToNone,
 
     /// <summary>
-    /// Defines if/how meeting invitations are sent.
+    ///     Meeting invitations are sent to all attendees.
     /// </summary>
-    public enum SendInvitationsMode
-    {
-        /// <summary>
-        /// No meeting invitation is sent.
-        /// </summary>
-        SendToNone,
+    SendOnlyToAll,
 
-        /// <summary>
-        /// Meeting invitations are sent to all attendees.
-        /// </summary>
-        SendOnlyToAll,
-
-        /// <summary>
-        /// Meeting invitations are sent to all attendees and a copy of the invitation message is saved.
-        /// </summary>
-        SendToAllAndSaveCopy
-    }
+    /// <summary>
+    ///     Meeting invitations are sent to all attendees and a copy of the invitation message is saved.
+    /// </summary>
+    SendToAllAndSaveCopy,
 }

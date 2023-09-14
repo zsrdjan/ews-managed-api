@@ -23,1097 +23,819 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the set of conditions and exceptions available for a rule.
+/// </summary>
+[PublicAPI]
+public sealed class RulePredicates : ComplexProperty
 {
     /// <summary>
-    /// Represents the set of conditions and exceptions available for a rule.
+    ///     The FlaggedForAction predicate.
     /// </summary>
-    public sealed class RulePredicates : ComplexProperty
+    private FlaggedForAction? _flaggedForAction;
+
+    /// <summary>
+    ///     The HasAttachments predicate.
+    /// </summary>
+    private bool _hasAttachments;
+
+    /// <summary>
+    ///     The Importance predicate.
+    /// </summary>
+    private Importance? _importance;
+
+    /// <summary>
+    ///     The IsApprovalRequest predicate.
+    /// </summary>
+    private bool _isApprovalRequest;
+
+    /// <summary>
+    ///     The IsAutomaticForward predicate.
+    /// </summary>
+    private bool _isAutomaticForward;
+
+    /// <summary>
+    ///     The IsAutomaticReply predicate.
+    /// </summary>
+    private bool _isAutomaticReply;
+
+    /// <summary>
+    ///     The IsEncrypted predicate.
+    /// </summary>
+    private bool _isEncrypted;
+
+    /// <summary>
+    ///     The IsMeetingRequest predicate.
+    /// </summary>
+    private bool _isMeetingRequest;
+
+    /// <summary>
+    ///     The IsMeetingResponse predicate.
+    /// </summary>
+    private bool _isMeetingResponse;
+
+    /// <summary>
+    ///     The IsNDR predicate.
+    /// </summary>
+    private bool _isNonDeliveryReport;
+
+    /// <summary>
+    ///     The IsPermissionControlled predicate.
+    /// </summary>
+    private bool _isPermissionControlled;
+
+    /// <summary>
+    ///     The IsSigned predicate.
+    /// </summary>
+    private bool _isSigned;
+
+    /// <summary>
+    ///     The IsVoicemail predicate.
+    /// </summary>
+    private bool _isVoicemail;
+
+    /// <summary>
+    ///     The IsReadReceipt  predicate.
+    /// </summary>
+    private bool _isReadReceipt;
+
+    /// <summary>
+    ///     The NotSentToMe predicate.
+    /// </summary>
+    private bool _notSentToMe;
+
+    /// <summary>
+    ///     SentCcMe predicate.
+    /// </summary>
+    private bool _sentCcMe;
+
+    /// <summary>
+    ///     The SentOnlyToMe predicate.
+    /// </summary>
+    private bool _sentOnlyToMe;
+
+    /// <summary>
+    ///     The SentToMe predicate.
+    /// </summary>
+    private bool _sentToMe;
+
+    /// <summary>
+    ///     The SentToOrCcMe predicate.
+    /// </summary>
+    private bool _sentToOrCcMe;
+
+    /// <summary>
+    ///     The Sensitivity predicate.
+    /// </summary>
+    private Sensitivity? _sensitivity;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
+    /// </summary>
+    internal RulePredicates()
     {
-        /// <summary>
-        /// The HasCategories predicate.
-        /// </summary>
-        private StringList categories;
+        Categories = new StringList();
+        ContainsBodyStrings = new StringList();
+        ContainsHeaderStrings = new StringList();
+        ContainsRecipientStrings = new StringList();
+        ContainsSenderStrings = new StringList();
+        ContainsSubjectOrBodyStrings = new StringList();
+        ContainsSubjectStrings = new StringList();
+        FromAddresses = new EmailAddressCollection(XmlElementNames.Address);
+        FromConnectedAccounts = new StringList();
+        ItemClasses = new StringList();
+        MessageClassifications = new StringList();
+        SentToAddresses = new EmailAddressCollection(XmlElementNames.Address);
+        WithinDateRange = new RulePredicateDateRange();
+        WithinSizeRange = new RulePredicateSizeRange();
+    }
 
-        /// <summary>
-        /// The ContainsBodyStrings predicate.
-        /// </summary>
-        private StringList containsBodyStrings;
+    /// <summary>
+    ///     Gets the categories that an incoming message should be stamped with
+    ///     for the condition or exception to apply. To disable this predicate,
+    ///     empty the list.
+    /// </summary>
+    public StringList Categories { get; }
 
-        /// <summary>
-        /// The ContainsHeaderStrings predicate.
-        /// </summary>
-        private StringList containsHeaderStrings;
+    /// <summary>
+    ///     Gets the strings that should appear in the body of incoming messages
+    ///     for the condition or exception to apply.
+    ///     To disable this predicate, empty the list.
+    /// </summary>
+    public StringList ContainsBodyStrings { get; }
 
-        /// <summary>
-        /// The ContainsRecipientStrings predicate.
-        /// </summary>
-        private StringList containsRecipientStrings;
+    /// <summary>
+    ///     Gets the strings that should appear in the headers of incoming messages
+    ///     for the condition or exception to apply. To disable this predicate, empty
+    ///     the list.
+    /// </summary>
+    public StringList ContainsHeaderStrings { get; }
 
-        /// <summary>
-        /// The ContainsSenderStrings predicate.
-        /// </summary>
-        private StringList containsSenderStrings;
+    /// <summary>
+    ///     Gets the strings that should appear in either the To or Cc fields of
+    ///     incoming messages for the condition or exception to apply. To disable this
+    ///     predicate, empty the list.
+    /// </summary>
+    public StringList ContainsRecipientStrings { get; }
 
-        /// <summary>
-        /// The ContainsSubjectOrBodyStrings predicate.
-        /// </summary>
-        private StringList containsSubjectOrBodyStrings;
+    /// <summary>
+    ///     Gets the strings that should appear in the From field of incoming messages
+    ///     for the condition or exception to apply. To disable this predicate, empty
+    ///     the list.
+    /// </summary>
+    public StringList ContainsSenderStrings { get; }
 
-        /// <summary>
-        /// The ContainsSubjectStrings predicate.
-        /// </summary>
-        private StringList containsSubjectStrings;
+    /// <summary>
+    ///     Gets the strings that should appear in either the body or the subject
+    ///     of incoming messages for the condition or exception to apply.
+    ///     To disable this predicate, empty the list.
+    /// </summary>
+    public StringList ContainsSubjectOrBodyStrings { get; }
 
-        /// <summary>
-        /// The FlaggedForAction predicate.
-        /// </summary>
-        private FlaggedForAction? flaggedForAction;
+    /// <summary>
+    ///     Gets the strings that should appear in the subject of incoming messages
+    ///     for the condition or exception to apply. To disable this predicate,
+    ///     empty the list.
+    /// </summary>
+    public StringList ContainsSubjectStrings { get; }
 
-        /// <summary>
-        /// The FromAddresses predicate.
-        /// </summary>
-        private EmailAddressCollection fromAddresses;
+    /// <summary>
+    ///     Gets or sets the flag for action value that should appear on incoming
+    ///     messages for the condition or exception to apply. To disable this
+    ///     predicate, set it to null.
+    /// </summary>
+    public FlaggedForAction? FlaggedForAction
+    {
+        get => _flaggedForAction;
+        set => SetFieldValue(ref _flaggedForAction, value);
+    }
 
-        /// <summary>
-        /// The FromConnectedAccounts predicate.
-        /// </summary>
-        private StringList fromConnectedAccounts;
+    /// <summary>
+    ///     Gets the e-mail addresses of the senders of incoming messages for the
+    ///     condition or exception to apply. To disable this predicate, empty the
+    ///     list.
+    /// </summary>
+    public EmailAddressCollection FromAddresses { get; }
 
-        /// <summary>
-        /// The HasAttachments predicate.
-        /// </summary>
-        private bool hasAttachments;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must have
+    ///     attachments for the condition or exception to apply.
+    /// </summary>
+    public bool HasAttachments
+    {
+        get => _hasAttachments;
+        set => SetFieldValue(ref _hasAttachments, value);
+    }
 
-        /// <summary>
-        /// The Importance predicate.
-        /// </summary>
-        private Importance? importance;
+    /// <summary>
+    ///     Gets or sets the importance that should be stamped on incoming messages
+    ///     for the condition or exception to apply. To disable this predicate, set
+    ///     it to null.
+    /// </summary>
+    public Importance? Importance
+    {
+        get => _importance;
+        set => SetFieldValue(ref _importance, value);
+    }
 
-        /// <summary>
-        /// The IsApprovalRequest predicate.
-        /// </summary>
-        private bool isApprovalRequest;
-        
-        /// <summary>
-        /// The IsAutomaticForward predicate.
-        /// </summary>
-        private bool isAutomaticForward;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     approval requests for the condition or exception to apply.
+    /// </summary>
+    public bool IsApprovalRequest
+    {
+        get => _isApprovalRequest;
+        set => SetFieldValue(ref _isApprovalRequest, value);
+    }
 
-        /// <summary>
-        /// The IsAutomaticReply predicate.
-        /// </summary>
-        private bool isAutomaticReply;
-        
-        /// <summary>
-        /// The IsEncrypted predicate.
-        /// </summary>
-        private bool isEncrypted;
-        
-        /// <summary>
-        /// The IsMeetingRequest predicate.
-        /// </summary>
-        private bool isMeetingRequest;
-        
-        /// <summary>
-        /// The IsMeetingResponse predicate.
-        /// </summary>
-        private bool isMeetingResponse;
-        
-        /// <summary>
-        /// The IsNDR predicate.
-        /// </summary>
-        private bool isNonDeliveryReport;
-        
-        /// <summary>
-        /// The IsPermissionControlled predicate.
-        /// </summary>
-        private bool isPermissionControlled;
-        
-        /// <summary>
-        /// The IsSigned predicate.
-        /// </summary>
-        private bool isSigned;
-        
-        /// <summary>
-        /// The IsVoicemail predicate.
-        /// </summary>
-        private bool isVoicemail;
-        
-        /// <summary>
-        /// The IsReadReceipt  predicate.
-        /// </summary>
-        private bool isReadReceipt;
-        
-        /// <summary>
-        /// ItemClasses predicate.
-        /// </summary>
-        private StringList itemClasses;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     automatic forwards for the condition or exception to apply.
+    /// </summary>
+    public bool IsAutomaticForward
+    {
+        get => _isAutomaticForward;
+        set => SetFieldValue(ref _isAutomaticForward, value);
+    }
 
-        /// <summary>
-        /// The MessageClassifications predicate.
-        /// </summary>
-        private StringList messageClassifications;
-        
-        /// <summary>
-        /// The NotSentToMe predicate.
-        /// </summary>
-        private bool notSentToMe;
-        
-        /// <summary>
-        /// SentCcMe predicate.
-        /// </summary>
-        private bool sentCcMe;
-        
-        /// <summary>
-        /// The SentOnlyToMe predicate.
-        /// </summary>
-        private bool sentOnlyToMe;
-        
-        /// <summary>
-        /// The SentToAddresses predicate.
-        /// </summary>
-        private EmailAddressCollection sentToAddresses;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     automatic replies for the condition or exception to apply.
+    /// </summary>
+    public bool IsAutomaticReply
+    {
+        get => _isAutomaticReply;
+        set => SetFieldValue(ref _isAutomaticReply, value);
+    }
 
-        /// <summary>
-        /// The SentToMe predicate.
-        /// </summary>
-        private bool sentToMe;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     S/MIME encrypted for the condition or exception to apply.
+    /// </summary>
+    public bool IsEncrypted
+    {
+        get => _isEncrypted;
+        set => SetFieldValue(ref _isEncrypted, value);
+    }
 
-        /// <summary>
-        /// The SentToOrCcMe predicate.
-        /// </summary>
-        private bool sentToOrCcMe;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     meeting requests for the condition or exception to apply.
+    /// </summary>
+    public bool IsMeetingRequest
+    {
+        get => _isMeetingRequest;
+        set => SetFieldValue(ref _isMeetingRequest, value);
+    }
 
-        /// <summary>
-        /// The Sensitivity predicate.
-        /// </summary>
-        private Sensitivity? sensitivity;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     meeting responses for the condition or exception to apply.
+    /// </summary>
+    public bool IsMeetingResponse
+    {
+        get => _isMeetingResponse;
+        set => SetFieldValue(ref _isMeetingResponse, value);
+    }
 
-        /// <summary>
-        /// The Sensitivity predicate.
-        /// </summary>
-        private RulePredicateDateRange withinDateRange;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     non-delivery reports (NDR) for the condition or exception to apply.
+    /// </summary>
+    public bool IsNonDeliveryReport
+    {
+        get => _isNonDeliveryReport;
+        set => SetFieldValue(ref _isNonDeliveryReport, value);
+    }
 
-        /// <summary>
-        /// The Sensitivity predicate.
-        /// </summary>
-        private RulePredicateSizeRange withinSizeRange;
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     permission controlled (RMS protected) for the condition or exception
+    ///     to apply.
+    /// </summary>
+    public bool IsPermissionControlled
+    {
+        get => _isPermissionControlled;
+        set => SetFieldValue(ref _isPermissionControlled, value);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RulePredicates"/> class.
-        /// </summary>
-        internal RulePredicates()
-            : base()
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     S/MIME signed for the condition or exception to apply.
+    /// </summary>
+    public bool IsSigned
+    {
+        get => _isSigned;
+        set => SetFieldValue(ref _isSigned, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     voice mails for the condition or exception to apply.
+    /// </summary>
+    public bool IsVoicemail
+    {
+        get => _isVoicemail;
+        set => SetFieldValue(ref _isVoicemail, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether incoming messages must be
+    ///     read receipts for the condition or exception to apply.
+    /// </summary>
+    public bool IsReadReceipt
+    {
+        get => _isReadReceipt;
+        set => SetFieldValue(ref _isReadReceipt, value);
+    }
+
+    /// <summary>
+    ///     Gets the e-mail account names from which incoming messages must have
+    ///     been aggregated for the condition or exception to apply. To disable
+    ///     this predicate, empty the list.
+    /// </summary>
+    public StringList FromConnectedAccounts { get; }
+
+    /// <summary>
+    ///     Gets the item classes that must be stamped on incoming messages for
+    ///     the condition or exception to apply. To disable this predicate,
+    ///     empty the list.
+    /// </summary>
+    public StringList ItemClasses { get; }
+
+    /// <summary>
+    ///     Gets the message classifications that must be stamped on incoming messages
+    ///     for the condition or exception to apply. To disable this predicate,
+    ///     empty the list.
+    /// </summary>
+    public StringList MessageClassifications { get; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the owner of the mailbox must
+    ///     NOT be a To recipient of the incoming messages for the condition or
+    ///     exception to apply.
+    /// </summary>
+    public bool NotSentToMe
+    {
+        get => _notSentToMe;
+        set => SetFieldValue(ref _notSentToMe, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the owner of the mailbox must be
+    ///     a Cc recipient of incoming messages for the condition or exception to apply.
+    /// </summary>
+    public bool SentCcMe
+    {
+        get => _sentCcMe;
+        set => SetFieldValue(ref _sentCcMe, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the owner of the mailbox must be
+    ///     the only To recipient of incoming messages for the condition or exception
+    ///     to apply.
+    /// </summary>
+    public bool SentOnlyToMe
+    {
+        get => _sentOnlyToMe;
+        set => SetFieldValue(ref _sentOnlyToMe, value);
+    }
+
+    /// <summary>
+    ///     Gets the e-mail addresses incoming messages must have been sent to for
+    ///     the condition or exception to apply. To disable this predicate, empty
+    ///     the list.
+    /// </summary>
+    public EmailAddressCollection SentToAddresses { get; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the owner of the mailbox must be
+    ///     a To recipient of incoming messages for the condition or exception to apply.
+    /// </summary>
+    public bool SentToMe
+    {
+        get => _sentToMe;
+        set => SetFieldValue(ref _sentToMe, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the owner of the mailbox must be
+    ///     either a To or Cc recipient of incoming messages for the condition or
+    ///     exception to apply.
+    /// </summary>
+    public bool SentToOrCcMe
+    {
+        get => _sentToOrCcMe;
+        set => SetFieldValue(ref _sentToOrCcMe, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the sensitivity that must be stamped on incoming messages
+    ///     for the condition or exception to apply. To disable this predicate, set it
+    ///     to null.
+    /// </summary>
+    public Sensitivity? Sensitivity
+    {
+        get => _sensitivity;
+        set => SetFieldValue(ref _sensitivity, value);
+    }
+
+    /// <summary>
+    ///     Gets the date range within which incoming messages must have been received
+    ///     for the condition or exception to apply. To disable this predicate, set both
+    ///     its Start and End properties to null.
+    /// </summary>
+    public RulePredicateDateRange WithinDateRange { get; }
+
+    /// <summary>
+    ///     Gets the minimum and maximum sizes incoming messages must have for the
+    ///     condition or exception to apply. To disable this predicate, set both its
+    ///     MinimumSize and MaximumSize properties to null.
+    /// </summary>
+    public RulePredicateSizeRange WithinSizeRange { get; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            this.categories = new StringList();
-            this.containsBodyStrings = new StringList();
-            this.containsHeaderStrings = new StringList();
-            this.containsRecipientStrings = new StringList();
-            this.containsSenderStrings = new StringList();
-            this.containsSubjectOrBodyStrings = new StringList();
-            this.containsSubjectStrings = new StringList();
-            this.fromAddresses = new EmailAddressCollection(XmlElementNames.Address);
-            this.fromConnectedAccounts = new StringList();
-            this.itemClasses = new StringList();
-            this.messageClassifications = new StringList();
-            this.sentToAddresses = new EmailAddressCollection(XmlElementNames.Address);
-            this.withinDateRange = new RulePredicateDateRange();
-            this.withinSizeRange = new RulePredicateSizeRange();
-        }
-
-        /// <summary>
-        /// Gets the categories that an incoming message should be stamped with 
-        /// for the condition or exception to apply. To disable this predicate,
-        /// empty the list.
-        /// </summary>
-        public StringList Categories
-        {
-            get
+            case XmlElementNames.Categories:
             {
-                return this.categories;
+                Categories.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the strings that should appear in the body of incoming messages 
-        /// for the condition or exception to apply.
-        /// To disable this predicate, empty the list.
-        /// </summary>
-        public StringList ContainsBodyStrings
-        {
-            get
+            case XmlElementNames.ContainsBodyStrings:
             {
-                return this.containsBodyStrings;
+                ContainsBodyStrings.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the strings that should appear in the headers of incoming messages 
-        /// for the condition or exception to apply. To disable this predicate, empty 
-        /// the list.
-        /// </summary>
-        public StringList ContainsHeaderStrings
-        {
-            get
+            case XmlElementNames.ContainsHeaderStrings:
             {
-                return this.containsHeaderStrings;
+                ContainsHeaderStrings.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the strings that should appear in either the To or Cc fields of 
-        /// incoming messages for the condition or exception to apply. To disable this
-        /// predicate, empty the list.
-        /// </summary>
-        public StringList ContainsRecipientStrings
-        {
-            get
+            case XmlElementNames.ContainsRecipientStrings:
             {
-                return this.containsRecipientStrings;
+                ContainsRecipientStrings.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the strings that should appear in the From field of incoming messages 
-        /// for the condition or exception to apply. To disable this predicate, empty 
-        /// the list.
-        /// </summary>
-        public StringList ContainsSenderStrings
-        {
-            get
+            case XmlElementNames.ContainsSenderStrings:
             {
-                return this.containsSenderStrings;
+                ContainsSenderStrings.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the strings that should appear in either the body or the subject 
-        /// of incoming messages for the condition or exception to apply.
-        /// To disable this predicate, empty the list.
-        /// </summary>
-        public StringList ContainsSubjectOrBodyStrings
-        {
-            get
+            case XmlElementNames.ContainsSubjectOrBodyStrings:
             {
-                return this.containsSubjectOrBodyStrings;
+                ContainsSubjectOrBodyStrings.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the strings that should appear in the subject of incoming messages 
-        /// for the condition or exception to apply. To disable this predicate, 
-        /// empty the list.
-        /// </summary>
-        public StringList ContainsSubjectStrings
-        {
-            get
+            case XmlElementNames.ContainsSubjectStrings:
             {
-                return this.containsSubjectStrings;
+                ContainsSubjectStrings.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the flag for action value that should appear on incoming 
-        /// messages for the condition or execption to apply. To disable this 
-        /// predicate, set it to null. 
-        /// </summary>
-        public FlaggedForAction? FlaggedForAction
-        {
-            get
+            case XmlElementNames.FlaggedForAction:
             {
-                return this.flaggedForAction;
+                _flaggedForAction = reader.ReadElementValue<FlaggedForAction>();
+                return true;
             }
-
-            set
+            case XmlElementNames.FromAddresses:
             {
-                this.SetFieldValue<FlaggedForAction?>(ref this.flaggedForAction, value);
+                FromAddresses.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets the e-mail addresses of the senders of incoming messages for the 
-        /// condition or exception to apply. To disable this predicate, empty the 
-        /// list.
-        /// </summary>
-        public EmailAddressCollection FromAddresses
-        {
-            get
+            case XmlElementNames.FromConnectedAccounts:
             {
-                return this.fromAddresses;
+                FromConnectedAccounts.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must have
-        /// attachments for the condition or exception to apply.  
-        /// </summary>
-        public bool HasAttachments
-        {
-            get
+            case XmlElementNames.HasAttachments:
             {
-                return this.hasAttachments;
+                _hasAttachments = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.Importance:
             {
-                this.SetFieldValue<bool>(ref this.hasAttachments, value);
+                _importance = reader.ReadElementValue<Importance>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the importance that should be stamped on incoming messages 
-        /// for the condition or exception to apply. To disable this predicate, set 
-        /// it to null.
-        /// </summary>
-        public Importance? Importance
-        {
-            get
+            case XmlElementNames.IsApprovalRequest:
             {
-                return this.importance;
+                _isApprovalRequest = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsAutomaticForward:
             {
-                this.SetFieldValue<Importance?>(ref this.importance, value);
+                _isAutomaticForward = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// approval requests for the condition or exception to apply. 
-        /// </summary>
-        public bool IsApprovalRequest
-        {
-            get
+            case XmlElementNames.IsAutomaticReply:
             {
-                return this.isApprovalRequest;
+                _isAutomaticReply = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsEncrypted:
             {
-                this.SetFieldValue<bool>(ref this.isApprovalRequest, value);
+                _isEncrypted = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// automatic forwards for the condition or exception to apply.
-        /// </summary>
-        public bool IsAutomaticForward
-        {
-            get
+            case XmlElementNames.IsMeetingRequest:
             {
-                return this.isAutomaticForward;
+                _isMeetingRequest = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsMeetingResponse:
             {
-                this.SetFieldValue<bool>(ref this.isAutomaticForward, value);
+                _isMeetingResponse = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// automatic replies for the condition or exception to apply. 
-        /// </summary>
-        public bool IsAutomaticReply
-        {
-            get
+            case XmlElementNames.IsNDR:
             {
-                return this.isAutomaticReply;
+                _isNonDeliveryReport = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsPermissionControlled:
             {
-                this.SetFieldValue<bool>(ref this.isAutomaticReply, value);
+                _isPermissionControlled = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// S/MIME encrypted for the condition or exception to apply.
-        /// </summary>
-        public bool IsEncrypted
-        {
-            get
+            case XmlElementNames.IsSigned:
             {
-                return this.isEncrypted;
+                _isSigned = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.IsVoicemail:
             {
-                this.SetFieldValue<bool>(ref this.isEncrypted, value);
+                _isVoicemail = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// meeting requests for the condition or exception to apply. 
-        /// </summary>
-        public bool IsMeetingRequest
-        {
-            get
+            case XmlElementNames.IsReadReceipt:
             {
-                return this.isMeetingRequest;
+                _isReadReceipt = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.ItemClasses:
             {
-                this.SetFieldValue<bool>(ref this.isMeetingRequest, value);
+                ItemClasses.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// meeting responses for the condition or exception to apply. 
-        /// </summary>
-        public bool IsMeetingResponse
-        {
-            get
+            case XmlElementNames.MessageClassifications:
             {
-                return this.isMeetingResponse;
+                MessageClassifications.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-
-            set
+            case XmlElementNames.NotSentToMe:
             {
-                this.SetFieldValue<bool>(ref this.isMeetingResponse, value);
+                _notSentToMe = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// non-delivery reports (NDR) for the condition or exception to apply. 
-        /// </summary>
-        public bool IsNonDeliveryReport
-        {
-            get
+            case XmlElementNames.SentCcMe:
             {
-                return this.isNonDeliveryReport;
+                _sentCcMe = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.SentOnlyToMe:
             {
-                this.SetFieldValue<bool>(ref this.isNonDeliveryReport, value);
+                _sentOnlyToMe = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// permission controlled (RMS protected) for the condition or exception 
-        /// to apply. 
-        /// </summary>
-        public bool IsPermissionControlled
-        {
-            get
+            case XmlElementNames.SentToAddresses:
             {
-                return this.isPermissionControlled;
+                SentToAddresses.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-
-            set
+            case XmlElementNames.SentToMe:
             {
-                this.SetFieldValue<bool>(ref this.isPermissionControlled, value);
+                _sentToMe = reader.ReadElementValue<bool>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// S/MIME signed for the condition or exception to apply. 
-        /// </summary>
-        public bool IsSigned
-        {
-            get
+            case XmlElementNames.SentToOrCcMe:
             {
-                return this.isSigned;
+                _sentToOrCcMe = reader.ReadElementValue<bool>();
+                return true;
             }
-
-            set
+            case XmlElementNames.Sensitivity:
             {
-                this.SetFieldValue<bool>(ref this.isSigned, value);
+                _sensitivity = reader.ReadElementValue<Sensitivity>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// voice mails for the condition or exception to apply. 
-        /// </summary>
-        public bool IsVoicemail
-        {
-            get
+            case XmlElementNames.WithinDateRange:
             {
-                return this.isVoicemail;
+                WithinDateRange.LoadFromXml(reader, reader.LocalName);
+                return true;
             }
-
-            set
+            case XmlElementNames.WithinSizeRange:
             {
-                this.SetFieldValue<bool>(ref this.isVoicemail, value);
+                WithinSizeRange.LoadFromXml(reader, reader.LocalName);
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether incoming messages must be 
-        /// read receipts for the condition or exception to apply. 
-        /// </summary>
-        public bool IsReadReceipt
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (Categories.Count > 0)
         {
-            get
-            {
-                return this.isReadReceipt;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.isReadReceipt, value);
-            }
+            Categories.WriteToXml(writer, XmlElementNames.Categories);
         }
 
-        /// <summary>
-        /// Gets the e-mail account names from which incoming messages must have 
-        /// been aggregated for the condition or exception to apply. To disable 
-        /// this predicate, empty the list.
-        /// </summary>
-        public StringList FromConnectedAccounts
+        if (ContainsBodyStrings.Count > 0)
         {
-            get
-            {
-                return this.fromConnectedAccounts;
-            }
+            ContainsBodyStrings.WriteToXml(writer, XmlElementNames.ContainsBodyStrings);
         }
 
-        /// <summary>
-        /// Gets the item classes that must be stamped on incoming messages for
-        /// the condition or exception to apply. To disable this predicate, 
-        /// empty the list.
-        /// </summary>
-        public StringList ItemClasses
+        if (ContainsHeaderStrings.Count > 0)
         {
-            get
-            {
-                return this.itemClasses;
-            }
-        }
-        
-        /// <summary>
-        /// Gets the message classifications that must be stamped on incoming messages
-        /// for the condition or exception to apply. To disable this predicate, 
-        /// empty the list.
-        /// </summary>
-        public StringList MessageClassifications
-        {
-            get
-            {
-                return this.messageClassifications;
-            }
+            ContainsHeaderStrings.WriteToXml(writer, XmlElementNames.ContainsHeaderStrings);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the owner of the mailbox must 
-        /// NOT be a To recipient of the incoming messages for the condition or 
-        /// exception to apply.
-        /// </summary>
-        public bool NotSentToMe
+        if (ContainsRecipientStrings.Count > 0)
         {
-            get
-            {
-                return this.notSentToMe;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.notSentToMe, value);
-            }
+            ContainsRecipientStrings.WriteToXml(writer, XmlElementNames.ContainsRecipientStrings);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the owner of the mailbox must be 
-        /// a Cc recipient of incoming messages for the condition or exception to apply. 
-        /// </summary>
-        public bool SentCcMe
+        if (ContainsSenderStrings.Count > 0)
         {
-            get
-            {
-                return this.sentCcMe;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.sentCcMe, value);
-            }
+            ContainsSenderStrings.WriteToXml(writer, XmlElementNames.ContainsSenderStrings);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the owner of the mailbox must be 
-        /// the only To recipient of incoming messages for the condition or exception 
-        /// to apply.
-        /// </summary>
-        public bool SentOnlyToMe
+        if (ContainsSubjectOrBodyStrings.Count > 0)
         {
-            get
-            {
-                return this.sentOnlyToMe;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.sentOnlyToMe, value);
-            }
+            ContainsSubjectOrBodyStrings.WriteToXml(writer, XmlElementNames.ContainsSubjectOrBodyStrings);
         }
 
-        /// <summary>
-        /// Gets the e-mail addresses incoming messages must have been sent to for 
-        /// the condition or exception to apply. To disable this predicate, empty 
-        /// the list.
-        /// </summary>
-        public EmailAddressCollection SentToAddresses
+        if (ContainsSubjectStrings.Count > 0)
         {
-            get
-            {
-                return this.sentToAddresses;
-            }
+            ContainsSubjectStrings.WriteToXml(writer, XmlElementNames.ContainsSubjectStrings);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the owner of the mailbox must be 
-        /// a To recipient of incoming messages for the condition or exception to apply. 
-        /// </summary>
-        public bool SentToMe
+        if (FlaggedForAction.HasValue)
         {
-            get
-            {
-                return this.sentToMe;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.sentToMe, value);
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FlaggedForAction, FlaggedForAction.Value);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the owner of the mailbox must be
-        /// either a To or Cc recipient of incoming messages for the condition or
-        /// exception to apply. 
-        /// </summary>
-        public bool SentToOrCcMe
+        if (FromAddresses.Count > 0)
         {
-            get
-            {
-                return this.sentToOrCcMe;
-            }
-
-            set
-            {
-                this.SetFieldValue<bool>(ref this.sentToOrCcMe, value);
-            }
+            FromAddresses.WriteToXml(writer, XmlElementNames.FromAddresses);
         }
 
-        /// <summary>
-        /// Gets or sets the sensitivity that must be stamped on incoming messages 
-        /// for the condition or exception to apply. To disable this predicate, set it
-        /// to null.
-        /// </summary>
-        public Sensitivity? Sensitivity
+        if (FromConnectedAccounts.Count > 0)
         {
-            get
-            {
-                return this.sensitivity;
-            }
-
-            set
-            {
-                this.SetFieldValue<Sensitivity?>(ref this.sensitivity, value);
-            }
+            FromConnectedAccounts.WriteToXml(writer, XmlElementNames.FromConnectedAccounts);
         }
 
-        /// <summary>
-        /// Gets the date range within which incoming messages must have been received 
-        /// for the condition or exception to apply. To disable this predicate, set both 
-        /// its Start and End properties to null.
-        /// </summary>
-        public RulePredicateDateRange WithinDateRange
+        if (HasAttachments)
         {
-            get
-            {
-                return this.withinDateRange;
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.HasAttachments, HasAttachments);
         }
 
-        /// <summary>
-        /// Gets the minimum and maximum sizes incoming messages must have for the 
-        /// condition or exception to apply. To disable this predicate, set both its 
-        /// MinimumSize and MaximumSize properties to null.
-        /// </summary>
-        public RulePredicateSizeRange WithinSizeRange
+        if (Importance.HasValue)
         {
-            get
-            {
-                return this.withinSizeRange;
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Importance, Importance.Value);
         }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+        if (IsApprovalRequest)
         {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.Categories:
-                    this.categories.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.ContainsBodyStrings:
-                    this.containsBodyStrings.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.ContainsHeaderStrings:
-                    this.containsHeaderStrings.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.ContainsRecipientStrings:
-                    this.containsRecipientStrings.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.ContainsSenderStrings:
-                    this.containsSenderStrings.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.ContainsSubjectOrBodyStrings:
-                    this.containsSubjectOrBodyStrings.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.ContainsSubjectStrings:
-                    this.containsSubjectStrings.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.FlaggedForAction:
-                    this.flaggedForAction = reader.ReadElementValue<FlaggedForAction>();
-                    return true;
-                case XmlElementNames.FromAddresses:
-                    this.fromAddresses.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.FromConnectedAccounts:
-                    this.fromConnectedAccounts.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.HasAttachments:
-                    this.hasAttachments = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.Importance:
-                    this.importance = reader.ReadElementValue<Importance>();
-                    return true;
-                case XmlElementNames.IsApprovalRequest:
-                    this.isApprovalRequest = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsAutomaticForward:
-                    this.isAutomaticForward = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsAutomaticReply:
-                    this.isAutomaticReply = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsEncrypted:
-                    this.isEncrypted = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsMeetingRequest:
-                    this.isMeetingRequest = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsMeetingResponse:
-                    this.isMeetingResponse = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsNDR:
-                    this.isNonDeliveryReport = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsPermissionControlled:
-                    this.isPermissionControlled = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsSigned:
-                    this.isSigned = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsVoicemail:
-                    this.isVoicemail = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.IsReadReceipt:
-                    this.isReadReceipt = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.ItemClasses:
-                    this.itemClasses.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.MessageClassifications:
-                    this.messageClassifications.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.NotSentToMe:
-                    this.notSentToMe = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.SentCcMe:
-                    this.sentCcMe = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.SentOnlyToMe:
-                    this.sentOnlyToMe = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.SentToAddresses:
-                    this.sentToAddresses.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.SentToMe:
-                    this.sentToMe = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.SentToOrCcMe:
-                    this.sentToOrCcMe = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.Sensitivity:
-                    this.sensitivity = reader.ReadElementValue<Sensitivity>();
-                    return true;
-                case XmlElementNames.WithinDateRange:
-                    this.withinDateRange.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.WithinSizeRange:
-                    this.withinSizeRange.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                default:
-                    return false;
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsApprovalRequest, IsApprovalRequest);
         }
 
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+        if (IsAutomaticForward)
         {
-            if (this.Categories.Count > 0)
-            {
-                this.Categories.WriteToXml(writer, XmlElementNames.Categories);
-            }
-
-            if (this.ContainsBodyStrings.Count > 0)
-            {
-                this.ContainsBodyStrings.WriteToXml(writer, XmlElementNames.ContainsBodyStrings);
-            }
-
-            if (this.ContainsHeaderStrings.Count > 0)
-            {
-                this.ContainsHeaderStrings.WriteToXml(writer, XmlElementNames.ContainsHeaderStrings);
-            }
-
-            if (this.ContainsRecipientStrings.Count > 0)
-            {
-                this.ContainsRecipientStrings.WriteToXml(writer, XmlElementNames.ContainsRecipientStrings);
-            }
-
-            if (this.ContainsSenderStrings.Count > 0)
-            {
-                this.ContainsSenderStrings.WriteToXml(writer, XmlElementNames.ContainsSenderStrings);
-            }
-
-            if (this.ContainsSubjectOrBodyStrings.Count > 0)
-            {
-                this.ContainsSubjectOrBodyStrings.WriteToXml(writer, XmlElementNames.ContainsSubjectOrBodyStrings);
-            }
-
-            if (this.ContainsSubjectStrings.Count > 0)
-            {
-                this.ContainsSubjectStrings.WriteToXml(writer, XmlElementNames.ContainsSubjectStrings);
-            }
-
-            if (this.FlaggedForAction.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.FlaggedForAction,
-                    this.FlaggedForAction.Value);
-            }
-
-            if (this.FromAddresses.Count > 0)
-            {
-                this.FromAddresses.WriteToXml(writer, XmlElementNames.FromAddresses);
-            }
-
-            if (this.FromConnectedAccounts.Count > 0)
-            {
-                this.FromConnectedAccounts.WriteToXml(writer, XmlElementNames.FromConnectedAccounts);
-            }
-
-            if (this.HasAttachments != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.HasAttachments,
-                    this.HasAttachments);
-            }
-
-            if (this.Importance.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.Importance,
-                    this.Importance.Value);
-            }
-
-            if (this.IsApprovalRequest != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.IsApprovalRequest,
-                    this.IsApprovalRequest);
-            }
-
-            if (this.IsAutomaticForward != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.IsAutomaticForward,
-                    this.IsAutomaticForward);
-            }
-
-            if (this.IsAutomaticReply != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsAutomaticReply, 
-                    this.IsAutomaticReply);
-            }
-
-            if (this.IsEncrypted != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsEncrypted, 
-                    this.IsEncrypted);
-            }
-
-            if (this.IsMeetingRequest != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsMeetingRequest, 
-                    this.IsMeetingRequest);
-            }
-
-            if (this.IsMeetingResponse != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsMeetingResponse, 
-                    this.IsMeetingResponse);
-            }
-
-            if (this.IsNonDeliveryReport != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsNDR,
-                    this.IsNonDeliveryReport);
-            }
-
-            if (this.IsPermissionControlled != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsPermissionControlled, 
-                    this.IsPermissionControlled);
-            }
-
-            if (this.isReadReceipt != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsReadReceipt,
-                    this.IsReadReceipt);
-            }
-
-            if (this.IsSigned != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsSigned, 
-                    this.IsSigned);
-            }
-
-            if (this.IsVoicemail != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.IsVoicemail, 
-                    this.IsVoicemail);
-            }
-
-            if (this.ItemClasses.Count > 0)
-            {
-                this.ItemClasses.WriteToXml(writer, XmlElementNames.ItemClasses);
-            }
-
-            if (this.MessageClassifications.Count > 0)
-            {
-                this.MessageClassifications.WriteToXml(writer, XmlElementNames.MessageClassifications);
-            }
-
-            if (this.NotSentToMe != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.NotSentToMe, 
-                    this.NotSentToMe);
-            }
-
-            if (this.SentCcMe != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.SentCcMe, 
-                    this.SentCcMe);
-            }
-
-            if (this.SentOnlyToMe != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.SentOnlyToMe, 
-                    this.SentOnlyToMe);
-            }
-
-            if (this.SentToAddresses.Count > 0)
-            {
-                this.SentToAddresses.WriteToXml(writer, XmlElementNames.SentToAddresses);
-            }
-
-            if (this.SentToMe != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.SentToMe, 
-                    this.SentToMe);
-            }
-
-            if (this.SentToOrCcMe != false)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.SentToOrCcMe, 
-                    this.SentToOrCcMe);
-            }
-
-            if (this.Sensitivity.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types, 
-                    XmlElementNames.Sensitivity, 
-                    this.Sensitivity.Value);
-            }
-
-            if (this.WithinDateRange.Start.HasValue || this.WithinDateRange.End.HasValue)
-            {
-                this.WithinDateRange.WriteToXml(writer, XmlElementNames.WithinDateRange);
-            }
-
-            if (this.WithinSizeRange.MaximumSize.HasValue || this.WithinSizeRange.MinimumSize.HasValue)
-            {
-                this.WithinSizeRange.WriteToXml(writer, XmlElementNames.WithinSizeRange);
-            }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsAutomaticForward, IsAutomaticForward);
         }
 
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        internal override void InternalValidate()
+        if (IsAutomaticReply)
         {
-            base.InternalValidate();
-            EwsUtilities.ValidateParam(this.fromAddresses, "FromAddresses");
-            EwsUtilities.ValidateParam(this.sentToAddresses, "SentToAddresses");
-            EwsUtilities.ValidateParam(this.withinDateRange, "WithinDateRange");
-            EwsUtilities.ValidateParam(this.withinSizeRange, "WithinSizeRange");
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsAutomaticReply, IsAutomaticReply);
         }
+
+        if (IsEncrypted)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsEncrypted, IsEncrypted);
+        }
+
+        if (IsMeetingRequest)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsMeetingRequest, IsMeetingRequest);
+        }
+
+        if (IsMeetingResponse)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsMeetingResponse, IsMeetingResponse);
+        }
+
+        if (IsNonDeliveryReport)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsNDR, IsNonDeliveryReport);
+        }
+
+        if (IsPermissionControlled)
+        {
+            writer.WriteElementValue(
+                XmlNamespace.Types,
+                XmlElementNames.IsPermissionControlled,
+                IsPermissionControlled
+            );
+        }
+
+        if (_isReadReceipt)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsReadReceipt, IsReadReceipt);
+        }
+
+        if (IsSigned)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsSigned, IsSigned);
+        }
+
+        if (IsVoicemail)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsVoicemail, IsVoicemail);
+        }
+
+        if (ItemClasses.Count > 0)
+        {
+            ItemClasses.WriteToXml(writer, XmlElementNames.ItemClasses);
+        }
+
+        if (MessageClassifications.Count > 0)
+        {
+            MessageClassifications.WriteToXml(writer, XmlElementNames.MessageClassifications);
+        }
+
+        if (NotSentToMe)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.NotSentToMe, NotSentToMe);
+        }
+
+        if (SentCcMe)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SentCcMe, SentCcMe);
+        }
+
+        if (SentOnlyToMe)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SentOnlyToMe, SentOnlyToMe);
+        }
+
+        if (SentToAddresses.Count > 0)
+        {
+            SentToAddresses.WriteToXml(writer, XmlElementNames.SentToAddresses);
+        }
+
+        if (SentToMe)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SentToMe, SentToMe);
+        }
+
+        if (SentToOrCcMe)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SentToOrCcMe, SentToOrCcMe);
+        }
+
+        if (Sensitivity.HasValue)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Sensitivity, Sensitivity.Value);
+        }
+
+        if (WithinDateRange.Start.HasValue || WithinDateRange.End.HasValue)
+        {
+            WithinDateRange.WriteToXml(writer, XmlElementNames.WithinDateRange);
+        }
+
+        if (WithinSizeRange.MaximumSize.HasValue || WithinSizeRange.MinimumSize.HasValue)
+        {
+            WithinSizeRange.WriteToXml(writer, XmlElementNames.WithinSizeRange);
+        }
+    }
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+
+        EwsUtilities.ValidateParam(FromAddresses);
+        EwsUtilities.ValidateParam(SentToAddresses);
+        EwsUtilities.ValidateParam(WithinDateRange);
+        EwsUtilities.ValidateParam(WithinSizeRange);
     }
 }

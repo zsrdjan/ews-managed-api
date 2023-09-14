@@ -23,59 +23,53 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the GetDiscoverySearchConfiguration response.
+/// </summary>
+[PublicAPI]
+public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    private readonly List<DiscoverySearchConfiguration> _configurations = new();
 
     /// <summary>
-    /// Represents the GetDiscoverySearchConfiguration response.
+    ///     Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationResponse" /> class.
     /// </summary>
-    public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
+    internal GetDiscoverySearchConfigurationResponse()
     {
-        List<DiscoverySearchConfiguration> configurations = new List<DiscoverySearchConfiguration>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationResponse"/> class.
-        /// </summary>
-        internal GetDiscoverySearchConfigurationResponse()
-            : base()
-        {
-        }
-
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            this.configurations.Clear();
-
-            base.ReadElementsFromXml(reader);
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations);
-            if (!reader.IsEmptyElement)
-            {
-                do
-                {
-                    reader.Read();
-                    if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.DiscoverySearchConfiguration))
-                    {
-                        this.configurations.Add(DiscoverySearchConfiguration.LoadFromXml(reader));
-                    }
-                }
-                while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations));
-            }
-            reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations);
-        }
-
-        /// <summary>
-        /// Searchable mailboxes result
-        /// </summary>
-        public DiscoverySearchConfiguration[] DiscoverySearchConfigurations
-        {
-            get { return this.configurations.ToArray(); }
-        }
     }
+
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        _configurations.Clear();
+
+        base.ReadElementsFromXml(reader);
+
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations);
+        if (!reader.IsEmptyElement)
+        {
+            do
+            {
+                reader.Read();
+                if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.DiscoverySearchConfiguration))
+                {
+                    _configurations.Add(DiscoverySearchConfiguration.LoadFromXml(reader));
+                }
+            } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations));
+        }
+
+        reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations);
+    }
+
+    /// <summary>
+    ///     Searchable mailboxes result
+    /// </summary>
+    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations => _configurations.ToArray();
 }

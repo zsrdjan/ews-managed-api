@@ -23,54 +23,56 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an EmailUserEntity object.
+/// </summary>
+[PublicAPI]
+public sealed class EmailUserEntity : ComplexProperty
 {
-    using System;
-    using System.IO;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EmailUserEntity" /> class.
+    /// </summary>
+    internal EmailUserEntity()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
-    /// Represents an EmailUserEntity object.
+    ///     Gets the EmailUser entity Name.
     /// </summary>
-    public sealed class EmailUserEntity : ComplexProperty
+    public string Name { get; internal set; }
+
+    /// <summary>
+    ///     Gets the EmailUser entity UserId.
+    /// </summary>
+    public string UserId { get; internal set; }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EmailUserEntity"/> class.
-        /// </summary>
-        internal EmailUserEntity()
-            : base()
+        switch (reader.LocalName)
         {
-            this.Namespace = XmlNamespace.Types;
-        }
-
-        /// <summary>
-        /// Gets the EmailUser entity Name.
-        /// </summary>
-        public string Name { get; internal set; }
-
-        /// <summary>
-        /// Gets the EmailUser entity UserId.
-        /// </summary>
-        public string UserId { get; internal set; }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.NlgName:
             {
-                case XmlElementNames.NlgName:
-                    this.Name = reader.ReadElementValue();
-                    return true;
-
-                case XmlElementNames.NlgUserId:
-                    this.UserId = reader.ReadElementValue();
-                    return true;
-
-                default:
-                    return base.TryReadElementFromXml(reader);
+                Name = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.NlgUserId:
+            {
+                UserId = reader.ReadElementValue();
+                return true;
+            }
+            default:
+            {
+                return base.TryReadElementFromXml(reader);
             }
         }
     }

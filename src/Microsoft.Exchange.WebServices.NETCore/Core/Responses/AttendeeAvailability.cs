@@ -23,133 +23,119 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Collections.ObjectModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the availability of an individual attendee.
+/// </summary>
+[PublicAPI]
+public sealed class AttendeeAvailability : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AttendeeAvailability" /> class.
+    /// </summary>
+    internal AttendeeAvailability()
+    {
+    }
 
     /// <summary>
-    /// Represents the availability of an individual attendee.
+    ///     Loads the free busy view from XML.
     /// </summary>
-    public sealed class AttendeeAvailability : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    /// <param name="viewType">Type of free/busy view.</param>
+    internal void LoadFreeBusyViewFromXml(EwsServiceXmlReader reader, FreeBusyViewType viewType)
     {
-        private Collection<CalendarEvent> calendarEvents = new Collection<CalendarEvent>();
-        private Collection<LegacyFreeBusyStatus> mergedFreeBusyStatus = new Collection<LegacyFreeBusyStatus>();
-        private FreeBusyViewType viewType;
-        private WorkingHours workingHours;
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AttendeeAvailability"/> class.
-        /// </summary>
-        internal AttendeeAvailability()
-            : base()
+        var viewTypeString = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.FreeBusyViewType);
+
+        ViewType = Enum.Parse<FreeBusyViewType>(viewTypeString, false);
+
+        do
         {
-        }
+            reader.Read();
 
-        /// <summary>
-        /// Loads the free busy view from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="viewType">Type of free/busy view.</param>
-        internal void LoadFreeBusyViewFromXml(EwsServiceXmlReader reader, FreeBusyViewType viewType)
-        {
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView);
-
-            string viewTypeString = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.FreeBusyViewType);
-
-            this.viewType = (FreeBusyViewType)Enum.Parse(typeof(FreeBusyViewType), viewTypeString, false);
-
-            do
+            if (reader.IsStartElement())
             {
-                reader.Read();
-
-                if (reader.IsStartElement())
+                switch (reader.LocalName)
                 {
-                    switch (reader.LocalName)
+                    case XmlElementNames.MergedFreeBusy:
                     {
-                        case XmlElementNames.MergedFreeBusy:
-                            string mergedFreeBusy = reader.ReadElementValue();
+                        var mergedFreeBusy = reader.ReadElementValue();
 
-                            for (int i = 0; i < mergedFreeBusy.Length; i++)
+                        for (var i = 0; i < mergedFreeBusy.Length; i++)
+                        {
+                            MergedFreeBusyStatus.Add((LegacyFreeBusyStatus)byte.Parse(mergedFreeBusy[i].ToString()));
+                        }
+
+                        break;
+                    }
+                    case XmlElementNames.CalendarEventArray:
+                    {
+                        do
+                        {
+                            reader.Read();
+
+                            // Sometimes Exchange Online returns blank CalendarEventArray tag like bellow.
+                            // <CalendarEventArray xmlns="http://schemas.microsoft.com/exchange/services/2006/types" />
+                            // So we have to check the end of CalendarEventArray tag.
+                            if (reader.LocalName == XmlElementNames.FreeBusyView)
                             {
-                                this.mergedFreeBusyStatus.Add((LegacyFreeBusyStatus)Byte.Parse(mergedFreeBusy[i].ToString()));
+                                // There is no the end tag of CalendarEventArray, but the reader is reading the end tag of FreeBusyView.
+                                break;
                             }
 
-                            break;
-                        case XmlElementNames.CalendarEventArray:
-                            do
+                            if (reader.LocalName == XmlElementNames.WorkingHours)
                             {
-                                reader.Read();
-
-                                // Sometimes Exchange Online returns blank CalendarEventArray tag like bellow.
-                                // <CalendarEventArray xmlns="http://schemas.microsoft.com/exchange/services/2006/types" />
-                                // So we have to check the end of CalendarEventArray tag.
-                                if (reader.LocalName == XmlElementNames.FreeBusyView)
-                                {
-                                    // There is no the end tag of CalendarEventArray, but the reader is reading the end tag of FreeBusyView.
-                                    break;
-                                }
-                                else if (reader.LocalName == XmlElementNames.WorkingHours)
-                                {
-                                    // There is no the end tag of CalendarEventArray, but the reader is reading the start tag of WorkingHours.
-                                    goto case XmlElementNames.WorkingHours;
-                                }
-
-                                if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.CalendarEvent))
-                                {
-                                    CalendarEvent calendarEvent = new CalendarEvent();
-
-                                    calendarEvent.LoadFromXml(reader, XmlElementNames.CalendarEvent);
-
-                                    this.calendarEvents.Add(calendarEvent);
-                                }
+                                // There is no the end tag of CalendarEventArray, but the reader is reading the start tag of WorkingHours.
+                                goto case XmlElementNames.WorkingHours;
                             }
-                            while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.CalendarEventArray));
 
-                            break;
-                        case XmlElementNames.WorkingHours:
-                            this.workingHours = new WorkingHours();
-                            this.workingHours.LoadFromXml(reader, reader.LocalName);
+                            if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.CalendarEvent))
+                            {
+                                var calendarEvent = new CalendarEvent();
 
-                            break;
+                                calendarEvent.LoadFromXml(reader, XmlElementNames.CalendarEvent);
+
+                                CalendarEvents.Add(calendarEvent);
+                            }
+                        } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.CalendarEventArray));
+
+                        break;
+                    }
+                    case XmlElementNames.WorkingHours:
+                    {
+                        WorkingHours = new WorkingHours();
+                        WorkingHours.LoadFromXml(reader, reader.LocalName);
+
+                        break;
                     }
                 }
             }
-            while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView));
-        }
-
-        /// <summary>
-        /// Gets a collection of calendar events for the attendee.
-        /// </summary>
-        public Collection<CalendarEvent> CalendarEvents
-        {
-            get { return this.calendarEvents; }
-        }
-
-        /// <summary>
-        /// Gets the free/busy view type that wes retrieved for the attendee.
-        /// </summary>
-        public FreeBusyViewType ViewType
-        {
-            get { return this.viewType; }
-        }
-
-        /// <summary>
-        /// Gets a collection of merged free/busy status for the attendee.
-        /// </summary>
-        public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus
-        {
-            get { return this.mergedFreeBusyStatus; }
-        }
-
-        /// <summary>
-        /// Gets the working hours of the attendee.
-        /// </summary>
-        public WorkingHours WorkingHours
-        {
-            get { return this.workingHours; }
-        }
+        } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView));
     }
+
+    /// <summary>
+    ///     Gets a collection of calendar events for the attendee.
+    /// </summary>
+    public Collection<CalendarEvent> CalendarEvents { get; } = new();
+
+    /// <summary>
+    ///     Gets the free/busy view type that wes retrieved for the attendee.
+    /// </summary>
+    public FreeBusyViewType ViewType { get; private set; }
+
+    /// <summary>
+    ///     Gets a collection of merged free/busy status for the attendee.
+    /// </summary>
+    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus { get; } = new();
+
+    /// <summary>
+    ///     Gets the working hours of the attendee.
+    /// </summary>
+    public WorkingHours WorkingHours { get; private set; }
 }

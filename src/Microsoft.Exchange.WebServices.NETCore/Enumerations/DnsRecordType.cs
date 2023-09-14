@@ -23,51 +23,50 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Dns
+namespace Microsoft.Exchange.WebServices.Dns;
+
+/// <summary>
+///     DNS record types.
+/// </summary>
+internal enum DnsRecordType : ushort
 {
     /// <summary>
-    ///  DNS record types.
+    ///     RFC 1034/1035 Address Record
     /// </summary>
-    internal enum DnsRecordType : ushort
-    {
-        /// <summary>
-        ///  RFC 1034/1035 Address Record
-        /// </summary>        
-        A = 0x0001,
+    A = 0x0001,
 
-        /// <summary>
-        /// Canonical Name Record
-        /// </summary>
-        CNAME = 0x0005,
+    /// <summary>
+    ///     Canonical Name Record
+    /// </summary>
+    CNAME = 0x0005,
 
-        /// <summary>
-        /// Start of Authority Record
-        /// </summary>
-        SOA = 0x0006,
-        
-        /// <summary>
-        /// Pointer Record
-        /// </summary>
-        PTR = 0x000c,
+    /// <summary>
+    ///     Start of Authority Record
+    /// </summary>
+    SOA = 0x0006,
 
-        /// <summary>
-        ///  Mail Exchange Record
-        /// </summary>
-        MX = 0x000f,
+    /// <summary>
+    ///     Pointer Record
+    /// </summary>
+    PTR = 0x000c,
 
-        /// <summary>
-        /// Text Record
-        /// </summary>
-        TXT = 0x0010,
+    /// <summary>
+    ///     Mail Exchange Record
+    /// </summary>
+    MX = 0x000f,
 
-        /// <summary>
-        ///  RFC 1886 (IPv6 Address)
-        /// </summary>
-        AAAA = 0x001c,
+    /// <summary>
+    ///     Text Record
+    /// </summary>
+    TXT = 0x0010,
 
-        /// <summary>
-        /// Service location - RFC 2052
-        /// </summary>
-        SRV = 0x0021,
-    }
+    /// <summary>
+    ///     RFC 1886 (IPv6 Address)
+    /// </summary>
+    AAAA = 0x001c,
+
+    /// <summary>
+    ///     Service location - RFC 2052
+    /// </summary>
+    SRV = 0x0021,
 }

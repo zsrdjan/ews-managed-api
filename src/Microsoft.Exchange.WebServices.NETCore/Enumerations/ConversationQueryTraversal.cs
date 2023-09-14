@@ -23,25 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Xml.Serialization;
+using JetBrains.Annotations;
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the folder traversal depth in queries.
+/// </summary>
+[PublicAPI]
+public enum ConversationQueryTraversal
 {
     /// <summary>
-    /// Defines the folder traversal depth in queries.
+    ///     Shallow traversal
     /// </summary>
-    public enum ConversationQueryTraversal
-    {
-        /// <summary>
-        /// Shallow traversal
-        /// </summary>
-        [RequiredServerVersion(ExchangeVersion.Exchange2013)]
-        Shallow = 0,
+    [RequiredServerVersion(ExchangeVersion.Exchange2013)]
+    Shallow = 0,
 
-        /// <summary>
-        /// Deep traversal
-        /// </summary>
-        [RequiredServerVersion(ExchangeVersion.Exchange2013)]
-        Deep = 1,
-    }
+    /// <summary>
+    ///     Deep traversal
+    /// </summary>
+    [RequiredServerVersion(ExchangeVersion.Exchange2013)]
+    Deep = 1,
 }

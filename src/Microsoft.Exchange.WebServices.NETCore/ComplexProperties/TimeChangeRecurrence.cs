@@ -23,125 +23,114 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a recurrence pattern for a time change in a time zone.
+/// </summary>
+internal sealed class TimeChangeRecurrence : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    private DayOfTheWeek? _dayOfTheWeek;
+    private DayOfTheWeekIndex? _dayOfTheWeekIndex;
+    private Month? _month;
 
     /// <summary>
-    /// Represents a recurrence pattern for a time change in a time zone.
+    ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
     /// </summary>
-    internal sealed class TimeChangeRecurrence : ComplexProperty
+    public TimeChangeRecurrence()
     {
-        private DayOfTheWeek? dayOfTheWeek;
-        private DayOfTheWeekIndex? dayOfTheWeekIndex;
-        private Month? month;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeChangeRecurrence"/> class.
-        /// </summary>
-        public TimeChangeRecurrence()
-            : base()
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
+    /// </summary>
+    /// <param name="dayOfTheWeekIndex">The index of the day in the month at which the time change occurs.</param>
+    /// <param name="dayOfTheWeek">The day of the week the time change occurs.</param>
+    /// <param name="month">The month the time change occurs.</param>
+    public TimeChangeRecurrence(DayOfTheWeekIndex dayOfTheWeekIndex, DayOfTheWeek dayOfTheWeek, Month month)
+        : this()
+    {
+        _dayOfTheWeekIndex = dayOfTheWeekIndex;
+        _dayOfTheWeek = dayOfTheWeek;
+        _month = month;
+    }
+
+    /// <summary>
+    ///     Gets or sets the index of the day in the month at which the time change occurs.
+    /// </summary>
+    public DayOfTheWeekIndex? DayOfTheWeekIndex
+    {
+        get => _dayOfTheWeekIndex;
+        set => SetFieldValue(ref _dayOfTheWeekIndex, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the day of the week the time change occurs.
+    /// </summary>
+    public DayOfTheWeek? DayOfTheWeek
+    {
+        get => _dayOfTheWeek;
+        set => SetFieldValue(ref _dayOfTheWeek, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the month the time change occurs.
+    /// </summary>
+    public Month? Month
+    {
+        get => _month;
+        set => SetFieldValue(ref _month, value);
+    }
+
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (DayOfTheWeek.HasValue)
         {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DaysOfWeek, DayOfTheWeek.Value);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeChangeRecurrence"/> class.
-        /// </summary>
-        /// <param name="dayOfTheWeekIndex">The index of the day in the month at which the time change occurs.</param>
-        /// <param name="dayOfTheWeek">The day of the week the time change occurs.</param>
-        /// <param name="month">The month the time change occurs.</param>
-        public TimeChangeRecurrence(
-            DayOfTheWeekIndex dayOfTheWeekIndex,
-            DayOfTheWeek dayOfTheWeek,
-            Month month)
-            : this()
+        if (_dayOfTheWeekIndex.HasValue)
         {
-            this.dayOfTheWeekIndex = dayOfTheWeekIndex;
-            this.dayOfTheWeek = dayOfTheWeek;
-            this.month = month;
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOfWeekIndex, DayOfTheWeekIndex.Value);
         }
 
-        /// <summary>
-        /// Gets or sets the index of the day in the month at which the time change occurs.
-        /// </summary>
-        public DayOfTheWeekIndex? DayOfTheWeekIndex
+        if (Month.HasValue)
         {
-            get { return this.dayOfTheWeekIndex; }
-            set { this.SetFieldValue<DayOfTheWeekIndex?>(ref this.dayOfTheWeekIndex, value); }
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, Month.Value);
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the day of the week the time change occurs.
-        /// </summary>
-        public DayOfTheWeek? DayOfTheWeek
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get { return this.dayOfTheWeek; }
-            set { this.SetFieldValue<DayOfTheWeek?>(ref this.dayOfTheWeek, value); }
-        }
-
-        /// <summary>
-        /// Gets or sets the month the time change occurs.
-        /// </summary>
-        public Month? Month
-        {
-            get { return this.month; }
-            set { this.SetFieldValue<Month?>(ref this.month, value); }
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            if (this.DayOfTheWeek.HasValue)
+            case XmlElementNames.DaysOfWeek:
             {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.DaysOfWeek,
-                    this.DayOfTheWeek.Value);
+                _dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
+                return true;
             }
-
-            if (this.dayOfTheWeekIndex.HasValue)
+            case XmlElementNames.DayOfWeekIndex:
             {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.DayOfWeekIndex,
-                    this.DayOfTheWeekIndex.Value);
+                _dayOfTheWeekIndex = reader.ReadElementValue<DayOfTheWeekIndex>();
+                return true;
             }
-
-            if (this.Month.HasValue)
+            case XmlElementNames.Month:
             {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.Month,
-                    this.Month.Value);
+                _month = reader.ReadElementValue<Month>();
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            default:
             {
-                case XmlElementNames.DaysOfWeek:
-                    this.dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
-                    return true;
-                case XmlElementNames.DayOfWeekIndex:
-                    this.dayOfTheWeekIndex = reader.ReadElementValue<DayOfTheWeekIndex>();
-                    return true;
-                case XmlElementNames.Month:
-                    this.month = reader.ReadElementValue<Month>();
-                    return true;
-                default:
-                    return false;
+                return false;
             }
         }
     }

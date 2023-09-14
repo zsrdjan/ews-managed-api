@@ -23,237 +23,192 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the DelveDocument.
+/// </summary>
+[PublicAPI]
+public sealed class DelveDocument : InsightValue
 {
-    using System.Collections.Generic;
-    using System.Xml;
+    private double _rank;
+    private string _author;
+    private string _created;
+    private string _lastModifiedTime;
+    private string _defaultEncodingUrl;
+    private string _fileType;
+    private string _title;
+    private string _lastEditor;
+    private string _documentId;
+    private string _previewUrl;
 
     /// <summary>
-    /// Represents the DelveDocument.
+    ///     Gets the Rank
     /// </summary>
-    public sealed class DelveDocument : InsightValue
+    public double Rank
     {
-        private double rank;
-        private string author;
-        private string created;
-        private string lastModifiedTime;
-        private string defaultEncodingURL;
-        private string fileType;
-        private string title;
-        private string lastEditor;
-        private string documentId;
-        private string previewURL;
+        get => _rank;
+        set => SetFieldValue(ref _rank, value);
+    }
 
-        /// <summary>
-        /// Gets the Rank
-        /// </summary>
-        public double Rank
+    /// <summary>
+    ///     Gets the Author
+    /// </summary>
+    public string Author
+    {
+        get => _author;
+        set => SetFieldValue(ref _author, value);
+    }
+
+    /// <summary>
+    ///     Gets the Created
+    /// </summary>
+    public string Created
+    {
+        get => _created;
+        set => SetFieldValue(ref _created, value);
+    }
+
+    /// <summary>
+    ///     Gets the LastModifiedTime
+    /// </summary>
+    public string LastModifiedTime
+    {
+        get => _lastModifiedTime;
+        set => SetFieldValue(ref _lastModifiedTime, value);
+    }
+
+    /// <summary>
+    ///     Gets the DefaultEncodingURL
+    /// </summary>
+    public string DefaultEncodingURL
+    {
+        get => _defaultEncodingUrl;
+        set => SetFieldValue(ref _defaultEncodingUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets the FileType
+    /// </summary>
+    public string FileType
+    {
+        get => _fileType;
+        set => SetFieldValue(ref _fileType, value);
+    }
+
+    /// <summary>
+    ///     Gets the Title
+    /// </summary>
+    public string Title
+    {
+        get => _title;
+        set => SetFieldValue(ref _title, value);
+    }
+
+    /// <summary>
+    ///     Gets the DocumentId
+    /// </summary>
+    public string DocumentId
+    {
+        get => _documentId;
+        set => SetFieldValue(ref _documentId, value);
+    }
+
+    /// <summary>
+    ///     Gets the PreviewURL
+    /// </summary>
+    public string PreviewURL
+    {
+        get => _previewUrl;
+        set => SetFieldValue(ref _previewUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets the LastEditor
+    /// </summary>
+    public string LastEditor
+    {
+        get => _lastEditor;
+        set => SetFieldValue(ref _lastEditor, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">XML reader</param>
+    /// <returns>Whether the element was read</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            get
+            case XmlElementNames.InsightSource:
             {
-                return this.rank;
+                InsightSource = reader.ReadElementValue<string>();
+                break;
             }
-
-            set
+            case XmlElementNames.UpdatedUtcTicks:
             {
-                this.SetFieldValue<double>(ref this.rank, value);
+                UpdatedUtcTicks = reader.ReadElementValue<long>();
+                break;
+            }
+            case XmlElementNames.Rank:
+            {
+                Rank = reader.ReadElementValue<double>();
+                break;
+            }
+            case XmlElementNames.Author:
+            {
+                Author = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Created:
+            {
+                Created = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.LastModifiedTime:
+            {
+                LastModifiedTime = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.DefaultEncodingURL:
+            {
+                DefaultEncodingURL = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.FileType:
+            {
+                FileType = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.Title:
+            {
+                Title = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.DocumentId:
+            {
+                DocumentId = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.PreviewURL:
+            {
+                PreviewURL = reader.ReadElementValue();
+                break;
+            }
+            case XmlElementNames.LastEditor:
+            {
+                LastEditor = reader.ReadElementValue();
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        /// <summary>
-        /// Gets the Author
-        /// </summary>
-        public string Author
-        {
-            get
-            {
-                return this.author;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.author, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Created
-        /// </summary>
-        public string Created
-        {
-            get
-            {
-                return this.created;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.created, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the LastModifiedTime
-        /// </summary>
-        public string LastModifiedTime
-        {
-            get
-            {
-                return this.lastModifiedTime;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.lastModifiedTime, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the DefaultEncodingURL
-        /// </summary>
-        public string DefaultEncodingURL
-        {
-            get
-            {
-                return this.defaultEncodingURL;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.defaultEncodingURL, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the FileType
-        /// </summary>
-        public string FileType
-        {
-            get
-            {
-                return this.fileType;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.fileType, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Title
-        /// </summary>
-        public string Title
-        {
-            get
-            {
-                return this.title;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.title, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the DocumentId
-        /// </summary>
-        public string DocumentId
-        {
-            get
-            {
-                return this.documentId;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.documentId, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the PreviewURL
-        /// </summary>
-        public string PreviewURL
-        {
-            get
-            {
-                return this.previewURL;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.previewURL, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the LastEditor
-        /// </summary>
-        public string LastEditor
-        {
-            get
-            {
-                return this.lastEditor;
-            }
-
-            set
-            {
-                this.SetFieldValue<string>(ref this.lastEditor, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">XML reader</param>
-        /// <returns>Whether the element was read</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.InsightSource:
-                    this.InsightSource = reader.ReadElementValue<string>();
-                    break;
-                case XmlElementNames.UpdatedUtcTicks:
-                    this.UpdatedUtcTicks = reader.ReadElementValue<long>();
-                    break;
-                case XmlElementNames.Rank:
-                    this.Rank = reader.ReadElementValue<double>();
-                    break;
-                case XmlElementNames.Author:
-                    this.Author = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Created:
-                    this.Created = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.LastModifiedTime:
-                    this.LastModifiedTime = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.DefaultEncodingURL:
-                    this.DefaultEncodingURL = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.FileType:
-                    this.FileType = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.Title:
-                    this.Title = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.DocumentId:
-                    this.DocumentId = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.PreviewURL:
-                    this.PreviewURL = reader.ReadElementValue();
-                    break;
-                case XmlElementNames.LastEditor:
-                    this.LastEditor = reader.ReadElementValue();
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
+        return true;
     }
 }

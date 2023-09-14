@@ -23,209 +23,193 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a recurrence pattern, as used by Appointment and Task items.
+/// </summary>
+[PublicAPI]
+public abstract partial class Recurrence : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.IO;
-    using System.Text;
+    private DateTime? _startDate;
+    private int? _numberOfOccurrences;
+    private DateTime? _endDate;
 
     /// <summary>
-    /// Represents a recurrence pattern, as used by Appointment and Task items.
+    ///     Initializes a new instance of the <see cref="Recurrence" /> class.
     /// </summary>
-    public abstract partial class Recurrence : ComplexProperty
+    internal Recurrence()
     {
-        private DateTime? startDate;
-        private int? numberOfOccurrences;
-        private DateTime? endDate;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Recurrence"/> class.
-        /// </summary>
-        internal Recurrence()
-            : base()
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Recurrence" /> class.
+    /// </summary>
+    /// <param name="startDate">The start date.</param>
+    internal Recurrence(DateTime startDate)
+        : this()
+    {
+        _startDate = startDate;
+    }
+
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal abstract string XmlElementName { get; }
+
+    /// <summary>
+    ///     Gets a value indicating whether this instance is regeneration pattern.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if this instance is regeneration pattern; otherwise, <c>false</c>.
+    /// </value>
+    internal virtual bool IsRegenerationPattern => false;
+
+    /// <summary>
+    ///     Write properties to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal virtual void InternalWritePropertiesToXml(EwsServiceXmlWriter writer)
+    {
+    }
+
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal sealed override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteStartElement(XmlNamespace.Types, XmlElementName);
+        InternalWritePropertiesToXml(writer);
+        writer.WriteEndElement();
+
+        RecurrenceRange range;
+
+        if (!HasEnd)
         {
+            range = new NoEndRecurrenceRange(StartDate);
+        }
+        else if (NumberOfOccurrences.HasValue)
+        {
+            range = new NumberedRecurrenceRange(StartDate, NumberOfOccurrences);
+        }
+        else
+        {
+            range = new EndDateRecurrenceRange(StartDate, EndDate.Value);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Recurrence"/> class.
-        /// </summary>
-        /// <param name="startDate">The start date.</param>
-        internal Recurrence(DateTime startDate)
-            : this()
+        range.WriteToXml(writer, range.XmlElementName);
+    }
+
+    /// <summary>
+    ///     Gets a property value or throw if null.
+    /// </summary>
+    /// <typeparam name="T">Value type.</typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="name">The property name.</param>
+    /// <returns>Property value</returns>
+    internal static T GetFieldValueOrThrowIfNull<T>(T? value, string name)
+        where T : struct
+    {
+        if (value.HasValue)
         {
-            this.startDate = startDate;
+            return value.Value;
         }
 
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal abstract string XmlElementName { get; }
+        throw new ServiceValidationException(
+            string.Format(Strings.PropertyValueMustBeSpecifiedForRecurrencePattern, name)
+        );
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether this instance is regeneration pattern.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if this instance is regeneration pattern; otherwise, <c>false</c>.
-        /// </value>
-        internal virtual bool IsRegenerationPattern
+    /// <summary>
+    ///     Gets or sets the date and time when the recurrence start.
+    /// </summary>
+    public DateTime StartDate
+    {
+        get => GetFieldValueOrThrowIfNull(_startDate, "StartDate");
+        set => _startDate = value;
+    }
+
+    /// <summary>
+    ///     Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
+    /// </summary>
+    public bool HasEnd => _numberOfOccurrences.HasValue || _endDate.HasValue;
+
+    /// <summary>
+    ///     Sets up this recurrence so that it never ends. Calling NeverEnds is equivalent to setting both NumberOfOccurrences
+    ///     and EndDate to null.
+    /// </summary>
+    public void NeverEnds()
+    {
+        _numberOfOccurrences = null;
+        _endDate = null;
+        Changed();
+    }
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+
+        if (!_startDate.HasValue)
         {
-            get { return false; }
+            throw new ServiceValidationException(Strings.RecurrencePatternMustHaveStartDate);
         }
+    }
 
-        /// <summary>
-        /// Write properties to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal virtual void InternalWritePropertiesToXml(EwsServiceXmlWriter writer)
+    /// <summary>
+    ///     Gets or sets the number of occurrences after which the recurrence ends. Setting NumberOfOccurrences resets EndDate.
+    /// </summary>
+    public int? NumberOfOccurrences
+    {
+        get => _numberOfOccurrences;
+
+        set
         {
-        }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override sealed void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteStartElement(XmlNamespace.Types, this.XmlElementName);
-            this.InternalWritePropertiesToXml(writer);
-            writer.WriteEndElement();
-
-            RecurrenceRange range;
-
-            if (!this.HasEnd)
+            if (value < 1)
             {
-                range = new NoEndRecurrenceRange(this.StartDate);
-            }
-            else if (this.NumberOfOccurrences.HasValue)
-            {
-                range = new NumberedRecurrenceRange(this.StartDate, this.NumberOfOccurrences);
-            }
-            else
-            {
-                range = new EndDateRecurrenceRange(this.StartDate, this.EndDate.Value);
-            }
-
-            range.WriteToXml(writer, range.XmlElementName);
-        }
-
-        /// <summary>
-        /// Gets a property value or throw if null.
-        /// </summary>
-        /// <typeparam name="T">Value type.</typeparam>
-        /// <param name="value">The value.</param>
-        /// <param name="name">The property name.</param>
-        /// <returns>Property value</returns>
-        internal T GetFieldValueOrThrowIfNull<T>(Nullable<T> value, string name) where T : struct
-        {
-            if (value.HasValue)
-            {
-                return value.Value;
-            }
-            else
-            {
-                throw new ServiceValidationException(
-                                string.Format(Strings.PropertyValueMustBeSpecifiedForRecurrencePattern, name));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the date and time when the recurrence start.
-        /// </summary>
-        public DateTime StartDate
-        {
-            get { return this.GetFieldValueOrThrowIfNull<DateTime>(this.startDate, "StartDate"); }
-            set { this.startDate = value; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
-        /// </summary>
-        public bool HasEnd
-        {
-            get { return this.numberOfOccurrences.HasValue || this.endDate.HasValue; }
-        }
-
-        /// <summary>
-        /// Sets up this recurrence so that it never ends. Calling NeverEnds is equivalent to setting both NumberOfOccurrences and EndDate to null.
-        /// </summary>
-        public void NeverEnds()
-        {
-            this.numberOfOccurrences = null;
-            this.endDate = null;
-            this.Changed();
-        }
-
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        internal override void InternalValidate()
-        {
-            base.InternalValidate();
-
-            if (!this.startDate.HasValue)
-            {
-                throw new ServiceValidationException(Strings.RecurrencePatternMustHaveStartDate);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the number of occurrences after which the recurrence ends. Setting NumberOfOccurrences resets EndDate.
-        /// </summary>
-        public int? NumberOfOccurrences
-        {
-            get
-            {
-                return this.numberOfOccurrences;
+                throw new ArgumentException(Strings.NumberOfOccurrencesMustBeGreaterThanZero);
             }
 
-            set
-            {
-                if (value < 1)
-                {
-                    throw new ArgumentException(Strings.NumberOfOccurrencesMustBeGreaterThanZero);
-                }
-
-                this.SetFieldValue<int?>(ref this.numberOfOccurrences, value);
-                this.endDate = null;
-            }
+            SetFieldValue(ref _numberOfOccurrences, value);
+            _endDate = null;
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the date after which the recurrence ends. Setting EndDate resets NumberOfOccurrences.
-        /// </summary>
-        public DateTime? EndDate
+    /// <summary>
+    ///     Gets or sets the date after which the recurrence ends. Setting EndDate resets NumberOfOccurrences.
+    /// </summary>
+    public DateTime? EndDate
+    {
+        get => _endDate;
+
+        set
         {
-            get
-            {
-                return this.endDate;
-            }
-
-            set
-            {
-                this.SetFieldValue<DateTime?>(ref this.endDate, value);
-                this.numberOfOccurrences = null;
-            }
+            SetFieldValue(ref _endDate, value);
+            _numberOfOccurrences = null;
         }
+    }
 
-        /// <summary>
-        /// Checks if two recurrence objects are identical. 
-        /// </summary>
-        /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
-        /// <returns>true if the two recurrences are identical, false otherwise.</returns>
-        public virtual bool IsSame(Recurrence otherRecurrence)
+    /// <summary>
+    ///     Checks if two recurrence objects are identical.
+    /// </summary>
+    /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
+    /// <returns>true if the two recurrences are identical, false otherwise.</returns>
+    public virtual bool IsSame(Recurrence? otherRecurrence)
+    {
+        if (otherRecurrence == null)
         {
-            if (otherRecurrence == null)
-            {
-                return false;
-            }
-
-            return (this.GetType() == otherRecurrence.GetType() &&
-                    this.numberOfOccurrences == otherRecurrence.numberOfOccurrences &&
-                    this.endDate == otherRecurrence.endDate &&
-                    this.startDate == otherRecurrence.startDate);
+            return false;
         }
+
+        return GetType() == otherRecurrence.GetType() &&
+               _numberOfOccurrences == otherRecurrence._numberOfOccurrences &&
+               _endDate == otherRecurrence._endDate &&
+               _startDate == otherRecurrence._startDate;
     }
 }

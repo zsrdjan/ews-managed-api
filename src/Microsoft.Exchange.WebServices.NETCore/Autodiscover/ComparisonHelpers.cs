@@ -23,37 +23,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
-{
-    using System;
-    using System.Collections;
+using System.Collections;
 
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents a set of helper methods for performing string comparisons.
+/// </summary>
+internal static class ComparisonHelpers
+{
     /// <summary>
-    /// Represents a set of helper methods for performing string comparisons.
+    ///     Case insensitive check if the collection contains the string.
     /// </summary>
-    internal static class ComparisonHelpers
+    /// <param name="collection">The collection of objects, only strings are checked</param>
+    /// <param name="match">String to match</param>
+    /// <returns>true, if match contained in the collection</returns>
+    internal static bool CaseInsensitiveContains(this ICollection collection, string match)
     {
-        /// <summary>
-        /// Case insensitive check if the collection contains the string.
-        /// </summary>
-        /// <param name="collection">The collection of objects, only strings are checked</param>
-        /// <param name="match">String to match</param>
-        /// <returns>true, if match contained in the collection</returns>
-        internal static bool CaseInsensitiveContains(this ICollection collection, string match)
+        foreach (var obj in collection)
         {
-            foreach (object obj in collection)
+            if (obj is string str)
             {
-                string str = obj as string;
-                if (str != null)
+                if (string.Compare(str, match, StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    if (string.Compare(str, match, StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
-
-            return false;
         }
+
+        return false;
     }
 }

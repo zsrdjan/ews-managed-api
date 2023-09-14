@@ -23,128 +23,129 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Collections.ObjectModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an availability time suggestion.
+/// </summary>
+[PublicAPI]
+public sealed class TimeSuggestion : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeSuggestion" /> class.
+    /// </summary>
+    internal TimeSuggestion()
+    {
+    }
 
     /// <summary>
-    /// Represents an availability time suggestion.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class TimeSuggestion : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if appropriate element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private DateTime meetingTime;
-        private bool isWorkTime;
-        private SuggestionQuality quality;
-        private Collection<Conflict> conflicts = new Collection<Conflict>();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeSuggestion"/> class.
-        /// </summary>
-        internal TimeSuggestion()
-            : base()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if appropriate element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.MeetingTime:
             {
-                case XmlElementNames.MeetingTime:
-                    this.meetingTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
-                    return true;
-                case XmlElementNames.IsWorkTime:
-                    this.isWorkTime = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.SuggestionQuality:
-                    this.quality = reader.ReadElementValue<SuggestionQuality>();
-                    return true;
-                case XmlElementNames.AttendeeConflictDataArray:
-                    if (!reader.IsEmptyElement)
+                MeetingTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
+                return true;
+            }
+            case XmlElementNames.IsWorkTime:
+            {
+                IsWorkTime = reader.ReadElementValue<bool>();
+                return true;
+            }
+            case XmlElementNames.SuggestionQuality:
+            {
+                Quality = reader.ReadElementValue<SuggestionQuality>();
+                return true;
+            }
+            case XmlElementNames.AttendeeConflictDataArray:
+            {
+                if (!reader.IsEmptyElement)
+                {
+                    do
                     {
-                        do
+                        reader.Read();
+
+                        if (reader.IsStartElement())
                         {
-                            reader.Read();
+                            Conflict? conflict = null;
 
-                            if (reader.IsStartElement())
+                            switch (reader.LocalName)
                             {
-                                Conflict conflict = null;
-
-                                switch (reader.LocalName)
+                                case XmlElementNames.UnknownAttendeeConflictData:
                                 {
-                                    case XmlElementNames.UnknownAttendeeConflictData:
-                                        conflict = new Conflict(ConflictType.UnknownAttendeeConflict);
-                                        break;
-                                    case XmlElementNames.TooBigGroupAttendeeConflictData:
-                                        conflict = new Conflict(ConflictType.GroupTooBigConflict);
-                                        break;
-                                    case XmlElementNames.IndividualAttendeeConflictData:
-                                        conflict = new Conflict(ConflictType.IndividualAttendeeConflict);
-                                        break;
-                                    case XmlElementNames.GroupAttendeeConflictData:
-                                        conflict = new Conflict(ConflictType.GroupConflict);
-                                        break;
-                                    default:
-                                        EwsUtilities.Assert(
-                                            false,
-                                            "TimeSuggestion.TryReadElementFromXml",
-                                            string.Format("The {0} element name does not map to any AttendeeConflict descendant.", reader.LocalName));
-
-                                        // The following line to please the compiler
-                                        break;
+                                    conflict = new Conflict(ConflictType.UnknownAttendeeConflict);
+                                    break;
                                 }
+                                case XmlElementNames.TooBigGroupAttendeeConflictData:
+                                {
+                                    conflict = new Conflict(ConflictType.GroupTooBigConflict);
+                                    break;
+                                }
+                                case XmlElementNames.IndividualAttendeeConflictData:
+                                {
+                                    conflict = new Conflict(ConflictType.IndividualAttendeeConflict);
+                                    break;
+                                }
+                                case XmlElementNames.GroupAttendeeConflictData:
+                                {
+                                    conflict = new Conflict(ConflictType.GroupConflict);
+                                    break;
+                                }
+                                default:
+                                {
+                                    EwsUtilities.Assert(
+                                        false,
+                                        "TimeSuggestion.TryReadElementFromXml",
+                                        $"The {reader.LocalName} element name does not map to any AttendeeConflict descendant."
+                                    );
 
-                                conflict.LoadFromXml(reader, reader.LocalName);
-
-                                this.conflicts.Add(conflict);
+                                    // The following line to please the compiler
+                                    break;
+                                }
                             }
-                        }
-                        while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.AttendeeConflictDataArray));
-                    }
 
-                    return true;
-                default:
-                    return false;
+                            conflict.LoadFromXml(reader, reader.LocalName);
+
+                            Conflicts.Add(conflict);
+                        }
+                    } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.AttendeeConflictDataArray));
+                }
+
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Gets the suggested time.
-        /// </summary>
-        public DateTime MeetingTime
-        {
-            get { return this.meetingTime; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the suggested time is within working hours.
-        /// </summary>
-        public bool IsWorkTime
-        {
-            get { return this.isWorkTime; }
-        }
-
-        /// <summary>
-        /// Gets the quality of the suggestion.
-        /// </summary>
-        public SuggestionQuality Quality
-        {
-            get { return this.quality; }
-        }
-
-        /// <summary>
-        /// Gets a collection of conflicts at the suggested time.
-        /// </summary>
-        public Collection<Conflict> Conflicts
-        {
-            get { return this.conflicts; }
-        }
     }
+
+    /// <summary>
+    ///     Gets the suggested time.
+    /// </summary>
+    public DateTime MeetingTime { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the suggested time is within working hours.
+    /// </summary>
+    public bool IsWorkTime { get; private set; }
+
+    /// <summary>
+    ///     Gets the quality of the suggestion.
+    /// </summary>
+    public SuggestionQuality Quality { get; private set; }
+
+    /// <summary>
+    ///     Gets a collection of conflicts at the suggested time.
+    /// </summary>
+    public Collection<Conflict> Conflicts { get; } = new Collection<Conflict>();
 }

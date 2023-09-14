@@ -23,64 +23,51 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Collections.ObjectModel;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the results of a GetUserAvailability operation.
+/// </summary>
+[PublicAPI]
+public sealed class GetUserAvailabilityResults
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserAvailabilityResults" /> class.
+    /// </summary>
+    internal GetUserAvailabilityResults()
+    {
+    }
 
     /// <summary>
-    /// Represents the results of a GetUserAvailability operation.
+    ///     Gets or sets the suggestions response for the requested meeting time.
     /// </summary>
-    public sealed class GetUserAvailabilityResults
+    internal SuggestionsResponse? SuggestionsResponse { get; set; }
+
+    /// <summary>
+    ///     Gets a collection of AttendeeAvailability objects representing availability information for each of the specified
+    ///     attendees.
+    /// </summary>
+    public ServiceResponseCollection<AttendeeAvailability> AttendeesAvailability { get; internal set; }
+
+    /// <summary>
+    ///     Gets a collection of suggested meeting times for the specified time period.
+    /// </summary>
+    public Collection<Suggestion>? Suggestions
     {
-        private ServiceResponseCollection<AttendeeAvailability> attendeesAvailability;
-        private SuggestionsResponse suggestionsResponse;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetUserAvailabilityResults"/> class.
-        /// </summary>
-        internal GetUserAvailabilityResults()
+        get
         {
-        }
-
-        /// <summary>
-        /// Gets or sets the suggestions response for the requested meeting time.
-        /// </summary>
-        internal SuggestionsResponse SuggestionsResponse
-        {
-            get { return this.suggestionsResponse; }
-            set { this.suggestionsResponse = value; }
-        }
-
-        /// <summary>
-        /// Gets a collection of AttendeeAvailability objects representing availability information for each of the specified attendees.
-        /// </summary>
-        public ServiceResponseCollection<AttendeeAvailability> AttendeesAvailability
-        {
-            get { return this.attendeesAvailability; }
-            internal set { this.attendeesAvailability = value; }
-        }
-
-        /// <summary>
-        /// Gets a collection of suggested meeting times for the specified time period.
-        /// </summary>
-        public Collection<Suggestion> Suggestions
-        {
-            get
+            if (SuggestionsResponse == null)
             {
-                if (this.suggestionsResponse == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    this.suggestionsResponse.ThrowIfNecessary();
-
-                    return this.suggestionsResponse.Suggestions;
-                }
+                return null;
             }
+
+            SuggestionsResponse.ThrowIfNecessary();
+
+            return SuggestionsResponse.Suggestions;
         }
     }
 }

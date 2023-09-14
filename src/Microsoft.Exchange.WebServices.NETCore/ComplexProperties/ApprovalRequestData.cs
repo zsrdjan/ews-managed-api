@@ -23,83 +23,76 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents approval request information.
+/// </summary>
+[PublicAPI]
+public sealed class ApprovalRequestData : ComplexProperty
 {
-    using System;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ApprovalRequestData" /> class.
+    /// </summary>
+    internal ApprovalRequestData()
+    {
+    }
 
     /// <summary>
-    /// Represents approval request information.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class ApprovalRequestData : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private bool isUndecidedApprovalRequest;
-        private int approvalDecision;
-        private string approvalDecisionMaker;
-        private DateTime approvalDecisionTime;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApprovalRequestData"/> class.
-        /// </summary>
-        internal ApprovalRequestData()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.IsUndecidedApprovalRequest:
             {
-                case XmlElementNames.IsUndecidedApprovalRequest:
-                    this.isUndecidedApprovalRequest = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.ApprovalDecision:
-                    this.approvalDecision = reader.ReadElementValue<int>();
-                    return true;
-                case XmlElementNames.ApprovalDecisionMaker:
-                    this.approvalDecisionMaker = reader.ReadElementValue<string>();
-                    return true;
-                case XmlElementNames.ApprovalDecisionTime:
-                    this.approvalDecisionTime = reader.ReadElementValueAsDateTime().Value;
-                    return true;
-                default:
-                    return false;
+                IsUndecidedApprovalRequest = reader.ReadElementValue<bool>();
+                return true;
+            }
+            case XmlElementNames.ApprovalDecision:
+            {
+                ApprovalDecision = reader.ReadElementValue<int>();
+                return true;
+            }
+            case XmlElementNames.ApprovalDecisionMaker:
+            {
+                ApprovalDecisionMaker = reader.ReadElementValue<string>();
+                return true;
+            }
+            case XmlElementNames.ApprovalDecisionTime:
+            {
+                ApprovalDecisionTime = reader.ReadElementValueAsDateTime().Value;
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether this is an undecided approval request.
-        /// </summary>
-        public bool IsUndecidedApprovalRequest
-        {
-            get { return this.isUndecidedApprovalRequest; }
-        }
-
-        /// <summary>
-        /// Gets the approval decision on the request.
-        /// </summary>
-        public int ApprovalDecision 
-        {
-            get { return this.approvalDecision; }
-        }
-
-        /// <summary>
-        /// Gets the name of the user who made the decision.
-        /// </summary>
-        public string ApprovalDecisionMaker
-        {
-            get { return this.approvalDecisionMaker; }
-        }
-
-        /// <summary>
-        /// Gets the time at which the decision was made.
-        /// </summary>
-        public DateTime ApprovalDecisionTime
-        {
-            get { return this.approvalDecisionTime; }
-        }
     }
+
+    /// <summary>
+    ///     Gets a value indicating whether this is an undecided approval request.
+    /// </summary>
+    public bool IsUndecidedApprovalRequest { get; private set; }
+
+    /// <summary>
+    ///     Gets the approval decision on the request.
+    /// </summary>
+    public int ApprovalDecision { get; private set; }
+
+    /// <summary>
+    ///     Gets the name of the user who made the decision.
+    /// </summary>
+    public string ApprovalDecisionMaker { get; private set; }
+
+    /// <summary>
+    ///     Gets the time at which the decision was made.
+    /// </summary>
+    public DateTime ApprovalDecisionTime { get; private set; }
 }

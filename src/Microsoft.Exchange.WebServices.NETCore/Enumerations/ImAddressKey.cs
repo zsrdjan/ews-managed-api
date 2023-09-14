@@ -23,30 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines Instant Messaging address entries for a contact.
+/// </summary>
+[PublicAPI]
+public enum ImAddressKey
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The first Instant Messaging address.
+    /// </summary>
+    ImAddress1,
 
     /// <summary>
-    /// Defines Instant Messaging address entries for a contact.
+    ///     The second Instant Messaging address.
     /// </summary>
-    public enum ImAddressKey
-    {
-        /// <summary>
-        /// The first Instant Messaging address.
-        /// </summary>
-        ImAddress1,
-        
-        /// <summary>
-        /// The second Instant Messaging address.
-        /// </summary>
-        ImAddress2,
+    ImAddress2,
 
-        /// <summary>
-        /// The third Instant Messaging address.
-        /// </summary>
-        ImAddress3
-    }
+    /// <summary>
+    ///     The third Instant Messaging address.
+    /// </summary>
+    ImAddress3,
 }

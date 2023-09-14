@@ -23,205 +23,202 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a change of time for a time zone.
+/// </summary>
+internal sealed class TimeChange : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
-    using System.Xml;
+    private string _timeZoneName;
+    private TimeSpan? _offset;
+    private Time? _time;
+    private DateTime? _absoluteDate;
+    private TimeChangeRecurrence? _recurrence;
 
     /// <summary>
-    /// Represents a change of time for a time zone.
+    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
     /// </summary>
-    internal sealed class TimeChange : ComplexProperty
+    public TimeChange()
     {
-        private string timeZoneName;
-        private TimeSpan? offset;
-        private Time time;
-        private DateTime? absoluteDate;
-        private TimeChangeRecurrence recurrence;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeChange"/> class.
-        /// </summary>
-        public TimeChange()
-            : base()
-        {
-        }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
+    /// </summary>
+    /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
+    public TimeChange(TimeSpan offset)
+        : this()
+    {
+        _offset = offset;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeChange"/> class.
-        /// </summary>
-        /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
-        public TimeChange(TimeSpan offset)
-            : this()
-        {
-            this.offset = offset;
-        }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
+    /// </summary>
+    /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
+    /// <param name="time">The time at which the change occurs.</param>
+    public TimeChange(TimeSpan offset, Time time)
+        : this(offset)
+    {
+        _time = time;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TimeChange"/> class.
-        /// </summary>
-        /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
-        /// <param name="time">The time at which the change occurs.</param>
-        public TimeChange(TimeSpan offset, Time time)
-            : this(offset)
-        {
-            this.time = time;
-        }
+    /// <summary>
+    ///     Gets or sets the name of the associated time zone.
+    /// </summary>
+    public string TimeZoneName
+    {
+        get => _timeZoneName;
+        set => SetFieldValue(ref _timeZoneName, value);
+    }
 
-        /// <summary>
-        /// Gets or sets the name of the associated time zone.
-        /// </summary>
-        public string TimeZoneName
-        {
-            get { return this.timeZoneName; }
-            set { this.SetFieldValue<string>(ref this.timeZoneName, value); }
-        }
+    /// <summary>
+    ///     Gets or sets the offset since the beginning of the year when the change occurs.
+    /// </summary>
+    public TimeSpan? Offset
+    {
+        get => _offset;
+        set => SetFieldValue(ref _offset, value);
+    }
 
-        /// <summary>
-        /// Gets or sets the offset since the beginning of the year when the change occurs.
-        /// </summary>
-        public TimeSpan? Offset
-        {
-            get { return this.offset; }
-            set { this.SetFieldValue<TimeSpan?>(ref this.offset, value); }
-        }
+    /// <summary>
+    ///     Gets or sets the time at which the change occurs.
+    /// </summary>
+    public Time? Time
+    {
+        get => _time;
+        set => SetFieldValue(ref _time, value);
+    }
 
-        /// <summary>
-        /// Gets or sets the time at which the change occurs.
-        /// </summary>
-        public Time Time
-        {
-            get { return this.time; }
-            set { this.SetFieldValue<Time>(ref this.time, value); }
-        }
+    /// <summary>
+    ///     Gets or sets the absolute date at which the change occurs. AbsoluteDate and Recurrence are mutually exclusive;
+    ///     setting one resets the other.
+    /// </summary>
+    public DateTime? AbsoluteDate
+    {
+        get => _absoluteDate;
 
-        /// <summary>
-        /// Gets or sets the absolute date at which the change occurs. AbsoluteDate and Recurrence are mutually exclusive; setting one resets the other.
-        /// </summary>
-        public DateTime? AbsoluteDate
+        set
         {
-            get
+            SetFieldValue(ref _absoluteDate, value);
+
+            if (_absoluteDate.HasValue)
             {
-                return this.absoluteDate;
-            }
-
-            set
-            {
-                this.SetFieldValue<DateTime?>(ref this.absoluteDate, value);
-
-                if (this.absoluteDate.HasValue)
-                {
-                    this.recurrence = null;
-                }
+                _recurrence = null;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the recurrence pattern defining when the change occurs. Recurrence and AbsoluteDate are mutually exclusive; setting one resets the other.
-        /// </summary>
-        public TimeChangeRecurrence Recurrence
+    /// <summary>
+    ///     Gets or sets the recurrence pattern defining when the change occurs. Recurrence and AbsoluteDate are mutually
+    ///     exclusive; setting one resets the other.
+    /// </summary>
+    public TimeChangeRecurrence? Recurrence
+    {
+        get => _recurrence;
+
+        set
         {
-            get
-            {
-                return this.recurrence;
-            }
+            SetFieldValue(ref _recurrence, value);
 
-            set
+            if (_recurrence != null)
             {
-                this.SetFieldValue<TimeChangeRecurrence>(ref this.recurrence, value);
-
-                if (this.recurrence != null)
-                {
-                    this.absoluteDate = null;
-                }
+                _absoluteDate = null;
             }
         }
+    }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-            switch (reader.LocalName)
+            case XmlElementNames.Offset:
             {
-                case XmlElementNames.Offset:
-                    this.offset = EwsUtilities.XSDurationToTimeSpan(reader.ReadElementValue());
-                    return true;
-                case XmlElementNames.RelativeYearlyRecurrence:
-                    this.Recurrence = new TimeChangeRecurrence();
-                    this.Recurrence.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                case XmlElementNames.AbsoluteDate:
-                    DateTime dateTime = DateTime.Parse(reader.ReadElementValue());
+                _offset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
+                return true;
+            }
+            case XmlElementNames.RelativeYearlyRecurrence:
+            {
+                Recurrence = new TimeChangeRecurrence();
+                Recurrence.LoadFromXml(reader, reader.LocalName);
+                return true;
+            }
+            case XmlElementNames.AbsoluteDate:
+            {
+                var dateTime = DateTime.Parse(reader.ReadElementValue());
 
-                    // TODO: BUG
-                    this.absoluteDate = new DateTime(dateTime.ToUniversalTime().Ticks, DateTimeKind.Unspecified);
-                    return true;
-                case XmlElementNames.Time:
-                    this.time = new Time(DateTime.Parse(reader.ReadElementValue()));
-                    return true;
-                default:
-                    return false;
+                // TODO: BUG
+                _absoluteDate = new DateTime(dateTime.ToUniversalTime().Ticks, DateTimeKind.Unspecified);
+                return true;
+            }
+            case XmlElementNames.Time:
+            {
+                _time = new Time(DateTime.Parse(reader.ReadElementValue()));
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Reads the attributes from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
+    /// <summary>
+    ///     Reads the attributes from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
+    {
+        _timeZoneName = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
+    }
+
+    /// <summary>
+    ///     Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteAttributeValue(XmlAttributeNames.TimeZoneName, TimeZoneName);
+    }
+
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        if (Offset.HasValue)
         {
-            this.timeZoneName = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
+            writer.WriteElementValue(
+                XmlNamespace.Types,
+                XmlElementNames.Offset,
+                EwsUtilities.TimeSpanToXsDuration(Offset.Value)
+            );
         }
 
-        /// <summary>
-        /// Writes the attributes to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+        if (Recurrence != null)
         {
-            writer.WriteAttributeValue(XmlAttributeNames.TimeZoneName, this.TimeZoneName);
+            Recurrence.WriteToXml(writer, XmlElementNames.RelativeYearlyRecurrence);
         }
 
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+        if (AbsoluteDate.HasValue)
         {
-            if (this.Offset.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.Offset,
-                    EwsUtilities.TimeSpanToXSDuration(this.Offset.Value));
-            }
+            writer.WriteElementValue(
+                XmlNamespace.Types,
+                XmlElementNames.AbsoluteDate,
+                EwsUtilities.DateTimeToXsDate(new DateTime(AbsoluteDate.Value.Ticks, DateTimeKind.Unspecified))
+            );
+        }
 
-            if (this.Recurrence != null)
-            {
-                this.Recurrence.WriteToXml(writer, XmlElementNames.RelativeYearlyRecurrence);
-            }
-
-            if (this.AbsoluteDate.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.AbsoluteDate,
-                    EwsUtilities.DateTimeToXSDate(new DateTime(this.AbsoluteDate.Value.Ticks, DateTimeKind.Unspecified)));
-            }
-
-            if (this.Time != null)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.Time,
-                    this.Time.ToXSTime());
-            }
+        if (Time != null)
+        {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Time, Time.ToXsTime());
         }
     }
 }

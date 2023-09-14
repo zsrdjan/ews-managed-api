@@ -23,47 +23,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the SearchMailboxes response.
+/// </summary>
+[PublicAPI]
+public sealed class SearchMailboxesResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SearchMailboxesResponse" /> class.
+    /// </summary>
+    internal SearchMailboxesResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents the SearchMailboxes response.
+    ///     Reads response elements from XML.
     /// </summary>
-    public sealed class SearchMailboxesResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        SearchMailboxesResult searchResult = null;
+        SearchResult = new SearchMailboxesResult();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SearchMailboxesResponse"/> class.
-        /// </summary>
-        internal SearchMailboxesResponse()
-            : base()
-        {
-        }
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            this.searchResult = new SearchMailboxesResult();
-
-            base.ReadElementsFromXml(reader);
-
-            this.searchResult = SearchMailboxesResult.LoadFromXml(reader);
-        }
-
-        /// <summary>
-        /// Search mailboxes result
-        /// </summary>
-        public SearchMailboxesResult SearchResult
-        {
-            get { return this.searchResult; }
-            internal set { this.searchResult = value; }
-        }
+        SearchResult = SearchMailboxesResult.LoadFromXml(reader);
     }
+
+    /// <summary>
+    ///     Search mailboxes result
+    /// </summary>
+    public SearchMailboxesResult SearchResult { get; internal set; }
 }

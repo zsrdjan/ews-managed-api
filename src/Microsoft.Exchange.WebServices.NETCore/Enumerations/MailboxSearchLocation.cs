@@ -23,31 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Xml.Serialization;
+using JetBrains.Annotations;
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the location for mailbox search.
+/// </summary>
+[PublicAPI]
+public enum MailboxSearchLocation
 {
     /// <summary>
-    /// Defines the location for mailbox search.
+    ///     Primary only (Exchange 2013 or later).
     /// </summary>
-    public enum MailboxSearchLocation
-    {
-        /// <summary>
-        /// Primary only (Exchange 2013 or later).
-        /// </summary>
-        [RequiredServerVersion(ExchangeVersion.Exchange2013)]
-        PrimaryOnly,
+    [RequiredServerVersion(ExchangeVersion.Exchange2013)]
+    PrimaryOnly,
 
-        /// <summary>
-        /// Archive only (Exchange 2013 or later).
-        /// </summary>
-        [RequiredServerVersion(ExchangeVersion.Exchange2013)]
-        ArchiveOnly,
+    /// <summary>
+    ///     Archive only (Exchange 2013 or later).
+    /// </summary>
+    [RequiredServerVersion(ExchangeVersion.Exchange2013)]
+    ArchiveOnly,
 
-        /// <summary>
-        /// Both Primary and Archive (Exchange 2013 or later).
-        /// </summary>
-        [RequiredServerVersion(ExchangeVersion.Exchange2013)]
-        All,
-    }
+    /// <summary>
+    ///     Both Primary and Archive (Exchange 2013 or later).
+    /// </summary>
+    [RequiredServerVersion(ExchangeVersion.Exchange2013)]
+    All,
 }

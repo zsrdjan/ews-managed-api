@@ -23,111 +23,90 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+internal sealed class NumberedRecurrenceRange : RecurrenceRange
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    private int? _numberOfOccurrences;
 
-    internal sealed class NumberedRecurrenceRange : RecurrenceRange
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NumberedRecurrenceRange" /> class.
+    /// </summary>
+    public NumberedRecurrenceRange()
     {
-        private int? numberOfOccurrences;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NumberedRecurrenceRange"/> class.
-        /// </summary>
-        public NumberedRecurrenceRange()
-            : base()
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NumberedRecurrenceRange" /> class.
+    /// </summary>
+    /// <param name="startDate">The start date.</param>
+    /// <param name="numberOfOccurrences">The number of occurrences.</param>
+    public NumberedRecurrenceRange(DateTime startDate, int? numberOfOccurrences)
+        : base(startDate)
+    {
+        _numberOfOccurrences = numberOfOccurrences;
+    }
+
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal override string XmlElementName => XmlElementNames.NumberedRecurrence;
+
+    /// <summary>
+    ///     Setups the recurrence.
+    /// </summary>
+    /// <param name="recurrence">The recurrence.</param>
+    internal override void SetupRecurrence(Recurrence recurrence)
+    {
+        base.SetupRecurrence(recurrence);
+
+        recurrence.NumberOfOccurrences = NumberOfOccurrences;
+    }
+
+    /// <summary>
+    ///     Writes the elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        base.WriteElementsToXml(writer);
+
+        if (NumberOfOccurrences.HasValue)
         {
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.NumberOfOccurrences, NumberOfOccurrences);
+        }
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        if (base.TryReadElementFromXml(reader))
+        {
+            return true;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NumberedRecurrenceRange"/> class.
-        /// </summary>
-        /// <param name="startDate">The start date.</param>
-        /// <param name="numberOfOccurrences">The number of occurrences.</param>
-        public NumberedRecurrenceRange(DateTime startDate, int? numberOfOccurrences)
-            : base(startDate)
+        switch (reader.LocalName)
         {
-            this.numberOfOccurrences = numberOfOccurrences;
-        }
-
-        /// <summary>
-        /// Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal override string XmlElementName
-        {
-            get { return XmlElementNames.NumberedRecurrence; }
-        }
-
-        /// <summary>
-        /// Setups the recurrence.
-        /// </summary>
-        /// <param name="recurrence">The recurrence.</param>
-        internal override void SetupRecurrence(Recurrence recurrence)
-        {
-            base.SetupRecurrence(recurrence);
-
-            recurrence.NumberOfOccurrences = this.NumberOfOccurrences;
-        }
-
-        /// <summary>
-        /// Writes the elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            base.WriteElementsToXml(writer);
-
-            if (this.NumberOfOccurrences.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.NumberOfOccurrences,
-                    this.NumberOfOccurrences);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            if (base.TryReadElementFromXml(reader))
-            {
+            case XmlElementNames.NumberOfOccurrences:
+                _numberOfOccurrences = reader.ReadElementValue<int>();
                 return true;
-            }
-            else
-            {
-                switch (reader.LocalName)
-                {
-                    case XmlElementNames.NumberOfOccurrences:
-                        this.numberOfOccurrences = reader.ReadElementValue<int>();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
+            default:
+                return false;
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the number of occurrences.
-        /// </summary>
-        /// <value>The number of occurrences.</value>
-        public int? NumberOfOccurrences
-        {
-            get
-            {
-                return this.numberOfOccurrences;
-            }
-
-            set
-            {
-                this.SetFieldValue<int?>(ref this.numberOfOccurrences, value);
-            }
-        }
+    /// <summary>
+    ///     Gets or sets the number of occurrences.
+    /// </summary>
+    /// <value>The number of occurrences.</value>
+    public int? NumberOfOccurrences
+    {
+        get => _numberOfOccurrences;
+        set => SetFieldValue(ref _numberOfOccurrences, value);
     }
 }

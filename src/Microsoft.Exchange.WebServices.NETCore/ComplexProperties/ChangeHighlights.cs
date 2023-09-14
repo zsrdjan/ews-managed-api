@@ -23,107 +23,96 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Encapsulates information on the changehighlights of a meeting request.
+/// </summary>
+[PublicAPI]
+public sealed class ChangeHighlights : ComplexProperty
 {
-    using System;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ChangeHighlights" /> class.
+    /// </summary>
+    internal ChangeHighlights()
+    {
+    }
 
     /// <summary>
-    /// Encapsulates information on the changehighlights of a meeting request.
+    ///     Tries to read element from XML.
     /// </summary>
-    public sealed class ChangeHighlights : ComplexProperty
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private bool hasLocationChanged;
-        private string location;
-        private bool hasStartTimeChanged;
-        private DateTime start;
-        private bool hasEndTimeChanged;
-        private DateTime end;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChangeHighlights"/> class.
-        /// </summary>
-        internal ChangeHighlights()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.HasLocationChanged:
             {
-                case XmlElementNames.HasLocationChanged:
-                    this.hasLocationChanged = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.Location:
-                    this.location = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.HasStartTimeChanged:
-                    this.hasStartTimeChanged = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.Start:
-                    this.start = reader.ReadElementValueAsDateTime().Value;
-                    return true;
-                case XmlElementNames.HasEndTimeChanged:
-                    this.hasEndTimeChanged = reader.ReadElementValue<bool>();
-                    return true;
-                case XmlElementNames.End:
-                    this.end = reader.ReadElementValueAsDateTime().Value;
-                    return true;
-                default:
-                    return false;
+                HasLocationChanged = reader.ReadElementValue<bool>();
+                return true;
+            }
+            case XmlElementNames.Location:
+            {
+                Location = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.HasStartTimeChanged:
+            {
+                HasStartTimeChanged = reader.ReadElementValue<bool>();
+                return true;
+            }
+            case XmlElementNames.Start:
+            {
+                Start = reader.ReadElementValueAsDateTime().Value;
+                return true;
+            }
+            case XmlElementNames.HasEndTimeChanged:
+            {
+                HasEndTimeChanged = reader.ReadElementValue<bool>();
+                return true;
+            }
+            case XmlElementNames.End:
+            {
+                End = reader.ReadElementValueAsDateTime().Value;
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Gets a value indicating whether the location has changed.
-        /// </summary>
-        public bool HasLocationChanged
-        {
-            get { return this.hasLocationChanged; }
-        }
-
-        /// <summary>
-        /// Gets the old location
-        /// </summary>
-        public string Location
-        {
-            get { return this.location; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the the start time has changed.
-        /// </summary>
-        public bool HasStartTimeChanged
-        {
-            get { return this.hasStartTimeChanged; }
-        }
-
-        /// <summary>
-        /// Gets the old start date and time of the meeting.
-        /// </summary>
-        public DateTime Start
-        {
-            get { return this.start; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the the end time has changed.
-        /// </summary>
-        public bool HasEndTimeChanged
-        {
-            get { return this.hasEndTimeChanged; }
-        }
-
-        /// <summary>
-        /// Gets the old end date and time of the meeting.
-        /// </summary>
-        public DateTime End
-        {
-            get { return this.end; }
-        }
     }
+
+    /// <summary>
+    ///     Gets a value indicating whether the location has changed.
+    /// </summary>
+    public bool HasLocationChanged { get; private set; }
+
+    /// <summary>
+    ///     Gets the old location
+    /// </summary>
+    public string Location { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the the start time has changed.
+    /// </summary>
+    public bool HasStartTimeChanged { get; private set; }
+
+    /// <summary>
+    ///     Gets the old start date and time of the meeting.
+    /// </summary>
+    public DateTime Start { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the the end time has changed.
+    /// </summary>
+    public bool HasEndTimeChanged { get; private set; }
+
+    /// <summary>
+    ///     Gets the old end date and time of the meeting.
+    /// </summary>
+    public DateTime End { get; private set; }
 }

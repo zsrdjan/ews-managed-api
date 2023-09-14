@@ -23,40 +23,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the hold status.
+/// </summary>
+[PublicAPI]
+public enum HoldStatus
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Not on hold
+    /// </summary>
+    NotOnHold,
 
     /// <summary>
-    /// Defines the hold status.
+    ///     Placing/removing hold is in-progress
     /// </summary>
-    public enum HoldStatus
-    {
-        /// <summary>
-        /// Not on hold
-        /// </summary>
-        NotOnHold,
+    Pending,
 
-        /// <summary>
-        /// Placing/removing hold is in-progress
-        /// </summary>
-        Pending,
+    /// <summary>
+    ///     On hold
+    /// </summary>
+    OnHold,
 
-        /// <summary>
-        /// On hold
-        /// </summary>
-        OnHold,
+    /// <summary>
+    ///     Some mailboxes are on hold and some are not
+    /// </summary>
+    PartialHold,
 
-        /// <summary>
-        /// Some mailboxes are on hold and some are not
-        /// </summary>
-        PartialHold,
-
-        /// <summary>
-        /// The hold operation failed
-        /// </summary>
-        Failed,
-    }
+    /// <summary>
+    ///     The hold operation failed
+    /// </summary>
+    Failed,
 }

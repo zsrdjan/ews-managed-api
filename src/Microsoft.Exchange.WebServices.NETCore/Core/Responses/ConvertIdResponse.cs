@@ -23,77 +23,75 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to an individual Id conversion operation.
+/// </summary>
+public sealed class ConvertIdResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ConvertIdResponse" /> class.
+    /// </summary>
+    internal ConvertIdResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents the response to an individual Id conversion operation.
+    ///     Reads response elements from XML.
     /// </summary>
-    public sealed class ConvertIdResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        private AlternateIdBase convertedId;
+        base.ReadElementsFromXml(reader);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConvertIdResponse"/> class.
-        /// </summary>
-        internal ConvertIdResponse()
-            : base()
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.AlternateId);
+
+        var alternateIdClass = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
+
+        var aliasSeparatorIndex = alternateIdClass.IndexOf(':');
+
+        if (aliasSeparatorIndex > -1)
         {
+            alternateIdClass = alternateIdClass.Substring(aliasSeparatorIndex + 1);
         }
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+        // Alternate Id classes are responsible fro reading the AlternateId end element when necessary
+        switch (alternateIdClass)
         {
-            base.ReadElementsFromXml(reader);
-
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.AlternateId);
-
-            string alternateIdClass = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
-
-            int aliasSeparatorIndex = alternateIdClass.IndexOf(':');
-
-            if (aliasSeparatorIndex > -1)
+            case AlternateId.SchemaTypeName:
             {
-                alternateIdClass = alternateIdClass.Substring(aliasSeparatorIndex + 1);
+                ConvertedId = new AlternateId();
+                break;
             }
-
-            // Alternate Id classes are responsible fro reading the AlternateId end element when necessary
-            switch (alternateIdClass)
+            case AlternatePublicFolderId.SchemaTypeName:
             {
-                case AlternateId.SchemaTypeName:
-                    this.convertedId = new AlternateId();
-                    break;
-                case AlternatePublicFolderId.SchemaTypeName:
-                    this.convertedId = new AlternatePublicFolderId();
-                    break;
-                case AlternatePublicFolderItemId.SchemaTypeName:
-                    this.convertedId = new AlternatePublicFolderItemId();
-                    break;
-                default:
-                    EwsUtilities.Assert(
-                        false,
-                        "ConvertIdResponse.ReadElementsFromXml",
-                        string.Format("Unknown alternate Id class: {0}", alternateIdClass));
-                    break;
+                ConvertedId = new AlternatePublicFolderId();
+                break;
             }
-
-            this.convertedId.LoadAttributesFromXml(reader);
-
-            reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.AlternateId);
+            case AlternatePublicFolderItemId.SchemaTypeName:
+            {
+                ConvertedId = new AlternatePublicFolderItemId();
+                break;
+            }
+            default:
+            {
+                EwsUtilities.Assert(
+                    false,
+                    "ConvertIdResponse.ReadElementsFromXml",
+                    $"Unknown alternate Id class: {alternateIdClass}"
+                );
+                break;
+            }
         }
 
-        /// <summary>
-        /// Gets the converted Id.
-        /// </summary>
-        public AlternateIdBase ConvertedId
-        {
-            get { return this.convertedId; }
-        }
+        ConvertedId.LoadAttributesFromXml(reader);
+
+        reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.AlternateId);
     }
+
+    /// <summary>
+    ///     Gets the converted Id.
+    /// </summary>
+    public AlternateIdBase ConvertedId { get; private set; }
 }

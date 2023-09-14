@@ -23,209 +23,198 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Online Meeting Lobby Bypass options.
+/// </summary>
+[PublicAPI]
+public enum LobbyBypass
 {
     /// <summary>
-    /// Online Meeting Lobby Bypass options.
+    ///     Disabled.
     /// </summary>
-    public enum LobbyBypass
-    {
-        /// <summary>
-        /// Disabled.
-        /// </summary>
-        Disabled,
+    Disabled,
 
-        /// <summary>
-        /// Enabled for gateway participants.
-        /// </summary>
-        EnabledForGatewayParticipants,
+    /// <summary>
+    ///     Enabled for gateway participants.
+    /// </summary>
+    EnabledForGatewayParticipants,
+}
+
+/// <summary>
+///     Online Meeting Access Level options.
+/// </summary>
+[PublicAPI]
+public enum OnlineMeetingAccessLevel
+{
+    /// <summary>
+    ///     Locked.
+    /// </summary>
+    Locked,
+
+    /// <summary>
+    ///     Invited.
+    /// </summary>
+    Invited,
+
+    /// <summary>
+    ///     Internal.
+    /// </summary>
+    Internal,
+
+    /// <summary>
+    ///     Everyone.
+    /// </summary>
+    Everyone,
+}
+
+/// <summary>
+///     Online Meeting Presenters options.
+/// </summary>
+[PublicAPI]
+public enum Presenters
+{
+    /// <summary>
+    ///     Disabled.
+    /// </summary>
+    Disabled,
+
+    /// <summary>
+    ///     Internal.
+    /// </summary>
+    Internal,
+
+    /// <summary>
+    ///     Everyone.
+    /// </summary>
+    Everyone,
+}
+
+/// <summary>
+///     Represents Lync online meeting settings.
+/// </summary>
+[PublicAPI]
+public class OnlineMeetingSettings : ComplexProperty
+{
+    /// <summary>
+    ///     Email address.
+    /// </summary>
+    private LobbyBypass _lobbyBypass;
+
+    /// <summary>
+    ///     Routing type.
+    /// </summary>
+    private OnlineMeetingAccessLevel _accessLevel;
+
+    /// <summary>
+    ///     Routing type.
+    /// </summary>
+    private Presenters _presenters;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="OnlineMeetingSettings" /> class.
+    /// </summary>
+    public OnlineMeetingSettings()
+    {
     }
 
     /// <summary>
-    /// Online Meeting Access Level options.
+    ///     Initializes a new instance of the <see cref="OnlineMeetingSettings" /> class.
     /// </summary>
-    public enum OnlineMeetingAccessLevel
+    /// <param name="lobbyBypass">The address used to initialize the OnlineMeetingSettings.</param>
+    /// <param name="accessLevel">The routing type used to initialize the OnlineMeetingSettings.</param>
+    /// <param name="presenters">Mailbox type of the participant.</param>
+    internal OnlineMeetingSettings(LobbyBypass lobbyBypass, OnlineMeetingAccessLevel accessLevel, Presenters presenters)
     {
-        /// <summary>
-        /// Locked.
-        /// </summary>
-        Locked,
-
-        /// <summary>
-        /// Invited.
-        /// </summary>
-        Invited,
-
-        /// <summary>
-        /// Internal.
-        /// </summary>
-        Internal,
-
-        /// <summary>
-        /// Everyone.
-        /// </summary>
-        Everyone,
+        _lobbyBypass = lobbyBypass;
+        _accessLevel = accessLevel;
+        _presenters = presenters;
     }
 
     /// <summary>
-    /// Online Meeting Presenters options.
+    ///     Initializes a new instance of the <see cref="OnlineMeetingSettings" /> class from another OnlineMeetingSettings
+    ///     instance.
     /// </summary>
-    public enum Presenters
+    /// <param name="onlineMeetingSettings">OnlineMeetingSettings instance to copy.</param>
+    internal OnlineMeetingSettings(OnlineMeetingSettings onlineMeetingSettings)
+        : this()
     {
-        /// <summary>
-        /// Disabled.
-        /// </summary>
-        Disabled,
+        EwsUtilities.ValidateParam(onlineMeetingSettings, "OnlineMeetingSettings");
 
-        /// <summary>
-        /// Internal.
-        /// </summary>
-        Internal,
-
-        /// <summary>
-        /// Everyone.
-        /// </summary>
-        Everyone,
+        LobbyBypass = onlineMeetingSettings.LobbyBypass;
+        AccessLevel = onlineMeetingSettings.AccessLevel;
+        Presenters = onlineMeetingSettings.Presenters;
     }
-    
+
     /// <summary>
-    /// Represents Lync online meeting settings.
+    ///     Gets or sets the online meeting setting that describes whether users dialing in by phone have to wait in the lobby.
     /// </summary>
-    public class OnlineMeetingSettings : ComplexProperty
+    public LobbyBypass LobbyBypass
     {
-        /// <summary>
-        /// Email address.
-        /// </summary>
-        private LobbyBypass lobbyBypass;
+        get => _lobbyBypass;
+        set => SetFieldValue(ref _lobbyBypass, value);
+    }
 
-        /// <summary>
-        /// Routing type.
-        /// </summary>
-        private OnlineMeetingAccessLevel accessLevel;
+    /// <summary>
+    ///     Gets or sets the online meeting setting that describes access permission to the meeting.
+    /// </summary>
+    public OnlineMeetingAccessLevel AccessLevel
+    {
+        get => _accessLevel;
+        set => SetFieldValue(ref _accessLevel, value);
+    }
 
-        /// <summary>
-        /// Routing type.
-        /// </summary>
-        private Presenters presenters;
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OnlineMeetingSettings"/> class.
-        /// </summary>
-        public OnlineMeetingSettings()
-            : base()
+    /// <summary>
+    ///     Gets or sets the online meeting setting that defines the meeting leaders.
+    /// </summary>
+    public Presenters Presenters
+    {
+        get => _presenters;
+        set => SetFieldValue(ref _presenters, value);
+    }
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+    {
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OnlineMeetingSettings"/> class.
-        /// </summary>
-        /// <param name="lobbyBypass">The address used to initialize the OnlineMeetingSettings.</param>
-        /// <param name="accessLevel">The routing type used to initialize the OnlineMeetingSettings.</param>
-        /// <param name="presenters">Mailbox type of the participant.</param>
-        internal OnlineMeetingSettings(
-            LobbyBypass lobbyBypass,
-            OnlineMeetingAccessLevel accessLevel,
-            Presenters presenters)
-        {
-            this.lobbyBypass = lobbyBypass;
-            this.accessLevel = accessLevel;
-            this.presenters = presenters;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OnlineMeetingSettings"/> class from another OnlineMeetingSettings instance.
-        /// </summary>
-        /// <param name="onlineMeetingSettings">OnlineMeetingSettings instance to copy.</param>
-        internal OnlineMeetingSettings(OnlineMeetingSettings onlineMeetingSettings)
-            : this()
-        {
-            EwsUtilities.ValidateParam(onlineMeetingSettings, "OnlineMeetingSettings");
-
-            this.LobbyBypass = onlineMeetingSettings.LobbyBypass;
-            this.AccessLevel = onlineMeetingSettings.AccessLevel;
-            this.Presenters = onlineMeetingSettings.Presenters;
-        }
-
-        /// <summary>
-        /// Gets or sets the online meeting setting that describes whether users dialing in by phone have to wait in the lobby.
-        /// </summary>
-        public LobbyBypass LobbyBypass
-        {
-            get
+            case XmlElementNames.LobbyBypass:
             {
-                return this.lobbyBypass;
+                _lobbyBypass = reader.ReadElementValue<LobbyBypass>();
+                return true;
             }
-
-            set
+            case XmlElementNames.AccessLevel:
             {
-                this.SetFieldValue<LobbyBypass>(ref this.lobbyBypass, value);
+                _accessLevel = reader.ReadElementValue<OnlineMeetingAccessLevel>();
+                return true;
+            }
+            case XmlElementNames.Presenters:
+            {
+                _presenters = reader.ReadElementValue<Presenters>();
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Gets or sets the online meeting setting that describes access permission to the meeting.
-        /// </summary>
-        public OnlineMeetingAccessLevel AccessLevel
-        {
-            get
-            {
-                return this.accessLevel;
-            }
-
-            set
-            {
-                this.SetFieldValue<OnlineMeetingAccessLevel>(ref this.accessLevel, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the online meeting setting that defines the meeting leaders.
-        /// </summary>
-        public Presenters Presenters
-        {
-            get
-            {
-                return this.presenters;
-            }
-
-            set
-            {
-                this.SetFieldValue<Presenters>(ref this.presenters, value);
-            }
-        }
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
-            {
-                case XmlElementNames.LobbyBypass:
-                    this.lobbyBypass = reader.ReadElementValue<LobbyBypass>();
-                    return true;
-                case XmlElementNames.AccessLevel:
-                    this.accessLevel = reader.ReadElementValue<OnlineMeetingAccessLevel>();
-                    return true;
-                case XmlElementNames.Presenters:
-                    this.presenters = reader.ReadElementValue<Presenters>();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LobbyBypass, this.LobbyBypass);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AccessLevel, this.AccessLevel);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Presenters, this.Presenters);
-        }
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LobbyBypass, LobbyBypass);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AccessLevel, AccessLevel);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Presenters, Presenters);
     }
 }

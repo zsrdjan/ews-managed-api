@@ -23,118 +23,108 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using Microsoft.Exchange.WebServices.Data.Misc;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the base class for all recurring time zone period transitions.
+/// </summary>
+internal abstract class AbsoluteMonthTransition : TimeZoneTransition
 {
-    using Misc;
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes this transition based on the specified transition time.
+    /// </summary>
+    /// <param name="transitionTime">The transition time to initialize from.</param>
+    internal override void InitializeFromTransitionTime(TransitionTime transitionTime)
+    {
+        base.InitializeFromTransitionTime(transitionTime);
+
+        TimeOffset = transitionTime.TimeOfDay.TimeOfDay;
+        Month = transitionTime.Month;
+    }
 
     /// <summary>
-    /// Represents the base class for all recurring time zone period transitions.
+    ///     Tries to read element from XML.
     /// </summary>
-    internal abstract class AbsoluteMonthTransition : TimeZoneTransition
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private TimeSpan timeOffset;
-        private int month;
-
-        /// <summary>
-        /// Initializes this transition based on the specified transition time.
-        /// </summary>
-        /// <param name="transitionTime">The transition time to initialize from.</param>
-        internal override void InitializeFromTransitionTime(TransitionTime transitionTime)
+        if (base.TryReadElementFromXml(reader))
         {
-            base.InitializeFromTransitionTime(transitionTime);
-
-            this.timeOffset = transitionTime.TimeOfDay.TimeOfDay;
-            this.month = transitionTime.Month;
+            return true;
         }
 
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
+        switch (reader.LocalName)
         {
-            if (base.TryReadElementFromXml(reader))
+            case XmlElementNames.TimeOffset:
             {
+                TimeOffset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
                 return true;
             }
-            else
+            case XmlElementNames.Month:
             {
-                switch (reader.LocalName)
-                {
-                    case XmlElementNames.TimeOffset:
-                        this.timeOffset = EwsUtilities.XSDurationToTimeSpan(reader.ReadElementValue());
-                        return true;
-                    case XmlElementNames.Month:
-                        this.month = reader.ReadElementValue<int>();
+                Month = reader.ReadElementValue<int>();
 
-                        EwsUtilities.Assert(
-                            this.month > 0 && this.month <= 12,
-                            "AbsoluteMonthTransition.TryReadElementFromXml",
-                            "month is not in the valid 1 - 12 range.");
+                EwsUtilities.Assert(
+                    Month > 0 && Month <= 12,
+                    "AbsoluteMonthTransition.TryReadElementFromXml",
+                    "month is not in the valid 1 - 12 range."
+                );
 
-                        return true;
-                    default:
-                        return false;
-                }
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
-
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            base.WriteElementsToXml(writer);
-
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.TimeOffset,
-                EwsUtilities.TimeSpanToXSDuration(this.timeOffset));
-
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.Month,
-                this.month);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AbsoluteMonthTransition"/> class.
-        /// </summary>
-        /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-        internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition)
-            : base(timeZoneDefinition)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AbsoluteMonthTransition"/> class.
-        /// </summary>
-        /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-        /// <param name="targetPeriod">The period the transition will target.</param>
-        internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
-            : base(timeZoneDefinition, targetPeriod)
-        {
-        }
-
-        /// <summary>
-        /// Gets the time offset from midnight when the transition occurs.
-        /// </summary>
-        internal TimeSpan TimeOffset
-        {
-            get { return this.timeOffset; }
-        }
-
-        /// <summary>
-        /// Gets the month when the transition occurs.
-        /// </summary>
-        internal int Month
-        {
-            get { return this.month; }
-        }
     }
+
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        base.WriteElementsToXml(writer);
+
+        writer.WriteElementValue(
+            XmlNamespace.Types,
+            XmlElementNames.TimeOffset,
+            EwsUtilities.TimeSpanToXsDuration(TimeOffset)
+        );
+
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, Month);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition)
+        : base(timeZoneDefinition)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    /// <param name="targetPeriod">The period the transition will target.</param>
+    internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
+        : base(timeZoneDefinition, targetPeriod)
+    {
+    }
+
+    /// <summary>
+    ///     Gets the time offset from midnight when the transition occurs.
+    /// </summary>
+    internal TimeSpan TimeOffset { get; private set; }
+
+    /// <summary>
+    ///     Gets the month when the transition occurs.
+    /// </summary>
+    internal int Month { get; private set; }
 }

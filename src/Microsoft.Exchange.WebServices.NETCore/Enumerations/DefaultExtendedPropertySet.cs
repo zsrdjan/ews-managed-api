@@ -23,60 +23,58 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the default sets of extended properties.
+/// </summary>
+[PublicAPI]
+public enum DefaultExtendedPropertySet
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The Meeting extended property set.
+    /// </summary>
+    Meeting,
 
     /// <summary>
-    /// Defines the default sets of extended properties.
+    ///     The Appointment extended property set.
     /// </summary>
-    public enum DefaultExtendedPropertySet
-    {
-        /// <summary>
-        /// The Meeting extended property set.
-        /// </summary>
-        Meeting,
+    Appointment,
 
-        /// <summary>
-        /// The Appointment extended property set.
-        /// </summary>
-        Appointment,
+    /// <summary>
+    ///     The Common extended property set.
+    /// </summary>
+    Common,
 
-        /// <summary>
-        /// The Common extended property set.
-        /// </summary>
-        Common,
+    /// <summary>
+    ///     The PublicStrings extended property set.
+    /// </summary>
+    PublicStrings,
 
-        /// <summary>
-        /// The PublicStrings extended property set.
-        /// </summary>
-        PublicStrings,
+    /// <summary>
+    ///     The Address extended property set.
+    /// </summary>
+    Address,
 
-        /// <summary>
-        /// The Address extended property set.
-        /// </summary>
-        Address,
+    /// <summary>
+    ///     The InternetHeaders extended property set.
+    /// </summary>
+    InternetHeaders,
 
-        /// <summary>
-        /// The InternetHeaders extended property set.
-        /// </summary>
-        InternetHeaders,
+    /// <summary>
+    ///     The CalendarAssistants extended property set.
+    /// </summary>
+    CalendarAssistant,
 
-        /// <summary>
-        /// The CalendarAssistants extended property set.
-        /// </summary>
-        CalendarAssistant,
+    /// <summary>
+    ///     The UnifiedMessaging extended property set.
+    /// </summary>
+    UnifiedMessaging,
 
-        /// <summary>
-        /// The UnifiedMessaging extended property set.
-        /// </summary>
-        UnifiedMessaging,
-
-        /// <summary>
-        /// The Task extended property set.
-        /// </summary>
-        Task
-    }
+    /// <summary>
+    ///     The Task extended property set.
+    /// </summary>
+    Task,
 }

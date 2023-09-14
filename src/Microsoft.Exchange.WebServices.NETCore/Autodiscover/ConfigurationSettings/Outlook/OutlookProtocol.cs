@@ -23,506 +23,607 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+using System.ComponentModel;
+using System.Xml;
 
-    using ConverterDictionary = System.Collections.Generic.Dictionary<UserSettingName, System.Func<OutlookProtocol, object>>;
-    using ConverterPair = System.Collections.Generic.KeyValuePair<UserSettingName, System.Func<OutlookProtocol, object>>;
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents a supported Outlook protocol in an Outlook configurations settings account.
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+internal sealed class OutlookProtocol
+{
+    #region Private constants
+
+    private const string EXCH = "EXCH";
+    private const string EXPR = "EXPR";
+    private const string WEB = "WEB";
+
+    #endregion
+
+
+    #region Private static fields
 
     /// <summary>
-    /// Represents a supported Outlook protocol in an Outlook configurations settings account.
+    ///     Converters to translate common Outlook protocol settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    internal sealed class OutlookProtocol
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookProtocol, object>>>
+        CommonProtocolSettings = new(
+            () =>
+            {
+                return new Dictionary<UserSettingName, Func<OutlookProtocol, object>>
+                {
+                    // @formatter:off
+                    { UserSettingName.EcpDeliveryReportUrlFragment, p => p._ecpUrlMt },
+                    { UserSettingName.EcpEmailSubscriptionsUrlFragment, p => p._ecpUrlAggr },
+                    { UserSettingName.EcpPublishingUrlFragment, p => p._ecpUrlPublish },
+                    { UserSettingName.EcpPhotoUrlFragment, p => p._ecpUrlPhoto },
+                    { UserSettingName.EcpRetentionPolicyTagsUrlFragment, p => p._ecpUrlRet },
+                    { UserSettingName.EcpTextMessagingUrlFragment, p => p._ecpUrlSms },
+                    { UserSettingName.EcpVoicemailUrlFragment, p => p._ecpUrlUm },
+                    { UserSettingName.EcpConnectUrlFragment, p => p._ecpUrlConnect },
+                    { UserSettingName.EcpTeamMailboxUrlFragment, p => p._ecpUrlTm },
+                    { UserSettingName.EcpTeamMailboxCreatingUrlFragment, p => p._ecpUrlTmCreating },
+                    { UserSettingName.EcpTeamMailboxEditingUrlFragment, p => p._ecpUrlTmEditing },
+                    { UserSettingName.EcpExtensionInstallationUrlFragment, p => p._ecpUrlExtInstall },
+                    { UserSettingName.SiteMailboxCreationURL, p => p._siteMailboxCreationUrl },
+                    // @formatter:on
+                };
+            }
+        );
+
+    /// <summary>
+    ///     Converters to translate internal (EXCH) Outlook protocol settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance.
+    /// </summary>
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookProtocol, object>>>
+        InternalProtocolSettings = new(
+            () =>
+            {
+                return new Dictionary<UserSettingName, Func<OutlookProtocol, object>>
+                {
+                    // @formatter:off
+                    { UserSettingName.ActiveDirectoryServer, p => p._activeDirectoryServer },
+                    { UserSettingName.CrossOrganizationSharingEnabled, p => p._sharingEnabled.ToString() },
+                    { UserSettingName.InternalEcpUrl, p => p._ecpUrl },
+                    { UserSettingName.InternalEcpDeliveryReportUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlMt) },
+                    { UserSettingName.InternalEcpEmailSubscriptionsUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlAggr) },
+                    { UserSettingName.InternalEcpPublishingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlPublish) },
+                    { UserSettingName.InternalEcpPhotoUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlPhoto) },
+                    { UserSettingName.InternalEcpRetentionPolicyTagsUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlRet) },
+                    { UserSettingName.InternalEcpTextMessagingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlSms) },
+                    { UserSettingName.InternalEcpVoicemailUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlUm) },
+                    { UserSettingName.InternalEcpConnectUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlConnect) },
+                    { UserSettingName.InternalEcpTeamMailboxUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTm) },
+                    { UserSettingName.InternalEcpTeamMailboxCreatingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTmCreating) },
+                    { UserSettingName.InternalEcpTeamMailboxEditingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTmEditing) },
+                    { UserSettingName.InternalEcpTeamMailboxHidingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTmHiding) },
+                    { UserSettingName.InternalEcpExtensionInstallationUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlExtInstall) },
+                    { UserSettingName.InternalEwsUrl, p => p._exchangeWebServicesUrl ?? p._availabilityServiceUrl },
+                    { UserSettingName.InternalEmwsUrl, p => p._exchangeManagementWebServicesUrl },
+                    { UserSettingName.InternalMailboxServerDN, p => p._serverDn },
+                    { UserSettingName.InternalRpcClientServer, p => p._server },
+                    { UserSettingName.InternalOABUrl, p => p._offlineAddressBookUrl },
+                    { UserSettingName.InternalUMUrl, p => p._unifiedMessagingUrl },
+                    { UserSettingName.MailboxDN, p => p._mailboxDn },
+                    { UserSettingName.PublicFolderServer, p => p._publicFolderServer },
+                    { UserSettingName.InternalServerExclusiveConnect, p => p._serverExclusiveConnect },
+                    // @formatter:on
+                };
+            }
+        );
+
+    /// <summary>
+    ///     Converters to translate external (EXPR) Outlook protocol settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance.
+    /// </summary>
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookProtocol, object>>>
+        ExternalProtocolSettings = new(
+            () =>
+            {
+                return new Dictionary<UserSettingName, Func<OutlookProtocol, object>>
+                {
+                    // @formatter:off
+                    { UserSettingName.ExternalEcpDeliveryReportUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlRet) },
+                    { UserSettingName.ExternalEcpEmailSubscriptionsUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlAggr) },
+                    { UserSettingName.ExternalEcpPublishingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlPublish) },
+                    { UserSettingName.ExternalEcpPhotoUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlPhoto) },
+                    { UserSettingName.ExternalEcpRetentionPolicyTagsUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlRet) },
+                    { UserSettingName.ExternalEcpTextMessagingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlSms) },
+                    { UserSettingName.ExternalEcpUrl, p => p._ecpUrl },
+                    { UserSettingName.ExternalEcpVoicemailUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlUm) },
+                    { UserSettingName.ExternalEcpConnectUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlConnect) },
+                    { UserSettingName.ExternalEcpTeamMailboxUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTm) },
+                    { UserSettingName.ExternalEcpTeamMailboxCreatingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTmCreating) },
+                    { UserSettingName.ExternalEcpTeamMailboxEditingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTmEditing) },
+                    { UserSettingName.ExternalEcpTeamMailboxHidingUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlTmHiding) },
+                    { UserSettingName.ExternalEcpExtensionInstallationUrl, p => p.ConvertEcpFragmentToUrl(p._ecpUrlExtInstall) },
+                    { UserSettingName.ExternalEwsUrl, p => p._exchangeWebServicesUrl ?? p._availabilityServiceUrl },
+                    { UserSettingName.ExternalEmwsUrl, p => p._exchangeManagementWebServicesUrl },
+                    { UserSettingName.ExternalMailboxServer, p => p._server },
+                    { UserSettingName.ExternalMailboxServerAuthenticationMethods, p => p._authPackage },
+                    { UserSettingName.ExternalMailboxServerRequiresSSL, p => p._sslEnabled.ToString() },
+                    { UserSettingName.ExternalOABUrl, p => p._offlineAddressBookUrl },
+                    { UserSettingName.ExternalUMUrl, p => p._unifiedMessagingUrl },
+                    { UserSettingName.ExchangeRpcUrl, p => p._exchangeRpcUrl },
+                    { UserSettingName.EwsPartnerUrl, p => p._exchangeWebServicesPartnerUrl },
+                    { UserSettingName.ExternalServerExclusiveConnect, p => p._serverExclusiveConnect.ToString() },
+                    { UserSettingName.CertPrincipalName, p => p._certPrincipalName },
+                    { UserSettingName.GroupingInformation, p => p._groupingInformation },
+                    // @formatter:on
+                };
+            }
+        );
+
+    /// <summary>
+    ///     Merged converter dictionary for translating internal (EXCH) Outlook protocol settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance.
+    /// </summary>
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookProtocol, object>>>
+        InternalProtocolConverterDictionary = new(
+            () =>
+            {
+                var results = new Dictionary<UserSettingName, Func<OutlookProtocol, object>>();
+                CommonProtocolSettings.Member.ToList().ForEach(kv => results.Add(kv.Key, kv.Value));
+                InternalProtocolSettings.Member.ToList().ForEach(kv => results.Add(kv.Key, kv.Value));
+                return results;
+            }
+        );
+
+    /// <summary>
+    ///     Merged converter dictionary for translating external (EXPR) Outlook protocol settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance.
+    /// </summary>
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookProtocol, object>>>
+        ExternalProtocolConverterDictionary = new(
+            () =>
+            {
+                var results = new Dictionary<UserSettingName, Func<OutlookProtocol, object>>();
+                CommonProtocolSettings.Member.ToList().ForEach(kv => results.Add(kv.Key, kv.Value));
+                ExternalProtocolSettings.Member.ToList().ForEach(kv => results.Add(kv.Key, kv.Value));
+                return results;
+            }
+        );
+
+    /// <summary>
+    ///     Converters to translate Web (WEB) Outlook protocol settings.
+    ///     Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance.
+    /// </summary>
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookProtocol, object>>>
+        WebProtocolConverterDictionary = new(
+            () =>
+            {
+                return new Dictionary<UserSettingName, Func<OutlookProtocol, object>>
+                {
+                    {
+                        UserSettingName.InternalWebClientUrls, p => p._internalOutlookWebAccessUrls
+                    },
+                    {
+                        UserSettingName.ExternalWebClientUrls, p => p._externalOutlookWebAccessUrls
+                    },
+                };
+            }
+        );
+
+    /// <summary>
+    ///     The collection of available user settings for all OutlookProtocol types.
+    /// </summary>
+    private static readonly LazyMember<List<UserSettingName>> availableUserSettings = new(
+        () =>
+        {
+            var results = new List<UserSettingName>();
+            results.AddRange(CommonProtocolSettings.Member.Keys);
+            results.AddRange(InternalProtocolSettings.Member.Keys);
+            results.AddRange(ExternalProtocolSettings.Member.Keys);
+            results.AddRange(WebProtocolConverterDictionary.Member.Keys);
+            return results;
+        }
+    );
+
+    /// <summary>
+    ///     Map Outlook protocol name to type.
+    /// </summary>
+    private static readonly LazyMember<Dictionary<string, OutlookProtocolType>> ProtocolNameToTypeMap = new(
+        () => new Dictionary<string, OutlookProtocolType>
+        {
+            // @formatter:off
+            { EXCH, OutlookProtocolType.Rpc },
+            { EXPR, OutlookProtocolType.RpcOverHttp },
+            { WEB, OutlookProtocolType.Web },
+            // @formatter:on
+        }
+    );
+
+    #endregion
+
+
+    #region Private fields
+
+    private string _activeDirectoryServer;
+    private string _authPackage;
+    private string _availabilityServiceUrl;
+    private string _ecpUrl;
+    private string _ecpUrlAggr;
+    private string _ecpUrlMt;
+    private string _ecpUrlPublish;
+    private string _ecpUrlPhoto;
+    private string _ecpUrlConnect;
+    private string _ecpUrlRet;
+    private string _ecpUrlSms;
+    private string _ecpUrlUm;
+    private string _ecpUrlTm;
+    private string _ecpUrlTmCreating;
+    private string _ecpUrlTmEditing;
+    private string _ecpUrlTmHiding;
+    private string _siteMailboxCreationUrl;
+    private string _ecpUrlExtInstall;
+    private string _exchangeWebServicesUrl;
+    private string _exchangeManagementWebServicesUrl;
+    private string _mailboxDn;
+    private string _offlineAddressBookUrl;
+    private string _exchangeRpcUrl;
+    private string _exchangeWebServicesPartnerUrl;
+    private string _publicFolderServer;
+    private string _server;
+    private string _serverDn;
+    private string _unifiedMessagingUrl;
+    private bool _sharingEnabled;
+    private bool _sslEnabled;
+    private bool _serverExclusiveConnect;
+    private string _certPrincipalName;
+    private string _groupingInformation;
+    private readonly WebClientUrlCollection _externalOutlookWebAccessUrls;
+    private readonly WebClientUrlCollection _internalOutlookWebAccessUrls;
+
+    #endregion
+
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="OutlookProtocol" /> class.
+    /// </summary>
+    internal OutlookProtocol()
     {
-        #region Private constants
-        private const string EXCH = "EXCH";
-        private const string EXPR = "EXPR";
-        private const string WEB = "WEB";
-        #endregion
+        _internalOutlookWebAccessUrls = new WebClientUrlCollection();
+        _externalOutlookWebAccessUrls = new WebClientUrlCollection();
+    }
 
-        #region Private static fields
-        /// <summary>
-        /// Converters to translate common Outlook protocol settings.
-        /// Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance. 
-        /// </summary>
-        private static LazyMember<ConverterDictionary> commonProtocolSettings = new LazyMember<ConverterDictionary>(
-            () =>
-            {
-                var results = new ConverterDictionary();
-                results.Add(UserSettingName.EcpDeliveryReportUrlFragment,        p => p.ecpUrlMt);
-                results.Add(UserSettingName.EcpEmailSubscriptionsUrlFragment,    p => p.ecpUrlAggr);
-                results.Add(UserSettingName.EcpPublishingUrlFragment,            p => p.ecpUrlPublish);
-                results.Add(UserSettingName.EcpPhotoUrlFragment,                 p => p.ecpUrlPhoto);
-                results.Add(UserSettingName.EcpRetentionPolicyTagsUrlFragment,   p => p.ecpUrlRet);
-                results.Add(UserSettingName.EcpTextMessagingUrlFragment,         p => p.ecpUrlSms);
-                results.Add(UserSettingName.EcpVoicemailUrlFragment,             p => p.ecpUrlUm);
-                results.Add(UserSettingName.EcpConnectUrlFragment,               p => p.ecpUrlConnect);
-                results.Add(UserSettingName.EcpTeamMailboxUrlFragment,           p => p.ecpUrlTm);
-                results.Add(UserSettingName.EcpTeamMailboxCreatingUrlFragment,   p => p.ecpUrlTmCreating);
-                results.Add(UserSettingName.EcpTeamMailboxEditingUrlFragment,    p => p.ecpUrlTmEditing);
-                results.Add(UserSettingName.EcpExtensionInstallationUrlFragment, p => p.ecpUrlExtInstall);
-                results.Add(UserSettingName.SiteMailboxCreationURL,              p => p.siteMailboxCreationURL);
-                return results;
-            });
-
-        /// <summary>
-        /// Converters to translate internal (EXCH) Outlook protocol settings.
-        /// Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance. 
-        /// </summary>
-        private static LazyMember<ConverterDictionary> internalProtocolSettings = new LazyMember<ConverterDictionary>(
-            () =>
-            {
-                var results = new ConverterDictionary();
-                results.Add(UserSettingName.ActiveDirectoryServer,             p => p.activeDirectoryServer);
-                results.Add(UserSettingName.CrossOrganizationSharingEnabled,   p => p.sharingEnabled.ToString());
-                results.Add(UserSettingName.InternalEcpUrl,                    p => p.ecpUrl);
-                results.Add(UserSettingName.InternalEcpDeliveryReportUrl,      p => p.ConvertEcpFragmentToUrl(p.ecpUrlMt));
-                results.Add(UserSettingName.InternalEcpEmailSubscriptionsUrl,  p => p.ConvertEcpFragmentToUrl(p.ecpUrlAggr));
-                results.Add(UserSettingName.InternalEcpPublishingUrl,          p => p.ConvertEcpFragmentToUrl(p.ecpUrlPublish));
-                results.Add(UserSettingName.InternalEcpPhotoUrl,               p => p.ConvertEcpFragmentToUrl(p.ecpUrlPhoto));
-                results.Add(UserSettingName.InternalEcpRetentionPolicyTagsUrl, p => p.ConvertEcpFragmentToUrl(p.ecpUrlRet));
-                results.Add(UserSettingName.InternalEcpTextMessagingUrl,       p => p.ConvertEcpFragmentToUrl(p.ecpUrlSms));
-                results.Add(UserSettingName.InternalEcpVoicemailUrl,           p => p.ConvertEcpFragmentToUrl(p.ecpUrlUm));
-                results.Add(UserSettingName.InternalEcpConnectUrl,             p => p.ConvertEcpFragmentToUrl(p.ecpUrlConnect));
-                results.Add(UserSettingName.InternalEcpTeamMailboxUrl,         p => p.ConvertEcpFragmentToUrl(p.ecpUrlTm));
-                results.Add(UserSettingName.InternalEcpTeamMailboxCreatingUrl, p => p.ConvertEcpFragmentToUrl(p.ecpUrlTmCreating));
-                results.Add(UserSettingName.InternalEcpTeamMailboxEditingUrl,  p => p.ConvertEcpFragmentToUrl(p.ecpUrlTmEditing));
-                results.Add(UserSettingName.InternalEcpTeamMailboxHidingUrl,   p => p.ConvertEcpFragmentToUrl(p.ecpUrlTmHiding));
-                results.Add(UserSettingName.InternalEcpExtensionInstallationUrl, p => p.ConvertEcpFragmentToUrl(p.ecpUrlExtInstall)); 
-                results.Add(UserSettingName.InternalEwsUrl, p => p.exchangeWebServicesUrl ?? p.availabilityServiceUrl);
-                results.Add(UserSettingName.InternalEmwsUrl, p => p.exchangeManagementWebServicesUrl);
-                results.Add(UserSettingName.InternalMailboxServerDN, p => p.serverDN);
-                results.Add(UserSettingName.InternalRpcClientServer,           p => p.server);
-                results.Add(UserSettingName.InternalOABUrl,                    p => p.offlineAddressBookUrl);
-                results.Add(UserSettingName.InternalUMUrl,                     p => p.unifiedMessagingUrl);
-                results.Add(UserSettingName.MailboxDN,                         p => p.mailboxDN);
-                results.Add(UserSettingName.PublicFolderServer,                p => p.publicFolderServer);
-                results.Add(UserSettingName.InternalServerExclusiveConnect,    p => p.serverExclusiveConnect);
-                return results;
-            });
-
-        /// <summary>
-        /// Converters to translate external (EXPR) Outlook protocol settings.
-        /// Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance. 
-        /// </summary>
-        private static LazyMember<ConverterDictionary> externalProtocolSettings = new LazyMember<ConverterDictionary>(
-            () =>
-            {
-                var results = new ConverterDictionary();
-                results.Add(UserSettingName.ExternalEcpDeliveryReportUrl,               p => p.ConvertEcpFragmentToUrl(p.ecpUrlRet));
-                results.Add(UserSettingName.ExternalEcpEmailSubscriptionsUrl,           p => p.ConvertEcpFragmentToUrl(p.ecpUrlAggr));
-                results.Add(UserSettingName.ExternalEcpPublishingUrl,                   p => p.ConvertEcpFragmentToUrl(p.ecpUrlPublish));
-                results.Add(UserSettingName.ExternalEcpPhotoUrl,                        p => p.ConvertEcpFragmentToUrl(p.ecpUrlPhoto));
-                results.Add(UserSettingName.ExternalEcpRetentionPolicyTagsUrl,          p => p.ConvertEcpFragmentToUrl(p.ecpUrlRet));
-                results.Add(UserSettingName.ExternalEcpTextMessagingUrl,                p => p.ConvertEcpFragmentToUrl(p.ecpUrlSms));
-                results.Add(UserSettingName.ExternalEcpUrl,                             p => p.ecpUrl);
-                results.Add(UserSettingName.ExternalEcpVoicemailUrl,                    p => p.ConvertEcpFragmentToUrl(p.ecpUrlUm));
-                results.Add(UserSettingName.ExternalEcpConnectUrl,                      p => p.ConvertEcpFragmentToUrl(p.ecpUrlConnect));
-                results.Add(UserSettingName.ExternalEcpTeamMailboxUrl,                  p => p.ConvertEcpFragmentToUrl(p.ecpUrlTm));
-                results.Add(UserSettingName.ExternalEcpTeamMailboxCreatingUrl,          p => p.ConvertEcpFragmentToUrl(p.ecpUrlTmCreating));
-                results.Add(UserSettingName.ExternalEcpTeamMailboxEditingUrl,           p => p.ConvertEcpFragmentToUrl(p.ecpUrlTmEditing));
-                results.Add(UserSettingName.ExternalEcpTeamMailboxHidingUrl,            p => p.ConvertEcpFragmentToUrl(p.ecpUrlTmHiding));
-                results.Add(UserSettingName.ExternalEcpExtensionInstallationUrl,        p => p.ConvertEcpFragmentToUrl(p.ecpUrlExtInstall));
-                results.Add(UserSettingName.ExternalEwsUrl,                             p => p.exchangeWebServicesUrl ?? p.availabilityServiceUrl);
-                results.Add(UserSettingName.ExternalEmwsUrl,                            p => p.exchangeManagementWebServicesUrl);
-                results.Add(UserSettingName.ExternalMailboxServer,                      p => p.server);
-                results.Add(UserSettingName.ExternalMailboxServerAuthenticationMethods, p => p.authPackage);
-                results.Add(UserSettingName.ExternalMailboxServerRequiresSSL,           p => p.sslEnabled.ToString());
-                results.Add(UserSettingName.ExternalOABUrl,                             p => p.offlineAddressBookUrl);
-                results.Add(UserSettingName.ExternalUMUrl,                              p => p.unifiedMessagingUrl);
-                results.Add(UserSettingName.ExchangeRpcUrl,                             p => p.exchangeRpcUrl);
-                results.Add(UserSettingName.EwsPartnerUrl,                              p => p.exchangeWebServicesPartnerUrl);
-                results.Add(UserSettingName.ExternalServerExclusiveConnect,             p => p.serverExclusiveConnect.ToString());
-                results.Add(UserSettingName.CertPrincipalName,                          p => p.certPrincipalName);
-                results.Add(UserSettingName.GroupingInformation,                        p => p.groupingInformation);
-                return results;
-            });
-
-        /// <summary>
-        /// Merged converter dictionary for translating internal (EXCH) Outlook protocol settings.
-        /// Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance. 
-        /// </summary>
-        private static LazyMember<ConverterDictionary> internalProtocolConverterDictionary = new LazyMember<ConverterDictionary>(
-            () =>
-            {
-                var results = new ConverterDictionary();
-                commonProtocolSettings.Member.ToList<ConverterPair>().ForEach((kv) => results.Add(kv.Key, kv.Value));
-                internalProtocolSettings.Member.ToList<ConverterPair>().ForEach((kv) => results.Add(kv.Key, kv.Value));
-                return results;
-            });
-
-        /// <summary>
-        /// Merged converter dictionary for translating external (EXPR) Outlook protocol settings.
-        /// Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance. 
-        /// </summary>
-        private static LazyMember<ConverterDictionary> externalProtocolConverterDictionary = new LazyMember<ConverterDictionary>(
-            () =>
-            {
-                var results = new ConverterDictionary();
-                commonProtocolSettings.Member.ToList<ConverterPair>().ForEach((kv) => results.Add(kv.Key, kv.Value));
-                externalProtocolSettings.Member.ToList<ConverterPair>().ForEach((kv) => results.Add(kv.Key, kv.Value));
-                return results;
-            });
-
-        /// <summary>
-        /// Converters to translate Web (WEB) Outlook protocol settings.
-        /// Each entry maps to a lambda expression used to get the matching property from the OutlookProtocol instance. 
-        /// </summary>
-        private static LazyMember<ConverterDictionary> webProtocolConverterDictionary = new LazyMember<ConverterDictionary>(
-            () =>
-            {
-                var results = new ConverterDictionary();
-                results.Add(UserSettingName.InternalWebClientUrls, p => p.internalOutlookWebAccessUrls);
-                results.Add(UserSettingName.ExternalWebClientUrls, p => p.externalOutlookWebAccessUrls);
-                return results;
-            });
-
-        /// <summary>
-        /// The collection of available user settings for all OutlookProtocol types.
-        /// </summary>
-        private static LazyMember<List<UserSettingName>> availableUserSettings = new LazyMember<List<UserSettingName>>(
-            () =>
-            {
-                var results = new List<UserSettingName>();
-                results.AddRange(commonProtocolSettings.Member.Keys);
-                results.AddRange(internalProtocolSettings.Member.Keys);
-                results.AddRange(externalProtocolSettings.Member.Keys);
-                results.AddRange(webProtocolConverterDictionary.Member.Keys);
-                return results;
-            });
-
-        /// <summary>
-        /// Map Outlook protocol name to type.
-        /// </summary>
-        private static LazyMember<Dictionary<string, OutlookProtocolType>> protocolNameToTypeMap = new LazyMember<Dictionary<string, OutlookProtocolType>>(
-            delegate()
-            {
-                Dictionary<string, OutlookProtocolType> results = new Dictionary<string, OutlookProtocolType>();
-                results.Add(OutlookProtocol.EXCH, OutlookProtocolType.Rpc);
-                results.Add(OutlookProtocol.EXPR, OutlookProtocolType.RpcOverHttp);
-                results.Add(OutlookProtocol.WEB, OutlookProtocolType.Web);
-                return results;
-            });
-        #endregion
-
-        #region Private fields
-        private string activeDirectoryServer;
-        private string authPackage;
-        private string availabilityServiceUrl;
-        private string ecpUrl;
-        private string ecpUrlAggr;
-        private string ecpUrlMt;
-        private string ecpUrlPublish;
-        private string ecpUrlPhoto;
-        private string ecpUrlConnect;
-        private string ecpUrlRet;
-        private string ecpUrlSms;
-        private string ecpUrlUm;
-        private string ecpUrlTm;
-        private string ecpUrlTmCreating;
-        private string ecpUrlTmEditing;
-        private string ecpUrlTmHiding;
-        private string siteMailboxCreationURL;
-        private string ecpUrlExtInstall;
-        private string exchangeWebServicesUrl;
-        private string exchangeManagementWebServicesUrl;
-        private string mailboxDN;
-        private string offlineAddressBookUrl;
-        private string exchangeRpcUrl;
-        private string exchangeWebServicesPartnerUrl;
-        private string publicFolderServer;
-        private string server;
-        private string serverDN;
-        private string unifiedMessagingUrl;
-        private bool sharingEnabled;
-        private bool sslEnabled;
-        private bool serverExclusiveConnect;
-        private string certPrincipalName;
-        private string groupingInformation;
-        private WebClientUrlCollection externalOutlookWebAccessUrls;
-        private WebClientUrlCollection internalOutlookWebAccessUrls;
-        #endregion
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OutlookProtocol"/> class.
-        /// </summary>
-        internal OutlookProtocol()
+    /// <summary>
+    ///     Loads from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal void LoadFromXml(EwsXmlReader reader)
+    {
+        do
         {
-            this.internalOutlookWebAccessUrls = new WebClientUrlCollection();
-            this.externalOutlookWebAccessUrls = new WebClientUrlCollection();
-        }
+            reader.Read();
 
-        /// <summary>
-        /// Loads from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal void LoadFromXml(EwsXmlReader reader)
-        {
-            do
+            if (reader.NodeType == XmlNodeType.Element)
             {
-                reader.Read();
-
-                if (reader.NodeType == XmlNodeType.Element)
+                switch (reader.LocalName)
                 {
-                    switch (reader.LocalName)
+                    case XmlElementNames.Type:
                     {
-                        case XmlElementNames.Type:
-                            this.ProtocolType = OutlookProtocol.ProtocolNameToType(reader.ReadElementValue());
-                            break;
-                        case XmlElementNames.AuthPackage:
-                            this.authPackage = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.Server:
-                            this.server = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.ServerDN:
-                            this.serverDN = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.ServerVersion:
-                            // just read it out
-                            reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.AD:
-                            this.activeDirectoryServer = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.MdbDN:
-                            this.mailboxDN = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EWSUrl:
-                            this.exchangeWebServicesUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EmwsUrl:
-                            this.exchangeManagementWebServicesUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.ASUrl:
-                            this.availabilityServiceUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.OOFUrl:
-                            // just read it out
-                            reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.UMUrl:
-                            this.unifiedMessagingUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.OABUrl:
-                            this.offlineAddressBookUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.PublicFolderServer:
-                            this.publicFolderServer = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.Internal:
-                            OutlookProtocol.LoadWebClientUrlsFromXml(reader, this.internalOutlookWebAccessUrls, reader.LocalName);
-                            break;
-                        case XmlElementNames.External:
-                            OutlookProtocol.LoadWebClientUrlsFromXml(reader, this.externalOutlookWebAccessUrls, reader.LocalName);
-                            break;
-                        case XmlElementNames.Ssl:
-                            string sslStr = reader.ReadElementValue();
-                            this.sslEnabled = sslStr.Equals("On", StringComparison.OrdinalIgnoreCase);
-                            break;
-                        case XmlElementNames.SharingUrl:
-                            this.sharingEnabled = reader.ReadElementValue().Length > 0;
-                            break;
-                        case XmlElementNames.EcpUrl:
-                            this.ecpUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_um:
-                            this.ecpUrlUm = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_aggr:
-                            this.ecpUrlAggr = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_sms:
-                            this.ecpUrlSms = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_mt:
-                            this.ecpUrlMt = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_ret:
-                            this.ecpUrlRet = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_publish:
-                            this.ecpUrlPublish = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_photo:
-                            this.ecpUrlPhoto = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.ExchangeRpcUrl:
-                            this.exchangeRpcUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EwsPartnerUrl:
-                            this.exchangeWebServicesPartnerUrl = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_connect:
-                            this.ecpUrlConnect = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_tm:
-                            this.ecpUrlTm = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_tmCreating:
-                            this.ecpUrlTmCreating = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_tmEditing:
-                            this.ecpUrlTmEditing = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_tmHiding:
-                            this.ecpUrlTmHiding = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.SiteMailboxCreationURL:
-                            this.siteMailboxCreationURL = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.EcpUrl_extinstall:
-                            this.ecpUrlExtInstall = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.ServerExclusiveConnect:
-                            string serverExclusiveConnectStr = reader.ReadElementValue();
-                            this.serverExclusiveConnect = serverExclusiveConnectStr.Equals("On", StringComparison.OrdinalIgnoreCase);
-                            break;
-                        case XmlElementNames.CertPrincipalName:
-                            this.certPrincipalName = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.GroupingInformation:
-                            this.groupingInformation = reader.ReadElementValue();
-                            break;
-                        default:
-                            reader.SkipCurrentElement();
-                            break;
+                        ProtocolType = ProtocolNameToType(reader.ReadElementValue());
+                        break;
                     }
-                }
-            }
-            while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.Protocol));
-        }
-
-        /// <summary>
-        /// Convert protocol name to protocol type.
-        /// </summary>
-        /// <param name="protocolName">Name of the protocol.</param>
-        /// <returns>OutlookProtocolType</returns>
-        private static OutlookProtocolType ProtocolNameToType(string protocolName)
-        {
-            OutlookProtocolType protocolType;
-            if (!protocolNameToTypeMap.Member.TryGetValue(protocolName, out protocolType))
-            {
-                protocolType = OutlookProtocolType.Unknown;
-            }
-            return protocolType;
-        }
-
-        /// <summary>
-        /// Loads web client urls from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="webClientUrls">The web client urls.</param>
-        /// <param name="elementName">Name of the element.</param>
-        private static void LoadWebClientUrlsFromXml(EwsXmlReader reader, WebClientUrlCollection webClientUrls, string elementName)
-        {
-            do
-            {
-                reader.Read();
-
-                if (reader.NodeType == XmlNodeType.Element)
-                {
-                    switch (reader.LocalName)
+                    case XmlElementNames.AuthPackage:
                     {
-                        case XmlElementNames.OWAUrl:
-                            string authMethod = reader.ReadAttributeValue(XmlAttributeNames.AuthenticationMethod);
-                            string owaUrl = reader.ReadElementValue();
-                            WebClientUrl webClientUrl = new WebClientUrl(authMethod, owaUrl);
-                            webClientUrls.Urls.Add(webClientUrl);
-                            break;
-                        default:
-                            reader.SkipCurrentElement();
-                            break;
+                        _authPackage = reader.ReadElementValue();
+                        break;
                     }
-                }
-            }
-            while (!reader.IsEndElement(XmlNamespace.NotSpecified, elementName));
-        }
-
-        /// <summary>
-        /// Convert ECP fragment to full ECP URL.
-        /// </summary>
-        /// <param name="fragment">The fragment.</param>
-        /// <returns>Full URL string (or null if either portion is empty.</returns>
-        private string ConvertEcpFragmentToUrl(string fragment)
-        {
-            return (string.IsNullOrEmpty(this.ecpUrl) || string.IsNullOrEmpty(fragment)) ? null : (this.ecpUrl + fragment);
-        }
-
-        /// <summary>
-        /// Convert OutlookProtocol to GetUserSettings response.
-        /// </summary>
-        /// <param name="requestedSettings">The requested settings.</param>
-        /// <param name="response">The response.</param>
-        internal void ConvertToUserSettings(
-            List<UserSettingName> requestedSettings,
-            GetUserSettingsResponse response)
-        {
-            if (this.ConverterDictionary != null)
-            {
-                // In English: collect converters that are contained in the requested settings.
-                var converterQuery = from converter in this.ConverterDictionary
-                                     where requestedSettings.Contains(converter.Key)
-                                     select converter;
-
-                foreach (ConverterPair kv in converterQuery)
-                {
-                    object value = kv.Value(this);
-                    if (value != null)
+                    case XmlElementNames.Server:
                     {
-                        response.Settings[kv.Key] = value;
+                        _server = reader.ReadElementValue();
+                        break;
                     }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the type of the protocol.
-        /// </summary>
-        /// <value>The type of the protocol.</value>
-        internal OutlookProtocolType ProtocolType
-        {
-            get; set; 
-        }
-
-        /// <summary>
-        /// Gets the converter dictionary for protocol type.
-        /// </summary>
-        /// <value>The converter dictionary.</value>
-        private ConverterDictionary ConverterDictionary
-        {
-            get
-            {
-                switch (this.ProtocolType)
-                {
-                    case OutlookProtocolType.Rpc:
-                        return internalProtocolConverterDictionary.Member;
-                    case OutlookProtocolType.RpcOverHttp:
-                        return externalProtocolConverterDictionary.Member;
-                    case OutlookProtocolType.Web:
-                        return webProtocolConverterDictionary.Member;
+                    case XmlElementNames.ServerDN:
+                    {
+                        _serverDn = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.ServerVersion:
+                    {
+                        // just read it out
+                        reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.AD:
+                    {
+                        _activeDirectoryServer = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.MdbDN:
+                    {
+                        _mailboxDn = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EWSUrl:
+                    {
+                        _exchangeWebServicesUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EmwsUrl:
+                    {
+                        _exchangeManagementWebServicesUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.ASUrl:
+                    {
+                        _availabilityServiceUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.OOFUrl:
+                    {
+                        // just read it out
+                        reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.UMUrl:
+                    {
+                        _unifiedMessagingUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.OABUrl:
+                    {
+                        _offlineAddressBookUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.PublicFolderServer:
+                    {
+                        _publicFolderServer = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.Internal:
+                    {
+                        LoadWebClientUrlsFromXml(reader, _internalOutlookWebAccessUrls, reader.LocalName);
+                        break;
+                    }
+                    case XmlElementNames.External:
+                    {
+                        LoadWebClientUrlsFromXml(reader, _externalOutlookWebAccessUrls, reader.LocalName);
+                        break;
+                    }
+                    case XmlElementNames.Ssl:
+                    {
+                        var sslStr = reader.ReadElementValue();
+                        _sslEnabled = sslStr.Equals("On", StringComparison.OrdinalIgnoreCase);
+                        break;
+                    }
+                    case XmlElementNames.SharingUrl:
+                    {
+                        _sharingEnabled = reader.ReadElementValue().Length > 0;
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl:
+                    {
+                        _ecpUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_um:
+                    {
+                        _ecpUrlUm = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_aggr:
+                    {
+                        _ecpUrlAggr = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_sms:
+                    {
+                        _ecpUrlSms = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_mt:
+                    {
+                        _ecpUrlMt = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_ret:
+                    {
+                        _ecpUrlRet = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_publish:
+                    {
+                        _ecpUrlPublish = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_photo:
+                    {
+                        _ecpUrlPhoto = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.ExchangeRpcUrl:
+                    {
+                        _exchangeRpcUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EwsPartnerUrl:
+                    {
+                        _exchangeWebServicesPartnerUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_connect:
+                    {
+                        _ecpUrlConnect = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_tm:
+                    {
+                        _ecpUrlTm = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_tmCreating:
+                    {
+                        _ecpUrlTmCreating = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_tmEditing:
+                    {
+                        _ecpUrlTmEditing = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_tmHiding:
+                    {
+                        _ecpUrlTmHiding = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.SiteMailboxCreationURL:
+                    {
+                        _siteMailboxCreationUrl = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.EcpUrl_extinstall:
+                    {
+                        _ecpUrlExtInstall = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.ServerExclusiveConnect:
+                    {
+                        var serverExclusiveConnectStr = reader.ReadElementValue();
+                        _serverExclusiveConnect = serverExclusiveConnectStr.Equals(
+                            "On",
+                            StringComparison.OrdinalIgnoreCase
+                        );
+                        break;
+                    }
+                    case XmlElementNames.CertPrincipalName:
+                    {
+                        _certPrincipalName = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.GroupingInformation:
+                    {
+                        _groupingInformation = reader.ReadElementValue();
+                        break;
+                    }
                     default:
-                        return null;
+                    {
+                        reader.SkipCurrentElement();
+                        break;
+                    }
                 }
             }
+        } while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.Protocol));
+    }
+
+    /// <summary>
+    ///     Convert protocol name to protocol type.
+    /// </summary>
+    /// <param name="protocolName">Name of the protocol.</param>
+    /// <returns>OutlookProtocolType</returns>
+    private static OutlookProtocolType ProtocolNameToType(string protocolName)
+    {
+        if (!ProtocolNameToTypeMap.Member.TryGetValue(protocolName, out var protocolType))
+        {
+            protocolType = OutlookProtocolType.Unknown;
         }
 
-        /// <summary>
-        /// Gets the available user settings.
-        /// </summary>
-        internal static List<UserSettingName> AvailableUserSettings
+        return protocolType;
+    }
+
+    /// <summary>
+    ///     Loads web client urls from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <param name="webClientUrls">The web client urls.</param>
+    /// <param name="elementName">Name of the element.</param>
+    private static void LoadWebClientUrlsFromXml(
+        EwsXmlReader reader,
+        WebClientUrlCollection webClientUrls,
+        string elementName
+    )
+    {
+        do
         {
-            get
+            reader.Read();
+
+            if (reader.NodeType == XmlNodeType.Element)
             {
-                return availableUserSettings.Member;
+                switch (reader.LocalName)
+                {
+                    case XmlElementNames.OWAUrl:
+                    {
+                        var authMethod = reader.ReadAttributeValue(XmlAttributeNames.AuthenticationMethod);
+                        var owaUrl = reader.ReadElementValue();
+                        var webClientUrl = new WebClientUrl(authMethod, owaUrl);
+                        webClientUrls.Urls.Add(webClientUrl);
+                        break;
+                    }
+                    default:
+                    {
+                        reader.SkipCurrentElement();
+                        break;
+                    }
+                }
+            }
+        } while (!reader.IsEndElement(XmlNamespace.NotSpecified, elementName));
+    }
+
+    /// <summary>
+    ///     Convert ECP fragment to full ECP URL.
+    /// </summary>
+    /// <param name="fragment">The fragment.</param>
+    /// <returns>Full URL string (or null if either portion is empty.</returns>
+    private string? ConvertEcpFragmentToUrl(string fragment)
+    {
+        return string.IsNullOrEmpty(_ecpUrl) || string.IsNullOrEmpty(fragment) ? null : _ecpUrl + fragment;
+    }
+
+    /// <summary>
+    ///     Convert OutlookProtocol to GetUserSettings response.
+    /// </summary>
+    /// <param name="requestedSettings">The requested settings.</param>
+    /// <param name="response">The response.</param>
+    internal void ConvertToUserSettings(List<UserSettingName> requestedSettings, GetUserSettingsResponse response)
+    {
+        if (ConverterDictionary != null)
+        {
+            // In English: collect converters that are contained in the requested settings.
+            var converterQuery = from converter in ConverterDictionary
+                where requestedSettings.Contains(converter.Key)
+                select converter;
+
+            foreach (var kv in converterQuery)
+            {
+                var value = kv.Value(this);
+                if (value != null)
+                {
+                    response.Settings[kv.Key] = value;
+                }
             }
         }
     }
+
+    /// <summary>
+    ///     Gets the type of the protocol.
+    /// </summary>
+    /// <value>The type of the protocol.</value>
+    internal OutlookProtocolType ProtocolType { get; set; }
+
+    /// <summary>
+    ///     Gets the converter dictionary for protocol type.
+    /// </summary>
+    /// <value>The converter dictionary.</value>
+    private Dictionary<UserSettingName, Func<OutlookProtocol, object>>? ConverterDictionary
+    {
+        get =>
+            ProtocolType switch
+            {
+                OutlookProtocolType.Rpc => InternalProtocolConverterDictionary.Member,
+                OutlookProtocolType.RpcOverHttp => ExternalProtocolConverterDictionary.Member,
+                OutlookProtocolType.Web => WebProtocolConverterDictionary.Member,
+                _ => null,
+            };
+    }
+
+    /// <summary>
+    ///     Gets the available user settings.
+    /// </summary>
+    internal static List<UserSettingName> AvailableUserSettings => availableUserSettings.Member;
 }

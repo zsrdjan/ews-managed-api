@@ -23,173 +23,152 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the complete name of a contact.
+/// </summary>
+[PublicAPI]
+public sealed class CompleteName : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Text;
+    #region Properties
 
     /// <summary>
-    /// Represents the complete name of a contact.
+    ///     Gets the contact's title.
     /// </summary>
-    public sealed class CompleteName : ComplexProperty
+    public string Title { get; private set; }
+
+    /// <summary>
+    ///     Gets the given name (first name) of the contact.
+    /// </summary>
+    public string GivenName { get; private set; }
+
+    /// <summary>
+    ///     Gets the middle name of the contact.
+    /// </summary>
+    public string MiddleName { get; private set; }
+
+    /// <summary>
+    ///     Gets the surname (last name) of the contact.
+    /// </summary>
+    public string Surname { get; private set; }
+
+    /// <summary>
+    ///     Gets the suffix of the contact.
+    /// </summary>
+    public string Suffix { get; private set; }
+
+    /// <summary>
+    ///     Gets the initials of the contact.
+    /// </summary>
+    public string Initials { get; private set; }
+
+    /// <summary>
+    ///     Gets the full name of the contact.
+    /// </summary>
+    public string FullName { get; private set; }
+
+    /// <summary>
+    ///     Gets the nickname of the contact.
+    /// </summary>
+    public string NickName { get; private set; }
+
+    /// <summary>
+    ///     Gets the Yomi given name (first name) of the contact.
+    /// </summary>
+    public string YomiGivenName { get; private set; }
+
+    /// <summary>
+    ///     Gets the Yomi surname (last name) of the contact.
+    /// </summary>
+    public string YomiSurname { get; private set; }
+
+    #endregion
+
+
+    /// <summary>
+    ///     Tries to read element from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <returns>True if element was read.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private string title;
-        private string givenName;
-        private string middleName;
-        private string surname;
-        private string suffix;
-        private string initials;
-        private string fullName;
-        private string nickname;
-        private string yomiGivenName;
-        private string yomiSurname;
-
-        #region Properties
-
-        /// <summary>
-        /// Gets the contact's title.
-        /// </summary>
-        public string Title
+        switch (reader.LocalName)
         {
-            get { return this.title; }
-        }
-
-        /// <summary>
-        /// Gets the given name (first name) of the contact.
-        /// </summary>
-        public string GivenName
-        {
-            get { return this.givenName; }
-        }
-
-        /// <summary>
-        /// Gets the middle name of the contact.
-        /// </summary>
-        public string MiddleName
-        {
-            get { return this.middleName; }
-        }
-
-        /// <summary>
-        /// Gets the surname (last name) of the contact.
-        /// </summary>
-        public string Surname
-        {
-            get { return this.surname; }
-        }
-
-        /// <summary>
-        /// Gets the suffix of the contact.
-        /// </summary>
-        public string Suffix
-        {
-            get { return this.suffix; }
-        }
-
-        /// <summary>
-        /// Gets the initials of the contact.
-        /// </summary>
-        public string Initials
-        {
-            get { return this.initials; }
-        }
-
-        /// <summary>
-        /// Gets the full name of the contact.
-        /// </summary>
-        public string FullName
-        {
-            get { return this.fullName; }
-        }
-
-        /// <summary>
-        /// Gets the nickname of the contact.
-        /// </summary>
-        public string NickName
-        {
-            get { return this.nickname; }
-        }
-
-        /// <summary>
-        /// Gets the Yomi given name (first name) of the contact.
-        /// </summary>
-        public string YomiGivenName
-        {
-            get { return this.yomiGivenName; }
-        }
-
-        /// <summary>
-        /// Gets the Yomi surname (last name) of the contact.
-        /// </summary>
-        public string YomiSurname
-        {
-            get { return this.yomiSurname; }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Tries to read element from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>True if element was read.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.Title:
             {
-                case XmlElementNames.Title:
-                    this.title = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.FirstName:
-                    this.givenName = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.MiddleName:
-                    this.middleName = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.LastName:
-                    this.surname = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.Suffix:
-                    this.suffix = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.Initials:
-                    this.initials = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.FullName:
-                    this.fullName = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.NickName:
-                    this.nickname = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.YomiFirstName:
-                    this.yomiGivenName = reader.ReadElementValue();
-                    return true;
-                case XmlElementNames.YomiLastName:
-                    this.yomiSurname = reader.ReadElementValue();
-                    return true;
-                default:
-                    return false;
+                Title = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.FirstName:
+            {
+                GivenName = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.MiddleName:
+            {
+                MiddleName = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.LastName:
+            {
+                Surname = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.Suffix:
+            {
+                Suffix = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.Initials:
+            {
+                Initials = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.FullName:
+            {
+                FullName = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.NickName:
+            {
+                NickName = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.YomiFirstName:
+            {
+                YomiGivenName = reader.ReadElementValue();
+                return true;
+            }
+            case XmlElementNames.YomiLastName:
+            {
+                YomiSurname = reader.ReadElementValue();
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
+    }
 
-        /// <summary>
-        /// Writes the elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Title, this.Title);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FirstName, this.GivenName);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MiddleName, this.MiddleName);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LastName, this.Surname);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Suffix, this.Suffix);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Initials, this.Initials);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FullName, this.FullName);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.NickName, this.NickName);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.YomiFirstName, this.YomiGivenName);
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.YomiLastName, this.YomiSurname);
-        }
+    /// <summary>
+    ///     Writes the elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Title, Title);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FirstName, GivenName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MiddleName, MiddleName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LastName, Surname);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Suffix, Suffix);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Initials, Initials);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FullName, FullName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.NickName, NickName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.YomiFirstName, YomiGivenName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.YomiLastName, YomiSurname);
     }
 }

@@ -23,57 +23,45 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Xml;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a ExecuteDiagnosticMethod operation
+/// </summary>
+internal sealed class ExecuteDiagnosticMethodResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Xml;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExecuteDiagnosticMethodResponse" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ExecuteDiagnosticMethodResponse(ExchangeService service)
+    {
+        EwsUtilities.Assert(service != null, "ExecuteDiagnosticMethodResponse.ctor", "service is null");
+    }
 
     /// <summary>
-    /// Represents the response to a ExecuteDiagnosticMethod operation
+    ///     Reads response elements from XML.
     /// </summary>
-    internal sealed class ExecuteDiagnosticMethodResponse : ServiceResponse
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExecuteDiagnosticMethodResponse"/> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        internal ExecuteDiagnosticMethodResponse(ExchangeService service)
-            : base()
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ReturnValue);
+
+        using (var returnValueReader = reader.GetXmlReaderForNode())
         {
-            EwsUtilities.Assert(
-                service != null,
-                "ExecuteDiagnosticMethodResponse.ctor",
-                "service is null");
+            ReturnValue = new SafeXmlDocument();
+            ReturnValue.Load(returnValueReader);
         }
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ReturnValue);
-
-            using (XmlReader returnValueReader = reader.GetXmlReaderForNode())
-            {
-                this.ReturnValue = new SafeXmlDocument();
-                this.ReturnValue.Load(returnValueReader);
-            }
-
-            reader.SkipCurrentElement();
-            reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.ReturnValue);
-        }
-
-        /// <summary>
-        /// Gets the return value.
-        /// </summary>
-        /// <value>The return value.</value>
-        internal XmlDocument ReturnValue
-        {
-            get;
-            private set;
-        }
+        reader.SkipCurrentElement();
+        reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.ReturnValue);
     }
+
+    /// <summary>
+    ///     Gets the return value.
+    /// </summary>
+    /// <value>The return value.</value>
+    internal XmlDocument ReturnValue { get; private set; }
 }

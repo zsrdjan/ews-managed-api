@@ -23,40 +23,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the type of a meeting attendee.
+/// </summary>
+[PublicAPI]
+public enum MeetingAttendeeType
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     The attendee is the organizer of the meeting.
+    /// </summary>
+    Organizer,
 
     /// <summary>
-    /// Defines the type of a meeting attendee.
+    ///     The attendee is required.
     /// </summary>
-    public enum MeetingAttendeeType
-    {
-        /// <summary>
-        /// The attendee is the organizer of the meeting.
-        /// </summary>
-        Organizer,
+    Required,
 
-        /// <summary>
-        /// The attendee is required.
-        /// </summary>
-        Required,
+    /// <summary>
+    ///     The attendee is optional.
+    /// </summary>
+    Optional,
 
-        /// <summary>
-        /// The attendee is optional.
-        /// </summary>
-        Optional,
+    /// <summary>
+    ///     The attendee is a room.
+    /// </summary>
+    Room,
 
-        /// <summary>
-        /// The attendee is a room.
-        /// </summary>
-        Room,
-
-        /// <summary>
-        /// The attendee is a resource.
-        /// </summary>
-        Resource
-    }
+    /// <summary>
+    ///     The attendee is a resource.
+    /// </summary>
+    Resource,
 }

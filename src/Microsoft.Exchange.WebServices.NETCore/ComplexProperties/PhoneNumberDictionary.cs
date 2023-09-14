@@ -23,97 +23,90 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents a dictionary of phone numbers.
+/// </summary>
+[PublicAPI]
+[EditorBrowsable(EditorBrowsableState.Never)]
+public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, PhoneNumberEntry>
 {
-    using System.ComponentModel;
+    /// <summary>
+    ///     Gets the field URI.
+    /// </summary>
+    /// <returns>Field URI.</returns>
+    internal override string GetFieldURI()
+    {
+        return "contacts:PhoneNumber";
+    }
 
     /// <summary>
-    /// Represents a dictionary of phone numbers.
+    ///     Creates instance of dictionary entry.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, PhoneNumberEntry>
+    /// <returns>New instance.</returns>
+    internal override PhoneNumberEntry CreateEntryInstance()
     {
-        /// <summary>
-        /// Gets the field URI.
-        /// </summary>
-        /// <returns>Field URI.</returns>
-        internal override string GetFieldURI()
-        {
-            return "contacts:PhoneNumber";
-        }
+        return new PhoneNumberEntry();
+    }
 
-        /// <summary>
-        /// Creates instance of dictionary entry.
-        /// </summary>
-        /// <returns>New instance.</returns>
-        internal override PhoneNumberEntry CreateEntryInstance()
-        {
-            return new PhoneNumberEntry();
-        }
+    /// <summary>
+    ///     Gets or sets the phone number at the specified key.
+    /// </summary>
+    /// <param name="key">The key of the phone number to get or set.</param>
+    /// <returns>The phone number at the specified key.</returns>
+    public string? this[PhoneNumberKey key]
+    {
+        get => Entries[key].PhoneNumber;
 
-        /// <summary>
-        /// Gets or sets the phone number at the specified key.
-        /// </summary>
-        /// <param name="key">The key of the phone number to get or set.</param>
-        /// <returns>The phone number at the specified key.</returns>
-        public string this[PhoneNumberKey key]
+        set
         {
-            get
+            if (value == null)
             {
-                return this.Entries[key].PhoneNumber;
-            }
-
-            set
-            {
-                if (value == null)
-                {
-                    this.InternalRemove(key);
-                }
-                else
-                {
-                    PhoneNumberEntry entry;
-
-                    if (this.Entries.TryGetValue(key, out entry))
-                    {
-                        entry.PhoneNumber = value;
-                        this.Changed();
-                    }
-                    else
-                    {
-                        entry = new PhoneNumberEntry(key, value);
-                        this.InternalAdd(entry);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Tries to get the phone number associated with the specified key.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <param name="phoneNumber">
-        /// When this method returns, contains the phone number associated with the specified key,
-        /// if the key is found; otherwise, null. This parameter is passed uninitialized.
-        /// </param>
-        /// <returns>
-        /// true if the Dictionary contains a phone number associated with the specified key; otherwise, false.
-        /// </returns>
-        public bool TryGetValue(PhoneNumberKey key, out string phoneNumber)
-        {
-            PhoneNumberEntry entry = null;
-
-            if (this.Entries.TryGetValue(key, out entry))
-            {
-                phoneNumber = entry.PhoneNumber;
-
-                return true;
+                InternalRemove(key);
             }
             else
             {
-                phoneNumber = null;
-
-                return false;
+                if (Entries.TryGetValue(key, out var entry))
+                {
+                    entry.PhoneNumber = value;
+                    Changed();
+                }
+                else
+                {
+                    entry = new PhoneNumberEntry(key, value);
+                    InternalAdd(entry);
+                }
             }
         }
+    }
+
+    /// <summary>
+    ///     Tries to get the phone number associated with the specified key.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="phoneNumber">
+    ///     When this method returns, contains the phone number associated with the specified key,
+    ///     if the key is found; otherwise, null. This parameter is passed uninitialized.
+    /// </param>
+    /// <returns>
+    ///     true if the Dictionary contains a phone number associated with the specified key; otherwise, false.
+    /// </returns>
+    public bool TryGetValue(PhoneNumberKey key, [MaybeNullWhen(false)] out string phoneNumber)
+    {
+        if (Entries.TryGetValue(key, out var entry))
+        {
+            phoneNumber = entry.PhoneNumber;
+
+            return true;
+        }
+
+        phoneNumber = null;
+        return false;
     }
 }

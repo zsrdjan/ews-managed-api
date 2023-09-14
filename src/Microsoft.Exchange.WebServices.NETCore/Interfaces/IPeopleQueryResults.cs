@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,23 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the results of an Persona search operation.
+/// </summary>
+[PublicAPI]
+public interface IPeopleQueryResults
 {
-    using System.Collections.Generic;
+    /// <summary>
+    ///     Gets the Personas that were found by the search operation.
+    /// </summary>
+    IList<Persona> Personas { get; }
 
     /// <summary>
-    /// Represents the results of an Persona search operation.
+    ///     Gets the ID for this FindPeople call, which can be used for feedback
     /// </summary>
-    public interface IPeopleQueryResults
-    {
-        /// <summary>
-        /// Gets the Personas that were found by the search operation.
-        /// </summary>
-        IList<Persona> Personas { get; }
-
-        /// <summary>
-        /// Gets the ID for this FindPeople call, which can be used for feedback
-        /// </summary>
-        string TransactionId { get; }
-    }
+    string TransactionId { get; }
 }

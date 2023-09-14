@@ -23,54 +23,51 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.Xml;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents a user setting that is a collection of alternate mailboxes.
+/// </summary>
+[PublicAPI]
+public sealed class AlternateMailboxCollection
 {
-    using System.Collections.Generic;
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AlternateMailboxCollection" /> class.
+    /// </summary>
+    internal AlternateMailboxCollection()
+    {
+    }
 
     /// <summary>
-    /// Represents a user setting that is a collection of alternate mailboxes.
+    ///     Loads instance of AlternateMailboxCollection from XML.
     /// </summary>
-    public sealed class AlternateMailboxCollection
+    /// <param name="reader">The reader.</param>
+    /// <returns>AlternateMailboxCollection</returns>
+    internal static AlternateMailboxCollection LoadFromXml(EwsXmlReader reader)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AlternateMailboxCollection"/> class.
-        /// </summary>
-        internal AlternateMailboxCollection()
-        {
-            this.Entries = new List<AlternateMailbox>();
-        }
+        var instance = new AlternateMailboxCollection();
 
-        /// <summary>
-        /// Loads instance of AlternateMailboxCollection from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <returns>AlternateMailboxCollection</returns>
-        internal static AlternateMailboxCollection LoadFromXml(EwsXmlReader reader)
+        do
         {
-            AlternateMailboxCollection instance = new AlternateMailboxCollection();
+            reader.Read();
 
-            do
+            if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.AlternateMailbox)
             {
-                reader.Read();
-
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.AlternateMailbox))
-                {
-                    instance.Entries.Add(AlternateMailbox.LoadFromXml(reader));
-                }
+                instance.Entries.Add(AlternateMailbox.LoadFromXml(reader));
             }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.AlternateMailboxes));
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.AlternateMailboxes));
 
-            return instance;
-        }
-
-        /// <summary>
-        /// Gets the collection of alternate mailboxes.
-        /// </summary>
-        public List<AlternateMailbox> Entries
-        {
-            get; private set;
-        }
+        return instance;
     }
+
+    /// <summary>
+    ///     Gets the collection of alternate mailboxes.
+    /// </summary>
+    public List<AlternateMailbox> Entries { get; private set; } = new();
 }

@@ -23,31 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Defines the type of ExtensionInstallScope.
+/// </summary>
+[PublicAPI]
+public enum ExtensionInstallScope
 {
     /// <summary>
-    /// Defines the type of ExtensionInstallScope.
+    ///     Unassigned
     /// </summary>
-    public enum ExtensionInstallScope
-    {
-        /// <summary>
-        /// Unassigned
-        /// </summary>
-        None = 0,
+    None = 0,
 
-        /// <summary>
-        /// User
-        /// </summary>
-        User = 1,
+    /// <summary>
+    ///     User
+    /// </summary>
+    User = 1,
 
-        /// <summary>
-        /// Organization
-        /// </summary>
-        Organization = 2,
+    /// <summary>
+    ///     Organization
+    /// </summary>
+    Organization = 2,
 
-        /// <summary>
-        /// Exchange Default
-        /// </summary>
-        Default = 3,
-    }
+    /// <summary>
+    ///     Exchange Default
+    /// </summary>
+    Default = 3,
 }

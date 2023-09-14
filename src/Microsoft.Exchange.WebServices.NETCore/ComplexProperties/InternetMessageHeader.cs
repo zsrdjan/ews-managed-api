@@ -23,88 +23,86 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an Internet message header.
+/// </summary>
+[PublicAPI]
+public sealed class InternetMessageHeader : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    private string _name;
+    private string _value;
 
     /// <summary>
-    /// Represents an Internet message header.
+    ///     Initializes a new instance of the <see cref="InternetMessageHeader" /> class.
     /// </summary>
-    public sealed class InternetMessageHeader : ComplexProperty
+    internal InternetMessageHeader()
     {
-        private string name;
-        private string value;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InternetMessageHeader"/> class.
-        /// </summary>
-        internal InternetMessageHeader()
-        {
-        }
+    /// <summary>
+    ///     Reads the attributes from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
+    {
+        _name = reader.ReadAttributeValue(XmlAttributeNames.HeaderName);
+    }
 
-        /// <summary>
-        /// Reads the attributes from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
-        {
-            this.name = reader.ReadAttributeValue(XmlAttributeNames.HeaderName);
-        }
+    /// <summary>
+    ///     Reads the text value from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
+    {
+        _value = reader.ReadValue();
+    }
 
-        /// <summary>
-        /// Reads the text value from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
-        {
-            this.value = reader.ReadValue();
-        }
+    /// <summary>
+    ///     Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteAttributeValue(XmlAttributeNames.HeaderName, Name);
+    }
 
-        /// <summary>
-        /// Writes the attributes to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteAttributeValue(XmlAttributeNames.HeaderName, this.Name);
-        }
+    /// <summary>
+    ///     Writes elements to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteValue(Value, Name);
+    }
 
-        /// <summary>
-        /// Writes elements to XML.
-        /// </summary>
-        /// <param name="writer">The writer.</param>
-        internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
-        {
-            writer.WriteValue(this.Value, this.Name);
-        }
+    /// <summary>
+    ///     Obtains a string representation of the header.
+    /// </summary>
+    /// <returns>The string representation of the header.</returns>
+    public override string ToString()
+    {
+        return $"{Name}={Value}";
+    }
 
-        /// <summary>
-        /// Obtains a string representation of the header.
-        /// </summary>
-        /// <returns>The string representation of the header.</returns>
-        public override string ToString()
-        {
-            return string.Format("{0}={1}", this.Name, this.Value);
-        }
+    /// <summary>
+    ///     The name of the header.
+    /// </summary>
+    public string Name
+    {
+        get => _name;
+        set => SetFieldValue(ref _name, value);
+    }
 
-        /// <summary>
-        /// The name of the header.
-        /// </summary>
-        public string Name
-        {
-            get { return this.name; }
-            set { this.SetFieldValue<string>(ref this.name, value); }
-        }
-
-        /// <summary>
-        /// The value of the header.
-        /// </summary>
-        public string Value
-        {
-            get { return this.value; }
-            set { this.SetFieldValue<string>(ref this.value, value); }
-        }
+    /// <summary>
+    ///     The value of the header.
+    /// </summary>
+    public string Value
+    {
+        get => _value;
+        set => SetFieldValue(ref _value, value);
     }
 }

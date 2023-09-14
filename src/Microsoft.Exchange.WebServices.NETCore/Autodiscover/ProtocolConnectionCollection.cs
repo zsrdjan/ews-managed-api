@@ -23,64 +23,57 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.Xml;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents a user setting that is a collection of protocol connection.
+/// </summary>
+[PublicAPI]
+public sealed class ProtocolConnectionCollection
 {
-    using System.Collections.Generic;
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ProtocolConnectionCollection" /> class.
+    /// </summary>
+    internal ProtocolConnectionCollection()
+    {
+    }
 
     /// <summary>
-    /// Represents a user setting that is a collection of protocol connection.
+    ///     Read user setting with ProtocolConnectionCollection value.
     /// </summary>
-    public sealed class ProtocolConnectionCollection
+    /// <param name="reader">EwsServiceXmlReader</param>
+    internal static ProtocolConnectionCollection LoadFromXml(EwsXmlReader reader)
     {
-        private List<ProtocolConnection> connections;
+        var value = new ProtocolConnectionCollection();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProtocolConnectionCollection"/> class.
-        /// </summary>
-        internal ProtocolConnectionCollection()
+        do
         {
-            this.connections = new List<ProtocolConnection>();
-        }
+            reader.Read();
 
-        /// <summary>
-        /// Read user setting with ProtocolConnectionCollection value.
-        /// </summary>
-        /// <param name="reader">EwsServiceXmlReader</param>
-        internal static ProtocolConnectionCollection LoadFromXml(EwsXmlReader reader)
-        {
-            ProtocolConnectionCollection value = new ProtocolConnectionCollection();
-            ProtocolConnection connection = null;
-
-            do
+            if (reader.NodeType == XmlNodeType.Element)
             {
-                reader.Read();
-
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.LocalName == XmlElementNames.ProtocolConnection)
                 {
-                    if (reader.LocalName == XmlElementNames.ProtocolConnection)
+                    var connection = ProtocolConnection.LoadFromXml(reader);
+                    if (connection != null)
                     {
-                        connection = ProtocolConnection.LoadFromXml(reader);
-                        if (connection != null)
-                        {
-                            value.Connections.Add(connection);
-                        }
+                        value.Connections.Add(connection);
                     }
                 }
             }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.ProtocolConnections));
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.ProtocolConnections));
 
-            return value;
-        }
-
-        /// <summary>
-        /// Gets the Connections.
-        /// </summary>
-        public List<ProtocolConnection> Connections
-        {
-            get { return this.connections; }
-            internal set { this.connections = value; }
-        }
+        return value;
     }
+
+    /// <summary>
+    ///     Gets the Connections.
+    /// </summary>
+    public List<ProtocolConnection> Connections { get; internal set; } = new();
 }

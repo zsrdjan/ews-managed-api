@@ -23,87 +23,77 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an event in a calendar.
+/// </summary>
+[PublicAPI]
+public sealed class CalendarEvent : ComplexProperty
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CalendarEvent" /> class.
+    /// </summary>
+    internal CalendarEvent()
+    {
+    }
 
     /// <summary>
-    /// Represents an event in a calendar.
+    ///     Gets the start date and time of the event.
     /// </summary>
-    public sealed class CalendarEvent : ComplexProperty
+    public DateTime StartTime { get; private set; }
+
+    /// <summary>
+    ///     Gets the end date and time of the event.
+    /// </summary>
+    public DateTime EndTime { get; private set; }
+
+    /// <summary>
+    ///     Gets the free/busy status associated with the event.
+    /// </summary>
+    public LegacyFreeBusyStatus FreeBusyStatus { get; private set; }
+
+    /// <summary>
+    ///     Gets the details of the calendar event. Details is null if the user
+    ///     requsting them does no have the appropriate rights.
+    /// </summary>
+    public CalendarEventDetails Details { get; private set; }
+
+    /// <summary>
+    ///     Attempts to read the element at the reader's current position.
+    /// </summary>
+    /// <param name="reader">The reader used to read the element.</param>
+    /// <returns>True if the element was read, false otherwise.</returns>
+    internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        private DateTime startTime;
-        private DateTime endTime;
-        private LegacyFreeBusyStatus freeBusyStatus;
-        private CalendarEventDetails details;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CalendarEvent"/> class.
-        /// </summary>
-        internal CalendarEvent()
-            : base()
+        switch (reader.LocalName)
         {
-        }
-
-        /// <summary>
-        /// Gets the start date and time of the event.
-        /// </summary>
-        public DateTime StartTime
-        {
-            get { return this.startTime; }
-        }
-
-        /// <summary>
-        /// Gets the end date and time of the event.
-        /// </summary>
-        public DateTime EndTime
-        {
-            get { return this.endTime; }
-        }
-
-        /// <summary>
-        /// Gets the free/busy status associated with the event.
-        /// </summary>
-        public LegacyFreeBusyStatus FreeBusyStatus
-        {
-            get { return this.freeBusyStatus; }
-        }
-
-        /// <summary>
-        /// Gets the details of the calendar event. Details is null if the user
-        /// requsting them does no have the appropriate rights.
-        /// </summary>
-        public CalendarEventDetails Details
-        {
-            get { return this.details; }
-        }
-
-        /// <summary>
-        /// Attempts to read the element at the reader's current position.
-        /// </summary>
-        /// <param name="reader">The reader used to read the element.</param>
-        /// <returns>True if the element was read, false otherwise.</returns>
-        internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.StartTime:
             {
-                case XmlElementNames.StartTime:
-                    this.startTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
-                    return true;
-                case XmlElementNames.EndTime:
-                    this.endTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
-                    return true;
-                case XmlElementNames.BusyType:
-                    this.freeBusyStatus = reader.ReadElementValue<LegacyFreeBusyStatus>();
-                    return true;
-                case XmlElementNames.CalendarEventDetails:
-                    this.details = new CalendarEventDetails();
-                    this.details.LoadFromXml(reader, reader.LocalName);
-                    return true;
-                default:
-                    return false;
+                StartTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
+                return true;
+            }
+            case XmlElementNames.EndTime:
+            {
+                EndTime = reader.ReadElementValueAsUnbiasedDateTimeScopedToServiceTimeZone();
+                return true;
+            }
+            case XmlElementNames.BusyType:
+            {
+                FreeBusyStatus = reader.ReadElementValue<LegacyFreeBusyStatus>();
+                return true;
+            }
+            case XmlElementNames.CalendarEventDetails:
+            {
+                Details = new CalendarEventDetails();
+                Details.LoadFromXml(reader, reader.LocalName);
+                return true;
+            }
+            default:
+            {
+                return false;
             }
         }
     }

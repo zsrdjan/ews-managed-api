@@ -23,124 +23,108 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents the response to a subscription event retrieval operation.
+/// </summary>
+internal sealed class GetStreamingEventsResponse : ServiceResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+    private readonly HangingServiceRequestBase _request;
 
     /// <summary>
-    /// Represents the response to a subscription event retrieval operation.
+    ///     Enumeration of ConnectionStatus that can be returned by the server.
     /// </summary>
-    internal sealed class GetStreamingEventsResponse : ServiceResponse
+    private enum ConnectionStatus
     {
-        private GetStreamingEventsResults results = new GetStreamingEventsResults();
-        private HangingServiceRequestBase request;
+        /// <summary>
+        ///     Simple heartbeat
+        /// </summary>
+        Ok,
 
         /// <summary>
-        /// Enumeration of ConnectionStatus that can be returned by the server.
+        ///     Server is closing the connection.
         /// </summary>
-        private enum ConnectionStatus
-        {
-            /// <summary>
-            /// Simple heartbeat
-            /// </summary>
-            OK,
+        Closed,
+    }
 
-            /// <summary>
-            /// Server is closing the connection.
-            /// </summary>
-            Closed
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetStreamingEventsResponse" /> class.
+    /// </summary>
+    /// <param name="request">Request to disconnect when we get a close message.</param>
+    internal GetStreamingEventsResponse(HangingServiceRequestBase request)
+    {
+        ErrorSubscriptionIds = new List<string>();
+        _request = request;
+    }
+
+    /// <summary>
+    ///     Reads response elements from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
+    {
+        base.ReadElementsFromXml(reader);
+
+        reader.Read();
+
+        if (reader.LocalName == XmlElementNames.Notifications)
+        {
+            Results.LoadFromXml(reader);
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetStreamingEventsResponse"/> class.
-        /// </summary>
-        /// <param name="request">Request to disconnect when we get a close message.</param>
-        internal GetStreamingEventsResponse(HangingServiceRequestBase request)
-            : base()
+        else if (reader.LocalName == XmlElementNames.ConnectionStatus)
         {
-            this.ErrorSubscriptionIds = new List<string>();
-            this.request = request;
-        }
+            var connectionStatus = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.ConnectionStatus);
 
-        /// <summary>
-        /// Reads response elements from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal override void ReadElementsFromXml(EwsServiceXmlReader reader)
-        {
-            base.ReadElementsFromXml(reader);
-
-            reader.Read();
-
-            if (reader.LocalName == XmlElementNames.Notifications)
+            if (connectionStatus.Equals(ConnectionStatus.Closed.ToString()))
             {
-                this.results.LoadFromXml(reader);
+                _request.Disconnect(HangingRequestDisconnectReason.Clean, null);
             }
-            else if (reader.LocalName == XmlElementNames.ConnectionStatus)
-            {
-                string connectionStatus = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.ConnectionStatus);
-
-                if (connectionStatus.Equals(ConnectionStatus.Closed.ToString()))
-                {
-                    this.request.Disconnect(HangingRequestDisconnectReason.Clean, null);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Loads extra error details from XML
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="xmlElementName">The current element name of the extra error details.</param>
-        /// <returns>
-        /// True if the expected extra details is loaded;
-        /// False if the element name does not match the expected element.
-        /// </returns>
-        internal override bool LoadExtraErrorDetailsFromXml(EwsServiceXmlReader reader, string xmlElementName)
-        {
-            bool baseReturnVal = base.LoadExtraErrorDetailsFromXml(reader, xmlElementName);
-
-            if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.ErrorSubscriptionIds))
-            {
-                do
-                {
-                    reader.Read();
-
-                    if (reader.NodeType == System.Xml.XmlNodeType.Element &&
-                        reader.LocalName == XmlElementNames.SubscriptionId)
-                    {
-                        this.ErrorSubscriptionIds.Add(
-                            reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId));
-                    }
-                }
-                while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.ErrorSubscriptionIds));
-
-                return true;
-            }
-            else
-            {
-                return baseReturnVal;
-            }
-        }
-
-        /// <summary>
-        /// Gets event results from subscription.
-        /// </summary>
-        internal GetStreamingEventsResults Results
-        {
-            get { return this.results; }
-        }
-
-        /// <summary>
-        /// Gets the error subscription ids.
-        /// </summary>
-        /// <value>The error subscription ids.</value>
-        internal List<string> ErrorSubscriptionIds
-        {
-            get;
-            private set;
         }
     }
+
+    /// <summary>
+    ///     Loads extra error details from XML
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <param name="xmlElementName">The current element name of the extra error details.</param>
+    /// <returns>
+    ///     True if the expected extra details is loaded;
+    ///     False if the element name does not match the expected element.
+    /// </returns>
+    internal override bool LoadExtraErrorDetailsFromXml(EwsServiceXmlReader reader, string xmlElementName)
+    {
+        var baseReturnVal = base.LoadExtraErrorDetailsFromXml(reader, xmlElementName);
+
+        if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.ErrorSubscriptionIds))
+        {
+            do
+            {
+                reader.Read();
+
+                if (reader.NodeType == System.Xml.XmlNodeType.Element &&
+                    reader.LocalName == XmlElementNames.SubscriptionId)
+                {
+                    ErrorSubscriptionIds.Add(
+                        reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.SubscriptionId)
+                    );
+                }
+            } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.ErrorSubscriptionIds));
+
+            return true;
+        }
+
+        return baseReturnVal;
+    }
+
+    /// <summary>
+    ///     Gets event results from subscription.
+    /// </summary>
+    internal GetStreamingEventsResults Results { get; } = new();
+
+    /// <summary>
+    ///     Gets the error subscription ids.
+    /// </summary>
+    /// <value>The error subscription ids.</value>
+    internal List<string>? ErrorSubscriptionIds { get; private set; }
 }

@@ -20,9 +20,7 @@
 		<GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
 		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
 		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
+		
 		<Authors>sherlock1982, ItsClemi</Authors>
 		<RepositoryUrl>https://github.com/ItsClemi/ews-managed-api</RepositoryUrl>
 		<RepositoryType>GitHub</RepositoryType>

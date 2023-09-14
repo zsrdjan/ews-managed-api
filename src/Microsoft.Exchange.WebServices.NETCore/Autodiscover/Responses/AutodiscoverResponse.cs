@@ -23,79 +23,66 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents the base class for all responses returned by the Autodiscover service.
+/// </summary>
+[PublicAPI]
+public abstract class AutodiscoverResponse
 {
-    using System;
-    using Microsoft.Exchange.WebServices.Data;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AutodiscoverResponse" /> class.
+    /// </summary>
+    internal AutodiscoverResponse()
+    {
+    }
 
     /// <summary>
-    /// Represents the base class for all responses returned by the Autodiscover service.
+    ///     Loads response from XML.
     /// </summary>
-    public abstract class AutodiscoverResponse
+    /// <param name="reader">The reader.</param>
+    /// <param name="endElementName">End element name.</param>
+    internal virtual void LoadFromXml(EwsXmlReader reader, string endElementName)
     {
-        private AutodiscoverErrorCode errorCode;
-        private string errorMessage;
-        private Uri redirectionUrl;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutodiscoverResponse"/> class.
-        /// </summary>
-        internal AutodiscoverResponse()
+        switch (reader.LocalName)
         {
-            this.errorCode = AutodiscoverErrorCode.NoError;
-            this.errorMessage = Strings.NoError;
-        }
-
-        /// <summary>
-        /// Loads response from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="endElementName">End element name.</param>
-        internal virtual void LoadFromXml(EwsXmlReader reader, string endElementName)
-        {
-            switch (reader.LocalName)
+            case XmlElementNames.ErrorCode:
             {
-                case XmlElementNames.ErrorCode:
-                    this.ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
-                    break;
-                case XmlElementNames.ErrorMessage:
-                    this.ErrorMessage = reader.ReadElementValue();
-                    break;
-                default:
-                    break;
+                ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
+                break;
+            }
+            case XmlElementNames.ErrorMessage:
+            {
+                ErrorMessage = reader.ReadElementValue();
+                break;
             }
         }
-
-        #region Properties
-        /// <summary>
-        /// Gets the error code that was returned by the service.
-        /// </summary>
-        public AutodiscoverErrorCode ErrorCode
-        { 
-            get { return this.errorCode; }
-            internal set { this.errorCode = value; }
-        }
-
-        /// <summary>
-        /// Gets the error message that was returned by the service.
-        /// </summary>
-        /// <value>The error message.</value>
-        public string ErrorMessage
-        {
-            get { return this.errorMessage; }
-            internal set { this.errorMessage = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the redirection URL.
-        /// </summary>
-        /// <value>The redirection URL.</value>
-        internal Uri RedirectionUrl
-        {
-            get { return this.redirectionUrl; }
-            set { this.redirectionUrl = value; }
-        }
-
-        #endregion
     }
+
+
+    #region Properties
+
+    /// <summary>
+    ///     Gets the error code that was returned by the service.
+    /// </summary>
+    public AutodiscoverErrorCode ErrorCode { get; internal set; } = AutodiscoverErrorCode.NoError;
+
+    /// <summary>
+    ///     Gets the error message that was returned by the service.
+    /// </summary>
+    /// <value>The error message.</value>
+    public string ErrorMessage { get; internal set; } = Strings.NoError;
+
+    /// <summary>
+    ///     Gets or sets the redirection URL.
+    /// </summary>
+    /// <value>The redirection URL.</value>
+    internal Uri RedirectionUrl { get; set; }
+
+    #endregion
 }

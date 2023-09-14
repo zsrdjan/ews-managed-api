@@ -23,51 +23,52 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Data
+using System.Runtime.Serialization;
+
+using JetBrains.Annotations;
+
+namespace Microsoft.Exchange.WebServices.Data;
+
+/// <summary>
+///     Represents an exception that is thrown when the Autodiscover service could not be contacted.
+/// </summary>
+[PublicAPI]
+public class AutodiscoverLocalException : ServiceLocalException
 {
-    using System;
-	using System.Runtime.Serialization;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AutodiscoverLocalException" /> class.
+    /// </summary>
+    public AutodiscoverLocalException()
+    {
+    }
 
     /// <summary>
-    /// Represents an exception that is thrown when the Autodiscover service could not be contacted.
+    ///     Initializes a new instance of the <see cref="AutodiscoverLocalException" /> class.
     /// </summary>
-    public class AutodiscoverLocalException : ServiceLocalException
+    /// <param name="message">The message.</param>
+    public AutodiscoverLocalException(string message)
+        : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutodiscoverLocalException"/> class.
-        /// </summary>
-        public AutodiscoverLocalException()
-            : base()
-        {
-        }
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutodiscoverLocalException"/> class.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public AutodiscoverLocalException(string message)
-            : base(message)
-        {
-        }
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AutodiscoverLocalException" /> class.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <param name="innerException">The inner exception.</param>
+    public AutodiscoverLocalException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutodiscoverLocalException"/> class.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="innerException">The inner exception.</param>
-        public AutodiscoverLocalException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.AutodiscoverLocalException"/> class with serialized data.
-		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
-		protected AutodiscoverLocalException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	}
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.AutodiscoverLocalException" />
+    ///     class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected AutodiscoverLocalException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+    }
 }

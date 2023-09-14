@@ -23,195 +23,190 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace Microsoft.Exchange.WebServices.Autodiscover
+using System.Collections.ObjectModel;
+using System.Xml;
+
+using JetBrains.Annotations;
+
+using Microsoft.Exchange.WebServices.Data;
+
+namespace Microsoft.Exchange.WebServices.Autodiscover;
+
+/// <summary>
+///     Represents the response to a GetDomainSettings call for an individual domain.
+/// </summary>
+[PublicAPI]
+public sealed class GetDomainSettingsResponse : AutodiscoverResponse
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Text;
-    using System.Xml;
-    using Microsoft.Exchange.WebServices.Data;
+    private readonly Dictionary<DomainSettingName, object> _settings = new();
 
     /// <summary>
-    /// Represents the response to a GetDomainSettings call for an individual domain.
+    ///     Initializes a new instance of the <see cref="GetDomainSettingsResponse" /> class.
     /// </summary>
-    public sealed class GetDomainSettingsResponse : AutodiscoverResponse
+    public GetDomainSettingsResponse()
     {
-        private string domain;
-        private string redirectTarget;
-        private Dictionary<DomainSettingName, object> settings;
-        private Collection<DomainSettingError> domainSettingErrors;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GetDomainSettingsResponse"/> class.
-        /// </summary>
-        public GetDomainSettingsResponse()
-            : base()
+    /// <summary>
+    ///     Gets the domain this response applies to.
+    /// </summary>
+    public string Domain { get; internal set; } = string.Empty;
+
+    /// <summary>
+    ///     Gets the redirectionTarget (URL or email address)
+    /// </summary>
+    public string RedirectTarget { get; private set; }
+
+    /// <summary>
+    ///     Gets the requested settings for the domain.
+    /// </summary>
+    public IDictionary<DomainSettingName, object> Settings => _settings;
+
+    /// <summary>
+    ///     Gets error information for settings that could not be returned.
+    /// </summary>
+    public Collection<DomainSettingError> DomainSettingErrors { get; } = new();
+
+    /// <summary>
+    ///     Loads response from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    /// <param name="endElementName">End element name.</param>
+    internal override void LoadFromXml(EwsXmlReader reader, string endElementName)
+    {
+        do
         {
-            this.domain = string.Empty;
-            this.settings = new Dictionary<DomainSettingName, object>();
-            this.domainSettingErrors = new Collection<DomainSettingError>();
-        }
+            reader.Read();
 
-        /// <summary>
-        /// Gets the domain this response applies to.
-        /// </summary>
-        public string Domain
-        {
-            get { return this.domain; }
-            internal set { this.domain = value; }
-        }
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.LocalName)
+                {
+                    case XmlElementNames.RedirectTarget:
+                    {
+                        RedirectTarget = reader.ReadElementValue();
+                        break;
+                    }
+                    case XmlElementNames.DomainSettingErrors:
+                    {
+                        LoadDomainSettingErrorsFromXml(reader);
+                        break;
+                    }
+                    case XmlElementNames.DomainSettings:
+                    {
+                        LoadDomainSettingsFromXml(reader);
+                        break;
+                    }
+                    default:
+                    {
+                        base.LoadFromXml(reader, endElementName);
+                        break;
+                    }
+                }
+            }
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
+    }
 
-        /// <summary>
-        /// Gets the redirectionTarget (URL or email address)
-        /// </summary>
-        public string RedirectTarget
-        {
-            get { return this.redirectTarget; }
-        }
-
-        /// <summary>
-        /// Gets the requested settings for the domain.
-        /// </summary>
-        public IDictionary<DomainSettingName, object> Settings
-        {
-            get { return this.settings; }
-        }
-
-        /// <summary>
-        /// Gets error information for settings that could not be returned.
-        /// </summary>
-        public Collection<DomainSettingError> DomainSettingErrors
-        {
-            get { return this.domainSettingErrors; }
-        }
-
-        /// <summary>
-        /// Loads response from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        /// <param name="endElementName">End element name.</param>
-        internal override void LoadFromXml(EwsXmlReader reader, string endElementName)
+    /// <summary>
+    ///     Loads from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal void LoadDomainSettingsFromXml(EwsXmlReader reader)
+    {
+        if (!reader.IsEmptyElement)
         {
             do
             {
                 reader.Read();
 
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.DomainSetting)
                 {
-                    switch (reader.LocalName)
+                    var settingClass = reader.ReadAttributeValue(
+                        XmlNamespace.XmlSchemaInstance,
+                        XmlAttributeNames.Type
+                    );
+
+                    switch (settingClass)
                     {
-                        case XmlElementNames.RedirectTarget:
-                            this.redirectTarget = reader.ReadElementValue();
-                            break;
-                        case XmlElementNames.DomainSettingErrors:
-                            this.LoadDomainSettingErrorsFromXml(reader);
-                            break;
-                        case XmlElementNames.DomainSettings:
-                            this.LoadDomainSettingsFromXml(reader);
-                            break;
-                        default:
-                            base.LoadFromXml(reader, endElementName);
-                            break;
-                    }
-                }
-            }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
-        }
-
-        /// <summary>
-        /// Loads from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        internal void LoadDomainSettingsFromXml(EwsXmlReader reader)
-        {
-            if (!reader.IsEmptyElement)
-            {
-                do
-                {
-                    reader.Read();
-
-                    if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.DomainSetting))
-                    {
-                        string settingClass = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
-
-                        switch (settingClass)
+                        case XmlElementNames.DomainStringSetting:
                         {
-                            case XmlElementNames.DomainStringSetting:
-                                this.ReadSettingFromXml(reader);
-                                break;
-
-                            default:
-                                EwsUtilities.Assert(
-                                    false,
-                                    "GetDomainSettingsResponse.LoadDomainSettingsFromXml",
-                                    string.Format("Invalid setting class '{0}' returned", settingClass));
-                                break;
+                            ReadSettingFromXml(reader);
+                            break;
+                        }
+                        default:
+                        {
+                            EwsUtilities.Assert(
+                                false,
+                                "GetDomainSettingsResponse.LoadDomainSettingsFromXml",
+                                $"Invalid setting class '{settingClass}' returned"
+                            );
+                            break;
                         }
                     }
                 }
-                while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSettings));
-            }
+            } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSettings));
         }
+    }
 
-        /// <summary>
-        /// Reads domain setting from XML.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        private void ReadSettingFromXml(EwsXmlReader reader)
+    /// <summary>
+    ///     Reads domain setting from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    private void ReadSettingFromXml(EwsXmlReader reader)
+    {
+        DomainSettingName? name = null;
+        object? value = null;
+
+        do
         {
-            DomainSettingName? name = null;
-            object value = null;
+            reader.Read();
 
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                switch (reader.LocalName)
+                {
+                    case XmlElementNames.Name:
+                    {
+                        name = reader.ReadElementValue<DomainSettingName>();
+                        break;
+                    }
+                    case XmlElementNames.Value:
+                    {
+                        value = reader.ReadElementValue();
+                        break;
+                    }
+                }
+            }
+        } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSetting));
+
+        EwsUtilities.Assert(
+            name.HasValue,
+            "GetDomainSettingsResponse.ReadSettingFromXml",
+            "Missing name element in domain setting"
+        );
+
+        _settings.Add(name.Value, value);
+    }
+
+    /// <summary>
+    ///     Loads the domain setting errors.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    private void LoadDomainSettingErrorsFromXml(EwsXmlReader reader)
+    {
+        if (!reader.IsEmptyElement)
+        {
             do
             {
                 reader.Read();
 
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.DomainSettingError)
                 {
-                    switch (reader.LocalName)
-                    {
-                        case XmlElementNames.Name:
-                            name = reader.ReadElementValue<DomainSettingName>();
-                            break;
-                        case XmlElementNames.Value:
-                            value = reader.ReadElementValue();
-                            break;
-                    }
+                    var error = new DomainSettingError();
+                    error.LoadFromXml(reader);
+                    DomainSettingErrors.Add(error);
                 }
-            }
-            while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSetting));
-
-            EwsUtilities.Assert(
-                name.HasValue,
-                "GetDomainSettingsResponse.ReadSettingFromXml",
-                "Missing name element in domain setting");
-
-            this.settings.Add(name.Value, value);
-        }
-
-        /// <summary>
-        /// Loads the domain setting errors.
-        /// </summary>
-        /// <param name="reader">The reader.</param>
-        private void LoadDomainSettingErrorsFromXml(EwsXmlReader reader)
-        {
-            if (!reader.IsEmptyElement)
-            {
-                do
-                {
-                    reader.Read();
-
-                    if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.DomainSettingError))
-                    {
-                        DomainSettingError error = new DomainSettingError();
-                        error.LoadFromXml(reader);
-                        domainSettingErrors.Add(error);
-                    }
-                }
-                while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSettingErrors));
-            }
+            } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSettingErrors));
         }
     }
 }
