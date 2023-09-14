@@ -36,12 +36,9 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(Items, "Items");
+        EwsUtilities.ValidateParam(Items);
 
-        if (SavedCopyDestinationFolderId != null)
-        {
-            SavedCopyDestinationFolderId.Validate(Service.RequestedServerVersion);
-        }
+        SavedCopyDestinationFolderId?.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
@@ -154,5 +151,5 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     ///     Gets or sets the saved copy destination folder id.
     /// </summary>
     /// <value>The saved copy destination folder id.</value>
-    public FolderId SavedCopyDestinationFolderId { get; set; }
+    public FolderId? SavedCopyDestinationFolderId { get; set; }
 }

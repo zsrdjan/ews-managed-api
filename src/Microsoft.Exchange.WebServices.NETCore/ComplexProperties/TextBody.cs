@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the body of a message.
 /// </summary>
+[PublicAPI]
 public sealed class TextBody : MessageBody
 {
     /// <summary>

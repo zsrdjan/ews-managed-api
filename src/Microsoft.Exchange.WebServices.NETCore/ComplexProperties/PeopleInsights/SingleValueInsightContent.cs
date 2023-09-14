@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the SingleValueInsightContent.
 /// </summary>
+[PublicAPI]
 public sealed class SingleValueInsightContent : ComplexProperty
 {
     /// <summary>
     ///     Gets the Item
     /// </summary>
-    public InsightValue Item { get; internal set; }
+    public InsightValue? Item { get; internal set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -45,47 +48,69 @@ public sealed class SingleValueInsightContent : ComplexProperty
         switch (reader.ReadAttributeValue("xsi:type"))
         {
             case XmlElementNames.StringInsightValue:
+            {
                 Item = new StringInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.ProfileInsightValue:
+            {
                 Item = new ProfileInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.JobInsightValue:
+            {
                 Item = new JobInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.UserProfilePicture:
+            {
                 Item = new UserProfilePicture();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.EducationInsightValue:
+            {
                 Item = new EducationInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.SkillInsightValue:
+            {
                 Item = new SkillInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.DelveDocument:
+            {
                 Item = new DelveDocument();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.CompanyInsightValue:
+            {
                 Item = new CompanyInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.ComputedInsightValue:
+            {
                 Item = new ComputedInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.OutOfOfficeInsightValue:
+            {
                 Item = new OutOfOfficeInsightValue();
                 Item.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

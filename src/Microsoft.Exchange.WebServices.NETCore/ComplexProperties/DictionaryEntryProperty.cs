@@ -25,6 +25,8 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -35,10 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     constructor. That constructor does not have to be public.
 /// </remarks>
 /// <typeparam name="TKey">The type of the key used by this dictionary.</typeparam>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
 {
-    private TKey key;
+    private TKey _key;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;" /> class.
@@ -53,7 +56,7 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     /// <param name="key">The key.</param>
     internal DictionaryEntryProperty(TKey key)
     {
-        this.key = key;
+        _key = key;
     }
 
     /// <summary>
@@ -62,8 +65,8 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     /// <value>The key.</value>
     internal TKey Key
     {
-        get => key;
-        set => key = value;
+        get => _key;
+        set => _key = value;
     }
 
     /// <summary>
@@ -72,7 +75,7 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        key = reader.ReadAttributeValue<TKey>(XmlAttributeNames.Key);
+        _key = reader.ReadAttributeValue<TKey>(XmlAttributeNames.Key);
     }
 
     /// <summary>

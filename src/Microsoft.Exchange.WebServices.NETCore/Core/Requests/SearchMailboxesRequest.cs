@@ -31,16 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<SearchMailboxesResponse>,
     IDiscoveryVersionable
 {
-    private List<MailboxQuery> searchQueries = new List<MailboxQuery>();
-    private SearchResultType searchResultType = SearchResultType.PreviewOnly;
-    private SortDirection sortOrder = SortDirection.Ascending;
-    private string sortByProperty;
-    private bool performDeduplication;
-    private int pageSize;
-    private string pageItemReference;
-    private SearchPageDirection pageDirection = SearchPageDirection.Next;
-    private PreviewItemResponseShape previewItemResponseShape;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SearchMailboxesRequest" /> class.
     /// </summary>
@@ -120,7 +110,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
 
         if (!string.IsNullOrEmpty(SortByProperty))
         {
-            PropertyDefinitionBase prop = null;
+            PropertyDefinitionBase? prop = null;
             try
             {
                 prop = ServiceObjectSchema.FindPropertyDefinition(SortByProperty);
@@ -182,6 +172,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.MailboxQuery);
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Query, mailboxQuery.Query);
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.MailboxSearchScopes);
+
             foreach (var mailboxSearchScope in mailboxQuery.MailboxSearchScopes)
             {
                 // The checks here silently downgrade the schema based on compatibility checks, to receive errors use the validate method
@@ -274,7 +265,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SortBy);
             writer.WriteAttributeValue(XmlElementNames.Order, SortOrder.ToString());
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldURI);
-            writer.WriteAttributeValue(XmlElementNames.FieldURI, sortByProperty);
+            writer.WriteAttributeValue(XmlElementNames.FieldURI, SortByProperty);
             writer.WriteEndElement(); // FieldURI
             writer.WriteEndElement(); // SortBy
         }
@@ -286,7 +277,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
         }
 
         // Dedupe
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Deduplication, performDeduplication);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Deduplication, PerformDeduplication);
 
         if (PageSize > 0)
         {
@@ -313,47 +304,27 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     /// <summary>
     ///     Collection of query + mailboxes
     /// </summary>
-    public List<MailboxQuery> SearchQueries
-    {
-        get => searchQueries;
-        set => searchQueries = value;
-    }
+    public List<MailboxQuery> SearchQueries { get; set; } = new();
 
     /// <summary>
     ///     Search result type
     /// </summary>
-    public SearchResultType ResultType
-    {
-        get => searchResultType;
-        set => searchResultType = value;
-    }
+    public SearchResultType ResultType { get; set; } = SearchResultType.PreviewOnly;
 
     /// <summary>
     ///     Preview item response shape
     /// </summary>
-    public PreviewItemResponseShape PreviewItemResponseShape
-    {
-        get => previewItemResponseShape;
-        set => previewItemResponseShape = value;
-    }
+    public PreviewItemResponseShape PreviewItemResponseShape { get; set; }
 
     /// <summary>
     ///     Sort order
     /// </summary>
-    public SortDirection SortOrder
-    {
-        get => sortOrder;
-        set => sortOrder = value;
-    }
+    public SortDirection SortOrder { get; set; } = SortDirection.Ascending;
 
     /// <summary>
     ///     Sort by property name
     /// </summary>
-    public string SortByProperty
-    {
-        get => sortByProperty;
-        set => sortByProperty = value;
-    }
+    public string SortByProperty { get; set; }
 
     /// <summary>
     ///     Query language
@@ -363,38 +334,22 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     /// <summary>
     ///     Perform deduplication or not
     /// </summary>
-    public bool PerformDeduplication
-    {
-        get => performDeduplication;
-        set => performDeduplication = value;
-    }
+    public bool PerformDeduplication { get; set; }
 
     /// <summary>
     ///     Page size
     /// </summary>
-    public int PageSize
-    {
-        get => pageSize;
-        set => pageSize = value;
-    }
+    public int PageSize { get; set; }
 
     /// <summary>
     ///     Page item reference
     /// </summary>
-    public string PageItemReference
-    {
-        get => pageItemReference;
-        set => pageItemReference = value;
-    }
+    public string PageItemReference { get; set; }
 
     /// <summary>
     ///     Page direction
     /// </summary>
-    public SearchPageDirection PageDirection
-    {
-        get => pageDirection;
-        set => pageDirection = value;
-    }
+    public SearchPageDirection PageDirection { get; set; } = SearchPageDirection.Next;
 
     /// <summary>
     ///     Gets or sets the server version.

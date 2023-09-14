@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Online Meeting Lobby Bypass options.
 /// </summary>
+[PublicAPI]
 public enum LobbyBypass
 {
     /// <summary>
@@ -44,6 +47,7 @@ public enum LobbyBypass
 /// <summary>
 ///     Online Meeting Access Level options.
 /// </summary>
+[PublicAPI]
 public enum OnlineMeetingAccessLevel
 {
     /// <summary>
@@ -70,6 +74,7 @@ public enum OnlineMeetingAccessLevel
 /// <summary>
 ///     Online Meeting Presenters options.
 /// </summary>
+[PublicAPI]
 public enum Presenters
 {
     /// <summary>
@@ -91,22 +96,23 @@ public enum Presenters
 /// <summary>
 ///     Represents Lync online meeting settings.
 /// </summary>
+[PublicAPI]
 public class OnlineMeetingSettings : ComplexProperty
 {
     /// <summary>
     ///     Email address.
     /// </summary>
-    private LobbyBypass lobbyBypass;
+    private LobbyBypass _lobbyBypass;
 
     /// <summary>
     ///     Routing type.
     /// </summary>
-    private OnlineMeetingAccessLevel accessLevel;
+    private OnlineMeetingAccessLevel _accessLevel;
 
     /// <summary>
     ///     Routing type.
     /// </summary>
-    private Presenters presenters;
+    private Presenters _presenters;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnlineMeetingSettings" /> class.
@@ -123,9 +129,9 @@ public class OnlineMeetingSettings : ComplexProperty
     /// <param name="presenters">Mailbox type of the participant.</param>
     internal OnlineMeetingSettings(LobbyBypass lobbyBypass, OnlineMeetingAccessLevel accessLevel, Presenters presenters)
     {
-        this.lobbyBypass = lobbyBypass;
-        this.accessLevel = accessLevel;
-        this.presenters = presenters;
+        _lobbyBypass = lobbyBypass;
+        _accessLevel = accessLevel;
+        _presenters = presenters;
     }
 
     /// <summary>
@@ -148,9 +154,8 @@ public class OnlineMeetingSettings : ComplexProperty
     /// </summary>
     public LobbyBypass LobbyBypass
     {
-        get => lobbyBypass;
-
-        set => SetFieldValue(ref lobbyBypass, value);
+        get => _lobbyBypass;
+        set => SetFieldValue(ref _lobbyBypass, value);
     }
 
     /// <summary>
@@ -158,9 +163,8 @@ public class OnlineMeetingSettings : ComplexProperty
     /// </summary>
     public OnlineMeetingAccessLevel AccessLevel
     {
-        get => accessLevel;
-
-        set => SetFieldValue(ref accessLevel, value);
+        get => _accessLevel;
+        set => SetFieldValue(ref _accessLevel, value);
     }
 
     /// <summary>
@@ -168,9 +172,8 @@ public class OnlineMeetingSettings : ComplexProperty
     /// </summary>
     public Presenters Presenters
     {
-        get => presenters;
-
-        set => SetFieldValue(ref presenters, value);
+        get => _presenters;
+        set => SetFieldValue(ref _presenters, value);
     }
 
     /// <summary>
@@ -183,16 +186,24 @@ public class OnlineMeetingSettings : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.LobbyBypass:
-                lobbyBypass = reader.ReadElementValue<LobbyBypass>();
+            {
+                _lobbyBypass = reader.ReadElementValue<LobbyBypass>();
                 return true;
+            }
             case XmlElementNames.AccessLevel:
-                accessLevel = reader.ReadElementValue<OnlineMeetingAccessLevel>();
+            {
+                _accessLevel = reader.ReadElementValue<OnlineMeetingAccessLevel>();
                 return true;
+            }
             case XmlElementNames.Presenters:
-                presenters = reader.ReadElementValue<Presenters>();
+            {
+                _presenters = reader.ReadElementValue<Presenters>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

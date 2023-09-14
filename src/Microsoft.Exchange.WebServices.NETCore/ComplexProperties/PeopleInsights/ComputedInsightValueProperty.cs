@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 // <copyright file="ComputedInsightValueProperty.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
@@ -8,24 +8,26 @@
 // <summary>Implements the class for computed insight value property.</summary>
 //-----------------------------------------------------------------------
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a computed insight value.
 /// </summary>
+[PublicAPI]
 public sealed class ComputedInsightValueProperty : ComplexProperty
 {
-    private string key;
-    private string value;
+    private string _key;
+    private string _value;
 
     /// <summary>
     ///     Gets or sets the Key
     /// </summary>
     public string Key
     {
-        get => key;
-
-        set => SetFieldValue(ref key, value);
+        get => _key;
+        set => SetFieldValue(ref _key, value);
     }
 
     /// <summary>
@@ -33,9 +35,8 @@ public sealed class ComputedInsightValueProperty : ComplexProperty
     /// </summary>
     public string Value
     {
-        get => value;
-
-        set => SetFieldValue(ref this.value, value);
+        get => _value;
+        set => SetFieldValue(ref _value, value);
     }
 
     /// <summary>
@@ -48,13 +49,19 @@ public sealed class ComputedInsightValueProperty : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Key:
+            {
                 Key = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Value:
+            {
                 Value = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

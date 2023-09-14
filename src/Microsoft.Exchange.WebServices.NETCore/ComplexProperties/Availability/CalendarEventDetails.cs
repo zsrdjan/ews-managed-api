@@ -23,22 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the details of a calendar event as returned by the GetUserAvailability operation.
 /// </summary>
+[PublicAPI]
 public sealed class CalendarEventDetails : ComplexProperty
 {
-    private string storeId;
-    private string subject;
-    private string location;
-    private bool isMeeting;
-    private bool isRecurring;
-    private bool isException;
-    private bool isReminderSet;
-    private bool isPrivate;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="CalendarEventDetails" /> class.
     /// </summary>
@@ -56,71 +50,89 @@ public sealed class CalendarEventDetails : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ID:
-                storeId = reader.ReadElementValue();
+            {
+                StoreId = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Subject:
-                subject = reader.ReadElementValue();
+            {
+                Subject = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Location:
-                location = reader.ReadElementValue();
+            {
+                Location = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.IsMeeting:
-                isMeeting = reader.ReadElementValue<bool>();
+            {
+                IsMeeting = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsRecurring:
-                isRecurring = reader.ReadElementValue<bool>();
+            {
+                IsRecurring = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsException:
-                isException = reader.ReadElementValue<bool>();
+            {
+                IsException = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsReminderSet:
-                isReminderSet = reader.ReadElementValue<bool>();
+            {
+                IsReminderSet = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsPrivate:
-                isPrivate = reader.ReadElementValue<bool>();
+            {
+                IsPrivate = reader.ReadElementValue<bool>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the store Id of the calendar event.
     /// </summary>
-    public string StoreId => storeId;
+    public string StoreId { get; private set; }
 
     /// <summary>
     ///     Gets the subject of the calendar event.
     /// </summary>
-    public string Subject => subject;
+    public string Subject { get; private set; }
 
     /// <summary>
     ///     Gets the location of the calendar event.
     /// </summary>
-    public string Location => location;
+    public string Location { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the calendar event is a meeting.
     /// </summary>
-    public bool IsMeeting => isMeeting;
+    public bool IsMeeting { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the calendar event is recurring.
     /// </summary>
-    public bool IsRecurring => isRecurring;
+    public bool IsRecurring { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the calendar event is an exception in a recurring series.
     /// </summary>
-    public bool IsException => isException;
+    public bool IsException { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the calendar event has a reminder set.
     /// </summary>
-    public bool IsReminderSet => isReminderSet;
+    public bool IsReminderSet { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the calendar event is private.
     /// </summary>
-    public bool IsPrivate => isPrivate;
+    public bool IsPrivate { get; private set; }
 }

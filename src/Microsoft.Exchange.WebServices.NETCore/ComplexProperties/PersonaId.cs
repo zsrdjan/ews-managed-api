@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of a Persona.
 /// </summary>
+[PublicAPI]
 public sealed class PersonaId : ServiceId
 {
     /// <summary>
@@ -50,22 +53,22 @@ public sealed class PersonaId : ServiceId
     /// <summary>
     ///     Defines an implicit conversion from PersonaId to a Id string.
     /// </summary>
-    /// <param name="PersonaId">The PersonaId to be converted</param>
+    /// <param name="personaId">The PersonaId to be converted</param>
     /// <returns>A PersonaId initialized with the specified unique Id.</returns>
-    public static implicit operator string(PersonaId PersonaId)
+    public static implicit operator string(PersonaId personaId)
     {
-        if (PersonaId == null)
+        if (personaId == null)
         {
-            throw new ArgumentNullException("PersonaId");
+            throw new ArgumentNullException(nameof(personaId));
         }
 
-        if (string.IsNullOrEmpty(PersonaId.UniqueId))
+        if (string.IsNullOrEmpty(personaId.UniqueId))
         {
             return string.Empty;
         }
 
         // Ignoring the change key info
-        return PersonaId.UniqueId;
+        return personaId.UniqueId;
     }
 
     /// <summary>

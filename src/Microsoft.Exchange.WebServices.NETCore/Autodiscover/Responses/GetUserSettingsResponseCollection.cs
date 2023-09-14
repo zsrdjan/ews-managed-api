@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -30,6 +32,7 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents a collection of responses to GetUserSettings
 /// </summary>
+[PublicAPI]
 public sealed class GetUserSettingsResponseCollection : AutodiscoverResponseCollection<GetUserSettingsResponse>
 {
     /// <summary>

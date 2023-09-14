@@ -37,25 +37,24 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// <summary>
     ///     All user settings that are available from the Outlook provider.
     /// </summary>
-    private static readonly LazyMember<List<UserSettingName>> allOutlookProviderSettings =
-        new LazyMember<List<UserSettingName>>(
-            () =>
-            {
-                var results = new List<UserSettingName>();
-                results.AddRange(OutlookUser.AvailableUserSettings);
-                results.AddRange(OutlookProtocol.AvailableUserSettings);
-                results.Add(UserSettingName.AlternateMailboxes);
-                return results;
-            }
-        );
+    private static readonly LazyMember<List<UserSettingName>> AllOutlookProviderSettings = new(
+        () =>
+        {
+            var results = new List<UserSettingName>();
+            results.AddRange(OutlookUser.AvailableUserSettings);
+            results.AddRange(OutlookProtocol.AvailableUserSettings);
+            results.Add(UserSettingName.AlternateMailboxes);
+            return results;
+        }
+    );
 
     #endregion
 
 
     #region Private fields
 
-    private readonly OutlookUser user;
-    private OutlookAccount account;
+    private readonly OutlookUser _user;
+    private OutlookAccount _account;
 
     #endregion
 
@@ -65,8 +64,8 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// </summary>
     public OutlookConfigurationSettings()
     {
-        user = new OutlookUser();
-        account = new OutlookAccount();
+        _user = new OutlookUser();
+        _account = new OutlookAccount();
     }
 
     /// <summary>
@@ -78,7 +77,7 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// </returns>
     internal static bool IsAvailableUserSetting(UserSettingName setting)
     {
-        return allOutlookProviderSettings.Member.Contains(setting);
+        return AllOutlookProviderSettings.Member.Contains(setting);
     }
 
     /// <summary>
@@ -96,10 +95,10 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// <param name="redirectUrl">The redirect URL.</param>
     internal override void MakeRedirectionResponse(Uri redirectUrl)
     {
-        account = new OutlookAccount
+        _account = new OutlookAccount
         {
             RedirectTarget = redirectUrl.ToString(),
-            ResponseType = AutodiscoverResponseType.RedirectUrl
+            ResponseType = AutodiscoverResponseType.RedirectUrl,
         };
     }
 
@@ -115,14 +114,20 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
             switch (reader.LocalName)
             {
                 case XmlElementNames.User:
-                    user.LoadFromXml(reader);
+                {
+                    _user.LoadFromXml(reader);
                     return true;
+                }
                 case XmlElementNames.Account:
-                    account.LoadFromXml(reader);
+                {
+                    _account.LoadFromXml(reader);
                     return true;
+                }
                 default:
+                {
                     reader.SkipCurrentElement();
                     return false;
+                }
             }
         }
 
@@ -140,8 +145,10 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
         List<UserSettingName> requestedSettings
     )
     {
-        var response = new GetUserSettingsResponse();
-        response.SmtpAddress = smtpAddress;
+        var response = new GetUserSettingsResponse
+        {
+            SmtpAddress = smtpAddress,
+        };
 
         if (Error != null)
         {
@@ -153,33 +160,43 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
             switch (ResponseType)
             {
                 case AutodiscoverResponseType.Success:
+                {
                     response.ErrorCode = AutodiscoverErrorCode.NoError;
                     response.ErrorMessage = string.Empty;
-                    user.ConvertToUserSettings(requestedSettings, response);
-                    account.ConvertToUserSettings(requestedSettings, response);
+                    _user.ConvertToUserSettings(requestedSettings, response);
+                    _account.ConvertToUserSettings(requestedSettings, response);
                     ReportUnsupportedSettings(requestedSettings, response);
                     break;
+                }
                 case AutodiscoverResponseType.Error:
+                {
                     response.ErrorCode = AutodiscoverErrorCode.InternalServerError;
                     response.ErrorMessage = Strings.InvalidAutodiscoverServiceResponse;
                     break;
+                }
                 case AutodiscoverResponseType.RedirectAddress:
+                {
                     response.ErrorCode = AutodiscoverErrorCode.RedirectAddress;
                     response.ErrorMessage = string.Empty;
                     response.RedirectTarget = RedirectTarget;
                     break;
+                }
                 case AutodiscoverResponseType.RedirectUrl:
+                {
                     response.ErrorCode = AutodiscoverErrorCode.RedirectUrl;
                     response.ErrorMessage = string.Empty;
                     response.RedirectTarget = RedirectTarget;
                     break;
+                }
                 default:
+                {
                     EwsUtilities.Assert(
                         false,
                         "OutlookConfigurationSettings.ConvertSettings",
-                        "An unexpected error has occured. This code path should never be reached."
+                        "An unexpected error has occurred. This code path should never be reached."
                     );
                     break;
+                }
             }
         }
 
@@ -191,7 +208,10 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// </summary>
     /// <param name="requestedSettings">The requested settings.</param>
     /// <param name="response">The response.</param>
-    private void ReportUnsupportedSettings(List<UserSettingName> requestedSettings, GetUserSettingsResponse response)
+    private static void ReportUnsupportedSettings(
+        List<UserSettingName> requestedSettings,
+        GetUserSettingsResponse response
+    )
     {
         // In English: find settings listed in requestedSettings that are not supported by the Legacy provider.
         var invalidSettingQuery = from setting in requestedSettings
@@ -222,9 +242,9 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     {
         get
         {
-            if (account != null)
+            if (_account != null)
             {
-                return account.ResponseType;
+                return _account.ResponseType;
             }
 
             return AutodiscoverResponseType.Error;
@@ -234,5 +254,5 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// <summary>
     ///     Gets the redirect target.
     /// </summary>
-    internal override string RedirectTarget => account.RedirectTarget;
+    internal override string RedirectTarget => _account.RedirectTarget;
 }

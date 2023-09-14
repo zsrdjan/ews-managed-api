@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a ClientExtension object.
 /// </summary>
+[PublicAPI]
 public sealed class ClientExtension : ComplexProperty
 {
     /// <summary>
@@ -252,18 +255,22 @@ public sealed class ClientExtension : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Manifest:
+            {
                 ManifestStream = new MemoryStream();
                 reader.ReadBase64ElementValue(ManifestStream);
                 ManifestStream.Position = 0;
                 return true;
-
+            }
             case XmlElementNames.ClientExtensionSpecificUsers:
+            {
                 SpecificUsers = new StringList();
                 SpecificUsers.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ClientExtensionSpecificUsers);
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 
@@ -273,14 +280,14 @@ public sealed class ClientExtension : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (null != SpecificUsers)
+        if (SpecificUsers != null)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ClientExtensionSpecificUsers);
             SpecificUsers.WriteElementsToXml(writer);
             writer.WriteEndElement();
         }
 
-        if (null != ManifestStream)
+        if (ManifestStream != null)
         {
             if (ManifestStream.CanSeek)
             {

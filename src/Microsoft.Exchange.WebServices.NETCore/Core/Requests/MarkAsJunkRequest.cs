@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunkResponse>
 {
-    private readonly ItemIdWrapperList itemIds = new ItemIdWrapperList();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="MarkAsJunkRequest" /> class.
     /// </summary>
@@ -48,7 +46,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(ItemIds, "ItemIds");
+        EwsUtilities.ValidateParam(ItemIds);
     }
 
     /// <summary>
@@ -95,7 +93,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     /// <returns>Number of items in response.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return itemIds.Count;
+        return ItemIds.Count;
     }
 
     /// <summary>
@@ -114,7 +112,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        itemIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
+        ItemIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
     }
 
     /// <summary>
@@ -130,7 +128,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds => itemIds;
+    internal ItemIdWrapperList ItemIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets the isJunk flag.

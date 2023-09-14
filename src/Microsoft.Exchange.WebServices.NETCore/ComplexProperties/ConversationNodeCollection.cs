@@ -25,15 +25,18 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of conversation items.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ConversationNodeCollection : ComplexPropertyCollection<ConversationNode>
 {
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConversationNodeCollection" /> class.
@@ -41,7 +44,7 @@ public sealed class ConversationNodeCollection : ComplexPropertyCollection<Conve
     /// <param name="propertySet">The property set.</param>
     internal ConversationNodeCollection(PropertySet propertySet)
     {
-        this.propertySet = propertySet;
+        _propertySet = propertySet;
     }
 
     /// <summary>
@@ -51,7 +54,7 @@ public sealed class ConversationNodeCollection : ComplexPropertyCollection<Conve
     /// <returns>ConversationItem.</returns>
     internal override ConversationNode CreateComplexProperty(string xmlElementName)
     {
-        return new ConversationNode(propertySet);
+        return new ConversationNode(_propertySet);
     }
 
     /// <summary>

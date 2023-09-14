@@ -25,15 +25,18 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an entry of an ImAddressDictionary.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
 {
-    private string imAddress;
+    private string _imAddress;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ImAddressEntry" /> class.
@@ -50,7 +53,7 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     internal ImAddressEntry(ImAddressKey key, string imAddress)
         : base(key)
     {
-        this.imAddress = imAddress;
+        this._imAddress = imAddress;
     }
 
     /// <summary>
@@ -58,8 +61,8 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     /// </summary>
     public string ImAddress
     {
-        get => imAddress;
-        set => SetFieldValue(ref imAddress, value);
+        get => _imAddress;
+        set => SetFieldValue(ref _imAddress, value);
     }
 
     /// <summary>
@@ -68,7 +71,7 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        imAddress = reader.ReadValue();
+        _imAddress = reader.ReadValue();
     }
 
     /// <summary>

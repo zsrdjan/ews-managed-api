@@ -23,47 +23,50 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an attachment by reference.
 /// </summary>
+[PublicAPI]
 public sealed class ReferenceAttachment : Attachment
 {
     /// <summary>
     ///     The AttachLongPathName of the attachment.
     /// </summary>
-    private string attachLongPathName;
+    private string _attachLongPathName;
 
     /// <summary>
     ///     The ProviderType of the attachment.
     /// </summary>
-    private string providerType;
+    private string _providerType;
 
     /// <summary>
     ///     The ProviderEndpointUrl of the attachment.
     /// </summary>
-    private string providerEndpointUrl;
+    private string _providerEndpointUrl;
 
     /// <summary>
     ///     The AttachmentThumbnailUrl of the attachment.
     /// </summary>
-    private string attachmentThumbnailUrl;
+    private string _attachmentThumbnailUrl;
 
     /// <summary>
     ///     The AttachmentPreviewUrl of the attachment.
     /// </summary>
-    private string attachmentPreviewUrl;
+    private string _attachmentPreviewUrl;
 
     /// <summary>
     ///     The PermissionType of the attachment.
     /// </summary>
-    private int permissionType;
+    private int _permissionType;
 
     /// <summary>
     ///     The AttachmentIsFolder of the attachment.
     /// </summary>
-    private bool attachmentIsFolder;
+    private bool _attachmentIsFolder;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ReferenceAttachment" /> class.
@@ -97,43 +100,43 @@ public sealed class ReferenceAttachment : Attachment
         {
             if (reader.LocalName == XmlElementNames.AttachLongPathName)
             {
-                attachLongPathName = reader.ReadElementValue();
+                _attachLongPathName = reader.ReadElementValue();
                 return true;
             }
 
             if (reader.LocalName == XmlElementNames.ProviderType)
             {
-                providerType = reader.ReadElementValue();
+                _providerType = reader.ReadElementValue();
                 return true;
             }
 
             if (reader.LocalName == XmlElementNames.ProviderEndpointUrl)
             {
-                providerEndpointUrl = reader.ReadElementValue();
+                _providerEndpointUrl = reader.ReadElementValue();
                 return true;
             }
 
             if (reader.LocalName == XmlElementNames.AttachmentThumbnailUrl)
             {
-                attachmentThumbnailUrl = reader.ReadElementValue();
+                _attachmentThumbnailUrl = reader.ReadElementValue();
                 return true;
             }
 
             if (reader.LocalName == XmlElementNames.AttachmentPreviewUrl)
             {
-                attachmentPreviewUrl = reader.ReadElementValue();
+                _attachmentPreviewUrl = reader.ReadElementValue();
                 return true;
             }
 
             if (reader.LocalName == XmlElementNames.PermissionType)
             {
-                permissionType = reader.ReadElementValue<int>();
+                _permissionType = reader.ReadElementValue<int>();
                 return true;
             }
 
             if (reader.LocalName == XmlElementNames.AttachmentIsFolder)
             {
-                attachmentIsFolder = reader.ReadElementValue<bool>();
+                _attachmentIsFolder = reader.ReadElementValue<bool>();
                 return true;
             }
         }
@@ -173,8 +176,8 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public string AttachLongPathName
     {
-        get => attachLongPathName;
-        set => SetFieldValue(ref attachLongPathName, value);
+        get => _attachLongPathName;
+        set => SetFieldValue(ref _attachLongPathName, value);
     }
 
     /// <summary>
@@ -182,8 +185,8 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public string ProviderType
     {
-        get => providerType;
-        set => SetFieldValue(ref providerType, value);
+        get => _providerType;
+        set => SetFieldValue(ref _providerType, value);
     }
 
     /// <summary>
@@ -191,8 +194,8 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public string ProviderEndpointUrl
     {
-        get => providerEndpointUrl;
-        set => SetFieldValue(ref providerEndpointUrl, value);
+        get => _providerEndpointUrl;
+        set => SetFieldValue(ref _providerEndpointUrl, value);
     }
 
     /// <summary>
@@ -200,8 +203,8 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public string AttachmentThumbnailUrl
     {
-        get => attachmentThumbnailUrl;
-        set => SetFieldValue(ref attachmentThumbnailUrl, value);
+        get => _attachmentThumbnailUrl;
+        set => SetFieldValue(ref _attachmentThumbnailUrl, value);
     }
 
     /// <summary>
@@ -209,8 +212,8 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public string AttachmentPreviewUrl
     {
-        get => attachmentPreviewUrl;
-        set => SetFieldValue(ref attachmentPreviewUrl, value);
+        get => _attachmentPreviewUrl;
+        set => SetFieldValue(ref _attachmentPreviewUrl, value);
     }
 
     /// <summary>
@@ -218,8 +221,8 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public int PermissionType
     {
-        get => permissionType;
-        set => SetFieldValue(ref permissionType, value);
+        get => _permissionType;
+        set => SetFieldValue(ref _permissionType, value);
     }
 
     /// <summary>
@@ -227,7 +230,7 @@ public sealed class ReferenceAttachment : Attachment
     /// </summary>
     public bool AttachmentIsFolder
     {
-        get => attachmentIsFolder;
-        set => SetFieldValue(ref attachmentIsFolder, value);
+        get => _attachmentIsFolder;
+        set => SetFieldValue(ref _attachmentIsFolder, value);
     }
 }

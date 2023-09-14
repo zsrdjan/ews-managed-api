@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an operation to delete an existing rule.
 /// </summary>
+[PublicAPI]
 public sealed class DeleteRuleOperation : RuleOperation
 {
     /// <summary>
     ///     Id of the inbox rule to delete.
     /// </summary>
-    private string ruleId;
+    private string _ruleId;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteRuleOperation" /> class.
@@ -48,7 +51,7 @@ public sealed class DeleteRuleOperation : RuleOperation
     /// <param name="ruleId">The Id of the inbox rule to delete.</param>
     public DeleteRuleOperation(string ruleId)
     {
-        this.ruleId = ruleId;
+        _ruleId = ruleId;
     }
 
     /// <summary>
@@ -56,9 +59,8 @@ public sealed class DeleteRuleOperation : RuleOperation
     /// </summary>
     public string RuleId
     {
-        get => ruleId;
-
-        set => SetFieldValue(ref ruleId, value);
+        get => _ruleId;
+        set => SetFieldValue(ref _ruleId, value);
     }
 
     /// <summary>
@@ -75,7 +77,7 @@ public sealed class DeleteRuleOperation : RuleOperation
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(ruleId, "RuleId");
+        EwsUtilities.ValidateParam(_ruleId, "RuleId");
     }
 
     /// <summary>

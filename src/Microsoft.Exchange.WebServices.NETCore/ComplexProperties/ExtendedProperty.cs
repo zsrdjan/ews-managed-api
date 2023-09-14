@@ -25,15 +25,17 @@
 
 using System.Text;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an extended property.
 /// </summary>
+[PublicAPI]
 public sealed class ExtendedProperty : ComplexProperty
 {
-    private ExtendedPropertyDefinition propertyDefinition;
-    private object value;
+    private object _value;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ExtendedProperty" /> class.
@@ -49,9 +51,9 @@ public sealed class ExtendedProperty : ComplexProperty
     internal ExtendedProperty(ExtendedPropertyDefinition propertyDefinition)
         : this()
     {
-        EwsUtilities.ValidateParam(propertyDefinition, "propertyDefinition");
+        EwsUtilities.ValidateParam(propertyDefinition);
 
-        this.propertyDefinition = propertyDefinition;
+        PropertyDefinition = propertyDefinition;
     }
 
     /// <summary>
@@ -64,32 +66,40 @@ public sealed class ExtendedProperty : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ExtendedFieldURI:
-                propertyDefinition = new ExtendedPropertyDefinition();
-                propertyDefinition.LoadFromXml(reader);
+            {
+                PropertyDefinition = new ExtendedPropertyDefinition();
+                PropertyDefinition.LoadFromXml(reader);
                 return true;
+            }
             case XmlElementNames.Value:
+            {
                 EwsUtilities.Assert(
                     PropertyDefinition != null,
                     "ExtendedProperty.TryReadElementFromXml",
-                    "PropertyDefintion is missing"
+                    "PropertyDefinition is missing"
                 );
 
                 var stringValue = reader.ReadElementValue();
-                value = MapiTypeConverter.ConvertToValue(PropertyDefinition.MapiType, stringValue);
+                _value = MapiTypeConverter.ConvertToValue(PropertyDefinition.MapiType, stringValue);
                 return true;
+            }
             case XmlElementNames.Values:
+            {
                 EwsUtilities.Assert(
                     PropertyDefinition != null,
                     "ExtendedProperty.TryReadElementFromXml",
-                    "PropertyDefintion is missing"
+                    "PropertyDefinition is missing"
                 );
 
                 var stringList = new StringList(XmlElementNames.Value);
                 stringList.LoadFromXml(reader, reader.LocalName);
-                value = MapiTypeConverter.ConvertToValue(PropertyDefinition.MapiType, stringList);
+                _value = MapiTypeConverter.ConvertToValue(PropertyDefinition.MapiType, stringList);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -129,19 +139,19 @@ public sealed class ExtendedProperty : ComplexProperty
     /// <summary>
     ///     Gets the definition of the extended property.
     /// </summary>
-    public ExtendedPropertyDefinition PropertyDefinition => propertyDefinition;
+    public ExtendedPropertyDefinition PropertyDefinition { get; private set; }
 
     /// <summary>
     ///     Gets or sets the value of the extended property.
     /// </summary>
     public object Value
     {
-        get => value;
+        get => _value;
 
         set
         {
-            EwsUtilities.ValidateParam(value, "value");
-            SetFieldValue(ref this.value, MapiTypeConverter.ChangeType(PropertyDefinition.MapiType, value));
+            EwsUtilities.ValidateParam(value);
+            SetFieldValue(ref _value, MapiTypeConverter.ChangeType(PropertyDefinition.MapiType, value));
         }
     }
 
@@ -153,21 +163,20 @@ public sealed class ExtendedProperty : ComplexProperty
     {
         if (MapiTypeConverter.IsArrayType(PropertyDefinition.MapiType))
         {
-            var array = Value as Array;
-            if (array == null)
+            if (Value is not Array array)
             {
                 return string.Empty;
             }
 
             var sb = new StringBuilder();
-            sb.Append("[");
+            sb.Append('[');
             for (var index = array.GetLowerBound(0); index <= array.GetUpperBound(0); index++)
             {
                 sb.Append(MapiTypeConverter.ConvertToString(PropertyDefinition.MapiType, array.GetValue(index)));
-                sb.Append(",");
+                sb.Append(',');
             }
 
-            sb.Append("]");
+            sb.Append(']');
 
             return sb.ToString();
         }
@@ -185,10 +194,9 @@ public sealed class ExtendedProperty : ComplexProperty
     ///     otherwise, false.
     /// </returns>
     /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
-        var other = obj as ExtendedProperty;
-        if ((other != null) && other.PropertyDefinition.Equals(PropertyDefinition))
+        if (obj is ExtendedProperty other && other.PropertyDefinition.Equals(PropertyDefinition))
         {
             return GetStringValue().Equals(other.GetStringValue());
         }
@@ -205,7 +213,7 @@ public sealed class ExtendedProperty : ComplexProperty
     public override int GetHashCode()
     {
         return string.Concat(
-                (PropertyDefinition != null) ? PropertyDefinition.GetPrintableName() : string.Empty,
+                PropertyDefinition != null ? PropertyDefinition.GetPrintableName() : string.Empty,
                 GetStringValue()
             )
             .GetHashCode();

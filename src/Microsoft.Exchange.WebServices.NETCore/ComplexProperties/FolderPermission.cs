@@ -23,156 +23,166 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a permission on a folder.
 /// </summary>
+[PublicAPI]
 public sealed class FolderPermission : ComplexProperty
 {
     #region Default permissions
 
-    private static readonly LazyMember<Dictionary<FolderPermissionLevel, FolderPermission>> defaultPermissions =
-        new LazyMember<Dictionary<FolderPermissionLevel, FolderPermission>>(
-            delegate
+    private static readonly LazyMember<Dictionary<FolderPermissionLevel, FolderPermission>> DefaultPermissions = new(
+        () => new Dictionary<FolderPermissionLevel, FolderPermission>
+        {
             {
-                var result = new Dictionary<FolderPermissionLevel, FolderPermission>();
-
-                var permission = new FolderPermission();
-                permission.canCreateItems = false;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.None;
-                permission.editItems = PermissionScope.None;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = false;
-                permission.readItems = FolderPermissionReadAccess.None;
-
-                result.Add(FolderPermissionLevel.None, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.None;
-                permission.editItems = PermissionScope.None;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.None;
-
-                result.Add(FolderPermissionLevel.Contributor, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = false;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.None;
-                permission.editItems = PermissionScope.None;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.Reviewer, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.Owned;
-                permission.editItems = PermissionScope.None;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.NoneditingAuthor, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.Owned;
-                permission.editItems = PermissionScope.Owned;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.Author, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = true;
-                permission.deleteItems = PermissionScope.Owned;
-                permission.editItems = PermissionScope.Owned;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.PublishingAuthor, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.All;
-                permission.editItems = PermissionScope.All;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.Editor, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = true;
-                permission.deleteItems = PermissionScope.All;
-                permission.editItems = PermissionScope.All;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.PublishingEditor, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = true;
-                permission.canCreateSubFolders = true;
-                permission.deleteItems = PermissionScope.All;
-                permission.editItems = PermissionScope.All;
-                permission.isFolderContact = true;
-                permission.isFolderOwner = true;
-                permission.isFolderVisible = true;
-                permission.readItems = FolderPermissionReadAccess.FullDetails;
-
-                result.Add(FolderPermissionLevel.Owner, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = false;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.None;
-                permission.editItems = PermissionScope.None;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = false;
-                permission.readItems = FolderPermissionReadAccess.TimeOnly;
-
-                result.Add(FolderPermissionLevel.FreeBusyTimeOnly, permission);
-
-                permission = new FolderPermission();
-                permission.canCreateItems = false;
-                permission.canCreateSubFolders = false;
-                permission.deleteItems = PermissionScope.None;
-                permission.editItems = PermissionScope.None;
-                permission.isFolderContact = false;
-                permission.isFolderOwner = false;
-                permission.isFolderVisible = false;
-                permission.readItems = FolderPermissionReadAccess.TimeAndSubjectAndLocation;
-
-                result.Add(FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation, permission);
-
-                return result;
-            }
-        );
+                FolderPermissionLevel.None, new FolderPermission
+                {
+                    _canCreateItems = false,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.None,
+                    _editItems = PermissionScope.None,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = false,
+                    _readItems = FolderPermissionReadAccess.None,
+                }
+            },
+            {
+                FolderPermissionLevel.Contributor, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.None,
+                    _editItems = PermissionScope.None,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.None,
+                }
+            },
+            {
+                FolderPermissionLevel.Reviewer, new FolderPermission
+                {
+                    _canCreateItems = false,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.None,
+                    _editItems = PermissionScope.None,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.NoneditingAuthor, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.Owned,
+                    _editItems = PermissionScope.None,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.Author, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.Owned,
+                    _editItems = PermissionScope.Owned,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.PublishingAuthor, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = true,
+                    _deleteItems = PermissionScope.Owned,
+                    _editItems = PermissionScope.Owned,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.Editor, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.All,
+                    _editItems = PermissionScope.All,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.PublishingEditor, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = true,
+                    _deleteItems = PermissionScope.All,
+                    _editItems = PermissionScope.All,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.Owner, new FolderPermission
+                {
+                    _canCreateItems = true,
+                    _canCreateSubFolders = true,
+                    _deleteItems = PermissionScope.All,
+                    _editItems = PermissionScope.All,
+                    _isFolderContact = true,
+                    _isFolderOwner = true,
+                    _isFolderVisible = true,
+                    _readItems = FolderPermissionReadAccess.FullDetails,
+                }
+            },
+            {
+                FolderPermissionLevel.FreeBusyTimeOnly, new FolderPermission
+                {
+                    _canCreateItems = false,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.None,
+                    _editItems = PermissionScope.None,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = false,
+                    _readItems = FolderPermissionReadAccess.TimeOnly,
+                }
+            },
+            {
+                FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation, new FolderPermission
+                {
+                    _canCreateItems = false,
+                    _canCreateSubFolders = false,
+                    _deleteItems = PermissionScope.None,
+                    _editItems = PermissionScope.None,
+                    _isFolderContact = false,
+                    _isFolderOwner = false,
+                    _isFolderVisible = false,
+                    _readItems = FolderPermissionReadAccess.TimeAndSubjectAndLocation,
+                }
+            },
+        }
+    );
 
     #endregion
 
@@ -180,49 +190,49 @@ public sealed class FolderPermission : ComplexProperty
     /// <summary>
     ///     Variants of pre-defined permission levels that Outlook also displays with the same levels.
     /// </summary>
-    private static readonly LazyMember<List<FolderPermission>> levelVariants = new LazyMember<List<FolderPermission>>(
-        delegate
+    private static readonly LazyMember<List<FolderPermission>> LevelVariants = new(
+        () =>
         {
             var results = new List<FolderPermission>();
 
-            var permissionNone = defaultPermissions.Member[FolderPermissionLevel.None];
-            var permissionOwner = defaultPermissions.Member[FolderPermissionLevel.Owner];
+            var permissionNone = DefaultPermissions.Member[FolderPermissionLevel.None];
+            var permissionOwner = DefaultPermissions.Member[FolderPermissionLevel.Owner];
 
             // PermissionLevelNoneOption1
             var permission = permissionNone.Clone();
-            permission.isFolderVisible = true;
+            permission._isFolderVisible = true;
             results.Add(permission);
 
             // PermissionLevelNoneOption2
             permission = permissionNone.Clone();
-            permission.isFolderContact = true;
+            permission._isFolderContact = true;
             results.Add(permission);
 
             // PermissionLevelNoneOption3
             permission = permissionNone.Clone();
-            permission.isFolderContact = true;
-            permission.isFolderVisible = true;
+            permission._isFolderContact = true;
+            permission._isFolderVisible = true;
             results.Add(permission);
 
             // PermissionLevelOwnerOption1
             permission = permissionOwner.Clone();
-            permission.isFolderContact = false;
+            permission._isFolderContact = false;
             results.Add(permission);
 
             return results;
         }
     );
 
-    private UserId userId;
-    private bool canCreateItems;
-    private bool canCreateSubFolders;
-    private bool isFolderOwner;
-    private bool isFolderVisible;
-    private bool isFolderContact;
-    private PermissionScope editItems;
-    private PermissionScope deleteItems;
-    private FolderPermissionReadAccess readItems;
-    private FolderPermissionLevel permissionLevel;
+    private UserId? _userId;
+    private bool _canCreateItems;
+    private bool _canCreateSubFolders;
+    private bool _isFolderOwner;
+    private bool _isFolderVisible;
+    private bool _isFolderContact;
+    private PermissionScope _editItems;
+    private PermissionScope _deleteItems;
+    private FolderPermissionReadAccess _readItems;
+    private FolderPermissionLevel _permissionLevel;
 
     /// <summary>
     ///     Determines whether the specified folder permission is the same as this one. The comparison
@@ -261,16 +271,16 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     private void AdjustPermissionLevel()
     {
-        foreach (var keyValuePair in defaultPermissions.Member)
+        foreach (var keyValuePair in DefaultPermissions.Member)
         {
             if (IsEqualTo(keyValuePair.Value))
             {
-                permissionLevel = keyValuePair.Key;
+                _permissionLevel = keyValuePair.Key;
                 return;
             }
         }
 
-        permissionLevel = FolderPermissionLevel.Custom;
+        _permissionLevel = FolderPermissionLevel.Custom;
     }
 
     /// <summary>
@@ -280,14 +290,14 @@ public sealed class FolderPermission : ComplexProperty
     /// <param name="permission">The folder permission to copy the values from.</param>
     private void AssignIndividualPermissions(FolderPermission permission)
     {
-        canCreateItems = permission.CanCreateItems;
-        canCreateSubFolders = permission.CanCreateSubFolders;
-        isFolderContact = permission.IsFolderContact;
-        isFolderOwner = permission.IsFolderOwner;
-        isFolderVisible = permission.IsFolderVisible;
-        editItems = permission.EditItems;
-        deleteItems = permission.DeleteItems;
-        readItems = permission.ReadItems;
+        _canCreateItems = permission.CanCreateItems;
+        _canCreateSubFolders = permission.CanCreateSubFolders;
+        _isFolderContact = permission.IsFolderContact;
+        _isFolderOwner = permission.IsFolderOwner;
+        _isFolderVisible = permission.IsFolderVisible;
+        _editItems = permission.EditItems;
+        _deleteItems = permission.DeleteItems;
+        _readItems = permission.ReadItems;
     }
 
     /// <summary>
@@ -305,9 +315,9 @@ public sealed class FolderPermission : ComplexProperty
     /// <param name="permissionLevel">The level of the permission.</param>
     public FolderPermission(UserId userId, FolderPermissionLevel permissionLevel)
     {
-        EwsUtilities.ValidateParam(userId, "userId");
+        EwsUtilities.ValidateParam(userId);
 
-        this.userId = userId;
+        _userId = userId;
         PermissionLevel = permissionLevel;
     }
 
@@ -318,7 +328,7 @@ public sealed class FolderPermission : ComplexProperty
     /// <param name="permissionLevel">The level of the permission.</param>
     public FolderPermission(string primarySmtpAddress, FolderPermissionLevel permissionLevel)
     {
-        userId = new UserId(primarySmtpAddress);
+        _userId = new UserId(primarySmtpAddress);
         PermissionLevel = permissionLevel;
     }
 
@@ -329,7 +339,7 @@ public sealed class FolderPermission : ComplexProperty
     /// <param name="permissionLevel">The level of the permission.</param>
     public FolderPermission(StandardUser standardUser, FolderPermissionLevel permissionLevel)
     {
-        userId = new UserId(standardUser);
+        _userId = new UserId(standardUser);
         PermissionLevel = permissionLevel;
     }
 
@@ -351,19 +361,19 @@ public sealed class FolderPermission : ComplexProperty
         // If this permission is to be used for a non-calendar folder make sure that read access and permission level aren't set to Calendar-only values
         if (!isCalendarFolder)
         {
-            if ((readItems == FolderPermissionReadAccess.TimeAndSubjectAndLocation) ||
-                (readItems == FolderPermissionReadAccess.TimeOnly))
+            if ((_readItems == FolderPermissionReadAccess.TimeAndSubjectAndLocation) ||
+                (_readItems == FolderPermissionReadAccess.TimeOnly))
             {
                 throw new ServiceLocalException(
-                    string.Format(Strings.ReadAccessInvalidForNonCalendarFolder, readItems)
+                    string.Format(Strings.ReadAccessInvalidForNonCalendarFolder, _readItems)
                 );
             }
 
-            if ((permissionLevel == FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation) ||
-                (permissionLevel == FolderPermissionLevel.FreeBusyTimeOnly))
+            if ((_permissionLevel == FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation) ||
+                (_permissionLevel == FolderPermissionLevel.FreeBusyTimeOnly))
             {
                 throw new ServiceLocalException(
-                    string.Format(Strings.PermissionLevelInvalidForNonCalendarFolder, permissionLevel)
+                    string.Format(Strings.PermissionLevelInvalidForNonCalendarFolder, _permissionLevel)
                 );
             }
         }
@@ -372,22 +382,22 @@ public sealed class FolderPermission : ComplexProperty
     /// <summary>
     ///     Gets the Id of the user the permission applies to.
     /// </summary>
-    public UserId UserId
+    public UserId? UserId
     {
-        get => userId;
+        get => _userId;
 
         set
         {
-            if (userId != null)
+            if (_userId != null)
             {
-                userId.OnChange -= PropertyChanged;
+                _userId.OnChange -= PropertyChanged;
             }
 
-            SetFieldValue(ref userId, value);
+            SetFieldValue(ref _userId, value);
 
-            if (userId != null)
+            if (_userId != null)
             {
-                userId.OnChange += PropertyChanged;
+                _userId.OnChange += PropertyChanged;
             }
         }
     }
@@ -397,11 +407,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public bool CanCreateItems
     {
-        get => canCreateItems;
-
+        get => _canCreateItems;
         set
         {
-            SetFieldValue(ref canCreateItems, value);
+            SetFieldValue(ref _canCreateItems, value);
             AdjustPermissionLevel();
         }
     }
@@ -411,11 +420,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public bool CanCreateSubFolders
     {
-        get => canCreateSubFolders;
-
+        get => _canCreateSubFolders;
         set
         {
-            SetFieldValue(ref canCreateSubFolders, value);
+            SetFieldValue(ref _canCreateSubFolders, value);
             AdjustPermissionLevel();
         }
     }
@@ -425,11 +433,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public bool IsFolderOwner
     {
-        get => isFolderOwner;
-
+        get => _isFolderOwner;
         set
         {
-            SetFieldValue(ref isFolderOwner, value);
+            SetFieldValue(ref _isFolderOwner, value);
             AdjustPermissionLevel();
         }
     }
@@ -439,11 +446,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public bool IsFolderVisible
     {
-        get => isFolderVisible;
-
+        get => _isFolderVisible;
         set
         {
-            SetFieldValue(ref isFolderVisible, value);
+            SetFieldValue(ref _isFolderVisible, value);
             AdjustPermissionLevel();
         }
     }
@@ -453,11 +459,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public bool IsFolderContact
     {
-        get => isFolderContact;
-
+        get => _isFolderContact;
         set
         {
-            SetFieldValue(ref isFolderContact, value);
+            SetFieldValue(ref _isFolderContact, value);
             AdjustPermissionLevel();
         }
     }
@@ -467,11 +472,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public PermissionScope EditItems
     {
-        get => editItems;
-
+        get => _editItems;
         set
         {
-            SetFieldValue(ref editItems, value);
+            SetFieldValue(ref _editItems, value);
             AdjustPermissionLevel();
         }
     }
@@ -481,11 +485,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public PermissionScope DeleteItems
     {
-        get => deleteItems;
-
+        get => _deleteItems;
         set
         {
-            SetFieldValue(ref deleteItems, value);
+            SetFieldValue(ref _deleteItems, value);
             AdjustPermissionLevel();
         }
     }
@@ -495,11 +498,10 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public FolderPermissionReadAccess ReadItems
     {
-        get => readItems;
-
+        get => _readItems;
         set
         {
-            SetFieldValue(ref readItems, value);
+            SetFieldValue(ref _readItems, value);
             AdjustPermissionLevel();
         }
     }
@@ -509,19 +511,18 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     public FolderPermissionLevel PermissionLevel
     {
-        get => permissionLevel;
-
+        get => _permissionLevel;
         set
         {
-            if (permissionLevel != value)
+            if (_permissionLevel != value)
             {
                 if (value == FolderPermissionLevel.Custom)
                 {
                     throw new ServiceLocalException(Strings.CannotSetPermissionLevelToCustom);
                 }
 
-                AssignIndividualPermissions(defaultPermissions.Member[value]);
-                SetFieldValue(ref permissionLevel, value);
+                AssignIndividualPermissions(DefaultPermissions.Member[value]);
+                SetFieldValue(ref _permissionLevel, value);
             }
         }
     }
@@ -535,9 +536,9 @@ public sealed class FolderPermission : ComplexProperty
         {
             // If permission level is set to Custom, see if there's a variant
             // that Outlook would map to the same permission level.
-            if (permissionLevel == FolderPermissionLevel.Custom)
+            if (_permissionLevel == FolderPermissionLevel.Custom)
             {
-                foreach (var variant in levelVariants.Member)
+                foreach (var variant in LevelVariants.Member)
                 {
                     if (IsEqualTo(variant))
                     {
@@ -546,7 +547,7 @@ public sealed class FolderPermission : ComplexProperty
                 }
             }
 
-            return permissionLevel;
+            return _permissionLevel;
         }
     }
 
@@ -569,39 +570,61 @@ public sealed class FolderPermission : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.UserId:
+            {
                 UserId = new UserId();
                 UserId.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.CanCreateItems:
-                canCreateItems = reader.ReadValue<bool>();
+            {
+                _canCreateItems = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.CanCreateSubFolders:
-                canCreateSubFolders = reader.ReadValue<bool>();
+            {
+                _canCreateSubFolders = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsFolderOwner:
-                isFolderOwner = reader.ReadValue<bool>();
+            {
+                _isFolderOwner = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsFolderVisible:
-                isFolderVisible = reader.ReadValue<bool>();
+            {
+                _isFolderVisible = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsFolderContact:
-                isFolderContact = reader.ReadValue<bool>();
+            {
+                _isFolderContact = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.EditItems:
-                editItems = reader.ReadValue<PermissionScope>();
+            {
+                _editItems = reader.ReadValue<PermissionScope>();
                 return true;
+            }
             case XmlElementNames.DeleteItems:
-                deleteItems = reader.ReadValue<PermissionScope>();
+            {
+                _deleteItems = reader.ReadValue<PermissionScope>();
                 return true;
+            }
             case XmlElementNames.ReadItems:
-                readItems = reader.ReadValue<FolderPermissionReadAccess>();
+            {
+                _readItems = reader.ReadValue<FolderPermissionReadAccess>();
                 return true;
+            }
             case XmlElementNames.PermissionLevel:
             case XmlElementNames.CalendarPermissionLevel:
-                permissionLevel = reader.ReadValue<FolderPermissionLevel>();
+            {
+                _permissionLevel = reader.ReadValue<FolderPermissionLevel>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

@@ -23,27 +23,23 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a user's Out of Office (OOF) settings.
 /// </summary>
+[PublicAPI]
 public sealed class OofSettings : ComplexProperty, ISelfValidate
 {
-    private OofState state;
-    private OofExternalAudience externalAudience;
-    private OofExternalAudience allowExternalOof;
-    private TimeWindow duration;
-    private OofReply internalReply;
-    private OofReply externalReply;
-
     /// <summary>
     ///     Serializes an OofReply. Emits an empty OofReply in case the one passed in is null.
     /// </summary>
     /// <param name="oofReply">The oof reply.</param>
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">Name of the XML element.</param>
-    private void SerializeOofReply(OofReply oofReply, EwsServiceXmlWriter writer, string xmlElementName)
+    private static void SerializeOofReply(OofReply? oofReply, EwsServiceXmlWriter writer, string xmlElementName)
     {
         if (oofReply != null)
         {
@@ -72,25 +68,37 @@ public sealed class OofSettings : ComplexProperty, ISelfValidate
         switch (reader.LocalName)
         {
             case XmlElementNames.OofState:
-                state = reader.ReadValue<OofState>();
+            {
+                State = reader.ReadValue<OofState>();
                 return true;
+            }
             case XmlElementNames.ExternalAudience:
-                externalAudience = reader.ReadValue<OofExternalAudience>();
+            {
+                ExternalAudience = reader.ReadValue<OofExternalAudience>();
                 return true;
+            }
             case XmlElementNames.Duration:
-                duration = new TimeWindow();
-                duration.LoadFromXml(reader);
+            {
+                Duration = new TimeWindow();
+                Duration.LoadFromXml(reader);
                 return true;
+            }
             case XmlElementNames.InternalReply:
-                internalReply = new OofReply();
-                internalReply.LoadFromXml(reader, reader.LocalName);
+            {
+                InternalReply = new OofReply();
+                InternalReply.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ExternalReply:
-                externalReply = new OofReply();
-                externalReply.LoadFromXml(reader, reader.LocalName);
+            {
+                ExternalReply = new OofReply();
+                ExternalReply.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -119,56 +127,32 @@ public sealed class OofSettings : ComplexProperty, ISelfValidate
     ///     Gets or sets the user's OOF state.
     /// </summary>
     /// <value>The user's OOF state.</value>
-    public OofState State
-    {
-        get => state;
-        set => state = value;
-    }
+    public OofState State { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating who should receive external OOF messages.
     /// </summary>
-    public OofExternalAudience ExternalAudience
-    {
-        get => externalAudience;
-        set => externalAudience = value;
-    }
+    public OofExternalAudience ExternalAudience { get; set; }
 
     /// <summary>
     ///     Gets or sets the duration of the OOF status when State is set to OofState.Scheduled.
     /// </summary>
-    public TimeWindow Duration
-    {
-        get => duration;
-        set => duration = value;
-    }
+    public TimeWindow Duration { get; set; }
 
     /// <summary>
     ///     Gets or sets the OOF response sent other users in the user's domain or trusted domain.
     /// </summary>
-    public OofReply InternalReply
-    {
-        get => internalReply;
-        set => internalReply = value;
-    }
+    public OofReply InternalReply { get; set; }
 
     /// <summary>
     ///     Gets or sets the OOF response sent to addresses outside the user's domain or trusted domain.
     /// </summary>
-    public OofReply ExternalReply
-    {
-        get => externalReply;
-        set => externalReply = value;
-    }
+    public OofReply ExternalReply { get; set; }
 
     /// <summary>
     ///     Gets a value indicating the authorized external OOF notifications.
     /// </summary>
-    public OofExternalAudience AllowExternalOof
-    {
-        get => allowExternalOof;
-        internal set => allowExternalOof = value;
-    }
+    public OofExternalAudience AllowExternalOof { get; internal set; }
 
 
     #region ISelfValidate Members
@@ -185,7 +169,7 @@ public sealed class OofSettings : ComplexProperty, ISelfValidate
                 throw new ArgumentException(Strings.DurationMustBeSpecifiedWhenScheduled);
             }
 
-            EwsUtilities.ValidateParam(Duration, "Duration");
+            EwsUtilities.ValidateParam(Duration);
         }
     }
 

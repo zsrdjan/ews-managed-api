@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -25,37 +25,35 @@
 
 using System.Globalization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the OutOfOfficeInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class OutOfOfficeInsightValue : InsightValue
 {
-    private DateTime startTime;
-    private DateTime endTime;
-    private string culture = CultureInfo.CurrentCulture.Name;
-    private string message;
-
     /// <summary>
     ///     Get the start date and time.
     /// </summary>
-    public DateTime StartTime => startTime;
+    public DateTime StartTime { get; private set; }
 
     /// <summary>
     ///     Get the end date and time.
     /// </summary>
-    public DateTime EndTime => endTime;
+    public DateTime EndTime { get; private set; }
 
     /// <summary>
     ///     Get the culture of the reply.
     /// </summary>
-    public string Culture => culture;
+    public string Culture { get; private set; } = CultureInfo.CurrentCulture.Name;
 
     /// <summary>
     ///     Get the reply message.
     /// </summary>
-    public string Message => message;
+    public string Message { get; private set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -67,22 +65,34 @@ public sealed class OutOfOfficeInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.StartTime:
-                startTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
+            {
+                StartTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.StartTime).Value;
                 break;
+            }
             case XmlElementNames.EndTime:
-                endTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
+            {
+                EndTime = reader.ReadElementValueAsDateTime(XmlNamespace.Types, XmlElementNames.EndTime).Value;
                 break;
+            }
             case XmlElementNames.Culture:
-                culture = reader.ReadElementValue();
+            {
+                Culture = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Message:
-                message = reader.ReadElementValue();
+            {
+                Message = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

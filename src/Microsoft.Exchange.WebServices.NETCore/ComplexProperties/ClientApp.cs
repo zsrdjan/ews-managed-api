@@ -25,11 +25,14 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a app in GetAppManifests response.
 /// </summary>
+[PublicAPI]
 public sealed class ClientApp : ComplexProperty
 {
     /// <summary>
@@ -57,15 +60,13 @@ public sealed class ClientApp : ComplexProperty
     /// <returns>The xml document</returns>
     internal static SafeXmlDocument ReadToXmlDocument(EwsServiceXmlReader reader)
     {
-        using (var stream = new MemoryStream())
-        {
-            reader.ReadBase64ElementValue(stream);
-            stream.Position = 0;
+        using var stream = new MemoryStream();
+        reader.ReadBase64ElementValue(stream);
+        stream.Position = 0;
 
-            var manifest = new SafeXmlDocument();
-            manifest.Load(stream);
-            return manifest;
-        }
+        var manifest = new SafeXmlDocument();
+        manifest.Load(stream);
+        return manifest;
     }
 
     /// <summary>
@@ -78,16 +79,20 @@ public sealed class ClientApp : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Manifest:
+            {
                 Manifest = ReadToXmlDocument(reader);
                 return true;
-
+            }
             case XmlElementNames.Metadata:
+            {
                 Metadata = new ClientAppMetadata();
                 Metadata.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Metadata);
                 return true;
-
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 }

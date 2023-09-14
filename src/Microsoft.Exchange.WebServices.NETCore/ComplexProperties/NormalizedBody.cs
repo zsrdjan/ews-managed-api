@@ -23,17 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the normalized body of an item - the HTML fragment representation of the body.
 /// </summary>
+[PublicAPI]
 public sealed class NormalizedBody : ComplexProperty
 {
-    private BodyType bodyType;
-    private string text;
-    private bool isTruncated;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="NormalizedBody" /> class.
     /// </summary>
@@ -48,7 +47,7 @@ public sealed class NormalizedBody : ComplexProperty
     /// <returns>A string containing the text of the UniqueBody.</returns>
     public static implicit operator string(NormalizedBody messageBody)
     {
-        EwsUtilities.ValidateParam(messageBody, "messageBody");
+        EwsUtilities.ValidateParam(messageBody);
         return messageBody.Text;
     }
 
@@ -58,12 +57,12 @@ public sealed class NormalizedBody : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
+        BodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
 
         var attributeValue = reader.ReadAttributeValue(XmlAttributeNames.IsTruncated);
         if (!string.IsNullOrEmpty(attributeValue))
         {
-            isTruncated = bool.Parse(attributeValue);
+            IsTruncated = bool.Parse(attributeValue);
         }
     }
 
@@ -73,7 +72,7 @@ public sealed class NormalizedBody : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        text = reader.ReadValue();
+        Text = reader.ReadValue();
     }
 
     /// <summary>
@@ -100,32 +99,17 @@ public sealed class NormalizedBody : ComplexProperty
     /// <summary>
     ///     Gets the type of the normalized body's text.
     /// </summary>
-    public BodyType BodyType
-    {
-        get => bodyType;
-
-        internal set => bodyType = value;
-    }
+    public BodyType BodyType { get; internal set; }
 
     /// <summary>
     ///     Gets the text of the normalized body.
     /// </summary>
-    public string Text
-    {
-        get => text;
-
-        internal set => text = value;
-    }
+    public string? Text { get; internal set; }
 
     /// <summary>
     ///     Gets whether the body is truncated.
     /// </summary>
-    public bool IsTruncated
-    {
-        get => isTruncated;
-
-        internal set => isTruncated = value;
-    }
+    public bool IsTruncated { get; internal set; }
 
 
     #region Object method overrides
@@ -138,7 +122,7 @@ public sealed class NormalizedBody : ComplexProperty
     /// </returns>
     public override string ToString()
     {
-        return (Text == null) ? string.Empty : Text;
+        return Text ?? string.Empty;
     }
 
     #endregion

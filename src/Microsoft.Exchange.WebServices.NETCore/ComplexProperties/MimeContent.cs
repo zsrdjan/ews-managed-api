@@ -25,11 +25,14 @@
 
 using System.Text;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the MIME content of an item.
 /// </summary>
+[PublicAPI]
 public sealed class MimeContent : MimeContentBase
 {
     /// <summary>

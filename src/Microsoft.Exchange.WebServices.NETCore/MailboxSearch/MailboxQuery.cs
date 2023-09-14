@@ -92,7 +92,7 @@ public sealed class MailboxSearchScope
     ///     Gets the extended data.
     /// </summary>
     /// <value>The extended data.</value>
-    public ExtendedAttributes ExtendedAttributes { get; private set; }
+    public ExtendedAttributes? ExtendedAttributes { get; private set; }
 }
 
 /// <summary>

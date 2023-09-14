@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an e-mail address.
 /// </summary>
+[PublicAPI]
 public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
 {
     /// <summary>
@@ -45,7 +48,7 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public PersonaEmailAddress(string smtpAddress)
         : this()
     {
-        EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
+        EwsUtilities.ValidateParam(smtpAddress);
         Address = smtpAddress;
     }
 
@@ -57,7 +60,7 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public PersonaEmailAddress(string name, string smtpAddress)
         : this(smtpAddress)
     {
-        EwsUtilities.ValidateParam(name, "name");
+        EwsUtilities.ValidateParam(name);
         Name = name;
     }
 
@@ -67,7 +70,6 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public string Name
     {
         get => _emailAddress.Name;
-
         set => _emailAddress.Name = value;
     }
 
@@ -78,7 +80,6 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public string Address
     {
         get => _emailAddress.Address;
-
         set => _emailAddress.Address = value;
     }
 
@@ -88,7 +89,6 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public string RoutingType
     {
         get => _emailAddress.RoutingType;
-
         set => _emailAddress.RoutingType = value;
     }
 
@@ -98,17 +98,15 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public MailboxType? MailboxType
     {
         get => _emailAddress.MailboxType;
-
         set => _emailAddress.MailboxType = value;
     }
 
     /// <summary>
     ///     PersonaEmailAddress Id accessors
     /// </summary>
-    public ItemId Id
+    public ItemId? Id
     {
         get => _emailAddress.Id;
-
         set => _emailAddress.Id = value;
     }
 
@@ -144,9 +142,12 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
             switch (reader.LocalName)
             {
                 case XmlElementNames.Name:
+                {
                     Name = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.EmailAddress:
+                {
                     Address = reader.ReadElementValue();
 
                     // Process the next node before returning. Otherwise, the current </EmailAddress> node
@@ -159,21 +160,32 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
                     }
 
                     break;
+                }
                 case XmlElementNames.RoutingType:
+                {
                     RoutingType = reader.ReadElementValue();
                     break;
+                }
                 case XmlElementNames.MailboxType:
+                {
                     MailboxType = reader.ReadElementValue<MailboxType>();
                     break;
+                }
                 case XmlElementNames.ItemId:
+                {
                     Id = new ItemId();
                     Id.LoadFromXml(reader, reader.LocalName);
                     break;
+                }
                 case XmlElementNames.OriginalDisplayName:
+                {
                     OriginalDisplayName = reader.ReadElementValue();
                     break;
+                }
                 default:
+                {
                     return false;
+                }
             }
 
             return true;

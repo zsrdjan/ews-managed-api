@@ -24,12 +24,16 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a dictionary of Instant Messaging addresses.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAddressEntry>
 {
@@ -56,7 +60,7 @@ public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAdd
     /// </summary>
     /// <param name="key">The key of the Instant Messaging address to get or set.</param>
     /// <returns>The Instant Messaging address at the specified key.</returns>
-    public string this[ImAddressKey key]
+    public string? this[ImAddressKey key]
     {
         get => Entries[key].ImAddress;
 
@@ -68,9 +72,7 @@ public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAdd
             }
             else
             {
-                ImAddressEntry entry;
-
-                if (Entries.TryGetValue(key, out entry))
+                if (Entries.TryGetValue(key, out var entry))
                 {
                     entry.ImAddress = value;
                     Changed();
@@ -95,11 +97,9 @@ public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAdd
     /// <returns>
     ///     true if the Dictionary contains an IM address associated with the specified key; otherwise, false.
     /// </returns>
-    public bool TryGetValue(ImAddressKey key, out string imAddress)
+    public bool TryGetValue(ImAddressKey key, [MaybeNullWhen(false)] out string imAddress)
     {
-        ImAddressEntry entry = null;
-
-        if (Entries.TryGetValue(key, out entry))
+        if (Entries.TryGetValue(key, out var entry))
         {
             imAddress = entry.ImAddress;
 
@@ -107,7 +107,6 @@ public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAdd
         }
 
         imAddress = null;
-
         return false;
     }
 }

@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the body of a message.
 /// </summary>
+[PublicAPI]
 public class MessageBody : ComplexProperty
 {
-    private BodyType bodyType;
-    private string text;
+    private BodyType _bodyType;
+    private string _text;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MessageBody" /> class.
@@ -48,8 +51,8 @@ public class MessageBody : ComplexProperty
     public MessageBody(BodyType bodyType, string text)
         : this()
     {
-        this.bodyType = bodyType;
-        this.text = text;
+        _bodyType = bodyType;
+        _text = text;
     }
 
     /// <summary>
@@ -78,7 +81,7 @@ public class MessageBody : ComplexProperty
     /// <returns>A string containing the text of the MessageBody.</returns>
     public static implicit operator string(MessageBody messageBody)
     {
-        EwsUtilities.ValidateParam(messageBody, "messageBody");
+        EwsUtilities.ValidateParam(messageBody);
 
         return messageBody.Text;
     }
@@ -89,7 +92,7 @@ public class MessageBody : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
+        _bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
     }
 
     /// <summary>
@@ -98,7 +101,7 @@ public class MessageBody : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        text = reader.ReadValue();
+        _text = reader.ReadValue();
     }
 
     /// <summary>
@@ -127,17 +130,17 @@ public class MessageBody : ComplexProperty
     /// </summary>
     public BodyType BodyType
     {
-        get => bodyType;
-        set => SetFieldValue(ref bodyType, value);
+        get => _bodyType;
+        set => SetFieldValue(ref _bodyType, value);
     }
 
     /// <summary>
     ///     Gets or sets the text of the message body.
     /// </summary>
-    public string Text
+    public string? Text
     {
-        get => text;
-        set => SetFieldValue(ref text, value);
+        get => _text;
+        set => SetFieldValue(ref _text, value);
     }
 
 
@@ -151,7 +154,7 @@ public class MessageBody : ComplexProperty
     /// </returns>
     public override string ToString()
     {
-        return (Text == null) ? string.Empty : Text;
+        return Text ?? string.Empty;
     }
 
     #endregion

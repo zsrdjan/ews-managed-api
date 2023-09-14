@@ -37,13 +37,13 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     internal GetPeopleInsightsRequest(ExchangeService service)
         : base(service)
     {
-        Emailaddresses = new List<string>();
+        EmailAddresses = new List<string>();
     }
 
     /// <summary>
     ///     Gets the collection of Emailaddress.
     /// </summary>
-    internal List<string> Emailaddresses { get; set; }
+    internal List<string> EmailAddresses { get; set; }
 
     /// <summary>
     ///     Validate the request
@@ -53,7 +53,7 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
         base.Validate();
 
         // TODO - Validate each emailaddress
-        EwsUtilities.ValidateParamCollection(Emailaddresses, "EmailAddresses");
+        EwsUtilities.ValidateParamCollection(EmailAddresses);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.EmailAddresses);
 
-        foreach (var emailAddress in Emailaddresses)
+        foreach (var emailAddress in EmailAddresses)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.String, emailAddress);
         }

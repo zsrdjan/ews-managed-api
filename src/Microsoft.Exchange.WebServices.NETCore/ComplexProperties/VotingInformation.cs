@@ -25,16 +25,16 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents voting information.
 /// </summary>
+[PublicAPI]
 public sealed class VotingInformation : ComplexProperty
 {
-    private readonly Collection<VotingOptionData> userOptions = new Collection<VotingOptionData>();
-    private string votingResponse;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="VotingInformation" /> class.
     /// </summary>
@@ -52,6 +52,7 @@ public sealed class VotingInformation : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.UserOptions:
+            {
                 if (!reader.IsEmptyElement)
                 {
                     do
@@ -62,27 +63,32 @@ public sealed class VotingInformation : ComplexProperty
                         {
                             var option = new VotingOptionData();
                             option.LoadFromXml(reader, reader.LocalName);
-                            userOptions.Add(option);
+                            UserOptions.Add(option);
                         }
                     } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UserOptions));
                 }
 
                 return true;
+            }
             case XmlElementNames.VotingResponse:
-                votingResponse = reader.ReadElementValue<string>();
+            {
+                VotingResponse = reader.ReadElementValue<string>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the list of user options.
     /// </summary>
-    public Collection<VotingOptionData> UserOptions => userOptions;
+    public Collection<VotingOptionData> UserOptions { get; } = new();
 
     /// <summary>
     ///     Gets the voting response.
     /// </summary>
-    public string VotingResponse => votingResponse;
+    public string VotingResponse { get; private set; }
 }

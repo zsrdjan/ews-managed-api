@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of OccurrenceInfo objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class OccurrenceInfoCollection : ComplexPropertyCollection<OccurrenceInfo>
 {

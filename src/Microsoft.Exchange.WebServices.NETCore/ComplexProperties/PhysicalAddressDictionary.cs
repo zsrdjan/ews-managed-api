@@ -24,12 +24,16 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a dictionary of physical addresses.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class PhysicalAddressDictionary : DictionaryProperty<PhysicalAddressKey, PhysicalAddressEntry>
 {
@@ -47,7 +51,7 @@ public sealed class PhysicalAddressDictionary : DictionaryProperty<PhysicalAddre
     /// </summary>
     /// <param name="key">The key of the physical address to get or set.</param>
     /// <returns>The physical address at the specified key.</returns>
-    public PhysicalAddressEntry this[PhysicalAddressKey key]
+    public PhysicalAddressEntry? this[PhysicalAddressKey key]
     {
         get => Entries[key];
 
@@ -76,7 +80,7 @@ public sealed class PhysicalAddressDictionary : DictionaryProperty<PhysicalAddre
     /// <returns>
     ///     true if the Dictionary contains a physical address associated with the specified key; otherwise, false.
     /// </returns>
-    public bool TryGetValue(PhysicalAddressKey key, out PhysicalAddressEntry physicalAddress)
+    public bool TryGetValue(PhysicalAddressKey key, [MaybeNullWhen(false)] out PhysicalAddressEntry physicalAddress)
     {
         return Entries.TryGetValue(key, out physicalAddress);
     }

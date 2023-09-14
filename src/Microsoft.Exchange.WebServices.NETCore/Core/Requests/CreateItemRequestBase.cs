@@ -34,9 +34,6 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     where TServiceObject : ServiceObject
     where TResponse : ServiceResponse
 {
-    private MessageDisposition? messageDisposition;
-    private SendInvitationsMode? sendInvitationsMode;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateItemRequestBase&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
@@ -59,7 +56,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
         {
             foreach (var serviceObject in Items)
             {
-                if (serviceObject.GetIsTimeZoneHeaderRequired(false /* isUpdateOperation */))
+                if (serviceObject.GetIsTimeZoneHeaderRequired(false))
                 {
                     return true;
                 }
@@ -76,7 +73,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(Items, "Items");
+        EwsUtilities.ValidateParam(Items);
     }
 
     /// <summary>
@@ -147,21 +144,13 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     ///     Gets or sets the message disposition.
     /// </summary>
     /// <value>The message disposition.</value>
-    public MessageDisposition? MessageDisposition
-    {
-        get => messageDisposition;
-        set => messageDisposition = value;
-    }
+    public MessageDisposition? MessageDisposition { get; set; }
 
     /// <summary>
     ///     Gets or sets the send invitations mode.
     /// </summary>
     /// <value>The send invitations mode.</value>
-    public SendInvitationsMode? SendInvitationsMode
-    {
-        get => sendInvitationsMode;
-        set => sendInvitationsMode = value;
-    }
+    public SendInvitationsMode? SendInvitationsMode { get; set; }
 
     /// <summary>
     ///     Gets or sets the items.

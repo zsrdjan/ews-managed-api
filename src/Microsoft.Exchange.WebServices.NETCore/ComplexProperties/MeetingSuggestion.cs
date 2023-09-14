@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an MeetingSuggestion object.
 /// </summary>
+[PublicAPI]
 public sealed class MeetingSuggestion : ExtractedEntity
 {
     /// <summary>
@@ -77,32 +80,40 @@ public sealed class MeetingSuggestion : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgAttendees:
+            {
                 Attendees = new EmailUserEntityCollection();
                 Attendees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgAttendees);
                 return true;
-
+            }
             case XmlElementNames.NlgLocation:
+            {
                 Location = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgSubject:
+            {
                 Subject = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgMeetingString:
+            {
                 MeetingString = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgStartTime:
+            {
                 StartTime = reader.ReadElementValueAsDateTime();
                 return true;
-
+            }
             case XmlElementNames.NlgEndTime:
+            {
                 EndTime = reader.ReadElementValueAsDateTime();
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

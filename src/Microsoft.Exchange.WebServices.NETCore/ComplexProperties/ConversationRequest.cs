@@ -23,11 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-/// <summary>
-/// </summary>
-public sealed class ConversationRequest : ComplexProperty, ISelfValidate
+[PublicAPI]
+public sealed class ConversationRequest : ComplexProperty
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConversationRequest" /> class.
@@ -55,7 +56,7 @@ public sealed class ConversationRequest : ComplexProperty, ISelfValidate
     /// <summary>
     ///     Gets or sets the sync state representing the current state of the conversation for synchronization purposes.
     /// </summary>
-    public string SyncState { get; set; }
+    public string? SyncState { get; set; }
 
     /// <summary>
     ///     Writes to XML.
@@ -81,6 +82,6 @@ public sealed class ConversationRequest : ComplexProperty, ISelfValidate
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(ConversationId, "ConversationId");
+        EwsUtilities.ValidateParam(ConversationId);
     }
 }

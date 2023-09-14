@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the EmailInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class EmailInsightValue : InsightValue
 {
     /// <summary>
@@ -75,35 +78,55 @@ public sealed class EmailInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Id:
+            {
                 Id = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.ThreadId:
+            {
                 ThreadId = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Subject:
+            {
                 Subject = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.LastEmailDateUtcTicks:
+            {
                 LastEmailDateUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Body:
+            {
                 Body = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.LastEmailSender:
+            {
                 LastEmailSender = new ProfileInsightValue();
                 LastEmailSender.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.EmailsCount:
+            {
                 EmailsCount = reader.ReadElementValue<int>();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the MeetingInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class MeetingInsightValue : InsightValue
 {
     /// <summary>
@@ -83,36 +86,56 @@ public sealed class MeetingInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Id:
+            {
                 Id = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Subject:
+            {
                 Subject = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.StartUtcTicks:
+            {
                 StartUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.EndUtcTicks:
+            {
                 EndUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Location:
+            {
                 Location = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Organizer:
+            {
                 Organizer = new ProfileInsightValue();
                 Organizer.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.Attendees:
+            {
                 Attendees = new ProfileInsightValueCollection(XmlElementNames.Item);
                 Attendees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Attendees);
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

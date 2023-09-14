@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of an Exchange item.
 /// </summary>
+[PublicAPI]
 public class ItemId : ServiceId
 {
     /// <summary>

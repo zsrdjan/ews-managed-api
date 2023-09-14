@@ -35,19 +35,15 @@ internal class TimeZonePeriod : ComplexProperty
     internal const string DaylightPeriodId = "Dlt";
     internal const string DaylightPeriodName = "Daylight";
 
-    private TimeSpan bias;
-    private string name;
-    private string id;
-
     /// <summary>
     ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        id = reader.ReadAttributeValue(XmlAttributeNames.Id);
-        name = reader.ReadAttributeValue(XmlAttributeNames.Name);
-        bias = EwsUtilities.XsDurationToTimeSpan(reader.ReadAttributeValue(XmlAttributeNames.Bias));
+        Id = reader.ReadAttributeValue(XmlAttributeNames.Id);
+        Name = reader.ReadAttributeValue(XmlAttributeNames.Name);
+        Bias = EwsUtilities.XsDurationToTimeSpan(reader.ReadAttributeValue(XmlAttributeNames.Bias));
     }
 
     /// <summary>
@@ -56,9 +52,9 @@ internal class TimeZonePeriod : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.Bias, EwsUtilities.TimeSpanToXsDuration(bias));
-        writer.WriteAttributeValue(XmlAttributeNames.Name, name);
-        writer.WriteAttributeValue(XmlAttributeNames.Id, id);
+        writer.WriteAttributeValue(XmlAttributeNames.Bias, EwsUtilities.TimeSpanToXsDuration(Bias));
+        writer.WriteAttributeValue(XmlAttributeNames.Name, Name);
+        writer.WriteAttributeValue(XmlAttributeNames.Id, Id);
     }
 
     /// <summary>
@@ -92,32 +88,20 @@ internal class TimeZonePeriod : ComplexProperty
     /// <value>
     ///     <c>true</c> if this instance is standard period; otherwise, <c>false</c>.
     /// </value>
-    internal bool IsStandardPeriod => string.Compare(name, StandardPeriodName, StringComparison.OrdinalIgnoreCase) == 0;
+    internal bool IsStandardPeriod => string.Compare(Name, StandardPeriodName, StringComparison.OrdinalIgnoreCase) == 0;
 
     /// <summary>
     ///     Gets or sets the bias to UTC associated with this period.
     /// </summary>
-    internal TimeSpan Bias
-    {
-        get => bias;
-        set => bias = value;
-    }
+    internal TimeSpan Bias { get; set; }
 
     /// <summary>
     ///     Gets or sets the name of this period.
     /// </summary>
-    internal string Name
-    {
-        get => name;
-        set => name = value;
-    }
+    internal string Name { get; set; }
 
     /// <summary>
     ///     Gets or sets the id of this period.
     /// </summary>
-    internal string Id
-    {
-        get => id;
-        set => id = value;
-    }
+    internal string Id { get; set; }
 }

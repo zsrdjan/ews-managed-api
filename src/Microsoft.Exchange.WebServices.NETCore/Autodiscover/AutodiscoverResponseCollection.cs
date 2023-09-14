@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -33,34 +35,32 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 ///     Represents a collection of responses to a call to the Autodiscover service.
 /// </summary>
 /// <typeparam name="TResponse">The type of the responses in the collection.</typeparam>
+[PublicAPI]
 public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverResponse, IEnumerable<TResponse>
     where TResponse : AutodiscoverResponse
 {
-    private readonly List<TResponse> responses;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverResponseCollection&lt;TResponse&gt;" /> class.
     /// </summary>
     internal AutodiscoverResponseCollection()
     {
-        responses = new List<TResponse>();
     }
 
     /// <summary>
     ///     Gets the number of responses in the collection.
     /// </summary>
-    public int Count => responses.Count;
+    public int Count => Responses.Count;
 
     /// <summary>
     ///     Gets the response at the specified index.
     /// </summary>
     /// <param name="index">Index.</param>
-    public TResponse this[int index] => responses[index];
+    public TResponse this[int index] => Responses[index];
 
     /// <summary>
     ///     Gets the responses list.
     /// </summary>
-    internal List<TResponse> Responses => responses;
+    internal List<TResponse> Responses { get; } = new();
 
     /// <summary>
     ///     Loads response from XML.
@@ -98,8 +98,7 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
             do
             {
                 reader.Read();
-                if ((reader.NodeType == XmlNodeType.Element) &&
-                    (reader.LocalName == GetResponseInstanceXmlElementName()))
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == GetResponseInstanceXmlElementName())
                 {
                     var response = CreateResponseInstance();
                     response.LoadFromXml(reader, GetResponseInstanceXmlElementName());
@@ -136,7 +135,7 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TResponse> GetEnumerator()
     {
-        return responses.GetEnumerator();
+        return Responses.GetEnumerator();
     }
 
     #endregion
@@ -150,7 +149,7 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return (responses as System.Collections.IEnumerable).GetEnumerator();
+        return (Responses as System.Collections.IEnumerable).GetEnumerator();
     }
 
     #endregion

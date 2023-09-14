@@ -32,9 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal abstract class AbsoluteMonthTransition : TimeZoneTransition
 {
-    private TimeSpan timeOffset;
-    private int month;
-
     /// <summary>
     ///     Initializes this transition based on the specified transition time.
     /// </summary>
@@ -43,8 +40,8 @@ internal abstract class AbsoluteMonthTransition : TimeZoneTransition
     {
         base.InitializeFromTransitionTime(transitionTime);
 
-        timeOffset = transitionTime.TimeOfDay.TimeOfDay;
-        month = transitionTime.Month;
+        TimeOffset = transitionTime.TimeOfDay.TimeOfDay;
+        Month = transitionTime.Month;
     }
 
     /// <summary>
@@ -62,20 +59,26 @@ internal abstract class AbsoluteMonthTransition : TimeZoneTransition
         switch (reader.LocalName)
         {
             case XmlElementNames.TimeOffset:
-                timeOffset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
+            {
+                TimeOffset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
                 return true;
+            }
             case XmlElementNames.Month:
-                month = reader.ReadElementValue<int>();
+            {
+                Month = reader.ReadElementValue<int>();
 
                 EwsUtilities.Assert(
-                    month > 0 && month <= 12,
+                    Month > 0 && Month <= 12,
                     "AbsoluteMonthTransition.TryReadElementFromXml",
                     "month is not in the valid 1 - 12 range."
                 );
 
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -90,10 +93,10 @@ internal abstract class AbsoluteMonthTransition : TimeZoneTransition
         writer.WriteElementValue(
             XmlNamespace.Types,
             XmlElementNames.TimeOffset,
-            EwsUtilities.TimeSpanToXsDuration(timeOffset)
+            EwsUtilities.TimeSpanToXsDuration(TimeOffset)
         );
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, month);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, Month);
     }
 
     /// <summary>
@@ -118,10 +121,10 @@ internal abstract class AbsoluteMonthTransition : TimeZoneTransition
     /// <summary>
     ///     Gets the time offset from midnight when the transition occurs.
     /// </summary>
-    internal TimeSpan TimeOffset => timeOffset;
+    internal TimeSpan TimeOffset { get; private set; }
 
     /// <summary>
     ///     Gets the month when the transition occurs.
     /// </summary>
-    internal int Month => month;
+    internal int Month { get; private set; }
 }

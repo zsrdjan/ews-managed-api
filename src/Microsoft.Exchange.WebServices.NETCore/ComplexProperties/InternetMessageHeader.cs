@@ -23,15 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an Internet message header.
 /// </summary>
+[PublicAPI]
 public sealed class InternetMessageHeader : ComplexProperty
 {
-    private string name;
-    private string value;
+    private string _name;
+    private string _value;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InternetMessageHeader" /> class.
@@ -46,7 +49,7 @@ public sealed class InternetMessageHeader : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        name = reader.ReadAttributeValue(XmlAttributeNames.HeaderName);
+        _name = reader.ReadAttributeValue(XmlAttributeNames.HeaderName);
     }
 
     /// <summary>
@@ -55,7 +58,7 @@ public sealed class InternetMessageHeader : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        value = reader.ReadValue();
+        _value = reader.ReadValue();
     }
 
     /// <summary>
@@ -82,7 +85,7 @@ public sealed class InternetMessageHeader : ComplexProperty
     /// <returns>The string representation of the header.</returns>
     public override string ToString()
     {
-        return string.Format("{0}={1}", Name, Value);
+        return $"{Name}={Value}";
     }
 
     /// <summary>
@@ -90,8 +93,8 @@ public sealed class InternetMessageHeader : ComplexProperty
     /// </summary>
     public string Name
     {
-        get => name;
-        set => SetFieldValue(ref name, value);
+        get => _name;
+        set => SetFieldValue(ref _name, value);
     }
 
     /// <summary>
@@ -99,7 +102,7 @@ public sealed class InternetMessageHeader : ComplexProperty
     /// </summary>
     public string Value
     {
-        get => value;
-        set => SetFieldValue(ref this.value, value);
+        get => _value;
+        set => SetFieldValue(ref this._value, value);
     }
 }

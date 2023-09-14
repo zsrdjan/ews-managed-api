@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,16 +34,14 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents a user setting that is a collection of protocol connection.
 /// </summary>
+[PublicAPI]
 public sealed class ProtocolConnectionCollection
 {
-    private List<ProtocolConnection> connections;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProtocolConnectionCollection" /> class.
     /// </summary>
     internal ProtocolConnectionCollection()
     {
-        connections = new List<ProtocolConnection>();
     }
 
     /// <summary>
@@ -51,7 +51,6 @@ public sealed class ProtocolConnectionCollection
     internal static ProtocolConnectionCollection LoadFromXml(EwsXmlReader reader)
     {
         var value = new ProtocolConnectionCollection();
-        ProtocolConnection connection = null;
 
         do
         {
@@ -61,7 +60,7 @@ public sealed class ProtocolConnectionCollection
             {
                 if (reader.LocalName == XmlElementNames.ProtocolConnection)
                 {
-                    connection = ProtocolConnection.LoadFromXml(reader);
+                    var connection = ProtocolConnection.LoadFromXml(reader);
                     if (connection != null)
                     {
                         value.Connections.Add(connection);
@@ -76,9 +75,5 @@ public sealed class ProtocolConnectionCollection
     /// <summary>
     ///     Gets the Connections.
     /// </summary>
-    public List<ProtocolConnection> Connections
-    {
-        get => connections;
-        internal set => connections = value;
-    }
+    public List<ProtocolConnection> Connections { get; internal set; } = new();
 }

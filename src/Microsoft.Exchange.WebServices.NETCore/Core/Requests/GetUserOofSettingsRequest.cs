@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
 {
-    private string smtpAddress;
-
     /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
@@ -48,7 +46,7 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(SmtpAddress, "SmtpAddress");
+        EwsUtilities.ValidateParam(SmtpAddress);
     }
 
     /// <summary>
@@ -132,9 +130,5 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the SMTP address.
     /// </summary>
-    internal string SmtpAddress
-    {
-        get => smtpAddress;
-        set => smtpAddress = value;
-    }
+    internal string SmtpAddress { get; set; }
 }

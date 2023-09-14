@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents approval request information.
 /// </summary>
+[PublicAPI]
 public sealed class ApprovalRequestData : ComplexProperty
 {
-    private bool isUndecidedApprovalRequest;
-    private int approvalDecision;
-    private string approvalDecisionMaker;
-    private DateTime approvalDecisionTime;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ApprovalRequestData" /> class.
     /// </summary>
@@ -52,39 +50,49 @@ public sealed class ApprovalRequestData : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.IsUndecidedApprovalRequest:
-                isUndecidedApprovalRequest = reader.ReadElementValue<bool>();
+            {
+                IsUndecidedApprovalRequest = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.ApprovalDecision:
-                approvalDecision = reader.ReadElementValue<int>();
+            {
+                ApprovalDecision = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.ApprovalDecisionMaker:
-                approvalDecisionMaker = reader.ReadElementValue<string>();
+            {
+                ApprovalDecisionMaker = reader.ReadElementValue<string>();
                 return true;
+            }
             case XmlElementNames.ApprovalDecisionTime:
-                approvalDecisionTime = reader.ReadElementValueAsDateTime().Value;
+            {
+                ApprovalDecisionTime = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets a value indicating whether this is an undecided approval request.
     /// </summary>
-    public bool IsUndecidedApprovalRequest => isUndecidedApprovalRequest;
+    public bool IsUndecidedApprovalRequest { get; private set; }
 
     /// <summary>
     ///     Gets the approval decision on the request.
     /// </summary>
-    public int ApprovalDecision => approvalDecision;
+    public int ApprovalDecision { get; private set; }
 
     /// <summary>
     ///     Gets the name of the user who made the decision.
     /// </summary>
-    public string ApprovalDecisionMaker => approvalDecisionMaker;
+    public string ApprovalDecisionMaker { get; private set; }
 
     /// <summary>
     ///     Gets the time at which the decision was made.
     /// </summary>
-    public DateTime ApprovalDecisionTime => approvalDecisionTime;
+    public DateTime ApprovalDecisionTime { get; private set; }
 }

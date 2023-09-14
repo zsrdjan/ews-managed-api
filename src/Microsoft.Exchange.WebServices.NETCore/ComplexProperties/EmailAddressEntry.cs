@@ -25,26 +25,29 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an entry of an EmailAddressDictionary.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
 {
     /// <summary>
     ///     The email address.
     /// </summary>
-    private EmailAddress emailAddress;
+    private EmailAddress? _emailAddress;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EmailAddressEntry" /> class.
     /// </summary>
     internal EmailAddressEntry()
     {
-        emailAddress = new EmailAddress();
-        emailAddress.OnChange += EmailAddressChanged;
+        _emailAddress = new EmailAddress();
+        _emailAddress.OnChange += EmailAddressChanged;
     }
 
     /// <summary>
@@ -52,14 +55,14 @@ public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="emailAddress">The email address.</param>
-    internal EmailAddressEntry(EmailAddressKey key, EmailAddress emailAddress)
+    internal EmailAddressEntry(EmailAddressKey key, EmailAddress? emailAddress)
         : base(key)
     {
-        this.emailAddress = emailAddress;
+        _emailAddress = emailAddress;
 
-        if (this.emailAddress != null)
+        if (_emailAddress != null)
         {
-            this.emailAddress.OnChange += EmailAddressChanged;
+            _emailAddress.OnChange += EmailAddressChanged;
         }
     }
 
@@ -125,17 +128,17 @@ public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
     /// <summary>
     ///     Gets or sets the e-mail address of the entry.
     /// </summary>
-    public EmailAddress EmailAddress
+    public EmailAddress? EmailAddress
     {
-        get => emailAddress;
+        get => _emailAddress;
 
         set
         {
-            SetFieldValue(ref emailAddress, value);
+            SetFieldValue(ref _emailAddress, value);
 
-            if (emailAddress != null)
+            if (_emailAddress != null)
             {
-                emailAddress.OnChange += EmailAddressChanged;
+                _emailAddress.OnChange += EmailAddressChanged;
             }
         }
     }

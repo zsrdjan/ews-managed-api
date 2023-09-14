@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of a Conversation.
 /// </summary>
+[PublicAPI]
 public class ConversationId : ServiceId
 {
     /// <summary>
@@ -52,16 +55,16 @@ public class ConversationId : ServiceId
     /// </summary>
     /// <param name="conversationId">The conversationId to String.</param>
     /// <returns>A ConversationId initialized with the specified unique Id.</returns>
-    public static implicit operator String(ConversationId conversationId)
+    public static implicit operator string(ConversationId conversationId)
     {
         if (conversationId == null)
         {
-            throw new ArgumentNullException("conversationId");
+            throw new ArgumentNullException(nameof(conversationId));
         }
 
-        if (String.IsNullOrEmpty(conversationId.UniqueId))
+        if (string.IsNullOrEmpty(conversationId.UniqueId))
         {
-            return String.Empty;
+            return string.Empty;
         }
 
         // Ignoring the change key info

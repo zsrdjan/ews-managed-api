@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class ConvertIdRequest : MultiResponseServiceRequest<ConvertIdResponse>
 {
-    private IdFormat destinationFormat = IdFormat.EwsId;
-    private readonly List<AlternateIdBase> ids = new List<AlternateIdBase>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConvertIdRequest" /> class.
     /// </summary>
@@ -96,7 +93,7 @@ internal sealed class ConvertIdRequest : MultiResponseServiceRequest<ConvertIdRe
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(Ids, "Ids");
+        EwsUtilities.ValidateParamCollection(Ids);
     }
 
     /// <summary>
@@ -130,15 +127,11 @@ internal sealed class ConvertIdRequest : MultiResponseServiceRequest<ConvertIdRe
     ///     Gets or sets the destination format.
     /// </summary>
     /// <value>The destination format.</value>
-    public IdFormat DestinationFormat
-    {
-        get => destinationFormat;
-        set => destinationFormat = value;
-    }
+    public IdFormat DestinationFormat { get; set; } = IdFormat.EwsId;
 
     /// <summary>
     ///     Gets the ids.
     /// </summary>
     /// <value>The ids.</value>
-    public List<AlternateIdBase> Ids => ids;
+    public List<AlternateIdBase> Ids { get; } = new();
 }

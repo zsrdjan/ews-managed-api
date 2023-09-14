@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml;
+
+using JetBrains.Annotations;
 
 using Microsoft.Exchange.WebServices.Data;
 
@@ -43,6 +46,7 @@ public delegate bool AutodiscoverRedirectionUrlValidationCallback(string redirec
 /// <summary>
 ///     Represents a binding to the Exchange Autodiscover Service.
 /// </summary>
+[PublicAPI]
 public sealed class AutodiscoverService : ExchangeServiceBase
 {
     #region Static members
@@ -144,13 +148,9 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
     #region Private members
 
-    private string domain;
-    private bool? isExternal = true;
-    private Uri url;
-    private AutodiscoverRedirectionUrlValidationCallback redirectionUrlValidationCallback;
-    private readonly AutodiscoverDnsClient dnsClient;
-    private IPAddress dnsServerAddress;
-    private bool enableScpLookup = true;
+    private string? _domain;
+    private Uri? _url;
+    private readonly AutodiscoverDnsClient _dnsClient;
 
     private delegate Task<Tuple<TGetSettingsResponseCollection, Uri>>
         GetSettingsMethod<TGetSettingsResponseCollection, TSettingName>(
@@ -187,10 +187,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     private async Task<TSettings> GetLegacyUserSettingsAtUrl<TSettings>(string emailAddress, Uri url)
         where TSettings : ConfigurationSettingsBase, new()
     {
-        TraceMessage(
-            TraceFlags.AutodiscoverConfiguration,
-            string.Format("Trying to call Autodiscover for {0} on {1}.", emailAddress, url)
-        );
+        TraceMessage(TraceFlags.AutodiscoverConfiguration, $"Trying to call Autodiscover for {emailAddress} on {url}.");
 
         var settings = new TSettings();
 
@@ -198,81 +195,68 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
         using (var requestStream = new MemoryStream())
         {
-            Stream writerStream = requestStream;
-
             // If tracing is enabled, we generate the request in-memory so that we
             // can pass it along to the ITraceListener. Then we copy the stream to
             // the request stream.
             if (IsTraceEnabledFor(TraceFlags.AutodiscoverRequest))
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    using (var writer = new StreamWriter(memoryStream))
-                    {
-                        WriteLegacyAutodiscoverRequest(emailAddress, settings, writer);
-                        writer.Flush();
+                using var memoryStream = new MemoryStream();
+                await using var writer = new StreamWriter(memoryStream);
+                WriteLegacyAutodiscoverRequest(emailAddress, settings, writer);
+                await writer.FlushAsync();
 
-                        TraceXml(TraceFlags.AutodiscoverRequest, memoryStream);
+                TraceXml(TraceFlags.AutodiscoverRequest, memoryStream);
 
-                        EwsUtilities.CopyStream(memoryStream, requestStream);
-                    }
-                }
+                EwsUtilities.CopyStream(memoryStream, requestStream);
             }
             else
             {
-                using (var writer = new StreamWriter(requestStream))
-                {
-                    WriteLegacyAutodiscoverRequest(emailAddress, settings, writer);
-                }
+                await using var writer = new StreamWriter(requestStream);
+                WriteLegacyAutodiscoverRequest(emailAddress, settings, writer);
             }
 
             request.Content = new ByteArrayContent(requestStream.ToArray());
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
             {
-                CharSet = "utf-8"
+                CharSet = "utf-8",
             };
         }
 
-        using (var client = PrepareHttpClient())
-        using (IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(client.SendAsync(request).Result))
+        using var client = PrepareHttpClient();
+        using IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(client.SendAsync(request).Result);
+        if (TryGetRedirectionResponse(webResponse, out var redirectUrl))
         {
-            Uri redirectUrl;
-            if (TryGetRedirectionResponse(webResponse, out redirectUrl))
-            {
-                settings.MakeRedirectionResponse(redirectUrl);
-                return settings;
-            }
-
-            using (var responseStream = await webResponse.GetResponseStream())
-            {
-                // If tracing is enabled, we read the entire response into a MemoryStream so that we
-                // can pass it along to the ITraceListener. Then we parse the response from the 
-                // MemoryStream.
-                if (IsTraceEnabledFor(TraceFlags.AutodiscoverResponse))
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        // Copy response stream to in-memory stream and reset to start
-                        EwsUtilities.CopyStream(responseStream, memoryStream);
-                        memoryStream.Position = 0;
-
-                        TraceResponse(webResponse, memoryStream);
-
-                        var reader = new EwsXmlReader(memoryStream);
-                        reader.Read(XmlNodeType.XmlDeclaration);
-                        settings.LoadFromXml(reader);
-                    }
-                }
-                else
-                {
-                    var reader = new EwsXmlReader(responseStream);
-                    reader.Read(XmlNodeType.XmlDeclaration);
-                    settings.LoadFromXml(reader);
-                }
-            }
-
+            settings.MakeRedirectionResponse(redirectUrl);
             return settings;
         }
+
+        await using (var responseStream = await webResponse.GetResponseStream())
+        {
+            // If tracing is enabled, we read the entire response into a MemoryStream so that we
+            // can pass it along to the ITraceListener. Then we parse the response from the 
+            // MemoryStream.
+            if (IsTraceEnabledFor(TraceFlags.AutodiscoverResponse))
+            {
+                using var memoryStream = new MemoryStream();
+                // Copy response stream to in-memory stream and reset to start
+                EwsUtilities.CopyStream(responseStream, memoryStream);
+                memoryStream.Position = 0;
+
+                TraceResponse(webResponse, memoryStream);
+
+                var reader = new EwsXmlReader(memoryStream);
+                reader.Read(XmlNodeType.XmlDeclaration);
+                settings.LoadFromXml(reader);
+            }
+            else
+            {
+                var reader = new EwsXmlReader(responseStream);
+                reader.Read(XmlNodeType.XmlDeclaration);
+                settings.LoadFromXml(reader);
+            }
+        }
+
+        return settings;
     }
 
     /// <summary>
@@ -281,7 +265,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <param name="emailAddress">The email address.</param>
     /// <param name="settings">The settings.</param>
     /// <param name="writer">The writer.</param>
-    private void WriteLegacyAutodiscoverRequest(
+    private static void WriteLegacyAutodiscoverRequest(
         string emailAddress,
         ConfigurationSettingsBase settings,
         StreamWriter writer
@@ -300,44 +284,36 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// </summary>
     /// <param name="domainName">The name of the domain to call Autodiscover on.</param>
     /// <returns>A valid SSL-enabled redirection URL. (May be null).</returns>
-    private Uri GetRedirectUrl(string domainName)
+    private Uri? GetRedirectUrl(string domainName)
     {
         var url = string.Format(AutodiscoverLegacyHttpUrl, "autodiscover." + domainName);
 
-        TraceMessage(
-            TraceFlags.AutodiscoverConfiguration,
-            string.Format("Trying to get Autodiscover redirection URL from {0}.", url)
-        );
+        TraceMessage(TraceFlags.AutodiscoverConfiguration, $"Trying to get Autodiscover redirection URL from {url}.");
 
-        IEwsHttpWebResponse response = null;
+        IEwsHttpWebResponse? response = null;
 
         try
         {
-            using (var client = new HttpClient(
-                       new HttpClientHandler
-                       {
-                           AllowAutoRedirect = false
-                       }
-                   )
-                   {
-                       Timeout = AutodiscoverTimeout
-                   })
-            {
-                var httpResponse = client.GetAsync(url).Result;
-                response = new EwsHttpWebResponse(httpResponse);
-            }
+            using var client = new HttpClient(
+                new HttpClientHandler
+                {
+                    AllowAutoRedirect = false,
+                }
+            );
+            client.Timeout = AutodiscoverTimeout;
+            var httpResponse = client.GetAsync(url).Result;
+            response = new EwsHttpWebResponse(httpResponse);
         }
         catch (Exception ex)
         {
-            TraceMessage(TraceFlags.AutodiscoverConfiguration, string.Format("I/O error: {0}", ex.Message));
+            TraceMessage(TraceFlags.AutodiscoverConfiguration, $"I/O error: {ex.Message}");
         }
 
         if (response != null)
         {
             using (response)
             {
-                Uri redirectUrl;
-                if (TryGetRedirectionResponse(response, out redirectUrl))
+                if (TryGetRedirectionResponse(response, out var redirectUrl))
                 {
                     return redirectUrl;
                 }
@@ -355,7 +331,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <param name="response">The response.</param>
     /// <param name="redirectUrl">The redirect URL.</param>
     /// <returns>True if a valid redirection URL was found.</returns>
-    private bool TryGetRedirectionResponse(IEwsHttpWebResponse response, out Uri redirectUrl)
+    private bool TryGetRedirectionResponse(IEwsHttpWebResponse response, [MaybeNullWhen(false)] out Uri redirectUrl)
     {
         redirectUrl = null;
         if (AutodiscoverRequest.IsRedirectionResponse(response))
@@ -371,12 +347,9 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
                     // Check if URL is SSL and that the path matches.
                     var match = LegacyPathRegex.Match(redirectUrl.AbsolutePath);
-                    if ((redirectUrl.Scheme == "https") && match.Success)
+                    if (redirectUrl.Scheme == "https" && match.Success)
                     {
-                        TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            string.Format("Redirection URL found: '{0}'", redirectUrl)
-                        );
+                        TraceMessage(TraceFlags.AutodiscoverConfiguration, $"Redirection URL found: '{redirectUrl}'");
 
                         return true;
                     }
@@ -385,7 +358,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 {
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("Invalid redirection URL was returned: '{0}'", location)
+                        $"Invalid redirection URL was returned: '{location}'"
                     );
                     return false;
                 }
@@ -427,7 +400,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         }
 
         // No Url or Domain specified, need to figure out which endpoint to use.
-        var currentHop = 1;
+        const int currentHop = 1;
         var redirectionEmailAddresses = new List<string>();
         return (await InternalGetLegacyUserSettings<TSettings>(emailAddress, redirectionEmailAddresses, currentHop))
             .Item1;
@@ -450,8 +423,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     {
         var domainName = EwsUtilities.DomainFromEmailAddress(emailAddress);
 
-        int scpUrlCount;
-        var urls = GetAutodiscoverServiceUrls(domainName, out scpUrlCount);
+        var urls = GetAutodiscoverServiceUrls(domainName, out var scpUrlCount);
 
         if (urls.Count == 0)
         {
@@ -461,13 +433,13 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         // Assume caller is not inside the Intranet, regardless of whether SCP Urls 
         // were returned or not. SCP Urls are only relevant if one of them returns
         // valid Autodiscover settings.
-        isExternal = true;
+        IsExternal = true;
 
         var currentUrlIndex = 0;
 
         // Used to save exception for later reporting.
-        Exception delayedException = null;
-        TSettings settings = null;
+        Exception? delayedException = null;
+        TSettings? settings = null;
 
         do
         {
@@ -481,6 +453,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 switch (settings.ResponseType)
                 {
                     case AutodiscoverResponseType.Success:
+                    {
                         // Not external if Autodiscover endpoint found via SCP returned the settings.
                         if (isScpUrl)
                         {
@@ -489,16 +462,15 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
                         Url = autodiscoverUrl;
                         return Tuple.Create(settings, currentHop);
+                    }
                     case AutodiscoverResponseType.RedirectUrl:
+                    {
                         if (currentHop < AutodiscoverMaxRedirections)
                         {
                             currentHop++;
                             TraceMessage(
                                 TraceFlags.AutodiscoverResponse,
-                                string.Format(
-                                    "Autodiscover service returned redirection URL '{0}'.",
-                                    settings.RedirectTarget
-                                )
+                                $"Autodiscover service returned redirection URL '{settings.RedirectTarget}'."
                             );
 
                             urls[currentUrlIndex] = new Uri(settings.RedirectTarget);
@@ -506,16 +478,15 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         }
 
                         throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
+                    }
                     case AutodiscoverResponseType.RedirectAddress:
+                    {
                         if (currentHop < AutodiscoverMaxRedirections)
                         {
                             currentHop++;
                             TraceMessage(
                                 TraceFlags.AutodiscoverResponse,
-                                string.Format(
-                                    "Autodiscover service returned redirection email address '{0}'.",
-                                    settings.RedirectTarget
-                                )
+                                $"Autodiscover service returned redirection email address '{settings.RedirectTarget}'."
                             );
 
                             // If this email address was already tried, we may have a loop
@@ -530,7 +501,9 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         }
 
                         throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
+                    }
                     case AutodiscoverResponseType.Error:
+                    {
                         // Don't treat errors from an SCP-based Autodiscover service to be conclusive.
                         // We'll try the next one and record the error for later.
                         if (isScpUrl)
@@ -552,13 +525,16 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         }
 
                         break;
+                    }
                     default:
+                    {
                         EwsUtilities.Assert(
                             false,
                             "Autodiscover.GetConfigurationSettings",
                             "An unexpected error has occurred. This code path should never be reached."
                         );
                         break;
+                    }
                 }
             }
             catch (EwsHttpClientException ex)
@@ -566,12 +542,11 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 if (ex.Response != null)
                 {
                     var response = HttpWebRequestFactory.CreateExceptionResponse(ex);
-                    Uri redirectUrl;
-                    if (TryGetRedirectionResponse(response, out redirectUrl))
+                    if (TryGetRedirectionResponse(response, out var redirectUrl))
                     {
                         TraceMessage(
                             TraceFlags.AutodiscoverConfiguration,
-                            string.Format("Host returned a redirection to url {0}", redirectUrl)
+                            $"Host returned a redirection to url {redirectUrl}"
                         );
 
                         currentHop++;
@@ -583,7 +558,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
                         TraceMessage(
                             TraceFlags.AutodiscoverConfiguration,
-                            string.Format("{0} failed: {1} ({2})", url, ex.GetType().Name, ex.Message)
+                            $"{_url} failed: {ex.GetType().Name} ({ex.Message})"
                         );
 
                         // The url did not work, let's try the next.
@@ -594,7 +569,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 {
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("{0} failed: {1} ({2})", url, ex.GetType().Name, ex.Message)
+                        $"{_url} failed: {ex.GetType().Name} ({ex.Message})"
                     );
 
                     // The url did not work, let's try the next.
@@ -603,20 +578,14 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             }
             catch (XmlException ex)
             {
-                TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    string.Format("{0} failed: XML parsing error: {1}", url, ex.Message)
-                );
+                TraceMessage(TraceFlags.AutodiscoverConfiguration, $"{_url} failed: XML parsing error: {ex.Message}");
 
                 // The content at the URL wasn't a valid response, let's try the next.
                 currentUrlIndex++;
             }
             catch (Exception ex)
             {
-                TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    string.Format("{0} failed: I/O error: {1}", url, ex.Message)
-                );
+                TraceMessage(TraceFlags.AutodiscoverConfiguration, $"{_url} failed: I/O error: {ex.Message}");
 
                 // The content at the URL wasn't a valid response, let's try the next.
                 currentUrlIndex++;
@@ -665,20 +634,17 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// </summary>
     /// <param name="domainName">Name of the domain.</param>
     /// <returns>Autodiscover URL (may be null if lookup failed)</returns>
-    internal Uri GetRedirectionUrlFromDnsSrvRecord(string domainName)
+    internal Uri? GetRedirectionUrlFromDnsSrvRecord(string domainName)
     {
         TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            string.Format("Trying to get Autodiscover host from DNS SRV record for {0}.", domainName)
+            $"Trying to get Autodiscover host from DNS SRV record for {domainName}."
         );
 
-        var hostname = dnsClient.FindAutodiscoverHostFromSrv(domainName);
+        var hostname = _dnsClient.FindAutodiscoverHostFromSrv(domainName);
         if (!string.IsNullOrEmpty(hostname))
         {
-            TraceMessage(
-                TraceFlags.AutodiscoverConfiguration,
-                string.Format("Autodiscover host {0} was returned.", hostname)
-            );
+            TraceMessage(TraceFlags.AutodiscoverConfiguration, $"Autodiscover host {hostname} was returned.");
 
             return new Uri(string.Format(AutodiscoverLegacyHttpsUrl, hostname));
         }
@@ -694,14 +660,13 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <typeparam name="TSettings">The type of the settings.</typeparam>
     /// <param name="emailAddress">The email address.</param>
     /// <param name="redirectionUrl">Redirection Url.</param>
-    /// <param name="settings">The settings.</param>
     private async Task<Tuple<bool, TSettings>> TryLastChanceHostRedirection<TSettings>(
         string emailAddress,
         Uri redirectionUrl
     )
         where TSettings : ConfigurationSettingsBase, new()
     {
-        TSettings settings = null;
+        TSettings? settings = null;
 
         var redirectionEmailAddresses = new List<string>();
 
@@ -718,11 +683,15 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                     switch (settings.ResponseType)
                     {
                         case AutodiscoverResponseType.Success:
+                        {
                             return Tuple.Create(true, settings);
+                        }
                         case AutodiscoverResponseType.Error:
+                        {
                             throw new AutodiscoverRemoteException(Strings.AutodiscoverError, settings.Error);
+                        }
                         case AutodiscoverResponseType.RedirectAddress:
-
+                        {
                             // If this email address was already tried, we may have a loop
                             // in SCP lookups. Disable consideration of SCP records.
                             DisableScpLookupIfDuplicateRedirection(settings.RedirectTarget, redirectionEmailAddresses);
@@ -735,7 +704,10 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                             settings = result.Item1;
                             currentHop = result.Item2;
                             return Tuple.Create(true, settings);
+                        }
+
                         case AutodiscoverResponseType.RedirectUrl:
+                        {
                             try
                             {
                                 redirectionUrl = new Uri(settings.RedirectTarget);
@@ -744,24 +716,20 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                             {
                                 TraceMessage(
                                     TraceFlags.AutodiscoverConfiguration,
-                                    string.Format(
-                                        "Service returned invalid redirection URL {0}",
-                                        settings.RedirectTarget
-                                    )
+                                    $"Service returned invalid redirection URL {settings.RedirectTarget}"
                                 );
                                 return Tuple.Create(false, settings);
                             }
 
                             break;
+                        }
                         default:
-                            var failureMessage = string.Format(
-                                "Autodiscover call at {0} failed with error {1}, target {2}",
-                                redirectionUrl,
-                                settings.ResponseType,
-                                settings.RedirectTarget
-                            );
+                        {
+                            var failureMessage =
+                                $"Autodiscover call at {redirectionUrl} failed with error {settings.ResponseType}, target {settings.RedirectTarget}";
                             TraceMessage(TraceFlags.AutodiscoverConfiguration, failureMessage);
                             return Tuple.Create(false, settings);
+                        }
                     }
                 }
                 catch (EwsHttpClientException ex)
@@ -773,7 +741,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         {
                             TraceMessage(
                                 TraceFlags.AutodiscoverConfiguration,
-                                string.Format("Host returned a redirection to url {0}", redirectionUrl)
+                                $"Host returned a redirection to url {redirectionUrl}"
                             );
                             continue;
                         }
@@ -783,7 +751,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("{0} failed: {1} ({2})", url, ex.GetType().Name, ex.Message)
+                        $"{_url} failed: {ex.GetType().Name} ({ex.Message})"
                     );
 
                     return Tuple.Create(false, settings);
@@ -793,16 +761,18 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                     // If the response is malformed, it wasn't a valid Autodiscover endpoint.
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("{0} failed: XML parsing error: {1}", redirectionUrl, ex.Message)
+                        $"{redirectionUrl} failed: XML parsing error: {ex.Message}"
                     );
+
                     return Tuple.Create(false, settings);
                 }
                 catch (Exception ex)
                 {
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("{0} failed: I/O error: {1}", redirectionUrl, ex.Message)
+                        $"{redirectionUrl} failed: I/O error: {ex.Message}"
                     );
+
                     return Tuple.Create(false, settings);
                 }
             }
@@ -843,7 +813,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     )
     {
         // Cannot call legacy Autodiscover service with WindowsLive and other WSSecurity-based credentials
-        if ((Credentials != null) && (Credentials is WSSecurityBasedCredentials))
+        if (Credentials != null && Credentials is WSSecurityBasedCredentials)
         {
             throw new AutodiscoverLocalException(Strings.WLIDCredentialsCannotBeUsedWithLegacyAutodiscover);
         }
@@ -869,11 +839,15 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         List<UserSettingName> requestedSettings
     )
     {
-        var smtpAddresses = new List<string>();
-        smtpAddresses.Add(smtpAddress);
+        var smtpAddresses = new List<string>
+        {
+            smtpAddress,
+        };
 
-        var redirectionEmailAddresses = new List<string>();
-        redirectionEmailAddresses.Add(smtpAddress.ToLowerInvariant());
+        var redirectionEmailAddresses = new List<string>
+        {
+            smtpAddress.ToLowerInvariant(),
+        };
 
         for (var currentHop = 0; currentHop < AutodiscoverMaxRedirections; currentHop++)
         {
@@ -882,12 +856,10 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             switch (response.ErrorCode)
             {
                 case AutodiscoverErrorCode.RedirectAddress:
+                {
                     TraceMessage(
                         TraceFlags.AutodiscoverResponse,
-                        string.Format(
-                            "Autodiscover service returned redirection email address '{0}'.",
-                            response.RedirectTarget
-                        )
+                        $"Autodiscover service returned redirection email address '{response.RedirectTarget}'."
                     );
 
                     smtpAddresses.Clear();
@@ -899,19 +871,24 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                     // in SCP lookups. Disable consideration of SCP records.
                     DisableScpLookupIfDuplicateRedirection(response.RedirectTarget, redirectionEmailAddresses);
                     break;
+                }
 
                 case AutodiscoverErrorCode.RedirectUrl:
+                {
                     TraceMessage(
                         TraceFlags.AutodiscoverResponse,
-                        string.Format("Autodiscover service returned redirection URL '{0}'.", response.RedirectTarget)
+                        $"Autodiscover service returned redirection URL '{response.RedirectTarget}'."
                     );
 
                     Url = Credentials.AdjustUrl(new Uri(response.RedirectTarget));
                     break;
+                }
 
                 case AutodiscoverErrorCode.NoError:
                 default:
+                {
                     return response;
+                }
             }
         }
 
@@ -929,15 +906,15 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         List<UserSettingName> settings
     )
     {
-        EwsUtilities.ValidateParam(smtpAddresses, "smtpAddresses");
-        EwsUtilities.ValidateParam(settings, "settings");
+        EwsUtilities.ValidateParam(smtpAddresses);
+        EwsUtilities.ValidateParam(settings);
 
         return GetSettings(
             smtpAddresses,
             settings,
             null,
             InternalGetUserSettings,
-            delegate { return EwsUtilities.DomainFromEmailAddress(smtpAddresses[0]); }
+            () => EwsUtilities.DomainFromEmailAddress(smtpAddresses[0])
         );
     }
 
@@ -1011,8 +988,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             Uri autodiscoverUrl;
 
             var domainName = getDomainMethod();
-            int scpHostCount;
-            var hosts = GetAutodiscoverServiceHosts(domainName, out scpHostCount);
+            var hosts = GetAutodiscoverServiceHosts(domainName, out var scpHostCount);
 
             if (hosts.Count == 0)
             {
@@ -1056,7 +1032,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
             // Next-to-last chance: try unauthenticated GET over HTTP to be redirected to appropriate service endpoint.
             autodiscoverUrl = GetRedirectUrl(domainName);
-            if ((autodiscoverUrl != null) &&
+            if (autodiscoverUrl != null &&
                 CallRedirectionUrlValidationCallback(autodiscoverUrl.ToString()) &&
                 TryGetAutodiscoverEndpointUrl(autodiscoverUrl.Host, out autodiscoverUrl))
             {
@@ -1073,7 +1049,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             // Last Chance: try to read autodiscover SRV Record from DNS. If we find one, use
             // the hostname returned to construct an Autodiscover endpoint URL.
             autodiscoverUrl = GetRedirectionUrlFromDnsSrvRecord(domainName);
-            if ((autodiscoverUrl != null) &&
+            if (autodiscoverUrl != null &&
                 CallRedirectionUrlValidationCallback(autodiscoverUrl.ToString()) &&
                 TryGetAutodiscoverEndpointUrl(autodiscoverUrl.Host, out autodiscoverUrl))
             {
@@ -1110,9 +1086,11 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         // a valid response or we've followed too many redirections.
         for (var currentHop = 0; currentHop < AutodiscoverMaxRedirections; currentHop++)
         {
-            var request = new GetUserSettingsRequest(this, autodiscoverUrl);
-            request.SmtpAddresses = smtpAddresses;
-            request.Settings = settings;
+            var request = new GetUserSettingsRequest(this, autodiscoverUrl)
+            {
+                SmtpAddresses = smtpAddresses,
+                Settings = settings,
+            };
             var response = await request.Execute();
 
             // Did we get redirected?
@@ -1120,11 +1098,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             {
                 TraceMessage(
                     TraceFlags.AutodiscoverConfiguration,
-                    string.Format(
-                        "Request to {0} returned redirection to {1}",
-                        autodiscoverUrl,
-                        response.RedirectionUrl
-                    )
+                    $"Request to {autodiscoverUrl} returned redirection to {response.RedirectionUrl}"
                 );
 
                 // this url need be brought back to the caller.
@@ -1139,7 +1113,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
         TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            string.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverMaxRedirections)
+            $"Maximum number of redirection hops {AutodiscoverMaxRedirections} exceeded"
         );
 
         throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
@@ -1158,16 +1132,10 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         ExchangeVersion? requestedVersion
     )
     {
-        EwsUtilities.ValidateParam(domains, "domains");
-        EwsUtilities.ValidateParam(settings, "settings");
+        EwsUtilities.ValidateParam(domains);
+        EwsUtilities.ValidateParam(settings);
 
-        return GetSettings(
-            domains,
-            settings,
-            requestedVersion,
-            InternalGetDomainSettings,
-            delegate { return domains[0]; }
-        );
+        return GetSettings(domains, settings, requestedVersion, InternalGetDomainSettings, () => domains[0]);
     }
 
     /// <summary>
@@ -1189,10 +1157,12 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         // a valid response or we've followed too many redirections.
         for (var currentHop = 0; currentHop < AutodiscoverMaxRedirections; currentHop++)
         {
-            var request = new GetDomainSettingsRequest(this, autodiscoverUrl);
-            request.Domains = domains;
-            request.Settings = settings;
-            request.RequestedVersion = requestedVersion;
+            var request = new GetDomainSettingsRequest(this, autodiscoverUrl)
+            {
+                Domains = domains,
+                Settings = settings,
+                RequestedVersion = requestedVersion,
+            };
             var response = await request.Execute();
 
             // Did we get redirected?
@@ -1208,7 +1178,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
         TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            string.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverMaxRedirections)
+            $"Maximum number of redirection hops {AutodiscoverMaxRedirections} exceeded"
         );
 
         throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
@@ -1221,9 +1191,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <returns></returns>
     private Uri GetAutodiscoverEndpointUrl(string host)
     {
-        Uri autodiscoverUrl;
-
-        if (TryGetAutodiscoverEndpointUrl(host, out autodiscoverUrl))
+        if (TryGetAutodiscoverEndpointUrl(host, out var autodiscoverUrl))
         {
             return autodiscoverUrl;
         }
@@ -1237,26 +1205,25 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <param name="host">The host.</param>
     /// <param name="url">The URL.</param>
     /// <returns></returns>
-    private bool TryGetAutodiscoverEndpointUrl(string host, out Uri url)
+    private bool TryGetAutodiscoverEndpointUrl(string host, [MaybeNullWhen(false)] out Uri url)
     {
         url = null;
 
-        AutodiscoverEndpoints endpoints;
-        if (TryGetEnabledEndpointsForHost(ref host, out endpoints))
+        if (TryGetEnabledEndpointsForHost(ref host, out var endpoints))
         {
             url = new Uri(string.Format(AutodiscoverSoapHttpsUrl, host));
 
             // Make sure that at least one of the non-legacy endpoints is available.
-            if (((endpoints & AutodiscoverEndpoints.Soap) != AutodiscoverEndpoints.Soap) &&
-                ((endpoints & AutodiscoverEndpoints.WsSecurity) != AutodiscoverEndpoints.WsSecurity) &&
-                ((endpoints & AutodiscoverEndpoints.WSSecuritySymmetricKey) !=
-                 AutodiscoverEndpoints.WSSecuritySymmetricKey) &&
-                ((endpoints & AutodiscoverEndpoints.WSSecurityX509Cert) != AutodiscoverEndpoints.WSSecurityX509Cert) &&
-                ((endpoints & AutodiscoverEndpoints.OAuth) != AutodiscoverEndpoints.OAuth))
+            if ((endpoints & AutodiscoverEndpoints.Soap) != AutodiscoverEndpoints.Soap &&
+                (endpoints & AutodiscoverEndpoints.WsSecurity) != AutodiscoverEndpoints.WsSecurity &&
+                (endpoints & AutodiscoverEndpoints.WSSecuritySymmetricKey) !=
+                AutodiscoverEndpoints.WSSecuritySymmetricKey &&
+                (endpoints & AutodiscoverEndpoints.WSSecurityX509Cert) != AutodiscoverEndpoints.WSSecurityX509Cert &&
+                (endpoints & AutodiscoverEndpoints.OAuth) != AutodiscoverEndpoints.OAuth)
             {
                 TraceMessage(
                     TraceFlags.AutodiscoverConfiguration,
-                    string.Format("No Autodiscover endpoints are available  for host {0}", host)
+                    $"No Autodiscover endpoints are available  for host {host}"
                 );
 
                 return false;
@@ -1269,7 +1236,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 {
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("No Autodiscover WS-Security endpoint is available for host {0}", host)
+                        $"No Autodiscover WS-Security endpoint is available for host {host}"
                     );
 
                     return false;
@@ -1285,10 +1252,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 {
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format(
-                            "No Autodiscover WS-Security/SymmetricKey endpoint is available for host {0}",
-                            host
-                        )
+                        $"No Autodiscover WS-Security/SymmetricKey endpoint is available for host {host}"
                     );
 
                     return false;
@@ -1302,7 +1266,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 {
                     TraceMessage(
                         TraceFlags.AutodiscoverConfiguration,
-                        string.Format("No Autodiscover WS-Security/X509Cert endpoint is available for host {0}", host)
+                        $"No Autodiscover WS-Security/X509Cert endpoint is available for host {host}"
                     );
 
                     return false;
@@ -1320,10 +1284,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             return true;
         }
 
-        TraceMessage(
-            TraceFlags.AutodiscoverConfiguration,
-            string.Format("No Autodiscover endpoints are available for host {0}", host)
-        );
+        TraceMessage(TraceFlags.AutodiscoverConfiguration, $"No Autodiscover endpoints are available for host {host}");
 
         return false;
     }
@@ -1349,7 +1310,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     {
         var urls = new List<Uri>();
 
-        if (enableScpLookup)
+        if (EnableScpLookup)
         {
             // Get SCP URLs
             var callback = GetScpUrlsForDomainCallback ?? DefaultGetScpUrlsForDomain;
@@ -1394,10 +1355,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <returns>Flags indicating which endpoints are enabled.</returns>
     private bool TryGetEnabledEndpointsForHost(ref string host, out AutodiscoverEndpoints endpoints)
     {
-        TraceMessage(
-            TraceFlags.AutodiscoverConfiguration,
-            string.Format("Determining which endpoints are enabled for host {0}", host)
-        );
+        TraceMessage(TraceFlags.AutodiscoverConfiguration, $"Determining which endpoints are enabled for host {host}");
 
         // We may get redirected to another host. And therefore need to limit the number
         // of redirections we'll tolerate.
@@ -1408,39 +1366,34 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             endpoints = AutodiscoverEndpoints.None;
 
 
-            IEwsHttpWebResponse response = null;
+            IEwsHttpWebResponse? response = null;
 
             try
             {
-                using (var client = new HttpClient(
-                           new HttpClientHandler
-                           {
-                               AllowAutoRedirect = false
-                           }
-                       )
-                       {
-                           Timeout = AutodiscoverTimeout
-                       })
-                {
-                    var httpResponse = client.GetAsync(autoDiscoverUrl).Result;
-                    response = new EwsHttpWebResponse(httpResponse);
-                }
+                using var client = new HttpClient(
+                    new HttpClientHandler
+                    {
+                        AllowAutoRedirect = false,
+                    }
+                );
+                client.Timeout = AutodiscoverTimeout;
+                var httpResponse = client.GetAsync(autoDiscoverUrl).Result;
+                response = new EwsHttpWebResponse(httpResponse);
             }
             catch (Exception ex)
             {
-                TraceMessage(TraceFlags.AutodiscoverConfiguration, string.Format("I/O error: {0}", ex.Message));
+                TraceMessage(TraceFlags.AutodiscoverConfiguration, $"I/O error: {ex.Message}");
             }
 
             if (response != null)
             {
                 using (response)
                 {
-                    Uri redirectUrl;
-                    if (TryGetRedirectionResponse(response, out redirectUrl))
+                    if (TryGetRedirectionResponse(response, out var redirectUrl))
                     {
                         TraceMessage(
                             TraceFlags.AutodiscoverConfiguration,
-                            string.Format("Host returned redirection to host '{0}'", redirectUrl.Host)
+                            $"Host returned redirection to host '{redirectUrl.Host}'"
                         );
 
                         host = redirectUrl.Host;
@@ -1451,7 +1404,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
                         TraceMessage(
                             TraceFlags.AutodiscoverConfiguration,
-                            string.Format("Host returned enabled endpoint flags: {0}", endpoints)
+                            $"Host returned enabled endpoint flags: {endpoints}"
                         );
 
                         return true;
@@ -1466,7 +1419,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
         TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            string.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverMaxRedirections)
+            $"Maximum number of redirection hops {AutodiscoverMaxRedirections} exceeded"
         );
 
         throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
@@ -1477,7 +1430,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// </summary>
     /// <param name="response">The response.</param>
     /// <returns>Endpoints enabled.</returns>
-    private AutodiscoverEndpoints GetEndpointsFromHttpWebResponse(IEwsHttpWebResponse response)
+    private static AutodiscoverEndpoints GetEndpointsFromHttpWebResponse(IEwsHttpWebResponse response)
     {
         var endpoints = AutodiscoverEndpoints.Legacy;
         if (response.Headers.TryGetValues(AutodiscoverSoapEnabledHeaderName, out _))
@@ -1546,7 +1499,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     internal HttpRequestMessage PrepareHttpRequestMessageForUrl(Uri url)
     {
         // Verify that the protocol is something that we can handle
-        if ((url.Scheme != "http") && (url.Scheme != "https"))
+        if (url.Scheme != "http" && url.Scheme != "https")
         {
             throw new ServiceLocalException(string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
         }
@@ -1602,14 +1555,14 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             // Temporary fix for authentication on Linux platform
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
+                serviceCredentials = AdjustLinuxAuthentication(_url, serviceCredentials);
             }
 
             // Make sure that credentials have been authenticated if required
             serviceCredentials.PreAuthenticate();
 
             // TODO support different credentials
-            if (!(serviceCredentials is WebCredentials))
+            if (serviceCredentials is not WebCredentials)
             {
                 throw new NotImplementedException();
             }
@@ -1622,7 +1575,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
         return new HttpClient(httpClientHandler)
         {
-            Timeout = TimeSpan.FromMilliseconds(Timeout)
+            Timeout = TimeSpan.FromMilliseconds(Timeout),
         };
     }
 
@@ -1637,7 +1590,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <returns>True if redirection should be followed.</returns>
     private bool CallRedirectionUrlValidationCallback(string redirectionUrl)
     {
-        var callback = (RedirectionUrlValidationCallback == null) ? DefaultAutodiscoverRedirectionUrlValidationCallback
+        var callback = RedirectionUrlValidationCallback == null ? DefaultAutodiscoverRedirectionUrlValidationCallback
             : RedirectionUrlValidationCallback;
         return callback(redirectionUrl);
     }
@@ -1727,11 +1680,11 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <param name="domain">The domain that will be used to determine the URL of the service.</param>
     internal AutodiscoverService(Uri url, string domain)
     {
-        EwsUtilities.ValidateDomainNameAllowNull(domain, "domain");
+        EwsUtilities.ValidateDomainNameAllowNull(domain);
 
-        this.url = url;
-        this.domain = domain;
-        dnsClient = new AutodiscoverDnsClient(this);
+        _url = url;
+        _domain = domain;
+        _dnsClient = new AutodiscoverDnsClient(this);
     }
 
     /// <summary>
@@ -1743,11 +1696,11 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     internal AutodiscoverService(Uri url, string domain, ExchangeVersion requestedServerVersion)
         : base(requestedServerVersion)
     {
-        EwsUtilities.ValidateDomainNameAllowNull(domain, "domain");
+        EwsUtilities.ValidateDomainNameAllowNull(domain);
 
-        this.url = url;
-        this.domain = domain;
-        dnsClient = new AutodiscoverDnsClient(this);
+        _url = url;
+        _domain = domain;
+        _dnsClient = new AutodiscoverDnsClient(this);
     }
 
     /// <summary>
@@ -1758,7 +1711,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     internal AutodiscoverService(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
         : base(service, requestedServerVersion)
     {
-        dnsClient = new AutodiscoverDnsClient(this);
+        _dnsClient = new AutodiscoverDnsClient(this);
     }
 
     /// <summary>
@@ -1850,8 +1803,10 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         params DomainSettingName[] domainSettingNames
     )
     {
-        var domains = new List<string>(1);
-        domains.Add(domain);
+        var domains = new List<string>(1)
+        {
+            domain,
+        };
         var settings = new List<DomainSettingName>(domainSettingNames);
         return (await GetDomainSettings(domains, settings, requestedVersion))[0];
     }
@@ -1883,7 +1838,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <returns>True if the partner access information was retrieved, false otherwise.</returns>
     public async Task<Tuple<bool, ExchangeCredentials, Uri>> TryGetPartnerAccess(string targetTenantDomain)
     {
-        EwsUtilities.ValidateNonBlankStringParam(targetTenantDomain, "targetTenantDomain");
+        EwsUtilities.ValidateNonBlankStringParam(targetTenantDomain, nameof(targetTenantDomain));
 
         // the user should set the url to its own tenant's autodiscover url.
         // 
@@ -1899,30 +1854,32 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             );
         }
 
-        ExchangeCredentials partnerAccessCredentials = null;
-        Uri targetTenantAutodiscoverUrl = null;
+        ExchangeCredentials? partnerAccessCredentials = null;
+        Uri? targetTenantAutodiscoverUrl = null;
 
         var smtpAddress = targetTenantDomain;
-        if (!smtpAddress.Contains("@"))
+        if (!smtpAddress.Contains('@'))
         {
             smtpAddress = "SystemMailbox{e0dc1c29-89c3-4034-b678-e6c29d823ed9}@" + targetTenantDomain;
         }
 
-        var request = new GetUserSettingsRequest(this, Url, true);
-        request.SmtpAddresses = new List<string>(
-            new[]
-            {
-                smtpAddress
-            }
-        );
-        request.Settings = new List<UserSettingName>(
-            new[]
-            {
-                UserSettingName.ExternalEwsUrl
-            }
-        );
+        var request = new GetUserSettingsRequest(this, Url, true)
+        {
+            SmtpAddresses = new List<string>(
+                new[]
+                {
+                    smtpAddress,
+                }
+            ),
+            Settings = new List<UserSettingName>(
+                new[]
+                {
+                    UserSettingName.ExternalEwsUrl,
+                }
+            ),
+        };
 
-        GetUserSettingsResponseCollection response = null;
+        GetUserSettingsResponseCollection? response;
         try
         {
             response = await request.Execute();
@@ -1978,9 +1935,9 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     ///     Gets or sets the domain this service is bound to. When this property is set, the domain
     ///     name is used to automatically determine the Autodiscover service URL.
     /// </summary>
-    public string Domain
+    public string? Domain
     {
-        get => domain;
+        get => _domain;
         set
         {
             EwsUtilities.ValidateDomainNameAllowNull(value, "Domain");
@@ -1988,28 +1945,28 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             // If Domain property is set to non-null value, Url property is nulled.
             if (value != null)
             {
-                url = null;
+                _url = null;
             }
 
-            domain = value;
+            _domain = value;
         }
     }
 
     /// <summary>
     ///     Gets or sets the URL this service is bound to.
     /// </summary>
-    public Uri Url
+    public Uri? Url
     {
-        get => url;
+        get => _url;
         set
         {
             // If Url property is set to non-null value, Domain property is set to host portion of Url.
             if (value != null)
             {
-                domain = value.Host;
+                _domain = value.Host;
             }
 
-            url = value;
+            _url = value;
         }
     }
 
@@ -2023,42 +1980,26 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     ///     - This instance has been created with a domain name and no method has been called,
     ///     - This instance has been created with a URL.
     /// </remarks>
-    public bool? IsExternal
-    {
-        get => isExternal;
-        internal set => isExternal = value;
-    }
+    public bool? IsExternal { get; internal set; } = true;
 
     /// <summary>
     ///     Gets or sets the redirection URL validation callback.
     /// </summary>
     /// <value>The redirection URL validation callback.</value>
-    public AutodiscoverRedirectionUrlValidationCallback RedirectionUrlValidationCallback
-    {
-        get => redirectionUrlValidationCallback;
-        set => redirectionUrlValidationCallback = value;
-    }
+    public AutodiscoverRedirectionUrlValidationCallback RedirectionUrlValidationCallback { get; set; }
 
     /// <summary>
     ///     Gets or sets the DNS server address.
     /// </summary>
     /// <value>The DNS server address.</value>
-    internal IPAddress DnsServerAddress
-    {
-        get => dnsServerAddress;
-        set => dnsServerAddress = value;
-    }
+    internal IPAddress DnsServerAddress { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the AutodiscoverService should perform SCP (ServiceConnectionPoint) record
     ///     lookup when determining
     ///     the Autodiscover service URL.
     /// </summary>
-    public bool EnableScpLookup
-    {
-        get => enableScpLookup;
-        set => enableScpLookup = value;
-    }
+    public bool EnableScpLookup { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets the delegate used to resolve Autodiscover SCP urls for a specified domain.

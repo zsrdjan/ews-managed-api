@@ -23,15 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of a folder.
 /// </summary>
+[PublicAPI]
 public sealed class FolderId : ServiceId
 {
-    private readonly WellKnownFolderName? folderName;
-    private readonly Mailbox mailbox;
+    private readonly WellKnownFolderName? _folderName;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FolderId" /> class.
@@ -57,7 +59,7 @@ public sealed class FolderId : ServiceId
     /// <param name="folderName">The folder name used to initialize the FolderId.</param>
     public FolderId(WellKnownFolderName folderName)
     {
-        this.folderName = folderName;
+        _folderName = folderName;
     }
 
     /// <summary>
@@ -70,7 +72,7 @@ public sealed class FolderId : ServiceId
     public FolderId(WellKnownFolderName folderName, Mailbox mailbox)
         : this(folderName)
     {
-        this.mailbox = mailbox;
+        Mailbox = mailbox;
     }
 
     /// <summary>
@@ -92,10 +94,7 @@ public sealed class FolderId : ServiceId
         {
             writer.WriteAttributeValue(XmlAttributeNames.Id, FolderName.Value.ToString().ToLowerInvariant());
 
-            if (Mailbox != null)
-            {
-                Mailbox.WriteToXml(writer, XmlElementNames.Mailbox);
-            }
+            Mailbox?.WriteToXml(writer, XmlElementNames.Mailbox);
         }
         else
         {
@@ -121,12 +120,12 @@ public sealed class FolderId : ServiceId
     ///     Gets the name of the folder associated with the folder Id. Name and Id are mutually exclusive; if one is set, the
     ///     other is null.
     /// </summary>
-    public WellKnownFolderName? FolderName => folderName;
+    public WellKnownFolderName? FolderName => _folderName;
 
     /// <summary>
     ///     Gets the mailbox of the folder. Mailbox is only set when FolderName is set.
     /// </summary>
-    public Mailbox Mailbox => mailbox;
+    public Mailbox? Mailbox { get; }
 
     /// <summary>
     ///     Defines an implicit conversion between string and FolderId.
@@ -158,7 +157,7 @@ public sealed class FolderId : ServiceId
         {
             if (FolderName.HasValue)
             {
-                return (Mailbox == null) || Mailbox.IsValid;
+                return Mailbox == null || Mailbox.IsValid;
             }
 
             return base.IsValid;
@@ -175,16 +174,14 @@ public sealed class FolderId : ServiceId
     ///     otherwise, false.
     /// </returns>
     /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(this, obj))
         {
             return true;
         }
 
-        var other = obj as FolderId;
-
-        if (other == null)
+        if (obj is not FolderId other)
         {
             return false;
         }
@@ -226,9 +223,9 @@ public sealed class FolderId : ServiceId
         {
             hashCode = FolderName.Value.GetHashCode();
 
-            if ((Mailbox != null) && Mailbox.IsValid)
+            if (Mailbox != null && Mailbox.IsValid)
             {
-                hashCode = hashCode ^ Mailbox.GetHashCode();
+                hashCode ^= Mailbox.GetHashCode();
             }
         }
         else
@@ -251,9 +248,9 @@ public sealed class FolderId : ServiceId
         {
             if (FolderName.HasValue)
             {
-                if ((Mailbox != null) && mailbox.IsValid)
+                if (Mailbox != null && Mailbox.IsValid)
                 {
-                    return string.Format("{0} ({1})", folderName.Value, Mailbox);
+                    return $"{_folderName.Value} ({Mailbox})";
                 }
 
                 return FolderName.Value.ToString();

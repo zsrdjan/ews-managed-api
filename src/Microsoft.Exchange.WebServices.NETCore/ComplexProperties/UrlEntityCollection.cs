@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of UrlEntity objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class UrlEntityCollection : ComplexPropertyCollection<UrlEntity>
 {
@@ -44,12 +47,9 @@ public sealed class UrlEntityCollection : ComplexPropertyCollection<UrlEntity>
     ///     Initializes a new instance of the <see cref="UrlEntityCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal UrlEntityCollection(IEnumerable<UrlEntity> collection)
+    internal UrlEntityCollection(IEnumerable<UrlEntity>? collection)
     {
-        if (collection != null)
-        {
-            collection.ForEach(InternalAdd);
-        }
+        collection?.ForEach(InternalAdd);
     }
 
     /// <summary>

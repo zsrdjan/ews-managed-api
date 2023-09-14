@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<CreateAttachmentResponse>
 {
-    private string parentItemId;
-    private readonly List<Attachment> attachments = new List<Attachment>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateAttachmentRequest" /> class.
     /// </summary>
@@ -49,7 +46,7 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(ParentItemId, "ParentItemId");
+        EwsUtilities.ValidateParam(ParentItemId);
     }
 
     /// <summary>
@@ -134,10 +131,9 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     {
         get
         {
-            foreach (var itemAttachment in attachments.OfType<ItemAttachment>())
+            foreach (var itemAttachment in Attachments.OfType<ItemAttachment>())
             {
-                if ((itemAttachment.Item != null) &&
-                    itemAttachment.Item.GetIsTimeZoneHeaderRequired(false /* isUpdateOperation */))
+                if (itemAttachment.Item != null && itemAttachment.Item.GetIsTimeZoneHeaderRequired(false))
                 {
                     return true;
                 }
@@ -151,15 +147,11 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     ///     Gets the attachments.
     /// </summary>
     /// <value>The attachments.</value>
-    public List<Attachment> Attachments => attachments;
+    public List<Attachment> Attachments { get; } = new();
 
     /// <summary>
     ///     Gets or sets the parent item id.
     /// </summary>
     /// <value>The parent item id.</value>
-    public string ParentItemId
-    {
-        get => parentItemId;
-        set => parentItemId = value;
-    }
+    public string ParentItemId { get; set; }
 }

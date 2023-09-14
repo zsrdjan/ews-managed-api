@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class MarkAllItemsAsReadRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private readonly FolderIdWrapperList folderIds = new FolderIdWrapperList();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="MarkAllItemsAsReadRequest" /> class.
     /// </summary>
@@ -48,7 +46,7 @@ internal sealed class MarkAllItemsAsReadRequest : MultiResponseServiceRequest<Se
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(FolderIds, "FolderIds");
+        EwsUtilities.ValidateParam(FolderIds);
         FolderIds.Validate(Service.RequestedServerVersion);
     }
 
@@ -123,7 +121,7 @@ internal sealed class MarkAllItemsAsReadRequest : MultiResponseServiceRequest<Se
     /// <summary>
     ///     Gets the folder ids.
     /// </summary>
-    internal FolderIdWrapperList FolderIds => folderIds;
+    internal FolderIdWrapperList FolderIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets a value indicating whether items should be marked as read/unread.

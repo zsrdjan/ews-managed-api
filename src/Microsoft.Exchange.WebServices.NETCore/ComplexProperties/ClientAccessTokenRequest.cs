@@ -23,52 +23,41 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a client token access request
 /// </summary>
+[PublicAPI]
 public class ClientAccessTokenRequest : ComplexProperty
 {
-    private readonly string id;
-    private readonly ClientAccessTokenType tokenType;
-    private readonly string scope;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
-    /// </summary>
-    /// <param name="id">id</param>
-    /// <param name="tokenType">The tokenType.</param>
-    public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType)
-        : this(id, tokenType, null)
-    {
-    }
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
     /// </summary>
     /// <param name="id">id</param>
     /// <param name="tokenType">The tokenType.</param>
     /// <param name="scope">The scope.</param>
-    public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType, string scope)
+    public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType, string? scope = null)
     {
-        this.id = id;
-        this.tokenType = tokenType;
-        this.scope = scope;
+        Id = id;
+        TokenType = tokenType;
+        Scope = scope;
     }
 
     /// <summary>
     ///     Gets the App Id.
     /// </summary>
-    public string Id => id;
+    public string Id { get; }
 
     /// <summary>
     ///     Gets token type.
     /// </summary>
-    public ClientAccessTokenType TokenType => tokenType;
+    public ClientAccessTokenType TokenType { get; }
 
     /// <summary>
     ///     Gets the token scope.
     /// </summary>
-    public string Scope => scope;
+    public string? Scope { get; }
 }

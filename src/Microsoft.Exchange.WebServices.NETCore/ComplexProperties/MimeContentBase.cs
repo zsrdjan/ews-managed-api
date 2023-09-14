@@ -23,22 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the MIME content of an item.
 /// </summary>
+[PublicAPI]
 public abstract class MimeContentBase : ComplexProperty
 {
     /// <summary>
     ///     characterSet returned
     /// </summary>
-    private string characterSet;
+    private string? _characterSet;
 
     /// <summary>
     ///     content received
     /// </summary>
-    private byte[] content;
+    private byte[]? _content;
 
     /// <summary>
     ///     Reads attributes from XML.
@@ -47,7 +50,7 @@ public abstract class MimeContentBase : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        characterSet = reader.ReadAttributeValue<string>(XmlAttributeNames.CharacterSet);
+        _characterSet = reader.ReadAttributeValue<string>(XmlAttributeNames.CharacterSet);
     }
 
     /// <summary>
@@ -56,7 +59,7 @@ public abstract class MimeContentBase : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        content = Convert.FromBase64String(reader.ReadValue());
+        _content = Convert.FromBase64String(reader.ReadValue());
     }
 
     /// <summary>
@@ -83,18 +86,18 @@ public abstract class MimeContentBase : ComplexProperty
     /// <summary>
     ///     Gets or sets the character set of the content.
     /// </summary>
-    public string CharacterSet
+    public string? CharacterSet
     {
-        get => characterSet;
-        set => SetFieldValue(ref characterSet, value);
+        get => _characterSet;
+        set => SetFieldValue(ref _characterSet, value);
     }
 
     /// <summary>
     ///     Gets or sets the content.
     /// </summary>
-    public byte[] Content
+    public byte[]? Content
     {
-        get => content;
-        set => SetFieldValue(ref content, value);
+        get => _content;
+        set => SetFieldValue(ref _content, value);
     }
 }

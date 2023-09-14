@@ -43,7 +43,7 @@ internal sealed class SetClientExtensionRequest : MultiResponseServiceRequest<Se
     internal SetClientExtensionRequest(ExchangeService service, List<SetClientExtensionAction> actions)
         : base(service, ServiceErrorHandling.ThrowOnError)
     {
-        this._actions = actions;
+        _actions = actions;
     }
 
     /// <summary>

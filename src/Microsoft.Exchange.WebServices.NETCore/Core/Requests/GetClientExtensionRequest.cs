@@ -33,37 +33,37 @@ internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
     /// <summary>
     ///     The list of extension IDs to return.
     /// </summary>
-    private readonly StringList requestedExtensionIds;
+    private readonly StringList? _requestedExtensionIds;
 
     /// <summary>
     ///     Whether enabled extension only should be returned.
     /// </summary>
-    private readonly bool shouldReturnEnabledOnly;
+    private readonly bool _shouldReturnEnabledOnly;
 
     /// <summary>
     ///     Whether it's called from admin or user scope.
     /// </summary>
-    private readonly bool isUserScope;
+    private readonly bool _isUserScope;
 
     /// <summary>
     ///     The user identity.
     /// </summary>
-    private readonly string userId;
+    private readonly string _userId;
 
     /// <summary>
     ///     The list of org extension IDs which user enabled.
     /// </summary>
-    private readonly StringList userEnabledExtensionIds;
+    private readonly StringList? _userEnabledExtensionIds;
 
     /// <summary>
     ///     The list of org extension IDs which user disabled.
     /// </summary>
-    private readonly StringList userDisabledExtensionIds;
+    private readonly StringList? _userDisabledExtensionIds;
 
     /// <summary>
     ///     Whether it's called for debugging to retrieve org master table xml
     /// </summary>
-    private readonly bool isDebug;
+    private readonly bool _isDebug;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetClientExtensionRequest" /> class.
@@ -104,13 +104,13 @@ internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
     )
         : base(service)
     {
-        this.requestedExtensionIds = requestedExtensionIds;
-        this.shouldReturnEnabledOnly = shouldReturnEnabledOnly;
-        this.isUserScope = isUserScope;
-        this.userId = userId;
-        this.userEnabledExtensionIds = userEnabledExtensionIds;
-        this.userDisabledExtensionIds = userDisabledExtensionIds;
-        this.isDebug = isDebug;
+        _requestedExtensionIds = requestedExtensionIds;
+        _shouldReturnEnabledOnly = shouldReturnEnabledOnly;
+        _isUserScope = isUserScope;
+        _userId = userId;
+        _userEnabledExtensionIds = userEnabledExtensionIds;
+        _userDisabledExtensionIds = userDisabledExtensionIds;
+        _isDebug = isDebug;
     }
 
     /// <summary>
@@ -128,44 +128,44 @@ internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (null != requestedExtensionIds && requestedExtensionIds.Count > 0)
+        if (_requestedExtensionIds != null && _requestedExtensionIds.Count > 0)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ClientExtensionRequestedIds);
-            requestedExtensionIds.WriteElementsToXml(writer);
+            _requestedExtensionIds.WriteElementsToXml(writer);
             writer.WriteEndElement();
         }
 
-        if (isUserScope)
+        if (_isUserScope)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ClientExtensionUserRequest);
 
-            writer.WriteAttributeValue(XmlAttributeNames.ClientExtensionUserIdentity, userId);
+            writer.WriteAttributeValue(XmlAttributeNames.ClientExtensionUserIdentity, _userId);
 
-            if (shouldReturnEnabledOnly)
+            if (_shouldReturnEnabledOnly)
             {
-                writer.WriteAttributeValue(XmlAttributeNames.ClientExtensionEnabledOnly, shouldReturnEnabledOnly);
+                writer.WriteAttributeValue(XmlAttributeNames.ClientExtensionEnabledOnly, _shouldReturnEnabledOnly);
             }
 
-            if (null != userEnabledExtensionIds && userEnabledExtensionIds.Count > 0)
+            if (_userEnabledExtensionIds != null && _userEnabledExtensionIds.Count > 0)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ClientExtensionUserEnabled);
-                userEnabledExtensionIds.WriteElementsToXml(writer);
+                _userEnabledExtensionIds.WriteElementsToXml(writer);
                 writer.WriteEndElement();
             }
 
-            if (null != userDisabledExtensionIds && userDisabledExtensionIds.Count > 0)
+            if (_userDisabledExtensionIds != null && _userDisabledExtensionIds.Count > 0)
             {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ClientExtensionUserDisabled);
-                userDisabledExtensionIds.WriteElementsToXml(writer);
+                _userDisabledExtensionIds.WriteElementsToXml(writer);
                 writer.WriteEndElement();
             }
 
             writer.WriteEndElement();
         }
 
-        if (isDebug)
+        if (_isDebug)
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ClientExtensionIsDebug, isDebug);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ClientExtensionIsDebug, _isDebug);
         }
     }
 

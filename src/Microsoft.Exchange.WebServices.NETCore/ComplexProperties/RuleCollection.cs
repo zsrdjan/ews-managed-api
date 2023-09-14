@@ -25,29 +25,27 @@
 
 using System.Collections;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of rules.
 /// </summary>
+[PublicAPI]
 public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
 {
     /// <summary>
-    ///     The OutlookRuleBlobExists flag.
-    /// </summary>
-    private bool outlookRuleBlobExists;
-
-    /// <summary>
     ///     The rules in the rule collection.
     /// </summary>
-    private readonly List<Rule> rules;
+    private readonly List<Rule> _rules;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleCollection" /> class.
     /// </summary>
     internal RuleCollection()
     {
-        rules = new List<Rule>();
+        _rules = new List<Rule>();
     }
 
     /// <summary>
@@ -55,17 +53,12 @@ public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
     ///     mailbox. To update rules with EWS when the Outlook rule blob exists, call
     ///     SetInboxRules passing true as the value of the removeOutlookBlob parameter.
     /// </summary>
-    public bool OutlookRuleBlobExists
-    {
-        get => outlookRuleBlobExists;
-
-        internal set => outlookRuleBlobExists = value;
-    }
+    public bool OutlookRuleBlobExists { get; internal set; }
 
     /// <summary>
     ///     Gets the number of rules in this collection.
     /// </summary>
-    public int Count => rules.Count;
+    public int Count => _rules.Count;
 
     /// <summary>
     ///     Gets the rule at the specified index in the collection.
@@ -76,12 +69,12 @@ public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
     {
         get
         {
-            if (index < 0 || index >= rules.Count)
+            if (index < 0 || index >= _rules.Count)
             {
-                throw new ArgumentOutOfRangeException("Index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            return rules[index];
+            return _rules[index];
         }
     }
 
@@ -96,7 +89,7 @@ public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
         {
             var rule = new Rule();
             rule.LoadFromXml(reader, XmlElementNames.Rule);
-            rules.Add(rule);
+            _rules.Add(rule);
             return true;
         }
 
@@ -121,7 +114,7 @@ public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
     /// <returns>Enumerator</returns>
     public IEnumerator<Rule> GetEnumerator()
     {
-        return rules.GetEnumerator();
+        return _rules.GetEnumerator();
     }
 
     #endregion

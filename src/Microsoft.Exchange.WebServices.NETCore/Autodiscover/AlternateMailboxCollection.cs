@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,6 +34,7 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents a user setting that is a collection of alternate mailboxes.
 /// </summary>
+[PublicAPI]
 public sealed class AlternateMailboxCollection
 {
     /// <summary>
@@ -39,7 +42,6 @@ public sealed class AlternateMailboxCollection
     /// </summary>
     internal AlternateMailboxCollection()
     {
-        Entries = new List<AlternateMailbox>();
     }
 
     /// <summary>
@@ -55,7 +57,7 @@ public sealed class AlternateMailboxCollection
         {
             reader.Read();
 
-            if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.AlternateMailbox))
+            if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.AlternateMailbox)
             {
                 instance.Entries.Add(AlternateMailbox.LoadFromXml(reader));
             }
@@ -67,5 +69,5 @@ public sealed class AlternateMailboxCollection
     /// <summary>
     ///     Gets the collection of alternate mailboxes.
     /// </summary>
-    public List<AlternateMailbox> Entries { get; private set; }
+    public List<AlternateMailbox> Entries { get; private set; } = new();
 }

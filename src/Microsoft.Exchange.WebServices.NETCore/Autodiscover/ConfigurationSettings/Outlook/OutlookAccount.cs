@@ -47,8 +47,8 @@ internal sealed class OutlookAccount
 
     #region Private fields
 
-    private readonly Dictionary<OutlookProtocolType, OutlookProtocol> protocols;
-    private readonly AlternateMailboxCollection alternateMailboxes;
+    private readonly Dictionary<OutlookProtocolType, OutlookProtocol> _protocols;
+    private readonly AlternateMailboxCollection _alternateMailboxes;
 
     #endregion
 
@@ -58,8 +58,8 @@ internal sealed class OutlookAccount
     /// </summary>
     internal OutlookAccount()
     {
-        protocols = new Dictionary<OutlookProtocolType, OutlookProtocol>();
-        alternateMailboxes = new AlternateMailboxCollection();
+        _protocols = new Dictionary<OutlookProtocolType, OutlookProtocol>();
+        _alternateMailboxes = new AlternateMailboxCollection();
     }
 
     /// <summary>
@@ -77,51 +77,55 @@ internal sealed class OutlookAccount
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.AccountType:
+                    {
                         AccountType = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.Action:
+                    {
                         var xmlResponseType = reader.ReadElementValue();
 
-                        switch (xmlResponseType)
+                        ResponseType = xmlResponseType switch
                         {
-                            case Settings:
-                                ResponseType = AutodiscoverResponseType.Success;
-                                break;
-                            case RedirectUrl:
-                                ResponseType = AutodiscoverResponseType.RedirectUrl;
-                                break;
-                            case RedirectAddr:
-                                ResponseType = AutodiscoverResponseType.RedirectAddress;
-                                break;
-                            default:
-                                ResponseType = AutodiscoverResponseType.Error;
-                                break;
-                        }
+                            Settings => AutodiscoverResponseType.Success,
+                            RedirectUrl => AutodiscoverResponseType.RedirectUrl,
+                            RedirectAddr => AutodiscoverResponseType.RedirectAddress,
+                            _ => AutodiscoverResponseType.Error,
+                        };
 
                         break;
+                    }
                     case XmlElementNames.Protocol:
+                    {
                         var protocol = new OutlookProtocol();
                         protocol.LoadFromXml(reader);
-                        if (protocols.ContainsKey(protocol.ProtocolType))
+                        if (_protocols.ContainsKey(protocol.ProtocolType))
                         {
                             // There should be strictly one node per protocol type in the autodiscover response.
                             throw new ServiceLocalException(Strings.InvalidAutodiscoverServiceResponse);
                         }
 
-                        protocols.Add(protocol.ProtocolType, protocol);
+                        _protocols.Add(protocol.ProtocolType, protocol);
                         break;
+                    }
                     case XmlElementNames.RedirectAddr:
                     case XmlElementNames.RedirectUrl:
+                    {
                         RedirectTarget = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.AlternateMailboxes:
+                    {
                         var alternateMailbox = AlternateMailbox.LoadFromXml(reader);
-                        alternateMailboxes.Entries.Add(alternateMailbox);
+                        _alternateMailboxes.Entries.Add(alternateMailbox);
                         break;
+                    }
 
                     default:
+                    {
                         reader.SkipCurrentElement();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.Account));
@@ -134,14 +138,14 @@ internal sealed class OutlookAccount
     /// <param name="response">GetUserSettings response.</param>
     internal void ConvertToUserSettings(List<UserSettingName> requestedSettings, GetUserSettingsResponse response)
     {
-        foreach (var protocol in protocols.Values)
+        foreach (var protocol in _protocols.Values)
         {
             protocol.ConvertToUserSettings(requestedSettings, response);
         }
 
         if (requestedSettings.Contains(UserSettingName.AlternateMailboxes))
         {
-            response.Settings[UserSettingName.AlternateMailboxes] = alternateMailboxes;
+            response.Settings[UserSettingName.AlternateMailboxes] = _alternateMailboxes;
         }
     }
 

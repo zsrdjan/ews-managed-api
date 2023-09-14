@@ -35,9 +35,9 @@ internal class TimeZoneTransition : ComplexProperty
     private const string PeriodTarget = "Period";
     private const string GroupTarget = "Group";
 
-    private readonly TimeZoneDefinition timeZoneDefinition;
-    private TimeZonePeriod targetPeriod;
-    private TimeZoneTransitionGroup targetGroup;
+    private readonly TimeZoneDefinition _timeZoneDefinition;
+    private TimeZonePeriod? _targetPeriod;
+    private TimeZoneTransitionGroup _targetGroup;
 
     /// <summary>
     ///     Creates a time zone period transition of the appropriate type given an XML element name.
@@ -47,21 +47,16 @@ internal class TimeZoneTransition : ComplexProperty
     /// <returns>A TimeZonePeriodTransition instance.</returns>
     internal static TimeZoneTransition Create(TimeZoneDefinition timeZoneDefinition, string xmlElementName)
     {
-        switch (xmlElementName)
+        return xmlElementName switch
         {
-            case XmlElementNames.AbsoluteDateTransition:
-                return new AbsoluteDateTransition(timeZoneDefinition);
-            case XmlElementNames.RecurringDayTransition:
-                return new RelativeDayOfMonthTransition(timeZoneDefinition);
-            case XmlElementNames.RecurringDateTransition:
-                return new AbsoluteDayOfMonthTransition(timeZoneDefinition);
-            case XmlElementNames.Transition:
-                return new TimeZoneTransition(timeZoneDefinition);
-            default:
-                throw new ServiceLocalException(
-                    string.Format(Strings.UnknownTimeZonePeriodTransitionType, xmlElementName)
-                );
-        }
+            XmlElementNames.AbsoluteDateTransition => new AbsoluteDateTransition(timeZoneDefinition),
+            XmlElementNames.RecurringDayTransition => new RelativeDayOfMonthTransition(timeZoneDefinition),
+            XmlElementNames.RecurringDateTransition => new AbsoluteDayOfMonthTransition(timeZoneDefinition),
+            XmlElementNames.Transition => new TimeZoneTransition(timeZoneDefinition),
+            _ => throw new ServiceLocalException(
+                string.Format(Strings.UnknownTimeZonePeriodTransitionType, xmlElementName)
+            ),
+        };
     }
 
     /// <summary>
@@ -129,32 +124,42 @@ internal class TimeZoneTransition : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.To:
+            {
                 var targetKind = reader.ReadAttributeValue(XmlAttributeNames.Kind);
                 var targetId = reader.ReadElementValue();
 
                 switch (targetKind)
                 {
                     case PeriodTarget:
-                        if (!timeZoneDefinition.Periods.TryGetValue(targetId, out targetPeriod))
+                    {
+                        if (!_timeZoneDefinition.Periods.TryGetValue(targetId, out _targetPeriod))
                         {
                             throw new ServiceLocalException(string.Format(Strings.PeriodNotFound, targetId));
                         }
 
                         break;
+                    }
                     case GroupTarget:
-                        if (!timeZoneDefinition.TransitionGroups.TryGetValue(targetId, out targetGroup))
+                    {
+                        if (!_timeZoneDefinition.TransitionGroups.TryGetValue(targetId, out _targetGroup))
                         {
                             throw new ServiceLocalException(string.Format(Strings.TransitionGroupNotFound, targetId));
                         }
 
                         break;
+                    }
                     default:
+                    {
                         throw new ServiceLocalException(Strings.UnsupportedTimeZonePeriodTransitionTarget);
+                    }
                 }
 
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -166,15 +171,15 @@ internal class TimeZoneTransition : ComplexProperty
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.To);
 
-        if (targetPeriod != null)
+        if (_targetPeriod != null)
         {
             writer.WriteAttributeValue(XmlAttributeNames.Kind, PeriodTarget);
-            writer.WriteValue(targetPeriod.Id, XmlElementNames.To);
+            writer.WriteValue(_targetPeriod.Id, XmlElementNames.To);
         }
         else
         {
             writer.WriteAttributeValue(XmlAttributeNames.Kind, GroupTarget);
-            writer.WriteValue(targetGroup.Id, XmlElementNames.To);
+            writer.WriteValue(_targetGroup.Id, XmlElementNames.To);
         }
 
         writer.WriteEndElement(); // To
@@ -204,7 +209,7 @@ internal class TimeZoneTransition : ComplexProperty
     /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
     internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition)
     {
-        this.timeZoneDefinition = timeZoneDefinition;
+        _timeZoneDefinition = timeZoneDefinition;
     }
 
     /// <summary>
@@ -215,7 +220,7 @@ internal class TimeZoneTransition : ComplexProperty
     internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition, TimeZoneTransitionGroup targetGroup)
         : this(timeZoneDefinition)
     {
-        this.targetGroup = targetGroup;
+        _targetGroup = targetGroup;
     }
 
     /// <summary>
@@ -226,16 +231,16 @@ internal class TimeZoneTransition : ComplexProperty
     internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
         : this(timeZoneDefinition)
     {
-        this.targetPeriod = targetPeriod;
+        _targetPeriod = targetPeriod;
     }
 
     /// <summary>
     ///     Gets the target period of the transition.
     /// </summary>
-    internal TimeZonePeriod TargetPeriod => targetPeriod;
+    internal TimeZonePeriod TargetPeriod => _targetPeriod;
 
     /// <summary>
     ///     Gets the target transition group of the transition.
     /// </summary>
-    internal TimeZoneTransitionGroup TargetGroup => targetGroup;
+    internal TimeZoneTransitionGroup TargetGroup => _targetGroup;
 }

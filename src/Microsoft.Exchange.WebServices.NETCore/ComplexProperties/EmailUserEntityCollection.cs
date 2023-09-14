@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of EmailUserEntity objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EmailUserEntityCollection : ComplexPropertyCollection<EmailUserEntity>
 {
@@ -44,7 +47,7 @@ public sealed class EmailUserEntityCollection : ComplexPropertyCollection<EmailU
     ///     Initializes a new instance of the <see cref="EmailUserEntityCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal EmailUserEntityCollection(IEnumerable<EmailUserEntity> collection)
+    internal EmailUserEntityCollection(IEnumerable<EmailUserEntity>? collection)
     {
         if (collection != null)
         {

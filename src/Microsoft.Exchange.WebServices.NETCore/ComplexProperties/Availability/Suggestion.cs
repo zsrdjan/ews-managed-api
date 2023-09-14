@@ -26,17 +26,16 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a suggestion for a specific date.
 /// </summary>
+[PublicAPI]
 public sealed class Suggestion : ComplexProperty
 {
-    private DateTime date;
-    private SuggestionQuality quality;
-    private readonly Collection<TimeSuggestion> timeSuggestions = new Collection<TimeSuggestion>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="Suggestion" /> class.
     /// </summary>
@@ -54,23 +53,28 @@ public sealed class Suggestion : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Date:
+            {
                 // The date that is returned by Availability is unscoped. 
                 var tempDate = DateTime.Parse(reader.ReadElementValue(), CultureInfo.InvariantCulture);
 
                 if (tempDate.Kind != DateTimeKind.Unspecified)
                 {
-                    date = new DateTime(tempDate.Ticks, DateTimeKind.Unspecified);
+                    Date = new DateTime(tempDate.Ticks, DateTimeKind.Unspecified);
                 }
                 else
                 {
-                    date = tempDate;
+                    Date = tempDate;
                 }
 
                 return true;
+            }
             case XmlElementNames.DayQuality:
-                quality = reader.ReadElementValue<SuggestionQuality>();
+            {
+                Quality = reader.ReadElementValue<SuggestionQuality>();
                 return true;
+            }
             case XmlElementNames.SuggestionArray:
+            {
                 if (!reader.IsEmptyElement)
                 {
                     do
@@ -83,29 +87,32 @@ public sealed class Suggestion : ComplexProperty
 
                             timeSuggestion.LoadFromXml(reader, reader.LocalName);
 
-                            timeSuggestions.Add(timeSuggestion);
+                            TimeSuggestions.Add(timeSuggestion);
                         }
                     } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.SuggestionArray));
                 }
 
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the date and time of the suggestion.
     /// </summary>
-    public DateTime Date => date;
+    public DateTime Date { get; private set; }
 
     /// <summary>
     ///     Gets the quality of the suggestion.
     /// </summary>
-    public SuggestionQuality Quality => quality;
+    public SuggestionQuality Quality { get; private set; }
 
     /// <summary>
     ///     Gets a collection of suggested times within the suggested day.
     /// </summary>
-    public Collection<TimeSuggestion> TimeSuggestions => timeSuggestions;
+    public Collection<TimeSuggestion> TimeSuggestions { get; } = new Collection<TimeSuggestion>();
 }

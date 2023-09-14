@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Person.
 /// </summary>
+[PublicAPI]
 public class Person : ComplexProperty
 {
     /// <summary>
@@ -192,104 +195,164 @@ public class Person : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.EmailAddress:
+            {
                 EmailAddress = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.FullName:
+            {
                 FullName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.DisplayName:
+            {
                 DisplayName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.GivenName:
+            {
                 GivenName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Surname:
+            {
                 Surname = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.PhoneNumber:
+            {
                 PhoneNumber = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.SMSNumber:
+            {
                 SMSNumber = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.FacebookProfileLink:
+            {
                 FacebookProfileLink = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.LinkedInProfileLink:
+            {
                 LinkedInProfileLink = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.ProfessionalBiography:
+            {
                 ProfessionalBiography = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.TeamSize:
+            {
                 TeamSize = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Birthday:
+            {
                 Birthday = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Hometown:
+            {
                 Hometown = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.CurrentLocation:
+            {
                 CurrentLocation = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Office:
+            {
                 Office = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Headline:
+            {
                 Headline = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Title:
+            {
                 Title = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Alias:
+            {
                 Alias = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Department:
+            {
                 Department = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.MutualManager:
+            {
                 MutualManager = new ProfileInsightValue();
                 MutualManager.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.MutualManager);
                 break;
+            }
             case XmlElementNames.ManagementChain:
+            {
                 ManagementChain = new ProfileInsightValueCollection(XmlElementNames.Item);
                 ManagementChain.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ManagementChain);
                 break;
+            }
             case XmlElementNames.DirectReports:
+            {
                 DirectReports = new ProfileInsightValueCollection(XmlElementNames.Item);
                 DirectReports.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.DirectReports);
                 break;
+            }
             case XmlElementNames.Peers:
+            {
                 Peers = new ProfileInsightValueCollection(XmlElementNames.Item);
                 Peers.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Peers);
                 break;
+            }
             case XmlElementNames.MutualConnections:
+            {
                 MutualConnections = new ProfileInsightValueCollection(XmlElementNames.Item);
                 MutualConnections.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.MutualConnections);
                 break;
+            }
             case XmlElementNames.Skills:
+            {
                 Skills = new SkillInsightValueCollection(XmlElementNames.Item);
                 Skills.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Skills);
                 break;
+            }
             case XmlElementNames.CurrentJob:
+            {
                 CurrentJob = new JobInsightValueCollection(XmlElementNames.Item);
                 CurrentJob.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.CurrentJob);
                 break;
+            }
             case XmlElementNames.CompanyProfile:
+            {
                 CompanyProfile = new CompanyInsightValueCollection(XmlElementNames.Item);
                 CompanyProfile.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.CompanyProfile);
                 break;
+            }
             case XmlElementNames.Insights:
+            {
                 Insights = new PersonInsightCollection();
                 Insights.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.Insights);
                 break;
+            }
             case XmlElementNames.UserProfilePicture:
+            {
                 UserProfilePicture = new UserProfilePicture();
                 UserProfilePicture.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.UserProfilePicture);
                 break;
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
 
         return true;

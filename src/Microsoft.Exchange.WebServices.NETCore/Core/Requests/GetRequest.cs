@@ -34,8 +34,6 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     where TServiceObject : ServiceObject
     where TResponse : ServiceResponse
 {
-    private PropertySet propertySet;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
@@ -52,8 +50,8 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(PropertySet, "PropertySet");
-        PropertySet.ValidateForRequest(this, false /*summaryPropertiesOnly*/);
+        EwsUtilities.ValidateParam(PropertySet);
+        PropertySet.ValidateForRequest(this, false);
     }
 
     /// <summary>
@@ -68,16 +66,12 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        propertySet.WriteToXml(writer, GetServiceObjectType());
+        PropertySet.WriteToXml(writer, GetServiceObjectType());
     }
 
     /// <summary>
     ///     Gets or sets the property set.
     /// </summary>
     /// <value>The property set.</value>
-    public PropertySet PropertySet
-    {
-        get => propertySet;
-        set => propertySet = value;
-    }
+    public PropertySet PropertySet { get; set; }
 }

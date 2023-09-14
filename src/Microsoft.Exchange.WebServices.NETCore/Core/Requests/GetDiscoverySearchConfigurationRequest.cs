@@ -111,7 +111,7 @@ internal sealed class GetDiscoverySearchConfigurationRequest : SimpleServiceRequ
     /// <summary>
     ///     Search Id
     /// </summary>
-    public string SearchId { get; set; }
+    public string? SearchId { get; set; }
 
     /// <summary>
     ///     Expand group membership

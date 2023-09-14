@@ -39,7 +39,7 @@ public sealed class GetAttachmentResponse : ServiceResponse
     ///     Initializes a new instance of the <see cref="GetAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
-    internal GetAttachmentResponse(Attachment attachment)
+    internal GetAttachmentResponse(Attachment? attachment)
     {
         Attachment = attachment;
     }

@@ -23,16 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an attendee to a meeting.
 /// </summary>
+[PublicAPI]
 public sealed class Attendee : EmailAddress
 {
-    private MeetingResponseType? responseType;
-    private DateTime? lastResponseTime;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="Attendee" /> class.
     /// </summary>
@@ -47,7 +47,7 @@ public sealed class Attendee : EmailAddress
     public Attendee(string smtpAddress)
         : base(smtpAddress)
     {
-        EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
+        EwsUtilities.ValidateParam(smtpAddress, nameof(smtpAddress));
     }
 
     /// <summary>
@@ -83,12 +83,12 @@ public sealed class Attendee : EmailAddress
     /// <summary>
     ///     Gets the type of response the attendee gave to the meeting invitation it received.
     /// </summary>
-    public MeetingResponseType? ResponseType => responseType;
+    public MeetingResponseType? ResponseType { get; private set; }
 
     /// <summary>
     ///     Gets the date and time when the attendee last responded to a meeting invitation or update.
     /// </summary>
-    public DateTime? LastResponseTime => lastResponseTime;
+    public DateTime? LastResponseTime { get; private set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -100,16 +100,24 @@ public sealed class Attendee : EmailAddress
         switch (reader.LocalName)
         {
             case XmlElementNames.Mailbox:
+            {
                 LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ResponseType:
-                responseType = reader.ReadElementValue<MeetingResponseType>();
+            {
+                ResponseType = reader.ReadElementValue<MeetingResponseType>();
                 return true;
+            }
             case XmlElementNames.LastResponseTime:
-                lastResponseTime = reader.ReadElementValueAsDateTime();
+            {
+                LastResponseTime = reader.ReadElementValueAsDateTime();
                 return true;
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 

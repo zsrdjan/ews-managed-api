@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the collection of person insights.
 /// </summary>
+[PublicAPI]
 public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonInsight>
 {
     /// <summary>
     ///     XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="PersonInsightCollection" /> class.
@@ -49,7 +52,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal PersonInsightCollection(string collectionItemXmlElementName)
     {
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -65,7 +68,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     ///     Adds multiple person insights to the collection.
     /// </summary>
     /// <param name="insights">The collection of person insights to add.</param>
-    public void AddRange(IEnumerable<PersonInsight> insights)
+    public void AddRange(IEnumerable<PersonInsight>? insights)
     {
         if (insights != null)
         {
@@ -92,7 +95,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -105,7 +108,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     /// <returns>Whether removed from the collection</returns>
     public bool Remove(PersonInsight insight)
     {
-        EwsUtilities.ValidateParam(insight, "insight");
+        EwsUtilities.ValidateParam(insight);
 
         return InternalRemove(insight);
     }
@@ -117,7 +120,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     /// <returns>A PersonInsight object.</returns>
     internal override PersonInsight CreateComplexProperty(string xmlElementName)
     {
-        if (xmlElementName == collectionItemXmlElementName)
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new PersonInsight();
         }
@@ -132,7 +135,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     /// <returns>The XML element name corresponding to the provided PersonInsight object.</returns>
     internal override string GetCollectionItemXmlElementName(PersonInsight insight)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

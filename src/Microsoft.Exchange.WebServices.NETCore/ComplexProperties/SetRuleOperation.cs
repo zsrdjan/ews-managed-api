@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an operation to update an existing rule.
 /// </summary>
+[PublicAPI]
 public sealed class SetRuleOperation : RuleOperation
 {
     /// <summary>
     ///     Inbox rule to be updated.
     /// </summary>
-    private Rule rule;
+    private Rule _rule;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetRuleOperation" /> class.
@@ -48,7 +51,7 @@ public sealed class SetRuleOperation : RuleOperation
     /// <param name="rule">The inbox rule to update.</param>
     public SetRuleOperation(Rule rule)
     {
-        this.rule = rule;
+        _rule = rule;
     }
 
     /// <summary>
@@ -56,9 +59,8 @@ public sealed class SetRuleOperation : RuleOperation
     /// </summary>
     public Rule Rule
     {
-        get => rule;
-
-        set => SetFieldValue(ref rule, value);
+        get => _rule;
+        set => SetFieldValue(ref _rule, value);
     }
 
     /// <summary>
@@ -71,11 +73,15 @@ public sealed class SetRuleOperation : RuleOperation
         switch (reader.LocalName)
         {
             case XmlElementNames.Rule:
-                rule = new Rule();
-                rule.LoadFromXml(reader, reader.LocalName);
+            {
+                _rule = new Rule();
+                _rule.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -93,7 +99,7 @@ public sealed class SetRuleOperation : RuleOperation
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(rule, "Rule");
+        EwsUtilities.ValidateParam(_rule, "Rule");
     }
 
     /// <summary>

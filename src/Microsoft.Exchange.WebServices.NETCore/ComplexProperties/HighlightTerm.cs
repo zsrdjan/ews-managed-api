@@ -23,23 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an AQS highlight term.
 /// </summary>
+[PublicAPI]
 public sealed class HighlightTerm : ComplexProperty
 {
-    /// <summary>
-    ///     Term scope.
-    /// </summary>
-    private string scope;
-
-    /// <summary>
-    ///     Term value.
-    /// </summary>
-    private string value;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="HighlightTerm" /> class.
     /// </summary>
@@ -50,12 +43,12 @@ public sealed class HighlightTerm : ComplexProperty
     /// <summary>
     ///     Gets term scope.
     /// </summary>
-    public string Scope => scope;
+    public string Scope { get; private set; }
 
     /// <summary>
     ///     Gets term value.
     /// </summary>
-    public string Value => value;
+    public string Value { get; private set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -67,13 +60,19 @@ public sealed class HighlightTerm : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.HighlightTermScope:
-                scope = reader.ReadElementValue();
+            {
+                Scope = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.HighlightTermValue:
-                value = reader.ReadElementValue();
+            {
+                Value = reader.ReadElementValue();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 }

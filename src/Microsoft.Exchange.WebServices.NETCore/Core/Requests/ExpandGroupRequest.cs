@@ -30,15 +30,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupResponse>
 {
-    private EmailAddress emailAddress;
-
     /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(EmailAddress, "EmailAddress");
+        EwsUtilities.ValidateParam(EmailAddress);
     }
 
     /// <summary>
@@ -94,10 +92,7 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (EmailAddress != null)
-        {
-            EmailAddress.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.Mailbox);
-        }
+        EmailAddress?.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.Mailbox);
     }
 
     /// <summary>
@@ -122,9 +117,5 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     ///     Gets or sets the email address.
     /// </summary>
     /// <value>The email address.</value>
-    public EmailAddress EmailAddress
-    {
-        get => emailAddress;
-        set => emailAddress = value;
-    }
+    public EmailAddress? EmailAddress { get; set; }
 }

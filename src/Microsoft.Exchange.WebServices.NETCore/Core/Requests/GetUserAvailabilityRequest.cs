@@ -30,11 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
 {
-    private IEnumerable<AttendeeInfo> attendees;
-    private TimeWindow timeWindow;
-    private AvailabilityData requestedData = AvailabilityData.FreeBusyAndSuggestions;
-    private AvailabilityOptions options;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserAvailabilityRequest" /> class.
     /// </summary>
@@ -54,7 +49,7 @@ internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be eimitted.
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value><c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.</value>
     internal override bool EmitTimeZoneHeader => true;
@@ -63,13 +58,13 @@ internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
     ///     Gets a value indicating whether free/busy data is requested.
     /// </summary>
     internal bool IsFreeBusyViewRequested =>
-        requestedData == AvailabilityData.FreeBusy || requestedData == AvailabilityData.FreeBusyAndSuggestions;
+        RequestedData == AvailabilityData.FreeBusy || RequestedData == AvailabilityData.FreeBusyAndSuggestions;
 
     /// <summary>
     ///     Gets a value indicating whether suggestions are requested.
     /// </summary>
     internal bool IsSuggestionsViewRequested =>
-        requestedData == AvailabilityData.Suggestions || requestedData == AvailabilityData.FreeBusyAndSuggestions;
+        RequestedData == AvailabilityData.Suggestions || RequestedData == AvailabilityData.FreeBusyAndSuggestions;
 
     /// <summary>
     ///     Validate request.
@@ -192,37 +187,21 @@ internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the attendees.
     /// </summary>
-    public IEnumerable<AttendeeInfo> Attendees
-    {
-        get => attendees;
-        set => attendees = value;
-    }
+    public IEnumerable<AttendeeInfo> Attendees { get; set; }
 
     /// <summary>
     ///     Gets or sets the time window in which to retrieve user availability information.
     /// </summary>
-    public TimeWindow TimeWindow
-    {
-        get => timeWindow;
-        set => timeWindow = value;
-    }
+    public TimeWindow TimeWindow { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating what data is requested (free/busy and/or suggestions).
     /// </summary>
-    public AvailabilityData RequestedData
-    {
-        get => requestedData;
-        set => requestedData = value;
-    }
+    public AvailabilityData RequestedData { get; set; } = AvailabilityData.FreeBusyAndSuggestions;
 
     /// <summary>
     ///     Gets an object that allows you to specify options controlling the information returned
     ///     by the GetUserAvailability request.
     /// </summary>
-    public AvailabilityOptions Options
-    {
-        get => options;
-        set => options = value;
-    }
+    public AvailabilityOptions Options { get; set; }
 }

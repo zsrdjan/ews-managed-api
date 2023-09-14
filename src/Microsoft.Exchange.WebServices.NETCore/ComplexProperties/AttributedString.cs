@@ -25,17 +25,20 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an attributed string, a string with a value and a list of attributions.
 /// </summary>
+[PublicAPI]
 public sealed class AttributedString : ComplexProperty
 {
     /// <summary>
     ///     Internal attribution store
     /// </summary>
-    private List<string> attributionList;
+    private List<string> _attributionList;
 
     /// <summary>
     ///     String value
@@ -60,7 +63,7 @@ public sealed class AttributedString : ComplexProperty
     public AttributedString(string value)
         : this()
     {
-        EwsUtilities.ValidateParam(value, "value");
+        EwsUtilities.ValidateParam(value);
         Value = value;
     }
 
@@ -74,7 +77,7 @@ public sealed class AttributedString : ComplexProperty
     {
         if (attributions == null)
         {
-            throw new ArgumentNullException("attributions");
+            throw new ArgumentNullException(nameof(attributions));
         }
 
         foreach (var s in attributions)
@@ -105,12 +108,18 @@ public sealed class AttributedString : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Value:
+            {
                 Value = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Attributions:
+            {
                 return LoadAttributionsFromXml(reader);
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -124,7 +133,7 @@ public sealed class AttributedString : ComplexProperty
         if (!reader.IsEmptyElement)
         {
             var localName = reader.LocalName;
-            attributionList = new List<string>();
+            _attributionList = new List<string>();
 
             do
             {
@@ -134,12 +143,12 @@ public sealed class AttributedString : ComplexProperty
                     var s = reader.ReadElementValue();
                     if (!string.IsNullOrEmpty(s))
                     {
-                        attributionList.Add(s);
+                        _attributionList.Add(s);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, localName));
 
-            Attributions = attributionList.ToArray();
+            Attributions = _attributionList.ToArray();
         }
 
         return true;

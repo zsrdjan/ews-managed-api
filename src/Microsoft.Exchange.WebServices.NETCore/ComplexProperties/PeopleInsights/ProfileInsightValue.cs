@@ -23,61 +23,55 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the ProfileInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class ProfileInsightValue : InsightValue
 {
-    private string fullName;
-    private string firstName;
-    private string lastName;
-    private string emailAddress;
-    private string avatar;
-    private long joinedUtcTicks;
-    private UserProfilePicture profilePicture;
-    private string title;
-
     /// <summary>
     ///     Gets the FullName
     /// </summary>
-    public string FullName => fullName;
+    public string FullName { get; private set; }
 
     /// <summary>
     ///     Gets the FirstName
     /// </summary>
-    public string FirstName => firstName;
+    public string FirstName { get; private set; }
 
     /// <summary>
     ///     Gets the LastName
     /// </summary>
-    public string LastName => lastName;
+    public string LastName { get; private set; }
 
     /// <summary>
     ///     Gets the EmailAddress
     /// </summary>
-    public string EmailAddress => emailAddress;
+    public string EmailAddress { get; private set; }
 
     /// <summary>
     ///     Gets the Avatar
     /// </summary>
-    public string Avatar => avatar;
+    public string Avatar { get; private set; }
 
     /// <summary>
     ///     Gets the JoinedUtcTicks
     /// </summary>
-    public long JoinedUtcTicks => joinedUtcTicks;
+    public long JoinedUtcTicks { get; private set; }
 
     /// <summary>
     ///     Gets the ProfilePicture
     /// </summary>
-    public UserProfilePicture ProfilePicture => profilePicture;
+    public UserProfilePicture ProfilePicture { get; private set; }
 
     /// <summary>
     ///     Gets the Title
     /// </summary>
-    public string Title => title;
+    public string Title { get; private set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -89,39 +83,61 @@ public sealed class ProfileInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.FullName:
-                fullName = reader.ReadElementValue();
+            {
+                FullName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.FirstName:
-                firstName = reader.ReadElementValue();
+            {
+                FirstName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.LastName:
-                lastName = reader.ReadElementValue();
+            {
+                LastName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.EmailAddress:
-                emailAddress = reader.ReadElementValue();
+            {
+                EmailAddress = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Avatar:
-                avatar = reader.ReadElementValue();
+            {
+                Avatar = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.JoinedUtcTicks:
-                joinedUtcTicks = reader.ReadElementValue<long>();
+            {
+                JoinedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.ProfilePicture:
+            {
                 var picture = new UserProfilePicture();
                 picture.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.ProfilePicture);
-                profilePicture = picture;
+                ProfilePicture = picture;
                 break;
+            }
             case XmlElementNames.Title:
-                title = reader.ReadElementValue();
+            {
+                Title = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

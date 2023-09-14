@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TResponse>
     where TResponse : ServiceResponse
 {
-    private readonly ItemIdWrapperList itemIds = new ItemIdWrapperList();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetItemRequestBase&lt;TResponse&gt;" /> class.
     /// </summary>
@@ -50,7 +48,7 @@ internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TRespon
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(ItemIds, "ItemIds");
+        EwsUtilities.ValidateParamCollection(ItemIds);
     }
 
     /// <summary>
@@ -122,7 +120,7 @@ internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TRespon
     ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    public ItemIdWrapperList ItemIds => itemIds;
+    public ItemIdWrapperList ItemIds { get; } = new();
 
     /// <summary>
     ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.

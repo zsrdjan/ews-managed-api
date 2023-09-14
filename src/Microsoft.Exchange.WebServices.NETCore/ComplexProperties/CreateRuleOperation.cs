@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an operation to create a new rule.
 /// </summary>
+[PublicAPI]
 public sealed class CreateRuleOperation : RuleOperation
 {
     /// <summary>
     ///     Inbox rule to be created.
     /// </summary>
-    private Rule rule;
+    private Rule _rule;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateRuleOperation" /> class.
@@ -48,7 +51,7 @@ public sealed class CreateRuleOperation : RuleOperation
     /// <param name="rule">The inbox rule to create.</param>
     public CreateRuleOperation(Rule rule)
     {
-        this.rule = rule;
+        _rule = rule;
     }
 
     /// <summary>
@@ -56,9 +59,8 @@ public sealed class CreateRuleOperation : RuleOperation
     /// </summary>
     public Rule Rule
     {
-        get => rule;
-
-        set => SetFieldValue(ref rule, value);
+        get => _rule;
+        set => SetFieldValue(ref _rule, value);
     }
 
     /// <summary>
@@ -75,7 +77,7 @@ public sealed class CreateRuleOperation : RuleOperation
     /// </summary>
     internal override void InternalValidate()
     {
-        EwsUtilities.ValidateParam(rule, "Rule");
+        EwsUtilities.ValidateParam(_rule, "Rule");
     }
 
     /// <summary>

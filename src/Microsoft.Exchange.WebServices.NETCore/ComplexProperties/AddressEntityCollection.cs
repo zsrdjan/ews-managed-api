@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of AddressEntity objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class AddressEntityCollection : ComplexPropertyCollection<AddressEntity>
 {
@@ -44,7 +47,7 @@ public sealed class AddressEntityCollection : ComplexPropertyCollection<AddressE
     ///     Initializes a new instance of the <see cref="AddressEntityCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal AddressEntityCollection(IEnumerable<AddressEntity> collection)
+    internal AddressEntityCollection(IEnumerable<AddressEntity>? collection)
     {
         if (collection != null)
         {

@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -34,17 +36,17 @@ public abstract partial class Recurrence
     ///     Represents a recurrence pattern where each occurrence happens on specific days a specific number of weeks after the
     ///     previous one.
     /// </summary>
+    [PublicAPI]
     public sealed class WeeklyPattern : IntervalPattern
     {
-        private readonly DayOfTheWeekCollection daysOfTheWeek = new DayOfTheWeekCollection();
-        private DayOfWeek? firstDayOfWeek;
+        private DayOfWeek? _firstDayOfWeek;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WeeklyPattern" /> class.
         /// </summary>
         public WeeklyPattern()
         {
-            daysOfTheWeek.OnChange += DaysOfTheWeekChanged;
+            DaysOfTheWeek.OnChange += DaysOfTheWeekChanged;
         }
 
         /// <summary>
@@ -56,7 +58,7 @@ public abstract partial class Recurrence
         public WeeklyPattern(DateTime startDate, int interval, params DayOfTheWeek[] daysOfTheWeek)
             : base(startDate, interval)
         {
-            this.daysOfTheWeek.AddRange(daysOfTheWeek);
+            DaysOfTheWeek.AddRange(daysOfTheWeek);
         }
 
         /// <summary>
@@ -84,7 +86,7 @@ public abstract partial class Recurrence
 
             DaysOfTheWeek.WriteToXml(writer, XmlElementNames.DaysOfWeek);
 
-            if (firstDayOfWeek.HasValue)
+            if (_firstDayOfWeek.HasValue)
             {
                 //  We only allow the "FirstDayOfWeek" parameter for the Exchange2010_SP1 schema
                 //  version.
@@ -92,10 +94,10 @@ public abstract partial class Recurrence
                 EwsUtilities.ValidatePropertyVersion(
                     (ExchangeService)writer.Service,
                     ExchangeVersion.Exchange2010_SP1,
-                    "FirstDayOfWeek"
+                    nameof(FirstDayOfWeek)
                 );
 
-                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FirstDayOfWeek, firstDayOfWeek.Value);
+                writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FirstDayOfWeek, _firstDayOfWeek.Value);
             }
         }
 
@@ -114,16 +116,22 @@ public abstract partial class Recurrence
             switch (reader.LocalName)
             {
                 case XmlElementNames.DaysOfWeek:
+                {
                     DaysOfTheWeek.LoadFromXml(reader, reader.LocalName);
                     return true;
+                }
                 case XmlElementNames.FirstDayOfWeek:
+                {
                     FirstDayOfWeek = reader.ReadElementValue<DayOfWeek>(
                         XmlNamespace.Types,
                         XmlElementNames.FirstDayOfWeek
                     );
                     return true;
+                }
                 default:
+                {
                     return false;
+                }
             }
         }
 
@@ -145,27 +153,27 @@ public abstract partial class Recurrence
         /// </summary>
         /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
         /// <returns>true if the two recurrences are identical, false otherwise.</returns>
-        public override bool IsSame(Recurrence otherRecurrence)
+        public override bool IsSame(Recurrence? otherRecurrence)
         {
-            var otherWeeklyPattern = (WeeklyPattern)otherRecurrence;
+            var otherWeeklyPattern = (WeeklyPattern?)otherRecurrence;
 
             return base.IsSame(otherRecurrence) &&
-                   daysOfTheWeek.ToString(",") == otherWeeklyPattern.daysOfTheWeek.ToString(",") &&
-                   firstDayOfWeek == otherWeeklyPattern.firstDayOfWeek;
+                   DaysOfTheWeek.ToString(",") == otherWeeklyPattern.DaysOfTheWeek.ToString(",") &&
+                   _firstDayOfWeek == otherWeeklyPattern._firstDayOfWeek;
         }
 
         /// <summary>
         ///     Gets the list of the days of the week when occurrences happen.
         /// </summary>
-        public DayOfTheWeekCollection DaysOfTheWeek => daysOfTheWeek;
+        public DayOfTheWeekCollection DaysOfTheWeek { get; } = new();
 
         /// <summary>
         ///     Gets or sets the first day of the week for this recurrence.
         /// </summary>
         public DayOfWeek FirstDayOfWeek
         {
-            get => GetFieldValueOrThrowIfNull(firstDayOfWeek, "FirstDayOfWeek");
-            set => SetFieldValue(ref firstDayOfWeek, value);
+            get => GetFieldValueOrThrowIfNull(_firstDayOfWeek, "FirstDayOfWeek");
+            set => SetFieldValue(ref _firstDayOfWeek, value);
         }
     }
 }

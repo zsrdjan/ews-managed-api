@@ -32,9 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
 {
-    private DayOfTheWeek dayOfTheWeek;
-    private int weekIndex;
-
     /// <summary>
     ///     Gets the XML element name associated with the transition.
     /// </summary>
@@ -66,11 +63,11 @@ internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
     {
         base.InitializeFromTransitionTime(transitionTime);
 
-        dayOfTheWeek = EwsUtilities.SystemToEwsDayOfTheWeek(transitionTime.DayOfWeek);
+        DayOfTheWeek = EwsUtilities.SystemToEwsDayOfTheWeek(transitionTime.DayOfWeek);
 
         // TimeZoneInfo uses week indices from 1 to 5, 5 being the last week of the month.
         // EWS uses -1 to denote the last week of the month.
-        weekIndex = transitionTime.Week == 5 ? -1 : transitionTime.Week;
+        WeekIndex = transitionTime.Week == 5 ? -1 : transitionTime.Week;
     }
 
     /// <summary>
@@ -88,13 +85,19 @@ internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
         switch (reader.LocalName)
         {
             case XmlElementNames.DayOfWeek:
-                dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
+            {
+                DayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
                 return true;
+            }
             case XmlElementNames.Occurrence:
-                weekIndex = reader.ReadElementValue<int>();
+            {
+                WeekIndex = reader.ReadElementValue<int>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -106,9 +109,9 @@ internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
     {
         base.WriteElementsToXml(writer);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOfWeek, dayOfTheWeek);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOfWeek, DayOfTheWeek);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Occurrence, weekIndex);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Occurrence, WeekIndex);
     }
 
     /// <summary>
@@ -133,10 +136,10 @@ internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
     /// <summary>
     ///     Gets the day of the week when the transition occurs.
     /// </summary>
-    internal DayOfTheWeek DayOfTheWeek => dayOfTheWeek;
+    internal DayOfTheWeek DayOfTheWeek { get; private set; }
 
     /// <summary>
     ///     Gets the index of the week in the month when the transition occurs.
     /// </summary>
-    internal int WeekIndex => weekIndex;
+    internal int WeekIndex { get; private set; }
 }

@@ -96,7 +96,7 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
 
         writer.WriteEndElement();
 
-        if (PageSize != null && PageSize.HasValue)
+        if (PageSize.HasValue)
         {
             writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageSize, PageSize.Value.ToString());
         }
@@ -106,7 +106,7 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
             writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.PageItemReference, PageItemReference);
         }
 
-        if (PageDirection != null && PageDirection.HasValue)
+        if (PageDirection.HasValue)
         {
             writer.WriteElementValue(
                 XmlNamespace.Messages,

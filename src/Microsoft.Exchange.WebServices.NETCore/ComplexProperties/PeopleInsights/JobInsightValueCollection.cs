@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Exchange Web Services Managed API
  *
  * Copyright (c) Microsoft Corporation
@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the collection of job insights.
 /// </summary>
+[PublicAPI]
 public sealed class JobInsightValueCollection : ComplexPropertyCollection<JobInsightValue>
 {
     /// <summary>
     ///     XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="JobInsightValueCollection" /> class.
@@ -49,7 +52,7 @@ public sealed class JobInsightValueCollection : ComplexPropertyCollection<JobIns
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal JobInsightValueCollection(string collectionItemXmlElementName)
     {
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -59,7 +62,7 @@ public sealed class JobInsightValueCollection : ComplexPropertyCollection<JobIns
     /// <returns>A JobInsightValue object.</returns>
     internal override JobInsightValue CreateComplexProperty(string xmlElementName)
     {
-        if (xmlElementName == collectionItemXmlElementName)
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new JobInsightValue();
         }
@@ -74,7 +77,7 @@ public sealed class JobInsightValueCollection : ComplexPropertyCollection<JobIns
     /// <returns>The XML element name corresponding to the provided JobInsightValue object.</returns>
     internal override string GetCollectionItemXmlElementName(JobInsightValue insight)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

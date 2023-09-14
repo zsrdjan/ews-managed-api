@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of persona e-mail addresses.
 /// </summary>
+[PublicAPI]
 public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<PersonaEmailAddress>
 {
     /// <summary>
     ///     XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="PersonaEmailAddressCollection" /> class.
@@ -52,7 +55,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal PersonaEmailAddressCollection(string collectionItemXmlElementName)
     {
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -68,7 +71,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     ///     Adds multiple persona e-mail addresses to the collection.
     /// </summary>
     /// <param name="emailAddresses">The collection of persona e-mail addresses to add.</param>
-    public void AddRange(IEnumerable<PersonaEmailAddress> emailAddresses)
+    public void AddRange(IEnumerable<PersonaEmailAddress>? emailAddresses)
     {
         if (emailAddresses != null)
         {
@@ -97,7 +100,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     ///     Adds multiple e-mail addresses to the collection.
     /// </summary>
     /// <param name="smtpAddresses">The SMTP addresses to be added as persona email addresses</param>
-    public void AddRange(IEnumerable<string> smtpAddresses)
+    public void AddRange(IEnumerable<string>? smtpAddresses)
     {
         if (smtpAddresses != null)
         {
@@ -139,7 +142,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -152,7 +155,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     /// <returns>Whether removed from the collection</returns>
     public bool Remove(PersonaEmailAddress personaEmailAddress)
     {
-        EwsUtilities.ValidateParam(personaEmailAddress, "personaEmailAddress");
+        EwsUtilities.ValidateParam(personaEmailAddress);
 
         return InternalRemove(personaEmailAddress);
     }
@@ -164,7 +167,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     /// <returns>A PersonaEmailAddress object.</returns>
     internal override PersonaEmailAddress CreateComplexProperty(string xmlElementName)
     {
-        if (xmlElementName == collectionItemXmlElementName)
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new PersonaEmailAddress();
         }
@@ -179,7 +182,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     /// <returns>The XML element name corresponding to the provided PersonaEmailAddress object.</returns>
     internal override string GetCollectionItemXmlElementName(PersonaEmailAddress personaEmailAddress)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<DeleteAttachmentResponse>
 {
-    private readonly List<Attachment> attachments = new List<Attachment>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteAttachmentRequest" /> class.
     /// </summary>
@@ -48,10 +46,12 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(Attachments, "Attachments");
+
+        EwsUtilities.ValidateParamCollection(Attachments);
+
         for (var i = 0; i < Attachments.Count; i++)
         {
-            EwsUtilities.ValidateParam(Attachments[i].Id, string.Format("Attachment[{0}].Id", i));
+            EwsUtilities.ValidateParam(Attachments[i].Id, $"Attachment[{i}].Id");
         }
     }
 
@@ -133,5 +133,5 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     ///     Gets the attachments.
     /// </summary>
     /// <value>The attachments.</value>
-    public List<Attachment> Attachments => attachments;
+    public List<Attachment> Attachments { get; } = new();
 }

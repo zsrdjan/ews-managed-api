@@ -23,27 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurred while processing a rule operation.
 /// </summary>
+[PublicAPI]
 public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
 {
     /// <summary>
     ///     Index of the operation mapping to the error.
     /// </summary>
-    private int operationIndex;
-
-    /// <summary>
-    ///     RuleOperation object mapping to the error.
-    /// </summary>
-    private RuleOperation operation;
+    private int _operationIndex;
 
     /// <summary>
     ///     RuleError Collection.
     /// </summary>
-    private RuleErrorCollection ruleErrors;
+    private RuleErrorCollection _ruleErrors;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleOperationError" /> class.
@@ -55,12 +53,12 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     /// <summary>
     ///     Gets the operation that resulted in an error.
     /// </summary>
-    public RuleOperation Operation => operation;
+    public RuleOperation Operation { get; private set; }
 
     /// <summary>
     ///     Gets the number of rule errors in the list.
     /// </summary>
-    public int Count => ruleErrors.Count;
+    public int Count => _ruleErrors.Count;
 
     /// <summary>
     ///     Gets the rule error at the specified index.
@@ -73,10 +71,10 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            return ruleErrors[index];
+            return _ruleErrors[index];
         }
     }
 
@@ -90,30 +88,36 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
         switch (reader.LocalName)
         {
             case XmlElementNames.OperationIndex:
-                operationIndex = reader.ReadElementValue<int>();
+            {
+                _operationIndex = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.ValidationErrors:
-                ruleErrors = new RuleErrorCollection();
-                ruleErrors.LoadFromXml(reader, reader.LocalName);
+            {
+                _ruleErrors = new RuleErrorCollection();
+                _ruleErrors.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
-    ///     Set operation property by the index of a given opeation enumerator.
+    ///     Set operation property by the index of a given operation enumerator.
     /// </summary>
     /// <param name="operations">Operation enumerator.</param>
     internal void SetOperationByIndex(IEnumerator<RuleOperation> operations)
     {
         operations.Reset();
-        for (var i = 0; i <= operationIndex; i++)
+        for (var i = 0; i <= _operationIndex; i++)
         {
             operations.MoveNext();
         }
 
-        operation = operations.Current;
+        Operation = operations.Current;
     }
 
 
@@ -125,7 +129,7 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<RuleError> GetEnumerator()
     {
-        return ruleErrors.GetEnumerator();
+        return _ruleErrors.GetEnumerator();
     }
 
     #endregion
@@ -139,7 +143,7 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return ruleErrors.GetEnumerator();
+        return _ruleErrors.GetEnumerator();
     }
 
     #endregion

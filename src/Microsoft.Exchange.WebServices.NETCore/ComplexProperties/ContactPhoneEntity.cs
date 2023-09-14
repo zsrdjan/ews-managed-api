@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an ContactPhoneEntity object.
 /// </summary>
+[PublicAPI]
 public sealed class ContactPhoneEntity : ComplexProperty
 {
     /// <summary>
@@ -62,19 +65,24 @@ public sealed class ContactPhoneEntity : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgOriginalPhoneString:
+            {
                 OriginalPhoneString = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgPhoneString:
+            {
                 PhoneString = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgType:
+            {
                 Type = reader.ReadElementValue();
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

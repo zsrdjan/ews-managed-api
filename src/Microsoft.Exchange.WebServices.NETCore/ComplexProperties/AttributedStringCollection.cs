@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of attributed strings
 /// </summary>
+[PublicAPI]
 public sealed class AttributedStringCollection : ComplexPropertyCollection<AttributedString>
 {
     /// <summary>
     ///     Collection parent XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="AttributedStringCollection" /> class.
@@ -49,8 +52,8 @@ public sealed class AttributedStringCollection : ComplexPropertyCollection<Attri
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal AttributedStringCollection(string collectionItemXmlElementName)
     {
-        EwsUtilities.ValidateParam(collectionItemXmlElementName, "collectionItemXmlElementName");
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        EwsUtilities.ValidateParam(collectionItemXmlElementName);
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -66,7 +69,7 @@ public sealed class AttributedStringCollection : ComplexPropertyCollection<Attri
     ///     Adds multiple attributed strings to the collection.
     /// </summary>
     /// <param name="attributedStrings">Attributed strings to be added</param>
-    public void AddRange(IEnumerable<AttributedString> attributedStrings)
+    public void AddRange(IEnumerable<AttributedString>? attributedStrings)
     {
         if (attributedStrings != null)
         {
@@ -121,7 +124,7 @@ public sealed class AttributedStringCollection : ComplexPropertyCollection<Attri
     /// <returns>Whether succeeded</returns>
     public bool Remove(AttributedString attributedString)
     {
-        EwsUtilities.ValidateParam(attributedString, "attributedString");
+        EwsUtilities.ValidateParam(attributedString);
 
         return InternalRemove(attributedString);
     }
@@ -133,8 +136,8 @@ public sealed class AttributedStringCollection : ComplexPropertyCollection<Attri
     /// <returns>An AttributedString object</returns>
     internal override AttributedString CreateComplexProperty(string xmlElementName)
     {
-        EwsUtilities.ValidateParam(xmlElementName, "xmlElementName");
-        if (xmlElementName == collectionItemXmlElementName)
+        EwsUtilities.ValidateParam(xmlElementName);
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new AttributedString();
         }
@@ -149,7 +152,7 @@ public sealed class AttributedStringCollection : ComplexPropertyCollection<Attri
     /// <returns>The XML element name corresponding to the provided AttributedString object.</returns>
     internal override string GetCollectionItemXmlElementName(AttributedString attributedString)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

@@ -30,9 +30,6 @@ using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
-using ConverterDictionary = Dictionary<UserSettingName, Func<OutlookUser, string>>;
-using ConverterPair = KeyValuePair<UserSettingName, Func<OutlookUser, string>>;
-
 /// <summary>
 ///     Represents the user Outlook configuration settings apply to.
 /// </summary>
@@ -43,25 +40,26 @@ internal sealed class OutlookUser
     ///     Converters to translate Outlook user settings.
     ///     Each entry maps to a lambda expression used to get the matching property from the OutlookUser instance.
     /// </summary>
-    private static readonly LazyMember<ConverterDictionary> converterDictionary = new LazyMember<ConverterDictionary>(
-        delegate
-        {
-            var results = new ConverterDictionary();
-            results.Add(UserSettingName.UserDisplayName, u => u.displayName);
-            results.Add(UserSettingName.UserDN, u => u.legacyDN);
-            results.Add(UserSettingName.UserDeploymentId, u => u.deploymentId);
-            results.Add(UserSettingName.AutoDiscoverSMTPAddress, u => u.autodiscoverAMTPAddress);
-            return results;
-        }
-    );
+    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookUser, string>>> ConverterDictionary =
+        new(
+            () => new Dictionary<UserSettingName, Func<OutlookUser, string>>
+            {
+                // @formatter:off
+                { UserSettingName.UserDisplayName, u => u._displayName },
+                { UserSettingName.UserDN, u => u._legacyDn },
+                { UserSettingName.UserDeploymentId, u => u._deploymentId },
+                { UserSettingName.AutoDiscoverSMTPAddress, u => u._autodiscoverAmtpAddress },
+                // @formatter:on
+            }
+        );
 
 
     #region Private fields
 
-    private string displayName;
-    private string legacyDN;
-    private string deploymentId;
-    private string autodiscoverAMTPAddress;
+    private string _displayName;
+    private string _legacyDn;
+    private string _deploymentId;
+    private string _autodiscoverAmtpAddress;
 
     #endregion
 
@@ -88,20 +86,30 @@ internal sealed class OutlookUser
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.DisplayName:
-                        displayName = reader.ReadElementValue();
+                    {
+                        _displayName = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.LegacyDN:
-                        legacyDN = reader.ReadElementValue();
+                    {
+                        _legacyDn = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.DeploymentId:
-                        deploymentId = reader.ReadElementValue();
+                    {
+                        _deploymentId = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.AutoDiscoverSMTPAddress:
-                        autodiscoverAMTPAddress = reader.ReadElementValue();
+                    {
+                        _autodiscoverAmtpAddress = reader.ReadElementValue();
                         break;
+                    }
                     default:
+                    {
                         reader.SkipCurrentElement();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.NotSpecified, XmlElementNames.User));
@@ -115,11 +123,11 @@ internal sealed class OutlookUser
     internal void ConvertToUserSettings(List<UserSettingName> requestedSettings, GetUserSettingsResponse response)
     {
         // In English: collect converters that are contained in the requested settings.
-        var converterQuery = from converter in converterDictionary.Member
+        var converterQuery = from converter in ConverterDictionary.Member
             where requestedSettings.Contains(converter.Key)
             select converter;
 
-        foreach (ConverterPair kv in converterQuery)
+        foreach (var kv in converterQuery)
         {
             var value = kv.Value(this);
             if (!string.IsNullOrEmpty(value))
@@ -133,5 +141,5 @@ internal sealed class OutlookUser
     ///     Gets the available user settings.
     /// </summary>
     /// <value>The available user settings.</value>
-    internal static IEnumerable<UserSettingName> AvailableUserSettings => converterDictionary.Member.Keys;
+    internal static IEnumerable<UserSettingName> AvailableUserSettings => ConverterDictionary.Member.Keys;
 }

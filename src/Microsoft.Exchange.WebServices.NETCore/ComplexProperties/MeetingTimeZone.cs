@@ -30,10 +30,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class MeetingTimeZone : ComplexProperty
 {
-    private string name;
-    private TimeSpan? baseOffset;
-    private TimeChange standard;
-    private TimeChange daylight;
+    private string _name;
+    private TimeSpan? _baseOffset;
+    private TimeChange _standard;
+    private TimeChange _daylight;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MeetingTimeZone" /> class.
@@ -62,7 +62,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
     public MeetingTimeZone(string name)
         : this()
     {
-        this.name = name;
+        _name = name;
     }
 
     /// <summary>
@@ -75,18 +75,26 @@ internal sealed class MeetingTimeZone : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.BaseOffset:
-                baseOffset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
+            {
+                _baseOffset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
                 return true;
+            }
             case XmlElementNames.Standard:
-                standard = new TimeChange();
-                standard.LoadFromXml(reader, reader.LocalName);
+            {
+                _standard = new TimeChange();
+                _standard.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.Daylight:
-                daylight = new TimeChange();
-                daylight.LoadFromXml(reader, reader.LocalName);
+            {
+                _daylight = new TimeChange();
+                _daylight.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -96,7 +104,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        name = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
+        _name = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
     }
 
     /// <summary>
@@ -138,7 +146,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
     ///     Converts this meeting time zone into a TimeZoneInfo structure.
     /// </summary>
     /// <returns></returns>
-    internal TimeZoneInfo ToTimeZoneInfo()
+    internal TimeZoneInfo? ToTimeZoneInfo()
     {
         // MeetingTimeZone.ToTimeZoneInfo throws ArgumentNullException if name is null
         // TimeZoneName is optional, may not show in the response.
@@ -147,7 +155,7 @@ internal sealed class MeetingTimeZone : ComplexProperty
             return null;
         }
 
-        TimeZoneInfo result = null;
+        TimeZoneInfo? result = null;
 
         try
         {
@@ -169,8 +177,8 @@ internal sealed class MeetingTimeZone : ComplexProperty
     /// </summary>
     public string Name
     {
-        get => name;
-        set => SetFieldValue(ref name, value);
+        get => _name;
+        set => SetFieldValue(ref _name, value);
     }
 
     /// <summary>
@@ -178,25 +186,25 @@ internal sealed class MeetingTimeZone : ComplexProperty
     /// </summary>
     public TimeSpan? BaseOffset
     {
-        get => baseOffset;
-        set => SetFieldValue(ref baseOffset, value);
+        get => _baseOffset;
+        set => SetFieldValue(ref _baseOffset, value);
     }
 
     /// <summary>
     ///     Gets or sets a TimeChange defining when the time changes to Standard Time.
     /// </summary>
-    public TimeChange Standard
+    public TimeChange? Standard
     {
-        get => standard;
-        set => SetFieldValue(ref standard, value);
+        get => _standard;
+        set => SetFieldValue(ref _standard, value);
     }
 
     /// <summary>
     ///     Gets or sets a TimeChange defining when the time changes to Daylight Saving Time.
     /// </summary>
-    public TimeChange Daylight
+    public TimeChange? Daylight
     {
-        get => daylight;
-        set => SetFieldValue(ref daylight, value);
+        get => _daylight;
+        set => SetFieldValue(ref _daylight, value);
     }
 }

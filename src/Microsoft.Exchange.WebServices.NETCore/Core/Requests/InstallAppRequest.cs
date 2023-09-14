@@ -47,10 +47,10 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     )
         : base(service)
     {
-        this.manifestStream = manifestStream;
-        this.marketplaceAssetId = marketplaceAssetId;
-        this.marketplaceContentMarket = marketplaceContentMarket;
-        this.sendWelcomeEmail = sendWelcomeEmail;
+        _manifestStream = manifestStream;
+        _marketplaceAssetId = marketplaceAssetId;
+        _marketplaceContentMarket = marketplaceContentMarket;
+        _sendWelcomeEmail = sendWelcomeEmail;
     }
 
     /// <summary>
@@ -70,22 +70,22 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Manifest);
 
-        writer.WriteBase64ElementValue(manifestStream);
+        writer.WriteBase64ElementValue(_manifestStream);
 
-        if (!string.IsNullOrEmpty(marketplaceAssetId))
+        if (!string.IsNullOrEmpty(_marketplaceAssetId))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MarketplaceAssetId, marketplaceAssetId);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MarketplaceAssetId, _marketplaceAssetId);
 
-            if (!string.IsNullOrEmpty(marketplaceContentMarket))
+            if (!string.IsNullOrEmpty(_marketplaceContentMarket))
             {
                 writer.WriteElementValue(
                     XmlNamespace.Messages,
                     XmlElementNames.MarketplaceContentMarket,
-                    marketplaceContentMarket
+                    _marketplaceContentMarket
                 );
             }
 
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SendWelcomeEmail, sendWelcomeEmail);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.SendWelcomeEmail, _sendWelcomeEmail);
         }
 
         writer.WriteEndElement();
@@ -135,20 +135,20 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
     /// <summary>
     ///     The plain text manifest stream.
     /// </summary>
-    private readonly Stream manifestStream;
+    private readonly Stream _manifestStream;
 
     /// <summary>
     ///     The asset id of the addin in marketplace
     /// </summary>
-    private readonly string marketplaceAssetId;
+    private readonly string _marketplaceAssetId;
 
     /// <summary>
     ///     The target market for content
     /// </summary>
-    private readonly string marketplaceContentMarket;
+    private readonly string _marketplaceContentMarket;
 
     /// <summary>
     ///     Whether to send welcome email or not
     /// </summary>
-    private readonly bool sendWelcomeEmail;
+    private readonly bool _sendWelcomeEmail;
 }

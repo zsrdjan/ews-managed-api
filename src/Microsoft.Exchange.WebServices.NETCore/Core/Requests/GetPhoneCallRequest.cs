@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
 {
-    private PhoneCallId id;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetPhoneCallRequest" /> class.
     /// </summary>
@@ -56,7 +54,7 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        id.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
+        Id.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
     }
 
     /// <summary>
@@ -103,10 +101,5 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the Id of the phone call.
     /// </summary>
-    internal PhoneCallId Id
-    {
-        get => id;
-
-        set => id = value;
-    }
+    internal PhoneCallId Id { get; set; }
 }

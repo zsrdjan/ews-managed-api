@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of TaskSuggestion objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class TaskSuggestionCollection : ComplexPropertyCollection<TaskSuggestion>
 {
@@ -44,7 +47,7 @@ public sealed class TaskSuggestionCollection : ComplexPropertyCollection<TaskSug
     ///     Initializes a new instance of the <see cref="TaskSuggestionCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal TaskSuggestionCollection(IEnumerable<TaskSuggestion> collection)
+    internal TaskSuggestionCollection(IEnumerable<TaskSuggestion>? collection)
     {
         if (collection != null)
         {

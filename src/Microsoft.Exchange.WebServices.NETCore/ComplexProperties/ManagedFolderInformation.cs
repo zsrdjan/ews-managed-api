@@ -23,23 +23,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents information for a managed folder.
 /// </summary>
+[PublicAPI]
 public sealed class ManagedFolderInformation : ComplexProperty
 {
-    private bool? canDelete;
-    private bool? canRenameOrMove;
-    private bool? mustDisplayComment;
-    private bool? hasQuota;
-    private bool? isManagedFoldersRoot;
-    private string managedFolderId;
-    private string comment;
-    private int? storageQuota;
-    private int? folderSize;
-    private string homePage;
+    private string _comment;
+    private string _homePage;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ManagedFolderInformation" /> class.
@@ -58,87 +53,109 @@ public sealed class ManagedFolderInformation : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.CanDelete:
-                canDelete = reader.ReadValue<bool>();
+            {
+                CanDelete = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.CanRenameOrMove:
-                canRenameOrMove = reader.ReadValue<bool>();
+            {
+                CanRenameOrMove = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.MustDisplayComment:
-                mustDisplayComment = reader.ReadValue<bool>();
+            {
+                MustDisplayComment = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.HasQuota:
-                hasQuota = reader.ReadValue<bool>();
+            {
+                HasQuota = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsManagedFoldersRoot:
-                isManagedFoldersRoot = reader.ReadValue<bool>();
+            {
+                IsManagedFoldersRoot = reader.ReadValue<bool>();
                 return true;
+            }
             case XmlElementNames.ManagedFolderId:
-                managedFolderId = reader.ReadValue();
+            {
+                ManagedFolderId = reader.ReadValue();
                 return true;
+            }
             case XmlElementNames.Comment:
-                reader.TryReadValue(ref comment);
+            {
+                reader.TryReadValue(ref _comment);
                 return true;
+            }
             case XmlElementNames.StorageQuota:
-                storageQuota = reader.ReadValue<int>();
+            {
+                StorageQuota = reader.ReadValue<int>();
                 return true;
+            }
             case XmlElementNames.FolderSize:
-                folderSize = reader.ReadValue<int>();
+            {
+                FolderSize = reader.ReadValue<int>();
                 return true;
+            }
             case XmlElementNames.HomePage:
-                reader.TryReadValue(ref homePage);
+            {
+                reader.TryReadValue(ref _homePage);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets a value indicating whether the user can delete objects in the folder.
     /// </summary>
-    public bool? CanDelete => canDelete;
+    public bool? CanDelete { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the user can rename or move objects in the folder.
     /// </summary>
-    public bool? CanRenameOrMove => canRenameOrMove;
+    public bool? CanRenameOrMove { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the client application must display the Comment property to the user.
     /// </summary>
-    public bool? MustDisplayComment => mustDisplayComment;
+    public bool? MustDisplayComment { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the folder has a quota.
     /// </summary>
-    public bool? HasQuota => hasQuota;
+    public bool? HasQuota { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the folder is the root of the managed folder hierarchy.
     /// </summary>
-    public bool? IsManagedFoldersRoot => isManagedFoldersRoot;
+    public bool? IsManagedFoldersRoot { get; private set; }
 
     /// <summary>
     ///     Gets the Managed Folder Id of the folder.
     /// </summary>
-    public string ManagedFolderId => managedFolderId;
+    public string ManagedFolderId { get; private set; }
 
     /// <summary>
     ///     Gets the comment associated with the folder.
     /// </summary>
-    public string Comment => comment;
+    public string Comment => _comment;
 
     /// <summary>
     ///     Gets the storage quota of the folder.
     /// </summary>
-    public int? StorageQuota => storageQuota;
+    public int? StorageQuota { get; private set; }
 
     /// <summary>
     ///     Gets the size of the folder.
     /// </summary>
-    public int? FolderSize => folderSize;
+    public int? FolderSize { get; private set; }
 
     /// <summary>
     ///     Gets the home page associated with the folder.
     /// </summary>
-    public string HomePage => homePage;
+    public string HomePage => _homePage;
 }

@@ -23,22 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the minimum and maximum size of a message.
 /// </summary>
+[PublicAPI]
 public sealed class RulePredicateSizeRange : ComplexProperty
 {
     /// <summary>
     ///     Minimum Size.
     /// </summary>
-    private int? minimumSize;
+    private int? _minimumSize;
 
     /// <summary>
     ///     Mamixmum Size.
     /// </summary>
-    private int? maximumSize;
+    private int? _maximumSize;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RulePredicateSizeRange" /> class.
@@ -53,9 +56,8 @@ public sealed class RulePredicateSizeRange : ComplexProperty
     /// </summary>
     public int? MinimumSize
     {
-        get => minimumSize;
-
-        set => SetFieldValue(ref minimumSize, value);
+        get => _minimumSize;
+        set => SetFieldValue(ref _minimumSize, value);
     }
 
     /// <summary>
@@ -64,9 +66,8 @@ public sealed class RulePredicateSizeRange : ComplexProperty
     /// </summary>
     public int? MaximumSize
     {
-        get => maximumSize;
-
-        set => SetFieldValue(ref maximumSize, value);
+        get => _maximumSize;
+        set => SetFieldValue(ref _maximumSize, value);
     }
 
     /// <summary>
@@ -79,13 +80,19 @@ public sealed class RulePredicateSizeRange : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.MinimumSize:
-                minimumSize = reader.ReadElementValue<int>();
+            {
+                _minimumSize = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.MaximumSize:
-                maximumSize = reader.ReadElementValue<int>();
+            {
+                _maximumSize = reader.ReadElementValue<int>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -112,7 +119,7 @@ public sealed class RulePredicateSizeRange : ComplexProperty
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        if (minimumSize.HasValue && maximumSize.HasValue && minimumSize.Value > maximumSize.Value)
+        if (_minimumSize.HasValue && _maximumSize.HasValue && _minimumSize.Value > _maximumSize.Value)
         {
             throw new ServiceValidationException("MinimumSize cannot be larger than MaximumSize.");
         }

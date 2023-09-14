@@ -230,14 +230,6 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
                 // Stream is closed, so disconnect.
                 Disconnect(HangingRequestDisconnectReason.Exception, ex);
             }
-            /*
-            catch (HttpException ex)
-            {
-                // Stream is closed, so disconnect.
-                this.Disconnect(HangingRequestDisconnectReason.Exception, ex);
-                return;
-            }
-            */
             catch (EwsHttpClientException ex)
             {
                 // Stream is closed, so disconnect.

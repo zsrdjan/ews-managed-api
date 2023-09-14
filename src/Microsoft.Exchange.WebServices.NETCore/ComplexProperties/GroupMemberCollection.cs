@@ -23,18 +23,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of members of GroupMember type.
 /// </summary>
+[PublicAPI]
 public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMember>, ICustomUpdateSerializer
 {
     /// <summary>
     ///     If the collection is cleared, then store PDL members collection is updated with "SetItemField".
     ///     If the collection is not cleared, then store PDL members collection is updated with "AppendToItemField".
     /// </summary>
-    private bool collectionIsCleared;
+    private bool _collectionIsCleared;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GroupMemberCollection" /> class.
@@ -49,9 +52,9 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     /// </summary>
     /// <param name="key">The key of the member to find.</param>
     /// <returns>The member with the specified key.</returns>
-    public GroupMember Find(string key)
+    public GroupMember? Find(string key)
     {
-        EwsUtilities.ValidateParam(key, "key");
+        EwsUtilities.ValidateParam(key);
 
         foreach (var item in Items)
         {
@@ -71,7 +74,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     {
         // mark the whole collection for deletion
         InternalClear();
-        collectionIsCleared = true;
+        _collectionIsCleared = true;
     }
 
     /// <summary>
@@ -80,7 +83,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     /// <param name="member">The member to add.</param>
     public void Add(GroupMember member)
     {
-        EwsUtilities.ValidateParam(member, "member");
+        EwsUtilities.ValidateParam(member);
 
         EwsUtilities.Assert(member.Key == null, "GroupMemberCollection.Add", "member.Key is not null.");
 
@@ -95,7 +98,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     /// <param name="members">The members to add.</param>
     public void AddRange(IEnumerable<GroupMember> members)
     {
-        EwsUtilities.ValidateParam(members, "members");
+        EwsUtilities.ValidateParam(members);
 
         foreach (var member in members)
         {
@@ -117,7 +120,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     /// </summary>
     /// <param name="contactId">The Id of the contact.</param>
     /// <param name="addressToLink">The contact's address to link to.</param>
-    public void AddPersonalContact(ItemId contactId, string addressToLink)
+    public void AddPersonalContact(ItemId contactId, string? addressToLink)
     {
         Add(new GroupMember(contactId, addressToLink));
     }
@@ -226,7 +229,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -255,7 +258,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
         PropertyDefinition propertyDefinition
     )
     {
-        if (collectionIsCleared)
+        if (_collectionIsCleared)
         {
             if (AddedItems.Count == 0)
             {
@@ -313,7 +316,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     internal override void ClearChangeLog()
     {
         base.ClearChangeLog();
-        collectionIsCleared = false;
+        _collectionIsCleared = false;
     }
 
     /// <summary>
@@ -330,7 +333,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     ///     Delete the whole members collection.
     /// </summary>
     /// <param name="writer">Xml writer.</param>
-    private void WriteDeleteMembersCollectionToXml(EwsServiceXmlWriter writer)
+    private static void WriteDeleteMembersCollectionToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.DeleteItemField);
         ContactGroupSchema.Members.WriteToXml(writer);
@@ -342,7 +345,7 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     /// </summary>
     /// <param name="writer">Xml writer.</param>
     /// <param name="members">Members to delete.</param>
-    private void WriteDeleteMembersToXml(EwsServiceXmlWriter writer, List<GroupMember> members)
+    private static void WriteDeleteMembersToXml(EwsServiceXmlWriter writer, List<GroupMember> members)
     {
         if (members.Count != 0)
         {
@@ -368,7 +371,11 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     /// <param name="writer">Xml writer.</param>
     /// <param name="members">Members to set or append.</param>
     /// <param name="setMode">True - set members, false - append members.</param>
-    private void WriteSetOrAppendMembersToXml(EwsServiceXmlWriter writer, List<GroupMember> members, bool setMode)
+    private static void WriteSetOrAppendMembersToXml(
+        EwsServiceXmlWriter writer,
+        List<GroupMember> members,
+        bool setMode
+    )
     {
         if (members.Count != 0)
         {

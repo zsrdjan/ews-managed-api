@@ -47,7 +47,7 @@ internal sealed class FindPeopleRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Folder Id accessors
     /// </summary>
-    internal FolderId FolderId { get; set; }
+    internal FolderId? FolderId { get; set; }
 
     /// <summary>
     ///     Search filter accessors
@@ -55,7 +55,7 @@ internal sealed class FindPeopleRequest : SimpleServiceRequestBase
     ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
     ///     is null, no search filters are applied.
     /// </summary>
-    internal SearchFilter SearchFilter { get; set; }
+    internal SearchFilter? SearchFilter { get; set; }
 
     /// <summary>
     ///     Query string accessors

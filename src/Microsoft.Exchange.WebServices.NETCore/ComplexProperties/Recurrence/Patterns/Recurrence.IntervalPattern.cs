@@ -25,6 +25,8 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -35,10 +37,11 @@ public abstract partial class Recurrence
     /// <summary>
     ///     Represents a recurrence pattern where each occurrence happens at a specific interval after the previous one.
     /// </summary>
+    [PublicAPI]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class IntervalPattern : Recurrence
     {
-        private int interval = 1;
+        private int _interval = 1;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="IntervalPattern" /> class.
@@ -57,7 +60,7 @@ public abstract partial class Recurrence
         {
             if (interval < 1)
             {
-                throw new ArgumentOutOfRangeException("interval", Strings.IntervalMustBeGreaterOrEqualToOne);
+                throw new ArgumentOutOfRangeException(nameof(interval), Strings.IntervalMustBeGreaterOrEqualToOne);
             }
 
             Interval = interval;
@@ -89,10 +92,14 @@ public abstract partial class Recurrence
             switch (reader.LocalName)
             {
                 case XmlElementNames.Interval:
-                    interval = reader.ReadElementValue<int>();
+                {
+                    _interval = reader.ReadElementValue<int>();
                     return true;
+                }
                 default:
+                {
                     return false;
+                }
             }
         }
 
@@ -101,16 +108,16 @@ public abstract partial class Recurrence
         /// </summary>
         public int Interval
         {
-            get => interval;
+            get => _interval;
 
             set
             {
                 if (value < 1)
                 {
-                    throw new ArgumentOutOfRangeException("value", Strings.IntervalMustBeGreaterOrEqualToOne);
+                    throw new ArgumentOutOfRangeException(nameof(value), Strings.IntervalMustBeGreaterOrEqualToOne);
                 }
 
-                SetFieldValue(ref interval, value);
+                SetFieldValue(ref _interval, value);
             }
         }
 
@@ -119,9 +126,9 @@ public abstract partial class Recurrence
         /// </summary>
         /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
         /// <returns>true if the two recurrences are identical, false otherwise.</returns>
-        public override bool IsSame(Recurrence otherRecurrence)
+        public override bool IsSame(Recurrence? otherRecurrence)
         {
-            return base.IsSame(otherRecurrence) && interval == ((IntervalPattern)otherRecurrence).interval;
+            return base.IsSame(otherRecurrence) && _interval == ((IntervalPattern)otherRecurrence)._interval;
         }
     }
 }

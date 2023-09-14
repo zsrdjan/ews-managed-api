@@ -24,12 +24,16 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a dictionary of phone numbers.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, PhoneNumberEntry>
 {
@@ -56,7 +60,7 @@ public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, P
     /// </summary>
     /// <param name="key">The key of the phone number to get or set.</param>
     /// <returns>The phone number at the specified key.</returns>
-    public string this[PhoneNumberKey key]
+    public string? this[PhoneNumberKey key]
     {
         get => Entries[key].PhoneNumber;
 
@@ -68,9 +72,7 @@ public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, P
             }
             else
             {
-                PhoneNumberEntry entry;
-
-                if (Entries.TryGetValue(key, out entry))
+                if (Entries.TryGetValue(key, out var entry))
                 {
                     entry.PhoneNumber = value;
                     Changed();
@@ -95,11 +97,9 @@ public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, P
     /// <returns>
     ///     true if the Dictionary contains a phone number associated with the specified key; otherwise, false.
     /// </returns>
-    public bool TryGetValue(PhoneNumberKey key, out string phoneNumber)
+    public bool TryGetValue(PhoneNumberKey key, [MaybeNullWhen(false)] out string phoneNumber)
     {
-        PhoneNumberEntry entry = null;
-
-        if (Entries.TryGetValue(key, out entry))
+        if (Entries.TryGetValue(key, out var entry))
         {
             phoneNumber = entry.PhoneNumber;
 
@@ -107,7 +107,6 @@ public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, P
         }
 
         phoneNumber = null;
-
         return false;
     }
 }

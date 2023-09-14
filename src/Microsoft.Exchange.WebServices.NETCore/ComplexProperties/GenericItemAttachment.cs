@@ -23,12 +23,15 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a strongly typed item attachment.
 /// </summary>
 /// <typeparam name="TItem">Item type.</typeparam>
+[PublicAPI]
 public sealed class ItemAttachment<TItem> : ItemAttachment
     where TItem : Item
 {
@@ -46,7 +49,7 @@ public sealed class ItemAttachment<TItem> : ItemAttachment
     /// </summary>
     public new TItem? Item
     {
-        get => (TItem)base.Item;
+        get => (TItem?)base.Item;
         internal set => base.Item = value;
     }
 }

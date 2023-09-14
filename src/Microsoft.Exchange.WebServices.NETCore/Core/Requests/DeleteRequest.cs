@@ -33,11 +33,6 @@ internal abstract class DeleteRequest<TResponse> : MultiResponseServiceRequest<T
     where TResponse : ServiceResponse
 {
     /// <summary>
-    ///     Delete mode. Default is SoftDelete.
-    /// </summary>
-    private DeleteMode deleteMode = DeleteMode.SoftDelete;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteRequest&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -62,9 +57,5 @@ internal abstract class DeleteRequest<TResponse> : MultiResponseServiceRequest<T
     ///     Gets or sets the delete mode.
     /// </summary>
     /// <value>The delete mode.</value>
-    public DeleteMode DeleteMode
-    {
-        get => deleteMode;
-        set => deleteMode = value;
-    }
+    public DeleteMode DeleteMode { get; set; } = DeleteMode.SoftDelete;
 }

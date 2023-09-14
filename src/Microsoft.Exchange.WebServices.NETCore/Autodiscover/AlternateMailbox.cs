@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,15 +34,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents an alternate mailbox.
 /// </summary>
+[PublicAPI]
 public sealed class AlternateMailbox
 {
-    private string type;
-    private string displayName;
-    private string legacyDN;
-    private string server;
-    private string smtpAddress;
-    private string ownerSmtpAddress;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AlternateMailbox" /> class.
     /// </summary>
@@ -66,23 +62,35 @@ public sealed class AlternateMailbox
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.Type:
+                    {
                         altMailbox.Type = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.DisplayName:
+                    {
                         altMailbox.DisplayName = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.LegacyDN:
+                    {
                         altMailbox.LegacyDN = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.Server:
+                    {
                         altMailbox.Server = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.SmtpAddress:
+                    {
                         altMailbox.SmtpAddress = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.OwnerSmtpAddress:
+                    {
                         altMailbox.OwnerSmtpAddress = reader.ReadElementValue<string>();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.AlternateMailbox));
@@ -94,55 +102,31 @@ public sealed class AlternateMailbox
     ///     Gets the alternate mailbox type.
     /// </summary>
     /// <value>The type.</value>
-    public string Type
-    {
-        get => type;
-        internal set => type = value;
-    }
+    public string Type { get; internal set; }
 
     /// <summary>
     ///     Gets the alternate mailbox display name.
     /// </summary>
-    public string DisplayName
-    {
-        get => displayName;
-        internal set => displayName = value;
-    }
+    public string DisplayName { get; internal set; }
 
     /// <summary>
     ///     Gets the alternate mailbox legacy DN.
     /// </summary>
-    public string LegacyDN
-    {
-        get => legacyDN;
-        internal set => legacyDN = value;
-    }
+    public string LegacyDN { get; internal set; }
 
     /// <summary>
     ///     Gets the alernate mailbox server.
     /// </summary>
-    public string Server
-    {
-        get => server;
-        internal set => server = value;
-    }
+    public string Server { get; internal set; }
 
     /// <summary>
     ///     Gets the alternate mailbox address.
     ///     It has value only when Server and LegacyDN is empty.
     /// </summary>
-    public string SmtpAddress
-    {
-        get => smtpAddress;
-        internal set => smtpAddress = value;
-    }
+    public string SmtpAddress { get; internal set; }
 
     /// <summary>
     ///     Gets the alternate mailbox owner SmtpAddress.
     /// </summary>
-    public string OwnerSmtpAddress
-    {
-        get => ownerSmtpAddress;
-        internal set => ownerSmtpAddress = value;
-    }
+    public string OwnerSmtpAddress { get; internal set; }
 }

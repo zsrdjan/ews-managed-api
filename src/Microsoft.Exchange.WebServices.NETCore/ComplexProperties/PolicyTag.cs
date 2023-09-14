@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the policy tag of an item or folder.
 /// </summary>
+[PublicAPI]
 public sealed class PolicyTag : RetentionTagBase
 {
     /// <summary>

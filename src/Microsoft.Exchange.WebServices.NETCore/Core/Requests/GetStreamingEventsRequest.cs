@@ -31,10 +31,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class GetStreamingEventsRequest : HangingServiceRequestBase
 {
     internal const int HeartbeatFrequencyDefault = 45000; ////45s in ms
-    private static int heartbeatFrequency = HeartbeatFrequencyDefault;
+    private static int _heartbeatFrequency = HeartbeatFrequencyDefault;
 
-    private readonly IEnumerable<string> subscriptionIds;
-    private readonly int connectionTimeout;
+    private readonly IEnumerable<string> _subscriptionIds;
+    private readonly int _connectionTimeout;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetStreamingEventsRequest" /> class.
@@ -49,10 +49,10 @@ internal class GetStreamingEventsRequest : HangingServiceRequestBase
         IEnumerable<string> subscriptionIds,
         int connectionTimeout
     )
-        : base(service, serviceObjectHandler, heartbeatFrequency)
+        : base(service, serviceObjectHandler, _heartbeatFrequency)
     {
-        this.subscriptionIds = subscriptionIds;
-        this.connectionTimeout = connectionTimeout;
+        _subscriptionIds = subscriptionIds;
+        _connectionTimeout = connectionTimeout;
     }
 
     /// <summary>
@@ -81,14 +81,14 @@ internal class GetStreamingEventsRequest : HangingServiceRequestBase
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.SubscriptionIds);
 
-        foreach (var id in subscriptionIds)
+        foreach (var id in _subscriptionIds)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.SubscriptionId, id);
         }
 
         writer.WriteEndElement();
 
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ConnectionTimeout, connectionTimeout);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ConnectionTimeout, _connectionTimeout);
     }
 
     /// <summary>
@@ -125,7 +125,7 @@ internal class GetStreamingEventsRequest : HangingServiceRequestBase
     /// </summary>
     internal static int HeartbeatFrequency
     {
-        set => heartbeatFrequency = value;
+        set => _heartbeatFrequency = value;
     }
 
     #endregion

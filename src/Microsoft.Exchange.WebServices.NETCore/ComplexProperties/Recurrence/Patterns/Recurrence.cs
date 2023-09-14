@@ -23,16 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a recurrence pattern, as used by Appointment and Task items.
 /// </summary>
+[PublicAPI]
 public abstract partial class Recurrence : ComplexProperty
 {
-    private DateTime? startDate;
-    private int? numberOfOccurrences;
-    private DateTime? endDate;
+    private DateTime? _startDate;
+    private int? _numberOfOccurrences;
+    private DateTime? _endDate;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Recurrence" /> class.
@@ -48,7 +51,7 @@ public abstract partial class Recurrence : ComplexProperty
     internal Recurrence(DateTime startDate)
         : this()
     {
-        this.startDate = startDate;
+        _startDate = startDate;
     }
 
     /// <summary>
@@ -77,7 +80,7 @@ public abstract partial class Recurrence : ComplexProperty
     ///     Writes elements to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
-    internal override sealed void WriteElementsToXml(EwsServiceXmlWriter writer)
+    internal sealed override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementName);
         InternalWritePropertiesToXml(writer);
@@ -108,7 +111,7 @@ public abstract partial class Recurrence : ComplexProperty
     /// <param name="value">The value.</param>
     /// <param name="name">The property name.</param>
     /// <returns>Property value</returns>
-    internal T GetFieldValueOrThrowIfNull<T>(T? value, string name)
+    internal static T GetFieldValueOrThrowIfNull<T>(T? value, string name)
         where T : struct
     {
         if (value.HasValue)
@@ -126,14 +129,14 @@ public abstract partial class Recurrence : ComplexProperty
     /// </summary>
     public DateTime StartDate
     {
-        get => GetFieldValueOrThrowIfNull(startDate, "StartDate");
-        set => startDate = value;
+        get => GetFieldValueOrThrowIfNull(_startDate, "StartDate");
+        set => _startDate = value;
     }
 
     /// <summary>
     ///     Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
     /// </summary>
-    public bool HasEnd => numberOfOccurrences.HasValue || endDate.HasValue;
+    public bool HasEnd => _numberOfOccurrences.HasValue || _endDate.HasValue;
 
     /// <summary>
     ///     Sets up this recurrence so that it never ends. Calling NeverEnds is equivalent to setting both NumberOfOccurrences
@@ -141,8 +144,8 @@ public abstract partial class Recurrence : ComplexProperty
     /// </summary>
     public void NeverEnds()
     {
-        numberOfOccurrences = null;
-        endDate = null;
+        _numberOfOccurrences = null;
+        _endDate = null;
         Changed();
     }
 
@@ -153,7 +156,7 @@ public abstract partial class Recurrence : ComplexProperty
     {
         base.InternalValidate();
 
-        if (!startDate.HasValue)
+        if (!_startDate.HasValue)
         {
             throw new ServiceValidationException(Strings.RecurrencePatternMustHaveStartDate);
         }
@@ -164,7 +167,7 @@ public abstract partial class Recurrence : ComplexProperty
     /// </summary>
     public int? NumberOfOccurrences
     {
-        get => numberOfOccurrences;
+        get => _numberOfOccurrences;
 
         set
         {
@@ -173,8 +176,8 @@ public abstract partial class Recurrence : ComplexProperty
                 throw new ArgumentException(Strings.NumberOfOccurrencesMustBeGreaterThanZero);
             }
 
-            SetFieldValue(ref numberOfOccurrences, value);
-            endDate = null;
+            SetFieldValue(ref _numberOfOccurrences, value);
+            _endDate = null;
         }
     }
 
@@ -183,12 +186,12 @@ public abstract partial class Recurrence : ComplexProperty
     /// </summary>
     public DateTime? EndDate
     {
-        get => endDate;
+        get => _endDate;
 
         set
         {
-            SetFieldValue(ref endDate, value);
-            numberOfOccurrences = null;
+            SetFieldValue(ref _endDate, value);
+            _numberOfOccurrences = null;
         }
     }
 
@@ -197,16 +200,16 @@ public abstract partial class Recurrence : ComplexProperty
     /// </summary>
     /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
     /// <returns>true if the two recurrences are identical, false otherwise.</returns>
-    public virtual bool IsSame(Recurrence otherRecurrence)
+    public virtual bool IsSame(Recurrence? otherRecurrence)
     {
         if (otherRecurrence == null)
         {
             return false;
         }
 
-        return (GetType() == otherRecurrence.GetType() &&
-                numberOfOccurrences == otherRecurrence.numberOfOccurrences &&
-                endDate == otherRecurrence.endDate &&
-                startDate == otherRecurrence.startDate);
+        return GetType() == otherRecurrence.GetType() &&
+               _numberOfOccurrences == otherRecurrence._numberOfOccurrences &&
+               _endDate == otherRecurrence._endDate &&
+               _startDate == otherRecurrence._startDate;
     }
 }

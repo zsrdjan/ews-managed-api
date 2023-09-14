@@ -23,33 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an error that occurred as a result of executing a rule operation.
 /// </summary>
+[PublicAPI]
 public sealed class RuleError : ComplexProperty
 {
-    /// <summary>
-    ///     Rule property.
-    /// </summary>
-    private RuleProperty ruleProperty;
-
-    /// <summary>
-    ///     Rule validation error code.
-    /// </summary>
-    private RuleErrorCode errorCode;
-
-    /// <summary>
-    ///     Error message.
-    /// </summary>
-    private string errorMessage;
-
-    /// <summary>
-    ///     Field value.
-    /// </summary>
-    private string value;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="RuleError" /> class.
     /// </summary>
@@ -60,22 +43,22 @@ public sealed class RuleError : ComplexProperty
     /// <summary>
     ///     Gets the property which failed validation.
     /// </summary>
-    public RuleProperty RuleProperty => ruleProperty;
+    public RuleProperty RuleProperty { get; private set; }
 
     /// <summary>
     ///     Gets the validation error code.
     /// </summary>
-    public RuleErrorCode ErrorCode => errorCode;
+    public RuleErrorCode ErrorCode { get; private set; }
 
     /// <summary>
     ///     Gets the error message.
     /// </summary>
-    public string ErrorMessage => errorMessage;
+    public string ErrorMessage { get; private set; }
 
     /// <summary>
     ///     Gets the value that failed validation.
     /// </summary>
-    public string Value => value;
+    public string Value { get; private set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -87,19 +70,29 @@ public sealed class RuleError : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.FieldURI:
-                ruleProperty = reader.ReadElementValue<RuleProperty>();
+            {
+                RuleProperty = reader.ReadElementValue<RuleProperty>();
                 return true;
+            }
             case XmlElementNames.ErrorCode:
-                errorCode = reader.ReadElementValue<RuleErrorCode>();
+            {
+                ErrorCode = reader.ReadElementValue<RuleErrorCode>();
                 return true;
+            }
             case XmlElementNames.ErrorMessage:
-                errorMessage = reader.ReadElementValue();
+            {
+                ErrorMessage = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.FieldValue:
-                value = reader.ReadElementValue();
+            {
+                Value = reader.ReadElementValue();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 }

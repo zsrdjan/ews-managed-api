@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class GetFolderRequestBase<TResponse> : GetRequest<Folder, TResponse>
     where TResponse : ServiceResponse
 {
-    private readonly FolderIdWrapperList folderIds = new FolderIdWrapperList();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetFolderRequestBase&lt;TResponse&gt;" /> class.
     /// </summary>
@@ -50,7 +48,7 @@ internal abstract class GetFolderRequestBase<TResponse> : GetRequest<Folder, TRe
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(FolderIds, "FolderIds");
+        EwsUtilities.ValidateParamCollection(FolderIds);
         FolderIds.Validate(Service.RequestedServerVersion);
     }
 
@@ -123,5 +121,5 @@ internal abstract class GetFolderRequestBase<TResponse> : GetRequest<Folder, TRe
     ///     Gets the folder ids.
     /// </summary>
     /// <value>The folder ids.</value>
-    public FolderIdWrapperList FolderIds => folderIds;
+    public FolderIdWrapperList FolderIds { get; } = new FolderIdWrapperList();
 }

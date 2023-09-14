@@ -31,10 +31,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUserConfigurationResponse>
 {
     private const string EnumDelimiter = ",";
-    private string name;
-    private FolderId parentFolderId;
-    private UserConfigurationProperties properties;
-    private UserConfiguration userConfiguration;
+    private UserConfiguration? _userConfiguration;
 
     /// <summary>
     ///     Validate request.
@@ -43,8 +40,8 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(name, "name");
-        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+        EwsUtilities.ValidateParam(Name);
+        EwsUtilities.ValidateParam(ParentFolderId);
         ParentFolderId.Validate(Service.RequestedServerVersion);
     }
 
@@ -57,14 +54,16 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     internal override GetUserConfigurationResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         // In the case of UserConfiguration.Load(), this.userConfiguration is set.
-        if (userConfiguration == null)
+        if (_userConfiguration == null)
         {
-            userConfiguration = new UserConfiguration(service, properties);
-            userConfiguration.Name = name;
-            userConfiguration.ParentFolderId = parentFolderId;
+            _userConfiguration = new UserConfiguration(service, Properties)
+            {
+                Name = Name,
+                ParentFolderId = ParentFolderId,
+            };
         }
 
-        return new GetUserConfigurationResponse(userConfiguration);
+        return new GetUserConfigurationResponse(_userConfiguration);
     }
 
     /// <summary>
@@ -119,13 +118,13 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // Write UserConfiguationName element
-        UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, name, parentFolderId);
+        UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, Name, ParentFolderId);
 
         // Write UserConfigurationProperties element
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.UserConfigurationProperties,
-            properties.ToString().Replace(EnumDelimiter, string.Empty)
+            Properties.ToString().Replace(EnumDelimiter, string.Empty)
         );
     }
 
@@ -142,21 +141,13 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     ///     Gets or sets the name.
     /// </summary>
     /// <value>The name.</value>
-    internal string Name
-    {
-        get => name;
-        set => name = value;
-    }
+    internal string Name { get; set; }
 
     /// <summary>
     ///     Gets or sets the parent folder Id.
     /// </summary>
     /// <value>The parent folder Id.</value>
-    internal FolderId ParentFolderId
-    {
-        get => parentFolderId;
-        set => parentFolderId = value;
-    }
+    internal FolderId ParentFolderId { get; set; }
 
     /// <summary>
     ///     Gets or sets the user configuration.
@@ -164,14 +155,14 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     /// <value>The user configuration.</value>
     internal UserConfiguration UserConfiguration
     {
-        get => userConfiguration;
+        get => _userConfiguration;
 
         set
         {
-            userConfiguration = value;
+            _userConfiguration = value;
 
-            name = userConfiguration.Name;
-            parentFolderId = userConfiguration.ParentFolderId;
+            Name = _userConfiguration.Name;
+            ParentFolderId = _userConfiguration.ParentFolderId;
         }
     }
 
@@ -179,9 +170,5 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     ///     Gets or sets the properties.
     /// </summary>
     /// <value>The properties.</value>
-    internal UserConfigurationProperties Properties
-    {
-        get => properties;
-        set => properties = value;
-    }
+    internal UserConfigurationProperties Properties { get; set; }
 }

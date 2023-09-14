@@ -25,25 +25,28 @@
 
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a user configuration's Dictionary property.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
 {
     // TODO: Consider implementing IsDirty mechanism in ComplexProperty.
-    private readonly Dictionary<object, object> dictionary;
-    private bool isDirty;
+    private readonly Dictionary<object, object> _dictionary;
 
     /// <summary>
     ///     Initializes a new instance of <see cref="UserConfigurationDictionary" /> class.
     /// </summary>
     internal UserConfigurationDictionary()
     {
-        dictionary = new Dictionary<object, object>();
+        _dictionary = new Dictionary<object, object>();
     }
 
     /// <summary>
@@ -53,13 +56,13 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <returns>The element with the specified key.</returns>
     public object this[object key]
     {
-        get => dictionary[key];
+        get => _dictionary[key];
 
         set
         {
             ValidateEntry(key, value);
 
-            dictionary[key] = value;
+            _dictionary[key] = value;
 
             Changed();
         }
@@ -74,7 +77,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         ValidateEntry(key, value);
 
-        dictionary.Add(key, value);
+        _dictionary.Add(key, value);
 
         Changed();
     }
@@ -86,7 +89,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <returns>true if the user configuration dictionary contains an element with the key; otherwise false.</returns>
     public bool ContainsKey(object key)
     {
-        return dictionary.ContainsKey(key);
+        return _dictionary.ContainsKey(key);
     }
 
     /// <summary>
@@ -96,7 +99,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <returns>true if the element is successfully removed; otherwise false.</returns>
     public bool Remove(object key)
     {
-        var isRemoved = dictionary.Remove(key);
+        var isRemoved = _dictionary.Remove(key);
 
         if (isRemoved)
         {
@@ -115,24 +118,24 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     ///     otherwise, null.
     /// </param>
     /// <returns>true if the user configuration dictionary contains the key; otherwise false.</returns>
-    public bool TryGetValue(object key, out object value)
+    public bool TryGetValue(object key, [MaybeNullWhen(false)] out object value)
     {
-        return dictionary.TryGetValue(key, out value);
+        return _dictionary.TryGetValue(key, out value);
     }
 
     /// <summary>
     ///     Gets the number of elements in the user configuration dictionary.
     /// </summary>
-    public int Count => dictionary.Count;
+    public int Count => _dictionary.Count;
 
     /// <summary>
     ///     Removes all items from the user configuration dictionary.
     /// </summary>
     public void Clear()
     {
-        if (dictionary.Count != 0)
+        if (_dictionary.Count != 0)
         {
-            dictionary.Clear();
+            _dictionary.Clear();
 
             Changed();
         }
@@ -147,7 +150,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <returns>An IEnumerator that can be used to iterate through the user configuration dictionary.</returns>
     public IEnumerator GetEnumerator()
     {
-        return dictionary.GetEnumerator();
+        return _dictionary.GetEnumerator();
     }
 
     #endregion
@@ -156,12 +159,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <summary>
     ///     Gets or sets the isDirty flag.
     /// </summary>
-    internal bool IsDirty
-    {
-        get => isDirty;
-
-        set => isDirty = value;
-    }
+    internal bool IsDirty { get; set; }
 
     /// <summary>
     ///     Instance was changed.
@@ -170,7 +168,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         base.Changed();
 
-        isDirty = true;
+        IsDirty = true;
     }
 
     /// <summary>
@@ -181,7 +179,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         EwsUtilities.Assert(writer != null, "UserConfigurationDictionary.WriteElementsToXml", "writer is null");
 
-        foreach (var dictionaryEntry in dictionary)
+        foreach (var dictionaryEntry in _dictionary)
         {
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.DictionaryEntry);
 
@@ -207,53 +205,65 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         ref string valueAsString
     )
     {
-        if (dictionaryObject is bool)
+        switch (dictionaryObject)
         {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.Boolean;
-            valueAsString = EwsUtilities.BoolToXsBool((bool)dictionaryObject);
-        }
-        else if (dictionaryObject is byte)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.Byte;
-            valueAsString = ((byte)dictionaryObject).ToString();
-        }
-        else if (dictionaryObject is DateTime)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.DateTime;
-            valueAsString = service.ConvertDateTimeToUniversalDateTimeString((DateTime)dictionaryObject);
-        }
-        else if (dictionaryObject is int)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.Integer32;
-            valueAsString = ((int)dictionaryObject).ToString();
-        }
-        else if (dictionaryObject is long)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.Integer64;
-            valueAsString = ((long)dictionaryObject).ToString();
-        }
-        else if (dictionaryObject is string)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.String;
-            valueAsString = (string)dictionaryObject;
-        }
-        else if (dictionaryObject is uint)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.UnsignedInteger32;
-            valueAsString = ((uint)dictionaryObject).ToString();
-        }
-        else if (dictionaryObject is ulong)
-        {
-            dictionaryObjectType = UserConfigurationDictionaryObjectType.UnsignedInteger64;
-            valueAsString = ((ulong)dictionaryObject).ToString();
-        }
-        else
-        {
-            EwsUtilities.Assert(
-                false,
-                "UserConfigurationDictionary.WriteObjectValueToXml",
-                "Unsupported type: " + dictionaryObject.GetType()
-            );
+            case bool b:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.Boolean;
+                valueAsString = EwsUtilities.BoolToXsBool(b);
+                break;
+            }
+            case byte b:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.Byte;
+                valueAsString = b.ToString();
+                break;
+            }
+            case DateTime time:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.DateTime;
+                valueAsString = service.ConvertDateTimeToUniversalDateTimeString(time);
+                break;
+            }
+            case int i:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.Integer32;
+                valueAsString = i.ToString();
+                break;
+            }
+            case long l:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.Integer64;
+                valueAsString = l.ToString();
+                break;
+            }
+            case string s:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.String;
+                valueAsString = s;
+                break;
+            }
+            case uint u:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.UnsignedInteger32;
+                valueAsString = u.ToString();
+                break;
+            }
+            case ulong o:
+            {
+                dictionaryObjectType = UserConfigurationDictionaryObjectType.UnsignedInteger64;
+                valueAsString = o.ToString();
+                break;
+            }
+            default:
+            {
+                EwsUtilities.Assert(
+                    false,
+                    "UserConfigurationDictionary.WriteObjectValueToXml",
+                    "Unsupported type: " + dictionaryObject.GetType()
+                );
+                break;
+            }
         }
     }
 
@@ -277,7 +287,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <param name="writer">The writer.</param>
     /// <param name="xmlElementName">The Xml element name.</param>
     /// <param name="dictionaryObject">The object to write.</param>
-    private void WriteObjectToXml(EwsServiceXmlWriter writer, string xmlElementName, object dictionaryObject)
+    private static void WriteObjectToXml(EwsServiceXmlWriter writer, string xmlElementName, object? dictionaryObject)
     {
         EwsUtilities.Assert(writer != null, "UserConfigurationDictionary.WriteObjectToXml", "writer is null");
         EwsUtilities.Assert(
@@ -315,7 +325,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="dictionaryObject">The dictionary object to write.</param>
-    private void WriteObjectValueToXml(EwsServiceXmlWriter writer, object dictionaryObject)
+    private static void WriteObjectValueToXml(EwsServiceXmlWriter writer, object dictionaryObject)
     {
         EwsUtilities.Assert(writer != null, "UserConfigurationDictionary.WriteObjectValueToXml", "writer is null");
         EwsUtilities.Assert(
@@ -335,8 +345,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         //   . datetime, boolean, byte, short, int, long, string, ushort, unint, ulong
         //
         // First check for a string array
-        var dictionaryObjectAsStringArray = dictionaryObject as string[];
-        if (dictionaryObjectAsStringArray != null)
+        if (dictionaryObject is string[] dictionaryObjectAsStringArray)
         {
             WriteEntryTypeToXml(writer, UserConfigurationDictionaryObjectType.StringArray);
 
@@ -349,10 +358,9 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
         {
             // if not a string array, all other object values are returned as a single element
             var dictionaryObjectType = UserConfigurationDictionaryObjectType.String;
-            string valueAsString = null;
+            string? valueAsString = null;
 
-            var dictionaryObjectAsByteArray = dictionaryObject as byte[];
-            if (dictionaryObjectAsByteArray != null)
+            if (dictionaryObject is byte[] dictionaryObjectAsByteArray)
             {
                 // Convert byte array to base64 string
                 dictionaryObjectType = UserConfigurationDictionaryObjectType.ByteArray;
@@ -373,7 +381,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="dictionaryObjectType">Type to write.</param>
-    private void WriteEntryTypeToXml(
+    private static void WriteEntryTypeToXml(
         EwsServiceXmlWriter writer,
         UserConfigurationDictionaryObjectType dictionaryObjectType
     )
@@ -388,7 +396,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="value">Value to write.</param>
-    private void WriteEntryValueToXml(EwsServiceXmlWriter writer, string value)
+    private static void WriteEntryValueToXml(EwsServiceXmlWriter writer, string? value)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Value);
 
@@ -411,7 +419,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         base.LoadFromXml(reader, xmlNamespace, xmlElementName);
 
-        isDirty = false;
+        IsDirty = false;
     }
 
     /// <summary>
@@ -436,25 +444,24 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         EwsUtilities.Assert(reader != null, "UserConfigurationDictionary.LoadEntry", "reader is null");
 
-        object key;
-        object value = null;
+        object? value = null;
 
         // Position at DictionaryKey
         reader.ReadStartElement(Namespace, XmlElementNames.DictionaryKey);
 
-        key = GetDictionaryObject(reader);
+        var key = GetDictionaryObject(reader);
 
         // Position at DictionaryValue
         reader.ReadStartElement(Namespace, XmlElementNames.DictionaryValue);
 
         var nil = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Nil);
-        var hasValue = (nil == null) || (!Convert.ToBoolean(nil));
+        var hasValue = nil == null || !Convert.ToBoolean(nil);
         if (hasValue)
         {
             value = GetDictionaryObject(reader);
         }
 
-        dictionary.Add(key, value);
+        _dictionary.Add(key, value);
     }
 
     /// <summary>
@@ -462,7 +469,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// </summary>
     /// <param name="valueArray">The value array.</param>
     /// <returns></returns>
-    private List<string> GetObjectValue(object[] valueArray)
+    private static List<string> GetObjectValue(object[] valueArray)
     {
         var stringArray = new List<string>();
 
@@ -507,7 +514,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
 
         do
         {
-            string value = null;
+            string? value = null;
 
             if (reader.IsEmptyElement)
             {
@@ -516,15 +523,19 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                 {
                     case UserConfigurationDictionaryObjectType.String:
                     case UserConfigurationDictionaryObjectType.StringArray:
+                    {
                         value = string.Empty;
                         break;
+                    }
                     default:
+                    {
                         EwsUtilities.Assert(
                             false,
                             "UserConfigurationDictionary.GetObjectValue",
                             "Empty element passed for type: " + type
                         );
                         break;
+                    }
                 }
             }
             else
@@ -563,7 +574,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <param name="value">Value of the dictionary object as a string list</param>
     /// <param name="service">The service.</param>
     /// <returns>Dictionary object.</returns>
-    private object ConstructObject(
+    private static object ConstructObject(
         UserConfigurationDictionaryObjectType type,
         List<string> value,
         ExchangeService service
@@ -571,28 +582,32 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     {
         EwsUtilities.Assert(value != null, "UserConfigurationDictionary.ConstructObject", "value is null");
         EwsUtilities.Assert(
-            (value.Count == 1 || type == UserConfigurationDictionaryObjectType.StringArray),
+            value.Count == 1 || type == UserConfigurationDictionaryObjectType.StringArray,
             "UserConfigurationDictionary.ConstructObject",
             "value is array but type is not StringArray"
         );
 
-        object dictionaryObject = null;
+        object? dictionaryObject = null;
 
         switch (type)
         {
             case UserConfigurationDictionaryObjectType.Boolean:
+            {
                 dictionaryObject = bool.Parse(value[0]);
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.Byte:
+            {
                 dictionaryObject = byte.Parse(value[0]);
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.ByteArray:
+            {
                 dictionaryObject = Convert.FromBase64String(value[0]);
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.DateTime:
+            {
                 var dateTime = service.ConvertUniversalDateTimeStringToLocalDateTime(value[0]);
 
                 if (dateTime.HasValue)
@@ -605,38 +620,46 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                 }
 
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.Integer32:
+            {
                 dictionaryObject = int.Parse(value[0]);
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.Integer64:
+            {
                 dictionaryObject = long.Parse(value[0]);
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.String:
+            {
                 dictionaryObject = value[0];
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.StringArray:
+            {
                 dictionaryObject = value.ToArray();
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.UnsignedInteger32:
+            {
                 dictionaryObject = uint.Parse(value[0]);
                 break;
-
+            }
             case UserConfigurationDictionaryObjectType.UnsignedInteger64:
+            {
                 dictionaryObject = ulong.Parse(value[0]);
                 break;
-
+            }
             default:
+            {
                 EwsUtilities.Assert(
                     false,
                     "UserConfigurationDictionary.ConstructObject",
                     "Type not recognized: " + type
                 );
                 break;
+            }
         }
 
         return dictionaryObject;
@@ -657,13 +680,12 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     ///     Validates the dictionary object (key or entry value).
     /// </summary>
     /// <param name="dictionaryObject">Object to validate.</param>
-    private void ValidateObject(object dictionaryObject)
+    private static void ValidateObject(object? dictionaryObject)
     {
         // Keys may not be null but we rely on the internal dictionary to throw if the key is null.
         if (dictionaryObject != null)
         {
-            var dictionaryObjectAsArray = dictionaryObject as Array;
-            if (dictionaryObjectAsArray != null)
+            if (dictionaryObject is Array dictionaryObjectAsArray)
             {
                 ValidateArrayObject(dictionaryObjectAsArray);
             }
@@ -678,12 +700,12 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     ///     Validate the array object.
     /// </summary>
     /// <param name="dictionaryObjectAsArray">Object to validate</param>
-    private void ValidateArrayObject(Array dictionaryObjectAsArray)
+    private static void ValidateArrayObject(Array dictionaryObjectAsArray)
     {
-        // This logic is based on Microsoft.Exchange.Data.Storage.ConfigurationDictionary.CheckElementSupportedType().
-        if (dictionaryObjectAsArray is string[])
+        switch (dictionaryObjectAsArray)
         {
-            if (dictionaryObjectAsArray.Length > 0)
+            // This logic is based on Microsoft.Exchange.Data.Storage.ConfigurationDictionary.CheckElementSupportedType().
+            case string[] when dictionaryObjectAsArray.Length > 0:
             {
                 foreach (var arrayElement in dictionaryObjectAsArray)
                 {
@@ -692,46 +714,45 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
                         throw new ServiceLocalException(Strings.NullStringArrayElementInvalid);
                     }
                 }
+
+                break;
             }
-            else
+            case string[]:
             {
                 throw new ServiceLocalException(Strings.ZeroLengthArrayInvalid);
             }
-        }
-        else if (dictionaryObjectAsArray is byte[])
-        {
-            if (dictionaryObjectAsArray.Length <= 0)
+            case byte[]:
             {
-                throw new ServiceLocalException(Strings.ZeroLengthArrayInvalid);
+                if (dictionaryObjectAsArray.Length <= 0)
+                {
+                    throw new ServiceLocalException(Strings.ZeroLengthArrayInvalid);
+                }
+
+                break;
             }
-        }
-        else
-        {
-            throw new ServiceLocalException(
-                string.Format(Strings.ObjectTypeNotSupported, dictionaryObjectAsArray.GetType())
-            );
+            default:
+            {
+                throw new ServiceLocalException(
+                    string.Format(Strings.ObjectTypeNotSupported, dictionaryObjectAsArray.GetType())
+                );
+            }
         }
     }
 
-    static readonly Type[] ValidTypes =
+    private static readonly Type[] ValidTypes =
     {
         typeof(bool), typeof(byte), typeof(DateTime), typeof(int), typeof(long), typeof(string), typeof(uint),
-        typeof(ulong)
+        typeof(ulong),
     };
 
     /// <summary>
     ///     Validates the dictionary object type.
     /// </summary>
     /// <param name="type">Type to validate.</param>
-    private void ValidateObjectType(Type type)
+    private static void ValidateObjectType(Type type)
     {
         // This logic is based on Microsoft.Exchange.Data.Storage.ConfigurationDictionary.CheckElementSupportedType().
-        var isValidType = false;
-
-        if (ValidTypes.Contains(type))
-        {
-            isValidType = true;
-        }
+        var isValidType = ValidTypes.Contains(type);
 
         if (!isValidType)
         {

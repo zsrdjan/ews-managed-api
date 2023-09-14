@@ -23,22 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Encapsulates information on the deleted occurrence of a recurring appointment.
 /// </summary>
+[PublicAPI]
 public class DeletedOccurrenceInfo : ComplexProperty
 {
-    /// <summary>
-    ///     The original start date and time of the deleted occurrence.
-    /// </summary>
-    /// <remarks>
-    ///     The EWS schema contains a Start property for deleted occurrences but it's
-    ///     really the original start date and time of the occurrence.
-    /// </remarks>
-    private DateTime originalStart;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DeletedOccurrenceInfo" /> class.
     /// </summary>
@@ -56,15 +50,19 @@ public class DeletedOccurrenceInfo : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Start:
-                originalStart = reader.ReadElementValueAsDateTime().Value;
+            {
+                OriginalStart = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the original start date and time of the deleted occurrence.
     /// </summary>
-    public DateTime OriginalStart => originalStart;
+    public DateTime OriginalStart { get; private set; }
 }

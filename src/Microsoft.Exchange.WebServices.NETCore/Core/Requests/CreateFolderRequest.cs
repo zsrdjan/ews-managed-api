@@ -46,7 +46,7 @@ internal sealed class CreateFolderRequest : CreateRequest<Folder, ServiceRespons
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(Folders, "Folders");
+        EwsUtilities.ValidateParam(Folders);
 
         // Validate each folder.
         foreach (var folder in Folders)

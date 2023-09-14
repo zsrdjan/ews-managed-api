@@ -23,76 +23,67 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the complete name of a contact.
 /// </summary>
+[PublicAPI]
 public sealed class CompleteName : ComplexProperty
 {
-    private string title;
-    private string givenName;
-    private string middleName;
-    private string surname;
-    private string suffix;
-    private string initials;
-    private string fullName;
-    private string nickname;
-    private string yomiGivenName;
-    private string yomiSurname;
-
-
     #region Properties
 
     /// <summary>
     ///     Gets the contact's title.
     /// </summary>
-    public string Title => title;
+    public string Title { get; private set; }
 
     /// <summary>
     ///     Gets the given name (first name) of the contact.
     /// </summary>
-    public string GivenName => givenName;
+    public string GivenName { get; private set; }
 
     /// <summary>
     ///     Gets the middle name of the contact.
     /// </summary>
-    public string MiddleName => middleName;
+    public string MiddleName { get; private set; }
 
     /// <summary>
     ///     Gets the surname (last name) of the contact.
     /// </summary>
-    public string Surname => surname;
+    public string Surname { get; private set; }
 
     /// <summary>
     ///     Gets the suffix of the contact.
     /// </summary>
-    public string Suffix => suffix;
+    public string Suffix { get; private set; }
 
     /// <summary>
     ///     Gets the initials of the contact.
     /// </summary>
-    public string Initials => initials;
+    public string Initials { get; private set; }
 
     /// <summary>
     ///     Gets the full name of the contact.
     /// </summary>
-    public string FullName => fullName;
+    public string FullName { get; private set; }
 
     /// <summary>
     ///     Gets the nickname of the contact.
     /// </summary>
-    public string NickName => nickname;
+    public string NickName { get; private set; }
 
     /// <summary>
     ///     Gets the Yomi given name (first name) of the contact.
     /// </summary>
-    public string YomiGivenName => yomiGivenName;
+    public string YomiGivenName { get; private set; }
 
     /// <summary>
     ///     Gets the Yomi surname (last name) of the contact.
     /// </summary>
-    public string YomiSurname => yomiSurname;
+    public string YomiSurname { get; private set; }
 
     #endregion
 
@@ -107,37 +98,59 @@ public sealed class CompleteName : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Title:
-                title = reader.ReadElementValue();
+            {
+                Title = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.FirstName:
-                givenName = reader.ReadElementValue();
+            {
+                GivenName = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.MiddleName:
-                middleName = reader.ReadElementValue();
+            {
+                MiddleName = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.LastName:
-                surname = reader.ReadElementValue();
+            {
+                Surname = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Suffix:
-                suffix = reader.ReadElementValue();
+            {
+                Suffix = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Initials:
-                initials = reader.ReadElementValue();
+            {
+                Initials = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.FullName:
-                fullName = reader.ReadElementValue();
+            {
+                FullName = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.NickName:
-                nickname = reader.ReadElementValue();
+            {
+                NickName = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.YomiFirstName:
-                yomiGivenName = reader.ReadElementValue();
+            {
+                YomiGivenName = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.YomiLastName:
-                yomiSurname = reader.ReadElementValue();
+            {
+                YomiSurname = reader.ReadElementValue();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

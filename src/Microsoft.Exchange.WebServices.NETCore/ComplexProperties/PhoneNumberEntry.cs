@@ -25,15 +25,18 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an entry of a PhoneNumberDictionary.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class PhoneNumberEntry : DictionaryEntryProperty<PhoneNumberKey>
 {
-    private string phoneNumber;
+    private string _phoneNumber;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PhoneNumberEntry" /> class.
@@ -50,7 +53,7 @@ public sealed class PhoneNumberEntry : DictionaryEntryProperty<PhoneNumberKey>
     internal PhoneNumberEntry(PhoneNumberKey key, string phoneNumber)
         : base(key)
     {
-        this.phoneNumber = phoneNumber;
+        _phoneNumber = phoneNumber;
     }
 
     /// <summary>
@@ -59,7 +62,7 @@ public sealed class PhoneNumberEntry : DictionaryEntryProperty<PhoneNumberKey>
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        phoneNumber = reader.ReadValue();
+        _phoneNumber = reader.ReadValue();
     }
 
     /// <summary>
@@ -76,7 +79,7 @@ public sealed class PhoneNumberEntry : DictionaryEntryProperty<PhoneNumberKey>
     /// </summary>
     public string PhoneNumber
     {
-        get => phoneNumber;
-        set => SetFieldValue(ref phoneNumber, value);
+        get => _phoneNumber;
+        set => SetFieldValue(ref _phoneNumber, value);
     }
 }

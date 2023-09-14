@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -30,52 +32,33 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     A rule consists of a set of conditions and exceptions that determine whether or
 ///     not a set of actions should be executed on incoming messages.
 /// </summary>
+[PublicAPI]
 public sealed class Rule : ComplexProperty
 {
     /// <summary>
     ///     The rule ID.
     /// </summary>
-    private string ruleId;
+    private string _ruleId;
 
     /// <summary>
     ///     The rule display name.
     /// </summary>
-    private string displayName;
+    private string _displayName;
 
     /// <summary>
     ///     The rule priority.
     /// </summary>
-    private int priority;
+    private int _priority;
 
     /// <summary>
     ///     The rule status of enabled or not.
     /// </summary>
-    private bool isEnabled;
-
-    /// <summary>
-    ///     The rule status of is supported or not.
-    /// </summary>
-    private bool isNotSupported;
+    private bool _isEnabled;
 
     /// <summary>
     ///     The rule status of in error or not.
     /// </summary>
-    private bool isInError;
-
-    /// <summary>
-    ///     The rule conditions.
-    /// </summary>
-    private readonly RulePredicates conditions;
-
-    /// <summary>
-    ///     The rule actions.
-    /// </summary>
-    private readonly RuleActions actions;
-
-    /// <summary>
-    ///     The rule exceptions.
-    /// </summary>
-    private readonly RulePredicates exceptions;
+    private bool _isInError;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Rule" /> class.
@@ -83,12 +66,12 @@ public sealed class Rule : ComplexProperty
     public Rule()
     {
         //// New rule has priority as 0 by default
-        priority = 1;
+        _priority = 1;
         //// New rule is enabled by default
-        isEnabled = true;
-        conditions = new RulePredicates();
-        actions = new RuleActions();
-        exceptions = new RulePredicates();
+        _isEnabled = true;
+        Conditions = new RulePredicates();
+        Actions = new RuleActions();
+        Exceptions = new RulePredicates();
     }
 
     /// <summary>
@@ -96,9 +79,8 @@ public sealed class Rule : ComplexProperty
     /// </summary>
     public string Id
     {
-        get => ruleId;
-
-        set => SetFieldValue(ref ruleId, value);
+        get => _ruleId;
+        set => SetFieldValue(ref _ruleId, value);
     }
 
     /// <summary>
@@ -106,9 +88,8 @@ public sealed class Rule : ComplexProperty
     /// </summary>
     public string DisplayName
     {
-        get => displayName;
-
-        set => SetFieldValue(ref displayName, value);
+        get => _displayName;
+        set => SetFieldValue(ref _displayName, value);
     }
 
     /// <summary>
@@ -116,9 +97,8 @@ public sealed class Rule : ComplexProperty
     /// </summary>
     public int Priority
     {
-        get => priority;
-
-        set => SetFieldValue(ref priority, value);
+        get => _priority;
+        set => SetFieldValue(ref _priority, value);
     }
 
     /// <summary>
@@ -126,16 +106,15 @@ public sealed class Rule : ComplexProperty
     /// </summary>
     public bool IsEnabled
     {
-        get => isEnabled;
-
-        set => SetFieldValue(ref isEnabled, value);
+        get => _isEnabled;
+        set => SetFieldValue(ref _isEnabled, value);
     }
 
     /// <summary>
     ///     Gets a value indicating whether this rule can be modified via EWS.
     ///     If IsNotSupported is true, the rule cannot be modified via EWS.
     /// </summary>
-    public bool IsNotSupported => isNotSupported;
+    public bool IsNotSupported { get; private set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether this rule has errors. A rule that is in error
@@ -143,28 +122,27 @@ public sealed class Rule : ComplexProperty
     /// </summary>
     public bool IsInError
     {
-        get => isInError;
-
-        set => SetFieldValue(ref isInError, value);
+        get => _isInError;
+        set => SetFieldValue(ref _isInError, value);
     }
 
     /// <summary>
     ///     Gets the conditions that determine whether or not this rule should be
     ///     executed against incoming messages.
     /// </summary>
-    public RulePredicates Conditions => conditions;
+    public RulePredicates Conditions { get; }
 
     /// <summary>
     ///     Gets the actions that should be executed against incoming messages if the
     ///     conditions evaluate as true.
     /// </summary>
-    public RuleActions Actions => actions;
+    public RuleActions Actions { get; }
 
     /// <summary>
     ///     Gets the exceptions that determine if this rule should be skipped even if
     ///     its conditions evaluate to true.
     /// </summary>
-    public RulePredicates Exceptions => exceptions;
+    public RulePredicates Exceptions { get; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -176,34 +154,54 @@ public sealed class Rule : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.DisplayName:
-                displayName = reader.ReadElementValue();
+            {
+                _displayName = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.RuleId:
-                ruleId = reader.ReadElementValue();
+            {
+                _ruleId = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.Priority:
-                priority = reader.ReadElementValue<int>();
+            {
+                _priority = reader.ReadElementValue<int>();
                 return true;
+            }
             case XmlElementNames.IsEnabled:
-                isEnabled = reader.ReadElementValue<bool>();
+            {
+                _isEnabled = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsNotSupported:
-                isNotSupported = reader.ReadElementValue<bool>();
+            {
+                IsNotSupported = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsInError:
-                isInError = reader.ReadElementValue<bool>();
+            {
+                _isInError = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.Conditions:
-                conditions.LoadFromXml(reader, reader.LocalName);
+            {
+                Conditions.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.Actions:
-                actions.LoadFromXml(reader, reader.LocalName);
+            {
+                Actions.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.Exceptions:
-                exceptions.LoadFromXml(reader, reader.LocalName);
+            {
+                Exceptions.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -233,9 +231,9 @@ public sealed class Rule : ComplexProperty
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        EwsUtilities.ValidateParam(displayName, "DisplayName");
-        EwsUtilities.ValidateParam(conditions, "Conditions");
-        EwsUtilities.ValidateParam(exceptions, "Exceptions");
-        EwsUtilities.ValidateParam(actions, "Actions");
+        EwsUtilities.ValidateParam(_displayName, "DisplayName");
+        EwsUtilities.ValidateParam(Conditions);
+        EwsUtilities.ValidateParam(Exceptions);
+        EwsUtilities.ValidateParam(Actions);
     }
 }

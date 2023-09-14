@@ -31,16 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemResponse>
 {
     /// <summary>
-    ///     Source folder id
-    /// </summary>
-    private FolderId sourceFolderId;
-
-    /// <summary>
-    ///     Items
-    /// </summary>
-    private readonly ItemIdWrapperList ids = new ItemIdWrapperList();
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="ArchiveItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -55,8 +45,8 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     /// </summary>
     internal override void Validate()
     {
-        EwsUtilities.ValidateParam(sourceFolderId, "SourceFolderId");
-        sourceFolderId.Validate(Service.RequestedServerVersion);
+        EwsUtilities.ValidateParam(SourceFolderId);
+        SourceFolderId.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
@@ -74,17 +64,13 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     ///     Gets or sets the Archive source folder id.
     /// </summary>
     /// <value>The archive source folder id.</value>
-    public FolderId SourceFolderId
-    {
-        get => sourceFolderId;
-        set => sourceFolderId = value;
-    }
+    public FolderId SourceFolderId { get; set; }
 
     /// <summary>
     ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    internal ItemIdWrapperList Ids => ids;
+    internal ItemIdWrapperList Ids { get; } = new ItemIdWrapperList();
 
     /// <summary>
     ///     Gets the expected response message count.
@@ -92,7 +78,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return ids.Count;
+        return Ids.Count;
     }
 
     /// <summary>

@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Encapsulates information on the occurrence of a recurring appointment.
 /// </summary>
+[PublicAPI]
 public sealed class Flag : ComplexProperty
 {
-    private ItemFlagStatus flagStatus;
-    private DateTime startDate;
-    private DateTime dueDate;
-    private DateTime completeDate;
+    private ItemFlagStatus _flagStatus;
+    private DateTime _startDate;
+    private DateTime _dueDate;
+    private DateTime _completeDate;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Flag" /> class.
@@ -52,19 +55,29 @@ public sealed class Flag : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.FlagStatus:
-                flagStatus = reader.ReadElementValue<ItemFlagStatus>();
+            {
+                _flagStatus = reader.ReadElementValue<ItemFlagStatus>();
                 return true;
+            }
             case XmlElementNames.StartDate:
-                startDate = reader.ReadElementValueAsDateTime().Value;
+            {
+                _startDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             case XmlElementNames.DueDate:
-                dueDate = reader.ReadElementValueAsDateTime().Value;
+            {
+                _dueDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             case XmlElementNames.CompleteDate:
-                completeDate = reader.ReadElementValueAsDateTime().Value;
+            {
+                _completeDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -92,7 +105,7 @@ public sealed class Flag : ComplexProperty
     /// </summary>
     internal void Validate()
     {
-        EwsUtilities.ValidateParam(flagStatus, "FlagStatus");
+        EwsUtilities.ValidateParam(_flagStatus, "FlagStatus");
     }
 
     /// <summary>
@@ -100,9 +113,8 @@ public sealed class Flag : ComplexProperty
     /// </summary>
     public ItemFlagStatus FlagStatus
     {
-        get => flagStatus;
-
-        set => SetFieldValue(ref flagStatus, value);
+        get => _flagStatus;
+        set => SetFieldValue(ref _flagStatus, value);
     }
 
     /// <summary>
@@ -110,9 +122,8 @@ public sealed class Flag : ComplexProperty
     /// </summary>
     public DateTime StartDate
     {
-        get => startDate;
-
-        set => SetFieldValue(ref startDate, value);
+        get => _startDate;
+        set => SetFieldValue(ref _startDate, value);
     }
 
     /// <summary>
@@ -120,9 +131,8 @@ public sealed class Flag : ComplexProperty
     /// </summary>
     public DateTime DueDate
     {
-        get => dueDate;
-
-        set => SetFieldValue(ref dueDate, value);
+        get => _dueDate;
+        set => SetFieldValue(ref _dueDate, value);
     }
 
     /// <summary>
@@ -130,8 +140,7 @@ public sealed class Flag : ComplexProperty
     /// </summary>
     public DateTime CompleteDate
     {
-        get => completeDate;
-
-        set => SetFieldValue(ref completeDate, value);
+        get => _completeDate;
+        set => SetFieldValue(ref _completeDate, value);
     }
 }

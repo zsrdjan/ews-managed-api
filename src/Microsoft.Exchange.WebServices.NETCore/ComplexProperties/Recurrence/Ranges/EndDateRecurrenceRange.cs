@@ -30,7 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class EndDateRecurrenceRange : RecurrenceRange
 {
-    private DateTime endDate;
+    private DateTime _endDate;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EndDateRecurrenceRange" /> class.
@@ -47,7 +47,7 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
     public EndDateRecurrenceRange(DateTime startDate, DateTime endDate)
         : base(startDate)
     {
-        this.endDate = endDate;
+        _endDate = endDate;
     }
 
     /// <summary>
@@ -93,10 +93,14 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
         switch (reader.LocalName)
         {
             case XmlElementNames.EndDate:
-                endDate = reader.ReadElementValueAsDateTime().Value;
+            {
+                _endDate = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -106,7 +110,7 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
     /// <value>The end date.</value>
     public DateTime EndDate
     {
-        get => endDate;
-        set => SetFieldValue(ref endDate, value);
+        get => _endDate;
+        set => SetFieldValue(ref _endDate, value);
     }
 }

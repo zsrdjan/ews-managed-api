@@ -23,23 +23,27 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an array of byte arrays
 /// </summary>
+[PublicAPI]
 public sealed class ByteArrayArray : ComplexProperty
 {
     private const string ItemXmlElementName = "Base64Binary";
-    private readonly List<byte[]> content = new List<byte[]>();
+
+    private readonly List<byte[]> _content = new();
 
 
     #region Properties
 
     /// <summary>
-    ///     Gets the content of the arrray of byte arrays
+    ///     Gets the content of the array of byte arrays
     /// </summary>
-    public byte[][] Content => content.ToArray();
+    public byte[][] Content => _content.ToArray();
 
     #endregion
 
@@ -53,7 +57,7 @@ public sealed class ByteArrayArray : ComplexProperty
     {
         if (reader.LocalName == ItemXmlElementName)
         {
-            content.Add(reader.ReadBase64ElementValue());
+            _content.Add(reader.ReadBase64ElementValue());
             return true;
         }
 
@@ -66,7 +70,7 @@ public sealed class ByteArrayArray : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        foreach (var item in content)
+        foreach (var item in _content)
         {
             writer.WriteStartElement(XmlNamespace.Types, ItemXmlElementName);
             writer.WriteBase64ElementValue(item);

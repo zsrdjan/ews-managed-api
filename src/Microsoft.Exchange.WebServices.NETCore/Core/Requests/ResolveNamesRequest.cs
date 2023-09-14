@@ -30,26 +30,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveNamesResponse>
 {
-    private static readonly LazyMember<Dictionary<ResolveNameSearchLocation, string>> searchScopeMap =
-        new LazyMember<Dictionary<ResolveNameSearchLocation, string>>(
-            delegate
-            {
-                var map = new Dictionary<ResolveNameSearchLocation, string>();
-
-                map.Add(ResolveNameSearchLocation.DirectoryOnly, "ActiveDirectory");
-                map.Add(ResolveNameSearchLocation.DirectoryThenContacts, "ActiveDirectoryContacts");
-                map.Add(ResolveNameSearchLocation.ContactsOnly, "Contacts");
-                map.Add(ResolveNameSearchLocation.ContactsThenDirectory, "ContactsActiveDirectory");
-
-                return map;
-            }
-        );
-
-    private string nameToResolve;
-    private bool returnFullContactData;
-    private ResolveNameSearchLocation searchLocation;
-    private PropertySet contactDataPropertySet;
-    private readonly FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
+    private static readonly LazyMember<Dictionary<ResolveNameSearchLocation, string>> SearchScopeMap = new(
+        () => new Dictionary<ResolveNameSearchLocation, string>
+        {
+            // @formatter:off
+            { ResolveNameSearchLocation.DirectoryOnly, "ActiveDirectory" },
+            { ResolveNameSearchLocation.DirectoryThenContacts, "ActiveDirectoryContacts" },
+            { ResolveNameSearchLocation.ContactsOnly, "Contacts" },
+            { ResolveNameSearchLocation.ContactsThenDirectory, "ContactsActiveDirectory" },
+            // @formatter:on
+        }
+    );
 
     /// <summary>
     ///     Asserts the valid.
@@ -124,9 +115,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     {
         writer.WriteAttributeValue(XmlAttributeNames.ReturnFullContactData, ReturnFullContactData);
 
-        string searchScope = null;
-
-        searchScopeMap.Member.TryGetValue(SearchLocation, out searchScope);
+        SearchScopeMap.Member.TryGetValue(SearchLocation, out var searchScope);
 
         EwsUtilities.Assert(
             !string.IsNullOrEmpty(searchScope),
@@ -134,11 +123,11 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
             "The specified search location cannot be mapped to an EWS search scope."
         );
 
-        string propertySet = null;
-        if (contactDataPropertySet != null)
+        string? propertySet = null;
+        if (ContactDataPropertySet != null)
         {
             PropertySet.DefaultPropertySetMap.Member.TryGetValue(
-                contactDataPropertySet.BasePropertySet,
+                ContactDataPropertySet.BasePropertySet,
                 out propertySet
             );
         }
@@ -178,11 +167,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     ///     Gets or sets the name to resolve.
     /// </summary>
     /// <value>The name to resolve.</value>
-    public string NameToResolve
-    {
-        get => nameToResolve;
-        set => nameToResolve = value;
-    }
+    public string NameToResolve { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether to return full contact data or not.
@@ -190,35 +175,23 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     /// <value>
     ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
     /// </value>
-    public bool ReturnFullContactData
-    {
-        get => returnFullContactData;
-        set => returnFullContactData = value;
-    }
+    public bool ReturnFullContactData { get; set; }
 
     /// <summary>
     ///     Gets or sets the search location.
     /// </summary>
     /// <value>The search scope.</value>
-    public ResolveNameSearchLocation SearchLocation
-    {
-        get => searchLocation;
-        set => searchLocation = value;
-    }
+    public ResolveNameSearchLocation SearchLocation { get; set; }
 
     /// <summary>
     ///     Gets or sets the PropertySet for Contact Data
     /// </summary>
     /// <value>The PropertySet</value>
-    public PropertySet ContactDataPropertySet
-    {
-        get => contactDataPropertySet;
-        set => contactDataPropertySet = value;
-    }
+    public PropertySet? ContactDataPropertySet { get; set; }
 
     /// <summary>
     ///     Gets the parent folder ids.
     /// </summary>
     /// <value>The parent folder ids.</value>
-    public FolderIdWrapperList ParentFolderIds => parentFolderIds;
+    public FolderIdWrapperList ParentFolderIds { get; } = new();
 }

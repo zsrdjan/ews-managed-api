@@ -32,12 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TResponse>
     where TResponse : ServiceResponse
 {
-    private readonly FolderIdWrapperList parentFolderIds = new FolderIdWrapperList();
-    private SearchFilter searchFilter;
-    private string queryString;
-    private bool returnHighlightTerms;
-    private ViewBase view;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindRequest&lt;TResponse&gt;" /> class.
     /// </summary>
@@ -59,7 +53,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
 
         // query string parameter is only valid for Exchange2010 or higher
         //
-        if (!string.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2010)
+        if (!string.IsNullOrEmpty(QueryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2010)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -96,7 +90,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
             );
         }
 
-        if (!string.IsNullOrEmpty(queryString) && searchFilter != null)
+        if (!string.IsNullOrEmpty(QueryString) && SearchFilter != null)
         {
             throw new ServiceLocalException(Strings.BothSearchFilterAndQueryStringCannotBeSpecified);
         }
@@ -150,7 +144,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
 
         ParentFolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ParentFolderIds);
 
-        if (!string.IsNullOrEmpty(queryString))
+        if (!string.IsNullOrEmpty(QueryString))
         {
             // Emit the QueryString
             //
@@ -164,7 +158,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
                 );
             }
 
-            writer.WriteValue(queryString, XmlElementNames.QueryString);
+            writer.WriteValue(QueryString, XmlElementNames.QueryString);
             writer.WriteEndElement();
         }
     }
@@ -172,43 +166,27 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
     /// <summary>
     ///     Gets the parent folder ids.
     /// </summary>
-    public FolderIdWrapperList ParentFolderIds => parentFolderIds;
+    public FolderIdWrapperList ParentFolderIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets the search filter. Available search filter classes include SearchFilter.IsEqualTo,
     ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
     ///     is null, no search filters are applied.
     /// </summary>
-    public SearchFilter SearchFilter
-    {
-        get => searchFilter;
-        set => searchFilter = value;
-    }
+    public SearchFilter SearchFilter { get; set; }
 
     /// <summary>
     ///     Gets or sets the query string for indexed search.
     /// </summary>
-    public string QueryString
-    {
-        get => queryString;
-        set => queryString = value;
-    }
+    public string QueryString { get; set; }
 
     /// <summary>
     ///     Gets or sets the query string highlight terms.
     /// </summary>
-    internal bool ReturnHighlightTerms
-    {
-        get => returnHighlightTerms;
-        set => returnHighlightTerms = value;
-    }
+    internal bool ReturnHighlightTerms { get; set; }
 
     /// <summary>
     ///     Gets or sets the view controlling the number of items or folders returned.
     /// </summary>
-    public ViewBase View
-    {
-        get => view;
-        set => view = value;
-    }
+    public ViewBase View { get; set; }
 }

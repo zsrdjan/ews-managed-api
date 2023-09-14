@@ -23,20 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Encapsulates information on the changehighlights of a meeting request.
 /// </summary>
+[PublicAPI]
 public sealed class ChangeHighlights : ComplexProperty
 {
-    private bool hasLocationChanged;
-    private string location;
-    private bool hasStartTimeChanged;
-    private DateTime start;
-    private bool hasEndTimeChanged;
-    private DateTime end;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChangeHighlights" /> class.
     /// </summary>
@@ -54,55 +50,69 @@ public sealed class ChangeHighlights : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.HasLocationChanged:
-                hasLocationChanged = reader.ReadElementValue<bool>();
+            {
+                HasLocationChanged = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.Location:
-                location = reader.ReadElementValue();
+            {
+                Location = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.HasStartTimeChanged:
-                hasStartTimeChanged = reader.ReadElementValue<bool>();
+            {
+                HasStartTimeChanged = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.Start:
-                start = reader.ReadElementValueAsDateTime().Value;
+            {
+                Start = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             case XmlElementNames.HasEndTimeChanged:
-                hasEndTimeChanged = reader.ReadElementValue<bool>();
+            {
+                HasEndTimeChanged = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.End:
-                end = reader.ReadElementValueAsDateTime().Value;
+            {
+                End = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets a value indicating whether the location has changed.
     /// </summary>
-    public bool HasLocationChanged => hasLocationChanged;
+    public bool HasLocationChanged { get; private set; }
 
     /// <summary>
     ///     Gets the old location
     /// </summary>
-    public string Location => location;
+    public string Location { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the the start time has changed.
     /// </summary>
-    public bool HasStartTimeChanged => hasStartTimeChanged;
+    public bool HasStartTimeChanged { get; private set; }
 
     /// <summary>
     ///     Gets the old start date and time of the meeting.
     /// </summary>
-    public DateTime Start => start;
+    public DateTime Start { get; private set; }
 
     /// <summary>
     ///     Gets a value indicating whether the the end time has changed.
     /// </summary>
-    public bool HasEndTimeChanged => hasEndTimeChanged;
+    public bool HasEndTimeChanged { get; private set; }
 
     /// <summary>
     ///     Gets the old end date and time of the meeting.
     /// </summary>
-    public DateTime End => end;
+    public DateTime End { get; private set; }
 }

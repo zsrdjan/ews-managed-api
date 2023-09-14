@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an EmailUserEntity object.
 /// </summary>
+[PublicAPI]
 public sealed class EmailUserEntity : ComplexProperty
 {
     /// <summary>
@@ -58,15 +61,19 @@ public sealed class EmailUserEntity : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgName:
+            {
                 Name = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgUserId:
+            {
                 UserId = reader.ReadElementValue();
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

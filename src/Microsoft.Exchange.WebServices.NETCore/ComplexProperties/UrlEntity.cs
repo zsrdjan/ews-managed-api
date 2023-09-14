@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an UrlEntity object.
 /// </summary>
+[PublicAPI]
 public sealed class UrlEntity : ExtractedEntity
 {
     /// <summary>
@@ -52,11 +55,14 @@ public sealed class UrlEntity : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgUrl:
+            {
                 Url = reader.ReadElementValue();
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

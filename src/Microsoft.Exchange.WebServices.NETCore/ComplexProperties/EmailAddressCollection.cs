@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of e-mail addresses.
 /// </summary>
+[PublicAPI]
 public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddress>
 {
     /// <summary>
     ///     XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EmailAddressCollection" /> class.
@@ -53,7 +56,7 @@ public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddr
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal EmailAddressCollection(string collectionItemXmlElementName)
     {
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -134,7 +137,7 @@ public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddr
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -147,7 +150,7 @@ public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddr
     /// <returns>True if the email address was successfully removed from the collection, false otherwise.</returns>
     public bool Remove(EmailAddress emailAddress)
     {
-        EwsUtilities.ValidateParam(emailAddress, "emailAddress");
+        EwsUtilities.ValidateParam(emailAddress);
 
         return InternalRemove(emailAddress);
     }
@@ -159,7 +162,7 @@ public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddr
     /// <returns>An EmailAddress object.</returns>
     internal override EmailAddress CreateComplexProperty(string xmlElementName)
     {
-        if (xmlElementName == collectionItemXmlElementName)
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new EmailAddress();
         }
@@ -174,7 +177,7 @@ public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddr
     /// <returns>The XML element name corresponding to the provided EmailAddress object.</returns>
     internal override string GetCollectionItemXmlElementName(EmailAddress emailAddress)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

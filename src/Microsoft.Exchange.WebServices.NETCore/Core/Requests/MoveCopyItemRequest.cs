@@ -32,15 +32,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, TResponse>
     where TResponse : ServiceResponse
 {
-    private readonly ItemIdWrapperList itemIds = new ItemIdWrapperList();
-
     /// <summary>
     ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(ItemIds, "ItemIds");
+
+        EwsUtilities.ValidateParam(ItemIds);
     }
 
     /// <summary>
@@ -80,7 +79,7 @@ internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, T
     ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds => itemIds;
+    internal ItemIdWrapperList ItemIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets flag indicating whether we require that the service return new item ids.

@@ -26,11 +26,14 @@
 using System.ComponentModel;
 using System.Reflection;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an item's attachment collection.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>, IOwnedProperty
 {
@@ -39,7 +42,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <summary>
     ///     The item owner that owns this attachment collection
     /// </summary>
-    private Item owner;
+    private Item _owner;
 
     #endregion
 
@@ -65,7 +68,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// </summary>
     ServiceObject IOwnedProperty.Owner
     {
-        get => owner;
+        get => _owner;
 
         set
         {
@@ -77,7 +80,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
                 "value is not a descendant of ItemBase"
             );
 
-            owner = item;
+            _owner = item;
         }
     }
 
@@ -106,9 +109,11 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <returns>A FileAttachment instance.</returns>
     public FileAttachment AddFileAttachment(string name, string fileName)
     {
-        var fileAttachment = new FileAttachment(owner);
-        fileAttachment.Name = name;
-        fileAttachment.FileName = fileName;
+        var fileAttachment = new FileAttachment(_owner)
+        {
+            Name = name,
+            FileName = fileName,
+        };
 
         InternalAdd(fileAttachment);
 
@@ -123,9 +128,11 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <returns>A FileAttachment instance.</returns>
     public FileAttachment AddFileAttachment(string name, Stream contentStream)
     {
-        var fileAttachment = new FileAttachment(owner);
-        fileAttachment.Name = name;
-        fileAttachment.ContentStream = contentStream;
+        var fileAttachment = new FileAttachment(_owner)
+        {
+            Name = name,
+            ContentStream = contentStream,
+        };
 
         InternalAdd(fileAttachment);
 
@@ -140,9 +147,11 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <returns>A FileAttachment instance.</returns>
     public FileAttachment AddFileAttachment(string name, byte[] content)
     {
-        var fileAttachment = new FileAttachment(owner);
-        fileAttachment.Name = name;
-        fileAttachment.Content = content;
+        var fileAttachment = new FileAttachment(_owner)
+        {
+            Name = name,
+            Content = content,
+        };
 
         InternalAdd(fileAttachment);
 
@@ -157,10 +166,11 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <returns>A ReferenceAttachment instance</returns>
     public ReferenceAttachment AddReferenceAttachment(string name, string attachLongPathName)
     {
-        var referenceAttachment = new ReferenceAttachment(owner);
-
-        referenceAttachment.Name = name;
-        referenceAttachment.AttachLongPathName = attachLongPathName;
+        var referenceAttachment = new ReferenceAttachment(_owner)
+        {
+            Name = name,
+            AttachLongPathName = attachLongPathName,
+        };
 
         InternalAdd(referenceAttachment);
 
@@ -178,11 +188,11 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
         if (typeof(TItem).GetTypeInfo().GetCustomAttributes(typeof(AttachableAttribute), false).ToArray().Length == 0)
         {
             throw new InvalidOperationException(
-                string.Format("Items of type {0} are not supported as attachments.", typeof(TItem).Name)
+                $"Items of type {typeof(TItem).Name} are not supported as attachments."
             );
         }
 
-        var itemAttachment = new ItemAttachment<TItem>(owner);
+        var itemAttachment = new ItemAttachment<TItem>(_owner);
         itemAttachment.Item = (TItem)EwsUtilities.CreateItemFromItemClass(itemAttachment, typeof(TItem), true);
 
         InternalAdd(itemAttachment);
@@ -206,7 +216,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -219,7 +229,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <returns>True if the attachment was successfully removed from the collection, false otherwise.</returns>
     public bool Remove(Attachment attachment)
     {
-        EwsUtilities.ValidateParam(attachment, "attachment");
+        EwsUtilities.ValidateParam(attachment);
 
         return InternalRemove(attachment);
     }
@@ -229,19 +239,15 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to determine the type of attachment to create.</param>
     /// <returns>An Attachment instance.</returns>
-    internal override Attachment CreateComplexProperty(string xmlElementName)
+    internal override Attachment? CreateComplexProperty(string xmlElementName)
     {
-        switch (xmlElementName)
+        return xmlElementName switch
         {
-            case XmlElementNames.FileAttachment:
-                return new FileAttachment(owner);
-            case XmlElementNames.ItemAttachment:
-                return new ItemAttachment(owner);
-            case XmlElementNames.ReferenceAttachment:
-                return new ReferenceAttachment(owner);
-            default:
-                return null;
-        }
+            XmlElementNames.FileAttachment => new FileAttachment(_owner),
+            XmlElementNames.ItemAttachment => new ItemAttachment(_owner),
+            XmlElementNames.ReferenceAttachment => new ReferenceAttachment(_owner),
+            _ => null,
+        };
     }
 
     /// <summary>
@@ -251,17 +257,12 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// <returns>The XML element name associated with the complexProperty parameter.</returns>
     internal override string GetCollectionItemXmlElementName(Attachment complexProperty)
     {
-        if (complexProperty is FileAttachment)
+        return complexProperty switch
         {
-            return XmlElementNames.FileAttachment;
-        }
-
-        if (complexProperty is ReferenceAttachment)
-        {
-            return XmlElementNames.ReferenceAttachment;
-        }
-
-        return XmlElementNames.ItemAttachment;
+            FileAttachment => XmlElementNames.FileAttachment,
+            ReferenceAttachment => XmlElementNames.ReferenceAttachment,
+            _ => XmlElementNames.ItemAttachment,
+        };
     }
 
     /// <summary>
@@ -300,27 +301,26 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
         // If there are any, create them by calling the CreateAttachment web method.
         if (attachments.Count > 0)
         {
-            if (owner.IsAttachment)
+            if (_owner.IsAttachment)
             {
-                await InternalCreateAttachments(owner.ParentAttachment.Id, attachments, token);
+                await InternalCreateAttachments(_owner.ParentAttachment.Id, attachments, token);
             }
             else
             {
-                await InternalCreateAttachments(owner.Id.UniqueId, attachments, token);
+                await InternalCreateAttachments(_owner.Id.UniqueId, attachments, token);
             }
         }
 
         // Process all of the item attachments in this collection.
         foreach (var attachment in this)
         {
-            var itemAttachment = attachment as ItemAttachment;
-            if (itemAttachment != null)
+            if (attachment is ItemAttachment itemAttachment)
             {
                 // Make sure item was created/loaded before trying to create/delete sub-attachments
                 if (itemAttachment.Item != null)
                 {
                     // Create/delete any sub-attachments
-                    await itemAttachment.Item.Attachments.Save();
+                    await itemAttachment.Item.Attachments.Save(token);
 
                     // Clear the item's change log
                     itemAttachment.Item.ClearChangeLog();
@@ -401,11 +401,9 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
                 // 
                 // The IsNew check is to still let CreateAttachmentRequest allow multiple IsContactPhoto attachments.
                 // 
-                if (owner.IsNew && owner.Service.RequestedServerVersion >= ExchangeVersion.Exchange2010_SP2)
+                if (_owner.IsNew && _owner.Service.RequestedServerVersion >= ExchangeVersion.Exchange2010_SP2)
                 {
-                    var fileAttachment = attachment as FileAttachment;
-
-                    if (fileAttachment != null && fileAttachment.IsContactPhoto)
+                    if (attachment is FileAttachment fileAttachment && fileAttachment.IsContactPhoto)
                     {
                         if (contactPhotoFound)
                         {
@@ -425,12 +423,13 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     ///     Calls the DeleteAttachment web method to delete a list of attachments.
     /// </summary>
     /// <param name="attachments">The attachments to delete.</param>
+    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalDeleteAttachments(
         IEnumerable<Attachment> attachments,
         CancellationToken token
     )
     {
-        var responses = await owner.Service.DeleteAttachments(attachments, token);
+        var responses = await _owner.Service.DeleteAttachments(attachments, token);
 
         foreach (var response in responses)
         {
@@ -454,13 +453,14 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// </summary>
     /// <param name="parentItemId">The Id of the parent item of the new attachments.</param>
     /// <param name="attachments">The attachments to create.</param>
+    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalCreateAttachments(
         string parentItemId,
         IEnumerable<Attachment> attachments,
         CancellationToken token
     )
     {
-        var responses = await owner.Service.CreateAttachments(parentItemId, attachments, token);
+        var responses = await _owner.Service.CreateAttachments(parentItemId, attachments, token);
 
         foreach (var response in responses)
         {

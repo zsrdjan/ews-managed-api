@@ -30,11 +30,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class TimeChange : ComplexProperty
 {
-    private string timeZoneName;
-    private TimeSpan? offset;
-    private Time time;
-    private DateTime? absoluteDate;
-    private TimeChangeRecurrence recurrence;
+    private string _timeZoneName;
+    private TimeSpan? _offset;
+    private Time? _time;
+    private DateTime? _absoluteDate;
+    private TimeChangeRecurrence? _recurrence;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TimeChange" /> class.
@@ -50,7 +50,7 @@ internal sealed class TimeChange : ComplexProperty
     public TimeChange(TimeSpan offset)
         : this()
     {
-        this.offset = offset;
+        _offset = offset;
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ internal sealed class TimeChange : ComplexProperty
     public TimeChange(TimeSpan offset, Time time)
         : this(offset)
     {
-        this.time = time;
+        _time = time;
     }
 
     /// <summary>
@@ -69,8 +69,8 @@ internal sealed class TimeChange : ComplexProperty
     /// </summary>
     public string TimeZoneName
     {
-        get => timeZoneName;
-        set => SetFieldValue(ref timeZoneName, value);
+        get => _timeZoneName;
+        set => SetFieldValue(ref _timeZoneName, value);
     }
 
     /// <summary>
@@ -78,17 +78,17 @@ internal sealed class TimeChange : ComplexProperty
     /// </summary>
     public TimeSpan? Offset
     {
-        get => offset;
-        set => SetFieldValue(ref offset, value);
+        get => _offset;
+        set => SetFieldValue(ref _offset, value);
     }
 
     /// <summary>
     ///     Gets or sets the time at which the change occurs.
     /// </summary>
-    public Time Time
+    public Time? Time
     {
-        get => time;
-        set => SetFieldValue(ref time, value);
+        get => _time;
+        set => SetFieldValue(ref _time, value);
     }
 
     /// <summary>
@@ -97,15 +97,15 @@ internal sealed class TimeChange : ComplexProperty
     /// </summary>
     public DateTime? AbsoluteDate
     {
-        get => absoluteDate;
+        get => _absoluteDate;
 
         set
         {
-            SetFieldValue(ref absoluteDate, value);
+            SetFieldValue(ref _absoluteDate, value);
 
-            if (absoluteDate.HasValue)
+            if (_absoluteDate.HasValue)
             {
-                recurrence = null;
+                _recurrence = null;
             }
         }
     }
@@ -114,17 +114,17 @@ internal sealed class TimeChange : ComplexProperty
     ///     Gets or sets the recurrence pattern defining when the change occurs. Recurrence and AbsoluteDate are mutually
     ///     exclusive; setting one resets the other.
     /// </summary>
-    public TimeChangeRecurrence Recurrence
+    public TimeChangeRecurrence? Recurrence
     {
-        get => recurrence;
+        get => _recurrence;
 
         set
         {
-            SetFieldValue(ref recurrence, value);
+            SetFieldValue(ref _recurrence, value);
 
-            if (recurrence != null)
+            if (_recurrence != null)
             {
-                absoluteDate = null;
+                _absoluteDate = null;
             }
         }
     }
@@ -139,23 +139,33 @@ internal sealed class TimeChange : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Offset:
-                offset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
+            {
+                _offset = EwsUtilities.XsDurationToTimeSpan(reader.ReadElementValue());
                 return true;
+            }
             case XmlElementNames.RelativeYearlyRecurrence:
+            {
                 Recurrence = new TimeChangeRecurrence();
                 Recurrence.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.AbsoluteDate:
+            {
                 var dateTime = DateTime.Parse(reader.ReadElementValue());
 
                 // TODO: BUG
-                absoluteDate = new DateTime(dateTime.ToUniversalTime().Ticks, DateTimeKind.Unspecified);
+                _absoluteDate = new DateTime(dateTime.ToUniversalTime().Ticks, DateTimeKind.Unspecified);
                 return true;
+            }
             case XmlElementNames.Time:
-                time = new Time(DateTime.Parse(reader.ReadElementValue()));
+            {
+                _time = new Time(DateTime.Parse(reader.ReadElementValue()));
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -165,7 +175,7 @@ internal sealed class TimeChange : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        timeZoneName = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
+        _timeZoneName = reader.ReadAttributeValue(XmlAttributeNames.TimeZoneName);
     }
 
     /// <summary>

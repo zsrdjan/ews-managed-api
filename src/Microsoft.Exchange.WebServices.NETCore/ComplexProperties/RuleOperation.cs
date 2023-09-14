@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an operation to be performed on a rule.
 /// </summary>
+[PublicAPI]
 public abstract class RuleOperation : ComplexProperty
 {
     /// <summary>

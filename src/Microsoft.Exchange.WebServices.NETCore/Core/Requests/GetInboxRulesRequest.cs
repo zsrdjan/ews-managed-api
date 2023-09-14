@@ -31,11 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     The smtp address of the mailbox from which to get the inbox rules.
-    /// </summary>
-    private string mailboxSmtpAddress;
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="GetInboxRulesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -47,11 +42,7 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the address of the mailbox from which to get the inbox rules.
     /// </summary>
-    internal string MailboxSmtpAddress
-    {
-        get => mailboxSmtpAddress;
-        set => mailboxSmtpAddress = value;
-    }
+    internal string MailboxSmtpAddress { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.
@@ -68,9 +59,9 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (!string.IsNullOrEmpty(mailboxSmtpAddress))
+        if (!string.IsNullOrEmpty(MailboxSmtpAddress))
         {
-            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxSmtpAddress, mailboxSmtpAddress);
+            writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxSmtpAddress, MailboxSmtpAddress);
         }
     }
 

@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of a user.
 /// </summary>
+[PublicAPI]
 public sealed class UserId : ComplexProperty
 {
-    private string sID;
-    private string primarySmtpAddress;
-    private string displayName;
-    private StandardUser? standardUser;
+    private string _sId;
+    private string _primarySmtpAddress;
+    private string _displayName;
+    private StandardUser? _standardUser;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UserId" /> class.
@@ -49,7 +52,7 @@ public sealed class UserId : ComplexProperty
     public UserId(string primarySmtpAddress)
         : this()
     {
-        this.primarySmtpAddress = primarySmtpAddress;
+        _primarySmtpAddress = primarySmtpAddress;
     }
 
     /// <summary>
@@ -59,7 +62,7 @@ public sealed class UserId : ComplexProperty
     public UserId(StandardUser standardUser)
         : this()
     {
-        this.standardUser = standardUser;
+        _standardUser = standardUser;
     }
 
     /// <summary>
@@ -76,8 +79,8 @@ public sealed class UserId : ComplexProperty
     /// </summary>
     public string SID
     {
-        get => sID;
-        set => SetFieldValue(ref sID, value);
+        get => _sId;
+        set => SetFieldValue(ref _sId, value);
     }
 
     /// <summary>
@@ -85,8 +88,8 @@ public sealed class UserId : ComplexProperty
     /// </summary>
     public string PrimarySmtpAddress
     {
-        get => primarySmtpAddress;
-        set => SetFieldValue(ref primarySmtpAddress, value);
+        get => _primarySmtpAddress;
+        set => SetFieldValue(ref _primarySmtpAddress, value);
     }
 
     /// <summary>
@@ -94,8 +97,8 @@ public sealed class UserId : ComplexProperty
     /// </summary>
     public string DisplayName
     {
-        get => displayName;
-        set => SetFieldValue(ref displayName, value);
+        get => _displayName;
+        set => SetFieldValue(ref _displayName, value);
     }
 
     /// <summary>
@@ -103,8 +106,8 @@ public sealed class UserId : ComplexProperty
     /// </summary>
     public StandardUser? StandardUser
     {
-        get => standardUser;
-        set => SetFieldValue(ref standardUser, value);
+        get => _standardUser;
+        set => SetFieldValue(ref _standardUser, value);
     }
 
     /// <summary>
@@ -137,19 +140,29 @@ public sealed class UserId : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.SID:
-                sID = reader.ReadValue();
+            {
+                _sId = reader.ReadValue();
                 return true;
+            }
             case XmlElementNames.PrimarySmtpAddress:
-                primarySmtpAddress = reader.ReadValue();
+            {
+                _primarySmtpAddress = reader.ReadValue();
                 return true;
+            }
             case XmlElementNames.DisplayName:
-                displayName = reader.ReadValue();
+            {
+                _displayName = reader.ReadValue();
                 return true;
+            }
             case XmlElementNames.DistinguishedUser:
-                standardUser = reader.ReadValue<StandardUser>();
+            {
+                _standardUser = reader.ReadValue<StandardUser>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

@@ -25,11 +25,14 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the PersonInsight.
 /// </summary>
+[PublicAPI]
 public sealed class PersonInsight : ComplexProperty
 {
     /// <summary>
@@ -72,33 +75,49 @@ public sealed class PersonInsight : ComplexProperty
             switch (reader.LocalName)
             {
                 case XmlElementNames.InsightType:
+                {
                     InsightType = reader.ReadElementValue<string>();
                     break;
+                }
                 case XmlElementNames.Rank:
+                {
                     Rank = reader.ReadElementValue<double>();
                     break;
+                }
                 case XmlElementNames.Content:
+                {
                     var type = reader.ReadAttributeValue("xsi:type");
                     switch (type)
                     {
                         case XmlElementNames.SingleValueInsightContent:
+                        {
                             Content = new SingleValueInsightContent();
                             ((SingleValueInsightContent)Content).LoadFromXml(reader, reader.LocalName);
                             break;
+                        }
                         case XmlElementNames.MultiValueInsightContent:
+                        {
                             Content = new MultiValueInsightContent();
                             ((MultiValueInsightContent)Content).LoadFromXml(reader, reader.LocalName);
                             break;
+                        }
                         default:
+                        {
                             return false;
+                        }
                     }
 
                     break;
+                }
                 case XmlElementNames.ItemList:
+                {
                     ReadItemList(reader);
                     break;
+                }
                 default:
+                {
                     return false;
+                }
             }
 
             return true;
@@ -114,72 +133,95 @@ public sealed class PersonInsight : ComplexProperty
         do
         {
             reader.Read();
-            InsightValue item = null;
 
             if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.Item)
             {
                 switch (reader.ReadAttributeValue("xsi:type"))
                 {
                     case XmlElementNames.StringInsightValue:
-                        item = new StringInsightValue();
+                    {
+                        var item = new StringInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.ProfileInsightValue:
-                        item = new ProfileInsightValue();
+                    {
+                        var item = new ProfileInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.JobInsightValue:
-                        item = new JobInsightValue();
+                    {
+                        var item = new JobInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.UserProfilePicture:
-                        item = new UserProfilePicture();
+                    {
+                        var item = new UserProfilePicture();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.EducationInsightValue:
-                        item = new EducationInsightValue();
+                    {
+                        var item = new EducationInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.SkillInsightValue:
-                        item = new SkillInsightValue();
+                    {
+                        var item = new SkillInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.ComputedInsightValue:
-                        item = new ComputedInsightValue();
+                    {
+                        var item = new ComputedInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.MeetingInsightValue:
-                        item = new MeetingInsightValue();
+                    {
+                        var item = new MeetingInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.EmailInsightValue:
-                        item = new EmailInsightValue();
+                    {
+                        var item = new EmailInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.DelveDocument:
-                        item = new DelveDocument();
+                    {
+                        var item = new DelveDocument();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.CompanyInsightValue:
-                        item = new CompanyInsightValue();
+                    {
+                        var item = new CompanyInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                     case XmlElementNames.OutOfOfficeInsightValue:
-                        item = new OutOfOfficeInsightValue();
+                    {
+                        var item = new OutOfOfficeInsightValue();
                         item.LoadFromXml(reader, reader.LocalName);
                         ItemList.InternalAdd(item);
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.ItemList));

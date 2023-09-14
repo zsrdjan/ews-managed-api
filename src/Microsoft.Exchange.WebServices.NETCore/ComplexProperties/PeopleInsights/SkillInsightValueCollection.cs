@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the collection of person insights.
 /// </summary>
+[PublicAPI]
 public sealed class SkillInsightValueCollection : ComplexPropertyCollection<SkillInsightValue>
 {
     /// <summary>
     ///     XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="SkillInsightValueCollection" /> class.
@@ -49,7 +52,7 @@ public sealed class SkillInsightValueCollection : ComplexPropertyCollection<Skil
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal SkillInsightValueCollection(string collectionItemXmlElementName)
     {
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -59,7 +62,7 @@ public sealed class SkillInsightValueCollection : ComplexPropertyCollection<Skil
     /// <returns>A SkillInsightValue object.</returns>
     internal override SkillInsightValue CreateComplexProperty(string xmlElementName)
     {
-        if (xmlElementName == collectionItemXmlElementName)
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new SkillInsightValue();
         }
@@ -74,7 +77,7 @@ public sealed class SkillInsightValueCollection : ComplexPropertyCollection<Skil
     /// <returns>The XML element name corresponding to the provided SkillInsightValue object.</returns>
     internal override string GetCollectionItemXmlElementName(SkillInsightValue insight)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

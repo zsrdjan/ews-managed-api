@@ -23,23 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the StringInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class StringInsightValue : InsightValue
 {
-    private string data;
+    private string _data;
 
     /// <summary>
     ///     Gets the Data
     /// </summary>
     public string Data
     {
-        get => data;
-
-        set => SetFieldValue(ref data, value);
+        get => _data;
+        set => SetFieldValue(ref _data, value);
     }
 
     /// <summary>
@@ -52,16 +54,24 @@ public sealed class StringInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Data:
+            {
                 Data = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

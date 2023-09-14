@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,16 +34,14 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents a user setting that is a collection of Exchange web client URLs.
 /// </summary>
+[PublicAPI]
 public sealed class WebClientUrlCollection
 {
-    private readonly List<WebClientUrl> urls;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="WebClientUrlCollection" /> class.
     /// </summary>
     internal WebClientUrlCollection()
     {
-        urls = new List<WebClientUrl>();
     }
 
     /// <summary>
@@ -68,5 +68,5 @@ public sealed class WebClientUrlCollection
     /// <summary>
     ///     Gets the URLs.
     /// </summary>
-    public List<WebClientUrl> Urls => urls;
+    public List<WebClientUrl> Urls { get; } = new();
 }

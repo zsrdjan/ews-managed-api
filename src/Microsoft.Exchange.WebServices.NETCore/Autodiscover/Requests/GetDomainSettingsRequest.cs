@@ -38,9 +38,7 @@ internal class GetDomainSettingsRequest : AutodiscoverRequest
     private const string GetDomainSettingsActionUri =
         EwsUtilities.AutodiscoverSoapNamespace + "/Autodiscover/GetDomainSettings";
 
-    private List<string> domains;
-    private List<DomainSettingName> settings;
-    private ExchangeVersion? requestedVersion;
+    private ExchangeVersion? _requestedVersion;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetDomainSettingsRequest" /> class.
@@ -67,12 +65,12 @@ internal class GetDomainSettingsRequest : AutodiscoverRequest
             throw new ServiceValidationException(Strings.InvalidAutodiscoverSettingsCount);
         }
 
-        if (domains.Count == 0)
+        if (Domains.Count == 0)
         {
             throw new ServiceValidationException(Strings.InvalidAutodiscoverDomainsCount);
         }
 
-        foreach (var domain in domains)
+        foreach (var domain in Domains)
         {
             if (string.IsNullOrEmpty(domain))
             {
@@ -179,19 +177,19 @@ internal class GetDomainSettingsRequest : AutodiscoverRequest
         writer.WriteEndElement(); // Domains
 
         writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.RequestedSettings);
-        foreach (var setting in settings)
+        foreach (var setting in Settings)
         {
             writer.WriteElementValue(XmlNamespace.Autodiscover, XmlElementNames.Setting, setting);
         }
 
         writer.WriteEndElement(); // RequestedSettings
 
-        if (requestedVersion.HasValue)
+        if (_requestedVersion.HasValue)
         {
             writer.WriteElementValue(
                 XmlNamespace.Autodiscover,
                 XmlElementNames.RequestedVersion,
-                requestedVersion.Value
+                _requestedVersion.Value
             );
         }
 
@@ -201,27 +199,19 @@ internal class GetDomainSettingsRequest : AutodiscoverRequest
     /// <summary>
     ///     Gets or sets the domains.
     /// </summary>
-    internal List<string> Domains
-    {
-        get => domains;
-        set => domains = value;
-    }
+    internal List<string> Domains { get; set; }
 
     /// <summary>
     ///     Gets or sets the settings.
     /// </summary>
-    internal List<DomainSettingName> Settings
-    {
-        get => settings;
-        set => settings = value;
-    }
+    internal List<DomainSettingName> Settings { get; set; }
 
     /// <summary>
     ///     Gets or sets the RequestedVersion.
     /// </summary>
     internal ExchangeVersion? RequestedVersion
     {
-        get => requestedVersion;
-        set => requestedVersion = value;
+        get => _requestedVersion;
+        set => _requestedVersion = value;
     }
 }

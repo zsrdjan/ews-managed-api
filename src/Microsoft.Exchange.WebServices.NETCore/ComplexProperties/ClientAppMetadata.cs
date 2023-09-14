@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a ClientAppMetadata object.
 /// </summary>
+[PublicAPI]
 public sealed class ClientAppMetadata : ComplexProperty
 {
     /// <summary>
@@ -63,16 +66,24 @@ public sealed class ClientAppMetadata : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.EndNodeUrl:
+            {
                 EndNodeUrl = reader.ReadElementValue<string>();
                 return true;
+            }
             case XmlElementNames.ActionUrl:
+            {
                 ActionUrl = reader.ReadElementValue<string>();
                 return true;
+            }
             case XmlElementNames.AppStatus:
+            {
                 AppStatus = reader.ReadElementValue<string>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 }

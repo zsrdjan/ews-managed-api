@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Encapsulates information on the occurrence of a recurring appointment.
 /// </summary>
+[PublicAPI]
 public sealed class OccurrenceInfo : ComplexProperty
 {
-    private ItemId itemId;
-    private DateTime start;
-    private DateTime end;
-    private DateTime originalStart;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="OccurrenceInfo" /> class.
     /// </summary>
@@ -52,40 +50,50 @@ public sealed class OccurrenceInfo : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ItemId:
-                itemId = new ItemId();
-                itemId.LoadFromXml(reader, reader.LocalName);
+            {
+                ItemId = new ItemId();
+                ItemId.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.Start:
-                start = reader.ReadElementValueAsDateTime().Value;
+            {
+                Start = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             case XmlElementNames.End:
-                end = reader.ReadElementValueAsDateTime().Value;
+            {
+                End = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             case XmlElementNames.OriginalStart:
-                originalStart = reader.ReadElementValueAsDateTime().Value;
+            {
+                OriginalStart = reader.ReadElementValueAsDateTime().Value;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the Id of the occurrence.
     /// </summary>
-    public ItemId ItemId => itemId;
+    public ItemId ItemId { get; private set; }
 
     /// <summary>
     ///     Gets the start date and time of the occurrence.
     /// </summary>
-    public DateTime Start => start;
+    public DateTime Start { get; private set; }
 
     /// <summary>
     ///     Gets the end date and time of the occurrence.
     /// </summary>
-    public DateTime End => end;
+    public DateTime End { get; private set; }
 
     /// <summary>
     ///     Gets the original start date and time of the occurrence.
     /// </summary>
-    public DateTime OriginalStart => originalStart;
+    public DateTime OriginalStart { get; private set; }
 }

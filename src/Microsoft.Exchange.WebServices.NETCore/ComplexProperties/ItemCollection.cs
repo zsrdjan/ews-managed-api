@@ -26,17 +26,20 @@
 using System.ComponentModel;
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of items.
 /// </summary>
 /// <typeparam name="TItem">The type of item the collection contains.</typeparam>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     where TItem : Item
 {
-    private readonly List<TItem> items = new List<TItem>();
+    private readonly List<TItem> _items = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ItemCollection&lt;TItem&gt;" /> class.
@@ -61,10 +64,8 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
 
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    var item =
-                        EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(reader.Service, reader.LocalName) as TItem;
-
-                    if (item == null)
+                    if (EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(reader.Service, reader.LocalName) is not
+                        TItem item)
                     {
                         reader.SkipCurrentElement();
                     }
@@ -72,7 +73,7 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
                     {
                         item.LoadFromXml(reader, true /* clearPropertyBag */);
 
-                        items.Add(item);
+                        _items.Add(item);
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, localElementName));
@@ -82,7 +83,7 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     /// <summary>
     ///     Gets the total number of items in the collection.
     /// </summary>
-    public int Count => items.Count;
+    public int Count => _items.Count;
 
     /// <summary>
     ///     Gets the item at the specified index.
@@ -95,10 +96,10 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            return items[index];
+            return _items[index];
         }
     }
 
@@ -111,7 +112,7 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TItem> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion
@@ -125,7 +126,7 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the collection of InsightValue.
 /// </summary>
+[PublicAPI]
 public class InsightValueCollection : ComplexPropertyCollection<InsightValue>
 {
     /// <summary>
@@ -41,7 +44,7 @@ public class InsightValueCollection : ComplexPropertyCollection<InsightValue>
     ///     Initializes a new instance of the <see cref="InsightValueCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal InsightValueCollection(IEnumerable<InsightValue> collection)
+    internal InsightValueCollection(IEnumerable<InsightValue>? collection)
     {
         if (collection != null)
         {

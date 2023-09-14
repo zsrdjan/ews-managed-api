@@ -35,8 +35,6 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal abstract class ConfigurationSettingsBase
 {
-    private AutodiscoverError error;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConfigurationSettingsBase" /> class.
     /// </summary>
@@ -53,7 +51,7 @@ internal abstract class ConfigurationSettingsBase
     {
         if (reader.LocalName == XmlElementNames.Error)
         {
-            error = AutodiscoverError.Parse(reader);
+            Error = AutodiscoverError.Parse(reader);
 
             return true;
         }
@@ -125,5 +123,5 @@ internal abstract class ConfigurationSettingsBase
     ///     Gets the error.
     /// </summary>
     /// <value>The error.</value>
-    internal AutodiscoverError Error => error;
+    internal AutodiscoverError Error { get; private set; }
 }

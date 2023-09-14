@@ -68,8 +68,8 @@ internal sealed class GetAppMarketplaceUrlRequest : SimpleServiceRequestBase
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(ApiVersionSupported, "ApiVersionSupported");
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(SchemaVersionSupported, "SchemaVersionSupported");
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(ApiVersionSupported);
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(SchemaVersionSupported);
     }
 
     /// <summary>

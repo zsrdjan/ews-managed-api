@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,11 +34,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents the URL of the Exchange web client.
 /// </summary>
+[PublicAPI]
 public sealed class WebClientUrl
 {
-    private string authenticationMethods;
-    private string url;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="WebClientUrl" /> class.
     /// </summary>
@@ -51,8 +51,8 @@ public sealed class WebClientUrl
     /// <param name="url">The URL.</param>
     internal WebClientUrl(string authenticationMethods, string url)
     {
-        this.authenticationMethods = authenticationMethods;
-        this.url = url;
+        AuthenticationMethods = authenticationMethods;
+        Url = url;
     }
 
     /// <summary>
@@ -88,18 +88,10 @@ public sealed class WebClientUrl
     /// <summary>
     ///     Gets the authentication methods.
     /// </summary>
-    public string AuthenticationMethods
-    {
-        get => authenticationMethods;
-        internal set => authenticationMethods = value;
-    }
+    public string AuthenticationMethods { get; internal set; }
 
     /// <summary>
     ///     Gets the URL.
     /// </summary>
-    public string Url
-    {
-        get => url;
-        internal set => url = value;
-    }
+    public string Url { get; internal set; }
 }

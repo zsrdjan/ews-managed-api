@@ -30,13 +30,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Represents a group of time zone period transitions.
 /// </summary>
-internal class TimeZoneTransitionGroup : ComplexProperty
+internal sealed class TimeZoneTransitionGroup : ComplexProperty
 {
-    private readonly TimeZoneDefinition timeZoneDefinition;
-    private string id;
-    private readonly List<TimeZoneTransition> transitions = new List<TimeZoneTransition>();
-    private TimeZoneTransition transitionToStandard;
-    private TimeZoneTransition transitionToDaylight;
+    private readonly TimeZoneDefinition _timeZoneDefinition;
+    private TimeZoneTransition _transitionToStandard;
+    private TimeZoneTransition _transitionToDaylight;
 
     /// <summary>
     ///     Loads from XML.
@@ -62,7 +60,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        id = reader.ReadAttributeValue(XmlAttributeNames.Id);
+        Id = reader.ReadAttributeValue(XmlAttributeNames.Id);
     }
 
     /// <summary>
@@ -71,7 +69,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.Id, id);
+        writer.WriteAttributeValue(XmlAttributeNames.Id, Id);
     }
 
     /// <summary>
@@ -83,7 +81,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     {
         reader.EnsureCurrentNodeIsStartElement();
 
-        var transition = TimeZoneTransition.Create(timeZoneDefinition, reader.LocalName);
+        var transition = TimeZoneTransition.Create(_timeZoneDefinition, reader.LocalName);
 
         transition.LoadFromXml(reader);
 
@@ -93,7 +91,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
             "The transition's target period is null."
         );
 
-        transitions.Add(transition);
+        Transitions.Add(transition);
 
         return true;
     }
@@ -104,7 +102,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        foreach (var transition in transitions)
+        foreach (var transition in Transitions)
         {
             transition.WriteToXml(writer);
         }
@@ -115,56 +113,57 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// </summary>
     /// <param name="adjustmentRule">The adjustment rule to initialize from.</param>
     /// <param name="standardPeriod">A reference to the pre-created standard period.</param>
-    internal virtual void InitializeFromAdjustmentRule(AdjustmentRule adjustmentRule, TimeZonePeriod standardPeriod)
+    internal void InitializeFromAdjustmentRule(AdjustmentRule adjustmentRule, TimeZonePeriod standardPeriod)
     {
         if (adjustmentRule.DaylightDelta.TotalSeconds == 0)
         {
             // If the time zone info doesn't support Daylight Saving Time, we just need to
             // create one transition to one group with one transition to the standard period.
-            var standardPeriodToSet = new TimeZonePeriod();
-            standardPeriodToSet.Id = string.Format("{0}/{1}", standardPeriod.Id, adjustmentRule.DateStart.Year);
-            standardPeriodToSet.Name = standardPeriod.Name;
-            standardPeriodToSet.Bias = standardPeriod.Bias;
-            timeZoneDefinition.Periods.AddOrUpdate(standardPeriodToSet.Id, standardPeriodToSet);
+            var standardPeriodToSet = new TimeZonePeriod
+            {
+                Id = string.Format("{0}/{1}", standardPeriod.Id, adjustmentRule.DateStart.Year),
+                Name = standardPeriod.Name,
+                Bias = standardPeriod.Bias,
+            };
+            _timeZoneDefinition.Periods.AddOrUpdate(standardPeriodToSet.Id, standardPeriodToSet);
 
-            transitionToStandard = new TimeZoneTransition(timeZoneDefinition, standardPeriodToSet);
-            transitions.Add(transitionToStandard);
+            _transitionToStandard = new TimeZoneTransition(_timeZoneDefinition, standardPeriodToSet);
+            Transitions.Add(_transitionToStandard);
         }
         else
         {
-            var daylightPeriod = new TimeZonePeriod();
+            var daylightPeriod = new TimeZonePeriod
+            {
+                // Generate an Id of the form "Daylight/2008"
+                Id = string.Format("{0}/{1}", TimeZonePeriod.DaylightPeriodId, adjustmentRule.DateStart.Year),
+                Name = TimeZonePeriod.DaylightPeriodName,
+                Bias = standardPeriod.Bias - adjustmentRule.DaylightDelta,
+            };
 
-            // Generate an Id of the form "Daylight/2008"
-            daylightPeriod.Id = string.Format(
-                "{0}/{1}",
-                TimeZonePeriod.DaylightPeriodId,
-                adjustmentRule.DateStart.Year
-            );
-            daylightPeriod.Name = TimeZonePeriod.DaylightPeriodName;
-            daylightPeriod.Bias = standardPeriod.Bias - adjustmentRule.DaylightDelta;
+            _timeZoneDefinition.Periods.AddOrUpdate(daylightPeriod.Id, daylightPeriod);
 
-            timeZoneDefinition.Periods.AddOrUpdate(daylightPeriod.Id, daylightPeriod);
-
-            transitionToDaylight = TimeZoneTransition.CreateTimeZoneTransition(
-                timeZoneDefinition,
+            _transitionToDaylight = TimeZoneTransition.CreateTimeZoneTransition(
+                _timeZoneDefinition,
                 daylightPeriod,
                 adjustmentRule.DaylightTransitionStart
             );
 
-            var standardPeriodToSet = new TimeZonePeriod();
-            standardPeriodToSet.Id = string.Format("{0}/{1}", standardPeriod.Id, adjustmentRule.DateStart.Year);
-            standardPeriodToSet.Name = standardPeriod.Name;
-            standardPeriodToSet.Bias = standardPeriod.Bias;
-            timeZoneDefinition.Periods.AddOrUpdate(standardPeriodToSet.Id, standardPeriodToSet);
+            var standardPeriodToSet = new TimeZonePeriod
+            {
+                Id = string.Format("{0}/{1}", standardPeriod.Id, adjustmentRule.DateStart.Year),
+                Name = standardPeriod.Name,
+                Bias = standardPeriod.Bias,
+            };
+            _timeZoneDefinition.Periods.AddOrUpdate(standardPeriodToSet.Id, standardPeriodToSet);
 
-            transitionToStandard = TimeZoneTransition.CreateTimeZoneTransition(
-                timeZoneDefinition,
+            _transitionToStandard = TimeZoneTransition.CreateTimeZoneTransition(
+                _timeZoneDefinition,
                 standardPeriodToSet,
                 adjustmentRule.DaylightTransitionEnd
             );
 
-            transitions.Add(transitionToDaylight);
-            transitions.Add(transitionToStandard);
+            Transitions.Add(_transitionToDaylight);
+            Transitions.Add(_transitionToStandard);
         }
     }
 
@@ -174,21 +173,21 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     internal void Validate()
     {
         // There must be exactly one or two transitions in the group.
-        if (transitions.Count < 1 || transitions.Count > 2)
+        if (Transitions.Count < 1 || Transitions.Count > 2)
         {
             throw new ServiceLocalException(Strings.InvalidOrUnsupportedTimeZoneDefinition);
         }
 
         // If there is only one transition, it must be of type TimeZoneTransition
-        if (transitions.Count == 1 && !(transitions[0].GetType() == typeof(TimeZoneTransition)))
+        if (Transitions.Count == 1 && !(Transitions[0].GetType() == typeof(TimeZoneTransition)))
         {
             throw new ServiceLocalException(Strings.InvalidOrUnsupportedTimeZoneDefinition);
         }
 
         // If there are two transitions, none of them should be of type TimeZoneTransition
-        if (transitions.Count == 2)
+        if (Transitions.Count == 2)
         {
-            foreach (var transition in transitions)
+            foreach (var transition in Transitions)
             {
                 if (transition.GetType() == typeof(TimeZoneTransition))
                 {
@@ -198,7 +197,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
         }
 
         // All the transitions in the group must be to a period.
-        foreach (var transition in transitions)
+        foreach (var transition in Transitions)
         {
             if (transition.TargetPeriod == null)
             {
@@ -212,10 +211,6 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// </summary>
     internal class CustomTimeZoneCreateParams
     {
-        private TimeSpan baseOffsetToUtc;
-        private string standardDisplayName;
-        private string daylightDisplayName;
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="CustomTimeZoneCreateParams" /> class.
         /// </summary>
@@ -226,29 +221,17 @@ internal class TimeZoneTransitionGroup : ComplexProperty
         /// <summary>
         ///     Gets or sets the base offset to UTC.
         /// </summary>
-        internal TimeSpan BaseOffsetToUtc
-        {
-            get => baseOffsetToUtc;
-            set => baseOffsetToUtc = value;
-        }
+        internal TimeSpan BaseOffsetToUtc { get; set; }
 
         /// <summary>
         ///     Gets or sets the display name of the standard period.
         /// </summary>
-        internal string StandardDisplayName
-        {
-            get => standardDisplayName;
-            set => standardDisplayName = value;
-        }
+        internal string StandardDisplayName { get; set; }
 
         /// <summary>
         ///     Gets or sets the display name of the daylight period.
         /// </summary>
-        internal string DaylightDisplayName
-        {
-            get => daylightDisplayName;
-            set => daylightDisplayName = value;
-        }
+        internal string DaylightDisplayName { get; set; }
 
         /// <summary>
         ///     Gets a value indicating whether the custom time zone should have a daylight period.
@@ -256,14 +239,14 @@ internal class TimeZoneTransitionGroup : ComplexProperty
         /// <value>
         ///     <c>true</c> if the custom time zone should have a daylight period; otherwise, <c>false</c>.
         /// </value>
-        internal bool HasDaylightPeriod => !string.IsNullOrEmpty(daylightDisplayName);
+        internal bool HasDaylightPeriod => !string.IsNullOrEmpty(DaylightDisplayName);
     }
 
     /// <summary>
     ///     Gets a value indicating whether this group contains a transition to the Daylight period.
     /// </summary>
     /// <value><c>true</c> if this group contains a transition to daylight; otherwise, <c>false</c>.</value>
-    internal bool SupportsDaylight => transitions.Count == 2;
+    internal bool SupportsDaylight => Transitions.Count == 2;
 
     /// <summary>
     ///     Initializes the private members holding references to the transitions to the Daylight
@@ -271,23 +254,23 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// </summary>
     private void InitializeTransitions()
     {
-        if (transitionToStandard == null)
+        if (_transitionToStandard == null)
         {
-            foreach (var transition in transitions)
+            foreach (var transition in Transitions)
             {
-                if (transition.TargetPeriod.IsStandardPeriod || (transitions.Count == 1))
+                if (transition.TargetPeriod.IsStandardPeriod || (Transitions.Count == 1))
                 {
-                    transitionToStandard = transition;
+                    _transitionToStandard = transition;
                 }
                 else
                 {
-                    transitionToDaylight = transition;
+                    _transitionToDaylight = transition;
                 }
             }
         }
 
         // If we didn't find a Standard period, this is an invalid time zone group.
-        if (transitionToStandard == null)
+        if (_transitionToStandard == null)
         {
             throw new ServiceLocalException(Strings.InvalidOrUnsupportedTimeZoneDefinition);
         }
@@ -302,7 +285,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
         {
             InitializeTransitions();
 
-            return transitionToDaylight;
+            return _transitionToDaylight;
         }
     }
 
@@ -315,7 +298,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
         {
             InitializeTransitions();
 
-            return transitionToStandard;
+            return _transitionToStandard;
         }
     }
 
@@ -365,11 +348,11 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// <param name="startDate">The start date of the adjustment rule.</param>
     /// <param name="endDate">The end date of the adjustment rule.</param>
     /// <returns>An TimeZoneInfo.AdjustmentRule.</returns>
-    internal AdjustmentRule CreateAdjustmentRule(DateTime startDate, DateTime endDate)
+    internal AdjustmentRule? CreateAdjustmentRule(DateTime startDate, DateTime endDate)
     {
         // If there is only one transition, we can't create an adjustment rule. We have to assume
         // that the base offset to UTC is unchanged.
-        if (transitions.Count == 1)
+        if (Transitions.Count == 1)
         {
             return null;
         }
@@ -389,7 +372,7 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     /// <param name="timeZoneDefinition">The time zone definition.</param>
     internal TimeZoneTransitionGroup(TimeZoneDefinition timeZoneDefinition)
     {
-        this.timeZoneDefinition = timeZoneDefinition;
+        _timeZoneDefinition = timeZoneDefinition;
     }
 
     /// <summary>
@@ -400,20 +383,16 @@ internal class TimeZoneTransitionGroup : ComplexProperty
     internal TimeZoneTransitionGroup(TimeZoneDefinition timeZoneDefinition, string id)
         : this(timeZoneDefinition)
     {
-        this.id = id;
+        Id = id;
     }
 
     /// <summary>
     ///     Gets or sets the id of this group.
     /// </summary>
-    internal string Id
-    {
-        get => id;
-        set => id = value;
-    }
+    internal string Id { get; set; }
 
     /// <summary>
     ///     Gets the transitions in this group.
     /// </summary>
-    internal List<TimeZoneTransition> Transitions => transitions;
+    internal List<TimeZoneTransition> Transitions { get; } = new();
 }

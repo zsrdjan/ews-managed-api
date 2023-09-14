@@ -23,14 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of DayOfTheWeek values.
 /// </summary>
+[PublicAPI]
 public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfTheWeek>
 {
-    private readonly List<DayOfTheWeek> items = new List<DayOfTheWeek>();
+    private readonly List<DayOfTheWeek> _items = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DayOfTheWeekCollection" /> class.
@@ -70,7 +73,7 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     {
         reader.EnsureCurrentNodeIsStartElement(XmlNamespace.Types, xmlElementName);
 
-        EwsUtilities.ParseEnumValueList(items, reader.ReadElementValue(), ' ');
+        EwsUtilities.ParseEnumValueList(_items, reader.ReadElementValue(), ' ');
     }
 
     /// <summary>
@@ -103,9 +106,9 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     /// <param name="dayOfTheWeek">The day to add.</param>
     public void Add(DayOfTheWeek dayOfTheWeek)
     {
-        if (!items.Contains(dayOfTheWeek))
+        if (!_items.Contains(dayOfTheWeek))
         {
-            items.Add(dayOfTheWeek);
+            _items.Add(dayOfTheWeek);
             Changed();
         }
     }
@@ -129,7 +132,7 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     {
         if (Count > 0)
         {
-            items.Clear();
+            _items.Clear();
             Changed();
         }
     }
@@ -141,7 +144,7 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     /// <returns>True if the day was removed from the collection, false otherwise.</returns>
     public bool Remove(DayOfTheWeek dayOfTheWeek)
     {
-        var result = items.Remove(dayOfTheWeek);
+        var result = _items.Remove(dayOfTheWeek);
 
         if (result)
         {
@@ -159,10 +162,10 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
-        items.RemoveAt(index);
+        _items.RemoveAt(index);
         Changed();
     }
 
@@ -171,12 +174,12 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     /// </summary>
     /// <param name="index">Index</param>
     /// <returns>DayOfTheWeek at index</returns>
-    public DayOfTheWeek this[int index] => items[index];
+    public DayOfTheWeek this[int index] => _items[index];
 
     /// <summary>
     ///     Gets the number of days in the collection.
     /// </summary>
-    public int Count => items.Count;
+    public int Count => _items.Count;
 
 
     #region IEnumerable<DayOfTheWeek> Members
@@ -187,7 +190,7 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<DayOfTheWeek> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion
@@ -201,7 +204,7 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return _items.GetEnumerator();
     }
 
     #endregion

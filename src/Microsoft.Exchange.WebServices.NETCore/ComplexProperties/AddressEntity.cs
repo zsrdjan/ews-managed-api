@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an AddressEntity object.
 /// </summary>
+[PublicAPI]
 public sealed class AddressEntity : ExtractedEntity
 {
     /// <summary>
@@ -52,11 +55,14 @@ public sealed class AddressEntity : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgAddress:
+            {
                 Address = reader.ReadElementValue();
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

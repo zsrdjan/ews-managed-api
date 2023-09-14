@@ -23,16 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents Enhanced Location.
 /// </summary>
+[PublicAPI]
 public sealed class EnhancedLocation : ComplexProperty
 {
-    private string displayName;
-    private string annotation;
-    private PersonaPostalAddress personaPostalAddress;
+    private string _displayName;
+    private string _annotation;
+    private PersonaPostalAddress? _personaPostalAddress;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EnhancedLocation" /> class.
@@ -69,10 +72,10 @@ public sealed class EnhancedLocation : ComplexProperty
     public EnhancedLocation(string displayName, string annotation, PersonaPostalAddress personaPostalAddress)
         : this()
     {
-        this.displayName = displayName;
-        this.annotation = annotation;
-        this.personaPostalAddress = personaPostalAddress;
-        this.personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
+        _displayName = displayName;
+        _annotation = annotation;
+        _personaPostalAddress = personaPostalAddress;
+        _personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
     }
 
     /// <summary>
@@ -85,18 +88,26 @@ public sealed class EnhancedLocation : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.LocationDisplayName:
-                displayName = reader.ReadValue<string>();
+            {
+                _displayName = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.LocationAnnotation:
-                annotation = reader.ReadValue<string>();
+            {
+                _annotation = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.PersonaPostalAddress:
-                personaPostalAddress = new PersonaPostalAddress();
-                personaPostalAddress.LoadFromXml(reader);
-                personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
+            {
+                _personaPostalAddress = new PersonaPostalAddress();
+                _personaPostalAddress.LoadFromXml(reader);
+                _personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -105,8 +116,8 @@ public sealed class EnhancedLocation : ComplexProperty
     /// </summary>
     public string DisplayName
     {
-        get => displayName;
-        set => SetFieldValue(ref displayName, value);
+        get => _displayName;
+        set => SetFieldValue(ref _displayName, value);
     }
 
     /// <summary>
@@ -114,28 +125,28 @@ public sealed class EnhancedLocation : ComplexProperty
     /// </summary>
     public string Annotation
     {
-        get => annotation;
-        set => SetFieldValue(ref annotation, value);
+        get => _annotation;
+        set => SetFieldValue(ref _annotation, value);
     }
 
     /// <summary>
     ///     Gets or sets the Persona Postal Address.
     /// </summary>
-    public PersonaPostalAddress PersonaPostalAddress
+    public PersonaPostalAddress? PersonaPostalAddress
     {
-        get => personaPostalAddress;
+        get => _personaPostalAddress;
         set
         {
-            if (!personaPostalAddress.Equals(value))
+            if (!_personaPostalAddress.Equals(value))
             {
-                if (personaPostalAddress != null)
+                if (_personaPostalAddress != null)
                 {
-                    personaPostalAddress.OnChange -= PersonaPostalAddress_OnChange;
+                    _personaPostalAddress.OnChange -= PersonaPostalAddress_OnChange;
                 }
 
-                SetFieldValue(ref personaPostalAddress, value);
+                SetFieldValue(ref _personaPostalAddress, value);
 
-                personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
+                _personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
             }
         }
     }
@@ -146,9 +157,9 @@ public sealed class EnhancedLocation : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationDisplayName, displayName);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationAnnotation, annotation);
-        personaPostalAddress.WriteToXml(writer);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationDisplayName, _displayName);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationAnnotation, _annotation);
+        _personaPostalAddress.WriteToXml(writer);
     }
 
     /// <summary>
@@ -157,9 +168,9 @@ public sealed class EnhancedLocation : ComplexProperty
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        EwsUtilities.ValidateParam(displayName, "DisplayName");
-        EwsUtilities.ValidateParamAllowNull(annotation, "Annotation");
-        EwsUtilities.ValidateParamAllowNull(personaPostalAddress, "PersonaPostalAddress");
+        EwsUtilities.ValidateParam(_displayName, "DisplayName");
+        EwsUtilities.ValidateParamAllowNull(_annotation, "Annotation");
+        EwsUtilities.ValidateParamAllowNull(_personaPostalAddress, "PersonaPostalAddress");
     }
 
     /// <summary>

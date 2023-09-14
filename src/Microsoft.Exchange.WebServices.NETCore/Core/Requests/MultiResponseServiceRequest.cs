@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRequestBase
     where TResponse : ServiceResponse
 {
-    private readonly ServiceErrorHandling errorHandlingMode;
-
     /// <summary>
     ///     Parses the response.
     /// </summary>
@@ -118,7 +116,7 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     internal MultiResponseServiceRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
         : base(service)
     {
-        this.errorHandlingMode = errorHandlingMode;
+        ErrorHandlingMode = errorHandlingMode;
     }
 
     /// <summary>
@@ -147,5 +145,5 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     /// <summary>
     ///     Gets a value indicating how errors should be handled.
     /// </summary>
-    internal ServiceErrorHandling ErrorHandlingMode => errorHandlingMode;
+    internal ServiceErrorHandling ErrorHandlingMode { get; }
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an TaskSuggestion object.
 /// </summary>
+[PublicAPI]
 public sealed class TaskSuggestion : ExtractedEntity
 {
     /// <summary>
@@ -57,16 +60,20 @@ public sealed class TaskSuggestion : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgTaskString:
+            {
                 TaskString = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgAssignees:
+            {
                 Assignees = new EmailUserEntityCollection();
                 Assignees.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgAssignees);
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

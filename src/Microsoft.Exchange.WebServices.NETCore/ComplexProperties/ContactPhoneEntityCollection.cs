@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of ContactPhoneEntity objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ContactPhoneEntityCollection : ComplexPropertyCollection<ContactPhoneEntity>
 {
@@ -44,7 +47,7 @@ public sealed class ContactPhoneEntityCollection : ComplexPropertyCollection<Con
     ///     Initializes a new instance of the <see cref="ContactPhoneEntityCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal ContactPhoneEntityCollection(IEnumerable<ContactPhoneEntity> collection)
+    internal ContactPhoneEntityCollection(IEnumerable<ContactPhoneEntity>? collection)
     {
         if (collection != null)
         {

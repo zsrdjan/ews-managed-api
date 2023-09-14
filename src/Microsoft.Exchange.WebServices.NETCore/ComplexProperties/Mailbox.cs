@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a mailbox reference.
 /// </summary>
+[PublicAPI]
 public class Mailbox : ComplexProperty, ISearchStringProvider
 {
     #region Constructors
@@ -111,13 +114,19 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
         switch (reader.LocalName)
         {
             case XmlElementNames.EmailAddress:
+            {
                 Address = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.RoutingType:
+            {
                 RoutingType = reader.ReadElementValue();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -172,24 +181,22 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     ///     otherwise, false.
     /// </returns>
     /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(this, obj))
         {
             return true;
         }
 
-        var other = obj as Mailbox;
-
-        if (other == null)
+        if (obj is not Mailbox other)
         {
             return false;
         }
 
-        if (((Address == null) && (other.Address == null)) || ((Address != null) && Address.Equals(other.Address)))
+        if ((Address == null && other.Address == null) || (Address != null && Address.Equals(other.Address)))
         {
-            return ((RoutingType == null) && (other.RoutingType == null)) ||
-                   ((RoutingType != null) && RoutingType.Equals(other.RoutingType));
+            return (RoutingType == null && other.RoutingType == null) ||
+                   (RoutingType != null && RoutingType.Equals(other.RoutingType));
         }
 
         return false;

@@ -30,11 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class FindConversationRequest : SimpleServiceRequestBase
 {
-    private ViewBase view;
-    private FolderIdWrapper folderId;
-    private string queryString;
-    private bool returnHighlightTerms;
-    private MailboxSearchLocation? mailboxScope;
+    private ViewBase _view;
 
     /// <summary>
     /// </summary>
@@ -49,14 +45,15 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     /// </summary>
     public ViewBase View
     {
-        get => view;
+        get => _view;
 
         set
         {
-            view = value;
-            if (view is SeekToConditionItemView)
+            _view = value;
+
+            if (_view is SeekToConditionItemView itemView)
             {
-                ((SeekToConditionItemView)view).SetServiceObjectType(ServiceObjectType.Conversation);
+                itemView.SetServiceObjectType(ServiceObjectType.Conversation);
             }
         }
     }
@@ -64,42 +61,22 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets folder id
     /// </summary>
-    internal FolderIdWrapper FolderId
-    {
-        get => folderId;
-
-        set => folderId = value;
-    }
+    internal FolderIdWrapper FolderId { get; set; }
 
     /// <summary>
     ///     Gets or sets the query string for search value.
     /// </summary>
-    internal string QueryString
-    {
-        get => queryString;
-
-        set => queryString = value;
-    }
+    internal string QueryString { get; set; }
 
     /// <summary>
     ///     Gets or sets the query string highlight terms.
     /// </summary>
-    internal bool ReturnHighlightTerms
-    {
-        get => returnHighlightTerms;
-
-        set => returnHighlightTerms = value;
-    }
+    internal bool ReturnHighlightTerms { get; set; }
 
     /// <summary>
     ///     Gets or sets the mailbox search location to include in the search.
     /// </summary>
-    internal MailboxSearchLocation? MailboxScope
-    {
-        get => mailboxScope;
-
-        set => mailboxScope = value;
-    }
+    internal MailboxSearchLocation? MailboxScope { get; set; }
 
     /// <summary>
     ///     Validate request.
@@ -107,11 +84,11 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     internal override void Validate()
     {
         base.Validate();
-        view.InternalValidate(this);
+        _view.InternalValidate(this);
 
         // query string parameter is only valid for Exchange2013 or higher
         //
-        if (!string.IsNullOrEmpty(queryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (!string.IsNullOrEmpty(QueryString) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(
@@ -198,7 +175,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
             writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxScope, MailboxScope.Value);
         }
 
-        if (!string.IsNullOrEmpty(queryString))
+        if (!string.IsNullOrEmpty(QueryString))
         {
             // Emit the QueryString
             //
@@ -212,7 +189,7 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
                 );
             }
 
-            writer.WriteValue(queryString, XmlElementNames.QueryString);
+            writer.WriteValue(QueryString, XmlElementNames.QueryString);
             writer.WriteEndElement();
         }
 

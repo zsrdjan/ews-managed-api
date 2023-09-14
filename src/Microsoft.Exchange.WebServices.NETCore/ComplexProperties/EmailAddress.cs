@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an e-mail address.
 /// </summary>
+[PublicAPI]
 public class EmailAddress : ComplexProperty, ISearchStringProvider
 {
     /// <summary>
@@ -38,27 +41,27 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// <summary>
     ///     Display name.
     /// </summary>
-    private string name;
+    private string _name;
 
     /// <summary>
     ///     Email address.
     /// </summary>
-    private string address;
+    private string _address;
 
     /// <summary>
     ///     Routing type.
     /// </summary>
-    private string routingType;
+    private string _routingType;
 
     /// <summary>
     ///     Mailbox type.
     /// </summary>
-    private MailboxType? mailboxType;
+    private MailboxType? _mailboxType;
 
     /// <summary>
     ///     ItemId - Contact or PDL.
     /// </summary>
-    private ItemId id;
+    private ItemId _id;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
@@ -74,7 +77,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     public EmailAddress(string smtpAddress)
         : this()
     {
-        address = smtpAddress;
+        _address = smtpAddress;
     }
 
     /// <summary>
@@ -85,7 +88,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     public EmailAddress(string name, string smtpAddress)
         : this(smtpAddress)
     {
-        this.name = name;
+        _name = name;
     }
 
     /// <summary>
@@ -97,7 +100,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     public EmailAddress(string name, string address, string routingType)
         : this(name, address)
     {
-        this.routingType = routingType;
+        _routingType = routingType;
     }
 
     /// <summary>
@@ -110,7 +113,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     internal EmailAddress(string name, string address, string routingType, MailboxType mailboxType)
         : this(name, address, routingType)
     {
-        this.mailboxType = mailboxType;
+        _mailboxType = mailboxType;
     }
 
     /// <summary>
@@ -121,11 +124,11 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// <param name="routingType">The routing type used to initialize the EmailAddress.</param>
     /// <param name="mailboxType">Mailbox type of the participant.</param>
     /// <param name="itemId">ItemId of a Contact or PDL.</param>
-    internal EmailAddress(string name, string address, string routingType, MailboxType mailboxType, ItemId itemId)
+    internal EmailAddress(string? name, string address, string routingType, MailboxType mailboxType, ItemId itemId)
         : this(name, address, routingType)
     {
-        this.mailboxType = mailboxType;
-        id = itemId;
+        _mailboxType = mailboxType;
+        _id = itemId;
     }
 
     /// <summary>
@@ -135,7 +138,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     internal EmailAddress(EmailAddress mailbox)
         : this()
     {
-        EwsUtilities.ValidateParam(mailbox, "mailbox");
+        EwsUtilities.ValidateParam(mailbox);
 
         Name = mailbox.Name;
         Address = mailbox.Address;
@@ -149,9 +152,8 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// </summary>
     public string Name
     {
-        get => name;
-
-        set => SetFieldValue(ref name, value);
+        get => _name;
+        set => SetFieldValue(ref _name, value);
     }
 
     /// <summary>
@@ -161,9 +163,8 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// </summary>
     public string Address
     {
-        get => address;
-
-        set => SetFieldValue(ref address, value);
+        get => _address;
+        set => SetFieldValue(ref _address, value);
     }
 
     /// <summary>
@@ -172,9 +173,8 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// </summary>
     public string RoutingType
     {
-        get => routingType;
-
-        set => SetFieldValue(ref routingType, value);
+        get => _routingType;
+        set => SetFieldValue(ref _routingType, value);
     }
 
     /// <summary>
@@ -182,20 +182,18 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// </summary>
     public MailboxType? MailboxType
     {
-        get => mailboxType;
-
-        set => SetFieldValue(ref mailboxType, value);
+        get => _mailboxType;
+        set => SetFieldValue(ref _mailboxType, value);
     }
 
     /// <summary>
     ///     Gets or sets the Id of the contact the e-mail address represents. When Id is specified, Address
     ///     should be set to null.
     /// </summary>
-    public ItemId Id
+    public ItemId? Id
     {
-        get => id;
-
-        set => SetFieldValue(ref id, value);
+        get => _id;
+        set => SetFieldValue(ref _id, value);
     }
 
     /// <summary>
@@ -218,23 +216,35 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
         switch (reader.LocalName)
         {
             case XmlElementNames.Name:
-                name = reader.ReadElementValue();
+            {
+                _name = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.EmailAddress:
-                address = reader.ReadElementValue();
+            {
+                _address = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.RoutingType:
-                routingType = reader.ReadElementValue();
+            {
+                _routingType = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.MailboxType:
-                mailboxType = reader.ReadElementValue<MailboxType>();
+            {
+                _mailboxType = reader.ReadElementValue<MailboxType>();
                 return true;
+            }
             case XmlElementNames.ItemId:
-                id = new ItemId();
-                id.LoadFromXml(reader, reader.LocalName);
+            {
+                _id = new ItemId();
+                _id.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

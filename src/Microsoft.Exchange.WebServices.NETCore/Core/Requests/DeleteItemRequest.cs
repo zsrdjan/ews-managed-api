@@ -30,10 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
 {
-    private readonly ItemIdWrapperList itemIds = new ItemIdWrapperList();
-    private AffectedTaskOccurrence? affectedTaskOccurrences;
-    private SendCancellationsMode? sendCancellationsMode;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteItemRequest" /> class.
     /// </summary>
@@ -50,7 +46,7 @@ internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(ItemIds, "ItemIds");
+        EwsUtilities.ValidateParam(ItemIds);
 
         if (SuppressReadReceipts && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
@@ -70,7 +66,7 @@ internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return itemIds.Count;
+        return ItemIds.Count;
     }
 
     /// <summary>
@@ -141,7 +137,7 @@ internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        itemIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
+        ItemIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemIds);
     }
 
     /// <summary>
@@ -157,27 +153,19 @@ internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
     ///     Gets the item ids.
     /// </summary>
     /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds => itemIds;
+    internal ItemIdWrapperList ItemIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets the affected task occurrences.
     /// </summary>
     /// <value>The affected task occurrences.</value>
-    internal AffectedTaskOccurrence? AffectedTaskOccurrences
-    {
-        get => affectedTaskOccurrences;
-        set => affectedTaskOccurrences = value;
-    }
+    internal AffectedTaskOccurrence? AffectedTaskOccurrences { get; set; }
 
     /// <summary>
     ///     Gets or sets the send cancellations.
     /// </summary>
     /// <value>The send cancellations.</value>
-    internal SendCancellationsMode? SendCancellationsMode
-    {
-        get => sendCancellationsMode;
-        set => sendCancellationsMode = value;
-    }
+    internal SendCancellationsMode? SendCancellationsMode { get; set; }
 
     /// <summary>
     ///     Gets or sets whether to suppress read receipts

@@ -30,17 +30,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private string name;
-    private FolderId parentFolderId;
-
     /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(name, "name");
-        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+        EwsUtilities.ValidateParam(Name);
+        EwsUtilities.ValidateParam(ParentFolderId);
         ParentFolderId.Validate(Service.RequestedServerVersion);
     }
 
@@ -107,7 +104,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         // Write UserConfigurationName element
-        UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, name, parentFolderId);
+        UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, Name, ParentFolderId);
     }
 
     /// <summary>
@@ -123,19 +120,11 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     ///     Gets or sets the name.
     /// </summary>
     /// <value>The name.</value>
-    internal string Name
-    {
-        get => name;
-        set => name = value;
-    }
+    internal string Name { get; set; }
 
     /// <summary>
     ///     Gets or sets the parent folder Id.
     /// </summary>
     /// <value>The parent folder Id.</value>
-    internal FolderId ParentFolderId
-    {
-        get => parentFolderId;
-        set => parentFolderId = value;
-    }
+    internal FolderId ParentFolderId { get; set; }
 }

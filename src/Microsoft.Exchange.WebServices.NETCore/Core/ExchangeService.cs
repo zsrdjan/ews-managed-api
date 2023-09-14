@@ -2263,7 +2263,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     )
     {
         var request = new GetPeopleInsightsRequest(this);
-        request.Emailaddresses.AddRange(emailAddresses);
+        request.EmailAddresses.AddRange(emailAddresses);
 
         var response = await request.Execute(token).ConfigureAwait(false);
         return response.People;

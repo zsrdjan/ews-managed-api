@@ -102,12 +102,5 @@ internal sealed class GetPasswordExpirationDateRequest : SimpleServiceRequestBas
     /// <summary>
     ///     Gets or sets the room list to retrieve rooms from.
     /// </summary>
-    internal string MailboxSmtpAddress
-    {
-        get => mailboxSmtpAddress;
-
-        set => mailboxSmtpAddress = value;
-    }
-
-    private string mailboxSmtpAddress;
+    internal string MailboxSmtpAddress { get; set; }
 }

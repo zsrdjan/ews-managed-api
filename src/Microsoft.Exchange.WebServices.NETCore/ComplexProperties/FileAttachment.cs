@@ -23,18 +23,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a file attachment.
 /// </summary>
+[PublicAPI]
 public sealed class FileAttachment : Attachment
 {
-    private string fileName;
-    private Stream contentStream;
-    private byte[] content;
-    private Stream loadToStream;
-    private bool isContactPhoto;
+    private string? _fileName;
+    private Stream? _contentStream;
+    private byte[]? _content;
+    private Stream? _loadToStream;
+    private bool _isContactPhoto;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FileAttachment" /> class.
@@ -69,7 +72,7 @@ public sealed class FileAttachment : Attachment
     /// <param name="attachmentIndex">Index of this attachment.</param>
     internal override void Validate(int attachmentIndex)
     {
-        if (string.IsNullOrEmpty(fileName) && (content == null) && (contentStream == null))
+        if (string.IsNullOrEmpty(_fileName) && (_content == null) && (_contentStream == null))
         {
             throw new ServiceValidationException(string.Format(Strings.FileAttachmentContentIsNotSet, attachmentIndex));
         }
@@ -88,13 +91,13 @@ public sealed class FileAttachment : Attachment
         {
             if (reader.LocalName == XmlElementNames.IsContactPhoto)
             {
-                isContactPhoto = reader.ReadElementValue<bool>();
+                _isContactPhoto = reader.ReadElementValue<bool>();
             }
             else if (reader.LocalName == XmlElementNames.Content)
             {
-                if (loadToStream != null)
+                if (_loadToStream != null)
                 {
-                    reader.ReadBase64ElementValue(loadToStream);
+                    reader.ReadBase64ElementValue(_loadToStream);
                 }
                 else
                 {
@@ -111,12 +114,12 @@ public sealed class FileAttachment : Attachment
                         }
                         else
                         {
-                            content = reader.ReadBase64ElementValue();
+                            _content = reader.ReadBase64ElementValue();
                         }
                     }
                     else
                     {
-                        content = reader.ReadBase64ElementValue();
+                        _content = reader.ReadBase64ElementValue();
                     }
                 }
 
@@ -147,17 +150,15 @@ public sealed class FileAttachment : Attachment
 
         if (writer.Service.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
         {
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsContactPhoto, isContactPhoto);
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsContactPhoto, _isContactPhoto);
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Content);
 
         if (!string.IsNullOrEmpty(FileName))
         {
-            using (var fileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
-            {
-                writer.WriteBase64ElementValue(fileStream);
-            }
+            using var fileStream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+            writer.WriteBase64ElementValue(fileStream);
         }
         else if (ContentStream != null)
         {
@@ -181,7 +182,7 @@ public sealed class FileAttachment : Attachment
     /// <param name="stream">The stream to load the content of the attachment into.</param>
     public async System.Threading.Tasks.Task Load(Stream stream)
     {
-        loadToStream = stream;
+        _loadToStream = stream;
 
         try
         {
@@ -189,7 +190,7 @@ public sealed class FileAttachment : Attachment
         }
         finally
         {
-            loadToStream = null;
+            _loadToStream = null;
         }
     }
 
@@ -202,7 +203,7 @@ public sealed class FileAttachment : Attachment
     /// </param>
     public async System.Threading.Tasks.Task Load(string fileName)
     {
-        loadToStream = new FileStream(fileName, FileMode.Create);
+        _loadToStream = new FileStream(fileName, FileMode.Create);
 
         try
         {
@@ -210,29 +211,29 @@ public sealed class FileAttachment : Attachment
         }
         finally
         {
-            loadToStream.Dispose();
-            loadToStream = null;
+            await _loadToStream.DisposeAsync();
+            _loadToStream = null;
         }
 
-        this.fileName = fileName;
-        content = null;
-        contentStream = null;
+        _fileName = fileName;
+        _content = null;
+        _contentStream = null;
     }
 
     /// <summary>
     ///     Gets the name of the file the attachment is linked to.
     /// </summary>
-    public string FileName
+    public string? FileName
     {
-        get => fileName;
+        get => _fileName;
 
         internal set
         {
             ThrowIfThisIsNotNew();
 
-            fileName = value;
-            content = null;
-            contentStream = null;
+            _fileName = value;
+            _content = null;
+            _contentStream = null;
         }
     }
 
@@ -240,34 +241,34 @@ public sealed class FileAttachment : Attachment
     ///     Gets or sets the content stream.
     /// </summary>
     /// <value>The content stream.</value>
-    internal Stream ContentStream
+    internal Stream? ContentStream
     {
-        get => contentStream;
+        get => _contentStream;
 
         set
         {
             ThrowIfThisIsNotNew();
 
-            contentStream = value;
-            content = null;
-            fileName = null;
+            _contentStream = value;
+            _content = null;
+            _fileName = null;
         }
     }
 
     /// <summary>
     ///     Gets the content of the attachment into memory. Content is set only when Load() is called.
     /// </summary>
-    public byte[] Content
+    public byte[]? Content
     {
-        get => content;
+        get => _content;
 
         internal set
         {
             ThrowIfThisIsNotNew();
 
-            content = value;
-            fileName = null;
-            contentStream = null;
+            _content = value;
+            _fileName = null;
+            _contentStream = null;
         }
     }
 
@@ -280,7 +281,7 @@ public sealed class FileAttachment : Attachment
         {
             EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
 
-            return isContactPhoto;
+            return _isContactPhoto;
         }
 
         set
@@ -289,7 +290,7 @@ public sealed class FileAttachment : Attachment
 
             ThrowIfThisIsNotNew();
 
-            isContactPhoto = value;
+            _isContactPhoto = value;
         }
     }
 }

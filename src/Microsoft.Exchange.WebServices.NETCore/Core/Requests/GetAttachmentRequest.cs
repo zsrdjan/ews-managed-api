@@ -30,11 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAttachmentResponse>
 {
-    private readonly List<Attachment> attachments = new List<Attachment>();
-    private readonly List<string> attachmentIds = new List<string>();
-    private readonly List<PropertyDefinitionBase> additionalProperties = new List<PropertyDefinitionBase>();
-    private BodyType? bodyType;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetAttachmentRequest" /> class.
     /// </summary>
@@ -51,24 +46,25 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     internal override void Validate()
     {
         base.Validate();
+
         if (Attachments.Count > 0)
         {
-            EwsUtilities.ValidateParamCollection(Attachments, "Attachments");
+            EwsUtilities.ValidateParamCollection(Attachments);
         }
 
         if (AttachmentIds.Count > 0)
         {
-            EwsUtilities.ValidateParamCollection(AttachmentIds, "AttachmentIds");
+            EwsUtilities.ValidateParamCollection(AttachmentIds);
         }
 
         if (AttachmentIds.Count == 0 && Attachments.Count == 0)
         {
-            throw new ArgumentException(Strings.CollectionIsEmpty, @"Attachments/AttachmentIds");
+            throw new ArgumentException(Strings.CollectionIsEmpty, "Attachments/AttachmentIds");
         }
 
         for (var i = 0; i < AdditionalProperties.Count; i++)
         {
-            EwsUtilities.ValidateParam(AdditionalProperties[i], string.Format("AdditionalProperties[{0}]", i));
+            EwsUtilities.ValidateParam(AdditionalProperties[i], $"AdditionalProperties[{i}]");
         }
     }
 
@@ -170,29 +166,25 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     ///     Gets the attachments.
     /// </summary>
     /// <value>The attachments.</value>
-    public List<Attachment> Attachments => attachments;
+    public List<Attachment> Attachments { get; } = new();
 
     /// <summary>
     ///     Gets the attachment ids.
     /// </summary>
     /// <value>The attachment ids.</value>
-    public List<string> AttachmentIds => attachmentIds;
+    public List<string> AttachmentIds { get; } = new();
 
     /// <summary>
     ///     Gets the additional properties.
     /// </summary>
     /// <value>The additional properties.</value>
-    public List<PropertyDefinitionBase> AdditionalProperties => additionalProperties;
+    public List<PropertyDefinitionBase> AdditionalProperties { get; } = new();
 
     /// <summary>
     ///     Gets or sets the type of the body.
     /// </summary>
     /// <value>The type of the body.</value>
-    public BodyType? BodyType
-    {
-        get => bodyType;
-        set => bodyType = value;
-    }
+    public BodyType? BodyType { get; set; }
 
     /// <summary>
     ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
@@ -203,14 +195,14 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     internal override bool EmitTimeZoneHeader =>
         // we currently do not emit "AttachmentResponseShapeType.IncludeMimeContent"
         //
-        additionalProperties.Contains(ItemSchema.MimeContent);
+        AdditionalProperties.Contains(ItemSchema.MimeContent);
 
     /// <summary>
     ///     Writes attachment id elements.
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="attachmentId">The attachment id.</param>
-    private void WriteAttachmentIdXml(EwsServiceXmlWriter writer, string attachmentId)
+    private static void WriteAttachmentIdXml(EwsServiceXmlWriter writer, string attachmentId)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.AttachmentId);
         writer.WriteAttributeValue(XmlAttributeNames.Id, attachmentId);

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an attribution of an attributed string
 /// </summary>
+[PublicAPI]
 public sealed class Attribution : ComplexProperty
 {
     /// <summary>
@@ -73,17 +76,6 @@ public sealed class Attribution : ComplexProperty
     }
 
     /// <summary>
-    ///     Creates an instance with required values only
-    /// </summary>
-    /// <param name="id">Attribution id</param>
-    /// <param name="sourceId">Source Id</param>
-    /// <param name="displayName">Display name</param>
-    public Attribution(string id, ItemId sourceId, string displayName)
-        : this(id, sourceId, displayName, false, false, false, null)
-    {
-    }
-
-    /// <summary>
     ///     Creates an instance with all values
     /// </summary>
     /// <param name="id">Attribution id</param>
@@ -97,15 +89,15 @@ public sealed class Attribution : ComplexProperty
         string id,
         ItemId sourceId,
         string displayName,
-        bool isWritable,
-        bool isQuickContact,
-        bool isHidden,
-        FolderId folderId
+        bool isWritable = false,
+        bool isQuickContact = false,
+        bool isHidden = false,
+        FolderId? folderId = null
     )
         : this()
     {
-        EwsUtilities.ValidateParam(id, "id");
-        EwsUtilities.ValidateParam(displayName, "displayName");
+        EwsUtilities.ValidateParam(id);
+        EwsUtilities.ValidateParam(displayName);
 
         Id = id;
         SourceId = sourceId;
@@ -126,31 +118,46 @@ public sealed class Attribution : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Id:
+            {
                 Id = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.SourceId:
+            {
                 SourceId = new ItemId();
                 SourceId.LoadFromXml(reader, reader.LocalName);
                 break;
+            }
             case XmlElementNames.DisplayName:
+            {
                 DisplayName = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.IsWritable:
+            {
                 IsWritable = reader.ReadElementValue<bool>();
                 break;
+            }
             case XmlElementNames.IsQuickContact:
+            {
                 IsQuickContact = reader.ReadElementValue<bool>();
                 break;
+            }
             case XmlElementNames.IsHidden:
+            {
                 IsHidden = reader.ReadElementValue<bool>();
                 break;
+            }
             case XmlElementNames.FolderId:
+            {
                 FolderId = new FolderId();
                 FolderId.LoadFromXml(reader, reader.LocalName);
                 break;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
 
         return true;

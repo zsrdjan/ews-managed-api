@@ -23,16 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of an Exchange object.
 /// </summary>
+[PublicAPI]
 public abstract class ServiceId : ComplexProperty
 {
-    private string changeKey;
-    private string uniqueId;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceId" /> class.
     /// </summary>
@@ -47,9 +47,9 @@ public abstract class ServiceId : ComplexProperty
     internal ServiceId(string uniqueId)
         : this()
     {
-        EwsUtilities.ValidateParam(uniqueId, "uniqueId");
+        EwsUtilities.ValidateParam(uniqueId);
 
-        this.uniqueId = uniqueId;
+        UniqueId = uniqueId;
     }
 
     /// <summary>
@@ -58,8 +58,8 @@ public abstract class ServiceId : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        uniqueId = reader.ReadAttributeValue(XmlAttributeNames.Id);
-        changeKey = reader.ReadAttributeValue(XmlAttributeNames.ChangeKey);
+        UniqueId = reader.ReadAttributeValue(XmlAttributeNames.Id);
+        ChangeKey = reader.ReadAttributeValue(XmlAttributeNames.ChangeKey);
     }
 
     /// <summary>
@@ -93,34 +93,26 @@ public abstract class ServiceId : ComplexProperty
     /// <param name="source">The source.</param>
     internal void Assign(ServiceId source)
     {
-        uniqueId = source.UniqueId;
-        changeKey = source.ChangeKey;
+        UniqueId = source.UniqueId;
+        ChangeKey = source.ChangeKey;
     }
 
     /// <summary>
     ///     True if this instance is valid, false otherthise.
     /// </summary>
     /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
-    internal virtual bool IsValid => !string.IsNullOrEmpty(uniqueId);
+    internal virtual bool IsValid => !string.IsNullOrEmpty(UniqueId);
 
     /// <summary>
     ///     Gets the unique Id of the Exchange object.
     /// </summary>
-    public string UniqueId
-    {
-        get => uniqueId;
-        internal set => uniqueId = value;
-    }
+    public string? UniqueId { get; internal set; }
 
     /// <summary>
     ///     Gets the change key associated with the Exchange object. The change key represents the
     ///     the version of the associated item or folder.
     /// </summary>
-    public string ChangeKey
-    {
-        get => changeKey;
-        internal set => changeKey = value;
-    }
+    public string? ChangeKey { get; internal set; }
 
     /// <summary>
     ///     Determines whether two ServiceId instances are equal (including ChangeKeys)
@@ -130,7 +122,7 @@ public abstract class ServiceId : ComplexProperty
     {
         if (Equals(other))
         {
-            return ((ChangeKey == null) && (other.ChangeKey == null)) || ChangeKey.Equals(other.ChangeKey);
+            return (ChangeKey == null && other.ChangeKey == null) || ChangeKey.Equals(other.ChangeKey);
         }
 
         return false;
@@ -152,16 +144,14 @@ public abstract class ServiceId : ComplexProperty
     ///     otherwise, false.
     /// </returns>
     /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(this, obj))
         {
             return true;
         }
 
-        var other = obj as ServiceId;
-
-        if (other == null)
+        if (obj is not ServiceId other)
         {
             return false;
         }
@@ -196,7 +186,7 @@ public abstract class ServiceId : ComplexProperty
     /// </returns>
     public override string ToString()
     {
-        return (uniqueId == null) ? string.Empty : uniqueId;
+        return UniqueId ?? string.Empty;
     }
 
     #endregion

@@ -25,18 +25,16 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the working hours for a specific time zone.
 /// </summary>
+[PublicAPI]
 public sealed class WorkingHours : ComplexProperty
 {
-    private TimeZoneInfo timeZone;
-    private readonly Collection<DayOfTheWeek> daysOfTheWeek = new Collection<DayOfTheWeek>();
-    private TimeSpan startTime;
-    private TimeSpan endTime;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="WorkingHours" /> class.
     /// </summary>
@@ -54,13 +52,16 @@ public sealed class WorkingHours : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.TimeZone:
+            {
                 var legacyTimeZone = new LegacyAvailabilityTimeZone();
                 legacyTimeZone.LoadFromXml(reader, reader.LocalName);
 
-                timeZone = legacyTimeZone.ToTimeZoneInfo();
+                TimeZone = legacyTimeZone.ToTimeZoneInfo();
 
                 return true;
+            }
             case XmlElementNames.WorkingPeriodArray:
+            {
                 var workingPeriods = new List<WorkingPeriod>();
 
                 do
@@ -84,43 +85,46 @@ public sealed class WorkingHours : ComplexProperty
                 // structure if it happens to be in Exchange.
                 // So here we'll do what Outlook and OWA do: we'll use the start and end times of the
                 // first working period, but we'll use the week days of all the periods.
-                startTime = workingPeriods[0].StartTime;
-                endTime = workingPeriods[0].EndTime;
+                StartTime = workingPeriods[0].StartTime;
+                EndTime = workingPeriods[0].EndTime;
 
                 foreach (var workingPeriod in workingPeriods)
                 {
                     foreach (var dayOfWeek in workingPeriods[0].DaysOfWeek)
                     {
-                        if (!daysOfTheWeek.Contains(dayOfWeek))
+                        if (!DaysOfTheWeek.Contains(dayOfWeek))
                         {
-                            daysOfTheWeek.Add(dayOfWeek);
+                            DaysOfTheWeek.Add(dayOfWeek);
                         }
                     }
                 }
 
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the time zone to which the working hours apply.
     /// </summary>
-    public TimeZoneInfo TimeZone => timeZone;
+    public TimeZoneInfo TimeZone { get; private set; }
 
     /// <summary>
     ///     Gets the working days of the attendees.
     /// </summary>
-    public Collection<DayOfTheWeek> DaysOfTheWeek => daysOfTheWeek;
+    public Collection<DayOfTheWeek> DaysOfTheWeek { get; } = new();
 
     /// <summary>
     ///     Gets the time of the day the attendee starts working.
     /// </summary>
-    public TimeSpan StartTime => startTime;
+    public TimeSpan StartTime { get; private set; }
 
     /// <summary>
     ///     Gets the time of the day the attendee stops working.
     /// </summary>
-    public TimeSpan EndTime => endTime;
+    public TimeSpan EndTime { get; private set; }
 }

@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -33,6 +35,7 @@ public abstract partial class Recurrence
     /// <summary>
     ///     Represents a recurrence pattern where each occurrence happens a specific number of days after the previous one.
     /// </summary>
+    [PublicAPI]
     public sealed class DailyPattern : IntervalPattern
     {
         /// <summary>

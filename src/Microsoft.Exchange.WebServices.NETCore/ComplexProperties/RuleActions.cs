@@ -25,11 +25,14 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the set of actions available for a rule.
 /// </summary>
+[PublicAPI]
 public sealed class RuleActions : ComplexProperty
 {
     /// <summary>
@@ -38,80 +41,55 @@ public sealed class RuleActions : ComplexProperty
     private const string MobileType = "MOBILE";
 
     /// <summary>
-    ///     The AssignCategories action.
-    /// </summary>
-    private readonly StringList assignCategories;
-
-    /// <summary>
     ///     The CopyToFolder action.
     /// </summary>
-    private FolderId copyToFolder;
+    private FolderId _copyToFolder;
 
     /// <summary>
     ///     The Delete action.
     /// </summary>
-    private bool delete;
-
-    /// <summary>
-    ///     The ForwardAsAttachmentToRecipients action.
-    /// </summary>
-    private readonly EmailAddressCollection forwardAsAttachmentToRecipients;
-
-    /// <summary>
-    ///     The ForwardToRecipients action.
-    /// </summary>
-    private readonly EmailAddressCollection forwardToRecipients;
+    private bool _delete;
 
     /// <summary>
     ///     The MarkImportance action.
     /// </summary>
-    private Importance? markImportance;
+    private Importance? _markImportance;
 
     /// <summary>
     ///     The MarkAsRead action.
     /// </summary>
-    private bool markAsRead;
+    private bool _markAsRead;
 
     /// <summary>
     ///     The MoveToFolder action.
     /// </summary>
-    private FolderId moveToFolder;
+    private FolderId _moveToFolder;
 
     /// <summary>
     ///     The PermanentDelete action.
     /// </summary>
-    private bool permanentDelete;
-
-    /// <summary>
-    ///     The RedirectToRecipients action.
-    /// </summary>
-    private readonly EmailAddressCollection redirectToRecipients;
-
-    /// <summary>
-    ///     The SendSMSAlertToRecipients action.
-    /// </summary>
-    private Collection<MobilePhone> sendSMSAlertToRecipients;
+    private bool _permanentDelete;
 
     /// <summary>
     ///     The ServerReplyWithMessage action.
     /// </summary>
-    private ItemId serverReplyWithMessage;
+    private ItemId _serverReplyWithMessage;
 
     /// <summary>
     ///     The StopProcessingRules action.
     /// </summary>
-    private bool stopProcessingRules;
+    private bool _stopProcessingRules;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
     /// </summary>
     internal RuleActions()
     {
-        assignCategories = new StringList();
-        forwardAsAttachmentToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        forwardToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        redirectToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        sendSMSAlertToRecipients = new Collection<MobilePhone>();
+        AssignCategories = new StringList();
+        ForwardAsAttachmentToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        ForwardToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        RedirectToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        SendSMSAlertToRecipients = new Collection<MobilePhone>();
     }
 
     /// <summary>
@@ -119,17 +97,16 @@ public sealed class RuleActions : ComplexProperty
     ///     To disable stamping incoming messages with categories, set
     ///     AssignCategories to null.
     /// </summary>
-    public StringList AssignCategories => assignCategories;
+    public StringList AssignCategories { get; }
 
     /// <summary>
     ///     Gets or sets the Id of the folder incoming messages should be copied to.
     ///     To disable copying incoming messages to a folder, set CopyToFolder to null.
     /// </summary>
-    public FolderId CopyToFolder
+    public FolderId? CopyToFolder
     {
-        get => copyToFolder;
-
-        set => SetFieldValue(ref copyToFolder, value);
+        get => _copyToFolder;
+        set => SetFieldValue(ref _copyToFolder, value);
     }
 
     /// <summary>
@@ -138,9 +115,8 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     public bool Delete
     {
-        get => delete;
-
-        set => SetFieldValue(ref delete, value);
+        get => _delete;
+        set => SetFieldValue(ref _delete, value);
     }
 
     /// <summary>
@@ -148,13 +124,13 @@ public sealed class RuleActions : ComplexProperty
     ///     forwarded as attachments. To disable forwarding incoming messages
     ///     as attachments, empty the ForwardAsAttachmentToRecipients list.
     /// </summary>
-    public EmailAddressCollection ForwardAsAttachmentToRecipients => forwardAsAttachmentToRecipients;
+    public EmailAddressCollection ForwardAsAttachmentToRecipients { get; }
 
     /// <summary>
     ///     Gets the e-mail addresses to which incoming messages should be forwarded.
     ///     To disable forwarding incoming messages, empty the ForwardToRecipients list.
     /// </summary>
-    public EmailAddressCollection ForwardToRecipients => forwardToRecipients;
+    public EmailAddressCollection ForwardToRecipients { get; }
 
     /// <summary>
     ///     Gets or sets the importance that should be stamped on incoming
@@ -163,9 +139,8 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     public Importance? MarkImportance
     {
-        get => markImportance;
-
-        set => SetFieldValue(ref markImportance, value);
+        get => _markImportance;
+        set => SetFieldValue(ref _markImportance, value);
     }
 
     /// <summary>
@@ -174,9 +149,8 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     public bool MarkAsRead
     {
-        get => markAsRead;
-
-        set => SetFieldValue(ref markAsRead, value);
+        get => _markAsRead;
+        set => SetFieldValue(ref _markAsRead, value);
     }
 
     /// <summary>
@@ -184,11 +158,10 @@ public sealed class RuleActions : ComplexProperty
     ///     moved. To disable the moving of incoming messages to a folder, set
     ///     CopyToFolder to null.
     /// </summary>
-    public FolderId MoveToFolder
+    public FolderId? MoveToFolder
     {
-        get => moveToFolder;
-
-        set => SetFieldValue(ref moveToFolder, value);
+        get => _moveToFolder;
+        set => SetFieldValue(ref _moveToFolder, value);
     }
 
     /// <summary>
@@ -199,9 +172,8 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     public bool PermanentDelete
     {
-        get => permanentDelete;
-
-        set => SetFieldValue(ref permanentDelete, value);
+        get => _permanentDelete;
+        set => SetFieldValue(ref _permanentDelete, value);
     }
 
     /// <summary>
@@ -210,25 +182,24 @@ public sealed class RuleActions : ComplexProperty
     ///     the RedirectToRecipients list. Unlike forwarded mail, redirected mail
     ///     maintains the original sender and recipients.
     /// </summary>
-    public EmailAddressCollection RedirectToRecipients => redirectToRecipients;
+    public EmailAddressCollection RedirectToRecipients { get; }
 
     /// <summary>
     ///     Gets the phone numbers to which an SMS alert should be sent. To disable
     ///     sending SMS alerts for incoming messages, empty the
     ///     SendSMSAlertToRecipients list.
     /// </summary>
-    public Collection<MobilePhone> SendSMSAlertToRecipients => sendSMSAlertToRecipients;
+    public Collection<MobilePhone> SendSMSAlertToRecipients { get; private set; }
 
     /// <summary>
     ///     Gets or sets the Id of the template message that should be sent
     ///     as a reply to incoming messages. To disable automatic replies, set
     ///     ServerReplyWithMessage to null.
     /// </summary>
-    public ItemId ServerReplyWithMessage
+    public ItemId? ServerReplyWithMessage
     {
-        get => serverReplyWithMessage;
-
-        set => SetFieldValue(ref serverReplyWithMessage, value);
+        get => _serverReplyWithMessage;
+        set => SetFieldValue(ref _serverReplyWithMessage, value);
     }
 
     /// <summary>
@@ -237,9 +208,8 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     public bool StopProcessingRules
     {
-        get => stopProcessingRules;
-
-        set => SetFieldValue(ref stopProcessingRules, value);
+        get => _stopProcessingRules;
+        set => SetFieldValue(ref _stopProcessingRules, value);
     }
 
     /// <summary>
@@ -252,56 +222,84 @@ public sealed class RuleActions : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.AssignCategories:
-                assignCategories.LoadFromXml(reader, reader.LocalName);
+            {
+                AssignCategories.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.CopyToFolder:
+            {
                 reader.ReadStartElement(XmlNamespace.NotSpecified, XmlElementNames.FolderId);
-                copyToFolder = new FolderId();
-                copyToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
+                _copyToFolder = new FolderId();
+                _copyToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
                 reader.ReadEndElement(XmlNamespace.NotSpecified, XmlElementNames.CopyToFolder);
                 return true;
+            }
             case XmlElementNames.Delete:
-                delete = reader.ReadElementValue<bool>();
+            {
+                _delete = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.ForwardAsAttachmentToRecipients:
-                forwardAsAttachmentToRecipients.LoadFromXml(reader, reader.LocalName);
+            {
+                ForwardAsAttachmentToRecipients.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ForwardToRecipients:
-                forwardToRecipients.LoadFromXml(reader, reader.LocalName);
+            {
+                ForwardToRecipients.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.MarkImportance:
-                markImportance = reader.ReadElementValue<Importance>();
+            {
+                _markImportance = reader.ReadElementValue<Importance>();
                 return true;
+            }
             case XmlElementNames.MarkAsRead:
-                markAsRead = reader.ReadElementValue<bool>();
+            {
+                _markAsRead = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.MoveToFolder:
+            {
                 reader.ReadStartElement(XmlNamespace.NotSpecified, XmlElementNames.FolderId);
-                moveToFolder = new FolderId();
-                moveToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
+                _moveToFolder = new FolderId();
+                _moveToFolder.LoadFromXml(reader, XmlElementNames.FolderId);
                 reader.ReadEndElement(XmlNamespace.NotSpecified, XmlElementNames.MoveToFolder);
                 return true;
+            }
             case XmlElementNames.PermanentDelete:
-                permanentDelete = reader.ReadElementValue<bool>();
+            {
+                _permanentDelete = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.RedirectToRecipients:
-                redirectToRecipients.LoadFromXml(reader, reader.LocalName);
+            {
+                RedirectToRecipients.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.SendSMSAlertToRecipients:
+            {
                 var smsRecipientCollection = new EmailAddressCollection(XmlElementNames.Address);
                 smsRecipientCollection.LoadFromXml(reader, reader.LocalName);
-                sendSMSAlertToRecipients =
-                    ConvertSMSRecipientsFromEmailAddressCollectionToMobilePhoneCollection(smsRecipientCollection);
+                SendSMSAlertToRecipients =
+                    ConvertSmsRecipientsFromEmailAddressCollectionToMobilePhoneCollection(smsRecipientCollection);
                 return true;
+            }
             case XmlElementNames.ServerReplyWithMessage:
-                serverReplyWithMessage = new ItemId();
-                serverReplyWithMessage.LoadFromXml(reader, reader.LocalName);
+            {
+                _serverReplyWithMessage = new ItemId();
+                _serverReplyWithMessage.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.StopProcessingRules:
-                stopProcessingRules = reader.ReadElementValue<bool>();
+            {
+                _stopProcessingRules = reader.ReadElementValue<bool>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -368,7 +366,7 @@ public sealed class RuleActions : ComplexProperty
         if (SendSMSAlertToRecipients.Count > 0)
         {
             var emailCollection =
-                ConvertSMSRecipientsFromMobilePhoneCollectionToEmailAddressCollection(SendSMSAlertToRecipients);
+                ConvertSmsRecipientsFromMobilePhoneCollectionToEmailAddressCollection(SendSMSAlertToRecipients);
             emailCollection.WriteToXml(writer, XmlElementNames.SendSMSAlertToRecipients);
         }
 
@@ -389,12 +387,12 @@ public sealed class RuleActions : ComplexProperty
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        EwsUtilities.ValidateParam(forwardAsAttachmentToRecipients, "ForwardAsAttachmentToRecipients");
-        EwsUtilities.ValidateParam(forwardToRecipients, "ForwardToRecipients");
-        EwsUtilities.ValidateParam(redirectToRecipients, "RedirectToRecipients");
-        foreach (var sendSMSAlertToRecipient in sendSMSAlertToRecipients)
+        EwsUtilities.ValidateParam(ForwardAsAttachmentToRecipients);
+        EwsUtilities.ValidateParam(ForwardToRecipients);
+        EwsUtilities.ValidateParam(RedirectToRecipients);
+        foreach (var sendSmsAlertToRecipient in SendSMSAlertToRecipients)
         {
-            EwsUtilities.ValidateParam(sendSMSAlertToRecipient, "SendSMSAlertToRecipient");
+            EwsUtilities.ValidateParam(sendSmsAlertToRecipient, "SendSMSAlertToRecipients");
         }
     }
 
@@ -403,7 +401,7 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     /// <param name="emailCollection">Recipient list in EmailAddressCollection type.</param>
     /// <returns>A MobilePhone collection object containing all SMS recipient in MobilePhone type. </returns>
-    private static Collection<MobilePhone> ConvertSMSRecipientsFromEmailAddressCollectionToMobilePhoneCollection(
+    private static Collection<MobilePhone> ConvertSmsRecipientsFromEmailAddressCollectionToMobilePhoneCollection(
         EmailAddressCollection emailCollection
     )
     {
@@ -421,7 +419,7 @@ public sealed class RuleActions : ComplexProperty
     /// </summary>
     /// <param name="recipientCollection">Recipient list in a MobilePhone collection type.</param>
     /// <returns>An EmailAddressCollection object containing recipients with "MOBILE" address type. </returns>
-    private static EmailAddressCollection ConvertSMSRecipientsFromMobilePhoneCollectionToEmailAddressCollection(
+    private static EmailAddressCollection ConvertSmsRecipientsFromMobilePhoneCollectionToEmailAddressCollection(
         Collection<MobilePhone> recipientCollection
     )
     {

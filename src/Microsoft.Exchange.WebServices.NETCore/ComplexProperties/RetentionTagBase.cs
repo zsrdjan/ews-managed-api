@@ -23,27 +23,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the retention tag of an item.
 /// </summary>
+[PublicAPI]
 public class RetentionTagBase : ComplexProperty
 {
     /// <summary>
     ///     Xml element name.
     /// </summary>
-    private readonly string xmlElementName;
+    private readonly string _xmlElementName;
 
     /// <summary>
     ///     Is explicit.
     /// </summary>
-    private bool isExplicit;
+    private bool _isExplicit;
 
     /// <summary>
     ///     Retention id.
     /// </summary>
-    private Guid retentionId;
+    private Guid _retentionId;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RetentionTagBase" /> class.
@@ -51,7 +54,7 @@ public class RetentionTagBase : ComplexProperty
     /// <param name="xmlElementName">Xml element name.</param>
     public RetentionTagBase(string xmlElementName)
     {
-        this.xmlElementName = xmlElementName;
+        this._xmlElementName = xmlElementName;
     }
 
     /// <summary>
@@ -59,8 +62,8 @@ public class RetentionTagBase : ComplexProperty
     /// </summary>
     public bool IsExplicit
     {
-        get => isExplicit;
-        set => SetFieldValue(ref isExplicit, value);
+        get => _isExplicit;
+        set => SetFieldValue(ref _isExplicit, value);
     }
 
     /// <summary>
@@ -68,8 +71,8 @@ public class RetentionTagBase : ComplexProperty
     /// </summary>
     public Guid RetentionId
     {
-        get => retentionId;
-        set => SetFieldValue(ref retentionId, value);
+        get => _retentionId;
+        set => SetFieldValue(ref _retentionId, value);
     }
 
     /// <summary>
@@ -78,7 +81,7 @@ public class RetentionTagBase : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        isExplicit = reader.ReadAttributeValue<bool>(XmlAttributeNames.IsExplicit);
+        _isExplicit = reader.ReadAttributeValue<bool>(XmlAttributeNames.IsExplicit);
     }
 
     /// <summary>
@@ -87,7 +90,7 @@ public class RetentionTagBase : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        retentionId = new Guid(reader.ReadValue());
+        _retentionId = new Guid(reader.ReadValue());
     }
 
     /// <summary>
@@ -96,7 +99,7 @@ public class RetentionTagBase : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.IsExplicit, isExplicit);
+        writer.WriteAttributeValue(XmlAttributeNames.IsExplicit, _isExplicit);
     }
 
     /// <summary>
@@ -105,9 +108,9 @@ public class RetentionTagBase : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (retentionId != Guid.Empty)
+        if (_retentionId != Guid.Empty)
         {
-            writer.WriteValue(retentionId.ToString(), xmlElementName);
+            writer.WriteValue(_retentionId.ToString(), _xmlElementName);
         }
     }
 
@@ -122,12 +125,12 @@ public class RetentionTagBase : ComplexProperty
     /// </returns>
     public override string ToString()
     {
-        if (retentionId == Guid.Empty)
+        if (_retentionId == Guid.Empty)
         {
             return string.Empty;
         }
 
-        return retentionId.ToString();
+        return _retentionId.ToString();
     }
 
     #endregion

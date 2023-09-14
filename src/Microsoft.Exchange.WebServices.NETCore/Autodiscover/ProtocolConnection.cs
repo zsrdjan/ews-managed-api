@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,12 +34,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents the email Protocol connection settings for pop/imap/smtp protocols.
 /// </summary>
+[PublicAPI]
 public sealed class ProtocolConnection
 {
-    private string encryptionMethod;
-    private string hostname;
-    private int port;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ProtocolConnection" /> class.
     /// </summary>
@@ -62,14 +61,20 @@ public sealed class ProtocolConnection
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.EncryptionMethod:
+                    {
                         connection.EncryptionMethod = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.Hostname:
+                    {
                         connection.Hostname = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.Port:
+                    {
                         connection.Port = reader.ReadElementValue<int>();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.ProtocolConnection));
@@ -85,38 +90,26 @@ public sealed class ProtocolConnection
     /// <param name="port">The port number to use for the portocol.</param>
     internal ProtocolConnection(string encryptionMethod, string hostname, int port)
     {
-        this.encryptionMethod = encryptionMethod;
-        this.hostname = hostname;
-        this.port = port;
+        EncryptionMethod = encryptionMethod;
+        Hostname = hostname;
+        Port = port;
     }
 
     /// <summary>
     ///     Gets or sets the encryption method.
     /// </summary>
     /// <value>The encryption method.</value>
-    public string EncryptionMethod
-    {
-        get => encryptionMethod;
-        set => encryptionMethod = value;
-    }
+    public string EncryptionMethod { get; set; }
 
     /// <summary>
     ///     Gets or sets the Hostname.
     /// </summary>
     /// <value>The hostname.</value>
-    public string Hostname
-    {
-        get => hostname;
-        set => hostname = value;
-    }
+    public string Hostname { get; set; }
 
     /// <summary>
     ///     Gets or sets the port number.
     /// </summary>
     /// <value>The port number.</value>
-    public int Port
-    {
-        get => port;
-        set => port = value;
-    }
+    public int Port { get; set; }
 }

@@ -23,16 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents voting option information.
 /// </summary>
+[PublicAPI]
 public sealed class VotingOptionData : ComplexProperty
 {
-    private string displayName;
-    private SendPrompt sendPrompt;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="VotingOptionData" /> class.
     /// </summary>
@@ -50,23 +50,29 @@ public sealed class VotingOptionData : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.VotingOptionDisplayName:
-                displayName = reader.ReadElementValue<string>();
+            {
+                DisplayName = reader.ReadElementValue<string>();
                 return true;
+            }
             case XmlElementNames.SendPrompt:
-                sendPrompt = reader.ReadElementValue<SendPrompt>();
+            {
+                SendPrompt = reader.ReadElementValue<SendPrompt>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets the display name for the voting option.
     /// </summary>
-    public string DisplayName => displayName;
+    public string DisplayName { get; private set; }
 
     /// <summary>
     ///     Gets the send prompt.
     /// </summary>
-    public SendPrompt SendPrompt => sendPrompt;
+    public SendPrompt SendPrompt { get; private set; }
 }

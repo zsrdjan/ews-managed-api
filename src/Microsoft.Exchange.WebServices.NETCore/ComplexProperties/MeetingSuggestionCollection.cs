@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of MeetingSuggestion objects.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class MeetingSuggestionCollection : ComplexPropertyCollection<MeetingSuggestion>
 {
@@ -44,7 +47,7 @@ public sealed class MeetingSuggestionCollection : ComplexPropertyCollection<Meet
     ///     Initializes a new instance of the <see cref="MeetingSuggestionCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal MeetingSuggestionCollection(IEnumerable<MeetingSuggestion> collection)
+    internal MeetingSuggestionCollection(IEnumerable<MeetingSuggestion>? collection)
     {
         if (collection != null)
         {

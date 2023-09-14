@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an ExtractedEntity object.
 /// </summary>
+[PublicAPI]
 public abstract class ExtractedEntity : ComplexProperty
 {
     /// <summary>
@@ -53,6 +56,7 @@ public abstract class ExtractedEntity : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgEmailPosition:
+            {
                 var positionAsString = reader.ReadElementValue();
 
                 if (!string.IsNullOrEmpty(positionAsString))
@@ -61,9 +65,11 @@ public abstract class ExtractedEntity : ComplexProperty
                 }
 
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

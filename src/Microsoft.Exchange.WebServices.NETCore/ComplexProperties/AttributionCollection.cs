@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of attributions
 /// </summary>
+[PublicAPI]
 public sealed class AttributionCollection : ComplexPropertyCollection<Attribution>
 {
     /// <summary>
     ///     XML element name
     /// </summary>
-    private readonly string collectionItemXmlElementName;
+    private readonly string _collectionItemXmlElementName;
 
     /// <summary>
     ///     Creates a new instance of the <see cref="AttributionCollection" /> class.
@@ -49,8 +52,8 @@ public sealed class AttributionCollection : ComplexPropertyCollection<Attributio
     /// <param name="collectionItemXmlElementName">Name of the collection item XML element.</param>
     internal AttributionCollection(string collectionItemXmlElementName)
     {
-        EwsUtilities.ValidateParam(collectionItemXmlElementName, "collectionItemXmlElementName");
-        this.collectionItemXmlElementName = collectionItemXmlElementName;
+        EwsUtilities.ValidateParam(collectionItemXmlElementName);
+        _collectionItemXmlElementName = collectionItemXmlElementName;
     }
 
     /// <summary>
@@ -66,7 +69,7 @@ public sealed class AttributionCollection : ComplexPropertyCollection<Attributio
     ///     Adds multiple attributions to the collection.
     /// </summary>
     /// <param name="attributions">Attributions to be added</param>
-    public void AddRange(IEnumerable<Attribution> attributions)
+    public void AddRange(IEnumerable<Attribution>? attributions)
     {
         if (attributions != null)
         {
@@ -92,8 +95,8 @@ public sealed class AttributionCollection : ComplexPropertyCollection<Attributio
     /// <returns>The attribution object created</returns>
     internal override Attribution CreateComplexProperty(string xmlElementName)
     {
-        EwsUtilities.ValidateParam(xmlElementName, "xmlElementName");
-        if (xmlElementName == collectionItemXmlElementName)
+        EwsUtilities.ValidateParam(xmlElementName);
+        if (xmlElementName == _collectionItemXmlElementName)
         {
             return new Attribution();
         }
@@ -108,7 +111,7 @@ public sealed class AttributionCollection : ComplexPropertyCollection<Attributio
     /// <returns>The XML element name corresponding to the provided attribution object.</returns>
     internal override string GetCollectionItemXmlElementName(Attribution attribution)
     {
-        return collectionItemXmlElementName;
+        return _collectionItemXmlElementName;
     }
 
     /// <summary>

@@ -23,24 +23,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the SkillInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class SkillInsightValue : InsightValue
 {
-    private string name;
-    private string strength;
+    private string _name;
+    private string _strength;
 
     /// <summary>
     ///     Gets the Name
     /// </summary>
     public string Name
     {
-        get => name;
-
-        set => SetFieldValue(ref name, value);
+        get => _name;
+        set => SetFieldValue(ref _name, value);
     }
 
     /// <summary>
@@ -48,9 +50,8 @@ public sealed class SkillInsightValue : InsightValue
     /// </summary>
     public string Strength
     {
-        get => strength;
-
-        set => SetFieldValue(ref strength, value);
+        get => _strength;
+        set => SetFieldValue(ref _strength, value);
     }
 
     /// <summary>
@@ -63,19 +64,29 @@ public sealed class SkillInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Name:
+            {
                 Name = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Strength:
+            {
                 Strength = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

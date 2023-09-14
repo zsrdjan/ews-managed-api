@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -30,19 +32,14 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents the base class for all responses returned by the Autodiscover service.
 /// </summary>
+[PublicAPI]
 public abstract class AutodiscoverResponse
 {
-    private AutodiscoverErrorCode errorCode;
-    private string errorMessage;
-    private Uri redirectionUrl;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverResponse" /> class.
     /// </summary>
     internal AutodiscoverResponse()
     {
-        errorCode = AutodiscoverErrorCode.NoError;
-        errorMessage = Strings.NoError;
     }
 
     /// <summary>
@@ -55,11 +52,15 @@ public abstract class AutodiscoverResponse
         switch (reader.LocalName)
         {
             case XmlElementNames.ErrorCode:
+            {
                 ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
                 break;
+            }
             case XmlElementNames.ErrorMessage:
+            {
                 ErrorMessage = reader.ReadElementValue();
                 break;
+            }
         }
     }
 
@@ -69,31 +70,19 @@ public abstract class AutodiscoverResponse
     /// <summary>
     ///     Gets the error code that was returned by the service.
     /// </summary>
-    public AutodiscoverErrorCode ErrorCode
-    {
-        get => errorCode;
-        internal set => errorCode = value;
-    }
+    public AutodiscoverErrorCode ErrorCode { get; internal set; } = AutodiscoverErrorCode.NoError;
 
     /// <summary>
     ///     Gets the error message that was returned by the service.
     /// </summary>
     /// <value>The error message.</value>
-    public string ErrorMessage
-    {
-        get => errorMessage;
-        internal set => errorMessage = value;
-    }
+    public string ErrorMessage { get; internal set; } = Strings.NoError;
 
     /// <summary>
     ///     Gets or sets the redirection URL.
     /// </summary>
     /// <value>The redirection URL.</value>
-    internal Uri RedirectionUrl
-    {
-        get => redirectionUrl;
-        set => redirectionUrl = value;
-    }
+    internal Uri RedirectionUrl { get; set; }
 
     #endregion
 }

@@ -23,32 +23,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the DelveDocument.
 /// </summary>
+[PublicAPI]
 public sealed class DelveDocument : InsightValue
 {
-    private double rank;
-    private string author;
-    private string created;
-    private string lastModifiedTime;
-    private string defaultEncodingURL;
-    private string fileType;
-    private string title;
-    private string lastEditor;
-    private string documentId;
-    private string previewURL;
+    private double _rank;
+    private string _author;
+    private string _created;
+    private string _lastModifiedTime;
+    private string _defaultEncodingUrl;
+    private string _fileType;
+    private string _title;
+    private string _lastEditor;
+    private string _documentId;
+    private string _previewUrl;
 
     /// <summary>
     ///     Gets the Rank
     /// </summary>
     public double Rank
     {
-        get => rank;
-
-        set => SetFieldValue(ref rank, value);
+        get => _rank;
+        set => SetFieldValue(ref _rank, value);
     }
 
     /// <summary>
@@ -56,9 +58,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string Author
     {
-        get => author;
-
-        set => SetFieldValue(ref author, value);
+        get => _author;
+        set => SetFieldValue(ref _author, value);
     }
 
     /// <summary>
@@ -66,9 +67,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string Created
     {
-        get => created;
-
-        set => SetFieldValue(ref created, value);
+        get => _created;
+        set => SetFieldValue(ref _created, value);
     }
 
     /// <summary>
@@ -76,9 +76,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string LastModifiedTime
     {
-        get => lastModifiedTime;
-
-        set => SetFieldValue(ref lastModifiedTime, value);
+        get => _lastModifiedTime;
+        set => SetFieldValue(ref _lastModifiedTime, value);
     }
 
     /// <summary>
@@ -86,9 +85,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string DefaultEncodingURL
     {
-        get => defaultEncodingURL;
-
-        set => SetFieldValue(ref defaultEncodingURL, value);
+        get => _defaultEncodingUrl;
+        set => SetFieldValue(ref _defaultEncodingUrl, value);
     }
 
     /// <summary>
@@ -96,9 +94,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string FileType
     {
-        get => fileType;
-
-        set => SetFieldValue(ref fileType, value);
+        get => _fileType;
+        set => SetFieldValue(ref _fileType, value);
     }
 
     /// <summary>
@@ -106,9 +103,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string Title
     {
-        get => title;
-
-        set => SetFieldValue(ref title, value);
+        get => _title;
+        set => SetFieldValue(ref _title, value);
     }
 
     /// <summary>
@@ -116,9 +112,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string DocumentId
     {
-        get => documentId;
-
-        set => SetFieldValue(ref documentId, value);
+        get => _documentId;
+        set => SetFieldValue(ref _documentId, value);
     }
 
     /// <summary>
@@ -126,9 +121,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string PreviewURL
     {
-        get => previewURL;
-
-        set => SetFieldValue(ref previewURL, value);
+        get => _previewUrl;
+        set => SetFieldValue(ref _previewUrl, value);
     }
 
     /// <summary>
@@ -136,9 +130,8 @@ public sealed class DelveDocument : InsightValue
     /// </summary>
     public string LastEditor
     {
-        get => lastEditor;
-
-        set => SetFieldValue(ref lastEditor, value);
+        get => _lastEditor;
+        set => SetFieldValue(ref _lastEditor, value);
     }
 
     /// <summary>
@@ -151,43 +144,69 @@ public sealed class DelveDocument : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Rank:
+            {
                 Rank = reader.ReadElementValue<double>();
                 break;
+            }
             case XmlElementNames.Author:
+            {
                 Author = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Created:
+            {
                 Created = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.LastModifiedTime:
+            {
                 LastModifiedTime = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.DefaultEncodingURL:
+            {
                 DefaultEncodingURL = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.FileType:
+            {
                 FileType = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Title:
+            {
                 Title = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.DocumentId:
+            {
                 DocumentId = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.PreviewURL:
+            {
                 PreviewURL = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.LastEditor:
+            {
                 LastEditor = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

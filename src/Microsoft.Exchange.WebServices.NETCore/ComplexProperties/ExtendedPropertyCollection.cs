@@ -24,13 +24,17 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of extended properties.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ExtendedPropertyCollection : ComplexPropertyCollection<ExtendedProperty>, ICustomUpdateSerializer
 {
@@ -88,8 +92,7 @@ public sealed class ExtendedPropertyCollection : ComplexPropertyCollection<Exten
     /// <returns>ExtendedProperty.</returns>
     private ExtendedProperty GetOrAddExtendedProperty(ExtendedPropertyDefinition propertyDefinition)
     {
-        ExtendedProperty extendedProperty;
-        if (!TryGetProperty(propertyDefinition, out extendedProperty))
+        if (!TryGetProperty(propertyDefinition, out var extendedProperty))
         {
             extendedProperty = new ExtendedProperty(propertyDefinition);
             InternalAdd(extendedProperty);
@@ -119,10 +122,9 @@ public sealed class ExtendedPropertyCollection : ComplexPropertyCollection<Exten
     /// </returns>
     internal bool RemoveExtendedProperty(ExtendedPropertyDefinition propertyDefinition)
     {
-        EwsUtilities.ValidateParam(propertyDefinition, "propertyDefinition");
+        EwsUtilities.ValidateParam(propertyDefinition);
 
-        ExtendedProperty extendedProperty;
-        if (TryGetProperty(propertyDefinition, out extendedProperty))
+        if (TryGetProperty(propertyDefinition, out var extendedProperty))
         {
             return InternalRemove(extendedProperty);
         }
@@ -136,7 +138,10 @@ public sealed class ExtendedPropertyCollection : ComplexPropertyCollection<Exten
     /// <param name="propertyDefinition">The property definition.</param>
     /// <param name="extendedProperty">The extended property.</param>
     /// <returns>True of property exists in collection.</returns>
-    private bool TryGetProperty(ExtendedPropertyDefinition propertyDefinition, out ExtendedProperty extendedProperty)
+    private bool TryGetProperty(
+        ExtendedPropertyDefinition propertyDefinition,
+        [MaybeNullWhen(false)] out ExtendedProperty extendedProperty
+    )
     {
         extendedProperty = Items.Find(prop => prop.PropertyDefinition.Equals(propertyDefinition));
         return extendedProperty != null;
@@ -149,10 +154,12 @@ public sealed class ExtendedPropertyCollection : ComplexPropertyCollection<Exten
     /// <param name="propertyValue">The property value.</param>
     /// <typeparam name="T">Type of expected property value.</typeparam>
     /// <returns>True if property exists in collection.</returns>
-    internal bool TryGetValue<T>(ExtendedPropertyDefinition propertyDefinition, out T propertyValue)
+    internal bool TryGetValue<T>(
+        ExtendedPropertyDefinition propertyDefinition,
+        [MaybeNullWhen(false)] out T propertyValue
+    )
     {
-        ExtendedProperty extendedProperty;
-        if (TryGetProperty(propertyDefinition, out extendedProperty))
+        if (TryGetProperty(propertyDefinition, out var extendedProperty))
         {
             // Verify that the type parameter and property definition's type are compatible.
             if (!typeof(T).GetTypeInfo().IsAssignableFrom(propertyDefinition.Type.GetTypeInfo()))
@@ -162,7 +169,8 @@ public sealed class ExtendedPropertyCollection : ComplexPropertyCollection<Exten
                     EwsUtilities.GetPrintableTypeName(propertyDefinition.Type),
                     EwsUtilities.GetPrintableTypeName(typeof(T))
                 );
-                throw new ArgumentException(errorMessage, "propertyDefinition");
+
+                throw new ArgumentException(errorMessage, nameof(propertyDefinition));
             }
 
             propertyValue = (T)extendedProperty.Value;

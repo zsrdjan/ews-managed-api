@@ -25,28 +25,31 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents PersonaPostalAddress.
 /// </summary>
+[PublicAPI]
 public sealed class PersonaPostalAddress : ComplexProperty
 {
-    private string street;
-    private string city;
-    private string state;
-    private string country;
-    private string postalCode;
-    private string postOfficeBox;
-    private string type;
-    private double? latitude;
-    private double? longitude;
-    private double? accuracy;
-    private double? altitude;
-    private double? altitudeAccuracy;
-    private string formattedAddress;
-    private string uri;
-    private LocationSource source;
+    private string _street;
+    private string _city;
+    private string _state;
+    private string _country;
+    private string _postalCode;
+    private string _postOfficeBox;
+    private string _type;
+    private double? _latitude;
+    private double? _longitude;
+    private double? _accuracy;
+    private double? _altitude;
+    private double? _altitudeAccuracy;
+    private string _formattedAddress;
+    private string _uri;
+    private LocationSource _source;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PersonaPostalAddress" /> class.
@@ -90,20 +93,20 @@ public sealed class PersonaPostalAddress : ComplexProperty
     )
         : this()
     {
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.postalCode = postalCode;
-        this.postOfficeBox = postOfficeBox;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        source = locationSource;
-        uri = locationUri;
-        this.formattedAddress = formattedAddress;
-        this.accuracy = accuracy;
-        this.altitude = altitude;
-        this.altitudeAccuracy = altitudeAccuracy;
+        _street = street;
+        _city = city;
+        _state = state;
+        _country = country;
+        _postalCode = postalCode;
+        _postOfficeBox = postOfficeBox;
+        _latitude = latitude;
+        _longitude = longitude;
+        _source = locationSource;
+        _uri = locationUri;
+        _formattedAddress = formattedAddress;
+        _accuracy = accuracy;
+        _altitude = altitude;
+        _altitudeAccuracy = altitudeAccuracy;
     }
 
     /// <summary>
@@ -116,52 +119,84 @@ public sealed class PersonaPostalAddress : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Street:
-                street = reader.ReadValue<string>();
+            {
+                _street = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.City:
-                city = reader.ReadValue<string>();
+            {
+                _city = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.State:
-                state = reader.ReadValue<string>();
+            {
+                _state = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.Country:
-                country = reader.ReadValue<string>();
+            {
+                _country = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.PostalCode:
-                postalCode = reader.ReadValue<string>();
+            {
+                _postalCode = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.PostOfficeBox:
-                postOfficeBox = reader.ReadValue<string>();
+            {
+                _postOfficeBox = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.PostalAddressType:
-                type = reader.ReadValue<string>();
+            {
+                _type = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.Latitude:
-                latitude = reader.ReadValue<double>();
+            {
+                _latitude = reader.ReadValue<double>();
                 return true;
+            }
             case XmlElementNames.Longitude:
-                longitude = reader.ReadValue<double>();
+            {
+                _longitude = reader.ReadValue<double>();
                 return true;
+            }
             case XmlElementNames.Accuracy:
-                accuracy = reader.ReadValue<double>();
+            {
+                _accuracy = reader.ReadValue<double>();
                 return true;
+            }
             case XmlElementNames.Altitude:
-                altitude = reader.ReadValue<double>();
+            {
+                _altitude = reader.ReadValue<double>();
                 return true;
+            }
             case XmlElementNames.AltitudeAccuracy:
-                altitudeAccuracy = reader.ReadValue<double>();
+            {
+                _altitudeAccuracy = reader.ReadValue<double>();
                 return true;
+            }
             case XmlElementNames.FormattedAddress:
-                formattedAddress = reader.ReadValue<string>();
+            {
+                _formattedAddress = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.LocationUri:
-                uri = reader.ReadValue<string>();
+            {
+                _uri = reader.ReadValue<string>();
                 return true;
+            }
             case XmlElementNames.LocationSource:
-                source = reader.ReadValue<LocationSource>();
+            {
+                _source = reader.ReadValue<LocationSource>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -187,8 +222,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string Street
     {
-        get => street;
-        set => SetFieldValue(ref street, value);
+        get => _street;
+        set => SetFieldValue(ref _street, value);
     }
 
     /// <summary>
@@ -196,8 +231,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string City
     {
-        get => city;
-        set => SetFieldValue(ref city, value);
+        get => _city;
+        set => SetFieldValue(ref _city, value);
     }
 
     /// <summary>
@@ -205,8 +240,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string State
     {
-        get => state;
-        set => SetFieldValue(ref state, value);
+        get => _state;
+        set => SetFieldValue(ref _state, value);
     }
 
     /// <summary>
@@ -214,8 +249,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string Country
     {
-        get => country;
-        set => SetFieldValue(ref country, value);
+        get => _country;
+        set => SetFieldValue(ref _country, value);
     }
 
     /// <summary>
@@ -223,8 +258,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string PostalCode
     {
-        get => postalCode;
-        set => SetFieldValue(ref postalCode, value);
+        get => _postalCode;
+        set => SetFieldValue(ref _postalCode, value);
     }
 
     /// <summary>
@@ -232,8 +267,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string PostOfficeBox
     {
-        get => postOfficeBox;
-        set => SetFieldValue(ref postOfficeBox, value);
+        get => _postOfficeBox;
+        set => SetFieldValue(ref _postOfficeBox, value);
     }
 
     /// <summary>
@@ -241,8 +276,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string Type
     {
-        get => type;
-        set => SetFieldValue(ref type, value);
+        get => _type;
+        set => SetFieldValue(ref _type, value);
     }
 
     /// <summary>
@@ -250,8 +285,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public LocationSource Source
     {
-        get => source;
-        set => SetFieldValue(ref source, value);
+        get => _source;
+        set => SetFieldValue(ref _source, value);
     }
 
     /// <summary>
@@ -259,8 +294,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string Uri
     {
-        get => uri;
-        set => SetFieldValue(ref uri, value);
+        get => _uri;
+        set => SetFieldValue(ref _uri, value);
     }
 
     /// <summary>
@@ -268,8 +303,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public double? Latitude
     {
-        get => latitude;
-        set => SetFieldValue(ref latitude, value);
+        get => _latitude;
+        set => SetFieldValue(ref _latitude, value);
     }
 
     /// <summary>
@@ -277,8 +312,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public double? Longitude
     {
-        get => longitude;
-        set => SetFieldValue(ref longitude, value);
+        get => _longitude;
+        set => SetFieldValue(ref _longitude, value);
     }
 
     /// <summary>
@@ -286,8 +321,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public double? Accuracy
     {
-        get => accuracy;
-        set => SetFieldValue(ref accuracy, value);
+        get => _accuracy;
+        set => SetFieldValue(ref _accuracy, value);
     }
 
     /// <summary>
@@ -295,8 +330,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public double? Altitude
     {
-        get => altitude;
-        set => SetFieldValue(ref altitude, value);
+        get => _altitude;
+        set => SetFieldValue(ref _altitude, value);
     }
 
     /// <summary>
@@ -304,8 +339,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public double? AltitudeAccuracy
     {
-        get => altitudeAccuracy;
-        set => SetFieldValue(ref altitudeAccuracy, value);
+        get => _altitudeAccuracy;
+        set => SetFieldValue(ref _altitudeAccuracy, value);
     }
 
     /// <summary>
@@ -313,8 +348,8 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// </summary>
     public string FormattedAddress
     {
-        get => formattedAddress;
-        set => SetFieldValue(ref formattedAddress, value);
+        get => _formattedAddress;
+        set => SetFieldValue(ref _formattedAddress, value);
     }
 
     /// <summary>
@@ -323,21 +358,21 @@ public sealed class PersonaPostalAddress : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Street, street);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.City, city);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.State, state);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Country, country);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalCode, postalCode);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostOfficeBox, postOfficeBox);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalAddressType, type);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Latitude, latitude);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Longitude, longitude);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Accuracy, accuracy);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Altitude, altitude);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AltitudeAccuracy, altitudeAccuracy);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FormattedAddress, formattedAddress);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationUri, uri);
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationSource, source);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Street, _street);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.City, _city);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.State, _state);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Country, _country);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalCode, _postalCode);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostOfficeBox, _postOfficeBox);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PostalAddressType, _type);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Latitude, _latitude);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Longitude, _longitude);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Accuracy, _accuracy);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Altitude, _altitude);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AltitudeAccuracy, _altitudeAccuracy);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.FormattedAddress, _formattedAddress);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationUri, _uri);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.LocationSource, _source);
     }
 
     /// <summary>

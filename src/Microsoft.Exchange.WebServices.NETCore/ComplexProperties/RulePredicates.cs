@@ -23,202 +23,135 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the set of conditions and exceptions available for a rule.
 /// </summary>
+[PublicAPI]
 public sealed class RulePredicates : ComplexProperty
 {
     /// <summary>
-    ///     The HasCategories predicate.
-    /// </summary>
-    private readonly StringList categories;
-
-    /// <summary>
-    ///     The ContainsBodyStrings predicate.
-    /// </summary>
-    private readonly StringList containsBodyStrings;
-
-    /// <summary>
-    ///     The ContainsHeaderStrings predicate.
-    /// </summary>
-    private readonly StringList containsHeaderStrings;
-
-    /// <summary>
-    ///     The ContainsRecipientStrings predicate.
-    /// </summary>
-    private readonly StringList containsRecipientStrings;
-
-    /// <summary>
-    ///     The ContainsSenderStrings predicate.
-    /// </summary>
-    private readonly StringList containsSenderStrings;
-
-    /// <summary>
-    ///     The ContainsSubjectOrBodyStrings predicate.
-    /// </summary>
-    private readonly StringList containsSubjectOrBodyStrings;
-
-    /// <summary>
-    ///     The ContainsSubjectStrings predicate.
-    /// </summary>
-    private readonly StringList containsSubjectStrings;
-
-    /// <summary>
     ///     The FlaggedForAction predicate.
     /// </summary>
-    private FlaggedForAction? flaggedForAction;
-
-    /// <summary>
-    ///     The FromAddresses predicate.
-    /// </summary>
-    private readonly EmailAddressCollection fromAddresses;
-
-    /// <summary>
-    ///     The FromConnectedAccounts predicate.
-    /// </summary>
-    private readonly StringList fromConnectedAccounts;
+    private FlaggedForAction? _flaggedForAction;
 
     /// <summary>
     ///     The HasAttachments predicate.
     /// </summary>
-    private bool hasAttachments;
+    private bool _hasAttachments;
 
     /// <summary>
     ///     The Importance predicate.
     /// </summary>
-    private Importance? importance;
+    private Importance? _importance;
 
     /// <summary>
     ///     The IsApprovalRequest predicate.
     /// </summary>
-    private bool isApprovalRequest;
+    private bool _isApprovalRequest;
 
     /// <summary>
     ///     The IsAutomaticForward predicate.
     /// </summary>
-    private bool isAutomaticForward;
+    private bool _isAutomaticForward;
 
     /// <summary>
     ///     The IsAutomaticReply predicate.
     /// </summary>
-    private bool isAutomaticReply;
+    private bool _isAutomaticReply;
 
     /// <summary>
     ///     The IsEncrypted predicate.
     /// </summary>
-    private bool isEncrypted;
+    private bool _isEncrypted;
 
     /// <summary>
     ///     The IsMeetingRequest predicate.
     /// </summary>
-    private bool isMeetingRequest;
+    private bool _isMeetingRequest;
 
     /// <summary>
     ///     The IsMeetingResponse predicate.
     /// </summary>
-    private bool isMeetingResponse;
+    private bool _isMeetingResponse;
 
     /// <summary>
     ///     The IsNDR predicate.
     /// </summary>
-    private bool isNonDeliveryReport;
+    private bool _isNonDeliveryReport;
 
     /// <summary>
     ///     The IsPermissionControlled predicate.
     /// </summary>
-    private bool isPermissionControlled;
+    private bool _isPermissionControlled;
 
     /// <summary>
     ///     The IsSigned predicate.
     /// </summary>
-    private bool isSigned;
+    private bool _isSigned;
 
     /// <summary>
     ///     The IsVoicemail predicate.
     /// </summary>
-    private bool isVoicemail;
+    private bool _isVoicemail;
 
     /// <summary>
     ///     The IsReadReceipt  predicate.
     /// </summary>
-    private bool isReadReceipt;
-
-    /// <summary>
-    ///     ItemClasses predicate.
-    /// </summary>
-    private readonly StringList itemClasses;
-
-    /// <summary>
-    ///     The MessageClassifications predicate.
-    /// </summary>
-    private readonly StringList messageClassifications;
+    private bool _isReadReceipt;
 
     /// <summary>
     ///     The NotSentToMe predicate.
     /// </summary>
-    private bool notSentToMe;
+    private bool _notSentToMe;
 
     /// <summary>
     ///     SentCcMe predicate.
     /// </summary>
-    private bool sentCcMe;
+    private bool _sentCcMe;
 
     /// <summary>
     ///     The SentOnlyToMe predicate.
     /// </summary>
-    private bool sentOnlyToMe;
-
-    /// <summary>
-    ///     The SentToAddresses predicate.
-    /// </summary>
-    private readonly EmailAddressCollection sentToAddresses;
+    private bool _sentOnlyToMe;
 
     /// <summary>
     ///     The SentToMe predicate.
     /// </summary>
-    private bool sentToMe;
+    private bool _sentToMe;
 
     /// <summary>
     ///     The SentToOrCcMe predicate.
     /// </summary>
-    private bool sentToOrCcMe;
+    private bool _sentToOrCcMe;
 
     /// <summary>
     ///     The Sensitivity predicate.
     /// </summary>
-    private Sensitivity? sensitivity;
-
-    /// <summary>
-    ///     The Sensitivity predicate.
-    /// </summary>
-    private readonly RulePredicateDateRange withinDateRange;
-
-    /// <summary>
-    ///     The Sensitivity predicate.
-    /// </summary>
-    private readonly RulePredicateSizeRange withinSizeRange;
+    private Sensitivity? _sensitivity;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
     /// </summary>
     internal RulePredicates()
     {
-        categories = new StringList();
-        containsBodyStrings = new StringList();
-        containsHeaderStrings = new StringList();
-        containsRecipientStrings = new StringList();
-        containsSenderStrings = new StringList();
-        containsSubjectOrBodyStrings = new StringList();
-        containsSubjectStrings = new StringList();
-        fromAddresses = new EmailAddressCollection(XmlElementNames.Address);
-        fromConnectedAccounts = new StringList();
-        itemClasses = new StringList();
-        messageClassifications = new StringList();
-        sentToAddresses = new EmailAddressCollection(XmlElementNames.Address);
-        withinDateRange = new RulePredicateDateRange();
-        withinSizeRange = new RulePredicateSizeRange();
+        Categories = new StringList();
+        ContainsBodyStrings = new StringList();
+        ContainsHeaderStrings = new StringList();
+        ContainsRecipientStrings = new StringList();
+        ContainsSenderStrings = new StringList();
+        ContainsSubjectOrBodyStrings = new StringList();
+        ContainsSubjectStrings = new StringList();
+        FromAddresses = new EmailAddressCollection(XmlElementNames.Address);
+        FromConnectedAccounts = new StringList();
+        ItemClasses = new StringList();
+        MessageClassifications = new StringList();
+        SentToAddresses = new EmailAddressCollection(XmlElementNames.Address);
+        WithinDateRange = new RulePredicateDateRange();
+        WithinSizeRange = new RulePredicateSizeRange();
     }
 
     /// <summary>
@@ -226,60 +159,59 @@ public sealed class RulePredicates : ComplexProperty
     ///     for the condition or exception to apply. To disable this predicate,
     ///     empty the list.
     /// </summary>
-    public StringList Categories => categories;
+    public StringList Categories { get; }
 
     /// <summary>
     ///     Gets the strings that should appear in the body of incoming messages
     ///     for the condition or exception to apply.
     ///     To disable this predicate, empty the list.
     /// </summary>
-    public StringList ContainsBodyStrings => containsBodyStrings;
+    public StringList ContainsBodyStrings { get; }
 
     /// <summary>
     ///     Gets the strings that should appear in the headers of incoming messages
     ///     for the condition or exception to apply. To disable this predicate, empty
     ///     the list.
     /// </summary>
-    public StringList ContainsHeaderStrings => containsHeaderStrings;
+    public StringList ContainsHeaderStrings { get; }
 
     /// <summary>
     ///     Gets the strings that should appear in either the To or Cc fields of
     ///     incoming messages for the condition or exception to apply. To disable this
     ///     predicate, empty the list.
     /// </summary>
-    public StringList ContainsRecipientStrings => containsRecipientStrings;
+    public StringList ContainsRecipientStrings { get; }
 
     /// <summary>
     ///     Gets the strings that should appear in the From field of incoming messages
     ///     for the condition or exception to apply. To disable this predicate, empty
     ///     the list.
     /// </summary>
-    public StringList ContainsSenderStrings => containsSenderStrings;
+    public StringList ContainsSenderStrings { get; }
 
     /// <summary>
     ///     Gets the strings that should appear in either the body or the subject
     ///     of incoming messages for the condition or exception to apply.
     ///     To disable this predicate, empty the list.
     /// </summary>
-    public StringList ContainsSubjectOrBodyStrings => containsSubjectOrBodyStrings;
+    public StringList ContainsSubjectOrBodyStrings { get; }
 
     /// <summary>
     ///     Gets the strings that should appear in the subject of incoming messages
     ///     for the condition or exception to apply. To disable this predicate,
     ///     empty the list.
     /// </summary>
-    public StringList ContainsSubjectStrings => containsSubjectStrings;
+    public StringList ContainsSubjectStrings { get; }
 
     /// <summary>
     ///     Gets or sets the flag for action value that should appear on incoming
-    ///     messages for the condition or execption to apply. To disable this
+    ///     messages for the condition or exception to apply. To disable this
     ///     predicate, set it to null.
     /// </summary>
     public FlaggedForAction? FlaggedForAction
     {
-        get => flaggedForAction;
-
-        set => SetFieldValue(ref flaggedForAction, value);
+        get => _flaggedForAction;
+        set => SetFieldValue(ref _flaggedForAction, value);
     }
 
     /// <summary>
@@ -287,7 +219,7 @@ public sealed class RulePredicates : ComplexProperty
     ///     condition or exception to apply. To disable this predicate, empty the
     ///     list.
     /// </summary>
-    public EmailAddressCollection FromAddresses => fromAddresses;
+    public EmailAddressCollection FromAddresses { get; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether incoming messages must have
@@ -295,9 +227,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool HasAttachments
     {
-        get => hasAttachments;
-
-        set => SetFieldValue(ref hasAttachments, value);
+        get => _hasAttachments;
+        set => SetFieldValue(ref _hasAttachments, value);
     }
 
     /// <summary>
@@ -307,9 +238,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public Importance? Importance
     {
-        get => importance;
-
-        set => SetFieldValue(ref importance, value);
+        get => _importance;
+        set => SetFieldValue(ref _importance, value);
     }
 
     /// <summary>
@@ -318,9 +248,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsApprovalRequest
     {
-        get => isApprovalRequest;
-
-        set => SetFieldValue(ref isApprovalRequest, value);
+        get => _isApprovalRequest;
+        set => SetFieldValue(ref _isApprovalRequest, value);
     }
 
     /// <summary>
@@ -329,9 +258,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsAutomaticForward
     {
-        get => isAutomaticForward;
-
-        set => SetFieldValue(ref isAutomaticForward, value);
+        get => _isAutomaticForward;
+        set => SetFieldValue(ref _isAutomaticForward, value);
     }
 
     /// <summary>
@@ -340,9 +268,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsAutomaticReply
     {
-        get => isAutomaticReply;
-
-        set => SetFieldValue(ref isAutomaticReply, value);
+        get => _isAutomaticReply;
+        set => SetFieldValue(ref _isAutomaticReply, value);
     }
 
     /// <summary>
@@ -351,9 +278,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsEncrypted
     {
-        get => isEncrypted;
-
-        set => SetFieldValue(ref isEncrypted, value);
+        get => _isEncrypted;
+        set => SetFieldValue(ref _isEncrypted, value);
     }
 
     /// <summary>
@@ -362,9 +288,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsMeetingRequest
     {
-        get => isMeetingRequest;
-
-        set => SetFieldValue(ref isMeetingRequest, value);
+        get => _isMeetingRequest;
+        set => SetFieldValue(ref _isMeetingRequest, value);
     }
 
     /// <summary>
@@ -373,9 +298,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsMeetingResponse
     {
-        get => isMeetingResponse;
-
-        set => SetFieldValue(ref isMeetingResponse, value);
+        get => _isMeetingResponse;
+        set => SetFieldValue(ref _isMeetingResponse, value);
     }
 
     /// <summary>
@@ -384,9 +308,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsNonDeliveryReport
     {
-        get => isNonDeliveryReport;
-
-        set => SetFieldValue(ref isNonDeliveryReport, value);
+        get => _isNonDeliveryReport;
+        set => SetFieldValue(ref _isNonDeliveryReport, value);
     }
 
     /// <summary>
@@ -396,9 +319,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsPermissionControlled
     {
-        get => isPermissionControlled;
-
-        set => SetFieldValue(ref isPermissionControlled, value);
+        get => _isPermissionControlled;
+        set => SetFieldValue(ref _isPermissionControlled, value);
     }
 
     /// <summary>
@@ -407,9 +329,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsSigned
     {
-        get => isSigned;
-
-        set => SetFieldValue(ref isSigned, value);
+        get => _isSigned;
+        set => SetFieldValue(ref _isSigned, value);
     }
 
     /// <summary>
@@ -418,9 +339,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsVoicemail
     {
-        get => isVoicemail;
-
-        set => SetFieldValue(ref isVoicemail, value);
+        get => _isVoicemail;
+        set => SetFieldValue(ref _isVoicemail, value);
     }
 
     /// <summary>
@@ -429,9 +349,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool IsReadReceipt
     {
-        get => isReadReceipt;
-
-        set => SetFieldValue(ref isReadReceipt, value);
+        get => _isReadReceipt;
+        set => SetFieldValue(ref _isReadReceipt, value);
     }
 
     /// <summary>
@@ -439,21 +358,21 @@ public sealed class RulePredicates : ComplexProperty
     ///     been aggregated for the condition or exception to apply. To disable
     ///     this predicate, empty the list.
     /// </summary>
-    public StringList FromConnectedAccounts => fromConnectedAccounts;
+    public StringList FromConnectedAccounts { get; }
 
     /// <summary>
     ///     Gets the item classes that must be stamped on incoming messages for
     ///     the condition or exception to apply. To disable this predicate,
     ///     empty the list.
     /// </summary>
-    public StringList ItemClasses => itemClasses;
+    public StringList ItemClasses { get; }
 
     /// <summary>
     ///     Gets the message classifications that must be stamped on incoming messages
     ///     for the condition or exception to apply. To disable this predicate,
     ///     empty the list.
     /// </summary>
-    public StringList MessageClassifications => messageClassifications;
+    public StringList MessageClassifications { get; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the owner of the mailbox must
@@ -462,9 +381,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool NotSentToMe
     {
-        get => notSentToMe;
-
-        set => SetFieldValue(ref notSentToMe, value);
+        get => _notSentToMe;
+        set => SetFieldValue(ref _notSentToMe, value);
     }
 
     /// <summary>
@@ -473,9 +391,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool SentCcMe
     {
-        get => sentCcMe;
-
-        set => SetFieldValue(ref sentCcMe, value);
+        get => _sentCcMe;
+        set => SetFieldValue(ref _sentCcMe, value);
     }
 
     /// <summary>
@@ -485,9 +402,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool SentOnlyToMe
     {
-        get => sentOnlyToMe;
-
-        set => SetFieldValue(ref sentOnlyToMe, value);
+        get => _sentOnlyToMe;
+        set => SetFieldValue(ref _sentOnlyToMe, value);
     }
 
     /// <summary>
@@ -495,7 +411,7 @@ public sealed class RulePredicates : ComplexProperty
     ///     the condition or exception to apply. To disable this predicate, empty
     ///     the list.
     /// </summary>
-    public EmailAddressCollection SentToAddresses => sentToAddresses;
+    public EmailAddressCollection SentToAddresses { get; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the owner of the mailbox must be
@@ -503,9 +419,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool SentToMe
     {
-        get => sentToMe;
-
-        set => SetFieldValue(ref sentToMe, value);
+        get => _sentToMe;
+        set => SetFieldValue(ref _sentToMe, value);
     }
 
     /// <summary>
@@ -515,9 +430,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public bool SentToOrCcMe
     {
-        get => sentToOrCcMe;
-
-        set => SetFieldValue(ref sentToOrCcMe, value);
+        get => _sentToOrCcMe;
+        set => SetFieldValue(ref _sentToOrCcMe, value);
     }
 
     /// <summary>
@@ -527,9 +441,8 @@ public sealed class RulePredicates : ComplexProperty
     /// </summary>
     public Sensitivity? Sensitivity
     {
-        get => sensitivity;
-
-        set => SetFieldValue(ref sensitivity, value);
+        get => _sensitivity;
+        set => SetFieldValue(ref _sensitivity, value);
     }
 
     /// <summary>
@@ -537,14 +450,14 @@ public sealed class RulePredicates : ComplexProperty
     ///     for the condition or exception to apply. To disable this predicate, set both
     ///     its Start and End properties to null.
     /// </summary>
-    public RulePredicateDateRange WithinDateRange => withinDateRange;
+    public RulePredicateDateRange WithinDateRange { get; }
 
     /// <summary>
     ///     Gets the minimum and maximum sizes incoming messages must have for the
     ///     condition or exception to apply. To disable this predicate, set both its
     ///     MinimumSize and MaximumSize properties to null.
     /// </summary>
-    public RulePredicateSizeRange WithinSizeRange => withinSizeRange;
+    public RulePredicateSizeRange WithinSizeRange { get; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -556,109 +469,179 @@ public sealed class RulePredicates : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Categories:
-                categories.LoadFromXml(reader, reader.LocalName);
+            {
+                Categories.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ContainsBodyStrings:
-                containsBodyStrings.LoadFromXml(reader, reader.LocalName);
+            {
+                ContainsBodyStrings.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ContainsHeaderStrings:
-                containsHeaderStrings.LoadFromXml(reader, reader.LocalName);
+            {
+                ContainsHeaderStrings.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ContainsRecipientStrings:
-                containsRecipientStrings.LoadFromXml(reader, reader.LocalName);
+            {
+                ContainsRecipientStrings.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ContainsSenderStrings:
-                containsSenderStrings.LoadFromXml(reader, reader.LocalName);
+            {
+                ContainsSenderStrings.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ContainsSubjectOrBodyStrings:
-                containsSubjectOrBodyStrings.LoadFromXml(reader, reader.LocalName);
+            {
+                ContainsSubjectOrBodyStrings.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ContainsSubjectStrings:
-                containsSubjectStrings.LoadFromXml(reader, reader.LocalName);
+            {
+                ContainsSubjectStrings.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.FlaggedForAction:
-                flaggedForAction = reader.ReadElementValue<FlaggedForAction>();
+            {
+                _flaggedForAction = reader.ReadElementValue<FlaggedForAction>();
                 return true;
+            }
             case XmlElementNames.FromAddresses:
-                fromAddresses.LoadFromXml(reader, reader.LocalName);
+            {
+                FromAddresses.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.FromConnectedAccounts:
-                fromConnectedAccounts.LoadFromXml(reader, reader.LocalName);
+            {
+                FromConnectedAccounts.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.HasAttachments:
-                hasAttachments = reader.ReadElementValue<bool>();
+            {
+                _hasAttachments = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.Importance:
-                importance = reader.ReadElementValue<Importance>();
+            {
+                _importance = reader.ReadElementValue<Importance>();
                 return true;
+            }
             case XmlElementNames.IsApprovalRequest:
-                isApprovalRequest = reader.ReadElementValue<bool>();
+            {
+                _isApprovalRequest = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsAutomaticForward:
-                isAutomaticForward = reader.ReadElementValue<bool>();
+            {
+                _isAutomaticForward = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsAutomaticReply:
-                isAutomaticReply = reader.ReadElementValue<bool>();
+            {
+                _isAutomaticReply = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsEncrypted:
-                isEncrypted = reader.ReadElementValue<bool>();
+            {
+                _isEncrypted = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsMeetingRequest:
-                isMeetingRequest = reader.ReadElementValue<bool>();
+            {
+                _isMeetingRequest = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsMeetingResponse:
-                isMeetingResponse = reader.ReadElementValue<bool>();
+            {
+                _isMeetingResponse = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsNDR:
-                isNonDeliveryReport = reader.ReadElementValue<bool>();
+            {
+                _isNonDeliveryReport = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsPermissionControlled:
-                isPermissionControlled = reader.ReadElementValue<bool>();
+            {
+                _isPermissionControlled = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsSigned:
-                isSigned = reader.ReadElementValue<bool>();
+            {
+                _isSigned = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsVoicemail:
-                isVoicemail = reader.ReadElementValue<bool>();
+            {
+                _isVoicemail = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.IsReadReceipt:
-                isReadReceipt = reader.ReadElementValue<bool>();
+            {
+                _isReadReceipt = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.ItemClasses:
-                itemClasses.LoadFromXml(reader, reader.LocalName);
+            {
+                ItemClasses.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.MessageClassifications:
-                messageClassifications.LoadFromXml(reader, reader.LocalName);
+            {
+                MessageClassifications.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.NotSentToMe:
-                notSentToMe = reader.ReadElementValue<bool>();
+            {
+                _notSentToMe = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.SentCcMe:
-                sentCcMe = reader.ReadElementValue<bool>();
+            {
+                _sentCcMe = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.SentOnlyToMe:
-                sentOnlyToMe = reader.ReadElementValue<bool>();
+            {
+                _sentOnlyToMe = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.SentToAddresses:
-                sentToAddresses.LoadFromXml(reader, reader.LocalName);
+            {
+                SentToAddresses.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.SentToMe:
-                sentToMe = reader.ReadElementValue<bool>();
+            {
+                _sentToMe = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.SentToOrCcMe:
-                sentToOrCcMe = reader.ReadElementValue<bool>();
+            {
+                _sentToOrCcMe = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.Sensitivity:
-                sensitivity = reader.ReadElementValue<Sensitivity>();
+            {
+                _sensitivity = reader.ReadElementValue<Sensitivity>();
                 return true;
+            }
             case XmlElementNames.WithinDateRange:
-                withinDateRange.LoadFromXml(reader, reader.LocalName);
+            {
+                WithinDateRange.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.WithinSizeRange:
-                withinSizeRange.LoadFromXml(reader, reader.LocalName);
+            {
+                WithinSizeRange.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -772,7 +755,7 @@ public sealed class RulePredicates : ComplexProperty
             );
         }
 
-        if (isReadReceipt)
+        if (_isReadReceipt)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.IsReadReceipt, IsReadReceipt);
         }
@@ -849,9 +832,10 @@ public sealed class RulePredicates : ComplexProperty
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        EwsUtilities.ValidateParam(fromAddresses, "FromAddresses");
-        EwsUtilities.ValidateParam(sentToAddresses, "SentToAddresses");
-        EwsUtilities.ValidateParam(withinDateRange, "WithinDateRange");
-        EwsUtilities.ValidateParam(withinSizeRange, "WithinSizeRange");
+
+        EwsUtilities.ValidateParam(FromAddresses);
+        EwsUtilities.ValidateParam(SentToAddresses);
+        EwsUtilities.ValidateParam(WithinDateRange);
+        EwsUtilities.ValidateParam(WithinSizeRange);
     }
 }

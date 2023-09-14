@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of an occurrence of a recurring appointment.
 /// </summary>
+[PublicAPI]
 public sealed class RecurringAppointmentMasterId : ItemId
 {
     /// <summary>

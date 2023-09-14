@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of Internet message headers.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class InternetMessageHeaderCollection : ComplexPropertyCollection<InternetMessageHeader>
 {
@@ -68,7 +71,7 @@ public sealed class InternetMessageHeaderCollection : ComplexPropertyCollection<
     ///     An InternetMessageHeader representing the header with the specified name; null if no header with the specified
     ///     name was found.
     /// </returns>
-    public InternetMessageHeader Find(string name)
+    public InternetMessageHeader? Find(string name)
     {
         foreach (var internetMessageHeader in this)
         {

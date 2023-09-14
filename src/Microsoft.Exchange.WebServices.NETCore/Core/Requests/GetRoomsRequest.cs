@@ -101,12 +101,5 @@ internal sealed class GetRoomsRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the room list to retrieve rooms from.
     /// </summary>
-    internal EmailAddress RoomList
-    {
-        get => roomList;
-
-        set => roomList = value;
-    }
-
-    private EmailAddress roomList;
+    internal EmailAddress RoomList { get; set; }
 }

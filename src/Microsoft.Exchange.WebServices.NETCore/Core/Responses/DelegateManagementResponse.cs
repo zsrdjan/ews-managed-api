@@ -33,14 +33,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class DelegateManagementResponse : ServiceResponse
 {
     private readonly bool _readDelegateUsers;
-    private readonly List<DelegateUser> _delegateUsers;
+    private readonly List<DelegateUser>? _delegateUsers;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateManagementResponse" /> class.
     /// </summary>
     /// <param name="readDelegateUsers">if set to <c>true</c> [read delegate users].</param>
     /// <param name="delegateUsers">List of existing delegate users to load.</param>
-    internal DelegateManagementResponse(bool readDelegateUsers, List<DelegateUser> delegateUsers)
+    internal DelegateManagementResponse(bool readDelegateUsers, List<DelegateUser>? delegateUsers)
     {
         _readDelegateUsers = readDelegateUsers;
         _delegateUsers = delegateUsers;

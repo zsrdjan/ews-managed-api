@@ -23,16 +23,17 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
-/// <summary>
-/// </summary>
+[PublicAPI]
 public sealed class ConversationResponse : ComplexProperty
 {
     /// <summary>
     ///     Property set used to fetch items in the conversation.
     /// </summary>
-    private readonly PropertySet propertySet;
+    private readonly PropertySet _propertySet;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ConversationResponse" /> class.
@@ -40,7 +41,7 @@ public sealed class ConversationResponse : ComplexProperty
     /// <param name="propertySet">The property set.</param>
     internal ConversationResponse(PropertySet propertySet)
     {
-        this.propertySet = propertySet;
+        _propertySet = propertySet;
     }
 
     /// <summary>
@@ -68,21 +69,26 @@ public sealed class ConversationResponse : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.ConversationId:
+            {
                 ConversationId = new ConversationId();
                 ConversationId.LoadFromXml(reader, XmlElementNames.ConversationId);
                 return true;
-
+            }
             case XmlElementNames.SyncState:
+            {
                 SyncState = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.ConversationNodes:
-                ConversationNodes = new ConversationNodeCollection(propertySet);
+            {
+                ConversationNodes = new ConversationNodeCollection(_propertySet);
                 ConversationNodes.LoadFromXml(reader, XmlElementNames.ConversationNodes);
                 return true;
-
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 }

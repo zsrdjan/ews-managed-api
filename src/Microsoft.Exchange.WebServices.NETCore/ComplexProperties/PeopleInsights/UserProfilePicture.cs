@@ -23,26 +23,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the UserProfilePicture.
 /// </summary>
+[PublicAPI]
 public sealed class UserProfilePicture : InsightValue
 {
-    private string blob;
-    private string photoSize;
-    private string url;
-    private string imageType;
+    private string _blob;
+    private string _photoSize;
+    private string _url;
+    private string _imageType;
 
     /// <summary>
     ///     Gets the Blob
     /// </summary>
     public string Blob
     {
-        get => blob;
-
-        set => SetFieldValue(ref blob, value);
+        get => _blob;
+        set => SetFieldValue(ref _blob, value);
     }
 
     /// <summary>
@@ -50,9 +52,8 @@ public sealed class UserProfilePicture : InsightValue
     /// </summary>
     public string PhotoSize
     {
-        get => photoSize;
-
-        set => SetFieldValue(ref photoSize, value);
+        get => _photoSize;
+        set => SetFieldValue(ref _photoSize, value);
     }
 
     /// <summary>
@@ -60,9 +61,8 @@ public sealed class UserProfilePicture : InsightValue
     /// </summary>
     public string Url
     {
-        get => url;
-
-        set => SetFieldValue(ref url, value);
+        get => _url;
+        set => SetFieldValue(ref _url, value);
     }
 
     /// <summary>
@@ -70,9 +70,8 @@ public sealed class UserProfilePicture : InsightValue
     /// </summary>
     public string ImageType
     {
-        get => imageType;
-
-        set => SetFieldValue(ref imageType, value);
+        get => _imageType;
+        set => SetFieldValue(ref _imageType, value);
     }
 
     /// <summary>
@@ -85,25 +84,39 @@ public sealed class UserProfilePicture : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Blob:
+            {
                 Blob = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.PhotoSize:
+            {
                 PhotoSize = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Url:
+            {
                 Url = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.ImageType:
+            {
                 ImageType = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

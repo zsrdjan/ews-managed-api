@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,12 +34,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents an error from a GetDomainSettings request.
 /// </summary>
+[PublicAPI]
 public sealed class DomainSettingError
 {
-    private AutodiscoverErrorCode errorCode;
-    private string errorMessage;
-    private string settingName;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DomainSettingError" /> class.
     /// </summary>
@@ -60,14 +59,20 @@ public sealed class DomainSettingError
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.ErrorCode:
-                        errorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
+                    {
+                        ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
                         break;
+                    }
                     case XmlElementNames.ErrorMessage:
-                        errorMessage = reader.ReadElementValue();
+                    {
+                        ErrorMessage = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.SettingName:
-                        settingName = reader.ReadElementValue();
+                    {
+                        SettingName = reader.ReadElementValue();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.DomainSettingError));
@@ -77,17 +82,17 @@ public sealed class DomainSettingError
     ///     Gets the error code.
     /// </summary>
     /// <value>The error code.</value>
-    public AutodiscoverErrorCode ErrorCode => errorCode;
+    public AutodiscoverErrorCode ErrorCode { get; private set; }
 
     /// <summary>
     ///     Gets the error message.
     /// </summary>
     /// <value>The error message.</value>
-    public string ErrorMessage => errorMessage;
+    public string ErrorMessage { get; private set; }
 
     /// <summary>
     ///     Gets the name of the setting.
     /// </summary>
     /// <value>The name of the setting.</value>
-    public string SettingName => settingName;
+    public string SettingName { get; private set; }
 }

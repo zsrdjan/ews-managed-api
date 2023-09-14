@@ -30,8 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal abstract class RecurrenceRange : ComplexProperty
 {
-    private DateTime startDate;
-    private Recurrence recurrence;
+    private DateTime _startDate;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RecurrenceRange" /> class.
@@ -47,7 +46,7 @@ internal abstract class RecurrenceRange : ComplexProperty
     internal RecurrenceRange(DateTime startDate)
         : this()
     {
-        this.startDate = startDate;
+        _startDate = startDate;
     }
 
     /// <summary>
@@ -93,18 +92,20 @@ internal abstract class RecurrenceRange : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.StartDate:
-
+            {
                 var startDate = reader.ReadElementValueAsUnspecifiedDate();
                 if (startDate.HasValue)
                 {
-                    this.startDate = startDate.Value;
+                    _startDate = startDate.Value;
                     return true;
                 }
 
                 return false;
-
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -118,11 +119,7 @@ internal abstract class RecurrenceRange : ComplexProperty
     ///     Gets or sets the recurrence.
     /// </summary>
     /// <value>The recurrence.</value>
-    internal Recurrence Recurrence
-    {
-        get => recurrence;
-        set => recurrence = value;
-    }
+    internal Recurrence? Recurrence { get; set; }
 
     /// <summary>
     ///     Gets or sets the start date.
@@ -130,7 +127,7 @@ internal abstract class RecurrenceRange : ComplexProperty
     /// <value>The start date.</value>
     internal DateTime StartDate
     {
-        get => startDate;
-        set => SetFieldValue(ref startDate, value);
+        get => _startDate;
+        set => SetFieldValue(ref _startDate, value);
     }
 }

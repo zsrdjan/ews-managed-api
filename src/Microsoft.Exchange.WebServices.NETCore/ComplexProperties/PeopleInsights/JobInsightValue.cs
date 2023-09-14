@@ -23,31 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the JobInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class JobInsightValue : InsightValue
 {
-    private string company;
-    private string companyDescription;
-    private string companyTicker;
-    private string companyLogoUrl;
-    private string companyWebsiteUrl;
-    private string companyLinkedInUrl;
-    private string title;
-    private long startUtcTicks;
-    private long endUtcTicks;
+    private string _company;
+    private string _companyDescription;
+    private string _companyTicker;
+    private string _companyLogoUrl;
+    private string _companyWebsiteUrl;
+    private string _companyLinkedInUrl;
+    private string _title;
+    private long _startUtcTicks;
+    private long _endUtcTicks;
 
     /// <summary>
     ///     Gets the Company
     /// </summary>
     public string Company
     {
-        get => company;
-
-        set => SetFieldValue(ref company, value);
+        get => _company;
+        set => SetFieldValue(ref _company, value);
     }
 
     /// <summary>
@@ -55,9 +57,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public string CompanyDescription
     {
-        get => companyDescription;
-
-        set => SetFieldValue(ref companyDescription, value);
+        get => _companyDescription;
+        set => SetFieldValue(ref _companyDescription, value);
     }
 
     /// <summary>
@@ -65,9 +66,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public string CompanyTicker
     {
-        get => companyTicker;
-
-        set => SetFieldValue(ref companyTicker, value);
+        get => _companyTicker;
+        set => SetFieldValue(ref _companyTicker, value);
     }
 
     /// <summary>
@@ -75,9 +75,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public string CompanyLogoUrl
     {
-        get => companyLogoUrl;
-
-        set => SetFieldValue(ref companyLogoUrl, value);
+        get => _companyLogoUrl;
+        set => SetFieldValue(ref _companyLogoUrl, value);
     }
 
     /// <summary>
@@ -85,9 +84,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public string CompanyWebsiteUrl
     {
-        get => companyWebsiteUrl;
-
-        set => SetFieldValue(ref companyWebsiteUrl, value);
+        get => _companyWebsiteUrl;
+        set => SetFieldValue(ref _companyWebsiteUrl, value);
     }
 
     /// <summary>
@@ -95,9 +93,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public string CompanyLinkedInUrl
     {
-        get => companyLinkedInUrl;
-
-        set => SetFieldValue(ref companyLinkedInUrl, value);
+        get => _companyLinkedInUrl;
+        set => SetFieldValue(ref _companyLinkedInUrl, value);
     }
 
     /// <summary>
@@ -105,9 +102,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public string Title
     {
-        get => title;
-
-        set => SetFieldValue(ref title, value);
+        get => _title;
+        set => SetFieldValue(ref _title, value);
     }
 
     /// <summary>
@@ -115,9 +111,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public long StartUtcTicks
     {
-        get => startUtcTicks;
-
-        set => SetFieldValue(ref startUtcTicks, value);
+        get => _startUtcTicks;
+        set => SetFieldValue(ref _startUtcTicks, value);
     }
 
     /// <summary>
@@ -125,9 +120,8 @@ public sealed class JobInsightValue : InsightValue
     /// </summary>
     public long EndUtcTicks
     {
-        get => endUtcTicks;
-
-        set => SetFieldValue(ref endUtcTicks, value);
+        get => _endUtcTicks;
+        set => SetFieldValue(ref _endUtcTicks, value);
     }
 
     /// <summary>
@@ -140,25 +134,39 @@ public sealed class JobInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Company:
+            {
                 Company = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Title:
+            {
                 Title = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.StartUtcTicks:
+            {
                 StartUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.EndUtcTicks:
+            {
                 EndUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

@@ -26,22 +26,20 @@
 using System.ComponentModel;
 using System.Reflection;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of properties that can be sent to and retrieved from EWS.
 /// </summary>
 /// <typeparam name="TComplexProperty">ComplexProperty type.</typeparam>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexProperty, IEnumerable<TComplexProperty>,
     ICustomUpdateSerializer
     where TComplexProperty : ComplexProperty
 {
-    private readonly List<TComplexProperty> items = new List<TComplexProperty>();
-    private readonly List<TComplexProperty> addedItems = new List<TComplexProperty>();
-    private readonly List<TComplexProperty> modifiedItems = new List<TComplexProperty>();
-    private readonly List<TComplexProperty> removedItems = new List<TComplexProperty>();
-
     /// <summary>
     ///     Creates the complex property.
     /// </summary>
@@ -74,17 +72,14 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
         EwsUtilities.Assert(
             property != null,
             "ComplexPropertyCollection.ItemChanged",
-            string.Format(
-                "ComplexPropertyCollection.ItemChanged: the type of the complexProperty argument ({0}) is not supported.",
-                complexProperty.GetType().Name
-            )
+            $"ComplexPropertyCollection.ItemChanged: the type of the complexProperty argument ({complexProperty.GetType().Name}) is not supported."
         );
 
-        if (!addedItems.Contains(property))
+        if (!AddedItems.Contains(property))
         {
-            if (!modifiedItems.Contains(property))
+            if (!ModifiedItems.Contains(property))
             {
-                modifiedItems.Add(property);
+                ModifiedItems.Add(property);
                 Changed();
             }
         }
@@ -211,9 +206,9 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// </summary>
     internal override void ClearChangeLog()
     {
-        removedItems.Clear();
-        addedItems.Clear();
-        modifiedItems.Clear();
+        RemovedItems.Clear();
+        AddedItems.Clear();
+        ModifiedItems.Clear();
     }
 
     /// <summary>
@@ -222,34 +217,34 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// <param name="complexProperty">The complex property.</param>
     internal void RemoveFromChangeLog(TComplexProperty complexProperty)
     {
-        removedItems.Remove(complexProperty);
-        modifiedItems.Remove(complexProperty);
-        addedItems.Remove(complexProperty);
+        RemovedItems.Remove(complexProperty);
+        ModifiedItems.Remove(complexProperty);
+        AddedItems.Remove(complexProperty);
     }
 
     /// <summary>
     ///     Gets the items.
     /// </summary>
     /// <value>The items.</value>
-    internal List<TComplexProperty> Items => items;
+    internal List<TComplexProperty> Items { get; } = new();
 
     /// <summary>
     ///     Gets the added items.
     /// </summary>
     /// <value>The added items.</value>
-    internal List<TComplexProperty> AddedItems => addedItems;
+    internal List<TComplexProperty> AddedItems { get; } = new();
 
     /// <summary>
     ///     Gets the modified items.
     /// </summary>
     /// <value>The modified items.</value>
-    internal List<TComplexProperty> ModifiedItems => modifiedItems;
+    internal List<TComplexProperty> ModifiedItems { get; } = new();
 
     /// <summary>
     ///     Gets the removed items.
     /// </summary>
     /// <value>The removed items.</value>
-    internal List<TComplexProperty> RemovedItems => removedItems;
+    internal List<TComplexProperty> RemovedItems { get; } = new();
 
     /// <summary>
     ///     Add complex property.
@@ -273,13 +268,13 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
             "complexProperty is null"
         );
 
-        if (!items.Contains(complexProperty))
+        if (!Items.Contains(complexProperty))
         {
-            items.Add(complexProperty);
+            Items.Add(complexProperty);
             if (!loading)
             {
-                removedItems.Remove(complexProperty);
-                addedItems.Add(complexProperty);
+                RemovedItems.Remove(complexProperty);
+                AddedItems.Add(complexProperty);
             }
 
             complexProperty.OnChange += ItemChanged;
@@ -310,7 +305,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
             "index is out of range."
         );
 
-        InternalRemove(items[index]);
+        InternalRemove(Items[index]);
     }
 
     /// <summary>
@@ -326,20 +321,20 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
             "complexProperty is null"
         );
 
-        if (items.Remove(complexProperty))
+        if (Items.Remove(complexProperty))
         {
             complexProperty.OnChange -= ItemChanged;
 
-            if (!addedItems.Contains(complexProperty))
+            if (!AddedItems.Contains(complexProperty))
             {
-                removedItems.Add(complexProperty);
+                RemovedItems.Add(complexProperty);
             }
             else
             {
-                addedItems.Remove(complexProperty);
+                AddedItems.Remove(complexProperty);
             }
 
-            modifiedItems.Remove(complexProperty);
+            ModifiedItems.Remove(complexProperty);
             Changed();
             return true;
         }
@@ -354,7 +349,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// <returns>True if the property was found in the collection, false otherwise.</returns>
     public bool Contains(TComplexProperty complexProperty)
     {
-        return items.Contains(complexProperty);
+        return Items.Contains(complexProperty);
     }
 
     /// <summary>
@@ -364,13 +359,13 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// <returns>The zero-based index of the property within the collection.</returns>
     public int IndexOf(TComplexProperty complexProperty)
     {
-        return items.IndexOf(complexProperty);
+        return Items.IndexOf(complexProperty);
     }
 
     /// <summary>
     ///     Gets the total number of properties in the collection.
     /// </summary>
-    public int Count => items.Count;
+    public int Count => Items.Count;
 
     /// <summary>
     ///     Gets the property at the specified index.
@@ -383,10 +378,10 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
             }
 
-            return items[index];
+            return Items[index];
         }
     }
 
@@ -399,7 +394,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// <returns>An IEnumerator for the collection.</returns>
     public IEnumerator<TComplexProperty> GetEnumerator()
     {
-        return items.GetEnumerator();
+        return Items.GetEnumerator();
     }
 
     #endregion
@@ -413,7 +408,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// <returns>An IEnumerator for the collection.</returns>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
-        return items.GetEnumerator();
+        return Items.GetEnumerator();
     }
 
     #endregion

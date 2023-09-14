@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -34,10 +36,11 @@ public abstract partial class Recurrence
     ///     Represents a recurrence pattern where each occurrence happens on a relative day a specific number of months
     ///     after the previous one.
     /// </summary>
+    [PublicAPI]
     public sealed class RelativeMonthlyPattern : IntervalPattern
     {
-        private DayOfTheWeek? dayOfTheWeek;
-        private DayOfTheWeekIndex? dayOfTheWeekIndex;
+        private DayOfTheWeek? _dayOfTheWeek;
+        private DayOfTheWeekIndex? _dayOfTheWeekIndex;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RelativeMonthlyPattern" /> class.
@@ -99,13 +102,19 @@ public abstract partial class Recurrence
             switch (reader.LocalName)
             {
                 case XmlElementNames.DaysOfWeek:
-                    dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
+                {
+                    _dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
                     return true;
+                }
                 case XmlElementNames.DayOfWeekIndex:
-                    dayOfTheWeekIndex = reader.ReadElementValue<DayOfTheWeekIndex>();
+                {
+                    _dayOfTheWeekIndex = reader.ReadElementValue<DayOfTheWeekIndex>();
                     return true;
+                }
                 default:
+                {
                     return false;
+                }
             }
         }
 
@@ -116,12 +125,12 @@ public abstract partial class Recurrence
         {
             base.InternalValidate();
 
-            if (!dayOfTheWeek.HasValue)
+            if (!_dayOfTheWeek.HasValue)
             {
                 throw new ServiceValidationException(Strings.DayOfTheWeekMustBeSpecifiedForRecurrencePattern);
             }
 
-            if (!dayOfTheWeekIndex.HasValue)
+            if (!_dayOfTheWeekIndex.HasValue)
             {
                 throw new ServiceValidationException(Strings.DayOfWeekIndexMustBeSpecifiedForRecurrencePattern);
             }
@@ -132,13 +141,13 @@ public abstract partial class Recurrence
         /// </summary>
         /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
         /// <returns>true if the two recurrences are identical, false otherwise.</returns>
-        public override bool IsSame(Recurrence otherRecurrence)
+        public override bool IsSame(Recurrence? otherRecurrence)
         {
             var otherRelativeMonthlyPattern = (RelativeMonthlyPattern)otherRecurrence;
 
             return base.IsSame(otherRecurrence) &&
-                   dayOfTheWeek == otherRelativeMonthlyPattern.dayOfTheWeek &&
-                   dayOfTheWeekIndex == otherRelativeMonthlyPattern.dayOfTheWeekIndex;
+                   _dayOfTheWeek == otherRelativeMonthlyPattern._dayOfTheWeek &&
+                   _dayOfTheWeekIndex == otherRelativeMonthlyPattern._dayOfTheWeekIndex;
         }
 
         /// <summary>
@@ -146,8 +155,8 @@ public abstract partial class Recurrence
         /// </summary>
         public DayOfTheWeekIndex DayOfTheWeekIndex
         {
-            get => GetFieldValueOrThrowIfNull(dayOfTheWeekIndex, "DayOfTheWeekIndex");
-            set => SetFieldValue(ref dayOfTheWeekIndex, value);
+            get => GetFieldValueOrThrowIfNull(_dayOfTheWeekIndex, "DayOfTheWeekIndex");
+            set => SetFieldValue(ref _dayOfTheWeekIndex, value);
         }
 
         /// <summary>
@@ -155,8 +164,8 @@ public abstract partial class Recurrence
         /// </summary>
         public DayOfTheWeek DayOfTheWeek
         {
-            get => GetFieldValueOrThrowIfNull(dayOfTheWeek, "DayOfTheWeek");
-            set => SetFieldValue(ref dayOfTheWeek, value);
+            get => GetFieldValueOrThrowIfNull(_dayOfTheWeek, "DayOfTheWeek");
+            set => SetFieldValue(ref _dayOfTheWeek, value);
         }
     }
 }

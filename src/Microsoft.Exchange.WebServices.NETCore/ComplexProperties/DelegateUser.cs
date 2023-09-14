@@ -23,18 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a delegate user.
 /// </summary>
+[PublicAPI]
 public sealed class DelegateUser : ComplexProperty
 {
-    private UserId userId = new UserId();
-    private readonly DelegatePermissions permissions = new DelegatePermissions();
-    private bool receiveCopiesOfMeetingMessages;
-    private bool viewPrivateItems;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateUser" /> class.
     /// </summary>
@@ -43,8 +41,8 @@ public sealed class DelegateUser : ComplexProperty
         // Confusing error message refers to Calendar folder permissions when adding delegate access for a user
         // without including Calendar Folder permissions.
         //
-        receiveCopiesOfMeetingMessages = false;
-        viewPrivateItems = false;
+        ReceiveCopiesOfMeetingMessages = false;
+        ViewPrivateItems = false;
     }
 
     /// <summary>
@@ -54,7 +52,7 @@ public sealed class DelegateUser : ComplexProperty
     public DelegateUser(string primarySmtpAddress)
         : this()
     {
-        userId.PrimarySmtpAddress = primarySmtpAddress;
+        UserId.PrimarySmtpAddress = primarySmtpAddress;
     }
 
     /// <summary>
@@ -64,36 +62,28 @@ public sealed class DelegateUser : ComplexProperty
     public DelegateUser(StandardUser standardUser)
         : this()
     {
-        userId.StandardUser = standardUser;
+        UserId.StandardUser = standardUser;
     }
 
     /// <summary>
     ///     Gets the user Id of the delegate user.
     /// </summary>
-    public UserId UserId => userId;
+    public UserId UserId { get; private set; } = new();
 
     /// <summary>
     ///     Gets the list of delegate user's permissions.
     /// </summary>
-    public DelegatePermissions Permissions => permissions;
+    public DelegatePermissions Permissions { get; } = new();
 
     /// <summary>
     ///     Gets or sets a value indicating if the delegate user should receive copies of meeting requests.
     /// </summary>
-    public bool ReceiveCopiesOfMeetingMessages
-    {
-        get => receiveCopiesOfMeetingMessages;
-        set => receiveCopiesOfMeetingMessages = value;
-    }
+    public bool ReceiveCopiesOfMeetingMessages { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating if the delegate user should be able to view the principal's private items.
     /// </summary>
-    public bool ViewPrivateItems
-    {
-        get => viewPrivateItems;
-        set => viewPrivateItems = value;
-    }
+    public bool ViewPrivateItems { get; set; }
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -105,21 +95,31 @@ public sealed class DelegateUser : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.UserId:
-                userId = new UserId();
-                userId.LoadFromXml(reader, reader.LocalName);
+            {
+                UserId = new UserId();
+                UserId.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.DelegatePermissions:
-                permissions.Reset();
-                permissions.LoadFromXml(reader, reader.LocalName);
+            {
+                Permissions.Reset();
+                Permissions.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.ReceiveCopiesOfMeetingMessages:
-                receiveCopiesOfMeetingMessages = reader.ReadElementValue<bool>();
+            {
+                ReceiveCopiesOfMeetingMessages = reader.ReadElementValue<bool>();
                 return true;
+            }
             case XmlElementNames.ViewPrivateItems:
-                viewPrivateItems = reader.ReadElementValue<bool>();
+            {
+                ViewPrivateItems = reader.ReadElementValue<bool>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -162,7 +162,7 @@ public sealed class DelegateUser : ComplexProperty
     /// </summary>
     internal void ValidateAddDelegate()
     {
-        permissions.ValidateAddDelegate();
+        Permissions.ValidateAddDelegate();
     }
 
     /// <summary>
@@ -170,6 +170,6 @@ public sealed class DelegateUser : ComplexProperty
     /// </summary>
     internal void ValidateUpdateDelegate()
     {
-        permissions.ValidateUpdateDelegate();
+        Permissions.ValidateUpdateDelegate();
     }
 }

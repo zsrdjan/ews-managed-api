@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateManagementResponse>
 {
-    private readonly List<UserId> userIds = new List<UserId>();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="RemoveDelegateRequest" /> class.
     /// </summary>
@@ -47,7 +45,8 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(UserIds, "UserIds");
+
+        EwsUtilities.ValidateParamCollection(UserIds);
     }
 
     /// <summary>
@@ -108,5 +107,5 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     ///     Gets the user ids.
     /// </summary>
     /// <value>The user ids.</value>
-    public List<UserId> UserIds => userIds;
+    public List<UserId> UserIds { get; } = new();
 }

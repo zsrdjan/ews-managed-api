@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,6 +34,7 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents an error from a GetUserSettings request.
 /// </summary>
+[PublicAPI]
 public sealed class UserSettingError
 {
     /// <summary>
@@ -69,14 +72,20 @@ public sealed class UserSettingError
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.ErrorCode:
+                    {
                         ErrorCode = reader.ReadElementValue<AutodiscoverErrorCode>();
                         break;
+                    }
                     case XmlElementNames.ErrorMessage:
+                    {
                         ErrorMessage = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.SettingName:
+                    {
                         SettingName = reader.ReadElementValue();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettingError));

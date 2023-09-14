@@ -23,23 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the parameters associated with a search folder.
 /// </summary>
+[PublicAPI]
 public sealed class SearchFolderParameters : ComplexProperty
 {
-    private SearchFolderTraversal traversal;
-    private readonly FolderIdCollection rootFolderIds = new FolderIdCollection();
-    private SearchFilter searchFilter;
+    private SearchFolderTraversal _traversal;
+    private SearchFilter? _searchFilter;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SearchFolderParameters" /> class.
     /// </summary>
     internal SearchFolderParameters()
     {
-        rootFolderIds.OnChange += PropertyChanged;
+        RootFolderIds.OnChange += PropertyChanged;
     }
 
     /// <summary>
@@ -61,15 +63,21 @@ public sealed class SearchFolderParameters : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.BaseFolderIds:
+            {
                 RootFolderIds.InternalClear();
                 RootFolderIds.LoadFromXml(reader, reader.LocalName);
                 return true;
+            }
             case XmlElementNames.Restriction:
+            {
                 reader.Read();
-                searchFilter = SearchFilter.LoadFromXml(reader);
+                _searchFilter = SearchFilter.LoadFromXml(reader);
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -119,10 +127,7 @@ public sealed class SearchFolderParameters : ComplexProperty
         }
 
         // Validate the search filter
-        if (SearchFilter != null)
-        {
-            SearchFilter.InternalValidate();
-        }
+        SearchFilter?.InternalValidate();
     }
 
     /// <summary>
@@ -130,35 +135,35 @@ public sealed class SearchFolderParameters : ComplexProperty
     /// </summary>
     public SearchFolderTraversal Traversal
     {
-        get => traversal;
-        set => SetFieldValue(ref traversal, value);
+        get => _traversal;
+        set => SetFieldValue(ref _traversal, value);
     }
 
     /// <summary>
     ///     Gets the list of root folders the search folder searches in.
     /// </summary>
-    public FolderIdCollection RootFolderIds => rootFolderIds;
+    public FolderIdCollection RootFolderIds { get; } = new();
 
     /// <summary>
     ///     Gets or sets the search filter associated with the search folder. Available search filter classes include
     ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
     /// </summary>
-    public SearchFilter SearchFilter
+    public SearchFilter? SearchFilter
     {
-        get => searchFilter;
+        get => _searchFilter;
 
         set
         {
-            if (searchFilter != null)
+            if (_searchFilter != null)
             {
-                searchFilter.OnChange -= PropertyChanged;
+                _searchFilter.OnChange -= PropertyChanged;
             }
 
-            SetFieldValue(ref searchFilter, value);
+            SetFieldValue(ref _searchFilter, value);
 
-            if (searchFilter != null)
+            if (_searchFilter != null)
             {
-                searchFilter.OnChange += PropertyChanged;
+                _searchFilter.OnChange += PropertyChanged;
             }
         }
     }

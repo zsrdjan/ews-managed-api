@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
 {
-    private int dayOfMonth;
-
     /// <summary>
     ///     Gets the XML element name associated with the transition.
     /// </summary>
@@ -60,7 +58,7 @@ internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
     {
         base.InitializeFromTransitionTime(transitionTime);
 
-        dayOfMonth = transitionTime.Day;
+        DayOfMonth = transitionTime.Day;
     }
 
     /// <summary>
@@ -77,10 +75,10 @@ internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
 
         if (reader.LocalName == XmlElementNames.Day)
         {
-            dayOfMonth = reader.ReadElementValue<int>();
+            DayOfMonth = reader.ReadElementValue<int>();
 
             EwsUtilities.Assert(
-                dayOfMonth > 0 && dayOfMonth <= 31,
+                DayOfMonth > 0 && DayOfMonth <= 31,
                 "AbsoluteDayOfMonthTransition.TryReadElementFromXml",
                 "dayOfMonth is not in the valid 1 - 31 range."
             );
@@ -99,7 +97,7 @@ internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
     {
         base.WriteElementsToXml(writer);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Day, dayOfMonth);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Day, DayOfMonth);
     }
 
     /// <summary>
@@ -124,5 +122,5 @@ internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
     /// <summary>
     ///     Gets the day of then month when this transition occurs.
     /// </summary>
-    internal int DayOfMonth => dayOfMonth;
+    internal int DayOfMonth { get; private set; }
 }

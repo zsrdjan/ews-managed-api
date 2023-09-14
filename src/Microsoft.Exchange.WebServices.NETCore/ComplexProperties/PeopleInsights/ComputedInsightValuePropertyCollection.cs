@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 // <copyright file="ComputedInsightValuePropertyCollection.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
@@ -8,11 +8,14 @@
 // <summary>Implements the class for computed insight value property collection.</summary>
 //-----------------------------------------------------------------------
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of computed insight values.
 /// </summary>
+[PublicAPI]
 public sealed class ComputedInsightValuePropertyCollection : ComplexPropertyCollection<ComputedInsightValueProperty>
 {
     /// <summary>
@@ -26,7 +29,7 @@ public sealed class ComputedInsightValuePropertyCollection : ComplexPropertyColl
     ///     Initializes a new instance of the <see cref="ComputedInsightValuePropertyCollection" /> class.
     /// </summary>
     /// <param name="collection">The collection of objects to include.</param>
-    internal ComputedInsightValuePropertyCollection(IEnumerable<ComputedInsightValueProperty> collection)
+    internal ComputedInsightValuePropertyCollection(IEnumerable<ComputedInsightValueProperty>? collection)
     {
         if (collection != null)
         {

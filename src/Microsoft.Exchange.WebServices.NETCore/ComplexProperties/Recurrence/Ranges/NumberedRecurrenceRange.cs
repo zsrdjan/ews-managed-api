@@ -27,7 +27,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 
 internal sealed class NumberedRecurrenceRange : RecurrenceRange
 {
-    private int? numberOfOccurrences;
+    private int? _numberOfOccurrences;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="NumberedRecurrenceRange" /> class.
@@ -44,7 +44,7 @@ internal sealed class NumberedRecurrenceRange : RecurrenceRange
     public NumberedRecurrenceRange(DateTime startDate, int? numberOfOccurrences)
         : base(startDate)
     {
-        this.numberOfOccurrences = numberOfOccurrences;
+        _numberOfOccurrences = numberOfOccurrences;
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ internal sealed class NumberedRecurrenceRange : RecurrenceRange
         switch (reader.LocalName)
         {
             case XmlElementNames.NumberOfOccurrences:
-                numberOfOccurrences = reader.ReadElementValue<int>();
+                _numberOfOccurrences = reader.ReadElementValue<int>();
                 return true;
             default:
                 return false;
@@ -106,8 +106,7 @@ internal sealed class NumberedRecurrenceRange : RecurrenceRange
     /// <value>The number of occurrences.</value>
     public int? NumberOfOccurrences
     {
-        get => numberOfOccurrences;
-
-        set => SetFieldValue(ref numberOfOccurrences, value);
+        get => _numberOfOccurrences;
+        set => SetFieldValue(ref _numberOfOccurrences, value);
     }
 }

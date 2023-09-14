@@ -41,17 +41,7 @@ internal class GetUserSettingsRequest : AutodiscoverRequest
     /// <summary>
     ///     Expect this request to return the partner token.
     /// </summary>
-    private readonly bool expectPartnerToken;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="GetUserSettingsRequest" /> class.
-    /// </summary>
-    /// <param name="service">Autodiscover service associated with this request.</param>
-    /// <param name="url">URL of Autodiscover service.</param>
-    internal GetUserSettingsRequest(AutodiscoverService service, Uri url)
-        : this(service, url, false)
-    {
-    }
+    private readonly bool _expectPartnerToken;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserSettingsRequest" /> class.
@@ -59,10 +49,10 @@ internal class GetUserSettingsRequest : AutodiscoverRequest
     /// <param name="service">Autodiscover service associated with this request.</param>
     /// <param name="url">URL of Autodiscover service.</param>
     /// <param name="expectPartnerToken"></param>
-    internal GetUserSettingsRequest(AutodiscoverService service, Uri url, bool expectPartnerToken)
+    internal GetUserSettingsRequest(AutodiscoverService service, Uri url, bool expectPartnerToken = false)
         : base(service, url)
     {
-        this.expectPartnerToken = expectPartnerToken;
+        _expectPartnerToken = expectPartnerToken;
 
         // make an explicit https check.
         if (expectPartnerToken && !url.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
@@ -182,7 +172,7 @@ internal class GetUserSettingsRequest : AutodiscoverRequest
     /// <param name="writer"></param>
     internal override void WriteExtraCustomSoapHeadersToXml(EwsServiceXmlWriter writer)
     {
-        if (expectPartnerToken)
+        if (_expectPartnerToken)
         {
             writer.WriteElementValue(
                 XmlNamespace.Autodiscover,
@@ -235,7 +225,7 @@ internal class GetUserSettingsRequest : AutodiscoverRequest
     {
         base.ReadSoapHeader(reader);
 
-        if (expectPartnerToken)
+        if (_expectPartnerToken)
         {
             if (reader.IsStartElement(XmlNamespace.Autodiscover, XmlElementNames.PartnerToken))
             {

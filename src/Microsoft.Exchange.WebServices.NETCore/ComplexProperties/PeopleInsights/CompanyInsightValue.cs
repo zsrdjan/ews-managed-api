@@ -23,31 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the CompanyInsightValue.
 /// </summary>
+[PublicAPI]
 public sealed class CompanyInsightValue : InsightValue
 {
-    private string name;
-    private string satoriId;
-    private string description;
-    private string descriptionAttribution;
-    private string imageUrl;
-    private string imageUrlAttribution;
-    private string yearFound;
-    private string financeSymbol;
-    private string websiteUrl;
+    private string _name;
+    private string _satoriId;
+    private string _description;
+    private string _descriptionAttribution;
+    private string _imageUrl;
+    private string _imageUrlAttribution;
+    private string _yearFound;
+    private string _financeSymbol;
+    private string _websiteUrl;
 
     /// <summary>
     ///     Gets the Name
     /// </summary>
     public string Name
     {
-        get => name;
-
-        set => SetFieldValue(ref name, value);
+        get => _name;
+        set => SetFieldValue(ref _name, value);
     }
 
     /// <summary>
@@ -55,9 +57,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string SatoriId
     {
-        get => satoriId;
-
-        set => SetFieldValue(ref satoriId, value);
+        get => _satoriId;
+        set => SetFieldValue(ref _satoriId, value);
     }
 
     /// <summary>
@@ -65,9 +66,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string Description
     {
-        get => description;
-
-        set => SetFieldValue(ref description, value);
+        get => _description;
+        set => SetFieldValue(ref _description, value);
     }
 
     /// <summary>
@@ -75,9 +75,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string DescriptionAttribution
     {
-        get => descriptionAttribution;
-
-        set => SetFieldValue(ref descriptionAttribution, value);
+        get => _descriptionAttribution;
+        set => SetFieldValue(ref _descriptionAttribution, value);
     }
 
     /// <summary>
@@ -85,9 +84,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string ImageUrl
     {
-        get => imageUrl;
-
-        set => SetFieldValue(ref imageUrl, value);
+        get => _imageUrl;
+        set => SetFieldValue(ref _imageUrl, value);
     }
 
     /// <summary>
@@ -95,9 +93,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string ImageUrlAttribution
     {
-        get => imageUrlAttribution;
-
-        set => SetFieldValue(ref imageUrlAttribution, value);
+        get => _imageUrlAttribution;
+        set => SetFieldValue(ref _imageUrlAttribution, value);
     }
 
     /// <summary>
@@ -105,9 +102,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string YearFound
     {
-        get => yearFound;
-
-        set => SetFieldValue(ref yearFound, value);
+        get => _yearFound;
+        set => SetFieldValue(ref _yearFound, value);
     }
 
     /// <summary>
@@ -115,9 +111,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string FinanceSymbol
     {
-        get => financeSymbol;
-
-        set => SetFieldValue(ref financeSymbol, value);
+        get => _financeSymbol;
+        set => SetFieldValue(ref _financeSymbol, value);
     }
 
     /// <summary>
@@ -125,9 +120,8 @@ public sealed class CompanyInsightValue : InsightValue
     /// </summary>
     public string WebsiteUrl
     {
-        get => websiteUrl;
-
-        set => SetFieldValue(ref websiteUrl, value);
+        get => _websiteUrl;
+        set => SetFieldValue(ref _websiteUrl, value);
     }
 
     /// <summary>
@@ -140,40 +134,64 @@ public sealed class CompanyInsightValue : InsightValue
         switch (reader.LocalName)
         {
             case XmlElementNames.InsightSource:
+            {
                 InsightSource = reader.ReadElementValue<string>();
                 break;
+            }
             case XmlElementNames.UpdatedUtcTicks:
+            {
                 UpdatedUtcTicks = reader.ReadElementValue<long>();
                 break;
+            }
             case XmlElementNames.Name:
+            {
                 Name = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.SatoriId:
+            {
                 SatoriId = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.Description:
+            {
                 Description = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.DescriptionAttribution:
+            {
                 DescriptionAttribution = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.ImageUrl:
+            {
                 ImageUrl = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.ImageUrlAttribution:
+            {
                 ImageUrlAttribution = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.YearFound:
+            {
                 YearFound = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.FinanceSymbol:
+            {
                 FinanceSymbol = reader.ReadElementValue();
                 break;
+            }
             case XmlElementNames.WebsiteUrl:
+            {
                 WebsiteUrl = reader.ReadElementValue();
                 break;
+            }
             default:
+            {
                 return false;
+            }
         }
 
         return true;

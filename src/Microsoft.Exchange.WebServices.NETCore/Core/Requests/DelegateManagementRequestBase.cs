@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class DelegateManagementRequestBase<TResponse> : SimpleServiceRequestBase
     where TResponse : DelegateManagementResponse
 {
-    private Mailbox mailbox;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateManagementRequestBase&lt;TResponse&gt;" /> class.
     /// </summary>
@@ -49,7 +47,7 @@ internal abstract class DelegateManagementRequestBase<TResponse> : SimpleService
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(Mailbox, "Mailbox");
+        EwsUtilities.ValidateParam(Mailbox);
     }
 
     /// <summary>
@@ -98,9 +96,5 @@ internal abstract class DelegateManagementRequestBase<TResponse> : SimpleService
     ///     Gets or sets the mailbox.
     /// </summary>
     /// <value>The mailbox.</value>
-    public Mailbox Mailbox
-    {
-        get => mailbox;
-        set => mailbox = value;
-    }
+    public Mailbox Mailbox { get; set; }
 }

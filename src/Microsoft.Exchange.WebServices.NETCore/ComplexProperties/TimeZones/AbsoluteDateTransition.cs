@@ -34,8 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class AbsoluteDateTransition : TimeZoneTransition
 {
-    private DateTime dateTime;
-
     /// <summary>
     ///     Initializes this transition based on the specified transition time.
     /// </summary>
@@ -67,7 +65,7 @@ internal class AbsoluteDateTransition : TimeZoneTransition
         {
             if (reader.LocalName == XmlElementNames.DateTime)
             {
-                dateTime = DateTime.Parse(reader.ReadElementValue(), CultureInfo.InvariantCulture);
+                DateTime = DateTime.Parse(reader.ReadElementValue(), CultureInfo.InvariantCulture);
 
                 result = true;
             }
@@ -84,7 +82,7 @@ internal class AbsoluteDateTransition : TimeZoneTransition
     {
         base.WriteElementsToXml(writer);
 
-        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DateTime, dateTime);
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DateTime, DateTime);
     }
 
     /// <summary>
@@ -109,9 +107,5 @@ internal class AbsoluteDateTransition : TimeZoneTransition
     /// <summary>
     ///     Gets or sets the absolute date and time when the transition occurs.
     /// </summary>
-    internal DateTime DateTime
-    {
-        get => dateTime;
-        set => dateTime = value;
-    }
+    internal DateTime DateTime { get; set; }
 }

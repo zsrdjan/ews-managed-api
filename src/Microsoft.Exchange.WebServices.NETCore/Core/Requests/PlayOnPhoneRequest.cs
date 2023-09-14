@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class PlayOnPhoneRequest : SimpleServiceRequestBase
 {
-    private ItemId itemId;
-    private string dialString;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="PlayOnPhoneRequest" /> class.
     /// </summary>
@@ -57,8 +54,8 @@ internal sealed class PlayOnPhoneRequest : SimpleServiceRequestBase
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        itemId.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemId);
-        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.DialString, dialString);
+        ItemId.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.ItemId);
+        writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.DialString, DialString);
     }
 
     /// <summary>
@@ -105,20 +102,10 @@ internal sealed class PlayOnPhoneRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Gets or sets the item id of the message to play.
     /// </summary>
-    internal ItemId ItemId
-    {
-        get => itemId;
-
-        set => itemId = value;
-    }
+    internal ItemId ItemId { get; set; }
 
     /// <summary>
     ///     Gets or sets the dial string.
     /// </summary>
-    internal string DialString
-    {
-        get => dialString;
-
-        set => dialString = value;
-    }
+    internal string DialString { get; set; }
 }

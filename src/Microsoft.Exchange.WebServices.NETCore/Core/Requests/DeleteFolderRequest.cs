@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class DeleteFolderRequest : DeleteRequest<ServiceResponse>
 {
-    private readonly FolderIdWrapperList folderIds = new FolderIdWrapperList();
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteFolderRequest" /> class.
     /// </summary>
@@ -48,7 +46,7 @@ internal sealed class DeleteFolderRequest : DeleteRequest<ServiceResponse>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParam(FolderIds, "FolderIds");
+        EwsUtilities.ValidateParam(FolderIds);
         FolderIds.Validate(Service.RequestedServerVersion);
     }
 
@@ -121,5 +119,5 @@ internal sealed class DeleteFolderRequest : DeleteRequest<ServiceResponse>
     ///     Gets the folder ids.
     /// </summary>
     /// <value>The folder ids.</value>
-    internal FolderIdWrapperList FolderIds => folderIds;
+    internal FolderIdWrapperList FolderIds { get; } = new();
 }

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Disable reason type
 /// </summary>
+[PublicAPI]
 public enum DisableReasonType
 {
     /// <summary>
@@ -48,7 +51,7 @@ public enum DisableReasonType
     /// <summary>
     ///     Extension is being disabled from MOWA due to performance reasons
     /// </summary>
-    MobileClientPerformance
+    MobileClientPerformance,
 }
 
 /// <summary>

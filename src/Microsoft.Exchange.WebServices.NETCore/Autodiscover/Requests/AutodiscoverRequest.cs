@@ -37,9 +37,6 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// </summary>
 internal abstract class AutodiscoverRequest
 {
-    private readonly AutodiscoverService service;
-    private readonly Uri url;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverRequest" /> class.
     /// </summary>
@@ -47,8 +44,8 @@ internal abstract class AutodiscoverRequest
     /// <param name="url">URL of Autodiscover service.</param>
     internal AutodiscoverRequest(AutodiscoverService service, Uri url)
     {
-        this.service = service;
-        this.url = url;
+        Service = service;
+        Url = url;
     }
 
     /// <summary>
@@ -58,10 +55,10 @@ internal abstract class AutodiscoverRequest
     /// <returns>True if redirection response.</returns>
     internal static bool IsRedirectionResponse(IEwsHttpWebResponse httpWebResponse)
     {
-        return (httpWebResponse.StatusCode == HttpStatusCode.Redirect) ||
-               (httpWebResponse.StatusCode == HttpStatusCode.Moved) ||
-               (httpWebResponse.StatusCode == HttpStatusCode.RedirectKeepVerb) ||
-               (httpWebResponse.StatusCode == HttpStatusCode.RedirectMethod);
+        return httpWebResponse.StatusCode == HttpStatusCode.Redirect ||
+               httpWebResponse.StatusCode == HttpStatusCode.Moved ||
+               httpWebResponse.StatusCode == HttpStatusCode.RedirectKeepVerb ||
+               httpWebResponse.StatusCode == HttpStatusCode.RedirectMethod;
     }
 
     /// <summary>
@@ -82,7 +79,7 @@ internal abstract class AutodiscoverRequest
 
         try
         {
-            var request = Service.PrepareHttpRequestMessageForUrl(url);
+            var request = Service.PrepareHttpRequestMessageForUrl(Url);
 
             var needSignature = Service.Credentials != null && Service.Credentials.NeedSignature;
             var needTrace = Service.IsTraceEnabledFor(TraceFlags.AutodiscoverRequest);
@@ -97,7 +94,7 @@ internal abstract class AutodiscoverRequest
 
                 if (needSignature)
                 {
-                    service.Credentials.Sign(memoryStream);
+                    Service.Credentials.Sign(memoryStream);
                 }
 
                 if (needTrace)
@@ -109,63 +106,59 @@ internal abstract class AutodiscoverRequest
                 request.Content = new ByteArrayContent(memoryStream.ToArray());
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
                 {
-                    CharSet = "utf-8"
+                    CharSet = "utf-8",
                 };
             }
 
-            using (var client = Service.PrepareHttpClient())
-            using (IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(client.SendAsync(request).Result))
+            using var client = Service.PrepareHttpClient();
+            using IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(client.SendAsync(request).Result);
+            if (IsRedirectionResponse(webResponse))
             {
-                if (IsRedirectionResponse(webResponse))
+                var response = CreateRedirectionResponse(webResponse);
+                if (response != null)
                 {
-                    var response = CreateRedirectionResponse(webResponse);
-                    if (response != null)
-                    {
-                        return response;
-                    }
-
-                    throw new ServiceRemoteException(Strings.InvalidRedirectionResponseReturned);
+                    return response;
                 }
 
-                using (var responseStream = await GetResponseStream(webResponse))
+                throw new ServiceRemoteException(Strings.InvalidRedirectionResponseReturned);
+            }
+
+            await using var responseStream = await GetResponseStream(webResponse);
+            using (var memoryStream = new MemoryStream())
+            {
+                // Copy response stream to in-memory stream and reset to start
+                EwsUtilities.CopyStream(responseStream, memoryStream);
+                memoryStream.Position = 0;
+
+                Service.TraceResponse(webResponse, memoryStream);
+
+                var ewsXmlReader = new EwsXmlReader(memoryStream);
+
+                // WCF may not generate an XML declaration.
+                ewsXmlReader.Read();
+                if (ewsXmlReader.NodeType == XmlNodeType.XmlDeclaration)
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        // Copy response stream to in-memory stream and reset to start
-                        EwsUtilities.CopyStream(responseStream, memoryStream);
-                        memoryStream.Position = 0;
-
-                        Service.TraceResponse(webResponse, memoryStream);
-
-                        var ewsXmlReader = new EwsXmlReader(memoryStream);
-
-                        // WCF may not generate an XML declaration.
-                        ewsXmlReader.Read();
-                        if (ewsXmlReader.NodeType == XmlNodeType.XmlDeclaration)
-                        {
-                            ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
-                        }
-                        else if ((ewsXmlReader.NodeType != XmlNodeType.Element) ||
-                                 (ewsXmlReader.LocalName != XmlElementNames.SOAPEnvelopeElementName) ||
-                                 (ewsXmlReader.NamespaceUri != EwsUtilities.GetNamespaceUri(XmlNamespace.Soap)))
-                        {
-                            throw new ServiceXmlDeserializationException(Strings.InvalidAutodiscoverServiceResponse);
-                        }
-
-                        ReadSoapHeaders(ewsXmlReader);
-
-                        var response = ReadSoapBody(ewsXmlReader);
-
-                        ewsXmlReader.ReadEndElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
-
-                        if (response.ErrorCode == AutodiscoverErrorCode.NoError)
-                        {
-                            return response;
-                        }
-
-                        throw new AutodiscoverResponseException(response.ErrorCode, response.ErrorMessage);
-                    }
+                    ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
                 }
+                else if (ewsXmlReader.NodeType != XmlNodeType.Element ||
+                         ewsXmlReader.LocalName != XmlElementNames.SOAPEnvelopeElementName ||
+                         ewsXmlReader.NamespaceUri != EwsUtilities.GetNamespaceUri(XmlNamespace.Soap))
+                {
+                    throw new ServiceXmlDeserializationException(Strings.InvalidAutodiscoverServiceResponse);
+                }
+
+                ReadSoapHeaders(ewsXmlReader);
+
+                var response = ReadSoapBody(ewsXmlReader);
+
+                ewsXmlReader.ReadEndElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+
+                if (response.ErrorCode == AutodiscoverErrorCode.NoError)
+                {
+                    return response;
+                }
+
+                throw new AutodiscoverResponseException(response.ErrorCode, response.ErrorMessage);
             }
         }
         catch (EwsHttpClientException ex)
@@ -195,17 +188,14 @@ internal abstract class AutodiscoverRequest
         }
         catch (XmlException ex)
         {
-            Service.TraceMessage(
-                TraceFlags.AutodiscoverConfiguration,
-                string.Format("XML parsing error: {0}", ex.Message)
-            );
+            Service.TraceMessage(TraceFlags.AutodiscoverConfiguration, $"XML parsing error: {ex.Message}");
 
             // Wrap exception
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, ex.Message), ex);
         }
         catch (IOException ex)
         {
-            Service.TraceMessage(TraceFlags.AutodiscoverConfiguration, string.Format("I/O error: {0}", ex.Message));
+            Service.TraceMessage(TraceFlags.AutodiscoverConfiguration, $"I/O error: {ex.Message}");
 
             // Wrap exception
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, ex.Message), ex);
@@ -221,37 +211,33 @@ internal abstract class AutodiscoverRequest
         if (webException.Response != null)
         {
             var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
-            SoapFaultDetails soapFaultDetails;
 
             if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
             {
                 // If tracing is enabled, we read the entire response into a MemoryStream so that we
                 // can pass it along to the ITraceListener. Then we parse the response from the 
                 // MemoryStream.
+                SoapFaultDetails soapFaultDetails;
                 if (Service.IsTraceEnabledFor(TraceFlags.AutodiscoverRequest))
                 {
-                    using (var memoryStream = new MemoryStream())
+                    using var memoryStream = new MemoryStream();
+                    await using (var serviceResponseStream = await GetResponseStream(httpWebResponse))
                     {
-                        using (var serviceResponseStream = await GetResponseStream(httpWebResponse))
-                        {
-                            // Copy response to in-memory stream and reset position to start.
-                            EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
-                            memoryStream.Position = 0;
-                        }
-
-                        Service.TraceResponse(httpWebResponse, memoryStream);
-
-                        var reader = new EwsXmlReader(memoryStream);
-                        soapFaultDetails = ReadSoapFault(reader);
+                        // Copy response to in-memory stream and reset position to start.
+                        EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
+                        memoryStream.Position = 0;
                     }
+
+                    Service.TraceResponse(httpWebResponse, memoryStream);
+
+                    var reader = new EwsXmlReader(memoryStream);
+                    soapFaultDetails = ReadSoapFault(reader);
                 }
                 else
                 {
-                    using (var stream = await GetResponseStream(httpWebResponse))
-                    {
-                        var reader = new EwsXmlReader(stream);
-                        soapFaultDetails = ReadSoapFault(reader);
-                    }
+                    await using var stream = await GetResponseStream(httpWebResponse);
+                    var reader = new EwsXmlReader(stream);
+                    soapFaultDetails = ReadSoapFault(reader);
                 }
 
                 if (soapFaultDetails != null)
@@ -270,7 +256,7 @@ internal abstract class AutodiscoverRequest
     ///     Create a redirection response.
     /// </summary>
     /// <param name="httpWebResponse">The HTTP web response.</param>
-    private AutodiscoverResponse CreateRedirectionResponse(IEwsHttpWebResponse httpWebResponse)
+    private AutodiscoverResponse? CreateRedirectionResponse(IEwsHttpWebResponse httpWebResponse)
     {
         var location = httpWebResponse.Headers.Location;
         if (location != null)
@@ -278,7 +264,7 @@ internal abstract class AutodiscoverRequest
             try
             {
                 var redirectionUri = new Uri(Url, location);
-                if ((redirectionUri.Scheme == "http") || (redirectionUri.Scheme == "https"))
+                if (redirectionUri.Scheme == "http" || redirectionUri.Scheme == "https")
                 {
                     var response = CreateServiceResponse();
                     response.ErrorCode = AutodiscoverErrorCode.RedirectUrl;
@@ -288,14 +274,14 @@ internal abstract class AutodiscoverRequest
 
                 Service.TraceMessage(
                     TraceFlags.AutodiscoverConfiguration,
-                    string.Format("Invalid redirection URL '{0}' returned by Autodiscover service.", redirectionUri)
+                    $"Invalid redirection URL '{redirectionUri}' returned by Autodiscover service."
                 );
             }
             catch (UriFormatException)
             {
                 Service.TraceMessage(
                     TraceFlags.AutodiscoverConfiguration,
-                    string.Format("Invalid redirection location '{0}' returned by Autodiscover service.", location)
+                    $"Invalid redirection location '{location}' returned by Autodiscover service."
                 );
             }
         }
@@ -315,9 +301,9 @@ internal abstract class AutodiscoverRequest
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>SOAP fault details.</returns>
-    private SoapFaultDetails ReadSoapFault(EwsXmlReader reader)
+    private static SoapFaultDetails? ReadSoapFault(EwsXmlReader reader)
     {
-        SoapFaultDetails soapFaultDetails = null;
+        SoapFaultDetails? soapFaultDetails = null;
 
         try
         {
@@ -328,7 +314,7 @@ internal abstract class AutodiscoverRequest
                 reader.Read();
             }
 
-            if (!reader.IsStartElement() || (reader.LocalName != XmlElementNames.SOAPEnvelopeElementName))
+            if (!reader.IsStartElement() || reader.LocalName != XmlElementNames.SOAPEnvelopeElementName)
             {
                 return soapFaultDetails;
             }
@@ -520,7 +506,7 @@ internal abstract class AutodiscoverRequest
         // Is this the ServerVersionInfo?
         if (reader.IsStartElement(XmlNamespace.Autodiscover, XmlElementNames.ServerVersionInfo))
         {
-            service.ServerInfo = ReadServerVersionInfo(reader);
+            Service.ServerInfo = ReadServerVersionInfo(reader);
         }
     }
 
@@ -528,7 +514,7 @@ internal abstract class AutodiscoverRequest
     ///     Read ServerVersionInfo SOAP header.
     /// </summary>
     /// <param name="reader">EwsXmlReader</param>
-    private ExchangeServerInfo ReadServerVersionInfo(EwsXmlReader reader)
+    private static ExchangeServerInfo ReadServerVersionInfo(EwsXmlReader reader)
     {
         var serverInfo = new ExchangeServerInfo();
         do
@@ -540,20 +526,30 @@ internal abstract class AutodiscoverRequest
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.MajorVersion:
+                    {
                         serverInfo.MajorVersion = reader.ReadElementValue<int>();
                         break;
+                    }
                     case XmlElementNames.MinorVersion:
+                    {
                         serverInfo.MinorVersion = reader.ReadElementValue<int>();
                         break;
+                    }
                     case XmlElementNames.MajorBuildNumber:
+                    {
                         serverInfo.MajorBuildNumber = reader.ReadElementValue<int>();
                         break;
+                    }
                     case XmlElementNames.MinorBuildNumber:
+                    {
                         serverInfo.MinorBuildNumber = reader.ReadElementValue<int>();
                         break;
+                    }
                     case XmlElementNames.Version:
+                    {
                         serverInfo.VersionString = reader.ReadElementValue();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.ServerVersionInfo));
@@ -626,10 +622,10 @@ internal abstract class AutodiscoverRequest
     /// <summary>
     ///     Gets the service.
     /// </summary>
-    internal AutodiscoverService Service => service;
+    internal AutodiscoverService Service { get; }
 
     /// <summary>
     ///     Gets the URL.
     /// </summary>
-    internal Uri Url => url;
+    internal Uri Url { get; }
 }

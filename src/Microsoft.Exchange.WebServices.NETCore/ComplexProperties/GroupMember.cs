@@ -23,28 +23,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a group member.
 /// </summary>
+[PublicAPI]
 [RequiredServerVersion(ExchangeVersion.Exchange2010)]
 public class GroupMember : ComplexProperty
 {
     /// <summary>
     ///     AddressInformation field.
     /// </summary>
-    private EmailAddress addressInformation;
-
-    /// <summary>
-    ///     Status field.
-    /// </summary>
-    private MemberStatus status;
-
-    /// <summary>
-    ///     Member key field.
-    /// </summary>
-    private string key;
+    private EmailAddress? _addressInformation;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GroupMember" /> class.
@@ -52,10 +45,10 @@ public class GroupMember : ComplexProperty
     public GroupMember()
     {
         // Key is assigned by server
-        key = null;
+        Key = null;
 
         // Member status is calculated by server
-        status = MemberStatus.Unrecognized;
+        Status = MemberStatus.Unrecognized;
     }
 
     /// <summary>
@@ -84,11 +77,14 @@ public class GroupMember : ComplexProperty
             case MailboxType.Mailbox:
             case MailboxType.Contact:
             case MailboxType.OneOff:
+            {
                 AddressInformation = new EmailAddress(null, address, routingType, mailboxType);
                 break;
-
+            }
             default:
+            {
                 throw new ServiceLocalException(Strings.InvalidMailboxType);
+            }
         }
     }
 
@@ -108,20 +104,10 @@ public class GroupMember : ComplexProperty
     /// <param name="name">The name of the one-off member.</param>
     /// <param name="address">The address of the one-off member.</param>
     /// <param name="routingType">The routing type of the address.</param>
-    public GroupMember(string name, string address, string routingType)
+    public GroupMember(string name, string address, string routingType = EmailAddress.SmtpRoutingType)
         : this()
     {
         AddressInformation = new EmailAddress(name, address, routingType, MailboxType.OneOff);
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="GroupMember" /> class.
-    /// </summary>
-    /// <param name="name">The name of the one-off member.</param>
-    /// <param name="smtpAddress">The SMTP address of the one-off member.</param>
-    public GroupMember(string name, string smtpAddress)
-        : this(name, smtpAddress, EmailAddress.SmtpRoutingType)
-    {
     }
 
     /// <summary>
@@ -139,7 +125,7 @@ public class GroupMember : ComplexProperty
     /// </summary>
     /// <param name="contactId">The Id of the contact member.</param>
     /// <param name="addressToLink">The Id of the contact to link the member to.</param>
-    public GroupMember(ItemId contactId, string addressToLink)
+    public GroupMember(ItemId contactId, string? addressToLink)
         : this()
     {
         AddressInformation = new EmailAddress(null, addressToLink, null, MailboxType.Contact, contactId);
@@ -162,7 +148,7 @@ public class GroupMember : ComplexProperty
     internal GroupMember(GroupMember member)
         : this()
     {
-        EwsUtilities.ValidateParam(member, "member");
+        EwsUtilities.ValidateParam(member);
         AddressInformation = new EmailAddress(member.AddressInformation);
     }
 
@@ -175,39 +161,39 @@ public class GroupMember : ComplexProperty
     public GroupMember(Contact contact, EmailAddressKey emailAddressKey)
         : this()
     {
-        EwsUtilities.ValidateParam(contact, "contact");
+        EwsUtilities.ValidateParam(contact);
 
         var emailAddress = contact.EmailAddresses[emailAddressKey];
 
         AddressInformation = new EmailAddress(emailAddress);
 
-        addressInformation.Id = contact.Id;
+        _addressInformation.Id = contact.Id;
     }
 
     /// <summary>
     ///     Gets the key of the member.
     /// </summary>
-    public string Key => key;
+    public string? Key { get; private set; }
 
     /// <summary>
     ///     Gets the address information of the member.
     /// </summary>
-    public EmailAddress AddressInformation
+    public EmailAddress? AddressInformation
     {
-        get => addressInformation;
+        get => _addressInformation;
 
         internal set
         {
-            if (addressInformation != null)
+            if (_addressInformation != null)
             {
-                addressInformation.OnChange -= AddressInformationChanged;
+                _addressInformation.OnChange -= AddressInformationChanged;
             }
 
-            addressInformation = value;
+            _addressInformation = value;
 
-            if (addressInformation != null)
+            if (_addressInformation != null)
             {
-                addressInformation.OnChange += AddressInformationChanged;
+                _addressInformation.OnChange += AddressInformationChanged;
             }
         }
     }
@@ -215,7 +201,7 @@ public class GroupMember : ComplexProperty
     /// <summary>
     ///     Gets the status of the member.
     /// </summary>
-    public MemberStatus Status => status;
+    public MemberStatus Status { get; private set; }
 
     /// <summary>
     ///     Reads the member Key attribute from XML.
@@ -223,7 +209,7 @@ public class GroupMember : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        key = reader.ReadAttributeValue<string>(XmlAttributeNames.Key);
+        Key = reader.ReadAttributeValue<string>(XmlAttributeNames.Key);
     }
 
     /// <summary>
@@ -236,16 +222,20 @@ public class GroupMember : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.Status:
-                status = EwsUtilities.Parse<MemberStatus>(reader.ReadElementValue());
+            {
+                Status = EwsUtilities.Parse<MemberStatus>(reader.ReadElementValue());
                 return true;
-
+            }
             case XmlElementNames.Mailbox:
+            {
                 AddressInformation = new EmailAddress();
                 AddressInformation.LoadFromXml(reader, reader.LocalName);
                 return true;
-
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -256,7 +246,7 @@ public class GroupMember : ComplexProperty
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
         // if this.key is null or empty, writer skips the attribute
-        writer.WriteAttributeValue(XmlAttributeNames.Key, key);
+        writer.WriteAttributeValue(XmlAttributeNames.Key, Key);
     }
 
     /// <summary>

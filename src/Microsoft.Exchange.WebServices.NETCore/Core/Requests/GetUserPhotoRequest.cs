@@ -63,8 +63,13 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
     /// <returns>The canonical NotFound result</returns>
     internal static GetUserPhotoResponse GetNotFoundResponse()
     {
-        var serviceResponse = new GetUserPhotoResponse();
-        serviceResponse.Results.Status = GetUserPhotoStatus.PhotoOrUserNotFound;
+        var serviceResponse = new GetUserPhotoResponse
+        {
+            Results =
+            {
+                Status = GetUserPhotoStatus.PhotoOrUserNotFound,
+            },
+        };
 
         return serviceResponse;
     }
@@ -85,15 +90,6 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
         }
 
         base.Validate();
-    }
-
-    /// <summary>
-    ///     Writes XML attributes.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-    {
-        base.WriteAttributesToXml(writer);
     }
 
     /// <summary>
@@ -130,7 +126,7 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
 
             if (!EntityTag.EndsWith("\""))
             {
-                quotedETag = quotedETag + "\"";
+                quotedETag += "\"";
             }
 
             webHeaderCollection.IfNoneMatch.ParseAdd(quotedETag);
@@ -187,7 +183,6 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
         return GetResultOrDefault(() => InternalExecuteAsync(token));
     }
 
-    /// <summary>
     private static async Task<GetUserPhotoResponse> GetResultOrDefault(Func<Task<object>> serviceResponseFactory)
     {
         try
@@ -198,8 +193,7 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
         {
             // 404 is a valid return code in the case of GetUserPhoto when the photo is
             // not found, so it is necessary to catch this exception here.
-            var webException = ex.InnerException as EwsHttpClientException;
-            if (webException != null)
+            if (ex.InnerException is EwsHttpClientException webException)
             {
                 var errorResponse = webException.Response;
                 if (errorResponse != null && errorResponse.StatusCode == HttpStatusCode.NotFound)

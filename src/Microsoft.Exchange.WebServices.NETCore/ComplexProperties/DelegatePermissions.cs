@@ -23,40 +23,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the permissions of a delegate user.
 /// </summary>
+[PublicAPI]
 public sealed class DelegatePermissions : ComplexProperty
 {
-    private readonly Dictionary<string, DelegateFolderPermission> delegateFolderPermissions;
+    private readonly Dictionary<string, DelegateFolderPermission> _delegateFolderPermissions;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DelegatePermissions" /> class.
     /// </summary>
     internal DelegatePermissions()
     {
-        delegateFolderPermissions = new Dictionary<string, DelegateFolderPermission>
+        _delegateFolderPermissions = new Dictionary<string, DelegateFolderPermission>
         {
-            {
-                XmlElementNames.CalendarFolderPermissionLevel, new DelegateFolderPermission()
-            },
-            {
-                XmlElementNames.TasksFolderPermissionLevel, new DelegateFolderPermission()
-            },
-            {
-                XmlElementNames.InboxFolderPermissionLevel, new DelegateFolderPermission()
-            },
-            {
-                XmlElementNames.ContactsFolderPermissionLevel, new DelegateFolderPermission()
-            },
-            {
-                XmlElementNames.NotesFolderPermissionLevel, new DelegateFolderPermission()
-            },
-            {
-                XmlElementNames.JournalFolderPermissionLevel, new DelegateFolderPermission()
-            }
+            // @formatter:off
+            { XmlElementNames.CalendarFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.TasksFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.InboxFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.ContactsFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.NotesFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.JournalFolderPermissionLevel, new DelegateFolderPermission() },
+            // @formatter:on
         };
     }
 
@@ -65,8 +58,8 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     public DelegateFolderPermissionLevel CalendarFolderPermissionLevel
     {
-        get => delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel;
-        set => delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel = value;
+        get => _delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel;
+        set => _delegateFolderPermissions[XmlElementNames.CalendarFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
@@ -74,8 +67,8 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     public DelegateFolderPermissionLevel TasksFolderPermissionLevel
     {
-        get => delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel;
-        set => delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel = value;
+        get => _delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel;
+        set => _delegateFolderPermissions[XmlElementNames.TasksFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
@@ -83,8 +76,8 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     public DelegateFolderPermissionLevel InboxFolderPermissionLevel
     {
-        get => delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel;
-        set => delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel = value;
+        get => _delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel;
+        set => _delegateFolderPermissions[XmlElementNames.InboxFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
@@ -92,8 +85,8 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     public DelegateFolderPermissionLevel ContactsFolderPermissionLevel
     {
-        get => delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel;
-        set => delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel = value;
+        get => _delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel;
+        set => _delegateFolderPermissions[XmlElementNames.ContactsFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
@@ -101,8 +94,8 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     public DelegateFolderPermissionLevel NotesFolderPermissionLevel
     {
-        get => delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel;
-        set => delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel = value;
+        get => _delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel;
+        set => _delegateFolderPermissions[XmlElementNames.NotesFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
@@ -110,8 +103,8 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     public DelegateFolderPermissionLevel JournalFolderPermissionLevel
     {
-        get => delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel;
-        set => delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel = value;
+        get => _delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel;
+        set => _delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel = value;
     }
 
     /// <summary>
@@ -119,7 +112,7 @@ public sealed class DelegatePermissions : ComplexProperty
     /// </summary>
     internal void Reset()
     {
-        foreach (var delegateFolderPermission in delegateFolderPermissions.Values)
+        foreach (var delegateFolderPermission in _delegateFolderPermissions.Values)
         {
             delegateFolderPermission.Reset();
         }
@@ -132,9 +125,7 @@ public sealed class DelegatePermissions : ComplexProperty
     /// <returns>Returns true if element was read.</returns>
     internal override bool TryReadElementFromXml(EwsServiceXmlReader reader)
     {
-        DelegateFolderPermission delegateFolderPermission = null;
-
-        if (delegateFolderPermissions.TryGetValue(reader.LocalName, out delegateFolderPermission))
+        if (_delegateFolderPermissions.TryGetValue(reader.LocalName, out var delegateFolderPermission))
         {
             delegateFolderPermission.Initialize(reader.ReadElementValue<DelegateFolderPermissionLevel>());
         }
@@ -168,7 +159,7 @@ public sealed class DelegatePermissions : ComplexProperty
     /// <param name="xmlElementName">The element name.</param>
     private void WritePermissionToXml(EwsServiceXmlWriter writer, string xmlElementName)
     {
-        var delegateFolderPermissionLevel = delegateFolderPermissions[xmlElementName].PermissionLevel;
+        var delegateFolderPermissionLevel = _delegateFolderPermissions[xmlElementName].PermissionLevel;
 
         // UpdateDelegate fails if Custom permission level is round tripped
         //
@@ -185,7 +176,7 @@ public sealed class DelegatePermissions : ComplexProperty
     {
         // If any folder permission is Custom, throw
         //
-        if (delegateFolderPermissions.Any(kvp => kvp.Value.PermissionLevel == DelegateFolderPermissionLevel.Custom))
+        if (_delegateFolderPermissions.Any(kvp => kvp.Value.PermissionLevel == DelegateFolderPermissionLevel.Custom))
         {
             throw new ServiceValidationException(Strings.CannotSetDelegateFolderPermissionLevelToCustom);
         }
@@ -198,7 +189,7 @@ public sealed class DelegatePermissions : ComplexProperty
     {
         // If any folder permission was changed to custom, throw
         //
-        if (delegateFolderPermissions.Any(
+        if (_delegateFolderPermissions.Any(
                 kvp => kvp.Value.PermissionLevel == DelegateFolderPermissionLevel.Custom &&
                        !kvp.Value.IsExistingPermissionLevelCustom
             ))

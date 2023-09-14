@@ -30,9 +30,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class ApplyConversationActionRequest : MultiResponseServiceRequest<ServiceResponse>
 {
-    private readonly List<ConversationAction> conversationActions = new List<ConversationAction>();
-
-    public List<ConversationAction> ConversationActions => conversationActions;
+    public List<ConversationAction> ConversationActions { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ApplyConversationActionRequest" /> class.
@@ -61,7 +59,7 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     /// <returns>Number of expected response messages.</returns>
     internal override int GetExpectedResponseMessageCount()
     {
-        return conversationActions.Count;
+        return ConversationActions.Count;
     }
 
     /// <summary>
@@ -70,10 +68,11 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(conversationActions, "conversationActions");
-        for (var iAction = 0; iAction < ConversationActions.Count; iAction++)
+        EwsUtilities.ValidateParamCollection(ConversationActions);
+
+        foreach (var action in ConversationActions)
         {
-            ConversationActions[iAction].Validate();
+            action.Validate();
         }
     }
 
@@ -84,9 +83,10 @@ internal sealed class ApplyConversationActionRequest : MultiResponseServiceReque
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.ConversationActions);
-        for (var iAction = 0; iAction < ConversationActions.Count; iAction++)
+
+        foreach (var action in ConversationActions)
         {
-            ConversationActions[iAction].WriteElementsToXml(writer);
+            action.WriteElementsToXml(writer);
         }
 
         writer.WriteEndElement();

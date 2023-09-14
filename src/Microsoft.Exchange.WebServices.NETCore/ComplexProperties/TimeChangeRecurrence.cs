@@ -30,9 +30,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class TimeChangeRecurrence : ComplexProperty
 {
-    private DayOfTheWeek? dayOfTheWeek;
-    private DayOfTheWeekIndex? dayOfTheWeekIndex;
-    private Month? month;
+    private DayOfTheWeek? _dayOfTheWeek;
+    private DayOfTheWeekIndex? _dayOfTheWeekIndex;
+    private Month? _month;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
@@ -50,9 +50,9 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
     public TimeChangeRecurrence(DayOfTheWeekIndex dayOfTheWeekIndex, DayOfTheWeek dayOfTheWeek, Month month)
         : this()
     {
-        this.dayOfTheWeekIndex = dayOfTheWeekIndex;
-        this.dayOfTheWeek = dayOfTheWeek;
-        this.month = month;
+        _dayOfTheWeekIndex = dayOfTheWeekIndex;
+        _dayOfTheWeek = dayOfTheWeek;
+        _month = month;
     }
 
     /// <summary>
@@ -60,8 +60,8 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
     /// </summary>
     public DayOfTheWeekIndex? DayOfTheWeekIndex
     {
-        get => dayOfTheWeekIndex;
-        set => SetFieldValue(ref dayOfTheWeekIndex, value);
+        get => _dayOfTheWeekIndex;
+        set => SetFieldValue(ref _dayOfTheWeekIndex, value);
     }
 
     /// <summary>
@@ -69,8 +69,8 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
     /// </summary>
     public DayOfTheWeek? DayOfTheWeek
     {
-        get => dayOfTheWeek;
-        set => SetFieldValue(ref dayOfTheWeek, value);
+        get => _dayOfTheWeek;
+        set => SetFieldValue(ref _dayOfTheWeek, value);
     }
 
     /// <summary>
@@ -78,8 +78,8 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
     /// </summary>
     public Month? Month
     {
-        get => month;
-        set => SetFieldValue(ref month, value);
+        get => _month;
+        set => SetFieldValue(ref _month, value);
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DaysOfWeek, DayOfTheWeek.Value);
         }
 
-        if (dayOfTheWeekIndex.HasValue)
+        if (_dayOfTheWeekIndex.HasValue)
         {
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DayOfWeekIndex, DayOfTheWeekIndex.Value);
         }
@@ -114,16 +114,24 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.DaysOfWeek:
-                dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
+            {
+                _dayOfTheWeek = reader.ReadElementValue<DayOfTheWeek>();
                 return true;
+            }
             case XmlElementNames.DayOfWeekIndex:
-                dayOfTheWeekIndex = reader.ReadElementValue<DayOfTheWeekIndex>();
+            {
+                _dayOfTheWeekIndex = reader.ReadElementValue<DayOfTheWeekIndex>();
                 return true;
+            }
             case XmlElementNames.Month:
-                month = reader.ReadElementValue<Month>();
+            {
+                _month = reader.ReadElementValue<Month>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 }

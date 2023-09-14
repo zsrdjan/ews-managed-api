@@ -25,6 +25,8 @@
 
 using System.Xml;
 
+using JetBrains.Annotations;
+
 using Microsoft.Exchange.WebServices.Data;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
@@ -32,6 +34,7 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents a user setting that is a collection of alternate mailboxes.
 /// </summary>
+[PublicAPI]
 public sealed class DocumentSharingLocationCollection
 {
     /// <summary>
@@ -39,7 +42,6 @@ public sealed class DocumentSharingLocationCollection
     /// </summary>
     internal DocumentSharingLocationCollection()
     {
-        Entries = new List<DocumentSharingLocation>();
     }
 
     /// <summary>
@@ -55,8 +57,7 @@ public sealed class DocumentSharingLocationCollection
         {
             reader.Read();
 
-            if ((reader.NodeType == XmlNodeType.Element) &&
-                (reader.LocalName == XmlElementNames.DocumentSharingLocation))
+            if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.DocumentSharingLocation)
             {
                 var location = DocumentSharingLocation.LoadFromXml(reader);
                 instance.Entries.Add(location);
@@ -69,5 +70,5 @@ public sealed class DocumentSharingLocationCollection
     /// <summary>
     ///     Gets the collection of alternate mailboxes.
     /// </summary>
-    public List<DocumentSharingLocation> Entries { get; private set; }
+    public List<DocumentSharingLocation> Entries { get; private set; } = new();
 }

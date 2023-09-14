@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <content>
@@ -33,10 +35,11 @@ public abstract partial class Recurrence
     /// <summary>
     ///     Represents a recurrence pattern where each occurrence happens on a specific day every year.
     /// </summary>
+    [PublicAPI]
     public sealed class YearlyPattern : Recurrence
     {
-        private Month? month;
-        private int? dayOfMonth;
+        private Month? _month;
+        private int? _dayOfMonth;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="YearlyPattern" /> class.
@@ -92,13 +95,19 @@ public abstract partial class Recurrence
             switch (reader.LocalName)
             {
                 case XmlElementNames.DayOfMonth:
-                    dayOfMonth = reader.ReadElementValue<int>();
+                {
+                    _dayOfMonth = reader.ReadElementValue<int>();
                     return true;
+                }
                 case XmlElementNames.Month:
-                    month = reader.ReadElementValue<Month>();
+                {
+                    _month = reader.ReadElementValue<Month>();
                     return true;
+                }
                 default:
+                {
                     return false;
+                }
             }
         }
 
@@ -109,12 +118,12 @@ public abstract partial class Recurrence
         {
             base.InternalValidate();
 
-            if (!month.HasValue)
+            if (!_month.HasValue)
             {
                 throw new ServiceValidationException(Strings.MonthMustBeSpecifiedForRecurrencePattern);
             }
 
-            if (!dayOfMonth.HasValue)
+            if (!_dayOfMonth.HasValue)
             {
                 throw new ServiceValidationException(Strings.DayOfMonthMustBeSpecifiedForRecurrencePattern);
             }
@@ -125,13 +134,13 @@ public abstract partial class Recurrence
         /// </summary>
         /// <param name="otherRecurrence">The recurrence to compare this one to.</param>
         /// <returns>true if the two recurrences are identical, false otherwise.</returns>
-        public override bool IsSame(Recurrence otherRecurrence)
+        public override bool IsSame(Recurrence? otherRecurrence)
         {
-            var otherYearlyPattern = (YearlyPattern)otherRecurrence;
+            var otherYearlyPattern = (YearlyPattern?)otherRecurrence;
 
             return base.IsSame(otherRecurrence) &&
-                   month == otherYearlyPattern.month &&
-                   dayOfMonth == otherYearlyPattern.dayOfMonth;
+                   _month == otherYearlyPattern._month &&
+                   _dayOfMonth == otherYearlyPattern._dayOfMonth;
         }
 
         /// <summary>
@@ -139,8 +148,8 @@ public abstract partial class Recurrence
         /// </summary>
         public Month Month
         {
-            get => GetFieldValueOrThrowIfNull(month, "Month");
-            set => SetFieldValue(ref month, value);
+            get => GetFieldValueOrThrowIfNull(_month, "Month");
+            set => SetFieldValue(ref _month, value);
         }
 
         /// <summary>
@@ -148,7 +157,7 @@ public abstract partial class Recurrence
         /// </summary>
         public int DayOfMonth
         {
-            get => GetFieldValueOrThrowIfNull(dayOfMonth, "DayOfMonth");
+            get => GetFieldValueOrThrowIfNull(_dayOfMonth, "DayOfMonth");
 
             set
             {
@@ -157,7 +166,7 @@ public abstract partial class Recurrence
                     throw new ArgumentOutOfRangeException("DayOfMonth", Strings.DayOfMonthMustBeBetween1And31);
                 }
 
-                SetFieldValue(ref dayOfMonth, value);
+                SetFieldValue(ref _dayOfMonth, value);
             }
         }
     }

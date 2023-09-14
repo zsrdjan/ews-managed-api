@@ -55,7 +55,7 @@ internal class AutodiscoverDnsClient
     /// <summary>
     ///     Random selector in the case of ties.
     /// </summary>
-    private static readonly Random randomTieBreakerSelector = new Random();
+    private static readonly Random RandomTieBreakerSelector = new();
 
     #endregion
 
@@ -65,7 +65,7 @@ internal class AutodiscoverDnsClient
     /// <summary>
     ///     AutodiscoverService using this DNS reader.
     /// </summary>
-    private readonly AutodiscoverService service;
+    private readonly AutodiscoverService _service;
 
     #endregion
 
@@ -78,7 +78,7 @@ internal class AutodiscoverDnsClient
     /// <param name="service">The service.</param>
     internal AutodiscoverDnsClient(AutodiscoverService service)
     {
-        this.service = service;
+        _service = service;
     }
 
     #endregion
@@ -96,21 +96,21 @@ internal class AutodiscoverDnsClient
     /// </remarks>
     /// <param name="domain">The domain.</param>
     /// <returns>Autodiscover hostname (will be null if lookup failed).</returns>
-    internal string FindAutodiscoverHostFromSrv(string domain)
+    internal string? FindAutodiscoverHostFromSrv(string domain)
     {
         var domainToMatch = AutoDiscoverSrvPrefix + domain;
 
         var dnsSrvRecord = FindBestMatchingSrvRecord(domainToMatch);
 
-        if ((dnsSrvRecord == null) || string.IsNullOrEmpty(dnsSrvRecord.NameTarget))
+        if (dnsSrvRecord == null || string.IsNullOrEmpty(dnsSrvRecord.NameTarget))
         {
-            service.TraceMessage(TraceFlags.AutodiscoverConfiguration, "No appropriate SRV record was found.");
+            _service.TraceMessage(TraceFlags.AutodiscoverConfiguration, "No appropriate SRV record was found.");
             return null;
         }
 
-        service.TraceMessage(
+        _service.TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            string.Format("DNS query for SRV record for domain {0} found {1}", domain, dnsSrvRecord.NameTarget)
+            $"DNS query for SRV record for domain {domain} found {dnsSrvRecord.NameTarget}"
         );
 
         return dnsSrvRecord.NameTarget;
@@ -121,37 +121,33 @@ internal class AutodiscoverDnsClient
     /// </summary>
     /// <param name="domain">The domain.</param>
     /// <returns>DnsSrvRecord(will be null if lookup failed).</returns>
-    private DnsSrvRecord FindBestMatchingSrvRecord(string domain)
+    private DnsSrvRecord? FindBestMatchingSrvRecord(string domain)
     {
         List<DnsSrvRecord> dnsSrvRecordList;
         try
         {
             // Make DnsQuery call to get collection of SRV records.
-            dnsSrvRecordList = DnsClient.DnsQuery<DnsSrvRecord>(domain, service.DnsServerAddress);
+            dnsSrvRecordList = DnsClient.DnsQuery<DnsSrvRecord>(domain, _service.DnsServerAddress);
         }
         catch (DnsException ex)
         {
-            var dnsExcMessage = string.Format(
-                "DnsQuery returned error error '{0}' error code 0x{1:X8}.",
-                ex.Message,
-                ex.NativeErrorCode
-            );
-            service.TraceMessage(TraceFlags.AutodiscoverConfiguration, dnsExcMessage);
+            var dnsExcMessage = $"DnsQuery returned error error '{ex.Message}' error code 0x{ex.NativeErrorCode:X8}.";
+            _service.TraceMessage(TraceFlags.AutodiscoverConfiguration, dnsExcMessage);
             return null;
         }
         catch (SecurityException ex)
         {
             // In restricted environments, we may not be allowed to call unmanaged code.
-            service.TraceMessage(
+            _service.TraceMessage(
                 TraceFlags.AutodiscoverConfiguration,
-                string.Format("DnsQuery cannot be called. Security error: {0}.", ex.Message)
+                $"DnsQuery cannot be called. Security error: {ex.Message}."
             );
             return null;
         }
 
-        service.TraceMessage(
+        _service.TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            string.Format("{0} SRV records were returned.", dnsSrvRecordList.Count)
+            $"{dnsSrvRecordList.Count} SRV records were returned."
         );
 
         // If multiple records were returned, they will be returned sorted by priority 
@@ -173,15 +169,14 @@ internal class AutodiscoverDnsClient
         // Records were returned but nothing matched our criteria.
         if (!recordFound)
         {
-            service.TraceMessage(TraceFlags.AutodiscoverConfiguration, "No appropriate SRV records were found.");
-
+            _service.TraceMessage(TraceFlags.AutodiscoverConfiguration, "No appropriate SRV records were found.");
             return null;
         }
 
         // Collect all records with the same (highest) priority.
         // (Aren't lambda expressions cool? ;-)
         var bestDnsSrvRecordList = dnsSrvRecordList.FindAll(
-            record => (record.Port == SslPort) && (record.Priority == priority) && (record.Weight == weight)
+            record => record.Port == SslPort && record.Priority == priority && record.Weight == weight
         );
 
         // The list must contain at least one matching record since we found one earlier.
@@ -192,7 +187,7 @@ internal class AutodiscoverDnsClient
         );
 
         // If we have multiple records with the same priority and weight, randomly pick one.
-        var recordIndex = (bestDnsSrvRecordList.Count > 1) ? randomTieBreakerSelector.Next(bestDnsSrvRecordList.Count)
+        var recordIndex = bestDnsSrvRecordList.Count > 1 ? RandomTieBreakerSelector.Next(bestDnsSrvRecordList.Count)
             : 0;
 
         var bestDnsSrvRecord = bestDnsSrvRecordList[recordIndex];
@@ -205,7 +200,7 @@ internal class AutodiscoverDnsClient
             bestDnsSrvRecord.Priority,
             bestDnsSrvRecord.Weight
         );
-        service.TraceMessage(TraceFlags.AutodiscoverConfiguration, traceMessage);
+        _service.TraceMessage(TraceFlags.AutodiscoverConfiguration, traceMessage);
 
         return bestDnsSrvRecord;
     }

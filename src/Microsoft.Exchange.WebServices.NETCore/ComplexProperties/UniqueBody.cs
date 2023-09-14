@@ -23,17 +23,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the body part of an item that is unique to the conversation the item is part of.
 /// </summary>
+[PublicAPI]
 public sealed class UniqueBody : ComplexProperty
 {
-    private BodyType bodyType;
-    private string text;
-    private bool isTruncated;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="UniqueBody" /> class.
     /// </summary>
@@ -48,7 +47,7 @@ public sealed class UniqueBody : ComplexProperty
     /// <returns>A string containing the text of the UniqueBody.</returns>
     public static implicit operator string(UniqueBody messageBody)
     {
-        EwsUtilities.ValidateParam(messageBody, "messageBody");
+        EwsUtilities.ValidateParam(messageBody);
         return messageBody.Text;
     }
 
@@ -58,12 +57,12 @@ public sealed class UniqueBody : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        bodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
+        BodyType = reader.ReadAttributeValue<BodyType>(XmlAttributeNames.BodyType);
 
         var attributeValue = reader.ReadAttributeValue(XmlAttributeNames.IsTruncated);
         if (!string.IsNullOrEmpty(attributeValue))
         {
-            isTruncated = bool.Parse(attributeValue);
+            IsTruncated = bool.Parse(attributeValue);
         }
     }
 
@@ -73,7 +72,7 @@ public sealed class UniqueBody : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadTextValueFromXml(EwsServiceXmlReader reader)
     {
-        text = reader.ReadValue();
+        Text = reader.ReadValue();
     }
 
     /// <summary>
@@ -100,17 +99,17 @@ public sealed class UniqueBody : ComplexProperty
     /// <summary>
     ///     Gets the type of the unique body's text.
     /// </summary>
-    public BodyType BodyType => bodyType;
+    public BodyType BodyType { get; private set; }
 
     /// <summary>
     ///     Gets the text of the unique body.
     /// </summary>
-    public string Text => text;
+    public string? Text { get; private set; }
 
     /// <summary>
     ///     Gets whether the unique body is truncated.
     /// </summary>
-    public bool IsTruncated => isTruncated;
+    public bool IsTruncated { get; private set; }
 
 
     #region Object method overrides
@@ -123,7 +122,7 @@ public sealed class UniqueBody : ComplexProperty
     /// </returns>
     public override string ToString()
     {
-        return (Text == null) ? string.Empty : Text;
+        return Text ?? string.Empty;
     }
 
     #endregion

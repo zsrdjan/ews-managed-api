@@ -24,7 +24,10 @@
  */
 
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml;
+
+using JetBrains.Annotations;
 
 using Microsoft.Exchange.WebServices.Data;
 
@@ -33,6 +36,7 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents the response to a GetUsersSettings call for an individual user.
 /// </summary>
+[PublicAPI]
 public sealed class GetUserSettingsResponse : AutodiscoverResponse
 {
     /// <summary>
@@ -52,10 +56,9 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
     /// <param name="setting">The setting.</param>
     /// <param name="value">The setting value.</param>
     /// <returns>True if setting was available.</returns>
-    public bool TryGetSettingValue<T>(UserSettingName setting, out T value)
+    public bool TryGetSettingValue<T>(UserSettingName setting, [MaybeNullWhen(false)] out T value)
     {
-        object objValue;
-        if (Settings.TryGetValue(setting, out objValue))
+        if (Settings.TryGetValue(setting, out var objValue))
         {
             value = (T)objValue;
             return true;
@@ -101,17 +104,25 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.RedirectTarget:
+                    {
                         RedirectTarget = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.UserSettingErrors:
+                    {
                         LoadUserSettingErrorsFromXml(reader);
                         break;
+                    }
                     case XmlElementNames.UserSettings:
+                    {
                         LoadUserSettingsFromXml(reader);
                         break;
+                    }
                     default:
+                    {
                         base.LoadFromXml(reader, endElementName);
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
@@ -129,7 +140,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
             {
                 reader.Read();
 
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.UserSetting))
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.UserSetting)
                 {
                     var settingClass = reader.ReadAttributeValue(
                         XmlNamespace.XmlSchemaInstance,
@@ -143,16 +154,20 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
                         case XmlElementNames.AlternateMailboxCollectionSetting:
                         case XmlElementNames.ProtocolConnectionCollectionSetting:
                         case XmlElementNames.DocumentSharingLocationCollectionSetting:
+                        {
                             ReadSettingFromXml(reader);
                             break;
+                        }
 
                         default:
+                        {
                             EwsUtilities.Assert(
                                 false,
                                 "GetUserSettingsResponse.LoadUserSettingsFromXml",
-                                string.Format("Invalid setting class '{0}' returned", settingClass)
+                                $"Invalid setting class '{settingClass}' returned"
                             );
                             break;
+                        }
                     }
                 }
             } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettings));
@@ -165,8 +180,8 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
     /// <param name="reader">The reader.</param>
     private void ReadSettingFromXml(EwsXmlReader reader)
     {
-        string name = null;
-        object value = null;
+        string? name = null;
+        object? value = null;
 
         do
         {
@@ -177,23 +192,35 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.Name:
+                    {
                         name = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.Value:
+                    {
                         value = reader.ReadElementValue();
                         break;
+                    }
                     case XmlElementNames.WebClientUrls:
+                    {
                         value = WebClientUrlCollection.LoadFromXml(reader);
                         break;
+                    }
                     case XmlElementNames.ProtocolConnections:
+                    {
                         value = ProtocolConnectionCollection.LoadFromXml(reader);
                         break;
+                    }
                     case XmlElementNames.AlternateMailboxes:
+                    {
                         value = AlternateMailboxCollection.LoadFromXml(reader);
                         break;
+                    }
                     case XmlElementNames.DocumentSharingLocations:
+                    {
                         value = DocumentSharingLocationCollection.LoadFromXml(reader);
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSetting));
@@ -232,7 +259,7 @@ public sealed class GetUserSettingsResponse : AutodiscoverResponse
             {
                 reader.Read();
 
-                if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.UserSettingError))
+                if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.UserSettingError)
                 {
                     var error = new UserSettingError();
                     error.LoadFromXml(reader);

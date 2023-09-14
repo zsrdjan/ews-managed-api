@@ -25,6 +25,8 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -32,14 +34,15 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 /// <typeparam name="TKey">The type of key.</typeparam>
 /// <typeparam name="TEntry">The type of entry.</typeparam>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICustomUpdateSerializer
     where TEntry : DictionaryEntryProperty<TKey>
+    where TKey : notnull
 {
-    private readonly Dictionary<TKey, TEntry> entries = new Dictionary<TKey, TEntry>();
-    private readonly Dictionary<TKey, TEntry> removedEntries = new Dictionary<TKey, TEntry>();
-    private readonly List<TKey> addedEntries = new List<TKey>();
-    private readonly List<TKey> modifiedEntries = new List<TKey>();
+    private readonly Dictionary<TKey, TEntry> _removedEntries = new();
+    private readonly List<TKey> _addedEntries = new();
+    private readonly List<TKey> _modifiedEntries = new();
 
     /// <summary>
     ///     Entry was changed.
@@ -49,9 +52,9 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     {
         var key = (complexProperty as TEntry).Key;
 
-        if (!addedEntries.Contains(key) && !modifiedEntries.Contains(key))
+        if (!_addedEntries.Contains(key) && !_modifiedEntries.Contains(key))
         {
-            modifiedEntries.Add(key);
+            _modifiedEntries.Add(key);
             Changed();
         }
     }
@@ -124,11 +127,11 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     /// </summary>
     internal override void ClearChangeLog()
     {
-        addedEntries.Clear();
-        removedEntries.Clear();
-        modifiedEntries.Clear();
+        _addedEntries.Clear();
+        _removedEntries.Clear();
+        _modifiedEntries.Clear();
 
-        foreach (var entry in entries.Values)
+        foreach (var entry in Entries.Values)
         {
             entry.ClearChangeLog();
         }
@@ -142,9 +145,9 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     {
         entry.OnChange += EntryChanged;
 
-        entries.Add(entry.Key, entry);
-        addedEntries.Add(entry.Key);
-        removedEntries.Remove(entry.Key);
+        Entries.Add(entry.Key, entry);
+        _addedEntries.Add(entry.Key);
+        _removedEntries.Remove(entry.Key);
 
         Changed();
     }
@@ -155,19 +158,17 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     /// <param name="entry">The entry.</param>
     internal void InternalAddOrReplace(TEntry entry)
     {
-        TEntry oldEntry;
-
-        if (entries.TryGetValue(entry.Key, out oldEntry))
+        if (Entries.TryGetValue(entry.Key, out var oldEntry))
         {
             oldEntry.OnChange -= EntryChanged;
 
             entry.OnChange += EntryChanged;
 
-            if (!addedEntries.Contains(entry.Key))
+            if (!_addedEntries.Contains(entry.Key))
             {
-                if (!modifiedEntries.Contains(entry.Key))
+                if (!_modifiedEntries.Contains(entry.Key))
                 {
-                    modifiedEntries.Add(entry.Key);
+                    _modifiedEntries.Add(entry.Key);
                 }
             }
 
@@ -185,20 +186,18 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     /// <param name="key">The key.</param>
     internal void InternalRemove(TKey key)
     {
-        TEntry entry;
-
-        if (entries.TryGetValue(key, out entry))
+        if (Entries.TryGetValue(key, out var entry))
         {
             entry.OnChange -= EntryChanged;
 
-            entries.Remove(key);
-            removedEntries.Add(key, entry);
+            Entries.Remove(key);
+            _removedEntries.Add(key, entry);
 
             Changed();
         }
 
-        addedEntries.Remove(key);
-        modifiedEntries.Remove(key);
+        _addedEntries.Remove(key);
+        _modifiedEntries.Remove(key);
     }
 
     /// <summary>
@@ -243,7 +242,7 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     internal override void WriteToXml(EwsServiceXmlWriter writer, XmlNamespace xmlNamespace, string xmlElementName)
     {
         // Only write collection if it has at least one element.
-        if (entries.Count > 0)
+        if (Entries.Count > 0)
         {
             base.WriteToXml(writer, xmlNamespace, xmlElementName);
         }
@@ -255,7 +254,7 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        foreach (var keyValuePair in entries)
+        foreach (var keyValuePair in Entries)
         {
             keyValuePair.Value.WriteToXml(writer, GetEntryXmlElementName(keyValuePair.Value));
         }
@@ -265,7 +264,7 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     ///     Gets the entries.
     /// </summary>
     /// <value>The entries.</value>
-    internal Dictionary<TKey, TEntry> Entries => entries;
+    internal Dictionary<TKey, TEntry> Entries { get; } = new();
 
     /// <summary>
     ///     Determines whether this instance contains the specified key.
@@ -299,14 +298,14 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     {
         var tempEntries = new List<TEntry>();
 
-        foreach (var key in addedEntries)
+        foreach (var key in _addedEntries)
         {
-            tempEntries.Add(entries[key]);
+            tempEntries.Add(Entries[key]);
         }
 
-        foreach (var key in modifiedEntries)
+        foreach (var key in _modifiedEntries)
         {
-            tempEntries.Add(entries[key]);
+            tempEntries.Add(Entries[key]);
         }
 
         foreach (var entry in tempEntries)
@@ -326,7 +325,7 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
             }
         }
 
-        foreach (var entry in removedEntries.Values)
+        foreach (var entry in _removedEntries.Values)
         {
             if (!entry.WriteDeleteUpdateToXml(writer, ewsObject))
             {

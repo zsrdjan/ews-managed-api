@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an ContactEntity object.
 /// </summary>
+[PublicAPI]
 public sealed class ContactEntity : ExtractedEntity
 {
     /// <summary>
@@ -82,39 +85,48 @@ public sealed class ContactEntity : ExtractedEntity
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgPersonName:
+            {
                 PersonName = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgBusinessName:
+            {
                 BusinessName = reader.ReadElementValue();
                 return true;
-
+            }
             case XmlElementNames.NlgPhoneNumbers:
+            {
                 PhoneNumbers = new ContactPhoneEntityCollection();
                 PhoneNumbers.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgPhoneNumbers);
                 return true;
-
+            }
             case XmlElementNames.NlgUrls:
+            {
                 Urls = new StringList(XmlElementNames.NlgUrl);
                 Urls.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgUrls);
                 return true;
-
+            }
             case XmlElementNames.NlgEmailAddresses:
+            {
                 EmailAddresses = new StringList(XmlElementNames.NlgEmailAddress);
                 EmailAddresses.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgEmailAddresses);
                 return true;
-
+            }
             case XmlElementNames.NlgAddresses:
+            {
                 Addresses = new StringList(XmlElementNames.NlgAddress);
                 Addresses.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgAddresses);
                 return true;
-
+            }
             case XmlElementNames.NlgContactString:
+            {
                 ContactString = reader.ReadElementValue();
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

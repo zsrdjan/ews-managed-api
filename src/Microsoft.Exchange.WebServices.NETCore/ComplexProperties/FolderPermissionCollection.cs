@@ -25,15 +25,17 @@
 
 using System.Collections.ObjectModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of folder permissions.
 /// </summary>
+[PublicAPI]
 public sealed class FolderPermissionCollection : ComplexPropertyCollection<FolderPermission>
 {
-    private readonly bool isCalendarFolder;
-    private readonly Collection<string> unknownEntries = new Collection<string>();
+    private readonly bool _isCalendarFolder;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FolderPermissionCollection" /> class.
@@ -41,7 +43,7 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     /// <param name="owner">The folder owner.</param>
     internal FolderPermissionCollection(Folder owner)
     {
-        isCalendarFolder = owner is CalendarFolder;
+        _isCalendarFolder = owner is CalendarFolder;
     }
 
     /// <summary>
@@ -49,14 +51,14 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     /// </summary>
     /// <value>XML element name.</value>
     private string InnerCollectionXmlElementName =>
-        isCalendarFolder ? XmlElementNames.CalendarPermissions : XmlElementNames.Permissions;
+        _isCalendarFolder ? XmlElementNames.CalendarPermissions : XmlElementNames.Permissions;
 
     /// <summary>
     ///     Gets the name of the collection item XML element.
     /// </summary>
     /// <value>XML element name.</value>
     private string CollectionItemXmlElementName =>
-        isCalendarFolder ? XmlElementNames.CalendarPermission : XmlElementNames.Permission;
+        _isCalendarFolder ? XmlElementNames.CalendarPermission : XmlElementNames.Permission;
 
     /// <summary>
     ///     Gets the name of the collection item XML element.
@@ -91,7 +93,7 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
 
                 if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.UnknownEntry))
                 {
-                    unknownEntries.Add(reader.ReadElementValue());
+                    UnknownEntries.Add(reader.ReadElementValue());
                 }
             } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.UnknownEntries));
         }
@@ -105,7 +107,7 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
         for (var permissionIndex = 0; permissionIndex < Items.Count; permissionIndex++)
         {
             var permission = Items[permissionIndex];
-            permission.Validate(isCalendarFolder, permissionIndex);
+            permission.Validate(_isCalendarFolder, permissionIndex);
         }
     }
 
@@ -118,7 +120,7 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
         writer.WriteStartElement(XmlNamespace.Types, InnerCollectionXmlElementName);
         foreach (var folderPermission in this)
         {
-            folderPermission.WriteToXml(writer, GetCollectionItemXmlElementName(folderPermission), isCalendarFolder);
+            folderPermission.WriteToXml(writer, GetCollectionItemXmlElementName(folderPermission), _isCalendarFolder);
         }
 
         writer.WriteEndElement(); // this.InnerCollectionXmlElementName
@@ -149,7 +151,7 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     /// <param name="permissions">The permissions to add.</param>
     public void AddRange(IEnumerable<FolderPermission> permissions)
     {
-        EwsUtilities.ValidateParam(permissions, "permissions");
+        EwsUtilities.ValidateParam(permissions);
 
         foreach (var permission in permissions)
         {
@@ -187,5 +189,5 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     /// <summary>
     ///     Gets a list of unknown user Ids in the collection.
     /// </summary>
-    public Collection<string> UnknownEntries => unknownEntries;
+    public Collection<string> UnknownEntries { get; } = new();
 }

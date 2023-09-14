@@ -32,10 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class WorkingPeriod : ComplexProperty
 {
-    private readonly Collection<DayOfTheWeek> daysOfWeek = new Collection<DayOfTheWeek>();
-    private TimeSpan startTime;
-    private TimeSpan endTime;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="WorkingPeriod" /> class.
     /// </summary>
@@ -53,31 +49,39 @@ internal sealed class WorkingPeriod : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.DayOfWeek:
-                EwsUtilities.ParseEnumValueList(daysOfWeek, reader.ReadElementValue(), ' ');
+            {
+                EwsUtilities.ParseEnumValueList(DaysOfWeek, reader.ReadElementValue(), ' ');
                 return true;
+            }
             case XmlElementNames.StartTimeInMinutes:
-                startTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
+            {
+                StartTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
                 return true;
+            }
             case XmlElementNames.EndTimeInMinutes:
-                endTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
+            {
+                EndTime = TimeSpan.FromMinutes(reader.ReadElementValue<int>());
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
     /// <summary>
     ///     Gets a collection of work days.
     /// </summary>
-    internal Collection<DayOfTheWeek> DaysOfWeek => daysOfWeek;
+    internal Collection<DayOfTheWeek> DaysOfWeek { get; } = new Collection<DayOfTheWeek>();
 
     /// <summary>
     ///     Gets the start time of the period.
     /// </summary>
-    internal TimeSpan StartTime => startTime;
+    internal TimeSpan StartTime { get; private set; }
 
     /// <summary>
     ///     Gets the end time of the period.
     /// </summary>
-    internal TimeSpan EndTime => endTime;
+    internal TimeSpan EndTime { get; private set; }
 }

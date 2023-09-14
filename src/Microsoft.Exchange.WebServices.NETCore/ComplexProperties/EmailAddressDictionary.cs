@@ -24,12 +24,16 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+
+using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a dictionary of e-mail addresses.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey, EmailAddressEntry>
 {
@@ -56,7 +60,7 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
     /// </summary>
     /// <param name="key">The key of the e-mail address to get or set.</param>
     /// <returns>The e-mail address at the specified key.</returns>
-    public EmailAddress this[EmailAddressKey key]
+    public EmailAddress? this[EmailAddressKey key]
     {
         get => Entries[key].EmailAddress;
 
@@ -68,9 +72,7 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
             }
             else
             {
-                EmailAddressEntry entry;
-
-                if (Entries.TryGetValue(key, out entry))
+                if (Entries.TryGetValue(key, out var entry))
                 {
                     entry.EmailAddress = value;
                     Changed();
@@ -95,19 +97,15 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
     /// <returns>
     ///     true if the Dictionary contains an e-mail address associated with the specified key; otherwise, false.
     /// </returns>
-    public bool TryGetValue(EmailAddressKey key, out EmailAddress emailAddress)
+    public bool TryGetValue(EmailAddressKey key, [MaybeNullWhen(false)] out EmailAddress emailAddress)
     {
-        EmailAddressEntry entry = null;
-
-        if (Entries.TryGetValue(key, out entry))
+        if (Entries.TryGetValue(key, out var entry))
         {
             emailAddress = entry.EmailAddress;
-
             return true;
         }
 
         emailAddress = null;
-
         return false;
     }
 }

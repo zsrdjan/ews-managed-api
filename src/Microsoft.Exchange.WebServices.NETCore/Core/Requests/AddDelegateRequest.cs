@@ -30,9 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class AddDelegateRequest : DelegateManagementRequestBase<DelegateManagementResponse>
 {
-    private readonly List<DelegateUser> delegateUsers = new List<DelegateUser>();
-    private MeetingRequestsDeliveryScope? meetingRequestsDeliveryScope;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddDelegateRequest" /> class.
     /// </summary>
@@ -48,7 +45,7 @@ internal class AddDelegateRequest : DelegateManagementRequestBase<DelegateManage
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(DelegateUsers, "DelegateUsers");
+        EwsUtilities.ValidateParamCollection(DelegateUsers);
 
         foreach (var delegateUser in DelegateUsers)
         {
@@ -112,7 +109,7 @@ internal class AddDelegateRequest : DelegateManagementRequestBase<DelegateManage
     /// <returns>Service response.</returns>
     internal override DelegateManagementResponse CreateResponse()
     {
-        return new DelegateManagementResponse(true, delegateUsers);
+        return new DelegateManagementResponse(true, DelegateUsers);
     }
 
     /// <summary>
@@ -128,15 +125,11 @@ internal class AddDelegateRequest : DelegateManagementRequestBase<DelegateManage
     ///     Gets or sets the meeting requests delivery scope.
     /// </summary>
     /// <value>The meeting requests delivery scope.</value>
-    public MeetingRequestsDeliveryScope? MeetingRequestsDeliveryScope
-    {
-        get => meetingRequestsDeliveryScope;
-        set => meetingRequestsDeliveryScope = value;
-    }
+    public MeetingRequestsDeliveryScope? MeetingRequestsDeliveryScope { get; set; }
 
     /// <summary>
     ///     Gets the delegate users.
     /// </summary>
     /// <value>The delegate users.</value>
-    public List<DelegateUser> DelegateUsers => delegateUsers;
+    public List<DelegateUser> DelegateUsers { get; } = new();
 }

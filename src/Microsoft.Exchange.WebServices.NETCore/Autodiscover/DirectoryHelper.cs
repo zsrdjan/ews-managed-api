@@ -67,8 +67,6 @@ internal class DirectoryHelper
 
     #region Private members
 
-    private readonly ExchangeServiceBase service;
-
     #endregion
 
 
@@ -88,17 +86,17 @@ internal class DirectoryHelper
         }
         catch (InvalidOperationException e)
         {
-            TraceMessage(string.Format("LDAP call failed, exception: {0}", e));
+            TraceMessage($"LDAP call failed, exception: {e}");
             scpUrlList = new List<string>();
         }
         catch (NotSupportedException e)
         {
-            TraceMessage(string.Format("LDAP call failed, exception: {0}", e));
+            TraceMessage($"LDAP call failed, exception: {e}");
             scpUrlList = new List<string>();
         }
         catch (COMException e)
         {
-            TraceMessage(string.Format("LDAP call failed, exception: {0}", e));
+            TraceMessage($"LDAP call failed, exception: {e}");
             scpUrlList = new List<string>();
         }
 
@@ -120,18 +118,16 @@ internal class DirectoryHelper
 
         maxHops--;
 
-        TraceMessage(string.Format("Starting SCP lookup for domainName='{0}', root path='{1}'", domainName, ldapPath));
+        TraceMessage($"Starting SCP lookup for domainName='{domainName}', root path='{ldapPath}'");
 
-        string scpUrl = null;
-        string fallBackLdapPath = null;
-        string rootDsePath = null;
-        string configPath = null;
+        string? fallBackLdapPath = null;
+        string? configPath = null;
 
         // The list of SCP URLs.
         var scpUrlList = new List<string>();
 
         // Get the LDAP root path.
-        rootDsePath = (ldapPath == null) ? "LDAP://RootDSE" : ldapPath + "/RootDSE";
+        var rootDsePath = ldapPath == null ? "LDAP://RootDSE" : ldapPath + "/RootDSE";
 
         // Get the root directory entry.
         using (var rootDseEntry = new DirectoryEntry(rootDsePath))
@@ -158,7 +154,7 @@ internal class DirectoryHelper
                     configSearcher.PropertiesToLoad.Add("keywords");
                     configSearcher.PropertiesToLoad.Add("serviceBindingInformation");
 
-                    TraceMessage(string.Format("Searching for SCP entries in {0}", configEntry.Path));
+                    TraceMessage($"Searching for SCP entries in {configEntry.Path}");
 
                     // Query Active Directory for SCP entries.
                     scpDirEntries = configSearcher.FindAll();
@@ -171,7 +167,7 @@ internal class DirectoryHelper
             // Contains a pointer to the LDAP path of a SCP object.
             string scpPtrLdapPath;
 
-            TraceMessage(string.Format("Scanning for SCP pointers {0}", domainMatch));
+            TraceMessage($"Scanning for SCP pointers {domainMatch}");
 
             foreach (SearchResult scpDirEntry in scpDirEntries)
             {
@@ -188,12 +184,7 @@ internal class DirectoryHelper
                     {
                         // Stop the current search, start another from a new location.
                         TraceMessage(
-                            string.Format(
-                                "SCP pointer for '{0}' is found in '{1}', restarting search in '{2}'",
-                                domainMatch,
-                                scpDirEntry.Path,
-                                scpPtrLdapPath
-                            )
+                            $"SCP pointer for '{domainMatch}' is found in '{scpDirEntry.Path}', restarting search in '{scpPtrLdapPath}'"
                         );
 
                         return GetScpUrlList(domainName, scpPtrLdapPath, ref maxHops);
@@ -206,19 +197,14 @@ internal class DirectoryHelper
                         {
                             fallBackLdapPath = scpPtrLdapPath;
                             TraceMessage(
-                                string.Format(
-                                    "Fallback SCP pointer='{0}' for '{1}' is found in '{2}' and saved.",
-                                    fallBackLdapPath,
-                                    domainMatch,
-                                    scpDirEntry.Path
-                                )
+                                $"Fallback SCP pointer='{fallBackLdapPath}' for '{domainMatch}' is found in '{scpDirEntry.Path}' and saved."
                             );
                         }
                     }
                 }
             }
 
-            TraceMessage(string.Format("No SCP pointers found for '{0}' in configPath='{1}'", domainMatch, configPath));
+            TraceMessage($"No SCP pointers found for '{domainMatch}' in configPath='{configPath}'");
 
             // Get the computer's current site.
             var computerSiteName = GetSiteName();
@@ -230,7 +216,7 @@ internal class DirectoryHelper
                 var siteMatch = sitePrefix + computerSiteName;
                 var scpListNoSiteMatch = new List<string>();
 
-                TraceMessage(string.Format("Scanning for SCP urls for the current computer {0}", siteMatch));
+                TraceMessage($"Scanning for SCP urls for the current computer {siteMatch}");
 
                 foreach (SearchResult scpDirEntry in scpDirEntries)
                 {
@@ -241,7 +227,7 @@ internal class DirectoryHelper
                         scpDirEntry.Properties["serviceBindingInformation"].Count > 0)
                     {
                         // Get the SCP URL.
-                        scpUrl = scpDirEntry.Properties["serviceBindingInformation"][0] as string;
+                        var scpUrl = scpDirEntry.Properties["serviceBindingInformation"][0] as string;
 
                         // If the SCP URL matches the exact ComputerSiteName.
                         if (entryKeywords.CaseInsensitiveContains(siteMatch))
@@ -250,12 +236,7 @@ internal class DirectoryHelper
                             if (!scpUrlList.CaseInsensitiveContains(scpUrl))
                             {
                                 TraceMessage(
-                                    string.Format(
-                                        "Adding (prio 1) '{0}' for the '{1}' from '{2}' to the top of the list (exact match)",
-                                        scpUrl,
-                                        siteMatch,
-                                        scpDirEntry.Path
-                                    )
+                                    $"Adding (prio 1) '{scpUrl}' for the '{siteMatch}' from '{scpDirEntry.Path}' to the top of the list (exact match)"
                                 );
 
                                 scpUrlList.Add(scpUrl);
@@ -280,11 +261,7 @@ internal class DirectoryHelper
                                 if (!hasSiteKeyword)
                                 {
                                     TraceMessage(
-                                        string.Format(
-                                            "Adding (prio 2) '{0}' from '{1}' to the middle of the list (wildcard)",
-                                            scpUrl,
-                                            scpDirEntry.Path
-                                        )
+                                        $"Adding (prio 2) '{scpUrl}' from '{scpDirEntry.Path}' to the middle of the list (wildcard)"
                                     );
 
                                     scpListNoSiteMatch.Insert(0, scpUrl);
@@ -294,11 +271,7 @@ internal class DirectoryHelper
                                 else
                                 {
                                     TraceMessage(
-                                        string.Format(
-                                            "Adding (prio 3) '{0}' from '{1}' to the end of the list (site mismatch)",
-                                            scpUrl,
-                                            scpDirEntry.Path
-                                        )
+                                        $"Adding (prio 3) '{scpUrl}' from '{scpDirEntry.Path}' to the end of the list (site mismatch)"
                                     );
 
                                     scpListNoSiteMatch.Add(scpUrl);
@@ -338,11 +311,7 @@ internal class DirectoryHelper
             if (!string.IsNullOrEmpty(fallBackLdapPath))
             {
                 TraceMessage(
-                    string.Format(
-                        "Restarting search for domain '{0}' in SCP fallback pointer '{1}'",
-                        domainName,
-                        fallBackLdapPath
-                    )
+                    $"Restarting search for domain '{domainName}' in SCP fallback pointer '{fallBackLdapPath}'"
                 );
 
                 return GetScpUrlList(domainName, fallBackLdapPath, ref maxHops);
@@ -357,14 +326,12 @@ internal class DirectoryHelper
     ///     Get the local site name.
     /// </summary>
     /// <returns>Name of the local site.</returns>
-    private string GetSiteName()
+    private static string? GetSiteName()
     {
         try
         {
-            using (var site = ActiveDirectorySite.GetComputerSite())
-            {
-                return site.Name;
-            }
+            using var site = ActiveDirectorySite.GetComputerSite();
+            return site.Name;
         }
         catch (ActiveDirectoryObjectNotFoundException) // object not found in directory store
         {
@@ -398,7 +365,7 @@ internal class DirectoryHelper
     /// <param name="service">The service.</param>
     public DirectoryHelper(ExchangeServiceBase service)
     {
-        this.service = service;
+        Service = service;
     }
 
     #endregion
@@ -406,7 +373,7 @@ internal class DirectoryHelper
 
     #region Properties
 
-    internal ExchangeServiceBase Service => service;
+    internal ExchangeServiceBase Service { get; }
 
     #endregion
 }

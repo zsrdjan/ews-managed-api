@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an EntityExtractionResult object.
 /// </summary>
+[PublicAPI]
 public sealed class EntityExtractionResult : ComplexProperty
 {
     /// <summary>
@@ -83,42 +86,51 @@ public sealed class EntityExtractionResult : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.NlgAddresses:
+            {
                 Addresses = new AddressEntityCollection();
                 Addresses.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgAddresses);
                 return true;
-
+            }
             case XmlElementNames.NlgMeetingSuggestions:
+            {
                 MeetingSuggestions = new MeetingSuggestionCollection();
                 MeetingSuggestions.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgMeetingSuggestions);
                 return true;
-
+            }
             case XmlElementNames.NlgTaskSuggestions:
+            {
                 TaskSuggestions = new TaskSuggestionCollection();
                 TaskSuggestions.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgTaskSuggestions);
                 return true;
-
+            }
             case XmlElementNames.NlgEmailAddresses:
+            {
                 EmailAddresses = new EmailAddressEntityCollection();
                 EmailAddresses.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgEmailAddresses);
                 return true;
-
+            }
             case XmlElementNames.NlgContacts:
+            {
                 Contacts = new ContactEntityCollection();
                 Contacts.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgContacts);
                 return true;
-
+            }
             case XmlElementNames.NlgUrls:
+            {
                 Urls = new UrlEntityCollection();
                 Urls.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgUrls);
                 return true;
-
+            }
             case XmlElementNames.NlgPhoneNumbers:
+            {
                 PhoneNumbers = new PhoneEntityCollection();
                 PhoneNumbers.LoadFromXml(reader, XmlNamespace.Types, XmlElementNames.NlgPhoneNumbers);
                 return true;
-
+            }
             default:
+            {
                 return base.TryReadElementFromXml(reader);
+            }
         }
     }
 }

@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of folder Ids.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
 {
@@ -44,11 +47,11 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     ///     Initializes a new instance of the <see cref="FolderIdCollection" /> class.
     /// </summary>
     /// <param name="folderIds">The folder ids to include.</param>
-    internal FolderIdCollection(IEnumerable<FolderId> folderIds)
+    internal FolderIdCollection(IEnumerable<FolderId>? folderIds)
     {
         if (folderIds != null)
         {
-            folderIds.ForEach(folderId => InternalAdd(folderId));
+            folderIds.ForEach(InternalAdd);
         }
     }
 
@@ -78,11 +81,11 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     /// <param name="folderId">The folder Id to add.</param>
     public void Add(FolderId folderId)
     {
-        EwsUtilities.ValidateParam(folderId, "folderId");
+        EwsUtilities.ValidateParam(folderId);
 
         if (Contains(folderId))
         {
-            throw new ArgumentException(Strings.IdAlreadyInList, "folderId");
+            throw new ArgumentException(Strings.IdAlreadyInList, nameof(folderId));
         }
 
         InternalAdd(folderId);
@@ -97,7 +100,7 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     {
         if (Contains(folderName))
         {
-            throw new ArgumentException(Strings.IdAlreadyInList, "folderName");
+            throw new ArgumentException(Strings.IdAlreadyInList, nameof(folderName));
         }
 
         var folderId = new FolderId(folderName);
@@ -123,7 +126,7 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -136,7 +139,7 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     /// <returns>True if the folder id was successfully removed from the collection, false otherwise.</returns>
     public bool Remove(FolderId folderId)
     {
-        EwsUtilities.ValidateParam(folderId, "folderId");
+        EwsUtilities.ValidateParam(folderId);
 
         return InternalRemove(folderId);
     }
@@ -144,7 +147,7 @@ public sealed class FolderIdCollection : ComplexPropertyCollection<FolderId>
     /// <summary>
     ///     Removes the specified well-known folder from the collection.
     /// </summary>
-    /// <param name="folderName">The well-knwon folder to remove from the collection.</param>
+    /// <param name="folderName">The well-known folder to remove from the collection.</param>
     /// <returns>True if the well-known folder was successfully removed from the collection, false otherwise.</returns>
     public bool Remove(WellKnownFolderName folderName)
     {

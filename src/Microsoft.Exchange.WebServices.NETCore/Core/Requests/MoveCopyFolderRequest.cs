@@ -32,15 +32,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folder, TResponse>
     where TResponse : ServiceResponse
 {
-    private readonly FolderIdWrapperList folderIds = new FolderIdWrapperList();
-
     /// <summary>
     ///     Validates request.
     /// </summary>
     internal override void Validate()
     {
         base.Validate();
-        EwsUtilities.ValidateParamCollection(FolderIds, "FolderIds");
+        EwsUtilities.ValidateParamCollection(FolderIds);
         FolderIds.Validate(Service.RequestedServerVersion);
     }
 
@@ -60,7 +58,7 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     /// <param name="writer">The writer.</param>
     internal override void WriteIdsToXml(EwsServiceXmlWriter writer)
     {
-        folderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FolderIds);
+        FolderIds.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FolderIds);
     }
 
     /// <summary>
@@ -76,5 +74,5 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     ///     Gets the folder ids.
     /// </summary>
     /// <value>The folder ids.</value>
-    internal FolderIdWrapperList FolderIds => folderIds;
+    internal FolderIdWrapperList FolderIds { get; } = new();
 }

@@ -23,17 +23,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Id of an occurrence of a recurring appointment.
 /// </summary>
+[PublicAPI]
 public sealed class AppointmentOccurrenceId : ItemId
 {
     /// <summary>
     ///     Index of the occurrence.
     /// </summary>
-    private int occurrenceIndex;
+    private int _occurrenceIndex;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AppointmentOccurrenceId" /> class.
@@ -51,7 +54,7 @@ public sealed class AppointmentOccurrenceId : ItemId
     /// </summary>
     public int OccurrenceIndex
     {
-        get => occurrenceIndex;
+        get => _occurrenceIndex;
 
         set
         {
@@ -61,7 +64,7 @@ public sealed class AppointmentOccurrenceId : ItemId
                 throw new ArgumentException(Strings.OccurrenceIndexMustBeGreaterThanZero);
             }
 
-            occurrenceIndex = value;
+            _occurrenceIndex = value;
         }
     }
 

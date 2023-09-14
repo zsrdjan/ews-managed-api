@@ -23,22 +23,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the date and time range within which messages have been received.
 /// </summary>
+[PublicAPI]
 public sealed class RulePredicateDateRange : ComplexProperty
 {
     /// <summary>
     ///     The start DateTime.
     /// </summary>
-    private DateTime? start;
+    private DateTime? _start;
 
     /// <summary>
     ///     The end DateTime.
     /// </summary>
-    private DateTime? end;
+    private DateTime? _end;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="RulePredicateDateRange" /> class.
@@ -53,9 +56,8 @@ public sealed class RulePredicateDateRange : ComplexProperty
     /// </summary>
     public DateTime? Start
     {
-        get => start;
-
-        set => SetFieldValue(ref start, value);
+        get => _start;
+        set => SetFieldValue(ref _start, value);
     }
 
     /// <summary>
@@ -64,9 +66,8 @@ public sealed class RulePredicateDateRange : ComplexProperty
     /// </summary>
     public DateTime? End
     {
-        get => end;
-
-        set => SetFieldValue(ref end, value);
+        get => _end;
+        set => SetFieldValue(ref _end, value);
     }
 
     /// <summary>
@@ -79,13 +80,19 @@ public sealed class RulePredicateDateRange : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.StartDateTime:
-                start = reader.ReadElementValueAsDateTime();
+            {
+                _start = reader.ReadElementValueAsDateTime();
                 return true;
+            }
             case XmlElementNames.EndDateTime:
-                end = reader.ReadElementValueAsDateTime();
+            {
+                _end = reader.ReadElementValueAsDateTime();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 
@@ -112,7 +119,7 @@ public sealed class RulePredicateDateRange : ComplexProperty
     internal override void InternalValidate()
     {
         base.InternalValidate();
-        if (start.HasValue && end.HasValue && start.Value > end.Value)
+        if (_start.HasValue && _end.HasValue && _start.Value > _end.Value)
         {
             throw new ServiceValidationException("Start date time cannot be bigger than end date time.");
         }

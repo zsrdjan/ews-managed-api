@@ -89,15 +89,6 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     }
 
     /// <summary>
-    ///     Writes XML attributes.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-    {
-        base.WriteAttributesToXml(writer);
-    }
-
-    /// <summary>
     ///     Writes XML elements.
     /// </summary>
     /// <param name="writer">The writer.</param>

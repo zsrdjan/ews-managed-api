@@ -25,11 +25,14 @@
 
 using System.ComponentModel;
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a collection of attendees.
 /// </summary>
+[PublicAPI]
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class AttendeeCollection : ComplexPropertyCollection<Attendee>
 {
@@ -94,7 +97,7 @@ public sealed class AttendeeCollection : ComplexPropertyCollection<Attendee>
     {
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException("index", Strings.IndexIsOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
         }
 
         InternalRemoveAt(index);
@@ -107,7 +110,7 @@ public sealed class AttendeeCollection : ComplexPropertyCollection<Attendee>
     /// <returns>True if the attendee was successfully removed from the collection, false otherwise.</returns>
     public bool Remove(Attendee attendee)
     {
-        EwsUtilities.ValidateParam(attendee, "attendee");
+        EwsUtilities.ValidateParam(attendee);
 
         return InternalRemove(attendee);
     }

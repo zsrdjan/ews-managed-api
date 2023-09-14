@@ -23,16 +23,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the SetClientExtension method action.
 /// </summary>
+[PublicAPI]
 public sealed class SetClientExtensionAction : ComplexProperty
 {
-    private readonly SetClientExtensionActionId setClientExtensionActionId;
-    private readonly string extensionId;
-    private readonly ClientExtension clientExtension;
+    private readonly SetClientExtensionActionId _setClientExtensionActionId;
+    private readonly string _extensionId;
+    private readonly ClientExtension? _clientExtension;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetClientExtensionAction" /> class.
@@ -47,9 +50,9 @@ public sealed class SetClientExtensionAction : ComplexProperty
     )
     {
         Namespace = XmlNamespace.Types;
-        this.setClientExtensionActionId = setClientExtensionActionId;
-        this.extensionId = extensionId;
-        this.clientExtension = clientExtension;
+        _setClientExtensionActionId = setClientExtensionActionId;
+        _extensionId = extensionId;
+        _clientExtension = clientExtension;
     }
 
     /// <summary>
@@ -58,11 +61,11 @@ public sealed class SetClientExtensionAction : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
     {
-        writer.WriteAttributeValue(XmlAttributeNames.SetClientExtensionActionId, setClientExtensionActionId);
+        writer.WriteAttributeValue(XmlAttributeNames.SetClientExtensionActionId, _setClientExtensionActionId);
 
-        if (!string.IsNullOrEmpty(extensionId))
+        if (!string.IsNullOrEmpty(_extensionId))
         {
-            writer.WriteAttributeValue(XmlAttributeNames.ClientExtensionId, extensionId);
+            writer.WriteAttributeValue(XmlAttributeNames.ClientExtensionId, _extensionId);
         }
     }
 
@@ -72,9 +75,6 @@ public sealed class SetClientExtensionAction : ComplexProperty
     /// <param name="writer">The writer.</param>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
-        if (null != clientExtension)
-        {
-            clientExtension.WriteToXml(writer, XmlNamespace.Types, XmlElementNames.ClientExtension);
-        }
+        _clientExtension?.WriteToXml(writer, XmlNamespace.Types, XmlElementNames.ClientExtension);
     }
 }
