@@ -37,17 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>, IOwnedProperty
 {
-    #region Fields
-
     /// <summary>
     ///     The item owner that owns this attachment collection
     /// </summary>
     private Item _owner;
 
-    #endregion
-
-
-    #region Constructors
 
     /// <summary>
     ///     Initializes a new instance of AttachmentCollection.
@@ -56,10 +50,6 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     {
     }
 
-    #endregion
-
-
-    #region Properties
 
     #region IOwnedProperty Members
 
@@ -83,8 +73,6 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
             _owner = item;
         }
     }
-
-    #endregion
 
     #endregion
 
@@ -239,7 +227,7 @@ public sealed class AttachmentCollection : ComplexPropertyCollection<Attachment>
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to determine the type of attachment to create.</param>
     /// <returns>An Attachment instance.</returns>
-    internal override Attachment CreateComplexProperty(string xmlElementName)
+    internal override Attachment? CreateComplexProperty(string xmlElementName)
     {
         return xmlElementName switch
         {

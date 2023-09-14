@@ -60,7 +60,7 @@ public sealed class ProfileInsightValueCollection : ComplexPropertyCollection<Pr
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the ProfileInsightValue.</param>
     /// <returns>A ProfileInsightValue object.</returns>
-    internal override ProfileInsightValue CreateComplexProperty(string xmlElementName)
+    internal override ProfileInsightValue? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

@@ -60,7 +60,7 @@ public sealed class SkillInsightValueCollection : ComplexPropertyCollection<Skil
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the SkillInsightValue.</param>
     /// <returns>A SkillInsightValue object.</returns>
-    internal override SkillInsightValue CreateComplexProperty(string xmlElementName)
+    internal override SkillInsightValue? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

@@ -160,7 +160,7 @@ public sealed class EmailAddressCollection : ComplexPropertyCollection<EmailAddr
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the e-mail address.</param>
     /// <returns>An EmailAddress object.</returns>
-    internal override EmailAddress CreateComplexProperty(string xmlElementName)
+    internal override EmailAddress? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

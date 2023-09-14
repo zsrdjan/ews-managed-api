@@ -49,10 +49,7 @@ public sealed class ContactPhoneEntityCollection : ComplexPropertyCollection<Con
     /// <param name="collection">The collection of objects to include.</param>
     internal ContactPhoneEntityCollection(IEnumerable<ContactPhoneEntity>? collection)
     {
-        if (collection != null)
-        {
-            collection.ForEach(InternalAdd);
-        }
+        collection?.ForEach(InternalAdd);
     }
 
     /// <summary>

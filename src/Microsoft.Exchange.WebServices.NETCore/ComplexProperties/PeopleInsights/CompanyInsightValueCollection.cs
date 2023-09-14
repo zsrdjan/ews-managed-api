@@ -60,7 +60,7 @@ public sealed class CompanyInsightValueCollection : ComplexPropertyCollection<Co
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the CompanyInsightValue.</param>
     /// <returns>A CompanyInsightValue object.</returns>
-    internal override CompanyInsightValue CreateComplexProperty(string xmlElementName)
+    internal override CompanyInsightValue? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

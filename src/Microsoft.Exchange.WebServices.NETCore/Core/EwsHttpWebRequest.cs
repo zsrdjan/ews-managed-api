@@ -95,7 +95,6 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
             message.Content.Headers.TryAddWithoutValidation("Content-Type", ContentType);
         }
 
-
         if (!string.IsNullOrEmpty(UserAgent))
         {
             message.Headers.UserAgent.Clear();

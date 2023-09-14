@@ -42,7 +42,7 @@ internal sealed class RuleErrorCollection : ComplexPropertyCollection<RuleError>
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the RuleError object.</param>
     /// <returns>A RuleError object.</returns>
-    internal override RuleError CreateComplexProperty(string xmlElementName)
+    internal override RuleError? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == XmlElementNames.Error)
         {

@@ -98,6 +98,15 @@ public class ServiceResponse
             {
                 reader.ReadElementValue<int>(XmlNamespace.Messages, XmlElementNames.DescriptiveLinkKey);
             }
+            // TODO: is this required from: https://github.com/sherlock1982/ews-managed-api/pull/42/files
+            //else
+            //{
+            //    reader.ReadElementValue();
+            //    if (reader.IsStartElement(XmlNamespace.Messages, XmlElementNames.MessageText))
+            //    {
+            //        ErrorMessage = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.MessageText);
+            //    }
+            //}
 
             // If batch processing stopped, EWS returns an empty element. Skip over it.
             if (BatchProcessingStopped)

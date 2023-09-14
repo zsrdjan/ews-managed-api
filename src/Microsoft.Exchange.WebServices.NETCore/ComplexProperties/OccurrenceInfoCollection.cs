@@ -48,7 +48,7 @@ public sealed class OccurrenceInfoCollection : ComplexPropertyCollection<Occurre
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>OccurenceInfo instance.</returns>
-    internal override OccurrenceInfo CreateComplexProperty(string xmlElementName)
+    internal override OccurrenceInfo? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == XmlElementNames.Occurrence)
         {

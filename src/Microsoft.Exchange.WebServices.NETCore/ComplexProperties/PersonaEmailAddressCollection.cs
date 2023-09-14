@@ -165,7 +165,7 @@ public sealed class PersonaEmailAddressCollection : ComplexPropertyCollection<Pe
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the persona e-mail address.</param>
     /// <returns>A PersonaEmailAddress object.</returns>
-    internal override PersonaEmailAddress CreateComplexProperty(string xmlElementName)
+    internal override PersonaEmailAddress? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

@@ -49,10 +49,7 @@ public sealed class EmailAddressEntityCollection : ComplexPropertyCollection<Ema
     /// <param name="collection">The collection of objects to include.</param>
     internal EmailAddressEntityCollection(IEnumerable<EmailAddressEntity>? collection)
     {
-        if (collection != null)
-        {
-            collection.ForEach(InternalAdd);
-        }
+        collection?.ForEach(InternalAdd);
     }
 
     /// <summary>

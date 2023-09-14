@@ -1181,6 +1181,32 @@ internal static class XmlElementNames
     #endregion
 
 
+    #region MailTips
+
+    public const string GetMailTips = "GetMailTips";
+    public const string MailTipsRequested = "MailTipsRequested";
+    public const string GetMailTipsResponse = "GetMailTipsResponse";
+    public const string GetMailTipsResponseArray = "ResponseMessages";
+    public const string MailTipsResponseMessageType = "MailTipsResponseMessageType";
+    public const string MailTips = "MailTips";
+    public const string PendingMailTips = "PendingMailTips";
+    public const string CustomMailTip = "CustomMailTip";
+    public const string SendingAs = "SendingAs";
+    public const string Recipients = "Recipients";
+    public const string RecipientAddress = "RecipientAddress";
+    public const string OutOfOffice = "OutOfOffice";
+    public const string ReplayBody = "ReplyBody";
+    public const string IsModerated = "IsModerated";
+    public const string MailboxFull = "MailboxFull";
+    public const string InvalidRecipient = "InvalidRecipient";
+    public const string DeliveryRestricted = "DeliveryRestricted";
+    public const string ExternalMemberCount = "ExternalMemberCount";
+    public const string TotalMemberCount = "TotalMemberCount";
+    public const string MaxMessageSize = "MaxMessageSize";
+
+    #endregion
+
+
     #region Directory only contact properties
 
     public const string PhoneticFullName = "PhoneticFullName";

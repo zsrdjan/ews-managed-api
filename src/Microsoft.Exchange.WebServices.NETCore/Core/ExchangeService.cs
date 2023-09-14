@@ -3533,6 +3533,36 @@ public sealed class ExchangeService : ExchangeServiceBase
     #endregion
 
 
+    #region MailTips operations
+
+    /// <summary>
+    /// Gets MailTips for given users. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendingAs">E-mail address that a user is trying to send as.</param>
+    /// <param name="recipients">Collection of recipients that would receive a copy of the message.</param>
+    /// <param name="requested">Mail tips requested from the service.</param>
+    /// <param name="token"></param>
+    /// <returns>List of GetMailTips results.</returns>
+    public Task<GetMailTipsResults> GetMailTips(
+        string sendingAs,
+        Mailbox[] recipients,
+        MailTipsRequested requested,
+        CancellationToken token = default
+    )
+    {
+        var request = new GetMailTipsRequest(this)
+        {
+            SendingAs = sendingAs,
+            Recipients = recipients,
+            MailTipsRequested = requested,
+        };
+
+        return request.Execute(token);
+    }
+
+    #endregion
+
+
     #region Conversation
 
     /// <summary>

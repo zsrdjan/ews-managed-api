@@ -31,10 +31,7 @@ public sealed class ComputedInsightValuePropertyCollection : ComplexPropertyColl
     /// <param name="collection">The collection of objects to include.</param>
     internal ComputedInsightValuePropertyCollection(IEnumerable<ComputedInsightValueProperty>? collection)
     {
-        if (collection != null)
-        {
-            collection.ForEach(InternalAdd);
-        }
+        collection?.ForEach(InternalAdd);
     }
 
     /// <summary>
@@ -42,7 +39,7 @@ public sealed class ComputedInsightValuePropertyCollection : ComplexPropertyColl
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>ComputedInsightValueProperty.</returns>
-    internal override ComputedInsightValueProperty CreateComplexProperty(string xmlElementName)
+    internal override ComputedInsightValueProperty? CreateComplexProperty(string xmlElementName)
     {
         return new ComputedInsightValueProperty();
     }

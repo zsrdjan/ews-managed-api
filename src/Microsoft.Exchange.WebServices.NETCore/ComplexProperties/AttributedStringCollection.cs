@@ -134,9 +134,10 @@ public sealed class AttributedStringCollection : ComplexPropertyCollection<Attri
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the attributed string object</param>
     /// <returns>An AttributedString object</returns>
-    internal override AttributedString CreateComplexProperty(string xmlElementName)
+    internal override AttributedString? CreateComplexProperty(string xmlElementName)
     {
         EwsUtilities.ValidateParam(xmlElementName);
+
         if (xmlElementName == _collectionItemXmlElementName)
         {
             return new AttributedString();

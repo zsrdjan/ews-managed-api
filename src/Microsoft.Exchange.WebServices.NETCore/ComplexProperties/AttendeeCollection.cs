@@ -120,7 +120,7 @@ public sealed class AttendeeCollection : ComplexPropertyCollection<Attendee>
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the attendee.</param>
     /// <returns>An Attendee object.</returns>
-    internal override Attendee CreateComplexProperty(string xmlElementName)
+    internal override Attendee? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == XmlElementNames.Attendee)
         {

@@ -118,7 +118,7 @@ public sealed class PersonInsightCollection : ComplexPropertyCollection<PersonIn
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the PersonInsight.</param>
     /// <returns>A PersonInsight object.</returns>
-    internal override PersonInsight CreateComplexProperty(string xmlElementName)
+    internal override PersonInsight? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

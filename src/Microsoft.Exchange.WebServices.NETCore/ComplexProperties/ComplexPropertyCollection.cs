@@ -45,7 +45,7 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>Complex property instance.</returns>
-    internal abstract TComplexProperty CreateComplexProperty(string xmlElementName);
+    internal abstract TComplexProperty? CreateComplexProperty(string xmlElementName);
 
     /// <summary>
     ///     Gets the name of the collection item XML element.

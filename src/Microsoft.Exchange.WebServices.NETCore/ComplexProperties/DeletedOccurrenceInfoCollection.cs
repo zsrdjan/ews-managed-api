@@ -48,7 +48,7 @@ public sealed class DeletedOccurrenceInfoCollection : ComplexPropertyCollection<
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
     /// <returns>OccurenceInfo instance.</returns>
-    internal override DeletedOccurrenceInfo CreateComplexProperty(string xmlElementName)
+    internal override DeletedOccurrenceInfo? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == XmlElementNames.DeletedOccurrence)
         {

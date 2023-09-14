@@ -45,7 +45,7 @@ public sealed class RuleOperationErrorCollection : ComplexPropertyCollection<Rul
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the RuleOperationError object.</param>
     /// <returns>A RuleOperationError object.</returns>
-    internal override RuleOperationError CreateComplexProperty(string xmlElementName)
+    internal override RuleOperationError? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == XmlElementNames.RuleOperationError)
         {

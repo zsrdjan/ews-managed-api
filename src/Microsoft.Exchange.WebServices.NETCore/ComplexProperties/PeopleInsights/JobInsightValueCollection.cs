@@ -60,7 +60,7 @@ public sealed class JobInsightValueCollection : ComplexPropertyCollection<JobIns
     /// </summary>
     /// <param name="xmlElementName">The XML element name from which to create the JobInsightValue.</param>
     /// <returns>A JobInsightValue object.</returns>
-    internal override JobInsightValue CreateComplexProperty(string xmlElementName)
+    internal override JobInsightValue? CreateComplexProperty(string xmlElementName)
     {
         if (xmlElementName == _collectionItemXmlElementName)
         {

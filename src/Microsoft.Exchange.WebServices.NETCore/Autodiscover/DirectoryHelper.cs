@@ -65,11 +65,6 @@ internal class DirectoryHelper
     #endregion
 
 
-    #region Private members
-
-    #endregion
-
-
     /// <summary>
     ///     Gets the SCP URL list for domain.
     /// </summary>
@@ -109,7 +104,7 @@ internal class DirectoryHelper
     /// <param name="domainName">Domain name to search for SCP information</param>
     /// <param name="ldapPath">LDAP path to start the search</param>
     /// <param name="maxHops">The number of remaining allowed hops</param>
-    private List<string> GetScpUrlList(string domainName, string ldapPath, ref int maxHops)
+    private List<string> GetScpUrlList(string domainName, string? ldapPath, ref int maxHops)
     {
         if (maxHops <= 0)
         {
@@ -121,7 +116,7 @@ internal class DirectoryHelper
         TraceMessage($"Starting SCP lookup for domainName='{domainName}', root path='{ldapPath}'");
 
         string? fallBackLdapPath = null;
-        string? configPath = null;
+        string? configPath;
 
         // The list of SCP URLs.
         var scpUrlList = new List<string>();
@@ -137,7 +132,7 @@ internal class DirectoryHelper
         }
 
         // The container for SCP pointers and URLs objects from Active Directory
-        SearchResultCollection scpDirEntries = null;
+        SearchResultCollection? scpDirEntries = null;
 
         try
         {
@@ -145,27 +140,24 @@ internal class DirectoryHelper
             using (var configEntry = new DirectoryEntry("LDAP://" + configPath))
             {
                 // Use the configuration entry path to create a query.
-                using (var configSearcher = new DirectorySearcher(configEntry))
-                {
-                    // Filter for Autodiscover SCP URLs and SCP pointers.
-                    configSearcher.Filter = ScpFilterString;
+                using var configSearcher = new DirectorySearcher(configEntry);
+                // Filter for Autodiscover SCP URLs and SCP pointers.
+                configSearcher.Filter = ScpFilterString;
 
-                    // Identify properties to retrieve using the the query.
-                    configSearcher.PropertiesToLoad.Add("keywords");
-                    configSearcher.PropertiesToLoad.Add("serviceBindingInformation");
+                // Identify properties to retrieve using the the query.
+                configSearcher.PropertiesToLoad.Add("keywords");
+                configSearcher.PropertiesToLoad.Add("serviceBindingInformation");
 
-                    TraceMessage($"Searching for SCP entries in {configEntry.Path}");
+                TraceMessage($"Searching for SCP entries in {configEntry.Path}");
 
-                    // Query Active Directory for SCP entries.
-                    scpDirEntries = configSearcher.FindAll();
-                }
+                // Query Active Directory for SCP entries.
+                scpDirEntries = configSearcher.FindAll();
             }
 
             // Identify the domain to match.
             var domainMatch = "Domain=" + domainName;
 
             // Contains a pointer to the LDAP path of a SCP object.
-            string scpPtrLdapPath;
 
             TraceMessage($"Scanning for SCP pointers {domainMatch}");
 
@@ -177,7 +169,7 @@ internal class DirectoryHelper
                 if (entryKeywords.CaseInsensitiveContains(ScpPtrGuidString))
                 {
                     // Get the LDAP path to SCP pointer.
-                    scpPtrLdapPath = scpDirEntry.Properties["serviceBindingInformation"][0] as string;
+                    var scpPtrLdapPath = scpDirEntry.Properties["serviceBindingInformation"][0] as string;
 
                     // If the SCP pointer matches the user's domain, then restart search from that point.
                     if (entryKeywords.CaseInsensitiveContains(domainMatch))
@@ -357,8 +349,6 @@ internal class DirectoryHelper
     }
 
 
-    #region Constructors
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DirectoryHelper" /> class.
     /// </summary>
@@ -368,12 +358,6 @@ internal class DirectoryHelper
         Service = service;
     }
 
-    #endregion
-
-
-    #region Properties
 
     internal ExchangeServiceBase Service { get; }
-
-    #endregion
 }

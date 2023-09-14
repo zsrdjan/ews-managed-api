@@ -109,7 +109,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
     }
 
     /// <summary>
-    ///     Initializes this transition group based on the specified asjustment rule.
+    ///     Initializes this transition group based on the specified adjustment rule.
     /// </summary>
     /// <param name="adjustmentRule">The adjustment rule to initialize from.</param>
     /// <param name="standardPeriod">A reference to the pre-created standard period.</param>

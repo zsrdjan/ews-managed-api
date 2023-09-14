@@ -93,7 +93,7 @@ public sealed class AttributionCollection : ComplexPropertyCollection<Attributio
     /// </summary>
     /// <param name="xmlElementName">Attribution XML node name</param>
     /// <returns>The attribution object created</returns>
-    internal override Attribution CreateComplexProperty(string xmlElementName)
+    internal override Attribution? CreateComplexProperty(string xmlElementName)
     {
         EwsUtilities.ValidateParam(xmlElementName);
         if (xmlElementName == _collectionItemXmlElementName)
