@@ -56,7 +56,7 @@ public sealed class WebClientUrlCollection
         {
             reader.Read();
 
-            if ((reader.NodeType == XmlNodeType.Element) && (reader.LocalName == XmlElementNames.WebClientUrl))
+            if (reader.NodeType == XmlNodeType.Element && reader.LocalName == XmlElementNames.WebClientUrl)
             {
                 instance.Urls.Add(WebClientUrl.LoadFromXml(reader));
             }

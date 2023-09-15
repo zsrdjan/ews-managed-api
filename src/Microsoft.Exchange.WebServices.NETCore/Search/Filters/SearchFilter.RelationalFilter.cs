@@ -104,7 +104,7 @@ public abstract partial class SearchFilter
                 // All common value types (String, Int32, DateTime, ...) implement IConvertible.
                 // Value types that don't implement IConvertible must implement ISearchStringProvider 
                 // in order to be used in a search filter.
-                if (!((_value is IConvertible) || (_value is ISearchStringProvider)))
+                if (!(_value is IConvertible || _value is ISearchStringProvider))
                 {
                     throw new ServiceValidationException(
                         string.Format(Strings.SearchFilterComparisonValueTypeIsNotSupported, _value.GetType().Name)

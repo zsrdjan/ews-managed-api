@@ -59,6 +59,7 @@ public class SearchFolder : Folder
     /// </summary>
     /// <param name="service">The service to use to bind to the search folder.</param>
     /// <param name="id">The Id of the search folder to bind to.</param>
+    /// <param name="token"></param>
     /// <returns>A SearchFolder instance representing the search folder corresponding to the specified Id.</returns>
     public new static Task<SearchFolder> Bind(ExchangeService service, FolderId id, CancellationToken token = default)
     {

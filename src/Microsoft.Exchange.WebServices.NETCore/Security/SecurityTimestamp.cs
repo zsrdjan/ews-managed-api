@@ -152,7 +152,7 @@ internal sealed class SecurityTimestamp
     {
         for (var i = offset + count - 1; i >= offset; i--)
         {
-            buffer[i] = (char)('0' + (n % 10));
+            buffer[i] = (char)('0' + n % 10);
             n /= 10;
         }
 

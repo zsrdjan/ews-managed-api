@@ -79,7 +79,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
 
         // SeekToConditionItemView is only valid for Exchange2013 or higher
         //
-        if ((View is SeekToConditionItemView) && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
+        if (View is SeekToConditionItemView && Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
         {
             throw new ServiceVersionException(
                 string.Format(

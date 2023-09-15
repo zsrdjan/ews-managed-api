@@ -51,7 +51,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
         {
             var folder = Folders[i];
 
-            if ((folder == null) || folder.IsNew)
+            if (folder == null || folder.IsNew)
             {
                 throw new ArgumentException(string.Format(Strings.FolderToUpdateCannotBeNullOrNew, i));
             }

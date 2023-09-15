@@ -68,7 +68,7 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
         // is an unexpected server error.
         if (serviceResponses.Count < GetExpectedResponseMessageCount())
         {
-            if ((serviceResponses.Count == 1) && (serviceResponses[0].Result == ServiceResult.Error))
+            if (serviceResponses.Count == 1 && serviceResponses[0].Result == ServiceResult.Error)
             {
                 throw new ServiceResponseException(serviceResponses[0]);
             }

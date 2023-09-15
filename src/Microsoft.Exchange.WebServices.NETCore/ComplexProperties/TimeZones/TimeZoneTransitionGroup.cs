@@ -258,7 +258,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
         {
             foreach (var transition in Transitions)
             {
-                if (transition.TargetPeriod.IsStandardPeriod || (Transitions.Count == 1))
+                if (transition.TargetPeriod.IsStandardPeriod || Transitions.Count == 1)
                 {
                     _transitionToStandard = transition;
                 }

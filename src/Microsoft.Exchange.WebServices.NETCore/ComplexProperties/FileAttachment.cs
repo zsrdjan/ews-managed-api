@@ -72,7 +72,7 @@ public sealed class FileAttachment : Attachment
     /// <param name="attachmentIndex">Index of this attachment.</param>
     internal override void Validate(int attachmentIndex)
     {
-        if (string.IsNullOrEmpty(_fileName) && (_content == null) && (_contentStream == null))
+        if (string.IsNullOrEmpty(_fileName) && _content == null && _contentStream == null)
         {
             throw new ServiceValidationException(string.Format(Strings.FileAttachmentContentIsNotSet, attachmentIndex));
         }

@@ -71,7 +71,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
         EwsUtilities.ValidateParamCollection(Items);
         for (var i = 0; i < Items.Count; i++)
         {
-            if ((Items[i] == null) || Items[i].IsNew)
+            if (Items[i] == null || Items[i].IsNew)
             {
                 throw new ArgumentException(string.Format(Strings.ItemToUpdateCannotBeNullOrNew, i));
             }

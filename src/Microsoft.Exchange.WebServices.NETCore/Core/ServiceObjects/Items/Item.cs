@@ -356,6 +356,7 @@ public class Item : ServiceObject
     /// </summary>
     /// <param name="deleteMode">The deletion mode.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
+    /// <param name="token"></param>
     public Task<ServiceResponseCollection<ServiceResponse>> Delete(
         DeleteMode deleteMode,
         bool suppressReadReceipts,
@@ -367,21 +368,23 @@ public class Item : ServiceObject
 
     /// <summary>
     ///     Saves this item in a specific folder. Calling this method results in at least one call to EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added.
+    ///     Multiple calls to EWS might be made if attachments have been added.
     /// </summary>
     /// <param name="parentFolderId">The Id of the folder in which to save this item.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task Save(FolderId parentFolderId, CancellationToken token = default)
     {
-        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+        EwsUtilities.ValidateParam(parentFolderId);
 
         return InternalCreate(parentFolderId, MessageDisposition.SaveOnly, null, token);
     }
 
     /// <summary>
     ///     Saves this item in a specific folder. Calling this method results in at least one call to EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added.
+    ///     Multiple calls to EWS might be made if attachments have been added.
     /// </summary>
     /// <param name="parentFolderName">The name of the folder in which to save this item.</param>
+    /// <param name="token"></param>
     public System.Threading.Tasks.Task Save(WellKnownFolderName parentFolderName, CancellationToken token = default)
     {
         return InternalCreate(new FolderId(parentFolderName), MessageDisposition.SaveOnly, null, token);
@@ -390,7 +393,7 @@ public class Item : ServiceObject
     /// <summary>
     ///     Saves this item in the default folder based on the item's type (for example, an e-mail message is saved to the
     ///     Drafts folder).
-    ///     Calling this method results in at least one call to EWS. Mutliple calls to EWS might be made if attachments have
+    ///     Calling this method results in at least one call to EWS. Multiple calls to EWS might be made if attachments have
     ///     been added.
     /// </summary>
     public System.Threading.Tasks.Task Save(CancellationToken token = default)
@@ -401,9 +404,10 @@ public class Item : ServiceObject
     /// <summary>
     ///     Applies the local changes that have been made to this item. Calling this method results in at least one call to
     ///     EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added or removed.
+    ///     Multiple calls to EWS might be made if attachments have been added or removed.
     /// </summary>
     /// <param name="conflictResolutionMode">The conflict resolution mode.</param>
+    /// <param name="token"></param>
     public Task<Item?> Update(ConflictResolutionMode conflictResolutionMode, CancellationToken token = default)
     {
         return Update(conflictResolutionMode, false, token);
@@ -412,10 +416,11 @@ public class Item : ServiceObject
     /// <summary>
     ///     Applies the local changes that have been made to this item. Calling this method results in at least one call to
     ///     EWS.
-    ///     Mutliple calls to EWS might be made if attachments have been added or removed.
+    ///     Multiple calls to EWS might be made if attachments have been added or removed.
     /// </summary>
     /// <param name="conflictResolutionMode">The conflict resolution mode.</param>
     /// <param name="suppressReadReceipts">Whether to suppress read receipts</param>
+    /// <param name="token"></param>
     public Task<Item?> Update(
         ConflictResolutionMode conflictResolutionMode,
         bool suppressReadReceipts,
@@ -423,7 +428,7 @@ public class Item : ServiceObject
     )
     {
         return InternalUpdate(
-            null /* parentFolder */,
+            null,
             conflictResolutionMode,
             MessageDisposition.SaveOnly,
             null,
@@ -440,13 +445,14 @@ public class Item : ServiceObject
     ///     </para>
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder in which to create a copy of this item.</param>
+    /// <param name="token"></param>
     /// <returns>The copy of this item.</returns>
     public Task<Item> Copy(FolderId destinationFolderId, CancellationToken token = default)
     {
         ThrowIfThisIsNew();
         ThrowIfThisIsAttachment();
 
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+        EwsUtilities.ValidateParam(destinationFolderId);
 
         return Service.CopyItem(Id, destinationFolderId, token);
     }
@@ -473,13 +479,14 @@ public class Item : ServiceObject
     ///     </para>
     /// </summary>
     /// <param name="destinationFolderId">The Id of the folder to which to move this item.</param>
+    /// <param name="token"></param>
     /// <returns>The moved copy of this item.</returns>
     public Task<Item> Move(FolderId destinationFolderId, CancellationToken token = default)
     {
         ThrowIfThisIsNew();
         ThrowIfThisIsAttachment();
 
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+        EwsUtilities.ValidateParam(destinationFolderId);
 
         return Service.MoveItem(Id, destinationFolderId, token);
     }
@@ -537,9 +544,7 @@ public class Item : ServiceObject
         Attachments.Validate();
 
         // Flag parameter is only valid for Exchange2013 or higher
-        //
-        Flag flag;
-        if (TryGetProperty(ItemSchema.Flag, out flag) && flag != null)
+        if (TryGetProperty(ItemSchema.Flag, out Flag? flag) && flag != null)
         {
             if (Service.RequestedServerVersion < ExchangeVersion.Exchange2013)
             {
@@ -556,7 +561,7 @@ public class Item : ServiceObject
     ///     Gets a value indicating whether a time zone SOAP header should be emitted in a CreateItem
     ///     or UpdateItem request so this item can be property saved or updated.
     /// </summary>
-    /// <param name="isUpdateOperation">Indicates whether the operation being petrformed is an update operation.</param>
+    /// <param name="isUpdateOperation">Indicates whether the operation being performed is an update operation.</param>
     /// <returns>
     ///     <c>true</c> if a time zone SOAP header should be emitted; otherwise, <c>false</c>.
     /// </returns>
@@ -565,12 +570,11 @@ public class Item : ServiceObject
         // Starting E14SP2, attachment will be sent along with CreateItem requests. 
         // if the attachment used to require the Timezone header, CreateItem request should do so too.
         //
-        if (!isUpdateOperation && (Service.RequestedServerVersion >= ExchangeVersion.Exchange2010_SP2))
+        if (!isUpdateOperation && Service.RequestedServerVersion >= ExchangeVersion.Exchange2010_SP2)
         {
             foreach (var itemAttachment in Attachments.OfType<ItemAttachment>())
             {
-                if ((itemAttachment.Item != null) &&
-                    itemAttachment.Item.GetIsTimeZoneHeaderRequired(false /* isUpdateOperation */))
+                if (itemAttachment.Item != null && itemAttachment.Item.GetIsTimeZoneHeaderRequired(false))
                 {
                     return true;
                 }

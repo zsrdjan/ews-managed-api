@@ -119,7 +119,7 @@ public class EmailMessage : Item
 
         if (IsNew)
         {
-            if ((Attachments.Count == 0) || (messageDisposition == MessageDisposition.SaveOnly))
+            if (Attachments.Count == 0 || messageDisposition == MessageDisposition.SaveOnly)
             {
                 await InternalCreate(parentFolderId, messageDisposition, null, token);
             }

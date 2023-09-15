@@ -200,7 +200,7 @@ internal class EwsServiceXmlWriter : IDisposable
     {
         if (TryConvertObjectToString(value, out var stringValue))
         {
-            if ((stringValue != null) && (alwaysWriteEmptyString || (stringValue.Length != 0)))
+            if (stringValue != null && (alwaysWriteEmptyString || stringValue.Length != 0))
             {
                 WriteAttributeString(localName, stringValue);
             }

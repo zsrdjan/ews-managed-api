@@ -261,7 +261,7 @@ internal class MapiTypeConverter
     /// <returns>String value.</returns>
     internal static string ConvertToString(MapiPropertyType mapiPropType, object value)
     {
-        return (value == null) ? string.Empty : MapiTypeConverterMap[mapiPropType].ConvertToString(value);
+        return value == null ? string.Empty : MapiTypeConverterMap[mapiPropType].ConvertToString(value);
     }
 
     /// <summary>

@@ -98,7 +98,7 @@ internal sealed class Time
     /// <returns>The number of minutes since 12:00AM the time represents.</returns>
     internal int ConvertToMinutes()
     {
-        return Minutes + (Hours * 60);
+        return Minutes + Hours * 60;
     }
 
     /// <summary>

@@ -185,7 +185,7 @@ internal class DirectoryHelper
                     {
                         // Save the first SCP pointer ldapPath for a later call if a SCP URL is not found.
                         // Directory entries with a SCP pointer should have only one keyword=ScpPtrGuidString.
-                        if ((entryKeywords.Count == 1) && string.IsNullOrEmpty(fallBackLdapPath))
+                        if (entryKeywords.Count == 1 && string.IsNullOrEmpty(fallBackLdapPath))
                         {
                             fallBackLdapPath = scpPtrLdapPath;
                             TraceMessage(

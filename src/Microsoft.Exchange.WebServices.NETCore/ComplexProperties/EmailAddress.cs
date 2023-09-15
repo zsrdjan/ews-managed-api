@@ -61,7 +61,7 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     /// <summary>
     ///     ItemId - Contact or PDL.
     /// </summary>
-    private ItemId _id;
+    private ItemId? _id;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EmailAddress" /> class.

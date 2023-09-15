@@ -1833,8 +1833,6 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     ///     Try to get the partner access information for the given target tenant.
     /// </summary>
     /// <param name="targetTenantDomain">The target domain or user email address.</param>
-    /// <param name="partnerAccessCredentials">The partner access credentials.</param>
-    /// <param name="targetTenantAutodiscoverUrl">The autodiscover url for the given tenant.</param>
     /// <returns>True if the partner access information was retrieved, false otherwise.</returns>
     public async Task<Tuple<bool, ExchangeCredentials, Uri>> TryGetPartnerAccess(string targetTenantDomain)
     {

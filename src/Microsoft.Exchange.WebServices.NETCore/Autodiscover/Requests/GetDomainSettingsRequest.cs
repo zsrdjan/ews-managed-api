@@ -85,7 +85,7 @@ internal class GetDomainSettingsRequest : AutodiscoverRequest
     /// <returns></returns>
     internal async Task<GetDomainSettingsResponseCollection> Execute()
     {
-        var responses = (GetDomainSettingsResponseCollection)(await InternalExecute());
+        var responses = (GetDomainSettingsResponseCollection)await InternalExecute();
         if (responses.ErrorCode == AutodiscoverErrorCode.NoError)
         {
             PostProcessResponses(responses);

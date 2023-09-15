@@ -361,16 +361,16 @@ public sealed class FolderPermission : ComplexProperty
         // If this permission is to be used for a non-calendar folder make sure that read access and permission level aren't set to Calendar-only values
         if (!isCalendarFolder)
         {
-            if ((_readItems == FolderPermissionReadAccess.TimeAndSubjectAndLocation) ||
-                (_readItems == FolderPermissionReadAccess.TimeOnly))
+            if (_readItems == FolderPermissionReadAccess.TimeAndSubjectAndLocation ||
+                _readItems == FolderPermissionReadAccess.TimeOnly)
             {
                 throw new ServiceLocalException(
                     string.Format(Strings.ReadAccessInvalidForNonCalendarFolder, _readItems)
                 );
             }
 
-            if ((_permissionLevel == FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation) ||
-                (_permissionLevel == FolderPermissionLevel.FreeBusyTimeOnly))
+            if (_permissionLevel == FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation ||
+                _permissionLevel == FolderPermissionLevel.FreeBusyTimeOnly)
             {
                 throw new ServiceLocalException(
                     string.Format(Strings.PermissionLevelInvalidForNonCalendarFolder, _permissionLevel)

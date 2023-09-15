@@ -96,7 +96,7 @@ internal class GetUserSettingsRequest : AutodiscoverRequest
     /// <returns></returns>
     internal async Task<GetUserSettingsResponseCollection> Execute()
     {
-        var responses = (GetUserSettingsResponseCollection)(await InternalExecute());
+        var responses = (GetUserSettingsResponseCollection)await InternalExecute();
         if (responses.ErrorCode == AutodiscoverErrorCode.NoError)
         {
             PostProcessResponses(responses);
