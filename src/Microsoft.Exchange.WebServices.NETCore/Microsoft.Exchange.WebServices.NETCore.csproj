@@ -7,9 +7,6 @@
 		<LangVersion>latest</LangVersion>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 
-		<VersionPrefix>1.0.0</VersionPrefix>
-		<Version>1.0.0-beta1</Version>
-
 		<AssemblyName>Microsoft.Exchange.WebServices.NETCore</AssemblyName>
 		<PackageId>Microsoft.Exchange.WebServices.NETCore</PackageId>
 
@@ -36,6 +33,7 @@
 			added cancellation token for most of methods
 		</PackageReleaseNotes>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<IncludeSymbols>true</IncludeSymbols>
@@ -72,10 +70,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="license.txt">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
+		<None Include="../../license.txt" Pack="true" PackagePath="/" />
+		<None Include="../../readme.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
 </Project>
