@@ -33,7 +33,7 @@
 			added cancellation token for most of methods
 		</PackageReleaseNotes>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
 
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<IncludeSymbols>true</IncludeSymbols>
