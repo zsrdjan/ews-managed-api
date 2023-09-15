@@ -37,9 +37,9 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
     #
-    - uses: dotnet/nbgv@master
-      id: nbgv
-    - run: echo 'SemVer2=${{ steps.nbgv.outputs.SemVer2 }}'
+    # - uses: dotnet/nbgv@master
+    #   id: nbgv
+    # - run: echo 'SemVer2=${{ steps.nbgv.outputs.SemVer2 }}'
 
     # Create the NuGet package in the folder from the environment variable NuGetDirectory
     - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }}
