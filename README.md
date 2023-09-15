@@ -1,14 +1,16 @@
 # Quick introduction
 
-This is a .NET Core 7 port of EWS API. Here are some tips to take into account.
+This is a .NET Core 7 port of the [Microsoft.Exchange.WebServices.NETStandard](https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard) package with
+minor modifications.
 
-- NET Framework version is as functional as original
+Here are some tips to take into account:
+
 - Almost all functions involving HTTP requests are now async
 - Outdated async Begin/End functions were removed
 - NET Standard: LDAP Autodiscovery feature will not work
 - NET Standard on Linux: DNS Autodiscovery feature will not work
-- `ExchangeService.ServerCertificateValidationCallback` can now be specified to configure SSL validation 
-- Nuget package can be found here: https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard/
+- `ExchangeService.ServerCertificateValidationCallback` can now be specified to configure SSL validation
+- Nuget package can be found here: [https://www.nuget.org/packages/Exchange.WebServices.NETCore/](https://www.nuget.org/packages/Exchange.WebServices.NETCore/)
 
 # Getting Started with the EWS Managed API
 [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/OfficeDev/ews-managed-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -20,13 +22,10 @@ By using the EWS Managed API, you can access almost all the information stored i
 
 Starting July 19th 2018, Exchange Web Services (EWS) will no longer receive feature updates. While the service will continue to receive security updates and certain non-security updates, product design and features will remain unchanged. This change also applies to the EWS SDKs for Java and .NET. More information here: https://developer.microsoft.com/en-us/graph/blogs/upcoming-changes-to-exchange-web-services-ews-api-for-office-365/
 
-## Download options
-
-Download EWS Managed API via [nuget](http://www.nuget.org/packages/Microsoft.Exchange.WebServices/).
-
 ## Getting started resources
 
 See the following articles to help you get started:
+
 - [Get started with EWS Managed API client applications](http://msdn.microsoft.com/en-us/library/office/dn567668(v=exchg.150).aspx)
 - [How to: Reference the EWS Managed API assembly](http://msdn.microsoft.com/en-us/library/office/dn528373(v=exchg.150).aspx)
 - [How to: Set the EWS service URL by using the EWS Managed API](http://msdn.microsoft.com/en-us/library/office/dn509511(v=exchg.150).aspx)
@@ -37,13 +36,6 @@ See the following articles to help you get started:
 
 Documentation for the EWS Managed API is available in the [Web services](http://msdn.microsoft.com/en-us/library/office/dd877012(v=exchg.150).aspx) node of the [MSDN Library](http://msdn.microsoft.com/en-us/library/ms123401.aspx).
 In addition to the getting started links provided, you can find how to topics and code samples for the most frequently used EWS Managed API objects in the [Develop](http://msdn.microsoft.com/en-us/library/office/jj900166(v=exchg.150).aspx) node. All the latest information about the EWS Managed API, EWS, and related web services can be found under the [Explore the EWS Managed API, EWS, and web services in Exchange](http://msdn.microsoft.com/en-us/library/office/jj536567(v=exchg.150).aspx) topic on MSDN.
-
-## Prerequisites
-
-You need the following to work with the EWS Managed API:
-- A C# compiler to build the DLL files. We recommend Visual Studio 2013.
-- A mailbox on Office 365 or an Exchange server that is running Exchange Online or a version of Exchange starting with Exchange Server 2007.
-- A version of the .NET Framework starting with the .NET Framework 3.5.
 
 ## Additional resources
 

@@ -25,13 +25,6 @@
 		<PackageProjectUrl>https://github.com/ItsClemi/ews-managed-api</PackageProjectUrl>
 		<Title>Exchange.WebServices.NETCore</Title>
 		<Description>The Exchange Web Services (EWS) Managed API provides a managed interface for developing .NET client applications that use EWS. By using the EWS Managed API, you can access almost all the information stored in an Office 365, Exchange Online, or Exchange Server mailbox.</Description>
-		<PackageReleaseNotes>
-			removed obsolete WebRequests and switched to HttpClient internally
-			fixed issue with file attachements downloads
-			restored ldap autodiscover functionality
-			merged changes from official Microsoft repository
-			added cancellation token for most of methods
-		</PackageReleaseNotes>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 
