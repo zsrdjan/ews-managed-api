@@ -23,7 +23,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -73,14 +72,13 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="strValue">The string representation of value.</param>
     /// <returns>True if object was converted, false otherwise.</returns>
     /// <remarks>A null object will be "successfully" converted to a null string.</remarks>
-    internal bool TryConvertObjectToString(object? value, [MaybeNullWhen(false)] out string strValue)
+    internal bool TryConvertObjectToString(object? value, out string? strValue)
     {
         strValue = null;
-        var converted = true;
 
         if (value == null)
         {
-            return false;
+            return true;
         }
 
         // All value types should implement IConvertible. There are a couple of special cases 
@@ -88,8 +86,10 @@ internal class EwsServiceXmlWriter : IDisposable
         if (value.GetType().GetTypeInfo().IsEnum)
         {
             strValue = EwsUtilities.SerializeEnum((Enum)value);
+            return true;
         }
-        else if (value is IConvertible convertible)
+
+        if (value is IConvertible convertible)
         {
             strValue = convertible.GetTypeCode() switch
             {
@@ -97,44 +97,43 @@ internal class EwsServiceXmlWriter : IDisposable
                 TypeCode.DateTime => Service.ConvertDateTimeToUniversalDateTimeString((DateTime)value),
                 _ => convertible.ToString(CultureInfo.InvariantCulture),
             };
+
+            return true;
         }
-        else
+
+        switch (value)
         {
-            switch (value)
+            // If the value type doesn't implement IConvertible but implements IFormattable, use its
+            // ToString(format,formatProvider) method to convert to a string.
+            case IFormattable formattable:
             {
-                // If the value type doesn't implement IConvertible but implements IFormattable, use its
-                // ToString(format,formatProvider) method to convert to a string.
-                case IFormattable formattable:
-                {
-                    // Null arguments mean that we use default format and default locale.
-                    strValue = formattable.ToString(null, null);
-                    break;
-                }
-                case ISearchStringProvider searchStringProvider:
-                {
-                    // If the value type doesn't implement IConvertible or IFormattable but implements 
-                    // ISearchStringProvider convert to a string.
-                    // Note: if a value type implements IConvertible or IFormattable we will *not* check
-                    // to see if it also implements ISearchStringProvider. We'll always use its IConvertible.ToString 
-                    // or IFormattable.ToString method.
-                    strValue = searchStringProvider.GetSearchString();
-                    break;
-                }
-                case byte[] bytes:
-                {
-                    // Special case for byte arrays. Convert to Base64-encoded string.
-                    strValue = Convert.ToBase64String(bytes);
-                    break;
-                }
-                default:
-                {
-                    converted = false;
-                    break;
-                }
+                // Null arguments mean that we use default format and default locale.
+                strValue = formattable.ToString(null, null);
+                break;
+            }
+            case ISearchStringProvider searchStringProvider:
+            {
+                // If the value type doesn't implement IConvertible or IFormattable but implements 
+                // ISearchStringProvider convert to a string.
+                // Note: if a value type implements IConvertible or IFormattable we will *not* check
+                // to see if it also implements ISearchStringProvider. We'll always use its IConvertible.ToString 
+                // or IFormattable.ToString method.
+                strValue = searchStringProvider.GetSearchString();
+                break;
+            }
+            case byte[] bytes:
+            {
+                // Special case for byte arrays. Convert to Base64-encoded string.
+                strValue = Convert.ToBase64String(bytes);
+                break;
+            }
+            default:
+            {
+                return false;
             }
         }
 
-        return converted;
+        return true;
     }
 
     /// <summary>
@@ -187,7 +186,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="value">The value.</param>
     public void WriteAttributeValue(string localName, object value)
     {
-        WriteAttributeValue(localName, false /* alwaysWriteEmptyString */, value);
+        WriteAttributeValue(localName, false, value);
     }
 
     /// <summary>
@@ -196,20 +195,18 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="localName">The local name of the attribute.</param>
     /// <param name="alwaysWriteEmptyString">Always emit the empty string as the value.</param>
     /// <param name="value">The value.</param>
-    public void WriteAttributeValue(string localName, bool alwaysWriteEmptyString, object value)
+    public void WriteAttributeValue(string localName, bool alwaysWriteEmptyString, object? value)
     {
-        if (TryConvertObjectToString(value, out var stringValue))
-        {
-            if (stringValue != null && (alwaysWriteEmptyString || stringValue.Length != 0))
-            {
-                WriteAttributeString(localName, stringValue);
-            }
-        }
-        else
+        if (!TryConvertObjectToString(value, out var stringValue))
         {
             throw new ServiceXmlSerializationException(
-                string.Format(Strings.AttributeValueCannotBeSerialized, value.GetType().Name, localName)
+                string.Format(Strings.AttributeValueCannotBeSerialized, value!.GetType().Name, localName)
             );
+        }
+
+        if (stringValue != null && (alwaysWriteEmptyString || stringValue.Length != 0))
+        {
+            WriteAttributeString(localName, stringValue);
         }
     }
 
@@ -221,18 +218,16 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="value">The value.</param>
     public void WriteAttributeValue(string namespacePrefix, string localName, object value)
     {
-        if (TryConvertObjectToString(value, out var stringValue))
-        {
-            if (!string.IsNullOrEmpty(stringValue))
-            {
-                WriteAttributeString(namespacePrefix, localName, stringValue);
-            }
-        }
-        else
+        if (!TryConvertObjectToString(value, out var stringValue))
         {
             throw new ServiceXmlSerializationException(
                 string.Format(Strings.AttributeValueCannotBeSerialized, value.GetType().Name, localName)
             );
+        }
+
+        if (!string.IsNullOrEmpty(stringValue))
+        {
+            WriteAttributeString(namespacePrefix, localName, stringValue);
         }
     }
 
@@ -312,29 +307,27 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="value">The value.</param>
     internal void WriteElementValue(XmlNamespace xmlNamespace, string localName, string displayName, object value)
     {
-        if (TryConvertObjectToString(value, out var stringValue))
-        {
-            //  PS # 205106: The code here used to check IsNullOrEmpty on stringValue instead of just null.
-            //  Unfortunately, that meant that if someone really needed to update a string property to be the
-            //  value "" (String.Empty), they couldn't do it, because we wouldn't emit the element here, causing
-            //  an error on the server because an update is required to have a single sub-element that is the
-            //  value to update.  So we need to allow an empty string to create an empty element (like <Value />).
-            //  Note that changing this check to just check for null is fine, because the other types that get
-            //  converted by TryConvertObjectToString() won't return an empty string if the conversion is
-            //  successful (for instance, converting an integer to a string won't return an empty string - it'll
-            //  always return the stringized integer).
-            if (stringValue != null)
-            {
-                WriteStartElement(xmlNamespace, localName);
-                WriteValue(stringValue, displayName);
-                WriteEndElement();
-            }
-        }
-        else
+        if (!TryConvertObjectToString(value, out var stringValue))
         {
             throw new ServiceXmlSerializationException(
                 string.Format(Strings.ElementValueCannotBeSerialized, value.GetType().Name, localName)
             );
+        }
+
+        //  PS # 205106: The code here used to check IsNullOrEmpty on stringValue instead of just null.
+        //  Unfortunately, that meant that if someone really needed to update a string property to be the
+        //  value "" (String.Empty), they couldn't do it, because we wouldn't emit the element here, causing
+        //  an error on the server because an update is required to have a single sub-element that is the
+        //  value to update.  So we need to allow an empty string to create an empty element (like <Value />).
+        //  Note that changing this check to just check for null is fine, because the other types that get
+        //  converted by TryConvertObjectToString() won't return an empty string if the conversion is
+        //  successful (for instance, converting an integer to a string won't return an empty string - it'll
+        //  always return the stringized integer).
+        if (stringValue != null)
+        {
+            WriteStartElement(xmlNamespace, localName);
+            WriteValue(stringValue, displayName);
+            WriteEndElement();
         }
     }
 

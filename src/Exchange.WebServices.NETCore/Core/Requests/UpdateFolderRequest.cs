@@ -66,7 +66,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     /// <param name="session">The session.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ServiceResponse CreateServiceResponse(ExchangeService session, int responseIndex)
+    protected override ServiceResponse CreateServiceResponse(ExchangeService session, int responseIndex)
     {
         return new UpdateFolderResponse(Folders[responseIndex]);
     }
@@ -93,7 +93,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.UpdateFolderResponseMessage;
     }
@@ -102,7 +102,7 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return Folders.Count;
     }

@@ -61,7 +61,7 @@ internal sealed class CreateFolderRequest : CreateRequest<Folder, ServiceRespons
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new CreateFolderResponse((Folder)EwsUtilities.GetEnumeratedObjectAt(Folders, responseIndex));
     }
@@ -88,7 +88,7 @@ internal sealed class CreateFolderRequest : CreateRequest<Folder, ServiceRespons
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.CreateFolderResponseMessage;
     }

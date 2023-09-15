@@ -41,8 +41,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
 {
-    private TKey _key;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;" /> class.
     /// </summary>
@@ -56,18 +54,14 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     /// <param name="key">The key.</param>
     internal DictionaryEntryProperty(TKey key)
     {
-        _key = key;
+        Key = key;
     }
 
     /// <summary>
     ///     Gets or sets the key.
     /// </summary>
     /// <value>The key.</value>
-    internal TKey Key
-    {
-        get => _key;
-        set => _key = value;
-    }
+    internal TKey Key { get; set; }
 
     /// <summary>
     ///     Reads the attributes from XML.
@@ -75,7 +69,7 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     /// <param name="reader">The reader.</param>
     internal override void ReadAttributesFromXml(EwsServiceXmlReader reader)
     {
-        _key = reader.ReadAttributeValue<TKey>(XmlAttributeNames.Key);
+        Key = reader.ReadAttributeValue<TKey>(XmlAttributeNames.Key);
     }
 
     /// <summary>

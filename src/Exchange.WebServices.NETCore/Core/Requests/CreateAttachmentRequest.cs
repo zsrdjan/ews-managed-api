@@ -55,7 +55,7 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override CreateAttachmentResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override CreateAttachmentResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new CreateAttachmentResponse(Attachments[responseIndex]);
     }
@@ -64,7 +64,7 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return Attachments.Count;
     }
@@ -91,7 +91,7 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.CreateAttachmentResponseMessage;
     }

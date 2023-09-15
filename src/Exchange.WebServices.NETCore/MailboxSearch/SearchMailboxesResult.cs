@@ -76,8 +76,7 @@ public sealed class SearchMailboxesResult
         reader.ReadEndElementIfNecessary(XmlNamespace.Types, XmlElementNames.SearchQueries);
         searchResult.SearchQueries = searchQueries.ToArray();
 
-        searchResult.ResultType = (SearchResultType)Enum.Parse(
-            typeof(SearchResultType),
+        searchResult.ResultType = Enum.Parse<SearchResultType>(
             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ResultType)
         );
         searchResult.ItemCount = int.Parse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.ItemCount));
@@ -278,8 +277,7 @@ public sealed class SearchMailboxesResult
                     }
                     else if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.Importance))
                     {
-                        previewItem.Importance = (Importance)Enum.Parse(
-                            typeof(Importance),
+                        previewItem.Importance = Enum.Parse<Importance>(
                             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Importance)
                         );
                     }

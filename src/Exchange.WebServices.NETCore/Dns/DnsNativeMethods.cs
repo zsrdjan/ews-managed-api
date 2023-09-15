@@ -125,7 +125,7 @@ internal static class DnsNativeMethods
     /// </summary>
     /// <param name="dnsServerAddress">The DNS server address (may be null).</param>
     /// <returns>Pointer to DNS server list (may be IntPtr.Zero).</returns>
-    private static IntPtr AllocDnsServerList(IPAddress dnsServerAddress)
+    private static IntPtr AllocDnsServerList(IPAddress? dnsServerAddress)
     {
         var pServerList = IntPtr.Zero;
 

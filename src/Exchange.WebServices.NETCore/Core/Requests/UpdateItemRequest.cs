@@ -106,7 +106,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Response object.</returns>
-    internal override UpdateItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override UpdateItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new UpdateItemResponse(Items[responseIndex]);
     }
@@ -133,7 +133,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.UpdateItemResponseMessage;
     }
@@ -142,7 +142,7 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of items in response.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return Items.Count;
     }

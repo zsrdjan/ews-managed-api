@@ -94,19 +94,19 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal abstract TResponse CreateServiceResponse(ExchangeService service, int responseIndex);
+    protected abstract TResponse CreateServiceResponse(ExchangeService service, int responseIndex);
 
     /// <summary>
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal abstract string GetResponseMessageXmlElementName();
+    protected abstract string GetResponseMessageXmlElementName();
 
     /// <summary>
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal abstract int GetExpectedResponseMessageCount();
+    protected abstract int GetExpectedResponseMessageCount();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MultiResponseServiceRequest&lt;TResponse&gt;" /> class.

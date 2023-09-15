@@ -69,7 +69,7 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }
@@ -96,7 +96,7 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.SubscribeResponseMessage;
     }

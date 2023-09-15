@@ -70,7 +70,7 @@ internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, T
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return ItemIds.Count;
     }

@@ -274,11 +274,7 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     /// <returns></returns>
     private static UserConfigurationDictionaryObjectType GetObjectType(string type)
     {
-        return (UserConfigurationDictionaryObjectType)Enum.Parse(
-            typeof(UserConfigurationDictionaryObjectType),
-            type,
-            false
-        );
+        return Enum.Parse<UserConfigurationDictionaryObjectType>(type, false);
     }
 
     /// <summary>

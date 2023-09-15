@@ -45,7 +45,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new ServiceResponse();
     }
@@ -54,7 +54,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }
@@ -81,7 +81,7 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.UnsubscribeResponseMessage;
     }

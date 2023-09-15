@@ -43,15 +43,14 @@ internal class DnsClient
     /// <summary>
     ///     Map type of DnsRecord to DnsRecordType.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, DnsRecordType>> typeToDnsTypeMap =
-        new LazyMember<Dictionary<Type, DnsRecordType>>(
-            delegate
+    private static readonly LazyMember<Dictionary<Type, DnsRecordType>> TypeToDnsTypeMap = new(
+        () => new Dictionary<Type, DnsRecordType>
+        {
             {
-                var result = new Dictionary<Type, DnsRecordType>();
-                result.Add(typeof(DnsSrvRecord), DnsRecordType.SRV);
-                return result;
-            }
-        );
+                typeof(DnsSrvRecord), DnsRecordType.SRV
+            },
+        }
+    );
 
     /// <summary>
     ///     Perform DNS Query.
@@ -66,7 +65,7 @@ internal class DnsClient
         var dnsRecordList = new List<T>();
 
         // Each strongly-typed DnsRecord type maps to a DnsRecordType enum.
-        var dnsRecordTypeToQuery = typeToDnsTypeMap.Member[typeof(T)];
+        var dnsRecordTypeToQuery = TypeToDnsTypeMap.Member[typeof(T)];
 
         // queryResultsPtr will point to unmanaged heap memory if DnsQuery succeeds.
         var queryResultsPtr = IntPtr.Zero;
@@ -85,7 +84,7 @@ internal class DnsClient
             {
                 DnsRecordHeader dnsRecordHeader;
 
-                // Interate through linked list of query result records.
+                // Iterate through linked list of query result records.
                 for (var recordPtr = queryResultsPtr;
                      !recordPtr.Equals(IntPtr.Zero);
                      recordPtr = dnsRecordHeader.NextRecord)

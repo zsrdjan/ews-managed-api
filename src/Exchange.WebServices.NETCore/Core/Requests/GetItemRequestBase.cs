@@ -55,7 +55,7 @@ internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TRespon
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return ItemIds.Count;
     }
@@ -102,7 +102,7 @@ internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TRespon
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.GetItemResponseMessage;
     }

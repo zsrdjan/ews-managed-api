@@ -48,7 +48,7 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override SyncFolderItemsResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override SyncFolderItemsResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new SyncFolderItemsResponse(PropertySet);
     }
@@ -57,7 +57,7 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }
@@ -84,7 +84,7 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.SyncFolderItemsResponseMessage;
     }

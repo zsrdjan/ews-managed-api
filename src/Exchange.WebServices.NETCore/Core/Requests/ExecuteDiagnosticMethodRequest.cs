@@ -100,7 +100,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ExecuteDiagnosticMethodResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override ExecuteDiagnosticMethodResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new ExecuteDiagnosticMethodResponse(service);
     }
@@ -109,7 +109,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.ExecuteDiagnosticMethodResponseMEssage;
     }
@@ -118,7 +118,7 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }

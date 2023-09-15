@@ -46,7 +46,7 @@ internal sealed class FindFolderRequest : FindRequest<FindFolderResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override FindFolderResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override FindFolderResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new FindFolderResponse(View.GetPropertySetOrDefault());
     }
@@ -73,7 +73,7 @@ internal sealed class FindFolderRequest : FindRequest<FindFolderResponse>
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.FindFolderResponseMessage;
     }

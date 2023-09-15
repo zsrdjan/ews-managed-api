@@ -41,7 +41,7 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
     ///     Gets the field URI.
     /// </summary>
     /// <returns>Field URI.</returns>
-    internal override string GetFieldURI()
+    internal override string GetFieldUri()
     {
         return "contacts:EmailAddress";
     }

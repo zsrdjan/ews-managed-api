@@ -55,7 +55,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ArchiveItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override ArchiveItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new ArchiveItemResponse();
     }
@@ -76,7 +76,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return Ids.Count;
     }
@@ -103,7 +103,7 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.ArchiveItemResponseMessage;
     }

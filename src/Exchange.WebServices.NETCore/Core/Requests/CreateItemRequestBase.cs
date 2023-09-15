@@ -98,7 +98,7 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.CreateItemResponseMessage;
     }

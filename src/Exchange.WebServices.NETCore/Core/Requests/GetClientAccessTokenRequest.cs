@@ -46,7 +46,7 @@ internal sealed class GetClientAccessTokenRequest : MultiResponseServiceRequest<
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Response object.</returns>
-    internal override GetClientAccessTokenResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override GetClientAccessTokenResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new GetClientAccessTokenResponse(
             TokenRequests[responseIndex].Id,
@@ -76,7 +76,7 @@ internal sealed class GetClientAccessTokenRequest : MultiResponseServiceRequest<
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.GetClientAccessTokenResponseMessage;
     }
@@ -85,7 +85,7 @@ internal sealed class GetClientAccessTokenRequest : MultiResponseServiceRequest<
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of items in response.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return TokenRequests.Length;
     }
