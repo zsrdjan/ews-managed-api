@@ -1,12 +1,13 @@
 # Quick introduction
 
-This is a NET Standard 1.4 port of EWS API. Here are some tips to take into account.
+This is a .NET Core 7 port of EWS API. Here are some tips to take into account.
 
 - NET Framework version is as functional as original
 - Almost all functions involving HTTP requests are now async
 - Outdated async Begin/End functions were removed
 - NET Standard: LDAP Autodiscovery feature will not work
 - NET Standard on Linux: DNS Autodiscovery feature will not work
+- `ExchangeService.ServerCertificateValidationCallback` can now be specified to configure SSL validation 
 - Nuget package can be found here: https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard/
 
 # Getting Started with the EWS Managed API
