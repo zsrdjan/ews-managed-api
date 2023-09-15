@@ -395,14 +395,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     {
         var result = await BindToFolder(folderId, propertySet, token);
 
-        if (result is TFolder folder)
+        if (result is not TFolder folder)
         {
-            return folder;
+            throw new ServiceLocalException(
+                string.Format(Strings.FolderTypeNotCompatible, result.GetType().Name, typeof(TFolder).Name)
+            );
         }
 
-        throw new ServiceLocalException(
-            string.Format(Strings.FolderTypeNotCompatible, result.GetType().Name, typeof(TFolder).Name)
-        );
+        return folder;
     }
 
     /// <summary>

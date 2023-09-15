@@ -57,7 +57,7 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override SubscribeResponse<PullSubscription> CreateServiceResponse(
+    protected override SubscribeResponse<PullSubscription> CreateServiceResponse(
         ExchangeService service,
         int responseIndex
     )

@@ -55,7 +55,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Response object.</returns>
-    internal override MarkAsJunkResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override MarkAsJunkResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new MarkAsJunkResponse();
     }
@@ -82,7 +82,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.MarkAsJunkResponseMessage;
     }
@@ -91,7 +91,7 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of items in response.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return ItemIds.Count;
     }

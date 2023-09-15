@@ -7,6 +7,7 @@
 
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
+		<UserSecretsId>9dd7c090-3af8-4c28-bb34-b0d6d1e0d5a4</UserSecretsId>
 	</PropertyGroup>
 
 
@@ -25,15 +26,21 @@
 		</PackageReference>
 
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+
 		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Exchange.WebServices.NETCore\Exchange.WebServices.NETCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Notifications\" />
+	  <Folder Include="People\" />
 	</ItemGroup>
 
 </Project>

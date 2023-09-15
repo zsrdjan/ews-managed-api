@@ -46,7 +46,7 @@ internal sealed class CreateResponseObjectRequest : CreateItemRequestBase<Servic
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service object.</returns>
-    internal override CreateResponseObjectResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override CreateResponseObjectResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new CreateResponseObjectResponse();
     }

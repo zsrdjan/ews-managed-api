@@ -47,7 +47,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override ServiceResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new ServiceResponse();
     }
@@ -65,7 +65,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }
@@ -92,7 +92,7 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.DeleteUserConfigurationResponseMessage;
     }

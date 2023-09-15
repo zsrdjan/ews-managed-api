@@ -100,7 +100,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return ParentFolderIds.Count;
     }
@@ -173,7 +173,7 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
     ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
     ///     is null, no search filters are applied.
     /// </summary>
-    public SearchFilter SearchFilter { get; set; }
+    public SearchFilter? SearchFilter { get; set; }
 
     /// <summary>
     ///     Gets or sets the query string for indexed search.

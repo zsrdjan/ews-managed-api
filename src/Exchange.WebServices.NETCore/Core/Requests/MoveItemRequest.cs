@@ -46,7 +46,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override MoveCopyItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override MoveCopyItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new MoveCopyItemResponse();
     }
@@ -73,7 +73,7 @@ internal class MoveItemRequest : MoveCopyItemRequest<MoveCopyItemResponse>
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.MoveItemResponseMessage;
     }

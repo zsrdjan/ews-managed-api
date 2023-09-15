@@ -57,7 +57,7 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override FindItemResponse<TItem> CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override FindItemResponse<TItem> CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new FindItemResponse<TItem>(GroupBy != null, View.GetPropertySetOrDefault());
     }
@@ -84,7 +84,7 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.FindItemResponseMessage;
     }

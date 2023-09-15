@@ -65,7 +65,7 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return FolderIds.Count;
     }

@@ -83,7 +83,7 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override SubscribeResponse<PushSubscription> CreateServiceResponse(
+    protected override SubscribeResponse<PushSubscription> CreateServiceResponse(
         ExchangeService service,
         int responseIndex
     )

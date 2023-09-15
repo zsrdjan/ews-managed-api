@@ -58,7 +58,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override GetServerTimeZonesResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override GetServerTimeZonesResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new GetServerTimeZonesResponse();
     }
@@ -67,7 +67,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.GetServerTimeZonesResponseMessage;
     }
@@ -76,7 +76,7 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }

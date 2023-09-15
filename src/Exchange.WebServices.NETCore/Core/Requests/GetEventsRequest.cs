@@ -45,7 +45,7 @@ internal class GetEventsRequest : MultiResponseServiceRequest<GetEventsResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override GetEventsResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override GetEventsResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new GetEventsResponse();
     }
@@ -54,7 +54,7 @@ internal class GetEventsRequest : MultiResponseServiceRequest<GetEventsResponse>
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Response count.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }
@@ -81,7 +81,7 @@ internal class GetEventsRequest : MultiResponseServiceRequest<GetEventsResponse>
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.GetEventsResponseMessage;
     }

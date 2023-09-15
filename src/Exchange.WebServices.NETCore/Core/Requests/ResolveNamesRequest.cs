@@ -57,7 +57,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override ResolveNamesResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override ResolveNamesResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new ResolveNamesResponse(service);
     }
@@ -84,7 +84,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.ResolveNamesResponseMessage;
     }
@@ -102,7 +102,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return 1;
     }

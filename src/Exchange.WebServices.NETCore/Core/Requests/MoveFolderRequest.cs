@@ -46,7 +46,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override MoveCopyFolderResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override MoveCopyFolderResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new MoveCopyFolderResponse();
     }
@@ -73,7 +73,7 @@ internal class MoveFolderRequest : MoveCopyFolderRequest<MoveCopyFolderResponse>
     ///     Gets the name of the response message XML element.
     /// </summary>
     /// <returns>Xml element name.</returns>
-    internal override string GetResponseMessageXmlElementName()
+    protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.MoveFolderResponseMessage;
     }

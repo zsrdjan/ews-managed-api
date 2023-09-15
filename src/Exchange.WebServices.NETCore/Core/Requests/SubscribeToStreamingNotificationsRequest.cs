@@ -75,7 +75,7 @@ internal class SubscribeToStreamingNotificationsRequest : SubscribeRequest<Strea
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override SubscribeResponse<StreamingSubscription> CreateServiceResponse(
+    protected override SubscribeResponse<StreamingSubscription> CreateServiceResponse(
         ExchangeService service,
         int responseIndex
     )

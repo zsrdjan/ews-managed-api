@@ -46,7 +46,7 @@ internal sealed class GetItemRequest : GetItemRequestBase<GetItemResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override GetItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override GetItemResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new GetItemResponse(ItemIds[responseIndex], PropertySet);
     }

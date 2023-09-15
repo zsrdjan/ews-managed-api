@@ -1,4 +1,4 @@
-using System.Text.Json;
+using System.Reflection;
 
 using JetBrains.Annotations;
 
@@ -24,12 +24,18 @@ public class ExchangeConnectionOptions
 [PublicAPI]
 public class ExchangeProvider
 {
-    private readonly IServiceProvider _provider = BuildServiceProvider();
+    protected readonly IServiceProvider _provider = BuildServiceProvider();
+
+
+    public IOptions<ExchangeConnectionOptions> ConnectionOptions =>
+        _provider.GetRequiredService<IOptions<ExchangeConnectionOptions>>();
+
+    public string ImpersonateUpn => ConnectionOptions.Value.ImpersonateUpn;
 
 
     public ExchangeService CreateTestService()
     {
-        var options = _provider.GetRequiredService<IOptions<ExchangeConnectionOptions>>().Value;
+        var options = ConnectionOptions.Value;
 
         return new ExchangeService
         {
@@ -48,8 +54,7 @@ public class ExchangeProvider
     {
         var configuration = new ConfigurationBuilder()
             // 
-            .AddJsonFile("appsettings.json")
-            .AddEnvironmentVariables()
+            .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
             .Build();
 
 

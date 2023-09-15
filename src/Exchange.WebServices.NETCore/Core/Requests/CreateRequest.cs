@@ -61,7 +61,7 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of responses expected.</returns>
-    internal override int GetExpectedResponseMessageCount()
+    protected override int GetExpectedResponseMessageCount()
     {
         return EwsUtilities.GetEnumeratedObjectCount(Objects);
     }

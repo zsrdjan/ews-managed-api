@@ -46,7 +46,7 @@ internal sealed class GetFolderRequest : GetFolderRequestBase<GetFolderResponse>
     /// <param name="service">The service.</param>
     /// <param name="responseIndex">Index of the response.</param>
     /// <returns>Service response.</returns>
-    internal override GetFolderResponse CreateServiceResponse(ExchangeService service, int responseIndex)
+    protected override GetFolderResponse CreateServiceResponse(ExchangeService service, int responseIndex)
     {
         return new GetFolderResponse(FolderIds[responseIndex].GetFolder(), PropertySet);
     }
