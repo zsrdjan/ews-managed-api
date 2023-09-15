@@ -67,7 +67,7 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     private void WriteUriToXml(EwsServiceXmlWriter writer, TKey key)
     {
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.IndexedFieldURI);
-        writer.WriteAttributeValue(XmlAttributeNames.FieldURI, GetFieldURI());
+        writer.WriteAttributeValue(XmlAttributeNames.FieldURI, GetFieldUri());
         writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, GetFieldIndex(key));
         writer.WriteEndElement();
     }
@@ -86,9 +86,9 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     ///     Gets the field URI.
     /// </summary>
     /// <returns>Field URI.</returns>
-    internal virtual string GetFieldURI()
+    internal virtual string GetFieldUri()
     {
-        return null;
+        return null!;
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     /// </summary>
     /// <param name="reader">The reader.</param>
     /// <returns>Dictionary entry.</returns>
-    internal virtual TEntry CreateEntry(EwsServiceXmlReader reader)
+    internal virtual TEntry? CreateEntry(EwsServiceXmlReader reader)
     {
         if (reader.LocalName == XmlElementNames.Entry)
         {

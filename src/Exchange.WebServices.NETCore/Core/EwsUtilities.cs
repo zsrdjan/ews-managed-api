@@ -598,7 +598,7 @@ internal static partial class EwsUtilities
 
         foreach (var enumValue in enumValues)
         {
-            list.Add((T)Enum.Parse(typeof(T), enumValue, false));
+            list.Add(Enum.Parse<T>(enumValue, false));
         }
     }
 
@@ -658,7 +658,6 @@ internal static partial class EwsUtilities
         try
         {
             result = Parse<T>(value);
-
             return true;
         }
         //// Catch all exceptions here, we're not interested in the reason why TryParse failed.

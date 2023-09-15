@@ -107,8 +107,7 @@ public sealed class MailboxHoldResult
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.MailboxHoldStatus))
             {
                 var mailbox = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Mailbox);
-                var status = (HoldStatus)Enum.Parse(
-                    typeof(HoldStatus),
+                var status = Enum.Parse<HoldStatus>(
                     reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Status)
                 );
                 var additionalInfo = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.AdditionalInfo);

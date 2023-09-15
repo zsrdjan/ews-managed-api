@@ -187,3 +187,9 @@ FakesAssemblies/
 
 /_ReSharper.Caches
 /.vs
+
+appsettings.Development.json
+
+.env*
+*.args.json
+launchSettings.json

@@ -226,11 +226,7 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
         var attributeValue = reader.ReadAttributeValue(XmlAttributeNames.DistinguishedPropertySetId);
         if (!string.IsNullOrEmpty(attributeValue))
         {
-            _propertySet = (DefaultExtendedPropertySet)Enum.Parse(
-                typeof(DefaultExtendedPropertySet),
-                attributeValue,
-                false
-            );
+            _propertySet = Enum.Parse<DefaultExtendedPropertySet>(attributeValue, false);
         }
 
         attributeValue = reader.ReadAttributeValue(XmlAttributeNames.PropertySetId);

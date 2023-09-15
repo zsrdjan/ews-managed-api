@@ -53,13 +53,14 @@ public sealed class GetClientAccessTokenResponse : ServiceResponse
         base.ReadElementsFromXml(reader);
 
         reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.Token);
+
         Id = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Id);
-        TokenType = (ClientAccessTokenType)Enum.Parse(
-            typeof(ClientAccessTokenType),
+        TokenType = Enum.Parse<ClientAccessTokenType>(
             reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.TokenType)
         );
         TokenValue = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.TokenValue);
         TTL = int.Parse(reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.TTL));
+
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.Token);
     }
 

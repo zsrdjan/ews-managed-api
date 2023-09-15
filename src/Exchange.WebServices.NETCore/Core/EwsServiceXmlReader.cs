@@ -149,11 +149,7 @@ internal class EwsServiceXmlReader : EwsXmlReader
                         if (string.Compare(LocalName, serviceObject.GetXmlElementName(), StringComparison.Ordinal) != 0)
                         {
                             throw new ServiceLocalException(
-                                string.Format(
-                                    "The type of the object in the store ({0}) does not match that of the local object ({1}).",
-                                    LocalName,
-                                    serviceObject.GetXmlElementName()
-                                )
+                                $"The type of the object in the store ({LocalName}) does not match that of the local object ({serviceObject.GetXmlElementName()})."
                             );
                         }
 

@@ -54,7 +54,7 @@ public sealed class ClientApp : ComplexProperty
     public ClientAppMetadata Metadata { get; internal set; }
 
     /// <summary>
-    ///     Helper to convert to xml dcouemnt from the current value.
+    ///     Helper to convert to xml document from the current value.
     /// </summary>
     /// <param name="reader">the reader.</param>
     /// <returns>The xml document</returns>

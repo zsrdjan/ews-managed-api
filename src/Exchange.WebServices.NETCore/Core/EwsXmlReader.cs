@@ -34,16 +34,9 @@ internal class EwsXmlReader
 {
     private const int ReadWriteBufferSize = 4096;
 
-
-    #region Private members
-
     private XmlNodeType _prevNodeType = XmlNodeType.None;
+
     private readonly XmlReader _xmlReader;
-
-    #endregion
-
-
-    #region Constructor
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsXmlReader" /> class.
@@ -79,8 +72,6 @@ internal class EwsXmlReader
         var xmlTextReader = SafeXmlFactory.CreateSafeXmlTextReader(stream);
         return XmlReader.Create(xmlTextReader, settings);
     }
-
-    #endregion
 
 
     /// <summary>

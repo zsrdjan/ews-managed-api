@@ -47,7 +47,7 @@ public sealed class ClientExtension : ComplexProperty
     /// <param name="type">Extension type</param>
     /// <param name="scope">Extension install scope</param>
     /// <param name="manifestStream">Manifest stream, can be null</param>
-    /// <param name="marketplaceAssetID">The asset ID for Office Marketplace</param>
+    /// <param name="marketplaceAssetId">The asset ID for Office Marketplace</param>
     /// <param name="marketplaceContentMarket">The content market for Office Marketplace</param>
     /// <param name="isAvailable">Whether extension is available</param>
     /// <param name="isMandatory">Whether extension is mandatory</param>
@@ -60,7 +60,7 @@ public sealed class ClientExtension : ComplexProperty
         ExtensionType type,
         ExtensionInstallScope scope,
         Stream manifestStream,
-        string marketplaceAssetID,
+        string marketplaceAssetId,
         string marketplaceContentMarket,
         bool isAvailable,
         bool isMandatory,
@@ -75,7 +75,7 @@ public sealed class ClientExtension : ComplexProperty
         Type = type;
         Scope = scope;
         ManifestStream = manifestStream;
-        MarketplaceAssetID = marketplaceAssetID;
+        MarketplaceAssetID = marketplaceAssetId;
         MarketplaceContentMarket = marketplaceContentMarket;
         IsAvailable = isAvailable;
         IsMandatory = isMandatory;
@@ -99,7 +99,7 @@ public sealed class ClientExtension : ComplexProperty
     /// <summary>
     ///     Gets or sets the extension manifest stream.
     /// </summary>
-    public Stream ManifestStream { get; set; }
+    public Stream? ManifestStream { get; set; }
 
     /// <summary>
     ///     Gets or sets the asset ID for Office Marketplace.
@@ -149,7 +149,7 @@ public sealed class ClientExtension : ComplexProperty
     /// <summary>
     ///     Gets or sets the user list this extension is provided to.
     /// </summary>
-    public StringList SpecificUsers { get; set; }
+    public StringList? SpecificUsers { get; set; }
 
     /// <summary>
     ///     Reads attributes from XML.
