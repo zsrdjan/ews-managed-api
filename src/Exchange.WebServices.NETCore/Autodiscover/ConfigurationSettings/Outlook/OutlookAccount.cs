@@ -36,21 +36,12 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal sealed class OutlookAccount
 {
-    #region Private constants
-
     private const string Settings = "settings";
     private const string RedirectAddr = "redirectAddr";
     private const string RedirectUrl = "redirectUrl";
 
-    #endregion
-
-
-    #region Private fields
-
     private readonly Dictionary<OutlookProtocolType, OutlookProtocol> _protocols;
     private readonly AlternateMailboxCollection _alternateMailboxes;
-
-    #endregion
 
 
     /// <summary>

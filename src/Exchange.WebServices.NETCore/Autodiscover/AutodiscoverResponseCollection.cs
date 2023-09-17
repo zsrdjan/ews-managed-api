@@ -98,6 +98,7 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
             do
             {
                 reader.Read();
+
                 if (reader.NodeType == XmlNodeType.Element && reader.LocalName == GetResponseInstanceXmlElementName())
                 {
                     var response = CreateResponseInstance();

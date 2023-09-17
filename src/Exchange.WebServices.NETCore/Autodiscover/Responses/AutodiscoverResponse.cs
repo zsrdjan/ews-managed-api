@@ -82,7 +82,7 @@ public abstract class AutodiscoverResponse
     ///     Gets or sets the redirection URL.
     /// </summary>
     /// <value>The redirection URL.</value>
-    internal Uri RedirectionUrl { get; set; }
+    internal Uri? RedirectionUrl { get; set; }
 
     #endregion
 }

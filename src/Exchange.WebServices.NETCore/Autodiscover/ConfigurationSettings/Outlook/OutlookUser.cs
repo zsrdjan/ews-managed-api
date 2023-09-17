@@ -53,15 +53,10 @@ internal sealed class OutlookUser
             }
         );
 
-
-    #region Private fields
-
     private string _displayName;
     private string _legacyDn;
     private string _deploymentId;
     private string _autodiscoverAmtpAddress;
-
-    #endregion
 
 
     /// <summary>

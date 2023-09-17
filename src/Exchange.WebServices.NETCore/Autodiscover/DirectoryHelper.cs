@@ -291,10 +291,7 @@ internal class DirectoryHelper
         }
         finally
         {
-            if (scpDirEntries != null)
-            {
-                scpDirEntries.Dispose();
-            }
+            scpDirEntries?.Dispose();
         }
 
         // If no entries found, try fallBackLdapPath if it's non-empty.

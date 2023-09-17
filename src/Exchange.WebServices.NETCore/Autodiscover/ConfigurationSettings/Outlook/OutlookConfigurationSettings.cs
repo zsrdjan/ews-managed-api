@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// </summary>
 internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
 {
-    #region Static fields
-
     /// <summary>
     ///     All user settings that are available from the Outlook provider.
     /// </summary>
@@ -48,15 +46,10 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
         }
     );
 
-    #endregion
-
-
-    #region Private fields
 
     private readonly OutlookUser _user;
-    private OutlookAccount _account;
 
-    #endregion
+    private OutlookAccount _account;
 
 
     /// <summary>
