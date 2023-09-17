@@ -1,13 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Exchange.WebServices.NETCore\Exchange.WebServices.NETCore.csproj" />
-  </ItemGroup>
+		<PackageTags>ews exchange office365 Microsoft Web API Email Client Library C#</PackageTags>
+		<PackageProjectUrl>https://github.com/ItsClemi/ews-managed-api</PackageProjectUrl>
+		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
+	</PropertyGroup>
 
+
+	<ItemGroup>
+		<PackageReference Include="ARSoft.Tools.Net" Version="3.5.0" />
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Exchange.WebServices.NETCore\Exchange.WebServices.NETCore.csproj" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<None Include="../../license.txt" Pack="true" PackagePath="/" />
+		<None Include="../../readme.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
 </Project>
