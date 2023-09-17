@@ -221,7 +221,8 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         }
 
         using var client = PrepareHttpClient();
-        using IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(client.SendAsync(request).Result);
+        using IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(await client.SendAsync(request));
+
         if (TryGetRedirectionResponse(webResponse, out var redirectUrl))
         {
             settings.MakeRedirectionResponse(redirectUrl);
@@ -237,7 +238,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             {
                 using var memoryStream = new MemoryStream();
                 // Copy response stream to in-memory stream and reset to start
-                EwsUtilities.CopyStream(responseStream, memoryStream);
+                await responseStream.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
 
                 TraceResponse(webResponse, memoryStream);
@@ -282,7 +283,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// </summary>
     /// <param name="domainName">The name of the domain to call Autodiscover on.</param>
     /// <returns>A valid SSL-enabled redirection URL. (May be null).</returns>
-    private Uri? GetRedirectUrl(string domainName)
+    private async Task<Uri?> GetRedirectUrl(string domainName)
     {
         var url = string.Format(AutodiscoverLegacyHttpUrl, "autodiscover." + domainName);
 
@@ -299,7 +300,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 }
             );
             client.Timeout = AutodiscoverTimeout;
-            var httpResponse = client.GetAsync(url).Result;
+            var httpResponse = await client.GetAsync(url);
             response = new EwsHttpWebResponse(httpResponse);
         }
         catch (Exception ex)
@@ -602,7 +603,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         // try to get a redirection URL using an HTTP GET on a non-SSL Autodiscover endpoint. If successful, use this 
         // redirection URL to get the configuration settings for this email address. (This will be a common scenario for 
         // DataCenter deployments).
-        var redirectionUrl = GetRedirectUrl(domainName);
+        var redirectionUrl = await GetRedirectUrl(domainName);
         if (redirectionUrl != null)
         {
             var result = await TryLastChanceHostRedirection<TSettings>(emailAddress, redirectionUrl);
@@ -615,7 +616,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         {
             // Getting a redirection URL from an HTTP GET failed too. As a last chance, try to get an appropriate SRV Record
             // using DnsQuery. If successful, use this redirection URL to get the configuration settings for this email address.
-            redirectionUrl = GetRedirectionUrlFromDnsSrvRecord(domainName);
+            redirectionUrl = await GetRedirectionUrlFromDnsSrvRecord(domainName);
             if (redirectionUrl != null)
             {
                 var result = await TryLastChanceHostRedirection<TSettings>(emailAddress, redirectionUrl);
@@ -640,14 +641,14 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// </summary>
     /// <param name="domainName">Name of the domain.</param>
     /// <returns>Autodiscover URL (may be null if lookup failed)</returns>
-    internal Uri? GetRedirectionUrlFromDnsSrvRecord(string domainName)
+    internal async Task<Uri?> GetRedirectionUrlFromDnsSrvRecord(string domainName)
     {
         TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
             $"Trying to get Autodiscover host from DNS SRV record for {domainName}."
         );
 
-        var hostname = _dnsClient.FindAutodiscoverHostFromSrv(domainName);
+        var hostname = await _dnsClient.FindAutodiscoverHostFromSrv(domainName);
         if (!string.IsNullOrEmpty(hostname))
         {
             TraceMessage(TraceFlags.AutodiscoverConfiguration, $"Autodiscover host {hostname} was returned.");
@@ -1038,7 +1039,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             }
 
             // Next-to-last chance: try unauthenticated GET over HTTP to be redirected to appropriate service endpoint.
-            autodiscoverUrl = GetRedirectUrl(domainName);
+            autodiscoverUrl = await GetRedirectUrl(domainName);
 
             if (autodiscoverUrl != null &&
                 CallRedirectionUrlValidationCallback(autodiscoverUrl.ToString()) &&
@@ -1056,7 +1057,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
             // Last Chance: try to read autodiscover SRV Record from DNS. If we find one, use
             // the hostname returned to construct an Autodiscover endpoint URL.
-            autodiscoverUrl = GetRedirectionUrlFromDnsSrvRecord(domainName);
+            autodiscoverUrl = await GetRedirectionUrlFromDnsSrvRecord(domainName);
             if (autodiscoverUrl != null &&
                 CallRedirectionUrlValidationCallback(autodiscoverUrl.ToString()) &&
                 TryGetAutodiscoverEndpointUrl(autodiscoverUrl.Host, out autodiscoverUrl))
@@ -1327,6 +1328,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             // Get SCP URLs
             var callback = GetScpUrlsForDomainCallback ?? DefaultGetScpUrlsForDomain;
             var scpUrls = callback(domainName);
+
             foreach (var str in scpUrls)
             {
                 urls.Add(new Uri(str));
@@ -1383,7 +1385,8 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                     }
                 );
                 client.Timeout = AutodiscoverTimeout;
-                var httpResponse = client.GetAsync(autoDiscoverUrl).Result;
+
+                var httpResponse = client.GetAsync(autoDiscoverUrl).GetAwaiter().GetResult();
                 response = new EwsHttpWebResponse(httpResponse);
             }
             catch (Exception ex)
@@ -1964,12 +1967,15 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         params DomainSettingName[] domainSettingNames
     )
     {
-        var domains = new List<string>
-        {
-            domain,
-        };
-        var settings = new List<DomainSettingName>(domainSettingNames);
-        return (await GetDomainSettings(domains, settings, requestedVersion))[0];
+        var response = await GetDomainSettings(
+            new List<string>
+            {
+                domain,
+            },
+            new List<DomainSettingName>(domainSettingNames),
+            requestedVersion
+        );
+        return response[0];
     }
 
     /// <summary>
@@ -2161,5 +2167,5 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets the delegate used to resolve Autodiscover SCP urls for a specified domain.
     /// </summary>
-    public Func<string, ICollection<string>> GetScpUrlsForDomainCallback { get; set; }
+    public Func<string, ICollection<string>>? GetScpUrlsForDomainCallback { get; set; }
 }

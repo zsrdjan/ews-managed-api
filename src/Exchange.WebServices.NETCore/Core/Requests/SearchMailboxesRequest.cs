@@ -245,6 +245,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.PreviewItemResponseShape);
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.BaseShape, PreviewItemResponseShape.BaseShape);
+
             if (PreviewItemResponseShape.AdditionalProperties != null &&
                 PreviewItemResponseShape.AdditionalProperties.Length > 0)
             {
@@ -314,7 +315,7 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     /// <summary>
     ///     Preview item response shape
     /// </summary>
-    public PreviewItemResponseShape PreviewItemResponseShape { get; set; }
+    public PreviewItemResponseShape? PreviewItemResponseShape { get; set; }
 
     /// <summary>
     ///     Sort order

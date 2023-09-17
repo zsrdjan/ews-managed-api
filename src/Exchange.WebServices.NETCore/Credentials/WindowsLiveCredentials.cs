@@ -131,7 +131,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
         if (EwsUrl == null || EwsUrl != request.RequestUri)
         {
             IsAuthenticated = false;
-            MakeTokenRequestToWindowsLive(request.RequestUri);
+            MakeTokenRequestToWindowsLive(request.RequestUri).GetAwaiter().GetResult();
 
             IsAuthenticated = true;
             EwsUrl = request.RequestUri;
@@ -149,7 +149,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     /// </summary>
     /// <param name="uriForTokenEndpointReference">The Uri to use for the endpoint reference for our token</param>
     /// <returns>Response to token request.</returns>
-    private HttpWebResponse EmitTokenRequest(Uri uriForTokenEndpointReference)
+    private async Task<HttpWebResponse> EmitTokenRequest(Uri uriForTokenEndpointReference)
     {
         const string tokenRequest = "<?xml version='1.0' encoding='UTF-8'?>" +
                                     "<s:Envelope xmlns:s='http://www.w3.org/2003/05/soap-envelope' " +
@@ -221,21 +221,20 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
         );
 
         // Create and send the request.
-        var webRequest = (HttpWebRequest)WebRequest.Create(_windowsLiveUrl);
+        var webRequest = WebRequest.Create(_windowsLiveUrl);
 
         webRequest.Method = "POST";
         webRequest.ContentType = "text/xml; charset=utf-8";
         var requestBytes = Encoding.UTF8.GetBytes(requestToSend);
-        // webRequest.ContentLength = requestBytes.Length;
 
         // NOTE: We're not tracing the request to Windows Live here because it has the user name and
         // password in it.
-        using (var requestStream = webRequest.GetRequestStreamAsync().Result)
+        await using (var requestStream = await webRequest.GetRequestStreamAsync())
         {
-            requestStream.Write(requestBytes, 0, requestBytes.Length);
+            await requestStream.WriteAsync(requestBytes);
         }
 
-        return (HttpWebResponse)webRequest.GetResponseAsync().Result;
+        return (HttpWebResponse)await webRequest.GetResponseAsync();
     }
 
     /// <summary>
@@ -278,7 +277,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
         {
             if (TraceEnabled)
             {
-                var logMessage = string.Format("Exception Received when sending Windows Live token request: {0}", e);
+                var logMessage = $"Exception Received when sending Windows Live token request: {e}";
                 _traceListener.Trace("WindowsLiveResponse", logMessage);
             }
 
@@ -308,7 +307,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     Makes a request to Windows Live to get a token.
     /// </summary>
     /// <param name="uriForTokenEndpointReference">URL where token is to be used</param>
-    private void MakeTokenRequestToWindowsLive(Uri uriForTokenEndpointReference)
+    private async System.Threading.Tasks.Task MakeTokenRequestToWindowsLive(Uri uriForTokenEndpointReference)
     {
         // Post the request to Windows Live and load the response into an EwsXmlReader for
         // processing.
@@ -316,7 +315,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
 
         try
         {
-            response = EmitTokenRequest(uriForTokenEndpointReference);
+            response = await EmitTokenRequest(uriForTokenEndpointReference);
         }
         catch (EwsHttpClientException e)
         {
@@ -328,8 +327,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             {
                 if (TraceEnabled)
                 {
-                    var traceString = string.Format("Error occurred sending request - exception {0}", e);
-                    _traceListener.Trace("WindowsLiveCredentials", traceString);
+                    _traceListener.Trace("WindowsLiveCredentials", $"Error occurred sending request - exception {e}");
                 }
             }
 
@@ -344,8 +342,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
         {
             if (TraceEnabled)
             {
-                var traceString = string.Format("Error occurred sending request - exception {0}", e);
-                _traceListener.Trace("WindowsLiveCredentials", traceString);
+                _traceListener.Trace("WindowsLiveCredentials", $"Error occurred sending request - exception {e}");
             }
 
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, e.Message), e);

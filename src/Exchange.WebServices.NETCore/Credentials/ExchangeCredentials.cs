@@ -93,6 +93,7 @@ public abstract class ExchangeCredentials
             WSSecurityBasedCredentials.WsSecurityPathSuffix,
             StringComparison.OrdinalIgnoreCase
         );
+
         if (index != -1)
         {
             return absoluteUri.Substring(0, index);

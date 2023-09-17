@@ -35,4 +35,33 @@ public class AutodiscoverServiceTests : IClassFixture<AutodiscoverProvider>
 
         Debugger.Break();
     }
+
+    [Fact]
+    public async Task DomainTest()
+    {
+        var options = _provider.ConnectionOptions.Value;
+
+
+        var service = new AutodiscoverService
+        {
+        };
+
+        var result = await service.GetDomainSettings(
+            "outlook.com",
+            ExchangeVersion.Exchange2007_SP1,
+            DomainSettingName.ExternalEwsUrl
+        );
+
+        Debugger.Break();
+    }
+
+    [Fact]
+    public async Task LegacyDiscoveryTest()
+    {
+        var options = _provider.ConnectionOptions.Value;
+
+        var service = new AutodiscoverService(ExchangeVersion.Exchange2007_SP1);
+
+        await service.AutodiscoverUrl(options.UserName, _ => true);
+    }
 }

@@ -534,25 +534,10 @@ internal static partial class EwsUtilities
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="target">The target.</param>
+    [Obsolete]
     internal static void CopyStream(Stream source, Stream target)
     {
-        // See if this is a MemoryStream -- we can use WriteTo.
-        if (source is MemoryStream memContentStream)
-        {
-            memContentStream.WriteTo(target);
-        }
-        else
-        {
-            // Otherwise, copy data through a buffer
-            var buffer = new byte[4096];
-            var bufferSize = buffer.Length;
-            var bytesRead = source.Read(buffer, 0, bufferSize);
-            while (bytesRead > 0)
-            {
-                target.Write(buffer, 0, bytesRead);
-                bytesRead = source.Read(buffer, 0, bufferSize);
-            }
-        }
+        source.CopyTo(target);
     }
 
     #endregion
