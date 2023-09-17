@@ -36,13 +36,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 [EditorBrowsable(EditorBrowsableState.Never)]
 internal sealed class OutlookProtocol
 {
-    #region Private constants
-
     private const string EXCH = "EXCH";
     private const string EXPR = "EXPR";
     private const string WEB = "WEB";
-
-    #endregion
 
 
     #region Private static fields
@@ -261,7 +257,7 @@ internal sealed class OutlookProtocol
     private string _ecpUrlTmHiding;
     private string _siteMailboxCreationUrl;
     private string _ecpUrlExtInstall;
-    private string _exchangeWebServicesUrl;
+    private string? _exchangeWebServicesUrl;
     private string _exchangeManagementWebServicesUrl;
     private string _mailboxDn;
     private string _offlineAddressBookUrl;

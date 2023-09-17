@@ -68,8 +68,8 @@ internal class GetUserSettingsRequest : AutodiscoverRequest
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(SmtpAddresses, "smtpAddresses");
-        EwsUtilities.ValidateParam(Settings, "settings");
+        EwsUtilities.ValidateParam(SmtpAddresses);
+        EwsUtilities.ValidateParam(Settings);
 
         if (Settings.Count == 0)
         {

@@ -23,10 +23,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Security;
+using System.Net;
+
+using DnsClient;
+using DnsClient.Protocol;
 
 using Microsoft.Exchange.WebServices.Data;
-using Microsoft.Exchange.WebServices.Dns;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
@@ -35,8 +37,6 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// </summary>
 internal class AutodiscoverDnsClient
 {
-    #region Constants
-
     /// <summary>
     ///     SRV DNS prefix to lookup.
     /// </summary>
@@ -47,30 +47,18 @@ internal class AutodiscoverDnsClient
     /// </summary>
     private const int SslPort = 443;
 
-    #endregion
-
-
-    #region Static fields
 
     /// <summary>
     ///     Random selector in the case of ties.
     /// </summary>
     private static readonly Random RandomTieBreakerSelector = new();
 
-    #endregion
-
-
-    #region Instance fields
 
     /// <summary>
     ///     AutodiscoverService using this DNS reader.
     /// </summary>
     private readonly AutodiscoverService _service;
 
-    #endregion
-
-
-    #region Constructors
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverDnsClient" /> class.
@@ -81,10 +69,6 @@ internal class AutodiscoverDnsClient
         _service = service;
     }
 
-    #endregion
-
-
-    #region Instance methods
 
     /// <summary>
     ///     Finds the Autodiscover host from DNS SRV records.
@@ -96,13 +80,13 @@ internal class AutodiscoverDnsClient
     /// </remarks>
     /// <param name="domain">The domain.</param>
     /// <returns>Autodiscover hostname (will be null if lookup failed).</returns>
-    internal string? FindAutodiscoverHostFromSrv(string domain)
+    internal async Task<string?> FindAutodiscoverHostFromSrv(string domain)
     {
         var domainToMatch = AutoDiscoverSrvPrefix + domain;
 
-        var dnsSrvRecord = FindBestMatchingSrvRecord(domainToMatch);
+        var dnsSrvRecord = await FindBestMatchingSrvRecord(domainToMatch);
 
-        if (dnsSrvRecord == null || string.IsNullOrEmpty(dnsSrvRecord.NameTarget))
+        if (dnsSrvRecord == null || string.IsNullOrEmpty(dnsSrvRecord.Target.Value))
         {
             _service.TraceMessage(TraceFlags.AutodiscoverConfiguration, "No appropriate SRV record was found.");
             return null;
@@ -110,10 +94,10 @@ internal class AutodiscoverDnsClient
 
         _service.TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
-            $"DNS query for SRV record for domain {domain} found {dnsSrvRecord.NameTarget}"
+            $"DNS query for SRV record for domain {domain} found {dnsSrvRecord.Target.Value}"
         );
 
-        return dnsSrvRecord.NameTarget;
+        return dnsSrvRecord.Target.Value;
     }
 
     /// <summary>
@@ -121,29 +105,11 @@ internal class AutodiscoverDnsClient
     /// </summary>
     /// <param name="domain">The domain.</param>
     /// <returns>DnsSrvRecord(will be null if lookup failed).</returns>
-    private DnsSrvRecord? FindBestMatchingSrvRecord(string domain)
+    private async Task<SrvRecord?> FindBestMatchingSrvRecord(string domain)
     {
-        List<DnsSrvRecord> dnsSrvRecordList;
-        try
-        {
-            // Make DnsQuery call to get collection of SRV records.
-            dnsSrvRecordList = DnsClient.DnsQuery<DnsSrvRecord>(domain, _service.DnsServerAddress);
-        }
-        catch (DnsException ex)
-        {
-            var dnsExcMessage = $"DnsQuery returned error error '{ex.Message}' error code 0x{ex.NativeErrorCode:X8}.";
-            _service.TraceMessage(TraceFlags.AutodiscoverConfiguration, dnsExcMessage);
-            return null;
-        }
-        catch (SecurityException ex)
-        {
-            // In restricted environments, we may not be allowed to call unmanaged code.
-            _service.TraceMessage(
-                TraceFlags.AutodiscoverConfiguration,
-                $"DnsQuery cannot be called. Security error: {ex.Message}."
-            );
-            return null;
-        }
+        // Make DnsQuery call to get collection of SRV records.
+        var dnsSrvRecordList = await DnsQuery(domain, _service.DnsServerAddress);
+
 
         _service.TraceMessage(
             TraceFlags.AutodiscoverConfiguration,
@@ -196,7 +162,7 @@ internal class AutodiscoverDnsClient
             "Returning SRV record {0} of {1} records. Target: {2}, Priority: {3}, Weight: {4}",
             recordIndex,
             dnsSrvRecordList.Count,
-            bestDnsSrvRecord.NameTarget,
+            bestDnsSrvRecord.Target,
             bestDnsSrvRecord.Priority,
             bestDnsSrvRecord.Weight
         );
@@ -205,5 +171,18 @@ internal class AutodiscoverDnsClient
         return bestDnsSrvRecord;
     }
 
-    #endregion
+    private static async Task<List<SrvRecord>> DnsQuery(string domain, IPAddress? dnsServerAddress)
+    {
+        var options = dnsServerAddress != null ? new LookupClientOptions(dnsServerAddress) : new LookupClientOptions();
+
+        var lookup = new LookupClient(options);
+        var response = await lookup.QueryAsync(domain, QueryType.SRV);
+
+        if (response.HasError)
+        {
+            return new List<SrvRecord>();
+        }
+
+        return response.Answers.SrvRecords().ToList();
+    }
 }

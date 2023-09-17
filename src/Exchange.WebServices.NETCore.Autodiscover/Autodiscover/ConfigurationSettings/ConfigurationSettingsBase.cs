@@ -123,5 +123,5 @@ internal abstract class ConfigurationSettingsBase
     ///     Gets the error.
     /// </summary>
     /// <value>The error.</value>
-    internal AutodiscoverError Error { get; private set; }
+    internal AutodiscoverError? Error { get; private set; }
 }

@@ -84,13 +84,11 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <param name="response">Response received from the server</param>
     internal delegate void HandleResponseObject(object response);
 
-    private const int BufferSize = 4096;
-
     /// <summary>
     ///     Test switch to log all bytes that come across the wire.
     ///     Helpful when parsing fails before certain bytes hit the trace logs.
     /// </summary>
-    internal static readonly bool LogAllWireBytes = false;
+    internal const bool LogAllWireBytes = false;
 
     /// <summary>
     ///     Callback delegate to handle response objects
@@ -149,7 +147,8 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     {
         lock (_lockObject)
         {
-            var tuple = ValidateAndEmitRequest(token).Result;
+            var tuple = ValidateAndEmitRequest(token).GetAwaiter().GetResult();
+
             _request = tuple.Item1;
             _response = tuple.Item2;
 
@@ -256,7 +255,6 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
                 if (responseCopy != null)
                 {
                     await responseCopy.DisposeAsync();
-                    responseCopy = null;
                 }
             }
         }

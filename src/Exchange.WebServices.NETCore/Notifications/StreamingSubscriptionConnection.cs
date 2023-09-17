@@ -270,10 +270,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     {
         _currentHangingRequest = null;
 
-        if (OnDisconnect != null)
-        {
-            OnDisconnect(this, new SubscriptionErrorEventArgs(null, ex));
-        }
+        OnDisconnect?.Invoke(this, new SubscriptionErrorEventArgs(null, ex));
     }
 
     /// <summary>
@@ -314,7 +311,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     {
         if (response is not GetStreamingEventsResponse gseResponse)
         {
-            throw new ArgumentException(nameof(response));
+            throw new ArgumentException(null, nameof(response));
         }
 
         if (gseResponse.Result == ServiceResult.Success || gseResponse.Result == ServiceResult.Warning)
@@ -351,7 +348,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
 
         foreach (var id in gseResponse.ErrorSubscriptionIds)
         {
-            StreamingSubscription subscription = null;
+            StreamingSubscription? subscription = null;
 
             lock (_lockObject)
             {
@@ -366,10 +363,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
             {
                 var eventArgs = new SubscriptionErrorEventArgs(subscription, exception);
 
-                if (OnSubscriptionError != null)
-                {
-                    OnSubscriptionError(this, eventArgs);
-                }
+                OnSubscriptionError?.Invoke(this, eventArgs);
             }
 
             if (gseResponse.ErrorCode != ServiceError.ErrorMissedNotificationEvents)
@@ -395,10 +389,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     {
         var eventArgs = new SubscriptionErrorEventArgs(null, new ServiceResponseException(gseResponse));
 
-        if (OnSubscriptionError != null)
-        {
-            OnSubscriptionError(this, eventArgs);
-        }
+        OnSubscriptionError?.Invoke(this, eventArgs);
     }
 
     /// <summary>
@@ -424,10 +415,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
             {
                 var eventArgs = new NotificationEventArgs(subscription, events.Events);
 
-                if (OnNotificationEvent != null)
-                {
-                    OnNotificationEvent(this, eventArgs);
-                }
+                OnNotificationEvent?.Invoke(this, eventArgs);
             }
         }
     }

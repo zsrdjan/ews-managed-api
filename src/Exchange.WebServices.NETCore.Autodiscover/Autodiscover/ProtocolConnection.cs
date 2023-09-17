@@ -87,7 +87,7 @@ public sealed class ProtocolConnection
     /// </summary>
     /// <param name="encryptionMethod">The encryption method.</param>
     /// <param name="hostname">The hostname.</param>
-    /// <param name="port">The port number to use for the portocol.</param>
+    /// <param name="port">The port number to use for the protocol.</param>
     internal ProtocolConnection(string encryptionMethod, string hostname, int port)
     {
         EncryptionMethod = encryptionMethod;

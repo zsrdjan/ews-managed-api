@@ -98,6 +98,7 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
             do
             {
                 reader.Read();
+
                 if (reader.NodeType == XmlNodeType.Element && reader.LocalName == GetResponseInstanceXmlElementName())
                 {
                     var response = CreateResponseInstance();
@@ -127,8 +128,6 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
     internal abstract TResponse CreateResponseInstance();
 
 
-    #region IEnumerable<TResponse>
-
     /// <summary>
     ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
@@ -138,11 +137,6 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
         return Responses.GetEnumerator();
     }
 
-    #endregion
-
-
-    #region IEnumerable Members
-
     /// <summary>
     ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
@@ -151,6 +145,4 @@ public abstract class AutodiscoverResponseCollection<TResponse> : AutodiscoverRe
     {
         return (Responses as System.Collections.IEnumerable).GetEnumerator();
     }
-
-    #endregion
 }

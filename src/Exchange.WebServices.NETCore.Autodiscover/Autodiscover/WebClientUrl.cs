@@ -73,11 +73,15 @@ public sealed class WebClientUrl
                 switch (reader.LocalName)
                 {
                     case XmlElementNames.AuthenticationMethods:
+                    {
                         webClientUrl.AuthenticationMethods = reader.ReadElementValue<string>();
                         break;
+                    }
                     case XmlElementNames.Url:
+                    {
                         webClientUrl.Url = reader.ReadElementValue<string>();
                         break;
+                    }
                 }
             }
         } while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.WebClientUrl));

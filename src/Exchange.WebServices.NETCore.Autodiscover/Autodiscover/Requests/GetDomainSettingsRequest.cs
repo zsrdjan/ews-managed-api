@@ -57,8 +57,8 @@ internal class GetDomainSettingsRequest : AutodiscoverRequest
     {
         base.Validate();
 
-        EwsUtilities.ValidateParam(Domains, "domains");
-        EwsUtilities.ValidateParam(Settings, "settings");
+        EwsUtilities.ValidateParam(Domains);
+        EwsUtilities.ValidateParam(Settings);
 
         if (Settings.Count == 0)
         {

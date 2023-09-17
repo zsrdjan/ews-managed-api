@@ -30,6 +30,8 @@ using System.Xml;
 
 using Microsoft.Exchange.WebServices.Data;
 
+using Task = System.Threading.Tasks.Task;
+
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
 /// <summary>
@@ -111,7 +113,8 @@ internal abstract class AutodiscoverRequest
             }
 
             using var client = Service.PrepareHttpClient();
-            using IEwsHttpWebResponse webResponse = new EwsHttpWebResponse(client.SendAsync(request).Result);
+            using var webResponse = new EwsHttpWebResponse(await client.SendAsync(request));
+
             if (IsRedirectionResponse(webResponse))
             {
                 var response = CreateRedirectionResponse(webResponse);
@@ -127,7 +130,8 @@ internal abstract class AutodiscoverRequest
             using (var memoryStream = new MemoryStream())
             {
                 // Copy response stream to in-memory stream and reset to start
-                EwsUtilities.CopyStream(responseStream, memoryStream);
+                await responseStream.CopyToAsync(memoryStream);
+
                 memoryStream.Position = 0;
 
                 Service.TraceResponse(webResponse, memoryStream);
@@ -206,49 +210,51 @@ internal abstract class AutodiscoverRequest
     ///     Processes the web exception.
     /// </summary>
     /// <param name="webException">The web exception.</param>
-    private async System.Threading.Tasks.Task ProcessEwsHttpClientException(EwsHttpClientException webException)
+    private async Task ProcessEwsHttpClientException(EwsHttpClientException webException)
     {
-        if (webException.Response != null)
+        if (webException.Response == null)
         {
-            var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
+            return;
+        }
 
-            if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+        var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
+
+        if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+        {
+            // If tracing is enabled, we read the entire response into a MemoryStream so that we
+            // can pass it along to the ITraceListener. Then we parse the response from the 
+            // MemoryStream.
+            SoapFaultDetails soapFaultDetails;
+            if (Service.IsTraceEnabledFor(TraceFlags.AutodiscoverRequest))
             {
-                // If tracing is enabled, we read the entire response into a MemoryStream so that we
-                // can pass it along to the ITraceListener. Then we parse the response from the 
-                // MemoryStream.
-                SoapFaultDetails soapFaultDetails;
-                if (Service.IsTraceEnabledFor(TraceFlags.AutodiscoverRequest))
+                using var memoryStream = new MemoryStream();
+                await using (var serviceResponseStream = await GetResponseStream(httpWebResponse))
                 {
-                    using var memoryStream = new MemoryStream();
-                    await using (var serviceResponseStream = await GetResponseStream(httpWebResponse))
-                    {
-                        // Copy response to in-memory stream and reset position to start.
-                        EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
-                        memoryStream.Position = 0;
-                    }
-
-                    Service.TraceResponse(httpWebResponse, memoryStream);
-
-                    var reader = new EwsXmlReader(memoryStream);
-                    soapFaultDetails = ReadSoapFault(reader);
-                }
-                else
-                {
-                    await using var stream = await GetResponseStream(httpWebResponse);
-                    var reader = new EwsXmlReader(stream);
-                    soapFaultDetails = ReadSoapFault(reader);
+                    // Copy response to in-memory stream and reset position to start.
+                    await serviceResponseStream.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
                 }
 
-                if (soapFaultDetails != null)
-                {
-                    throw new ServiceResponseException(new ServiceResponse(soapFaultDetails));
-                }
+                Service.TraceResponse(httpWebResponse, memoryStream);
+
+                var reader = new EwsXmlReader(memoryStream);
+                soapFaultDetails = ReadSoapFault(reader);
             }
             else
             {
-                Service.ProcessHttpErrorResponse(httpWebResponse, webException);
+                await using var stream = await GetResponseStream(httpWebResponse);
+                var reader = new EwsXmlReader(stream);
+                soapFaultDetails = ReadSoapFault(reader);
             }
+
+            if (soapFaultDetails != null)
+            {
+                throw new ServiceResponseException(new ServiceResponse(soapFaultDetails));
+            }
+        }
+        else
+        {
+            Service.ProcessHttpErrorResponse(httpWebResponse, webException);
         }
     }
 
@@ -401,10 +407,7 @@ internal abstract class AutodiscoverRequest
 
         writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName);
 
-        if (Service.Credentials != null)
-        {
-            Service.Credentials.EmitExtraSoapHeaderNamespaceAliases(writer.InternalWriter);
-        }
+        Service.Credentials?.EmitExtraSoapHeaderNamespaceAliases(writer.InternalWriter);
 
         writer.WriteElementValue(
             XmlNamespace.Autodiscover,
@@ -418,10 +421,7 @@ internal abstract class AutodiscoverRequest
 
         WriteExtraCustomSoapHeadersToXml(writer);
 
-        if (Service.Credentials != null)
-        {
-            Service.Credentials.SerializeWSSecurityHeaders(writer.InternalWriter);
-        }
+        Service.Credentials?.SerializeWSSecurityHeaders(writer.InternalWriter);
 
         Service.DoOnSerializeCustomSoapHeaders(writer.InternalWriter);
 

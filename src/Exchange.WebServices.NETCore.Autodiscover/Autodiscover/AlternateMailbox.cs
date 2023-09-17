@@ -115,7 +115,7 @@ public sealed class AlternateMailbox
     public string LegacyDN { get; internal set; }
 
     /// <summary>
-    ///     Gets the alernate mailbox server.
+    ///     Gets the alternate mailbox server.
     /// </summary>
     public string Server { get; internal set; }
 

@@ -7,16 +7,11 @@
 
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<UserSecretsId>9dd7c090-3af8-4c28-bb34-b0d6d1e0d5a4</UserSecretsId>
+		<UserSecretsId>162159bc-f303-47ee-9fb5-f6096269a2f1</UserSecretsId>		
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Exchange.WebServices.NETCore\Exchange.WebServices.NETCore.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Notifications\" />
-	  <Folder Include="People\" />
+		<ProjectReference Include="..\..\src\Exchange.WebServices.NETCore.Autodiscover\Exchange.WebServices.NETCore.Autodiscover.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -480,7 +480,7 @@ public class Folder : ServiceObject
     /// <returns>An object representing the results of the search operation.</returns>
     public async Task<FindItemsResults<Item>> FindItems(ItemView view, CancellationToken token = default)
     {
-        var responses = await InternalFindItems<Item>((SearchFilter)null, view, null, token).ConfigureAwait(false);
+        var responses = await InternalFindItems<Item>((SearchFilter?)null, view, null, token).ConfigureAwait(false);
 
         return responses[0].Results;
     }
@@ -578,7 +578,7 @@ public class Folder : ServiceObject
     {
         EwsUtilities.ValidateParam(groupBy);
 
-        return FindItems((SearchFilter)null, view, groupBy);
+        return FindItems((SearchFilter?)null, view, groupBy);
     }
 
     /// <summary>
