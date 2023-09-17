@@ -5428,186 +5428,6 @@ public sealed class ExchangeService : ExchangeServiceBase
     #endregion
 
 
-    #region Autodiscover
-
-    /// <summary>
-    ///     Default implementation of AutodiscoverRedirectionUrlValidationCallback.
-    ///     Always returns true indicating that the URL can be used.
-    /// </summary>
-    /// <param name="redirectionUrl">The redirection URL.</param>
-    /// <returns>Returns true.</returns>
-    private bool DefaultAutodiscoverRedirectionUrlValidationCallback(string redirectionUrl)
-    {
-        throw new AutodiscoverLocalException(string.Format(Strings.AutodiscoverRedirectBlocked, redirectionUrl));
-    }
-
-    /// <summary>
-    ///     Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by
-    ///     calling the Autodiscover service.
-    /// </summary>
-    /// <param name="emailAddress">The email address to use.</param>
-    public System.Threading.Tasks.Task AutodiscoverUrl(string emailAddress)
-    {
-        return AutodiscoverUrl(emailAddress, DefaultAutodiscoverRedirectionUrlValidationCallback);
-    }
-
-    /// <summary>
-    ///     Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by
-    ///     calling the Autodiscover service.
-    /// </summary>
-    /// <param name="emailAddress">The email address to use.</param>
-    /// <param name="validateRedirectionUrlCallback">The callback used to validate redirection URL.</param>
-    public async System.Threading.Tasks.Task AutodiscoverUrl(
-        string emailAddress,
-        AutodiscoverRedirectionUrlValidationCallback validateRedirectionUrlCallback
-    )
-    {
-        Uri exchangeServiceUrl;
-
-        if (RequestedServerVersion > ExchangeVersion.Exchange2007_SP1)
-        {
-            try
-            {
-                exchangeServiceUrl = await GetAutodiscoverUrl(
-                    emailAddress,
-                    RequestedServerVersion,
-                    validateRedirectionUrlCallback
-                );
-
-                Url = AdjustServiceUriFromCredentials(exchangeServiceUrl);
-                return;
-            }
-            catch (AutodiscoverLocalException ex)
-            {
-                TraceMessage(
-                    TraceFlags.AutodiscoverResponse,
-                    $"Autodiscover service call failed with error '{ex.Message}'. Will try legacy service"
-                );
-            }
-            catch (ServiceRemoteException ex)
-            {
-                // Special case: if the caller's account is locked we want to return this exception, not continue.
-                if (ex is AccountIsLockedException)
-                {
-                    throw;
-                }
-
-                TraceMessage(
-                    TraceFlags.AutodiscoverResponse,
-                    $"Autodiscover service call failed with error '{ex.Message}'. Will try legacy service"
-                );
-            }
-        }
-
-        // Try legacy Autodiscover provider
-        exchangeServiceUrl = await GetAutodiscoverUrl(
-            emailAddress,
-            ExchangeVersion.Exchange2007_SP1,
-            validateRedirectionUrlCallback
-        );
-
-        Url = AdjustServiceUriFromCredentials(exchangeServiceUrl);
-    }
-
-    /// <summary>
-    ///     Adjusts the service URI based on the current type of credentials.
-    /// </summary>
-    /// <remarks>
-    ///     Autodiscover will always return the "plain" EWS endpoint URL but if the client
-    ///     is using WindowsLive credentials, ExchangeService needs to use the WS-Security endpoint.
-    /// </remarks>
-    /// <param name="uri">The URI.</param>
-    /// <returns>Adjusted URL.</returns>
-    private Uri AdjustServiceUriFromCredentials(Uri uri)
-    {
-        return Credentials != null ? Credentials.AdjustUrl(uri) : uri;
-    }
-
-    /// <summary>
-    ///     Gets the EWS URL from Autodiscover.
-    /// </summary>
-    /// <param name="emailAddress">The email address.</param>
-    /// <param name="requestedServerVersion">Exchange version.</param>
-    /// <param name="validateRedirectionUrlCallback">The validate redirection URL callback.</param>
-    /// <returns>Ews URL</returns>
-    private async Task<Uri> GetAutodiscoverUrl(
-        string emailAddress,
-        ExchangeVersion requestedServerVersion,
-        AutodiscoverRedirectionUrlValidationCallback validateRedirectionUrlCallback
-    )
-    {
-        var autodiscoverService = new AutodiscoverService(this, requestedServerVersion)
-        {
-            RedirectionUrlValidationCallback = validateRedirectionUrlCallback,
-            EnableScpLookup = EnableScpLookup,
-        };
-
-        var response = await autodiscoverService.GetUserSettings(
-            emailAddress,
-            UserSettingName.InternalEwsUrl,
-            UserSettingName.ExternalEwsUrl
-        );
-
-        switch (response.ErrorCode)
-        {
-            case AutodiscoverErrorCode.NoError:
-            {
-                return GetEwsUrlFromResponse(response, autodiscoverService.IsExternal.GetValueOrDefault(true));
-            }
-            case AutodiscoverErrorCode.InvalidUser:
-            {
-                throw new ServiceRemoteException(string.Format(Strings.InvalidUser, emailAddress));
-            }
-            case AutodiscoverErrorCode.InvalidRequest:
-            {
-                throw new ServiceRemoteException(
-                    string.Format(Strings.InvalidAutodiscoverRequest, response.ErrorMessage)
-                );
-            }
-            default:
-            {
-                TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    $"No EWS Url returned for user {emailAddress}, error code is {response.ErrorCode}"
-                );
-
-                throw new ServiceRemoteException(response.ErrorMessage);
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets the EWS URL from Autodiscover GetUserSettings response.
-    /// </summary>
-    /// <param name="response">The response.</param>
-    /// <param name="isExternal">If true, Autodiscover call was made externally.</param>
-    /// <returns>EWS URL.</returns>
-    private static Uri GetEwsUrlFromResponse(GetUserSettingsResponse response, bool isExternal)
-    {
-        // Figure out which URL to use: Internal or External.
-        // AutoDiscover may not return an external protocol. First try external, then internal.
-        // Either protocol may be returned without a configured URL.
-        if (isExternal &&
-            response.TryGetSettingValue(UserSettingName.ExternalEwsUrl, out string? uriString) &&
-            !string.IsNullOrEmpty(uriString))
-        {
-            return new Uri(uriString);
-        }
-
-        if ((response.TryGetSettingValue(UserSettingName.InternalEwsUrl, out uriString) ||
-             response.TryGetSettingValue(UserSettingName.ExternalEwsUrl, out uriString)) &&
-            !string.IsNullOrEmpty(uriString))
-        {
-            return new Uri(uriString);
-        }
-
-        // If Autodiscover doesn't return an internal or external EWS URL, throw an exception.
-        throw new AutodiscoverLocalException(Strings.AutodiscoverDidNotReturnEwsUrl);
-    }
-
-    #endregion
-
-
     #region ClientAccessTokens
 
     /// <summary>
@@ -6342,6 +6162,21 @@ public sealed class ExchangeService : ExchangeServiceBase
             TraceFlags.EwsResponseHttpHeaders,
             TraceFlags.EwsResponse
         );
+    }
+
+
+    /// <summary>
+    ///     Adjusts the service URI based on the current type of credentials.
+    /// </summary>
+    /// <remarks>
+    ///     Autodiscover will always return the "plain" EWS endpoint URL but if the client
+    ///     is using WindowsLive credentials, ExchangeService needs to use the WS-Security endpoint.
+    /// </remarks>
+    /// <param name="uri">The URI.</param>
+    /// <returns>Adjusted URL.</returns>
+    private Uri AdjustServiceUriFromCredentials(Uri uri)
+    {
+        return Credentials != null ? Credentials.AdjustUrl(uri) : uri;
     }
 
     #endregion

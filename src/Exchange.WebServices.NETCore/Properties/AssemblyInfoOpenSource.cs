@@ -24,6 +24,10 @@
  */
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Exchange.WebServices.NETCore.Autodiscover")]
+
 
 // Assembly information
 [assembly: AssemblyTitle("Microsoft Exchange Managed API")]

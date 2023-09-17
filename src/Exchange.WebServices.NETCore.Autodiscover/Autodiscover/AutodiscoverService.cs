@@ -146,8 +146,6 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     #endregion
 
 
-    #region Private members
-
     private string? _domain;
     private Uri? _url;
     private readonly AutodiscoverDnsClient _dnsClient;
@@ -159,8 +157,6 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             ExchangeVersion? requestedVersion,
             Uri autodiscoverUrl
         );
-
-    #endregion
 
 
     /// <summary>
@@ -1622,8 +1618,6 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     #endregion
 
 
-    #region Constructors
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutodiscoverService" /> class.
     /// </summary>
@@ -1728,8 +1722,6 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         : this(service, service.RequestedServerVersion)
     {
     }
-
-    #endregion
 
 
     #region Public Methods
