@@ -29,7 +29,6 @@ using DnsClient;
 using DnsClient.Protocol;
 
 using Microsoft.Exchange.WebServices.Data;
-using Microsoft.Exchange.WebServices.Dns;
 
 namespace Microsoft.Exchange.WebServices.Autodiscover;
 
@@ -177,7 +176,6 @@ internal class AutodiscoverDnsClient
         var options = dnsServerAddress != null ? new LookupClientOptions(dnsServerAddress) : new LookupClientOptions();
 
         var lookup = new LookupClient(options);
-
         var response = await lookup.QueryAsync(domain, QueryType.SRV);
 
         if (response.HasError)

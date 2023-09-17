@@ -204,8 +204,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 await writer.FlushAsync();
 
                 TraceXml(TraceFlags.AutodiscoverRequest, memoryStream);
-
-                EwsUtilities.CopyStream(memoryStream, requestStream);
+                await memoryStream.CopyToAsync(requestStream);
             }
             else
             {
@@ -1309,6 +1308,11 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <returns></returns>
     private ICollection<string> DefaultGetScpUrlsForDomain(string domainName)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return new List<string>();
+        }
+
         var helper = new DirectoryHelper(this);
         return helper.GetAutodiscoverScpUrlsForDomain(domainName);
     }

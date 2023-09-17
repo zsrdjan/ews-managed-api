@@ -60,7 +60,10 @@ public class AutodiscoverServiceTests : IClassFixture<AutodiscoverProvider>
     {
         var options = _provider.ConnectionOptions.Value;
 
-        var service = new AutodiscoverService(ExchangeVersion.Exchange2007_SP1);
+        var service = new AutodiscoverService(ExchangeVersion.Exchange2007_SP1)
+        {
+            EnableScpLookup = false,
+        };
 
         await service.AutodiscoverUrl(options.UserName, _ => true);
     }

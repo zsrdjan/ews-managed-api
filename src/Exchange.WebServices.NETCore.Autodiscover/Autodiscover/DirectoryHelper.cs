@@ -26,6 +26,7 @@
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 using Microsoft.Exchange.WebServices.Data;
 
@@ -34,10 +35,9 @@ namespace Microsoft.Exchange.WebServices.Autodiscover;
 /// <summary>
 ///     Represents a set of helper methods for using Active Directory services.
 /// </summary>
+[SupportedOSPlatform("windows")]
 internal class DirectoryHelper
 {
-    #region Static members
-
     /// <summary>
     ///     Maximum number of SCP hops in an SCP host lookup call.
     /// </summary>
@@ -46,12 +46,12 @@ internal class DirectoryHelper
     /// <summary>
     ///     GUID for SCP URL keyword
     /// </summary>
-    private const string ScpUrlGuidString = @"77378F46-2C66-4aa9-A6A6-3E7A48B19596";
+    private const string ScpUrlGuidString = "77378F46-2C66-4aa9-A6A6-3E7A48B19596";
 
     /// <summary>
     ///     GUID for SCP pointer keyword
     /// </summary>
-    private const string ScpPtrGuidString = @"67661d7F-8FC4-4fa7-BFAC-E1D7794C1F68";
+    private const string ScpPtrGuidString = "67661d7F-8FC4-4fa7-BFAC-E1D7794C1F68";
 
     /// <summary>
     ///     Filter string to find SCP Ptrs and Urls.
@@ -61,8 +61,6 @@ internal class DirectoryHelper
                                            ")(keywords=" +
                                            ScpUrlGuidString +
                                            ")))";
-
-    #endregion
 
 
     /// <summary>

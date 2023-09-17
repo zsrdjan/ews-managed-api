@@ -65,8 +65,6 @@ public abstract class AutodiscoverResponse
     }
 
 
-    #region Properties
-
     /// <summary>
     ///     Gets the error code that was returned by the service.
     /// </summary>
@@ -83,6 +81,4 @@ public abstract class AutodiscoverResponse
     /// </summary>
     /// <value>The redirection URL.</value>
     internal Uri? RedirectionUrl { get; set; }
-
-    #endregion
 }
