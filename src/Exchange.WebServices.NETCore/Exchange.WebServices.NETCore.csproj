@@ -23,7 +23,6 @@
 		<Description>The Exchange Web Services (EWS) Managed API provides a managed interface for developing .NET client applications that use EWS. By using the EWS Managed API, you can access almost all the information stored in an Office 365, Exchange Online, or Exchange Server mailbox.</Description>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
-
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,7 +30,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.DirectoryServices" Version="7.0.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.1" />
 	</ItemGroup>

@@ -8,8 +8,8 @@ Here are some tips to take into account:
 - Almost all functions involving HTTP requests are now async
 - Outdated async Begin/End functions were removed
 - NET Standard: LDAP Autodiscovery feature will not work
-- NET Standard on Linux: DNS Autodiscovery feature will not work
 - `ExchangeService.ServerCertificateValidationCallback` can now be specified to configure SSL validation
+- Autodiscovery features where moved to `Exchange.WebServices.NETCore.Autodiscover`
 - Nuget package can be found here: [https://www.nuget.org/packages/Exchange.WebServices.NETCore/](https://www.nuget.org/packages/Exchange.WebServices.NETCore/)
 
 # Getting Started with the EWS Managed API
