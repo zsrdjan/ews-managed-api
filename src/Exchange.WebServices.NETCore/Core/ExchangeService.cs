@@ -24,6 +24,7 @@
  */
 
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -31,7 +32,6 @@ using System.Xml;
 
 using JetBrains.Annotations;
 
-using Microsoft.Exchange.WebServices.Autodiscover;
 using Microsoft.Exchange.WebServices.Data.Enumerations;
 using Microsoft.Exchange.WebServices.Data.Groups;
 
@@ -6114,14 +6114,14 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <returns>
     ///     An initialized instance of HttpWebRequest.
     /// </returns>
-    internal IEwsHttpWebRequest PrepareHttpWebRequest(string methodName)
+    internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequest(string methodName)
     {
         var endpoint = Url;
         RegisterCustomBasicAuthModule();
 
         endpoint = AdjustServiceUriFromCredentials(endpoint);
 
-        var request = PrepareHttpWebRequestForUrl(endpoint, AcceptGzipEncoding, true);
+        var request = await PrepareHttpWebRequestForUrl(endpoint, AcceptGzipEncoding, true);
 
         if (ServerCertificateValidationCallback != null)
         {
@@ -6253,9 +6253,10 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets the target server version string (newer than Exchange2013).
     /// </summary>
+    [MemberNotNull(nameof(_targetServerVersion))]
     internal string TargetServerVersion
     {
-        get => _targetServerVersion;
+        get => _targetServerVersion ?? string.Empty;
 
         set
         {

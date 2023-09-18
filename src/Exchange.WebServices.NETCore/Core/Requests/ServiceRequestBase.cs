@@ -730,7 +730,7 @@ internal abstract class ServiceRequestBase
         IEwsHttpWebRequest? request = null;
         try
         {
-            request = Service.PrepareHttpWebRequest(GetXmlElementName());
+            request = await Service.PrepareHttpWebRequest(GetXmlElementName());
 
             Service.TraceHttpRequestHeaders(TraceFlags.EwsRequestHttpHeaders, request);
 

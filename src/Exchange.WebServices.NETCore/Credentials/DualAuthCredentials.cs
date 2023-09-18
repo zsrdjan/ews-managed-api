@@ -57,10 +57,12 @@ public sealed class DualAuthCredentials : ExchangeCredentials
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal override void PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
     {
         request.ClientCertificates = ClientCertificates;
         request.Credentials = _credentials;
+
+        return System.Threading.Tasks.Task.CompletedTask;
     }
 
     /// <summary>

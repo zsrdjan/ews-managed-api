@@ -29,6 +29,7 @@ using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -114,7 +115,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
     ///     Add the Authorization header to a service request.
     /// </summary>
     /// <param name="request">The request</param>
-    internal override void PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
     {
         base.PrepareWebRequest(request);
 
@@ -127,6 +128,8 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
         {
             request.Credentials = _credentials;
         }
+
+        return System.Threading.Tasks.Task.CompletedTask;
     }
 
     [GeneratedRegex(@"^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$", RegexOptions.Compiled)]
