@@ -3,9 +3,13 @@ using System.Reflection;
 using JetBrains.Annotations;
 
 using Microsoft.Exchange.WebServices.Data;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web.TokenCacheProviders;
+using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
 
 namespace Exchange.WebServices.NETCore.Tests;
 
@@ -18,7 +22,21 @@ public class ExchangeConnectionOptions
 
     public required string Password { get; set; }
 
-    public required string ImpersonateUpn { get; set; }
+    public required string ImpersonationUpn { get; set; }
+}
+
+[PublicAPI]
+public class OutlookConnectionOptions
+{
+    public required string Url { get; set; }
+
+    public required string TenantId { get; set; }
+
+    public required string ClientId { get; set; }
+
+    public required string ClientSecret { get; set; }
+
+    public required string ImpersonationUpn { get; set; }
 }
 
 [PublicAPI]
@@ -30,7 +48,10 @@ public class ExchangeProvider
     public IOptions<ExchangeConnectionOptions> ConnectionOptions =>
         _provider.GetRequiredService<IOptions<ExchangeConnectionOptions>>();
 
-    public string ImpersonateUpn => ConnectionOptions.Value.ImpersonateUpn;
+    public OutlookConnectionOptions OutlookConnectionOptions =>
+        _provider.GetRequiredService<IOptions<OutlookConnectionOptions>>().Value;
+
+    public string ImpersonateUpn => ConnectionOptions.Value.ImpersonationUpn;
 
 
     public ExchangeService CreateTestService()
@@ -44,9 +65,15 @@ public class ExchangeProvider
             PreAuthenticate = false,
             AcceptGzipEncoding = true,
             Url = new Uri(options.ServiceUrl),
-            ImpersonatedUserId = new ImpersonatedUserId(ConnectingIdType.PrincipalName, options.ImpersonateUpn),
+            ImpersonatedUserId = new ImpersonatedUserId(ConnectingIdType.PrincipalName, options.ImpersonationUpn),
             ServerCertificateValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
         };
+    }
+
+    public T GetRequiredService<T>()
+        where T : notnull
+    {
+        return _provider.GetRequiredService<T>();
     }
 
 
@@ -62,6 +89,11 @@ public class ExchangeProvider
         collection.AddSingleton<IConfiguration>(configuration);
 
         collection.AddOptions<ExchangeConnectionOptions>().Bind(configuration.GetSection("Exchange"));
+        collection.AddOptions<OutlookConnectionOptions>().Bind(configuration.GetSection("Outlook"));
+
+        // Add memory cache for MSALTokenCacheProvider
+        collection.AddSingleton<IMemoryCache, MemoryCache>();
+        collection.AddSingleton<IMsalTokenCacheProvider, MsalMemoryTokenCacheProvider>();
 
 
         return collection.BuildServiceProvider(true);

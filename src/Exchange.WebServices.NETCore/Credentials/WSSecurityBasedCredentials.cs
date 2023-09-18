@@ -203,7 +203,7 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// <summary>
     ///     Gets or sets the EWS URL.
     /// </summary>
-    internal Uri EwsUrl { get; set; }
+    internal Uri? EwsUrl { get; set; }
 
     /// <summary>
     ///     Gets the XmlNamespaceManager which is used to select node during signing the message.

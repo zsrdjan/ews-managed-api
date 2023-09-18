@@ -126,12 +126,12 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal override void PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override async System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
     {
         if (EwsUrl == null || EwsUrl != request.RequestUri)
         {
             IsAuthenticated = false;
-            MakeTokenRequestToWindowsLive(request.RequestUri).GetAwaiter().GetResult();
+            await MakeTokenRequestToWindowsLive(request.RequestUri);
 
             IsAuthenticated = true;
             EwsUrl = request.RequestUri;

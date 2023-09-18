@@ -113,7 +113,11 @@ public abstract class ExchangeServiceBase
     /// <param name="acceptGzipEncoding">If true, ask server for GZip compressed content.</param>
     /// <param name="allowAutoRedirect">If true, redirection responses will be automatically followed.</param>
     /// <returns>A initialized instance of HttpWebRequest.</returns>
-    internal IEwsHttpWebRequest PrepareHttpWebRequestForUrl(Uri url, bool acceptGzipEncoding, bool allowAutoRedirect)
+    internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequestForUrl(
+        Uri url,
+        bool acceptGzipEncoding,
+        bool allowAutoRedirect
+    )
     {
         // Verify that the protocol is something that we can handle
         if (url.Scheme != "http" && url.Scheme != "https")
@@ -162,6 +166,7 @@ public abstract class ExchangeServiceBase
             }
 
             request.UseDefaultCredentials = UseDefaultCredentials;
+
             if (!request.UseDefaultCredentials)
             {
                 var serviceCredentials = Credentials;
@@ -180,7 +185,7 @@ public abstract class ExchangeServiceBase
                 serviceCredentials.PreAuthenticate();
 
                 // Apply credentials to the request
-                serviceCredentials.PrepareWebRequest(request);
+                await serviceCredentials.PrepareWebRequest(request);
             }
 
             lock (HttpResponseHeaders)
@@ -207,7 +212,7 @@ public abstract class ExchangeServiceBase
 
         if (webCredentials.Credentials is NetworkCredential networkCredentials)
         {
-            var credentialCache = new CredentialCache
+            return new CredentialCache
             {
                 // @formatter:off
                 { url, "NTLM", networkCredentials },
@@ -215,8 +220,6 @@ public abstract class ExchangeServiceBase
                 { url, "Basic", networkCredentials },
                 // @formatter:on
             };
-
-            serviceCredentials = credentialCache;
         }
 
         return serviceCredentials;
