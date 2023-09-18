@@ -19,7 +19,7 @@ public abstract class OAuthAccessTokenCredentials : ExchangeCredentials
 
     internal override async System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
     {
-        var token = await AcquireAccessToken();
+        var token = await AcquireAccessToken().ConfigureAwait(false);
 
         request.Headers.Remove(HttpRequestHeader.Authorization.ToString());
         request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, token);

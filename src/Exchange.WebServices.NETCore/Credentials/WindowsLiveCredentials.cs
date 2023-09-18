@@ -131,7 +131,7 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
         if (EwsUrl == null || EwsUrl != request.RequestUri)
         {
             IsAuthenticated = false;
-            await MakeTokenRequestToWindowsLive(request.RequestUri);
+            await MakeTokenRequestToWindowsLive(request.RequestUri).ConfigureAwait(false);
 
             IsAuthenticated = true;
             EwsUrl = request.RequestUri;

@@ -38,6 +38,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// </summary>
     private readonly HttpResponseMessage _response;
 
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebResponse" /> class.
     /// </summary>
@@ -47,8 +48,14 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
         _response = response;
     }
 
+    /// <summary>
+    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    void IDisposable.Dispose()
+    {
+        _response.Dispose();
+    }
 
-    #region IEwsHttpWebResponse Members
 
     /// <summary>
     ///     Closes the response stream.
@@ -115,19 +122,4 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// <value></value>
     /// <returns>System.Version that contains the HTTP protocol version of the response.</returns>
     Version IEwsHttpWebResponse.ProtocolVersion => _response.Version;
-
-    #endregion
-
-
-    #region IDisposable Members
-
-    /// <summary>
-    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    void IDisposable.Dispose()
-    {
-        _response.Dispose();
-    }
-
-    #endregion
 }

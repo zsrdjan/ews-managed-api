@@ -89,13 +89,6 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         _addTimestamp = addTimestamp;
     }
 
-    /// <summary>
-    ///     This method is called to pre-authenticate credentials before a service request is made.
-    /// </summary>
-    internal override void PreAuthenticate()
-    {
-        // Nothing special to do here.
-    }
 
     /// <summary>
     ///     Emit the extra namespace aliases used for WS-Security and WS-Addressing.

@@ -1731,9 +1731,6 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 serviceCredentials = AdjustLinuxAuthentication(_url, serviceCredentials);
             }
 
-            // Make sure that credentials have been authenticated if required
-            serviceCredentials.PreAuthenticate();
-
             // TODO support different credentials
             if (serviceCredentials is not WebCredentials)
             {

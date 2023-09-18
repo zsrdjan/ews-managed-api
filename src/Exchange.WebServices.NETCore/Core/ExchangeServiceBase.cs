@@ -181,11 +181,8 @@ public abstract class ExchangeServiceBase
                     serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
                 }
 
-                // Make sure that credentials have been authenticated if required
-                serviceCredentials.PreAuthenticate();
-
                 // Apply credentials to the request
-                await serviceCredentials.PrepareWebRequest(request);
+                await serviceCredentials.PrepareWebRequest(request).ConfigureAwait(false);
             }
 
             lock (HttpResponseHeaders)

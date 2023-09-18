@@ -49,16 +49,16 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
     internal async Task<TResponse> InternalExecuteAsync<TResponse>(CancellationToken token)
         where TResponse : class
     {
-        var tuple = await ValidateAndEmitRequest(token).ConfigureAwait(false);
+        var (request, response) = await ValidateAndEmitRequest(token).ConfigureAwait(false);
         try
         {
-            var result = await ReadResponse(tuple.Item2).ConfigureAwait(false) as TResponse;
+            var result = await ReadResponse(response).ConfigureAwait(false) as TResponse;
             return result!;
         }
         finally
         {
-            tuple.Item1.Dispose();
-            tuple.Item2.Dispose();
+            request.Dispose();
+            response.Dispose();
         }
     }
 
@@ -81,10 +81,10 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
             if (Service.IsTraceEnabledFor(TraceFlags.EwsResponse))
             {
                 using var memoryStream = new MemoryStream();
-                await using (var serviceResponseStream = await GetResponseStream(response))
+                await using (var serviceResponseStream = await GetResponseStream(response).ConfigureAwait(false))
                 {
                     // Copy response to in-memory stream and reset position to start.
-                    EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
+                    await serviceResponseStream.CopyToAsync(memoryStream).ConfigureAwait(false);
                     memoryStream.Position = 0;
                 }
 
@@ -94,7 +94,7 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
             }
             else
             {
-                await using var responseStream = await GetResponseStream(response);
+                await using var responseStream = await GetResponseStream(response).ConfigureAwait(false);
                 serviceResponse = ReadResponseXml(responseStream, response.Headers);
             }
         }

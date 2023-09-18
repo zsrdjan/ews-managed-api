@@ -123,12 +123,10 @@ internal class EwsXmlReader
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
     /// <param name="nodeType">Type of the node.</param>
-    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalReadElementAsync(
         XmlNamespace xmlNamespace,
         string localName,
-        XmlNodeType nodeType,
-        CancellationToken token
+        XmlNodeType nodeType
     )
     {
         if (xmlNamespace == XmlNamespace.NotSpecified)
@@ -137,7 +135,7 @@ internal class EwsXmlReader
         }
         else
         {
-            await ReadAsync(nodeType, token);
+            await ReadAsync(nodeType);
 
             if (LocalName != localName || NamespaceUri != EwsUtilities.GetNamespaceUri(xmlNamespace))
             {
@@ -186,15 +184,13 @@ internal class EwsXmlReader
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="localName">Name of the local.</param>
     /// <param name="nodeType">Type of the node.</param>
-    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalReadElementAsync(
         string namespacePrefix,
         string localName,
-        XmlNodeType nodeType,
-        CancellationToken token
+        XmlNodeType nodeType
     )
     {
-        await ReadAsync(nodeType, token);
+        await ReadAsync(nodeType);
 
         if (LocalName != localName || NamespacePrefix != namespacePrefix)
         {
@@ -231,7 +227,7 @@ internal class EwsXmlReader
     /// <summary>
     ///     Reads the next node.
     /// </summary>
-    public async System.Threading.Tasks.Task ReadAsync(CancellationToken token)
+    public async System.Threading.Tasks.Task ReadAsync()
     {
         _prevNodeType = _xmlReader.NodeType;
 
@@ -265,10 +261,9 @@ internal class EwsXmlReader
     ///     Reads the specified node type.
     /// </summary>
     /// <param name="nodeType">Type of the node.</param>
-    /// <param name="token"></param>
-    public async System.Threading.Tasks.Task ReadAsync(XmlNodeType nodeType, CancellationToken token)
+    public async System.Threading.Tasks.Task ReadAsync(XmlNodeType nodeType)
     {
-        await ReadAsync(token);
+        await ReadAsync();
 
         if (NodeType != nodeType)
         {
@@ -592,14 +587,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="localName">Name of the local.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadStartElementAsync(
-        string namespacePrefix,
-        string localName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadStartElementAsync(string namespacePrefix, string localName)
     {
-        return InternalReadElementAsync(namespacePrefix, localName, XmlNodeType.Element, token);
+        return InternalReadElementAsync(namespacePrefix, localName, XmlNodeType.Element);
     }
 
     /// <summary>
@@ -607,14 +597,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadStartElementAsync(
-        XmlNamespace xmlNamespace,
-        string localName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadStartElementAsync(XmlNamespace xmlNamespace, string localName)
     {
-        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.Element, token);
+        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.Element);
     }
 
     /// <summary>
@@ -642,14 +627,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="elementName">Name of the element.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadEndElementAsync(
-        string namespacePrefix,
-        string elementName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadEndElementAsync(string namespacePrefix, string elementName)
     {
-        return InternalReadElementAsync(namespacePrefix, elementName, XmlNodeType.EndElement, token);
+        return InternalReadElementAsync(namespacePrefix, elementName, XmlNodeType.EndElement);
     }
 
     /// <summary>
@@ -657,14 +637,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadEndElementAsync(
-        XmlNamespace xmlNamespace,
-        string localName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadEndElementAsync(XmlNamespace xmlNamespace, string localName)
     {
-        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.EndElement, token);
+        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.EndElement);
     }
 
     /// <summary>

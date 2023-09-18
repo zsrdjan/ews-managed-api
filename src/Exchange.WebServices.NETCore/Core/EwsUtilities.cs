@@ -41,38 +41,34 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal static partial class EwsUtilities
 {
-    #region Private members
-
     /// <summary>
     ///     Map from XML element names to ServiceObject type and constructors.
     /// </summary>
-    private static readonly LazyMember<ServiceObjectInfo> ServiceObjectInfo = new(() => new ServiceObjectInfo());
+    private static readonly ServiceObjectInfo ServiceObjectInfo = new();
 
 
     /// <summary>
     ///     Dictionary of enum type to ExchangeVersion maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, ExchangeVersion>>> EnumVersionDictionaries =
-        new(
-            () => new Dictionary<Type, Dictionary<Enum, ExchangeVersion>>
-            {
-                // @formatter:off
-                { typeof(WellKnownFolderName), BuildEnumDict(typeof(WellKnownFolderName)) },
-                { typeof(ItemTraversal), BuildEnumDict(typeof(ItemTraversal)) },
-                { typeof(ConversationQueryTraversal), BuildEnumDict(typeof(ConversationQueryTraversal)) },
-                { typeof(FileAsMapping), BuildEnumDict(typeof(FileAsMapping)) },
-                { typeof(EventType), BuildEnumDict(typeof(EventType)) },
-                { typeof(MeetingRequestsDeliveryScope), BuildEnumDict(typeof(MeetingRequestsDeliveryScope)) },
-                { typeof(ViewFilter), BuildEnumDict(typeof(ViewFilter)) },
-                // @formatter:on
-            }
-        );
+    private static readonly IReadOnlyDictionary<Type, Dictionary<Enum, ExchangeVersion>> EnumVersionDictionaries =
+        new Dictionary<Type, Dictionary<Enum, ExchangeVersion>>
+        {
+            // @formatter:off
+            { typeof(WellKnownFolderName), BuildEnumDict(typeof(WellKnownFolderName)) },
+            { typeof(ItemTraversal), BuildEnumDict(typeof(ItemTraversal)) },
+            { typeof(ConversationQueryTraversal), BuildEnumDict(typeof(ConversationQueryTraversal)) },
+            { typeof(FileAsMapping), BuildEnumDict(typeof(FileAsMapping)) },
+            { typeof(EventType), BuildEnumDict(typeof(EventType)) },
+            { typeof(MeetingRequestsDeliveryScope), BuildEnumDict(typeof(MeetingRequestsDeliveryScope)) },
+            { typeof(ViewFilter), BuildEnumDict(typeof(ViewFilter)) },
+            // @formatter:on
+        };
 
     /// <summary>
     ///     Dictionary of enum type to schema-name-to-enum-value maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<string, Enum>>> SchemaToEnumDictionaries = new(
-        () => new Dictionary<Type, Dictionary<string, Enum>>
+    private static readonly IReadOnlyDictionary<Type, Dictionary<string, Enum>> SchemaToEnumDictionaries =
+        new Dictionary<Type, Dictionary<string, Enum>>
         {
             // @formatter:off
             { typeof(EventType), BuildSchemaToEnumDict(typeof(EventType)) },
@@ -81,14 +77,13 @@ internal static partial class EwsUtilities
             { typeof(RuleProperty), BuildSchemaToEnumDict(typeof(RuleProperty)) },
             { typeof(WellKnownFolderName), BuildSchemaToEnumDict(typeof(WellKnownFolderName)) },
             // @formatter:on
-        }
-    );
+        };
 
     /// <summary>
     ///     Dictionary of enum type to enum-value-to-schema-name maps.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, Dictionary<Enum, string>>> EnumToSchemaDictionaries = new(
-        () => new Dictionary<Type, Dictionary<Enum, string>>
+    private static readonly IReadOnlyDictionary<Type, Dictionary<Enum, string>> EnumToSchemaDictionaries =
+        new Dictionary<Type, Dictionary<Enum, string>>
         {
             // @formatter:off
             { typeof(EventType), BuildEnumToSchemaDict(typeof(EventType)) },
@@ -97,28 +92,21 @@ internal static partial class EwsUtilities
             { typeof(RuleProperty), BuildEnumToSchemaDict(typeof(RuleProperty)) },
             { typeof(WellKnownFolderName), BuildEnumToSchemaDict(typeof(WellKnownFolderName)) },
             // @formatter:on
-        }
-    );
+        };
 
     /// <summary>
     ///     Dictionary to map from special CLR type names to their "short" names.
     /// </summary>
-    private static readonly LazyMember<Dictionary<string, string>> TypeNameToShortNameMap = new(
-        () => new Dictionary<string, string>
-        {
-            // @formatter:off
-            { "Boolean", "bool" },
-            { "Int16", "short" },
-            { "Int32", "int" },
-            { "String", "string" },
-            // @formatter:on
-        }
-    );
+    private static readonly IReadOnlyDictionary<string, string> TypeNameToShortNameMap = new Dictionary<string, string>
+    {
+        // @formatter:off
+        { "Boolean", "bool" },
+        { "Int16", "short" },
+        { "Int32", "int" },
+        { "String", "string" },
+        // @formatter:on
+    };
 
-    #endregion
-
-
-    #region Constants
 
     internal const string XsFalse = "false";
     internal const string XsTrue = "true";
@@ -153,8 +141,6 @@ internal static partial class EwsUtilities
 
     internal const string WsSecuritySecExtNamespace =
         "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-
-    #endregion
 
 
     /// <summary>
@@ -249,12 +235,9 @@ internal static partial class EwsUtilities
     )
         where TServiceObject : ServiceObject
     {
-        if (ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
-                xmlElementName,
-                out var itemClass
-            ))
+        if (ServiceObjectInfo.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass))
         {
-            if (ServiceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(
+            if (ServiceObjectInfo.ServiceObjectConstructorsWithServiceParam.TryGetValue(
                     itemClass,
                     out var creationDelegate
                 ))
@@ -277,7 +260,7 @@ internal static partial class EwsUtilities
     /// <returns>New Item.</returns>
     internal static Item CreateItemFromItemClass(ItemAttachment itemAttachment, Type itemClass, bool isNew)
     {
-        if (ServiceObjectInfo.Member.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
+        if (ServiceObjectInfo.ServiceObjectConstructorsWithAttachmentParam.TryGetValue(
                 itemClass,
                 out var creationDelegate
             ))
@@ -296,10 +279,7 @@ internal static partial class EwsUtilities
     /// <returns>New Item.</returns>
     internal static Item? CreateItemFromXmlElementName(ItemAttachment itemAttachment, string xmlElementName)
     {
-        if (ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(
-                xmlElementName,
-                out var itemClass
-            ))
+        if (ServiceObjectInfo.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass))
         {
             return CreateItemFromItemClass(itemAttachment, itemClass, false);
         }
@@ -314,7 +294,7 @@ internal static partial class EwsUtilities
     /// <returns></returns>
     internal static Type? GetItemTypeFromXmlElementName(string xmlElementName)
     {
-        ServiceObjectInfo.Member.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass);
+        ServiceObjectInfo.XmlElementNameToServiceObjectClassMap.TryGetValue(xmlElementName, out var itemClass);
         return itemClass;
     }
 
@@ -594,7 +574,7 @@ internal static partial class EwsUtilities
     /// <returns>String representation of enum to be used in the protocol</returns>
     internal static string SerializeEnum(Enum value)
     {
-        if (EnumToSchemaDictionaries.Member.TryGetValue(value.GetType(), out var enumToStringDict) &&
+        if (EnumToSchemaDictionaries.TryGetValue(value.GetType(), out var enumToStringDict) &&
             enumToStringDict.TryGetValue(value, out var strValue))
         {
             return strValue;
@@ -613,7 +593,7 @@ internal static partial class EwsUtilities
     {
         if (typeof(T).GetTypeInfo().IsEnum)
         {
-            if (SchemaToEnumDictionaries.Member.TryGetValue(typeof(T), out var stringToEnumDict) &&
+            if (SchemaToEnumDictionaries.TryGetValue(typeof(T), out var stringToEnumDict) &&
                 stringToEnumDict.TryGetValue(value, out var enumValue))
             {
                 // This double-casting is ugly, but necessary. By this point, we know that T is an Enum
@@ -1008,7 +988,7 @@ internal static partial class EwsUtilities
     private static string GetSimplifiedTypeName(string typeName)
     {
         // If type has a shortname (e.g. int for Int32) map to the short name.
-        return TypeNameToShortNameMap.Member.TryGetValue(typeName, out var name) ? name : typeName;
+        return TypeNameToShortNameMap.TryGetValue(typeName, out var name) ? name : typeName;
     }
 
     #endregion
@@ -1177,8 +1157,9 @@ internal static partial class EwsUtilities
     internal static void ValidateEnumVersionValue(Enum enumValue, ExchangeVersion requestVersion)
     {
         var enumType = enumValue.GetType();
-        var enumVersionDict = EnumVersionDictionaries.Member[enumType];
+        var enumVersionDict = EnumVersionDictionaries[enumType];
         var enumVersion = enumVersionDict[enumValue];
+
         if (requestVersion < enumVersion)
         {
             throw new ServiceVersionException(
@@ -1327,6 +1308,7 @@ internal static partial class EwsUtilities
     private static Dictionary<Enum, ExchangeVersion> BuildEnumDict(Type enumType)
     {
         var dict = new Dictionary<Enum, ExchangeVersion>();
+
         var names = Enum.GetNames(enumType);
         foreach (var name in names)
         {

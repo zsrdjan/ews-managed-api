@@ -147,12 +147,12 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     {
         lock (_lockObject)
         {
-            var tuple = ValidateAndEmitRequest(token).GetAwaiter().GetResult();
+            var (request, response) = ValidateAndEmitRequest(token).GetAwaiter().GetResult();
 
-            _request = tuple.Item1;
-            _response = tuple.Item2;
+            _request = request;
+            _response = response;
 
-            InternalOnConnect();
+            InternalOnConnect().GetAwaiter().GetResult();
         }
     }
 
@@ -304,7 +304,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <summary>
     ///     Perform any bookkeeping needed when we connect
     /// </summary>
-    private void InternalOnConnect()
+    private async System.Threading.Tasks.Task InternalOnConnect()
     {
         if (!IsConnected)
         {
@@ -313,8 +313,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
             // Trace Http headers
             Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
 
-            // TODO: async?
-            ParseResponses().GetAwaiter().GetResult();
+            await ParseResponses();
         }
     }
 

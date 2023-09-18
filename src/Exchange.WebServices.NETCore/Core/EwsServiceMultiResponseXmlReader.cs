@@ -59,9 +59,7 @@ internal class EwsServiceMultiResponseXmlReader : EwsServiceXmlReader
     /// <returns>an instance of EwsServiceMultiResponseXmlReader wrapped around the input stream.</returns>
     internal static EwsServiceMultiResponseXmlReader Create(Stream stream, ExchangeService service)
     {
-        var reader = new EwsServiceMultiResponseXmlReader(stream, service);
-
-        return reader;
+        return new EwsServiceMultiResponseXmlReader(stream, service);
     }
 
 

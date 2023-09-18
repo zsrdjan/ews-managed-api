@@ -117,8 +117,6 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
     /// <param name="request">The request</param>
     internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
     {
-        base.PrepareWebRequest(request);
-
         if (_token != null)
         {
             request.Headers.Remove(HttpRequestHeader.Authorization.ToString());

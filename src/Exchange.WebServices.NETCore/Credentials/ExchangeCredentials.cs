@@ -103,14 +103,6 @@ public abstract class ExchangeCredentials
     }
 
     /// <summary>
-    ///     This method is called to pre-authenticate credentials before a service request is made.
-    /// </summary>
-    internal virtual void PreAuthenticate()
-    {
-        // do nothing by default.
-    }
-
-    /// <summary>
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>

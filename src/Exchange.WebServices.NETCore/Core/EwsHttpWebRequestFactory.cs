@@ -30,8 +30,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class EwsHttpWebRequestFactory : IEwsHttpWebRequestFactory
 {
-    #region IEwsHttpWebRequestFactory Members
-
     /// <summary>
     ///     Create a new instance of <see cref="EwsHttpWebRequest" />.
     /// </summary>
@@ -58,6 +56,4 @@ internal class EwsHttpWebRequestFactory : IEwsHttpWebRequestFactory
 
         return new EwsHttpWebResponse(exception.Response);
     }
-
-    #endregion
 }
