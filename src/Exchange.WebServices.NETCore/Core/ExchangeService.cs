@@ -114,6 +114,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets a value indicating whether trace output is pretty printed.
     /// </summary>
+    [Obsolete]
     public bool TraceEnablePrettyPrinting { get; set; } = true;
 
     /// <summary>

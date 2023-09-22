@@ -32,16 +32,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SoapFaultDetails
 {
-    #region Constructor
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="SoapFaultDetails" /> class.
     /// </summary>
     private SoapFaultDetails()
     {
     }
-
-    #endregion
 
 
     /// <summary>

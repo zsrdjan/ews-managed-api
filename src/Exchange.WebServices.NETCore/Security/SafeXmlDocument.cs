@@ -35,13 +35,11 @@ internal class SafeXmlDocument : XmlDocument
     /// <summary>
     ///     Xml settings object.
     /// </summary>
-    private readonly XmlReaderSettings _settings = new XmlReaderSettings
+    private readonly XmlReaderSettings _settings = new()
     {
         DtdProcessing = DtdProcessing.Prohibit,
     };
 
-
-    #region Constructors
 
     /// <summary>
     ///     Initializes a new instance of the SafeXmlDocument class.
@@ -68,8 +66,6 @@ internal class SafeXmlDocument : XmlDocument
         : base(nt)
     {
     }
-
-    #endregion
 
 
     #region Methods

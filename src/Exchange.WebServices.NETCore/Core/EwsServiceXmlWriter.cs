@@ -38,7 +38,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <summary>
     ///     Buffer size for writing Base64 encoded content.
     /// </summary>
-    private const int BufferSize = 4096;
+    private const int BufferSize = 8192;
 
     /// <summary>
     ///     UTF-8 encoding that does not create leading Byte order marks

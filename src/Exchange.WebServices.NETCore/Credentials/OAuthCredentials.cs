@@ -47,7 +47,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
 
     private readonly string? _token;
 
-    private readonly ICredentials _credentials;
+    internal ICredentials Credentials { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OAuthCredentials" /> class.
@@ -108,7 +108,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
     {
         EwsUtilities.ValidateParam(credentials);
 
-        _credentials = credentials;
+        Credentials = credentials;
     }
 
     /// <summary>
@@ -121,10 +121,6 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
         {
             request.Headers.Remove(HttpRequestHeader.Authorization.ToString());
             request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, _token);
-        }
-        else
-        {
-            request.Credentials = _credentials;
         }
 
         return System.Threading.Tasks.Task.CompletedTask;

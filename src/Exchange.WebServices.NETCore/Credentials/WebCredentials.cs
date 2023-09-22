@@ -79,17 +79,6 @@ public sealed class WebCredentials : ExchangeCredentials
     }
 
     /// <summary>
-    ///     Applies NetworkCredential associated with this instance to a service request.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    internal override System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
-    {
-        request.Credentials = Credentials;
-
-        return System.Threading.Tasks.Task.CompletedTask;
-    }
-
-    /// <summary>
     ///     Gets the Credentials from this instance.
     /// </summary>
     /// <value>The credentials.</value>

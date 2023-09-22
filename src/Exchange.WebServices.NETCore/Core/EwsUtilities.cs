@@ -42,6 +42,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal static partial class EwsUtilities
 {
     /// <summary>
+    ///     Gets the build version.
+    /// </summary>
+    /// <value>The build version.</value>
+    internal const string BuildVersion = "15.0.913.15";
+
+    /// <summary>
     ///     Map from XML element names to ServiceObject type and constructors.
     /// </summary>
     private static readonly ServiceObjectInfo ServiceObjectInfo = new();
@@ -507,29 +513,6 @@ internal static partial class EwsUtilities
     #endregion
 
 
-    #region Stream routines
-
-    /// <summary>
-    ///     Copies source stream to target.
-    /// </summary>
-    /// <param name="source">The source.</param>
-    /// <param name="target">The target.</param>
-    [Obsolete]
-    internal static void CopyStream(Stream source, Stream target)
-    {
-        source.CopyTo(target);
-    }
-
-    #endregion
-
-
-    /// <summary>
-    ///     Gets the build version.
-    /// </summary>
-    /// <value>The build version.</value>
-    internal static string BuildVersion => "15.0.913.15";
-
-
     #region Conversion routines
 
     /// <summary>
@@ -714,26 +697,14 @@ internal static partial class EwsUtilities
         // translate dates from one culture to another (e.g. Gregorian to Lunar).  The server
         // however, considers all dates to be in Gregorian, so using the InvariantCulture will
         // ensure this.
-        string format;
 
-        switch (date.Kind)
+        var format = date.Kind switch
         {
-            case DateTimeKind.Utc:
-            {
-                format = "yyyy-MM-ddZ";
-                break;
-            }
-            case DateTimeKind.Unspecified:
-            {
-                format = "yyyy-MM-dd";
-                break;
-            }
-            default: // DateTimeKind.Local is remaining
-            {
-                format = "yyyy-MM-ddzzz";
-                break;
-            }
-        }
+            DateTimeKind.Utc => "yyyy-MM-ddZ",
+            DateTimeKind.Unspecified => "yyyy-MM-dd",
+            // DateTimeKind.Local is remaining
+            _ => "yyyy-MM-ddzzz",
+        };
 
         return date.ToString(format, CultureInfo.InvariantCulture);
     }

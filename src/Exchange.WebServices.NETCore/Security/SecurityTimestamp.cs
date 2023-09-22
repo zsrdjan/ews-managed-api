@@ -49,17 +49,12 @@ internal sealed class SecurityTimestamp
     private DateTime _creationTimeUtc;
     private DateTime _expiryTimeUtc;
 
-    public SecurityTimestamp(DateTime creationTimeUtc, DateTime expiryTimeUtc, string id)
-        : this(creationTimeUtc, expiryTimeUtc, id, null, null)
-    {
-    }
-
     internal SecurityTimestamp(
         DateTime creationTimeUtc,
         DateTime expiryTimeUtc,
         string id,
-        string? digestAlgorithm,
-        byte[]? digest
+        string? digestAlgorithm = null,
+        byte[]? digest = null
     )
     {
         EwsUtilities.Assert(

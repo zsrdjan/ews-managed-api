@@ -26,11 +26,32 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
+///     PrivilegedUserId BudgetType enum
+/// </summary>
+internal enum PrivilegedUserIdBudgetType
+{
+    /// <summary>
+    ///     Interactive, charge against a copy of target mailbox budget.
+    /// </summary>
+    Default = 0,
+
+    /// <summary>
+    ///     Running as background load
+    /// </summary>
+    RunningAsBackgroundLoad = 1,
+
+    /// <summary>
+    ///     Unthrottled budget.
+    /// </summary>
+    Unthrottled = 2,
+}
+
+/// <summary>
 ///     Represents an privileged user Id.
 /// </summary>
 internal sealed class PrivilegedUserId
 {
-    private PrivilegedUserIdBudgetType? budgetType;
+    private PrivilegedUserIdBudgetType? _budgetType;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PrivilegedUserId" /> class.
@@ -67,9 +88,9 @@ internal sealed class PrivilegedUserId
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.OpenAsAdminOrSystemService);
         writer.WriteAttributeString(XmlElementNames.LogonType, LogonType.ToString());
-        if (requestedServerVersion >= ExchangeVersion.Exchange2013 && budgetType.HasValue)
+        if (requestedServerVersion >= ExchangeVersion.Exchange2013 && _budgetType.HasValue)
         {
-            writer.WriteAttributeString(XmlElementNames.BudgetType, ((int)budgetType.Value).ToString());
+            writer.WriteAttributeString(XmlElementNames.BudgetType, ((int)_budgetType.Value).ToString());
         }
 
         writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.ConnectingSID);
@@ -98,28 +119,7 @@ internal sealed class PrivilegedUserId
     /// </summary>
     public PrivilegedUserIdBudgetType? BudgetType
     {
-        get => budgetType;
-        set => budgetType = value;
+        get => _budgetType;
+        set => _budgetType = value;
     }
-}
-
-/// <summary>
-///     PrivilegedUserId BudgetType enum
-/// </summary>
-internal enum PrivilegedUserIdBudgetType
-{
-    /// <summary>
-    ///     Interactive, charge against a copy of target mailbox budget.
-    /// </summary>
-    Default = 0,
-
-    /// <summary>
-    ///     Running as background load
-    /// </summary>
-    RunningAsBackgroundLoad = 1,
-
-    /// <summary>
-    ///     Unthrottled budget.
-    /// </summary>
-    Unthrottled = 2,
 }

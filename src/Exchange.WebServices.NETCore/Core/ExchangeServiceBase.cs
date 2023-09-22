@@ -35,6 +35,11 @@ using System.Security.Cryptography.X509Certificates;
 
 using JetBrains.Annotations;
 
+using Microsoft.Exchange.WebServices.Data.Credentials;
+
+using System.Net.Http;
+using System;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -43,6 +48,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public abstract class ExchangeServiceBase
 {
+    /// <summary>
+    ///     Default UserAgent
+    /// </summary>
+    private const string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
+
     private static readonly object LockObj = new();
 
     /// <summary>
@@ -56,26 +66,34 @@ public abstract class ExchangeServiceBase
     private static byte[]? _binarySecret;
 
 
-    /// <summary>
-    ///     Default UserAgent
-    /// </summary>
-    private static readonly string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
-
-
     private ExchangeCredentials? _credentials;
-    private bool _useDefaultCredentials;
-    private int _timeout = 100000;
+
     private bool _traceEnabled;
     private ITraceListener? _traceListener = new EwsTraceListener();
     private string _userAgent = DefaultUserAgent;
     private TimeZoneDefinition? _timeZoneDefinition;
+
+    /// <summary>
+    ///     Underlying HttpWebRequest.
+    /// </summary>
+    private readonly HttpClient _httpClient;
+
+    private readonly HttpClientHandler _httpClientHandler = new()
+    {
+        AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+    };
 
 
     /// <summary>
     ///     Gets or sets the cookie container.
     /// </summary>
     /// <value>The cookie container.</value>
-    public CookieContainer CookieContainer { get; set; } = new();
+    public CookieContainer CookieContainer
+    {
+        get => _httpClientHandler.CookieContainer;
+        set => _httpClientHandler.CookieContainer = value;
+    }
+
 
     /// <summary>
     ///     Gets the time zone this service is scoped to.
@@ -142,8 +160,17 @@ public abstract class ExchangeServiceBase
         set
         {
             _credentials = value;
-            _useDefaultCredentials = false;
+            _httpClientHandler.UseDefaultCredentials = false;
             CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
+
+            // Set httpClient internal credentials
+            ClientHandlerCredentials = value switch
+            {
+                DualAuthCredentials authCredentials => authCredentials.Credentials,
+                OAuthCredentials authCredentials => authCredentials.Credentials,
+                WebCredentials webCredentials => webCredentials.Credentials,
+                _ => null,
+            };
         }
     }
 
@@ -155,11 +182,11 @@ public abstract class ExchangeServiceBase
     /// </summary>
     public bool UseDefaultCredentials
     {
-        get => _useDefaultCredentials;
+        get => _httpClientHandler.UseDefaultCredentials;
 
         set
         {
-            _useDefaultCredentials = value;
+            _httpClientHandler.UseDefaultCredentials = value;
 
             if (value)
             {
@@ -170,12 +197,26 @@ public abstract class ExchangeServiceBase
     }
 
     /// <summary>
+    ///     Gets or sets authentication information for the request.
+    /// </summary>
+    /// <returns>
+    ///     An <see cref="T:System.Net.ICredentials" /> that contains the authentication credentials associated with the
+    ///     request. The default is null.
+    /// </returns>
+    internal ICredentials? ClientHandlerCredentials
+    {
+        get => _httpClientHandler.Credentials;
+        set => _httpClientHandler.Credentials = value;
+    }
+
+
+    /// <summary>
     ///     Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds.
     ///     Defaults to 100000.
     /// </summary>
     public int Timeout
     {
-        get => _timeout;
+        get => _httpClient.Timeout.Milliseconds;
 
         set
         {
@@ -184,14 +225,18 @@ public abstract class ExchangeServiceBase
                 throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
             }
 
-            _timeout = value;
+            _httpClient.Timeout = TimeSpan.FromMilliseconds(value);
         }
     }
 
     /// <summary>
     ///     Gets or sets a value that indicates whether HTTP pre-authentication should be performed.
     /// </summary>
-    public bool PreAuthenticate { get; set; }
+    public bool PreAuthenticate
+    {
+        get => _httpClientHandler.PreAuthenticate;
+        set => _httpClientHandler.PreAuthenticate = value;
+    }
 
     /// <summary>
     ///     Gets or sets a value indicating whether GZip compression encoding should be accepted.
@@ -228,17 +273,26 @@ public abstract class ExchangeServiceBase
     ///     Gets or sets the web proxy that should be used when sending requests to EWS.
     ///     Set this property to null to use the default web proxy.
     /// </summary>
-    public IWebProxy? WebProxy { get; set; }
+    public IWebProxy? WebProxy
+    {
+        get => _httpClientHandler.Proxy;
+        set => _httpClientHandler.Proxy = value;
+    }
 
     /// <summary>
     ///     Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value
     ///     Keep-alive
     /// </summary>
-    public bool KeepAlive { get; set; } = true;
+    public bool KeepAlive
+    {
+        get => !(_httpClient.DefaultRequestHeaders.ConnectionClose ?? false);
+        set => _httpClient.DefaultRequestHeaders.ConnectionClose = !value;
+    }
 
     /// <summary>
     ///     Gets or sets the name of the connection group for the request.
     /// </summary>
+    [Obsolete]
     public string ConnectionGroupName { get; set; }
 
     /// <summary>
@@ -284,11 +338,6 @@ public abstract class ExchangeServiceBase
     }
 
     /// <summary>
-    ///     Gets or sets the HTTP web request factory.
-    /// </summary>
-    internal EwsHttpWebRequestFactory HttpWebRequestFactory { get; set; } = new EwsHttpWebRequestFactory();
-
-    /// <summary>
     ///     For testing: suppresses generation of the SOAP version header.
     /// </summary>
     internal bool SuppressXmlVersionHeader { get; set; }
@@ -297,7 +346,25 @@ public abstract class ExchangeServiceBase
     /// Optional client specified SSL certificate validation callback.
     /// </summary>
     public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
-        ServerCertificateValidationCallback { get; set; }
+        ServerCertificateValidationCallback
+    {
+        get => _httpClientHandler.ServerCertificateCustomValidationCallback;
+        set => _httpClientHandler.ServerCertificateCustomValidationCallback = value;
+    }
+
+    /// <summary>
+    ///     Gets or sets a value that indicates whether the request should follow redirection responses.
+    /// </summary>
+    /// <returns>
+    ///     True if the request should automatically follow redirection responses from the Internet resource; otherwise, false.
+    ///     The default value is true.
+    /// </returns>
+    internal bool AllowAutoRedirect
+    {
+        get => _httpClientHandler.AllowAutoRedirect;
+        set => _httpClientHandler.AllowAutoRedirect = value;
+    }
+
 
     /// <summary>
     ///     Occurs when the http response headers of a server call is captured.
@@ -325,8 +392,13 @@ public abstract class ExchangeServiceBase
     /// <param name="timeZone">The time zone to which the service is scoped.</param>
     internal ExchangeServiceBase(TimeZoneInfo timeZone)
     {
+        _httpClient = new HttpClient(_httpClientHandler);
+
         TimeZone = timeZone;
         UseDefaultCredentials = true;
+        AllowAutoRedirect = true; // Always set to true in PrepareHttpRequestFromUrl
+        CookieContainer = new CookieContainer();
+        KeepAlive = true;
     }
 
     /// <summary>
@@ -357,21 +429,21 @@ public abstract class ExchangeServiceBase
     internal ExchangeServiceBase(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
         : this(requestedServerVersion)
     {
-        _useDefaultCredentials = service._useDefaultCredentials;
-        _credentials = service._credentials;
+        UseDefaultCredentials = service.UseDefaultCredentials;
+        Credentials = service.Credentials;
         _traceEnabled = service._traceEnabled;
         _traceListener = service._traceListener;
         TraceFlags = service.TraceFlags;
-        _timeout = service._timeout;
+        Timeout = service.Timeout;
         PreAuthenticate = service.PreAuthenticate;
         _userAgent = service._userAgent;
         AcceptGzipEncoding = service.AcceptGzipEncoding;
         KeepAlive = service.KeepAlive;
-        ConnectionGroupName = service.ConnectionGroupName;
         TimeZone = service.TimeZone;
         HttpHeaders = service.HttpHeaders;
-        HttpWebRequestFactory = service.HttpWebRequestFactory;
         WebProxy = service.WebProxy;
+
+        ConnectionGroupName = service.ConnectionGroupName;
     }
 
     /// <summary>
@@ -416,85 +488,62 @@ public abstract class ExchangeServiceBase
             throw new ServiceLocalException(string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
         }
 
-        var request = HttpWebRequestFactory.CreateRequest(url);
-        try
+
+        var request = new EwsHttpWebRequest(_httpClient, url)
         {
-            request.PreAuthenticate = PreAuthenticate;
-            request.Timeout = Timeout;
-            request.ContentType = "text/xml; charset=utf-8";
-            request.Accept = "text/xml";
-            request.Method = "POST";
-            request.UserAgent = UserAgent;
-            request.AllowAutoRedirect = true;
-            request.CookieContainer = CookieContainer;
-            request.KeepAlive = KeepAlive;
-            request.ConnectionGroupName = ConnectionGroupName;
+            ContentType = "text/xml; charset=utf-8",
+            Accept = "text/xml",
+            Method = "POST",
+            UserAgent = UserAgent,
+        };
 
-            if (AcceptGzipEncoding)
-            {
-                request.Headers.AcceptEncoding.ParseAdd("gzip,deflate");
-            }
-
-            if (!string.IsNullOrEmpty(ClientRequestId))
-            {
-                request.Headers.TryAddWithoutValidation("client-request-id", ClientRequestId);
-
-                if (ReturnClientRequestId)
-                {
-                    request.Headers.TryAddWithoutValidation("return-client-request-id", "true");
-                }
-            }
-
-            if (WebProxy != null)
-            {
-                request.Proxy = WebProxy;
-            }
-
-            if (HttpHeaders.Count > 0)
-            {
-                foreach (var (key, value) in HttpHeaders)
-                {
-                    request.Headers.TryAddWithoutValidation(key, value);
-                }
-            }
-
-            request.UseDefaultCredentials = UseDefaultCredentials;
-
-            if (!request.UseDefaultCredentials)
-            {
-                var serviceCredentials = Credentials;
-                if (serviceCredentials == null)
-                {
-                    throw new ServiceLocalException(Strings.CredentialsRequired);
-                }
-
-                // Temporary fix for authentication on Linux platform
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
-                }
-
-                // Apply credentials to the request
-                await serviceCredentials.PrepareWebRequest(request).ConfigureAwait(false);
-            }
-
-            if (ServerCertificateValidationCallback != null)
-            {
-                request.ServerCertificateCustomValidationCallback = ServerCertificateValidationCallback;
-            }
-
-            lock (HttpResponseHeaders)
-            {
-                HttpResponseHeaders.Clear();
-            }
-
-            return request;
-        }
-        catch (Exception)
+        if (AcceptGzipEncoding)
         {
-            request.Dispose();
-            throw;
+            request.Headers.AcceptEncoding.ParseAdd("gzip,deflate");
         }
+
+        if (!string.IsNullOrEmpty(ClientRequestId))
+        {
+            request.Headers.TryAddWithoutValidation("client-request-id", ClientRequestId);
+
+            if (ReturnClientRequestId)
+            {
+                request.Headers.TryAddWithoutValidation("return-client-request-id", "true");
+            }
+        }
+
+        if (HttpHeaders.Count > 0)
+        {
+            foreach (var (key, value) in HttpHeaders)
+            {
+                request.Headers.TryAddWithoutValidation(key, value);
+            }
+        }
+
+        if (!UseDefaultCredentials)
+        {
+            var serviceCredentials = Credentials;
+            if (serviceCredentials == null)
+            {
+                throw new ServiceLocalException(Strings.CredentialsRequired);
+            }
+
+            // Temporary fix for authentication on Linux platform
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
+            }
+
+            // Apply credentials to the request
+            await serviceCredentials.PrepareWebRequest(request).ConfigureAwait(false);
+        }
+
+        lock (HttpResponseHeaders)
+        {
+            HttpResponseHeaders.Clear();
+        }
+
+        return request;
     }
 
     internal static ExchangeCredentials AdjustLinuxAuthentication(Uri url, ExchangeCredentials serviceCredentials)
@@ -756,27 +805,13 @@ public abstract class ExchangeServiceBase
     /// <returns>String representation of DateTime.</returns>
     internal string ConvertDateTimeToUniversalDateTimeString(DateTime value)
     {
-        DateTime dateTime;
-
-        switch (value.Kind)
+        var dateTime = value.Kind switch
         {
-            case DateTimeKind.Unspecified:
-            {
-                dateTime = EwsUtilities.ConvertTime(value, TimeZone, TimeZoneInfo.Utc);
-                break;
-            }
-            case DateTimeKind.Local:
-            {
-                dateTime = EwsUtilities.ConvertTime(value, TimeZoneInfo.Local, TimeZoneInfo.Utc);
-                break;
-            }
-            default:
-            {
-                // The date is already in UTC, no need to convert it.
-                dateTime = value;
-                break;
-            }
-        }
+            DateTimeKind.Unspecified => EwsUtilities.ConvertTime(value, TimeZone, TimeZoneInfo.Utc),
+            DateTimeKind.Local => EwsUtilities.ConvertTime(value, TimeZoneInfo.Local, TimeZoneInfo.Utc),
+            // The date is already in UTC, no need to convert it.
+            _ => value,
+        };
 
         return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
     }

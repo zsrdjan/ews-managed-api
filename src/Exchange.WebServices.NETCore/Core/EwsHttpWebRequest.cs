@@ -23,42 +23,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Net;
 using System.Net.Http.Headers;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents an implementation of the IEwsHttpWebRequest interface that uses HttpWebRequest.
 /// </summary>
-internal class EwsHttpWebRequest : IDisposable
+internal class EwsHttpWebRequest
 {
     /// <summary>
     ///     Underlying HttpWebRequest.
     /// </summary>
     private readonly HttpClient _httpClient;
 
-    private readonly HttpClientHandler _httpClientHandler;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebRequest" /> class.
     /// </summary>
+    /// <param name="httpClient">HttpClient copy</param>
     /// <param name="uri">The URI.</param>
-    internal EwsHttpWebRequest(Uri uri)
+    internal EwsHttpWebRequest(HttpClient httpClient, Uri uri)
     {
-        _httpClientHandler = new HttpClientHandler
-        {
-            AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-        };
-
-        _httpClient = new HttpClient(_httpClientHandler);
-
-
+        _httpClient = httpClient;
         RequestUri = uri;
     }
-
 
     /// <summary>
     ///     Gets a <see cref="T:System.IO.Stream" /> object to use to write request data.
@@ -75,6 +64,28 @@ internal class EwsHttpWebRequest : IDisposable
     ///     A <see cref="T:System.Net.HttpWebResponse" /> that contains the response from the Internet resource.
     /// </returns>
     public async Task<IEwsHttpWebResponse> GetResponse(CancellationToken token)
+    {
+        using var message = CreateRequestMessage();
+
+        HttpResponseMessage? response;
+        try
+        {
+            response = await _httpClient.SendAsync(message, token);
+        }
+        catch (Exception exception)
+        {
+            throw new EwsHttpClientException(exception);
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new EwsHttpClientException(response);
+        }
+
+        return new EwsHttpWebResponse(response);
+    }
+
+    private HttpRequestMessage CreateRequestMessage()
     {
         var message = new HttpRequestMessage(new HttpMethod(Method), RequestUri)
         {
@@ -99,28 +110,9 @@ internal class EwsHttpWebRequest : IDisposable
             message.Headers.Accept.ParseAdd(Accept);
         }
 
-        HttpResponseMessage? response;
-        try
-        {
-            response = await _httpClient.SendAsync(message, token);
-        }
-        catch (Exception exception)
-        {
-            throw new EwsHttpClientException(exception);
-        }
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new EwsHttpClientException(response);
-        }
-
-        return new EwsHttpWebResponse(response);
+        return message;
     }
 
-    public void Dispose()
-    {
-        _httpClient.Dispose();
-    }
 
     /// <summary>
     ///     Gets or sets the value of the Accept HTTP header.
@@ -129,53 +121,10 @@ internal class EwsHttpWebRequest : IDisposable
     public string Accept { get; set; }
 
     /// <summary>
-    ///     Gets or sets a value that indicates whether the request should follow redirection responses.
-    /// </summary>
-    /// <returns>
-    ///     True if the request should automatically follow redirection responses from the Internet resource; otherwise, false.
-    ///     The default value is true.
-    /// </returns>
-    public bool AllowAutoRedirect
-    {
-        get => _httpClientHandler.AllowAutoRedirect;
-        set => _httpClientHandler.AllowAutoRedirect = value;
-    }
-
-    /// <summary>
-    ///     Gets or sets the client certificates.
-    /// </summary>
-    /// <value></value>
-    /// <returns>The collection of X509 client certificates.</returns>
-    public X509CertificateCollection ClientCertificates { get; set; }
-
-    /// <summary>
     ///     Gets or sets the value of the Content-type HTTP header.
     /// </summary>
     /// <returns>The value of the Content-type HTTP header. The default value is null.</returns>
     public string ContentType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the cookie container.
-    /// </summary>
-    /// <value>The cookie container.</value>
-    public CookieContainer CookieContainer
-    {
-        get => _httpClientHandler.CookieContainer;
-        set => _httpClientHandler.CookieContainer = value;
-    }
-
-    /// <summary>
-    ///     Gets or sets authentication information for the request.
-    /// </summary>
-    /// <returns>
-    ///     An <see cref="T:System.Net.ICredentials" /> that contains the authentication credentials associated with the
-    ///     request. The default is null.
-    /// </returns>
-    public ICredentials? Credentials
-    {
-        get => _httpClientHandler.Credentials;
-        set => _httpClientHandler.Credentials = value;
-    }
 
     /// <summary>
     ///     Specifies a collection of the name/value pairs that make up the HTTP headers.
@@ -194,28 +143,6 @@ internal class EwsHttpWebRequest : IDisposable
     public string Method { get; set; } = "GET";
 
     /// <summary>
-    ///     Gets or sets proxy information for the request.
-    /// </summary>
-    public IWebProxy? Proxy
-    {
-        get => _httpClientHandler.Proxy;
-        set => _httpClientHandler.Proxy = value;
-    }
-
-    /// <summary>
-    ///     Gets or sets a value that indicates whether to send an authenticate header with the request.
-    /// </summary>
-    /// <returns>
-    ///     true to send a WWW-authenticate HTTP header with requests after authentication has taken place; otherwise,
-    ///     false. The default is false.
-    /// </returns>
-    public bool PreAuthenticate
-    {
-        get => _httpClientHandler.PreAuthenticate;
-        set => _httpClientHandler.PreAuthenticate = value;
-    }
-
-    /// <summary>
     ///     Gets the original Uniform Resource Identifier (URI) of the request.
     /// </summary>
     /// <returns>
@@ -225,31 +152,6 @@ internal class EwsHttpWebRequest : IDisposable
     public Uri RequestUri { get; }
 
     /// <summary>
-    ///     Gets or sets the time-out value in milliseconds for the <see cref="M:System.Net.HttpWebRequest.GetResponse" /> and
-    ///     <see cref="M:System.Net.HttpWebRequest.GetRequestStream" /> methods.
-    /// </summary>
-    /// <returns>
-    ///     The number of milliseconds to wait before the request times out. The default is 100,000 milliseconds (100
-    ///     seconds).
-    /// </returns>
-    public int Timeout
-    {
-        get => _httpClient.Timeout.Milliseconds;
-        set => _httpClient.Timeout = TimeSpan.FromMilliseconds(value);
-    }
-
-    /// <summary>
-    ///     Gets or sets a <see cref="T:System.Boolean" /> value that controls whether default credentials are sent with
-    ///     requests.
-    /// </summary>
-    /// <returns>true if the default credentials are used; otherwise false. The default value is false.</returns>
-    public bool UseDefaultCredentials
-    {
-        get => _httpClientHandler.UseDefaultCredentials;
-        set => _httpClientHandler.UseDefaultCredentials = value;
-    }
-
-    /// <summary>
     ///     Gets or sets the value of the User-agent HTTP header.
     /// </summary>
     /// <returns>
@@ -257,26 +159,4 @@ internal class EwsHttpWebRequest : IDisposable
     ///     <see cref="T:System.Net.WebHeaderCollection" />. If WebHeaderCollection is set, the property value is lost.
     /// </returns>
     public string UserAgent { get; set; }
-
-    /// <summary>
-    ///     Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value
-    ///     Keep-alive
-    /// </summary>
-    public bool KeepAlive
-    {
-        get => !(_httpClient.DefaultRequestHeaders.ConnectionClose ?? false);
-        set => _httpClient.DefaultRequestHeaders.ConnectionClose = !value;
-    }
-
-    /// <summary>
-    ///     Gets or sets the name of the connection group for the request.
-    /// </summary>
-    public string ConnectionGroupName { get; set; }
-
-    public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
-        ServerCertificateCustomValidationCallback
-    {
-        get => _httpClientHandler.ServerCertificateCustomValidationCallback;
-        set => _httpClientHandler.ServerCertificateCustomValidationCallback = value;
-    }
 }

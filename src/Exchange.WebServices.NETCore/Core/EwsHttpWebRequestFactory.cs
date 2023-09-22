@@ -31,21 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class EwsHttpWebRequestFactory
 {
     /// <summary>
-    ///     Create a new instance of <see cref="EwsHttpWebRequest" />.
-    /// </summary>
-    /// <param name="uri">The service URI.</param>
-    /// <returns>An instance of <see cref="EwsHttpWebRequest" />./// </returns>
-    public EwsHttpWebRequest CreateRequest(Uri uri)
-    {
-        return new EwsHttpWebRequest(uri);
-    }
-
-    /// <summary>
     ///     Creates response from a EwsHttpClientException.
     /// </summary>
     /// <param name="exception">The exception.</param>
     /// <returns>Instance of IEwsHttpWebResponse.</returns>
-    public IEwsHttpWebResponse CreateExceptionResponse(EwsHttpClientException exception)
+    public static IEwsHttpWebResponse CreateExceptionResponse(EwsHttpClientException exception)
     {
         EwsUtilities.ValidateParam(exception);
 

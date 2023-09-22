@@ -547,7 +547,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             {
                 if (ex.Response != null)
                 {
-                    var response = HttpWebRequestFactory.CreateExceptionResponse(ex);
+                    var response = EwsHttpWebRequestFactory.CreateExceptionResponse(ex);
                     if (TryGetRedirectionResponse(response, out var redirectUrl))
                     {
                         TraceMessage(
@@ -742,7 +742,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 {
                     if (ex.Response != null)
                     {
-                        var response = HttpWebRequestFactory.CreateExceptionResponse(ex);
+                        var response = EwsHttpWebRequestFactory.CreateExceptionResponse(ex);
                         if (TryGetRedirectionResponse(response, out redirectionUrl))
                         {
                             TraceMessage(

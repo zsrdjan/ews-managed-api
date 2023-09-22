@@ -391,7 +391,7 @@ internal abstract class ServiceRequestBase
 
         memoryStream.Position = 0;
 
-        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 4096, true);
+        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 8192, true);
         request.Content = reader.ReadToEnd();
     }
 
@@ -421,7 +421,8 @@ internal abstract class ServiceRequestBase
         }
 
         memoryStream.Position = 0;
-        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 4096, true);
+
+        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 8192, true);
         request.Content = reader.ReadToEnd();
     }
 
@@ -635,77 +636,69 @@ internal abstract class ServiceRequestBase
         Validate();
 
         var request = await BuildEwsHttpWebRequest().ConfigureAwait(false);
+        if (Service.SendClientLatencies)
+        {
+            string? clientStatisticsToAdd = null;
+
+            lock (ClientStatisticsCache)
+            {
+                if (ClientStatisticsCache.Count > 0)
+                {
+                    clientStatisticsToAdd = ClientStatisticsCache[0];
+                    ClientStatisticsCache.RemoveAt(0);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(clientStatisticsToAdd))
+            {
+                request.Headers.TryAddWithoutValidation(ClientStatisticsRequestHeader, clientStatisticsToAdd);
+            }
+        }
+
+        var startTime = DateTime.UtcNow;
+        IEwsHttpWebResponse? response = null;
+
         try
+        {
+            response = await GetEwsHttpWebResponse(request, token).ConfigureAwait(false);
+        }
+        finally
         {
             if (Service.SendClientLatencies)
             {
-                string? clientStatisticsToAdd = null;
+                var clientSideLatency = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                var requestId = string.Empty;
+                var soapAction = GetType().Name.Replace("Request", string.Empty);
+
+                if (response?.Headers != null)
+                {
+                    foreach (var requestIdHeader in RequestIdResponseHeaders)
+                    {
+                        if (response.Headers.TryGetValues(requestIdHeader, out var values))
+                        {
+                            requestId = values.First();
+                            break;
+                        }
+                    }
+                }
+
+                var sb = new StringBuilder();
+                sb.Append("MessageId=");
+                sb.Append(requestId);
+                sb.Append(",ResponseTime=");
+                sb.Append(clientSideLatency);
+                sb.Append(",SoapAction=");
+                sb.Append(soapAction);
+                sb.Append(';');
 
                 lock (ClientStatisticsCache)
                 {
-                    if (ClientStatisticsCache.Count > 0)
-                    {
-                        clientStatisticsToAdd = ClientStatisticsCache[0];
-                        ClientStatisticsCache.RemoveAt(0);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(clientStatisticsToAdd))
-                {
-                    request.Headers.TryAddWithoutValidation(ClientStatisticsRequestHeader, clientStatisticsToAdd);
+                    ClientStatisticsCache.Add(sb.ToString());
                 }
             }
-
-            var startTime = DateTime.UtcNow;
-            IEwsHttpWebResponse? response = null;
-
-            try
-            {
-                response = await GetEwsHttpWebResponse(request, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (Service.SendClientLatencies)
-                {
-                    var clientSideLatency = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
-                    var requestId = string.Empty;
-                    var soapAction = GetType().Name.Replace("Request", string.Empty);
-
-                    if (response?.Headers != null)
-                    {
-                        foreach (var requestIdHeader in RequestIdResponseHeaders)
-                        {
-                            if (response.Headers.TryGetValues(requestIdHeader, out var values))
-                            {
-                                requestId = values.First();
-                                break;
-                            }
-                        }
-                    }
-
-                    var sb = new StringBuilder();
-                    sb.Append("MessageId=");
-                    sb.Append(requestId);
-                    sb.Append(",ResponseTime=");
-                    sb.Append(clientSideLatency);
-                    sb.Append(",SoapAction=");
-                    sb.Append(soapAction);
-                    sb.Append(';');
-
-                    lock (ClientStatisticsCache)
-                    {
-                        ClientStatisticsCache.Add(sb.ToString());
-                    }
-                }
-            }
-
-            return (request, response);
         }
-        catch (Exception)
-        {
-            request.Dispose();
-            throw;
-        }
+
+        return (request, response);
     }
 
     /// <summary>
@@ -748,15 +741,11 @@ internal abstract class ServiceRequestBase
                 await ProcessEwsHttpClientException(ex);
             }
 
-            request?.Dispose();
-
             // Wrap exception if the above code block didn't throw
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, ex.Message), ex);
         }
         catch (IOException e)
         {
-            request?.Dispose();
-
             // Wrap exception.
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, e.Message), e);
         }
@@ -802,7 +791,7 @@ internal abstract class ServiceRequestBase
             return;
         }
 
-        using var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
+        using var httpWebResponse = EwsHttpWebRequestFactory.CreateExceptionResponse(webException);
 
         if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
         {

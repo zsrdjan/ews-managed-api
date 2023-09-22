@@ -105,43 +105,42 @@ public class Appointment : Item, ICalendarActionProvider
     }
 
     /// <summary>
-    ///     Binds to an occurence of an existing appointment and loads its first class properties.
+    ///     Binds to an occurrence of an existing appointment and loads its first class properties.
     ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the appointment.</param>
     /// <param name="recurringMasterId">The Id of the recurring master that the index represents an occurrence of.</param>
-    /// <param name="occurenceIndex">The index of the occurrence.</param>
+    /// <param name="occurrenceIndex">The index of the occurrence.</param>
     /// <returns>
-    ///     An Appointment instance representing the appointment occurence corresponding to the specified occurence index
-    ///     .
+    ///     An Appointment instance representing the appointment occurrence corresponding to the specified occurrence index.
     /// </returns>
     public static Task<Appointment> BindToOccurrence(
         ExchangeService service,
         ItemId recurringMasterId,
-        int occurenceIndex
+        int occurrenceIndex
     )
     {
-        return BindToOccurrence(service, recurringMasterId, occurenceIndex, PropertySet.FirstClassProperties);
+        return BindToOccurrence(service, recurringMasterId, occurrenceIndex, PropertySet.FirstClassProperties);
     }
 
     /// <summary>
-    ///     Binds to an occurence of an existing appointment and loads the specified set of properties.
+    ///     Binds to an occurrence of an existing appointment and loads the specified set of properties.
     ///     Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="service">The service to use to bind to the appointment.</param>
     /// <param name="recurringMasterId">The Id of the recurring master that the index represents an occurrence of.</param>
-    /// <param name="occurenceIndex">The index of the occurrence.</param>
+    /// <param name="occurrenceIndex">The index of the occurrence.</param>
     /// <param name="propertySet">The set of properties to load.</param>
-    /// <returns>An Appointment instance representing the appointment occurence corresponding to the specified occurence index.</returns>
+    /// <returns>An Appointment instance representing the appointment occurrence corresponding to the specified occurrence index.</returns>
     public static Task<Appointment> BindToOccurrence(
         ExchangeService service,
         ItemId recurringMasterId,
-        int occurenceIndex,
+        int occurrenceIndex,
         PropertySet propertySet
     )
     {
-        var occurenceId = new AppointmentOccurrenceId(recurringMasterId.UniqueId, occurenceIndex);
-        return Bind(service, occurenceId, propertySet);
+        var occurrenceId = new AppointmentOccurrenceId(recurringMasterId.UniqueId, occurrenceIndex);
+        return Bind(service, occurrenceId, propertySet);
     }
 
     /// <summary>
@@ -202,7 +201,7 @@ public class Appointment : Item, ICalendarActionProvider
     ///     Gets a value indicating whether a time zone SOAP header should be emitted in a CreateItem
     ///     or UpdateItem request so this item can be property saved or updated.
     /// </summary>
-    /// <param name="isUpdateOperation">Indicates whether the operation being petrformed is an update operation.</param>
+    /// <param name="isUpdateOperation">Indicates whether the operation being performed is an update operation.</param>
     /// <returns>
     ///     <c>true</c> if a time zone SOAP header should be emitted; otherwise, <c>false</c>.
     /// </returns>

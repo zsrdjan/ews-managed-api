@@ -49,7 +49,7 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
     internal async Task<TResponse> InternalExecuteAsync<TResponse>(CancellationToken token)
         where TResponse : class
     {
-        var (request, response) = await ValidateAndEmitRequest(token).ConfigureAwait(false);
+        var (_, response) = await ValidateAndEmitRequest(token).ConfigureAwait(false);
         try
         {
             var result = await ReadResponse(response).ConfigureAwait(false) as TResponse;
@@ -57,7 +57,6 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
         }
         finally
         {
-            request.Dispose();
             response.Dispose();
         }
     }
@@ -102,7 +101,7 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
         {
             if (e.Response != null)
             {
-                var exceptionResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(e);
+                var exceptionResponse = EwsHttpWebRequestFactory.CreateExceptionResponse(e);
                 Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, exceptionResponse);
             }
 

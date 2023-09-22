@@ -37,7 +37,7 @@ namespace Microsoft.Exchange.WebServices.Data.Credentials;
 [PublicAPI]
 public sealed class DualAuthCredentials : ExchangeCredentials
 {
-    private readonly ICredentials _credentials;
+    internal ICredentials Credentials { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DualAuthCredentials" /> class.
@@ -50,20 +50,9 @@ public sealed class DualAuthCredentials : ExchangeCredentials
         EwsUtilities.ValidateParam(clientCertificates);
 
         ClientCertificates = clientCertificates;
-        _credentials = new NetworkCredential(userName, password);
+        Credentials = new NetworkCredential(userName, password);
     }
 
-    /// <summary>
-    ///     This method is called to apply credentials to a service request before the request is made.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    internal override System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
-    {
-        request.ClientCertificates = ClientCertificates;
-        request.Credentials = _credentials;
-
-        return System.Threading.Tasks.Task.CompletedTask;
-    }
 
     /// <summary>
     ///     Gets the client certificates collection.

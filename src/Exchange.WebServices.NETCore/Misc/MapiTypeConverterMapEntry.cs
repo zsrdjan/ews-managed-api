@@ -191,7 +191,7 @@ internal class MapiTypeConverterMapEntry
     ///     Gets or sets the string parser.
     /// </summary>
     /// <remarks>For array types, this method is called for each array element.</remarks>
-    internal Func<string, object> Parse { get; set; }
+    internal Func<string?, object?> Parse { get; set; }
 
     /// <summary>
     ///     Gets or sets the string to object converter.
