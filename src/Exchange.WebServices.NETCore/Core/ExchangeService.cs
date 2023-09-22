@@ -24,10 +24,7 @@
  */
 
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 using JetBrains.Annotations;
@@ -51,6 +48,168 @@ public sealed class ExchangeService : ExchangeServiceBase
     private UnifiedMessaging? _unifiedMessaging;
 
     private string _targetServerVersion;
+
+
+    /// <summary>
+    ///     Gets or sets the URL of the Exchange Web Services.
+    /// </summary>
+    public required Uri Url { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the Id of the user that EWS should impersonate.
+    /// </summary>
+    public ImpersonatedUserId? ImpersonatedUserId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the Id of the user that EWS should open his/her mailbox with privileged logon type.
+    /// </summary>
+    internal PrivilegedUserId? PrivilegedUserId { get; set; }
+
+    /// <summary>
+    /// </summary>
+    public ManagementRoles? ManagementRoles { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the preferred culture for messages returned by the Exchange Web Services.
+    /// </summary>
+    public CultureInfo? PreferredCulture { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the DateTime precision for DateTime values returned from Exchange Web Services.
+    /// </summary>
+    public DateTimePrecision DateTimePrecision { get; set; } = DateTimePrecision.Default;
+
+    /// <summary>
+    ///     Gets or sets a file attachment content handler.
+    /// </summary>
+    public IFileAttachmentContentHandler? FileAttachmentContentHandler { get; set; }
+
+    /// <summary>
+    ///     Gets the time zone this service is scoped to.
+    /// </summary>
+    public new TimeZoneInfo TimeZone => base.TimeZone;
+
+    /// <summary>
+    ///     Provides access to the Unified Messaging functionalities.
+    /// </summary>
+    public UnifiedMessaging UnifiedMessaging => _unifiedMessaging ??= new UnifiedMessaging(this);
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the AutodiscoverUrl method should perform SCP (Service Connection Point)
+    ///     record lookup when determining
+    ///     the Autodiscover service URL.
+    /// </summary>
+    public bool EnableScpLookup { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether Exchange2007 compatibility mode is enabled. (Off by default)
+    /// </summary>
+    /// <remarks>
+    ///     In order to support E12 servers, the Exchange2007CompatibilityMode property can be used
+    ///     to indicate that we should use "Exchange2007" as the server version string rather than
+    ///     Exchange2007_SP1.
+    /// </remarks>
+    internal bool Exchange2007CompatibilityMode { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether trace output is pretty printed.
+    /// </summary>
+    public bool TraceEnablePrettyPrinting { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets the target server version string (newer than Exchange2013).
+    /// </summary>
+    internal string TargetServerVersion
+    {
+        get => _targetServerVersion;
+
+        set
+        {
+            ValidateTargetVersion(value);
+            _targetServerVersion = value;
+        }
+    }
+
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the latest supported version of EWS and scoped to the system's current time zone.
+    /// </summary>
+    public ExchangeService()
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the latest supported version of EWS and scoped to the specified time zone.
+    /// </summary>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    public ExchangeService(TimeZoneInfo timeZone)
+        : base(timeZone)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the system's current time zone.
+    /// </summary>
+    /// <param name="requestedServerVersion">The version of EWS that the service targets.</param>
+    public ExchangeService(ExchangeVersion requestedServerVersion)
+        : base(requestedServerVersion)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the specified time zone.
+    /// </summary>
+    /// <param name="requestedServerVersion">The version of EWS that the service targets.</param>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    public ExchangeService(ExchangeVersion requestedServerVersion, TimeZoneInfo timeZone)
+        : base(requestedServerVersion, timeZone)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the system's current time zone.
+    /// </summary>
+    /// <param name="targetServerVersion">The version (new style) of EWS that the service targets.</param>
+    /// <remarks>
+    ///     The target version string has a required part and an optional part.
+    ///     The required part is two integers separated by a dot, major.minor
+    ///     The optional part is a minimum required version, minimum=major.minor
+    ///     Examples:
+    ///     X-EWS-TargetVersion: 2.4
+    ///     X-EWS_TargetVersion: 2.9; minimum=2.4
+    /// </remarks>
+    internal ExchangeService(string targetServerVersion)
+        : base(ExchangeVersion.Exchange2013)
+    {
+        ValidateTargetVersion(targetServerVersion);
+        TargetServerVersion = targetServerVersion;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
+    ///     the specified version of EWS and scoped to the specified time zone.
+    /// </summary>
+    /// <param name="targetServerVersion">The version (new style) of EWS that the service targets.</param>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    /// <remarks>
+    ///     The new style version string has a required part and an optional part.
+    ///     The required part is two integers separated by a dot, major.minor
+    ///     The optional part is a minimum required version, minimum=major.minor
+    ///     Examples:
+    ///     2.4
+    ///     2.9; minimum=2.4
+    /// </remarks>
+    internal ExchangeService(string targetServerVersion, TimeZoneInfo timeZone)
+        : base(ExchangeVersion.Exchange2013, timeZone)
+    {
+        ValidateTargetVersion(targetServerVersion);
+        TargetServerVersion = targetServerVersion;
+    }
 
 
     #region Response object operations
@@ -6012,91 +6171,6 @@ public sealed class ExchangeService : ExchangeServiceBase
     #endregion
 
 
-    #region Constructors
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
-    ///     the latest supported version of EWS and scoped to the system's current time zone.
-    /// </summary>
-    public ExchangeService()
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
-    ///     the latest supported version of EWS and scoped to the specified time zone.
-    /// </summary>
-    /// <param name="timeZone">The time zone to which the service is scoped.</param>
-    public ExchangeService(TimeZoneInfo timeZone)
-        : base(timeZone)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
-    ///     the specified version of EWS and scoped to the system's current time zone.
-    /// </summary>
-    /// <param name="requestedServerVersion">The version of EWS that the service targets.</param>
-    public ExchangeService(ExchangeVersion requestedServerVersion)
-        : base(requestedServerVersion)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
-    ///     the specified version of EWS and scoped to the specified time zone.
-    /// </summary>
-    /// <param name="requestedServerVersion">The version of EWS that the service targets.</param>
-    /// <param name="timeZone">The time zone to which the service is scoped.</param>
-    public ExchangeService(ExchangeVersion requestedServerVersion, TimeZoneInfo timeZone)
-        : base(requestedServerVersion, timeZone)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
-    ///     the specified version of EWS and scoped to the system's current time zone.
-    /// </summary>
-    /// <param name="targetServerVersion">The version (new style) of EWS that the service targets.</param>
-    /// <remarks>
-    ///     The target version string has a required part and an optional part.
-    ///     The required part is two integers separated by a dot, major.minor
-    ///     The optional part is a minimum required version, minimum=major.minor
-    ///     Examples:
-    ///     X-EWS-TargetVersion: 2.4
-    ///     X-EWS_TargetVersion: 2.9; minimum=2.4
-    /// </remarks>
-    internal ExchangeService(string targetServerVersion)
-        : base(ExchangeVersion.Exchange2013)
-    {
-        ValidateTargetVersion(targetServerVersion);
-        TargetServerVersion = targetServerVersion;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeService" /> class, targeting
-    ///     the specified version of EWS and scoped to the specified time zone.
-    /// </summary>
-    /// <param name="targetServerVersion">The version (new style) of EWS that the service targets.</param>
-    /// <param name="timeZone">The time zone to which the service is scoped.</param>
-    /// <remarks>
-    ///     The new style version string has a required part and an optional part.
-    ///     The required part is two integers separated by a dot, major.minor
-    ///     The optional part is a minimum required version, minimum=major.minor
-    ///     Examples:
-    ///     2.4
-    ///     2.9; minimum=2.4
-    /// </remarks>
-    internal ExchangeService(string targetServerVersion, TimeZoneInfo timeZone)
-        : base(ExchangeVersion.Exchange2013, timeZone)
-    {
-        ValidateTargetVersion(targetServerVersion);
-        TargetServerVersion = targetServerVersion;
-    }
-
-    #endregion
-
-
     #region Utilities
 
     /// <summary>
@@ -6109,15 +6183,9 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// </returns>
     internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequest(string methodName)
     {
-        var endpoint = Url;
-        endpoint = AdjustServiceUriFromCredentials(endpoint);
+        var endpoint = AdjustServiceUriFromCredentials(Url);
 
-        var request = await PrepareHttpWebRequestForUrl(endpoint, AcceptGzipEncoding, true);
-
-        if (ServerCertificateValidationCallback != null)
-        {
-            request.ServerCertificateCustomValidationCallback = ServerCertificateValidationCallback;
-        }
+        var request = await PrepareHttpWebRequestForUrl(endpoint);
 
         if (!string.IsNullOrEmpty(TargetServerVersion))
         {
@@ -6125,16 +6193,6 @@ public sealed class ExchangeService : ExchangeServiceBase
         }
 
         return request;
-    }
-
-    /// <summary>
-    ///     Sets the type of the content.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    internal override void SetContentType(IEwsHttpWebRequest request)
-    {
-        request.ContentType = "text/xml; charset=utf-8";
-        request.Accept = "text/xml";
     }
 
     /// <summary>
@@ -6155,7 +6213,6 @@ public sealed class ExchangeService : ExchangeServiceBase
         );
     }
 
-
     /// <summary>
     ///     Adjusts the service URI based on the current type of credentials.
     /// </summary>
@@ -6171,91 +6228,4 @@ public sealed class ExchangeService : ExchangeServiceBase
     }
 
     #endregion
-
-
-    /// <summary>
-    ///     Gets or sets the URL of the Exchange Web Services.
-    /// </summary>
-    public required Uri Url { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the Id of the user that EWS should impersonate.
-    /// </summary>
-    public ImpersonatedUserId? ImpersonatedUserId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the Id of the user that EWS should open his/her mailbox with privileged logon type.
-    /// </summary>
-    internal PrivilegedUserId? PrivilegedUserId { get; set; }
-
-    /// <summary>
-    /// </summary>
-    public ManagementRoles? ManagementRoles { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the preferred culture for messages returned by the Exchange Web Services.
-    /// </summary>
-    public CultureInfo? PreferredCulture { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the DateTime precision for DateTime values returned from Exchange Web Services.
-    /// </summary>
-    public DateTimePrecision DateTimePrecision { get; set; } = DateTimePrecision.Default;
-
-    /// <summary>
-    ///     Gets or sets a file attachment content handler.
-    /// </summary>
-    public IFileAttachmentContentHandler? FileAttachmentContentHandler { get; set; }
-
-    /// <summary>
-    ///     Gets the time zone this service is scoped to.
-    /// </summary>
-    public new TimeZoneInfo TimeZone => base.TimeZone;
-
-    /// <summary>
-    ///     Provides access to the Unified Messaging functionalities.
-    /// </summary>
-    public UnifiedMessaging UnifiedMessaging => _unifiedMessaging ??= new UnifiedMessaging(this);
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the AutodiscoverUrl method should perform SCP (Service Connection Point)
-    ///     record lookup when determining
-    ///     the Autodiscover service URL.
-    /// </summary>
-    public bool EnableScpLookup { get; set; } = true;
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether Exchange2007 compatibility mode is enabled. (Off by default)
-    /// </summary>
-    /// <remarks>
-    ///     In order to support E12 servers, the Exchange2007CompatibilityMode property can be used
-    ///     to indicate that we should use "Exchange2007" as the server version string rather than
-    ///     Exchange2007_SP1.
-    /// </remarks>
-    internal bool Exchange2007CompatibilityMode { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether trace output is pretty printed.
-    /// </summary>
-    public bool TraceEnablePrettyPrinting { get; set; } = true;
-
-    /// <summary>
-    ///     Gets or sets the target server version string (newer than Exchange2013).
-    /// </summary>
-    internal string TargetServerVersion
-    {
-        get => _targetServerVersion;
-
-        set
-        {
-            ValidateTargetVersion(value);
-            _targetServerVersion = value;
-        }
-    }
-
-    /// <summary>
-    /// Optional client specified SSL certificate validation callback.
-    /// </summary>
-    public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
-        ServerCertificateValidationCallback { get; set; }
 }

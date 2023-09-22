@@ -435,6 +435,7 @@ internal abstract class ServiceRequestBase
     {
         ReadPreamble(ewsXmlReader);
         ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+
         ReadSoapHeader(ewsXmlReader);
         ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
 

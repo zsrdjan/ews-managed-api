@@ -27,9 +27,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Security.Cryptography;
 using System.Xml;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 
 using JetBrains.Annotations;
 
@@ -60,11 +62,6 @@ public abstract class ExchangeServiceBase
     private static readonly string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
 
 
-    /// <summary>
-    ///     Occurs when the http response headers of a server call is captured.
-    /// </summary>
-    public event ResponseHeadersCapturedHandler? OnResponseHeadersCaptured;
-
     private ExchangeCredentials? _credentials;
     private bool _useDefaultCredentials;
     private int _timeout = 100000;
@@ -72,7 +69,246 @@ public abstract class ExchangeServiceBase
     private ITraceListener? _traceListener = new EwsTraceListener();
     private string _userAgent = DefaultUserAgent;
     private TimeZoneDefinition? _timeZoneDefinition;
-    private IEwsHttpWebRequestFactory _ewsHttpWebRequestFactory = new EwsHttpWebRequestFactory();
+
+
+    /// <summary>
+    ///     Gets or sets the cookie container.
+    /// </summary>
+    /// <value>The cookie container.</value>
+    public CookieContainer CookieContainer { get; set; } = new();
+
+    /// <summary>
+    ///     Gets the time zone this service is scoped to.
+    /// </summary>
+    internal TimeZoneInfo TimeZone { get; }
+
+    /// <summary>
+    ///     Gets a time zone definition generated from the time zone info to which this service is scoped.
+    /// </summary>
+    public TimeZoneDefinition TimeZoneDefinition => _timeZoneDefinition ??= new TimeZoneDefinition(TimeZone);
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether client latency info is push to server.
+    /// </summary>
+    public bool SendClientLatencies { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether tracing is enabled.
+    /// </summary>
+    [MemberNotNullWhen(true, nameof(_traceListener))]
+    public bool TraceEnabled
+    {
+        get => _traceEnabled;
+
+        set
+        {
+            _traceEnabled = value;
+            if (_traceEnabled && _traceListener == null)
+            {
+                _traceListener = new EwsTraceListener();
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the trace flags.
+    /// </summary>
+    /// <value>The trace flags.</value>
+    public TraceFlags TraceFlags { get; set; } = TraceFlags.All;
+
+    /// <summary>
+    ///     Gets or sets the trace listener.
+    /// </summary>
+    /// <value>The trace listener.</value>
+    public ITraceListener? TraceListener
+    {
+        get => _traceListener;
+
+        set
+        {
+            _traceListener = value;
+            _traceEnabled = value != null;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the credentials used to authenticate with the Exchange Web Services. Setting the Credentials property
+    ///     automatically sets the UseDefaultCredentials to false.
+    /// </summary>
+    public ExchangeCredentials? Credentials
+    {
+        get => _credentials;
+
+        set
+        {
+            _credentials = value;
+            _useDefaultCredentials = false;
+            CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the credentials of the user currently logged into Windows should be used to
+    ///     authenticate with the Exchange Web Services. Setting UseDefaultCredentials to true automatically sets the
+    ///     Credentials
+    ///     property to null.
+    /// </summary>
+    public bool UseDefaultCredentials
+    {
+        get => _useDefaultCredentials;
+
+        set
+        {
+            _useDefaultCredentials = value;
+
+            if (value)
+            {
+                _credentials = null;
+                CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds.
+    ///     Defaults to 100000.
+    /// </summary>
+    public int Timeout
+    {
+        get => _timeout;
+
+        set
+        {
+            if (value < 1)
+            {
+                throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
+            }
+
+            _timeout = value;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets a value that indicates whether HTTP pre-authentication should be performed.
+    /// </summary>
+    public bool PreAuthenticate { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether GZip compression encoding should be accepted.
+    /// </summary>
+    /// <remarks>
+    ///     This value will tell the server that the client is able to handle GZip compression encoding. The server
+    ///     will only send Gzip compressed content if it has been configured to do so.
+    /// </remarks>
+    public bool AcceptGzipEncoding { get; set; } = true;
+
+    /// <summary>
+    ///     Gets the requested server version.
+    /// </summary>
+    /// <value>The requested server version.</value>
+    public ExchangeVersion RequestedServerVersion { get; } = ExchangeVersion.Exchange2013_SP1;
+
+    /// <summary>
+    ///     Gets or sets the user agent.
+    /// </summary>
+    /// <value>The user agent.</value>
+    public string UserAgent
+    {
+        get => _userAgent;
+        set => _userAgent = value + " (" + DefaultUserAgent + ")";
+    }
+
+    /// <summary>
+    ///     Gets information associated with the server that processed the last request.
+    ///     Will be null if no requests have been processed.
+    /// </summary>
+    public ExchangeServerInfo ServerInfo { get; internal set; }
+
+    /// <summary>
+    ///     Gets or sets the web proxy that should be used when sending requests to EWS.
+    ///     Set this property to null to use the default web proxy.
+    /// </summary>
+    public IWebProxy? WebProxy { get; set; }
+
+    /// <summary>
+    ///     Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value
+    ///     Keep-alive
+    /// </summary>
+    public bool KeepAlive { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets the name of the connection group for the request.
+    /// </summary>
+    public string ConnectionGroupName { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the request id for the request.
+    /// </summary>
+    public string ClientRequestId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a flag to indicate whether the client requires the server side to return the  request id.
+    /// </summary>
+    public bool ReturnClientRequestId { get; set; }
+
+    /// <summary>
+    ///     Gets a collection of HTTP headers that will be sent with each request to EWS.
+    /// </summary>
+    public IDictionary<string, string> HttpHeaders { get; } = new Dictionary<string, string>();
+
+    /// <summary>
+    ///     Gets a collection of HTTP headers from the last response.
+    /// </summary>
+    public IDictionary<string, string> HttpResponseHeaders { get; } = new Dictionary<string, string>();
+
+    /// <summary>
+    ///     Gets the session key.
+    /// </summary>
+    internal static byte[] SessionKey
+    {
+        get
+        {
+            // this has to be computed only once.
+            lock (LockObj)
+            {
+                if (_binarySecret == null)
+                {
+                    var randomNumberGenerator = RandomNumberGenerator.Create();
+                    _binarySecret = new byte[256 / 8];
+                    randomNumberGenerator.GetBytes(_binarySecret);
+                }
+
+                return _binarySecret;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the HTTP web request factory.
+    /// </summary>
+    internal EwsHttpWebRequestFactory HttpWebRequestFactory { get; set; } = new EwsHttpWebRequestFactory();
+
+    /// <summary>
+    ///     For testing: suppresses generation of the SOAP version header.
+    /// </summary>
+    internal bool SuppressXmlVersionHeader { get; set; }
+
+    /// <summary>
+    /// Optional client specified SSL certificate validation callback.
+    /// </summary>
+    public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
+        ServerCertificateValidationCallback { get; set; }
+
+    /// <summary>
+    ///     Occurs when the http response headers of a server call is captured.
+    /// </summary>
+    public event ResponseHeadersCapturedHandler? OnResponseHeadersCaptured;
+
+    /// <summary>
+    ///     Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to
+    ///     Exchange.
+    /// </summary>
+    public event CustomXmlSerializationDelegate? OnSerializeCustomSoapHeaders;
 
 
     /// <summary>
@@ -134,7 +370,7 @@ public abstract class ExchangeServiceBase
         ConnectionGroupName = service.ConnectionGroupName;
         TimeZone = service.TimeZone;
         HttpHeaders = service.HttpHeaders;
-        _ewsHttpWebRequestFactory = service._ewsHttpWebRequestFactory;
+        HttpWebRequestFactory = service.HttpWebRequestFactory;
         WebProxy = service.WebProxy;
     }
 
@@ -171,14 +407,8 @@ public abstract class ExchangeServiceBase
     ///     based on the configuration of this service object.
     /// </summary>
     /// <param name="url">The URL that the HttpWebRequest should target.</param>
-    /// <param name="acceptGzipEncoding">If true, ask server for GZip compressed content.</param>
-    /// <param name="allowAutoRedirect">If true, redirection responses will be automatically followed.</param>
     /// <returns>A initialized instance of HttpWebRequest.</returns>
-    internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequestForUrl(
-        Uri url,
-        bool acceptGzipEncoding,
-        bool allowAutoRedirect
-    )
+    internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequestForUrl(Uri url)
     {
         // Verify that the protocol is something that we can handle
         if (url.Scheme != "http" && url.Scheme != "https")
@@ -191,15 +421,16 @@ public abstract class ExchangeServiceBase
         {
             request.PreAuthenticate = PreAuthenticate;
             request.Timeout = Timeout;
-            SetContentType(request);
+            request.ContentType = "text/xml; charset=utf-8";
+            request.Accept = "text/xml";
             request.Method = "POST";
             request.UserAgent = UserAgent;
-            request.AllowAutoRedirect = allowAutoRedirect;
+            request.AllowAutoRedirect = true;
             request.CookieContainer = CookieContainer;
             request.KeepAlive = KeepAlive;
             request.ConnectionGroupName = ConnectionGroupName;
 
-            if (acceptGzipEncoding)
+            if (AcceptGzipEncoding)
             {
                 request.Headers.AcceptEncoding.ParseAdd("gzip,deflate");
             }
@@ -247,6 +478,11 @@ public abstract class ExchangeServiceBase
                 await serviceCredentials.PrepareWebRequest(request).ConfigureAwait(false);
             }
 
+            if (ServerCertificateValidationCallback != null)
+            {
+                request.ServerCertificateCustomValidationCallback = ServerCertificateValidationCallback;
+            }
+
             lock (HttpResponseHeaders)
             {
                 HttpResponseHeaders.Clear();
@@ -284,11 +520,6 @@ public abstract class ExchangeServiceBase
         return serviceCredentials;
     }
 
-    internal virtual void SetContentType(IEwsHttpWebRequest request)
-    {
-        request.ContentType = "text/xml; charset=utf-8";
-        request.Accept = "text/xml";
-    }
 
     /// <summary>
     ///     Processes an HTTP error response
@@ -571,250 +802,6 @@ public abstract class ExchangeServiceBase
     internal virtual void Validate()
     {
     }
-
-    #endregion
-
-
-    #region Properties
-
-    /// <summary>
-    ///     Gets or sets the cookie container.
-    /// </summary>
-    /// <value>The cookie container.</value>
-    public CookieContainer CookieContainer { get; set; } = new();
-
-    /// <summary>
-    ///     Gets the time zone this service is scoped to.
-    /// </summary>
-    internal TimeZoneInfo TimeZone { get; }
-
-    /// <summary>
-    ///     Gets a time zone definition generated from the time zone info to which this service is scoped.
-    /// </summary>
-    public TimeZoneDefinition TimeZoneDefinition => _timeZoneDefinition ??= new TimeZoneDefinition(TimeZone);
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether client latency info is push to server.
-    /// </summary>
-    public bool SendClientLatencies { get; set; } = true;
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether tracing is enabled.
-    /// </summary>
-    [MemberNotNullWhen(true, nameof(_traceListener))]
-    public bool TraceEnabled
-    {
-        get => _traceEnabled;
-
-        set
-        {
-            _traceEnabled = value;
-            if (_traceEnabled && _traceListener == null)
-            {
-                _traceListener = new EwsTraceListener();
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the trace flags.
-    /// </summary>
-    /// <value>The trace flags.</value>
-    public TraceFlags TraceFlags { get; set; } = TraceFlags.All;
-
-    /// <summary>
-    ///     Gets or sets the trace listener.
-    /// </summary>
-    /// <value>The trace listener.</value>
-    public ITraceListener? TraceListener
-    {
-        get => _traceListener;
-
-        set
-        {
-            _traceListener = value;
-            _traceEnabled = value != null;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the credentials used to authenticate with the Exchange Web Services. Setting the Credentials property
-    ///     automatically sets the UseDefaultCredentials to false.
-    /// </summary>
-    public ExchangeCredentials? Credentials
-    {
-        get => _credentials;
-
-        set
-        {
-            _credentials = value;
-            _useDefaultCredentials = false;
-            CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the credentials of the user currently logged into Windows should be used to
-    ///     authenticate with the Exchange Web Services. Setting UseDefaultCredentials to true automatically sets the
-    ///     Credentials
-    ///     property to null.
-    /// </summary>
-    public bool UseDefaultCredentials
-    {
-        get => _useDefaultCredentials;
-
-        set
-        {
-            _useDefaultCredentials = value;
-
-            if (value)
-            {
-                _credentials = null;
-                CookieContainer = new CookieContainer(); // Changing credentials resets the Cookie container
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds.
-    ///     Defaults to 100000.
-    /// </summary>
-    public int Timeout
-    {
-        get => _timeout;
-
-        set
-        {
-            if (value < 1)
-            {
-                throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
-            }
-
-            _timeout = value;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets a value that indicates whether HTTP pre-authentication should be performed.
-    /// </summary>
-    public bool PreAuthenticate { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether GZip compression encoding should be accepted.
-    /// </summary>
-    /// <remarks>
-    ///     This value will tell the server that the client is able to handle GZip compression encoding. The server
-    ///     will only send Gzip compressed content if it has been configured to do so.
-    /// </remarks>
-    public bool AcceptGzipEncoding { get; set; } = true;
-
-    /// <summary>
-    ///     Gets the requested server version.
-    /// </summary>
-    /// <value>The requested server version.</value>
-    public ExchangeVersion RequestedServerVersion { get; } = ExchangeVersion.Exchange2013_SP1;
-
-    /// <summary>
-    ///     Gets or sets the user agent.
-    /// </summary>
-    /// <value>The user agent.</value>
-    public string UserAgent
-    {
-        get => _userAgent;
-        set => _userAgent = value + " (" + DefaultUserAgent + ")";
-    }
-
-    /// <summary>
-    ///     Gets information associated with the server that processed the last request.
-    ///     Will be null if no requests have been processed.
-    /// </summary>
-    public ExchangeServerInfo ServerInfo { get; internal set; }
-
-    /// <summary>
-    ///     Gets or sets the web proxy that should be used when sending requests to EWS.
-    ///     Set this property to null to use the default web proxy.
-    /// </summary>
-    public IWebProxy? WebProxy { get; set; }
-
-    /// <summary>
-    ///     Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value
-    ///     Keep-alive
-    /// </summary>
-    public bool KeepAlive { get; set; } = true;
-
-    /// <summary>
-    ///     Gets or sets the name of the connection group for the request.
-    /// </summary>
-    public string ConnectionGroupName { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the request id for the request.
-    /// </summary>
-    public string ClientRequestId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a flag to indicate whether the client requires the server side to return the  request id.
-    /// </summary>
-    public bool ReturnClientRequestId { get; set; }
-
-    /// <summary>
-    ///     Gets a collection of HTTP headers that will be sent with each request to EWS.
-    /// </summary>
-    public IDictionary<string, string> HttpHeaders { get; } = new Dictionary<string, string>();
-
-    /// <summary>
-    ///     Gets a collection of HTTP headers from the last response.
-    /// </summary>
-    public IDictionary<string, string> HttpResponseHeaders { get; } = new Dictionary<string, string>();
-
-    /// <summary>
-    ///     Gets the session key.
-    /// </summary>
-    internal static byte[] SessionKey
-    {
-        get
-        {
-            // this has to be computed only once.
-            lock (LockObj)
-            {
-                if (_binarySecret == null)
-                {
-                    var randomNumberGenerator = RandomNumberGenerator.Create();
-                    _binarySecret = new byte[256 / 8];
-                    randomNumberGenerator.GetBytes(_binarySecret);
-                }
-
-                return _binarySecret;
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the HTTP web request factory.
-    /// </summary>
-    internal IEwsHttpWebRequestFactory? HttpWebRequestFactory
-    {
-        get => _ewsHttpWebRequestFactory;
-
-        // If new value is null, reset to default factory.
-        set => _ewsHttpWebRequestFactory = value ?? new EwsHttpWebRequestFactory();
-    }
-
-    /// <summary>
-    ///     For testing: suppresses generation of the SOAP version header.
-    /// </summary>
-    internal bool SuppressXmlVersionHeader { get; set; }
-
-    #endregion
-
-
-    #region Events
-
-    /// <summary>
-    ///     Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to
-    ///     Exchange.
-    /// </summary>
-    public event CustomXmlSerializationDelegate? OnSerializeCustomSoapHeaders;
 
     #endregion
 }
