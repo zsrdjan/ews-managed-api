@@ -115,7 +115,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
     ///     Add the Authorization header to a service request.
     /// </summary>
     /// <param name="request">The request</param>
-    internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
         if (_token != null)
         {

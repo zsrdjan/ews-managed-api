@@ -34,8 +34,8 @@ internal class EwsHttpWebRequestFactory
     ///     Create a new instance of <see cref="EwsHttpWebRequest" />.
     /// </summary>
     /// <param name="uri">The service URI.</param>
-    /// <returns>An instance of <see cref="IEwsHttpWebRequest" />./// </returns>
-    public IEwsHttpWebRequest CreateRequest(Uri uri)
+    /// <returns>An instance of <see cref="EwsHttpWebRequest" />./// </returns>
+    public EwsHttpWebRequest CreateRequest(Uri uri)
     {
         return new EwsHttpWebRequest(uri);
     }

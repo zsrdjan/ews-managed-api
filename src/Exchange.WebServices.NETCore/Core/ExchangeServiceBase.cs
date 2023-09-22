@@ -408,7 +408,7 @@ public abstract class ExchangeServiceBase
     /// </summary>
     /// <param name="url">The URL that the HttpWebRequest should target.</param>
     /// <returns>A initialized instance of HttpWebRequest.</returns>
-    internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequestForUrl(Uri url)
+    internal async Task<EwsHttpWebRequest> PrepareHttpWebRequestForUrl(Uri url)
     {
         // Verify that the protocol is something that we can handle
         if (url.Scheme != "http" && url.Scheme != "https")
@@ -628,7 +628,7 @@ public abstract class ExchangeServiceBase
     /// </summary>
     /// <param name="traceType">Kind of trace entry.</param>
     /// <param name="request">The request.</param>
-    internal void TraceHttpRequestHeaders(TraceFlags traceType, IEwsHttpWebRequest request)
+    internal void TraceHttpRequestHeaders(TraceFlags traceType, EwsHttpWebRequest request)
     {
         if (IsTraceEnabledFor(traceType))
         {

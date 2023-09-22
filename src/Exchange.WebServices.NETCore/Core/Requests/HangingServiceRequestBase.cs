@@ -103,7 +103,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <summary>
     ///     Request to the server.
     /// </summary>
-    private IEwsHttpWebRequest _request;
+    private EwsHttpWebRequest _request;
 
     /// <summary>
     ///     Expected minimum frequency in responses, in milliseconds.

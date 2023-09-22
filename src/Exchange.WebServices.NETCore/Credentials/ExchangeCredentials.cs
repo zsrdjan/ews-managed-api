@@ -106,7 +106,7 @@ public abstract class ExchangeCredentials
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal virtual System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal virtual System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
         // do nothing by default.
         return System.Threading.Tasks.Task.CompletedTask;

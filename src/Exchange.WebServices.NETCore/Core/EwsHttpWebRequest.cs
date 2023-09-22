@@ -33,7 +33,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Represents an implementation of the IEwsHttpWebRequest interface that uses HttpWebRequest.
 /// </summary>
-internal class EwsHttpWebRequest : IEwsHttpWebRequest
+internal class EwsHttpWebRequest : IDisposable
 {
     /// <summary>
     ///     Underlying HttpWebRequest.
@@ -135,7 +135,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     ///     True if the request should automatically follow redirection responses from the Internet resource; otherwise, false.
     ///     The default value is true.
     /// </returns>
-    bool IEwsHttpWebRequest.AllowAutoRedirect
+    public bool AllowAutoRedirect
     {
         get => _httpClientHandler.AllowAutoRedirect;
         set => _httpClientHandler.AllowAutoRedirect = value;
@@ -184,7 +184,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the name/value pairs that make up the headers
     ///     for the HTTP request.
     /// </returns>
-    HttpRequestHeaders IEwsHttpWebRequest.Headers => _httpClient.DefaultRequestHeaders;
+    public HttpRequestHeaders Headers => _httpClient.DefaultRequestHeaders;
 
     /// <summary>
     ///     Gets or sets the method for the request.

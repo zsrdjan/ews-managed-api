@@ -31,13 +31,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal interface IEwsHttpWebRequestFactory
 {
     /// <summary>
-    ///     Create a new instance of class that implements the <see cref="IEwsHttpWebRequest" /> interface.
+    ///     Create a new instance of class that implements the <see cref="EwsHttpWebRequest" /> interface.
     /// </summary>
     /// <param name="uri">The URI.</param>
     /// <returns>
-    ///     An object that implements the <see cref="IEwsHttpWebRequest" /> interface.
+    ///     An object that implements the <see cref="EwsHttpWebRequest" /> interface.
     /// </returns>
-    IEwsHttpWebRequest CreateRequest(Uri uri);
+    EwsHttpWebRequest CreateRequest(Uri uri);
 
     /// <summary>
     ///     Creates the exception response.

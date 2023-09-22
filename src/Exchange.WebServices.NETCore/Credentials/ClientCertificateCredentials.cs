@@ -51,7 +51,7 @@ public sealed class ClientCertificateCredentials : ExchangeCredentials
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
         request.ClientCertificates = ClientCertificates;
 

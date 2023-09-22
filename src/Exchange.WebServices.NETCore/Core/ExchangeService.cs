@@ -6181,7 +6181,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <returns>
     ///     An initialized instance of HttpWebRequest.
     /// </returns>
-    internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequest(string methodName)
+    internal async Task<EwsHttpWebRequest> PrepareHttpWebRequest(string methodName)
     {
         var endpoint = AdjustServiceUriFromCredentials(Url);
 

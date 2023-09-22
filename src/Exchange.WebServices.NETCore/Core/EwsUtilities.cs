@@ -395,7 +395,7 @@ internal static partial class EwsUtilities
     ///     Format request HTTP headers.
     /// </summary>
     /// <param name="request">The HTTP request.</param>
-    internal static string FormatHttpRequestHeaders(IEwsHttpWebRequest request)
+    internal static string FormatHttpRequestHeaders(EwsHttpWebRequest request)
     {
         var sb = new StringBuilder();
         sb.Append($"{request.Method} {request.RequestUri.AbsolutePath} HTTP/1.1\n");

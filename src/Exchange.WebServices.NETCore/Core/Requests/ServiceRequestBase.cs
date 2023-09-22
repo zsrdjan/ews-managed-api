@@ -381,7 +381,7 @@ internal abstract class ServiceRequestBase
     ///     Emits the request.
     /// </summary>
     /// <param name="request">The request.</param>
-    private void EmitRequest(IEwsHttpWebRequest request)
+    private void EmitRequest(EwsHttpWebRequest request)
     {
         using var memoryStream = new MemoryStream();
         using (var writer = new EwsServiceXmlWriter(Service, memoryStream))
@@ -401,7 +401,7 @@ internal abstract class ServiceRequestBase
     /// <param name="request">The request.</param>
     /// <param name="needSignature"></param>
     /// <param name="needTrace"></param>
-    private void TraceAndEmitRequest(IEwsHttpWebRequest request, bool needSignature, bool needTrace)
+    private void TraceAndEmitRequest(EwsHttpWebRequest request, bool needSignature, bool needTrace)
     {
         using var memoryStream = new MemoryStream();
         using (var writer = new EwsServiceXmlWriter(Service, memoryStream))
@@ -628,7 +628,7 @@ internal abstract class ServiceRequestBase
     /// </summary>
     /// <param name="token"></param>
     /// <returns>The response returned by the server.</returns>
-    protected async Task<(IEwsHttpWebRequest request, IEwsHttpWebResponse response)> ValidateAndEmitRequest(
+    protected async Task<(EwsHttpWebRequest request, IEwsHttpWebResponse response)> ValidateAndEmitRequest(
         CancellationToken token
     )
     {
@@ -712,9 +712,9 @@ internal abstract class ServiceRequestBase
     ///     Builds the IEwsHttpWebRequest object for current service request with exception handling.
     /// </summary>
     /// <returns>An IEwsHttpWebRequest instance</returns>
-    protected async Task<IEwsHttpWebRequest> BuildEwsHttpWebRequest()
+    protected async Task<EwsHttpWebRequest> BuildEwsHttpWebRequest()
     {
-        IEwsHttpWebRequest? request = null;
+        EwsHttpWebRequest? request = null;
         try
         {
             request = await Service.PrepareHttpWebRequest(GetXmlElementName());
@@ -768,7 +768,7 @@ internal abstract class ServiceRequestBase
     /// <param name="request">The specified IEwsHttpWebRequest</param>
     /// <param name="token"></param>
     /// <returns>An IEwsHttpWebResponse instance</returns>
-    protected async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(IEwsHttpWebRequest request, CancellationToken token)
+    protected async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(EwsHttpWebRequest request, CancellationToken token)
     {
         try
         {
