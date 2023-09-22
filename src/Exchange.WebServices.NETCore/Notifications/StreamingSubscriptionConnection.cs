@@ -204,7 +204,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     ///     This results in a long-standing call to EWS.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when Open is called while connected.</exception>
-    public void Open(CancellationToken token = default)
+    public void Open()
     {
         lock (_lockObject)
         {
@@ -226,7 +226,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
 
             _currentHangingRequest.OnDisconnect += OnRequestDisconnect;
 
-            _currentHangingRequest.InternalExecute(token);
+            _currentHangingRequest.InternalExecute();
         }
     }
 
@@ -258,7 +258,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
 
             // Further down in the stack, this will result in a call to our OnRequestDisconnect event handler,
             // doing the necessary cleanup.
-            _currentHangingRequest.Disconnect();
+            _currentHangingRequest?.Disconnect();
         }
     }
 

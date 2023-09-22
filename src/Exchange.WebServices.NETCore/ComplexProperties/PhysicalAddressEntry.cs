@@ -33,14 +33,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddressKey>
 {
-    #region Fields
-
     private readonly SimplePropertyBag<string> _propertyBag;
 
-    #endregion
-
-
-    #region Constructors
 
     /// <summary>
     ///     Initializes a new instance of PhysicalAddressEntry
@@ -50,8 +44,6 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         _propertyBag = new SimplePropertyBag<string>();
         _propertyBag.OnChange += PropertyBagChanged;
     }
-
-    #endregion
 
 
     #region Properties
@@ -272,25 +264,20 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         public const string CountryOrRegion = "CountryOrRegion";
         public const string PostalCode = "PostalCode";
 
+
         /// <summary>
-        ///     List of XML element names.
+        ///     Gets the XML element names.
         /// </summary>
-        private static readonly LazyMember<List<string>> xmlElementNames = new(
-            () => new List<string>
+        /// <value>The XML element names.</value>
+        public static List<string> XmlElementNames =>
+            new List<string>
             {
                 Street,
                 City,
                 State,
                 CountryOrRegion,
                 PostalCode,
-            }
-        );
-
-        /// <summary>
-        ///     Gets the XML element names.
-        /// </summary>
-        /// <value>The XML element names.</value>
-        public static List<string> XmlElementNames => xmlElementNames.Member;
+            };
     }
 
     #endregion

@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents the Unified Messaging functionalities.
 /// </summary>
+[PublicAPI]
 public sealed class UnifiedMessaging
 {
     private readonly ExchangeService _service;

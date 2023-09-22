@@ -35,23 +35,21 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Map CLR types used for MAPI properties to matching default values.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, object?>> DefaultValueMap = new(
-        () => new Dictionary<Type, object?>
-        {
-            // @formatter:off
-            { typeof(bool), false },
-            { typeof(byte[]), null },
-            { typeof(short), (short)0 },
-            { typeof(int), 0 },
-            { typeof(long), (long)0 },
-            { typeof(float), (float)0.0 },
-            { typeof(double), 0.0 },
-            { typeof(DateTime), DateTime.MinValue },
-            { typeof(Guid), Guid.Empty },
-            { typeof(string), null },
-            // @formatter:on
-        }
-    );
+    private static readonly IReadOnlyDictionary<Type, object?> DefaultValueMap = new Dictionary<Type, object?>
+    {
+        // @formatter:off
+        { typeof(bool), false },
+        { typeof(byte[]), null },
+        { typeof(short), (short)0 },
+        { typeof(int), 0 },
+        { typeof(long), (long)0 },
+        { typeof(float), (float)0.0 },
+        { typeof(double), 0.0 },
+        { typeof(DateTime), DateTime.MinValue },
+        { typeof(Guid), Guid.Empty },
+        { typeof(string), null },
+        // @formatter:on
+    };
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MapiTypeConverterMapEntry" /> class.
@@ -66,7 +64,7 @@ internal class MapiTypeConverterMapEntry
     internal MapiTypeConverterMapEntry(Type type)
     {
         EwsUtilities.Assert(
-            DefaultValueMap.Member.ContainsKey(type),
+            DefaultValueMap.ContainsKey(type),
             "MapiTypeConverterMapEntry ctor",
             $"No default value entry for type {type.Name}"
         );
@@ -216,7 +214,7 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Gets the default value for the type.
     /// </summary>
-    internal object DefaultValue => DefaultValueMap.Member[Type];
+    internal object DefaultValue => DefaultValueMap[Type];
 
     #endregion
 }

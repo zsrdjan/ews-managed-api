@@ -115,6 +115,10 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// </summary>
     private readonly object _lockObject = new();
 
+    private readonly CancellationTokenSource _tokenSource = new();
+
+    private System.Threading.Tasks.Task _readTask;
+
     /// <summary>
     ///     Delegate method to handle a hanging request disconnection.
     /// </summary>
@@ -143,23 +147,34 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     /// <summary>
     ///     Executes the request.
     /// </summary>
-    internal void InternalExecute(CancellationToken token)
+    internal void InternalExecute()
     {
         lock (_lockObject)
         {
-            var (request, response) = ValidateAndEmitRequest(token).GetAwaiter().GetResult();
+            var (request, response) = ValidateAndEmitRequest(_tokenSource.Token).GetAwaiter().GetResult();
 
             _request = request;
             _response = response;
 
-            InternalOnConnect().GetAwaiter().GetResult();
+            if (!IsConnected)
+            {
+                IsConnected = true;
+
+                // Trace Http headers
+                Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
+
+                _readTask = System.Threading.Tasks.Task.Run(
+                    async () => { await ParseResponses(_tokenSource.Token); },
+                    _tokenSource.Token
+                );
+            }
         }
     }
 
     /// <summary>
     ///     Parses the responses.
     /// </summary>
-    private async System.Threading.Tasks.Task ParseResponses()
+    private async System.Threading.Tasks.Task ParseResponses(CancellationToken cancellationToken)
     {
         try
         {
@@ -169,7 +184,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
             {
                 var traceEwsResponse = Service.IsTraceEnabledFor(TraceFlags.EwsResponse);
 
-                await using var responseStream = await _response.GetResponseStream();
+                await using var responseStream = await _response.GetResponseStream(cancellationToken);
                 var tracingStream = new HangingTraceStream(responseStream, Service)
                 {
                     ReadTimeout = 2 * _heartbeatFrequencyMilliseconds,
@@ -186,16 +201,14 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
 
                 while (IsConnected)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     object? responseObject;
                     if (traceEwsResponse)
                     {
                         try
                         {
-                            responseObject = await ReadResponseAsync(
-                                ewsXmlReader,
-                                _response.Headers,
-                                CancellationToken.None
-                            );
+                            responseObject = await ReadResponseAsync(ewsXmlReader, _response.Headers);
                         }
                         finally
                         {
@@ -209,15 +222,15 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
                     }
                     else
                     {
-                        responseObject = await ReadResponseAsync(
-                            ewsXmlReader,
-                            _response.Headers,
-                            CancellationToken.None
-                        );
+                        responseObject = await ReadResponseAsync(ewsXmlReader, _response.Headers);
                     }
 
                     _responseHandler(responseObject);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // Operation was cancelled, do nothing
             }
             catch (TimeoutException ex)
             {
@@ -281,8 +294,6 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     {
         lock (_lockObject)
         {
-            _request.Abort();
-            _response.Close();
             Disconnect(HangingRequestDisconnectReason.UserInitiated, null);
         }
     }
@@ -296,26 +307,15 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     {
         if (IsConnected)
         {
+            _tokenSource.Cancel();
+            // We do not care about exceptions here, as the ParseResponse handler provides a catch-all handler
+            _readTask.GetAwaiter().GetResult();
+
             _response.Close();
             InternalOnDisconnect(reason, exception);
         }
     }
 
-    /// <summary>
-    ///     Perform any bookkeeping needed when we connect
-    /// </summary>
-    private async System.Threading.Tasks.Task InternalOnConnect()
-    {
-        if (!IsConnected)
-        {
-            IsConnected = true;
-
-            // Trace Http headers
-            Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
-
-            await ParseResponses();
-        }
-    }
 
     /// <summary>
     ///     Perform any bookkeeping needed when we disconnect (cleanly or forcefully)
@@ -345,11 +345,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     ///     Reads any preamble data not part of the core response.
     /// </summary>
     /// <param name="ewsXmlReader">The EwsServiceXmlReader.</param>
-    /// <param name="token"></param>
-    protected override System.Threading.Tasks.Task ReadPreambleAsync(
-        EwsServiceXmlReader ewsXmlReader,
-        CancellationToken token
-    )
+    protected override System.Threading.Tasks.Task ReadPreambleAsync(EwsServiceXmlReader ewsXmlReader)
     {
         return System.Threading.Tasks.Task.CompletedTask;
     }

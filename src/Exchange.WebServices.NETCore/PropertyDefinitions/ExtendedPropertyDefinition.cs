@@ -35,8 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
 {
-    #region Constants
-
     private const string FieldFormat = "{0}: {1} ";
 
     private const string PropertySetFieldName = nameof(PropertySet);
@@ -46,17 +44,11 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     private const string IdFieldName = nameof(Id);
     private const string MapiTypeFieldName = nameof(MapiType);
 
-    #endregion
-
-
-    #region Fields
 
     private DefaultExtendedPropertySet? _propertySet;
     private Guid? _propertySetId;
     private int? _tag;
     private int? _id;
-
-    #endregion
 
 
     /// <summary>

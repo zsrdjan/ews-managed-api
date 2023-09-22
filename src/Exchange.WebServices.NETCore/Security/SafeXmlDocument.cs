@@ -32,8 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SafeXmlDocument : XmlDocument
 {
-    #region Members
-
     /// <summary>
     ///     Xml settings object.
     /// </summary>
@@ -41,8 +39,6 @@ internal class SafeXmlDocument : XmlDocument
     {
         DtdProcessing = DtdProcessing.Prohibit,
     };
-
-    #endregion
 
 
     #region Constructors

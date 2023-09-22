@@ -30,8 +30,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveNamesResponse>
 {
-    private static readonly LazyMember<Dictionary<ResolveNameSearchLocation, string>> SearchScopeMap = new(
-        () => new Dictionary<ResolveNameSearchLocation, string>
+    private static readonly IReadOnlyDictionary<ResolveNameSearchLocation, string> SearchScopeMap =
+        new Dictionary<ResolveNameSearchLocation, string>
         {
             // @formatter:off
             { ResolveNameSearchLocation.DirectoryOnly, "ActiveDirectory" },
@@ -39,8 +39,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
             { ResolveNameSearchLocation.ContactsOnly, "Contacts" },
             { ResolveNameSearchLocation.ContactsThenDirectory, "ContactsActiveDirectory" },
             // @formatter:on
-        }
-    );
+        };
 
     /// <summary>
     ///     Asserts the valid.
@@ -115,7 +114,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     {
         writer.WriteAttributeValue(XmlAttributeNames.ReturnFullContactData, ReturnFullContactData);
 
-        SearchScopeMap.Member.TryGetValue(SearchLocation, out var searchScope);
+        SearchScopeMap.TryGetValue(SearchLocation, out var searchScope);
 
         EwsUtilities.Assert(
             !string.IsNullOrEmpty(searchScope),
@@ -126,10 +125,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
         string? propertySet = null;
         if (ContactDataPropertySet != null)
         {
-            PropertySet.DefaultPropertySetMap.Member.TryGetValue(
-                ContactDataPropertySet.BasePropertySet,
-                out propertySet
-            );
+            PropertySet.DefaultPropertySetMap.TryGetValue(ContactDataPropertySet.BasePropertySet, out propertySet);
         }
 
         if (!Service.Exchange2007CompatibilityMode)

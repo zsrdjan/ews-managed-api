@@ -45,19 +45,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class ExchangeService : ExchangeServiceBase
 {
-    #region Constants
-
     private const string TargetServerVersionHeaderName = "X-EWS-TargetVersion";
 
-    #endregion
-
-
-    #region Fields
 
     private UnifiedMessaging? _unifiedMessaging;
-    private string _targetServerVersion;
 
-    #endregion
+    private string _targetServerVersion;
 
 
     #region Response object operations
@@ -6117,8 +6110,6 @@ public sealed class ExchangeService : ExchangeServiceBase
     internal async Task<IEwsHttpWebRequest> PrepareHttpWebRequest(string methodName)
     {
         var endpoint = Url;
-        RegisterCustomBasicAuthModule();
-
         endpoint = AdjustServiceUriFromCredentials(endpoint);
 
         var request = await PrepareHttpWebRequestForUrl(endpoint, AcceptGzipEncoding, true);
@@ -6181,8 +6172,6 @@ public sealed class ExchangeService : ExchangeServiceBase
 
     #endregion
 
-
-    #region Properties
 
     /// <summary>
     ///     Gets or sets the URL of the Exchange Web Services.
@@ -6253,10 +6242,9 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <summary>
     ///     Gets or sets the target server version string (newer than Exchange2013).
     /// </summary>
-    [MemberNotNull(nameof(_targetServerVersion))]
     internal string TargetServerVersion
     {
-        get => _targetServerVersion ?? string.Empty;
+        get => _targetServerVersion;
 
         set
         {
@@ -6270,6 +6258,4 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// </summary>
     public Func<HttpRequestMessage, X509Certificate2?, X509Chain?, SslPolicyErrors, bool>?
         ServerCertificateValidationCallback { get; set; }
-
-    #endregion
 }

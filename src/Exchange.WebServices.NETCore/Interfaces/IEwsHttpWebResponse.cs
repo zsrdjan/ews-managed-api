@@ -41,10 +41,11 @@ internal interface IEwsHttpWebResponse : IDisposable
     /// <summary>
     ///     Gets the stream that is used to read the body of the response from the server.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     ///     A <see cref="T:System.IO.Stream" /> containing the body of the response.
     /// </returns>
-    Task<Stream> GetResponseStream();
+    Task<Stream> GetResponseStream(CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Gets the method that is used to encode the body of the response.

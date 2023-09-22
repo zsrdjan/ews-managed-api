@@ -35,7 +35,7 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// <summary>
     ///     All user settings that are available from the Outlook provider.
     /// </summary>
-    private static readonly LazyMember<List<UserSettingName>> AllOutlookProviderSettings = new(
+    private static readonly Lazy<List<UserSettingName>> AllOutlookProviderSettings = new(
         () =>
         {
             var results = new List<UserSettingName>();
@@ -70,7 +70,7 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
     /// </returns>
     internal static bool IsAvailableUserSetting(UserSettingName setting)
     {
-        return AllOutlookProviderSettings.Member.Contains(setting);
+        return AllOutlookProviderSettings.Value.Contains(setting);
     }
 
     /// <summary>
@@ -221,7 +221,7 @@ internal sealed class OutlookConfigurationSettings : ConfigurationSettingsBase
                 ErrorMessage = string.Format(
                     Strings.AutodiscoverInvalidSettingForOutlookProvider,
                     invalidSetting.ToString()
-                )
+                ),
             };
             response.UserSettingErrors.Add(settingError);
         }

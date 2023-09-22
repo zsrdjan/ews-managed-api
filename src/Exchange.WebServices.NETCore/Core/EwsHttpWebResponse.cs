@@ -68,12 +68,13 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// <summary>
     ///     Gets the stream that is used to read the body of the response from the server.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     ///     A <see cref="T:System.IO.Stream" /> containing the body of the response.
     /// </returns>
-    Task<Stream> IEwsHttpWebResponse.GetResponseStream()
+    Task<Stream> IEwsHttpWebResponse.GetResponseStream(CancellationToken cancellationToken)
     {
-        return _response.Content.ReadAsStreamAsync();
+        return _response.Content.ReadAsStreamAsync(cancellationToken);
     }
 
     /// <summary>

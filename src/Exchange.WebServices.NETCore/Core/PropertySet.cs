@@ -27,8 +27,6 @@ using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using DefaultPropertySetDictionary = LazyMember<Dictionary<BasePropertySet, string>>;
-
 /// <summary>
 ///     Represents a set of item or folder properties. Property sets are used to indicate what properties of an item or
 ///     folder should be loaded when binding to an existing item or folder or when loading an item or folder's properties.
@@ -50,15 +48,15 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// <summary>
     ///     Maps BasePropertySet values to EWS's BaseShape values.
     /// </summary>
-    private static readonly DefaultPropertySetDictionary defaultPropertySetMap = new(
-        () => new Dictionary<BasePropertySet, string>
+    internal static readonly IReadOnlyDictionary<BasePropertySet, string> DefaultPropertySetMap =
+        new Dictionary<BasePropertySet, string>
         { 
             // @formatter:off
             { BasePropertySet.IdOnly, "IdOnly" },
             { BasePropertySet.FirstClassProperties, "AllProperties" },
             // @formatter:on
-        }
-    );
+        };
+
 
     /// <summary>
     ///     The base property set this property set is based upon.
@@ -214,7 +212,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     public void Add(PropertyDefinitionBase property)
     {
         ThrowIfReadonly();
-        EwsUtilities.ValidateParam(property, "property");
+        EwsUtilities.ValidateParam(property);
 
         if (!_additionalProperties.Contains(property))
         {
@@ -229,7 +227,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     public void AddRange(IEnumerable<PropertyDefinitionBase> properties)
     {
         ThrowIfReadonly();
-        EwsUtilities.ValidateParamCollection(properties, "properties");
+        EwsUtilities.ValidateParamCollection(properties);
 
         foreach (var property in properties)
         {
@@ -253,9 +251,10 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// <returns>PropertySet</returns>
     private static PropertySet CreateReadonlyPropertySet(BasePropertySet basePropertySet)
     {
-        var propertySet = new PropertySet(basePropertySet);
-        propertySet._isReadOnly = true;
-        return propertySet;
+        return new PropertySet(basePropertySet)
+        {
+            _isReadOnly = true,
+        };
     }
 
     /// <summary>
@@ -268,14 +267,23 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
         switch (serviceObjectType)
         {
             case ServiceObjectType.Item:
+            {
                 return XmlElementNames.ItemShape;
+            }
             case ServiceObjectType.Folder:
+            {
                 return XmlElementNames.FolderShape;
+            }
             case ServiceObjectType.Conversation:
+            {
                 return XmlElementNames.ConversationShape;
+            }
             case ServiceObjectType.Persona:
+            {
                 return XmlElementNames.PersonaShape;
+            }
             default:
+            {
                 EwsUtilities.Assert(
                     false,
                     "PropertySet.GetShapeName",
@@ -285,6 +293,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
                     )
                 );
                 return string.Empty;
+            }
         }
     }
 
@@ -305,7 +314,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// </summary>
     /// <param name="property">The property.</param>
     /// <returns>
-    ///     <c>true</c> if this property set contains the specified propert]; otherwise, <c>false</c>.
+    ///     <c>true</c> if this property set contains the specified property; otherwise, <c>false</c>.
     /// </returns>
     public bool Contains(PropertyDefinitionBase property)
     {
@@ -477,13 +486,9 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
         InternalValidate();
     }
 
-    /// <summary>
-    ///     Maps BasePropertySet values to EWS's BaseShape values.
-    /// </summary>
-    internal static DefaultPropertySetDictionary DefaultPropertySetMap => defaultPropertySetMap;
 
     /// <summary>
-    ///     Writes additonal properties to XML.
+    ///     Writes additional properties to XML.
     /// </summary>
     /// <param name="writer">The writer to write to.</param>
     /// <param name="propertyDefinitions">The property definitions to write.</param>
@@ -528,8 +533,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     {
         foreach (var propDefBase in _additionalProperties)
         {
-            var propertyDefinition = propDefBase as PropertyDefinition;
-            if (propertyDefinition != null)
+            if (propDefBase is PropertyDefinition propertyDefinition)
             {
                 if (propertyDefinition.Version > request.Service.RequestedServerVersion)
                 {
@@ -655,11 +659,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
 
         writer.WriteStartElement(XmlNamespace.Messages, shapeElementName);
 
-        writer.WriteElementValue(
-            XmlNamespace.Types,
-            XmlElementNames.BaseShape,
-            defaultPropertySetMap.Member[BasePropertySet]
-        );
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.BaseShape, DefaultPropertySetMap[BasePropertySet]);
 
         if (serviceObjectType == ServiceObjectType.Item)
         {

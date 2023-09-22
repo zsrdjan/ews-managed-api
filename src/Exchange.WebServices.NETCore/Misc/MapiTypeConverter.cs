@@ -27,12 +27,10 @@ using System.Globalization;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using MapiTypeConverterMap = Dictionary<MapiPropertyType, MapiTypeConverterMapEntry>;
-
 /// <summary>
 ///     Utility class to convert between MAPI Property type values and strings.
 /// </summary>
-internal class MapiTypeConverter
+internal static class MapiTypeConverter
 {
     /// <summary>
     ///     Assume DateTime values are in UTC.
@@ -42,10 +40,10 @@ internal class MapiTypeConverter
     /// <summary>
     ///     Map from MAPI property type to converter entry.
     /// </summary>
-    private static readonly LazyMember<MapiTypeConverterMap> mapiTypeConverterMap = new(
+    private static readonly Lazy<Dictionary<MapiPropertyType, MapiTypeConverterMapEntry>> mapiTypeConverterMap = new(
         () =>
         {
-            var map = new MapiTypeConverterMap
+            var map = new Dictionary<MapiPropertyType, MapiTypeConverterMapEntry>
             {
                 {
                     MapiPropertyType.ApplicationTime, new MapiTypeConverterMapEntry(typeof(double))
@@ -136,7 +134,7 @@ internal class MapiTypeConverter
                 MapiPropertyType.Integer,
                 new MapiTypeConverterMapEntry(typeof(int))
                 {
-                    Parse = s => ParseMapiIntegerValue(s),
+                    Parse = ParseMapiIntegerValue,
                 }
             );
 
@@ -259,7 +257,7 @@ internal class MapiTypeConverter
     /// <param name="mapiPropType">Type of the MAPI property.</param>
     /// <param name="value">Value to convert to string.</param>
     /// <returns>String value.</returns>
-    internal static string ConvertToString(MapiPropertyType mapiPropType, object value)
+    internal static string ConvertToString(MapiPropertyType mapiPropType, object? value)
     {
         return value == null ? string.Empty : MapiTypeConverterMap[mapiPropType].ConvertToString(value);
     }
@@ -310,5 +308,6 @@ internal class MapiTypeConverter
     ///     Gets the MAPI type converter map.
     /// </summary>
     /// <value>The MAPI type converter map.</value>
-    internal static MapiTypeConverterMap MapiTypeConverterMap => mapiTypeConverterMap.Member;
+    internal static Dictionary<MapiPropertyType, MapiTypeConverterMapEntry> MapiTypeConverterMap =>
+        mapiTypeConverterMap.Value;
 }

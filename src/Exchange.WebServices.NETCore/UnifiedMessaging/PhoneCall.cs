@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a phone call.
 /// </summary>
+[PublicAPI]
 public sealed class PhoneCall : ComplexProperty
 {
     private const string SuccessfulResponseText = "OK";
@@ -86,7 +89,7 @@ public sealed class PhoneCall : ComplexProperty
             throw new ServiceLocalException(Strings.PhoneCallAlreadyDisconnected);
         }
 
-        await _service.UnifiedMessaging.DisconnectPhoneCall(_id, token);
+        await _service.UnifiedMessaging.DisconnectPhoneCall(_id, token).ConfigureAwait(false);
         State = PhoneCallState.Disconnected;
     }
 
@@ -100,19 +103,29 @@ public sealed class PhoneCall : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.PhoneCallState:
+            {
                 State = reader.ReadElementValue<PhoneCallState>();
                 return true;
+            }
             case XmlElementNames.ConnectionFailureCause:
+            {
                 ConnectionFailureCause = reader.ReadElementValue<ConnectionFailureCause>();
                 return true;
+            }
             case XmlElementNames.SIPResponseText:
+            {
                 SIPResponseText = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.SIPResponseCode:
+            {
                 SIPResponseCode = reader.ReadElementValue<int>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
 

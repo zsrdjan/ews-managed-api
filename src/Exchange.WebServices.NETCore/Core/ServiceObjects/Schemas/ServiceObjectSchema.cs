@@ -31,9 +31,6 @@ using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using PropertyDefinitionDictionary = LazyMember<Dictionary<string, PropertyDefinitionBase>>;
-using SchemaTypeList = LazyMember<List<Type>>;
-
 /// <summary>
 ///     Represents the base class for all item and folder schemas.
 /// </summary>
@@ -50,7 +47,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     ///     If you add a new ServiceObject subclass that has an associated schema, add the schema type
     ///     to the list below.
     /// </remarks>
-    private static readonly SchemaTypeList AllSchemaTypes = new(
+    private static readonly Lazy<List<Type>> AllSchemaTypes = new(
         () =>
         {
             var typeList = new List<Type>
@@ -97,12 +94,12 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     /// <summary>
     ///     Dictionary of all property definitions.
     /// </summary>
-    private static readonly PropertyDefinitionDictionary AllSchemaProperties = new(
+    private static readonly Lazy<Dictionary<string, PropertyDefinitionBase>> AllSchemaProperties = new(
         () =>
         {
             var propDefDictionary = new Dictionary<string, PropertyDefinitionBase>();
 
-            foreach (var type in AllSchemaTypes.Member)
+            foreach (var type in AllSchemaTypes.Value)
             {
                 AddSchemaPropertiesToDictionary(type, propDefDictionary);
             }
@@ -161,10 +158,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
                         EwsUtilities.Assert(
                             existingPropertyDefinition == propertyDefinition,
                             "Schema.allSchemaProperties.delegate",
-                            string.Format(
-                                "There are at least two distinct property definitions with the following URI: {0}",
-                                propertyDefinition.Uri
-                            )
+                            $"There are at least two distinct property definitions with the following URI: {propertyDefinition.Uri}"
                         );
                     }
                     else
@@ -220,7 +214,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     /// <returns>Property definition.</returns>
     internal static PropertyDefinitionBase FindPropertyDefinition(string uri)
     {
-        return AllSchemaProperties.Member[uri];
+        return AllSchemaProperties.Value[uri];
     }
 
     /// <summary>
@@ -230,7 +224,7 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     {
         lock (LockObject)
         {
-            foreach (var type in AllSchemaTypes.Member)
+            foreach (var type in AllSchemaTypes.Value)
             {
                 ForeachPublicStaticPropertyFieldInType(
                     type,

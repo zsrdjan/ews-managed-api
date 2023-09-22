@@ -36,11 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal interface IEwsHttpWebRequest : IDisposable
 {
     /// <summary>
-    ///     Cancels request to an Internet resource.
-    /// </summary>
-    void Abort();
-
-    /// <summary>
     ///     Gets a <see cref="T:System.IO.Stream" /> object to use to write request data.
     /// </summary>
     /// <returns>

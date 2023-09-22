@@ -41,8 +41,8 @@ public sealed class GetEventsResults
     /// <remarks>
     ///     If you add a new notification event type, you'll need to add a new entry to the dictionary here.
     /// </remarks>
-    private static readonly LazyMember<Dictionary<string, EventType>> xmlElementNameToEventTypeMap = new(
-        () => new Dictionary<string, EventType>
+    internal static readonly IReadOnlyDictionary<string, EventType> XmlElementNameToEventTypeMap =
+        new Dictionary<string, EventType>
         {
             // @formatter:off
             { XmlElementNames.CopiedEvent, EventType.Copied },
@@ -54,14 +54,7 @@ public sealed class GetEventsResults
             { XmlElementNames.StatusEvent, EventType.Status },
             { XmlElementNames.FreeBusyChangedEvent, EventType.FreeBusyChanged },
             // @formatter:on
-        }
-    );
-
-    /// <summary>
-    ///     Gets the XML element name to event type mapping.
-    /// </summary>
-    /// <value>The XML element name to event type mapping.</value>
-    internal static Dictionary<string, EventType> XmlElementNameToEventTypeMap => xmlElementNameToEventTypeMap.Member;
+        };
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetEventsResults" /> class.
@@ -90,7 +83,7 @@ public sealed class GetEventsResults
             {
                 var eventElementName = reader.LocalName;
 
-                if (xmlElementNameToEventTypeMap.Member.TryGetValue(eventElementName, out var eventType))
+                if (XmlElementNameToEventTypeMap.TryGetValue(eventElementName, out var eventType))
                 {
                     NewWatermark = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Watermark);
 

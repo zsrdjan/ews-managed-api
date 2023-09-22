@@ -23,11 +23,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a push subscriptions.
 /// </summary>
+[PublicAPI]
 public sealed class PushSubscription : SubscriptionBase
 {
     /// <summary>

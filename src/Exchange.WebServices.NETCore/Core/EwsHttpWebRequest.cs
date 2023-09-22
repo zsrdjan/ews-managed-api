@@ -48,25 +48,17 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     /// <param name="uri">The URI.</param>
     internal EwsHttpWebRequest(Uri uri)
     {
-        Method = "GET";
-        RequestUri = uri;
-
         _httpClientHandler = new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
         };
 
         _httpClient = new HttpClient(_httpClientHandler);
-    }
 
 
-    /// <summary>
-    ///     Aborts this instance.
-    /// </summary>
-    public void Abort()
-    {
-        _httpClient.CancelPendingRequests();
+        RequestUri = uri;
     }
+
 
     /// <summary>
     ///     Gets a <see cref="T:System.IO.Stream" /> object to use to write request data.
@@ -199,7 +191,7 @@ internal class EwsHttpWebRequest : IEwsHttpWebRequest
     /// </summary>
     /// <returns>The request method to use to contact the Internet resource. The default value is GET.</returns>
     /// <exception cref="T:System.ArgumentException">No method is supplied.-or- The method string contains invalid characters. </exception>
-    public string Method { get; set; }
+    public string Method { get; set; } = "GET";
 
     /// <summary>
     ///     Gets or sets proxy information for the request.

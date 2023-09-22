@@ -41,8 +41,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public abstract class ExchangeServiceBase
 {
-    #region Const members
-
     private static readonly object LockObj = new();
 
     /// <summary>
@@ -55,20 +53,12 @@ public abstract class ExchangeServiceBase
     /// </summary>
     private static byte[]? _binarySecret;
 
-    #endregion
-
-
-    #region Static members
 
     /// <summary>
     ///     Default UserAgent
     /// </summary>
     private static readonly string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
 
-    #endregion
-
-
-    #region Fields
 
     /// <summary>
     ///     Occurs when the http response headers of a server call is captured.
@@ -84,7 +74,78 @@ public abstract class ExchangeServiceBase
     private TimeZoneDefinition? _timeZoneDefinition;
     private IEwsHttpWebRequestFactory _ewsHttpWebRequestFactory = new EwsHttpWebRequestFactory();
 
-    #endregion
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    internal ExchangeServiceBase()
+        : this(TimeZoneInfo.Local)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    internal ExchangeServiceBase(TimeZoneInfo timeZone)
+    {
+        TimeZone = timeZone;
+        UseDefaultCredentials = true;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="requestedServerVersion">The requested server version.</param>
+    internal ExchangeServiceBase(ExchangeVersion requestedServerVersion)
+        : this(requestedServerVersion, TimeZoneInfo.Local)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="requestedServerVersion">The requested server version.</param>
+    /// <param name="timeZone">The time zone to which the service is scoped.</param>
+    internal ExchangeServiceBase(ExchangeVersion requestedServerVersion, TimeZoneInfo timeZone)
+        : this(timeZone)
+    {
+        RequestedServerVersion = requestedServerVersion;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
+    /// </summary>
+    /// <param name="service">The other service.</param>
+    /// <param name="requestedServerVersion">The requested server version.</param>
+    internal ExchangeServiceBase(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
+        : this(requestedServerVersion)
+    {
+        _useDefaultCredentials = service._useDefaultCredentials;
+        _credentials = service._credentials;
+        _traceEnabled = service._traceEnabled;
+        _traceListener = service._traceListener;
+        TraceFlags = service.TraceFlags;
+        _timeout = service._timeout;
+        PreAuthenticate = service.PreAuthenticate;
+        _userAgent = service._userAgent;
+        AcceptGzipEncoding = service.AcceptGzipEncoding;
+        KeepAlive = service.KeepAlive;
+        ConnectionGroupName = service.ConnectionGroupName;
+        TimeZone = service.TimeZone;
+        HttpHeaders = service.HttpHeaders;
+        _ewsHttpWebRequestFactory = service._ewsHttpWebRequestFactory;
+        WebProxy = service.WebProxy;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class from existing one.
+    /// </summary>
+    /// <param name="service">The other service.</param>
+    internal ExchangeServiceBase(ExchangeServiceBase service)
+        : this(service, service.RequestedServerVersion)
+    {
+    }
 
 
     #region Event handlers
@@ -146,6 +207,7 @@ public abstract class ExchangeServiceBase
             if (!string.IsNullOrEmpty(ClientRequestId))
             {
                 request.Headers.TryAddWithoutValidation("client-request-id", ClientRequestId);
+
                 if (ReturnClientRequestId)
                 {
                     request.Headers.TryAddWithoutValidation("return-client-request-id", "true");
@@ -488,16 +550,6 @@ public abstract class ExchangeServiceBase
         return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
     }
 
-    /// <summary>
-    ///     Register the custom auth module to support non-ascii upn authentication if the server supports that
-    /// </summary>
-    internal void RegisterCustomBasicAuthModule()
-    {
-        if (RequestedServerVersion >= ExchangeVersion.Exchange2013_SP1)
-        {
-            //BasicAuthModuleForUTF8.InstantiateIfNeeded();
-        }
-    }
 
     /// <summary>
     ///     Sets the user agent to a custom value
@@ -506,83 +558,6 @@ public abstract class ExchangeServiceBase
     internal void SetCustomUserAgent(string userAgent)
     {
         _userAgent = userAgent;
-    }
-
-    #endregion
-
-
-    #region Constructors
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
-    /// </summary>
-    internal ExchangeServiceBase()
-        : this(TimeZoneInfo.Local)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
-    /// </summary>
-    /// <param name="timeZone">The time zone to which the service is scoped.</param>
-    internal ExchangeServiceBase(TimeZoneInfo timeZone)
-    {
-        TimeZone = timeZone;
-        UseDefaultCredentials = true;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
-    /// </summary>
-    /// <param name="requestedServerVersion">The requested server version.</param>
-    internal ExchangeServiceBase(ExchangeVersion requestedServerVersion)
-        : this(requestedServerVersion, TimeZoneInfo.Local)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
-    /// </summary>
-    /// <param name="requestedServerVersion">The requested server version.</param>
-    /// <param name="timeZone">The time zone to which the service is scoped.</param>
-    internal ExchangeServiceBase(ExchangeVersion requestedServerVersion, TimeZoneInfo timeZone)
-        : this(timeZone)
-    {
-        RequestedServerVersion = requestedServerVersion;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
-    /// </summary>
-    /// <param name="service">The other service.</param>
-    /// <param name="requestedServerVersion">The requested server version.</param>
-    internal ExchangeServiceBase(ExchangeServiceBase service, ExchangeVersion requestedServerVersion)
-        : this(requestedServerVersion)
-    {
-        _useDefaultCredentials = service._useDefaultCredentials;
-        _credentials = service._credentials;
-        _traceEnabled = service._traceEnabled;
-        _traceListener = service._traceListener;
-        TraceFlags = service.TraceFlags;
-        _timeout = service._timeout;
-        PreAuthenticate = service.PreAuthenticate;
-        _userAgent = service._userAgent;
-        AcceptGzipEncoding = service.AcceptGzipEncoding;
-        KeepAlive = service.KeepAlive;
-        ConnectionGroupName = service.ConnectionGroupName;
-        TimeZone = service.TimeZone;
-        HttpHeaders = service.HttpHeaders;
-        _ewsHttpWebRequestFactory = service._ewsHttpWebRequestFactory;
-        WebProxy = service.WebProxy;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class from existing one.
-    /// </summary>
-    /// <param name="service">The other service.</param>
-    internal ExchangeServiceBase(ExchangeServiceBase service)
-        : this(service, service.RequestedServerVersion)
-    {
     }
 
     #endregion

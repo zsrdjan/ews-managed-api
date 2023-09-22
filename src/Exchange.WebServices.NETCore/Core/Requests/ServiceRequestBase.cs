@@ -455,15 +455,13 @@ internal abstract class ServiceRequestBase
     /// </summary>
     /// <param name="ewsXmlReader">The XML reader.</param>
     /// <param name="responseHeaders">HTTP response headers</param>
-    /// <param name="token"></param>
     /// <returns>Service response.</returns>
     protected async Task<object> ReadResponseAsync(
         EwsServiceXmlReader ewsXmlReader,
-        HttpResponseHeaders? responseHeaders,
-        CancellationToken token
+        HttpResponseHeaders? responseHeaders
     )
     {
-        await ReadPreambleAsync(ewsXmlReader, token).ConfigureAwait(false);
+        await ReadPreambleAsync(ewsXmlReader).ConfigureAwait(false);
 
         await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName)
             .ConfigureAwait(false);
@@ -481,8 +479,10 @@ internal abstract class ServiceRequestBase
 
         ewsXmlReader.ReadEndElementIfNecessary(XmlNamespace.Messages, GetResponseXmlElementName());
 
-        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
-        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName)
+            .ConfigureAwait(false);
+        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName)
+            .ConfigureAwait(false);
         return serviceResponse;
     }
 
@@ -499,11 +499,7 @@ internal abstract class ServiceRequestBase
     ///     Reads any preamble data not part of the core response.
     /// </summary>
     /// <param name="ewsXmlReader">The EwsServiceXmlReader.</param>
-    /// <param name="token"></param>
-    protected virtual System.Threading.Tasks.Task ReadPreambleAsync(
-        EwsServiceXmlReader ewsXmlReader,
-        CancellationToken token
-    )
+    protected virtual System.Threading.Tasks.Task ReadPreambleAsync(EwsServiceXmlReader ewsXmlReader)
     {
         return ReadXmlDeclarationAsync(ewsXmlReader);
     }
@@ -535,10 +531,12 @@ internal abstract class ServiceRequestBase
     /// <param name="reader">EwsServiceXmlReader</param>
     private async System.Threading.Tasks.Task ReadSoapHeaderAsync(EwsServiceXmlReader reader)
     {
-        await reader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName);
+        await reader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName)
+            .ConfigureAwait(false);
+
         do
         {
-            await reader.ReadAsync();
+            await reader.ReadAsync().ConfigureAwait(false);
 
             // Is this the ServerVersionInfo?
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ServerVersionInfo))

@@ -35,8 +35,8 @@ public sealed class FolderPermission : ComplexProperty
 {
     #region Default permissions
 
-    private static readonly LazyMember<Dictionary<FolderPermissionLevel, FolderPermission>> DefaultPermissions = new(
-        () => new Dictionary<FolderPermissionLevel, FolderPermission>
+    private static readonly IReadOnlyDictionary<FolderPermissionLevel, FolderPermission> DefaultPermissions =
+        new Dictionary<FolderPermissionLevel, FolderPermission>
         {
             {
                 FolderPermissionLevel.None, new FolderPermission
@@ -181,8 +181,7 @@ public sealed class FolderPermission : ComplexProperty
                     _readItems = FolderPermissionReadAccess.TimeAndSubjectAndLocation,
                 }
             },
-        }
-    );
+        };
 
     #endregion
 
@@ -190,13 +189,13 @@ public sealed class FolderPermission : ComplexProperty
     /// <summary>
     ///     Variants of pre-defined permission levels that Outlook also displays with the same levels.
     /// </summary>
-    private static readonly LazyMember<List<FolderPermission>> LevelVariants = new(
+    private static readonly Lazy<List<FolderPermission>> LevelVariants = new(
         () =>
         {
             var results = new List<FolderPermission>();
 
-            var permissionNone = DefaultPermissions.Member[FolderPermissionLevel.None];
-            var permissionOwner = DefaultPermissions.Member[FolderPermissionLevel.Owner];
+            var permissionNone = DefaultPermissions[FolderPermissionLevel.None];
+            var permissionOwner = DefaultPermissions[FolderPermissionLevel.Owner];
 
             // PermissionLevelNoneOption1
             var permission = permissionNone.Clone();
@@ -271,7 +270,7 @@ public sealed class FolderPermission : ComplexProperty
     /// </summary>
     private void AdjustPermissionLevel()
     {
-        foreach (var keyValuePair in DefaultPermissions.Member)
+        foreach (var keyValuePair in DefaultPermissions)
         {
             if (IsEqualTo(keyValuePair.Value))
             {
@@ -521,7 +520,7 @@ public sealed class FolderPermission : ComplexProperty
                     throw new ServiceLocalException(Strings.CannotSetPermissionLevelToCustom);
                 }
 
-                AssignIndividualPermissions(DefaultPermissions.Member[value]);
+                AssignIndividualPermissions(DefaultPermissions[value]);
                 SetFieldValue(ref _permissionLevel, value);
             }
         }
@@ -538,7 +537,7 @@ public sealed class FolderPermission : ComplexProperty
             // that Outlook would map to the same permission level.
             if (_permissionLevel == FolderPermissionLevel.Custom)
             {
-                foreach (var variant in LevelVariants.Member)
+                foreach (var variant in LevelVariants.Value)
                 {
                     if (IsEqualTo(variant))
                     {
