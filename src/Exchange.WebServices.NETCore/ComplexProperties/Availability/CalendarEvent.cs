@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class CalendarEvent : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CalendarEvent" /> class.
-    /// </summary>
-    internal CalendarEvent()
-    {
-    }
-
-    /// <summary>
     ///     Gets the start date and time of the event.
     /// </summary>
     public DateTime StartTime { get; private set; }
@@ -60,6 +53,13 @@ public sealed class CalendarEvent : ComplexProperty
     ///     requsting them does no have the appropriate rights.
     /// </summary>
     public CalendarEventDetails Details { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CalendarEvent" /> class.
+    /// </summary>
+    internal CalendarEvent()
+    {
+    }
 
     /// <summary>
     ///     Attempts to read the element at the reader's current position.

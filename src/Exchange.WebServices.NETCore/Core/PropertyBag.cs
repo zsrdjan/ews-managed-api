@@ -34,27 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class PropertyBag
 {
+    private readonly List<PropertyDefinition> _addedProperties = new();
+
+    private readonly Dictionary<PropertyDefinition, object?> _deletedProperties = new();
+    private readonly List<PropertyDefinition> _loadedProperties = new();
+
+    private readonly List<PropertyDefinition> _modifiedProperties = new();
     private bool _isDirty;
     private bool _loading;
     private bool _onlySummaryPropertiesRequested;
-    private readonly List<PropertyDefinition> _loadedProperties = new();
-
-    private readonly Dictionary<PropertyDefinition, object?> _deletedProperties = new();
-
-    private readonly List<PropertyDefinition> _modifiedProperties = new();
-    private readonly List<PropertyDefinition> _addedProperties = new();
     private PropertySet? _requestedPropertySet;
-
-    /// <summary>
-    ///     Initializes a new instance of PropertyBag.
-    /// </summary>
-    /// <param name="owner">The owner of the bag.</param>
-    internal PropertyBag(ServiceObject owner)
-    {
-        EwsUtilities.Assert(owner != null, "PropertyBag.ctor", "owner is null");
-
-        Owner = owner;
-    }
 
     /// <summary>
     ///     Gets a dictionary holding the bag's properties.
@@ -77,6 +66,134 @@ internal class PropertyBag
 
             return changes > 0 || _isDirty;
         }
+    }
+
+    /// <summary>
+    ///     Gets or sets the value of a property.
+    /// </summary>
+    /// <param name="propertyDefinition">The property to get or set.</param>
+    /// <returns>An object representing the value of the property.</returns>
+    /// <exception cref="ServiceVersionException">Raised if this property requires a later version of Exchange.</exception>
+    /// <exception cref="ServiceObjectPropertyException">
+    ///     Raised for get if property hasn't been assigned or loaded. Raised for
+    ///     set if property cannot be updated or deleted.
+    /// </exception>
+    internal object this[PropertyDefinition propertyDefinition]
+    {
+        get
+        {
+            var propertyValue = GetPropertyValueOrException(propertyDefinition, out var serviceException);
+            if (serviceException == null)
+            {
+                return propertyValue!;
+            }
+
+            throw serviceException;
+        }
+
+        set
+        {
+            if (propertyDefinition.Version > Owner.Service.RequestedServerVersion)
+            {
+                throw new ServiceVersionException(
+                    string.Format(
+                        Strings.PropertyIncompatibleWithRequestVersion,
+                        propertyDefinition.Name,
+                        propertyDefinition.Version
+                    )
+                );
+            }
+
+            // If the property bag is not in the loading state, we need to verify whether
+            // the property can actually be set or updated.
+            if (!_loading)
+            {
+                // If the owner is new and if the property cannot be set, throw.
+                if (Owner.IsNew &&
+                    !propertyDefinition.HasFlag(PropertyDefinitionFlags.CanSet, Owner.Service.RequestedServerVersion))
+                {
+                    throw new ServiceObjectPropertyException(Strings.PropertyIsReadOnly, propertyDefinition);
+                }
+
+                if (!Owner.IsNew)
+                {
+                    // If owner is an item attachment, properties cannot be updated (EWS doesn't support updating item attachments)
+                    if (Owner is Item ownerItem && ownerItem.IsAttachment)
+                    {
+                        throw new ServiceObjectPropertyException(
+                            Strings.ItemAttachmentCannotBeUpdated,
+                            propertyDefinition
+                        );
+                    }
+
+                    // If the property cannot be deleted, throw.
+                    if (value == null && !propertyDefinition.HasFlag(PropertyDefinitionFlags.CanDelete))
+                    {
+                        throw new ServiceObjectPropertyException(Strings.PropertyCannotBeDeleted, propertyDefinition);
+                    }
+
+                    // If the property cannot be updated, throw.
+                    if (!propertyDefinition.HasFlag(PropertyDefinitionFlags.CanUpdate))
+                    {
+                        throw new ServiceObjectPropertyException(Strings.PropertyCannotBeUpdated, propertyDefinition);
+                    }
+                }
+            }
+
+            // If the value is set to null, delete the property.
+            if (value == null)
+            {
+                DeleteProperty(propertyDefinition);
+            }
+            else
+            {
+                if (Properties.TryGetValue(propertyDefinition, out var currentValue))
+                {
+                    if (currentValue is ComplexProperty complexProperty)
+                    {
+                        complexProperty.OnChange -= PropertyChanged;
+                    }
+                }
+
+                // If the property was to be deleted, the deletion becomes an update.
+                if (_deletedProperties.Remove(propertyDefinition))
+                {
+                    AddToChangeList(propertyDefinition, _modifiedProperties);
+                }
+                else
+                {
+                    // If the property value was not set, we have a newly set property.
+                    if (!Properties.ContainsKey(propertyDefinition))
+                    {
+                        AddToChangeList(propertyDefinition, _addedProperties);
+                    }
+                    else
+                    {
+                        // The last case is that we have a modified property.
+                        if (!_modifiedProperties.Contains(propertyDefinition))
+                        {
+                            AddToChangeList(propertyDefinition, _modifiedProperties);
+                        }
+                    }
+                }
+
+                InitComplexProperty(value as ComplexProperty);
+                Properties[propertyDefinition] = value;
+
+                Changed();
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of PropertyBag.
+    /// </summary>
+    /// <param name="owner">The owner of the bag.</param>
+    internal PropertyBag(ServiceObject owner)
+    {
+        EwsUtilities.Assert(owner != null, "PropertyBag.ctor", "owner is null");
+
+        Owner = owner;
     }
 
     /// <summary>
@@ -281,123 +398,6 @@ internal class PropertyBag
         }
 
         return propertyValue;
-    }
-
-    /// <summary>
-    ///     Gets or sets the value of a property.
-    /// </summary>
-    /// <param name="propertyDefinition">The property to get or set.</param>
-    /// <returns>An object representing the value of the property.</returns>
-    /// <exception cref="ServiceVersionException">Raised if this property requires a later version of Exchange.</exception>
-    /// <exception cref="ServiceObjectPropertyException">
-    ///     Raised for get if property hasn't been assigned or loaded. Raised for
-    ///     set if property cannot be updated or deleted.
-    /// </exception>
-    internal object this[PropertyDefinition propertyDefinition]
-    {
-        get
-        {
-            var propertyValue = GetPropertyValueOrException(propertyDefinition, out var serviceException);
-            if (serviceException == null)
-            {
-                return propertyValue!;
-            }
-
-            throw serviceException;
-        }
-
-        set
-        {
-            if (propertyDefinition.Version > Owner.Service.RequestedServerVersion)
-            {
-                throw new ServiceVersionException(
-                    string.Format(
-                        Strings.PropertyIncompatibleWithRequestVersion,
-                        propertyDefinition.Name,
-                        propertyDefinition.Version
-                    )
-                );
-            }
-
-            // If the property bag is not in the loading state, we need to verify whether
-            // the property can actually be set or updated.
-            if (!_loading)
-            {
-                // If the owner is new and if the property cannot be set, throw.
-                if (Owner.IsNew &&
-                    !propertyDefinition.HasFlag(PropertyDefinitionFlags.CanSet, Owner.Service.RequestedServerVersion))
-                {
-                    throw new ServiceObjectPropertyException(Strings.PropertyIsReadOnly, propertyDefinition);
-                }
-
-                if (!Owner.IsNew)
-                {
-                    // If owner is an item attachment, properties cannot be updated (EWS doesn't support updating item attachments)
-                    if (Owner is Item ownerItem && ownerItem.IsAttachment)
-                    {
-                        throw new ServiceObjectPropertyException(
-                            Strings.ItemAttachmentCannotBeUpdated,
-                            propertyDefinition
-                        );
-                    }
-
-                    // If the property cannot be deleted, throw.
-                    if (value == null && !propertyDefinition.HasFlag(PropertyDefinitionFlags.CanDelete))
-                    {
-                        throw new ServiceObjectPropertyException(Strings.PropertyCannotBeDeleted, propertyDefinition);
-                    }
-
-                    // If the property cannot be updated, throw.
-                    if (!propertyDefinition.HasFlag(PropertyDefinitionFlags.CanUpdate))
-                    {
-                        throw new ServiceObjectPropertyException(Strings.PropertyCannotBeUpdated, propertyDefinition);
-                    }
-                }
-            }
-
-            // If the value is set to null, delete the property.
-            if (value == null)
-            {
-                DeleteProperty(propertyDefinition);
-            }
-            else
-            {
-                if (Properties.TryGetValue(propertyDefinition, out var currentValue))
-                {
-                    if (currentValue is ComplexProperty complexProperty)
-                    {
-                        complexProperty.OnChange -= PropertyChanged;
-                    }
-                }
-
-                // If the property was to be deleted, the deletion becomes an update.
-                if (_deletedProperties.Remove(propertyDefinition))
-                {
-                    AddToChangeList(propertyDefinition, _modifiedProperties);
-                }
-                else
-                {
-                    // If the property value was not set, we have a newly set property.
-                    if (!Properties.ContainsKey(propertyDefinition))
-                    {
-                        AddToChangeList(propertyDefinition, _addedProperties);
-                    }
-                    else
-                    {
-                        // The last case is that we have a modified property.
-                        if (!_modifiedProperties.Contains(propertyDefinition))
-                        {
-                            AddToChangeList(propertyDefinition, _modifiedProperties);
-                        }
-                    }
-                }
-
-                InitComplexProperty(value as ComplexProperty);
-                Properties[propertyDefinition] = value;
-
-                Changed();
-            }
-        }
     }
 
     /// <summary>

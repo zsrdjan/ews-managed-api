@@ -31,15 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class FindPeopleRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     Default constructor
-    /// </summary>
-    /// <param name="service">Exchange web service</param>
-    internal FindPeopleRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Accessors of the view controlling the number of personas returned.
     /// </summary>
     internal ViewBase View { get; set; }
@@ -76,6 +67,15 @@ internal sealed class FindPeopleRequest : SimpleServiceRequestBase
     ///     The query mode for suggestion index enabled queries
     /// </summary>
     internal PeopleQueryMode QueryMode { get; set; }
+
+    /// <summary>
+    ///     Default constructor
+    /// </summary>
+    /// <param name="service">Exchange web service</param>
+    internal FindPeopleRequest(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
     ///     Validate request.

@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetEventsResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets event results from subscription.
+    /// </summary>
+    internal GetEventsResults Results { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetEventsResponse" /> class.
     /// </summary>
     internal GetEventsResponse()
@@ -47,9 +52,4 @@ internal sealed class GetEventsResponse : ServiceResponse
 
         Results.LoadFromXml(reader);
     }
-
-    /// <summary>
-    ///     Gets event results from subscription.
-    /// </summary>
-    internal GetEventsResults Results { get; } = new();
 }

@@ -51,14 +51,14 @@ public sealed class RuleActions : ComplexProperty
     private bool _delete;
 
     /// <summary>
-    ///     The MarkImportance action.
-    /// </summary>
-    private Importance? _markImportance;
-
-    /// <summary>
     ///     The MarkAsRead action.
     /// </summary>
     private bool _markAsRead;
+
+    /// <summary>
+    ///     The MarkImportance action.
+    /// </summary>
+    private Importance? _markImportance;
 
     /// <summary>
     ///     The MoveToFolder action.
@@ -79,18 +79,6 @@ public sealed class RuleActions : ComplexProperty
     ///     The StopProcessingRules action.
     /// </summary>
     private bool _stopProcessingRules;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
-    /// </summary>
-    internal RuleActions()
-    {
-        AssignCategories = new StringList();
-        ForwardAsAttachmentToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        ForwardToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        RedirectToRecipients = new EmailAddressCollection(XmlElementNames.Address);
-        SendSMSAlertToRecipients = new Collection<MobilePhone>();
-    }
 
     /// <summary>
     ///     Gets the categories that should be stamped on incoming messages.
@@ -210,6 +198,18 @@ public sealed class RuleActions : ComplexProperty
     {
         get => _stopProcessingRules;
         set => SetFieldValue(ref _stopProcessingRules, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
+    /// </summary>
+    internal RuleActions()
+    {
+        AssignCategories = new StringList();
+        ForwardAsAttachmentToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        ForwardToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        RedirectToRecipients = new EmailAddressCollection(XmlElementNames.Address);
+        SendSMSAlertToRecipients = new Collection<MobilePhone>();
     }
 
     /// <summary>

@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 public class UnifiedGroup : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="UnifiedGroup" /> class.
-    /// </summary>
-    internal UnifiedGroup()
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets whether this groups is a favorite group
     /// </summary>
     public bool IsFavorite { get; set; }
@@ -79,6 +72,13 @@ public class UnifiedGroup : ComplexProperty
     ///     Gets or sets the AccessType associated with this group
     /// </summary>
     public UnifiedGroupAccessType AccessType { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UnifiedGroup" /> class.
+    /// </summary>
+    internal UnifiedGroup()
+    {
+    }
 
     /// <summary>
     ///     Read Conversations from XML.

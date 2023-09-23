@@ -33,16 +33,16 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 internal sealed class GetUserUnifiedGroupsResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets or sets the UnifiedGroupsSet associated with the response
+    /// </summary>
+    public Collection<UnifiedGroupsSet> GroupsSets { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserUnifiedGroupsResponse" /> class.
     /// </summary>
     internal GetUserUnifiedGroupsResponse()
     {
     }
-
-    /// <summary>
-    ///     Gets or sets the UnifiedGroupsSet associated with the response
-    /// </summary>
-    public Collection<UnifiedGroupsSet> GroupsSets { get; } = new();
 
     /// <summary>
     ///     Read Conversations from XML.

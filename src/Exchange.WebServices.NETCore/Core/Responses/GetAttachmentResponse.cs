@@ -36,6 +36,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetAttachmentResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the attachment that was retrieved.
+    /// </summary>
+    public Attachment? Attachment { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
@@ -78,9 +83,4 @@ public sealed class GetAttachmentResponse : ServiceResponse
             reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
         }
     }
-
-    /// <summary>
-    ///     Gets the attachment that was retrieved.
-    /// </summary>
-    public Attachment? Attachment { get; private set; }
 }

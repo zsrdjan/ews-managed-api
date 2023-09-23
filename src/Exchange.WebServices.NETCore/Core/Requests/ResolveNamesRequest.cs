@@ -42,6 +42,47 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
         };
 
     /// <summary>
+    ///     Gets or sets the name to resolve.
+    /// </summary>
+    /// <value>The name to resolve.</value>
+    public string NameToResolve { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to return full contact data or not.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
+    /// </value>
+    public bool ReturnFullContactData { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the search location.
+    /// </summary>
+    /// <value>The search scope.</value>
+    public ResolveNameSearchLocation SearchLocation { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the PropertySet for Contact Data
+    /// </summary>
+    /// <value>The PropertySet</value>
+    public PropertySet? ContactDataPropertySet { get; set; }
+
+    /// <summary>
+    ///     Gets the parent folder ids.
+    /// </summary>
+    /// <value>The parent folder ids.</value>
+    public FolderIdWrapperList ParentFolderIds { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ResolveNamesRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ResolveNamesRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
     ///     Asserts the valid.
     /// </summary>
     internal override void Validate()
@@ -86,15 +127,6 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     protected override string GetResponseMessageXmlElementName()
     {
         return XmlElementNames.ResolveNamesResponseMessage;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ResolveNamesRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal ResolveNamesRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
     }
 
     /// <summary>
@@ -158,36 +190,4 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the name to resolve.
-    /// </summary>
-    /// <value>The name to resolve.</value>
-    public string NameToResolve { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether to return full contact data or not.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
-    /// </value>
-    public bool ReturnFullContactData { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the search location.
-    /// </summary>
-    /// <value>The search scope.</value>
-    public ResolveNameSearchLocation SearchLocation { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the PropertySet for Contact Data
-    /// </summary>
-    /// <value>The PropertySet</value>
-    public PropertySet? ContactDataPropertySet { get; set; }
-
-    /// <summary>
-    ///     Gets the parent folder ids.
-    /// </summary>
-    /// <value>The parent folder ids.</value>
-    public FolderIdWrapperList ParentFolderIds { get; } = new();
 }

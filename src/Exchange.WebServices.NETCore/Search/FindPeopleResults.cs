@@ -36,14 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class FindPeopleResults
 {
     /// <summary>
-    ///     Creates a new instance of the <see cref="FindPeopleResults" /> class.
-    /// </summary>
-    internal FindPeopleResults()
-    {
-        Personas = new Collection<Persona>();
-    }
-
-    /// <summary>
     ///     Accessors for the Personas that were found by the search operation.
     /// </summary>
     public Collection<Persona> Personas { get; internal set; }
@@ -62,4 +54,12 @@ public sealed class FindPeopleResults
     ///     Accessors for the first index of the loaded row.
     /// </summary>
     public int? FirstLoadedRowIndex { get; internal set; }
+
+    /// <summary>
+    ///     Creates a new instance of the <see cref="FindPeopleResults" /> class.
+    /// </summary>
+    internal FindPeopleResults()
+    {
+        Personas = new Collection<Persona>();
+    }
 }

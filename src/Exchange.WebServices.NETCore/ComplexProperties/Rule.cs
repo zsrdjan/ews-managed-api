@@ -36,19 +36,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class Rule : ComplexProperty
 {
     /// <summary>
-    ///     The rule ID.
-    /// </summary>
-    private string _ruleId;
-
-    /// <summary>
     ///     The rule display name.
     /// </summary>
     private string _displayName;
-
-    /// <summary>
-    ///     The rule priority.
-    /// </summary>
-    private int _priority;
 
     /// <summary>
     ///     The rule status of enabled or not.
@@ -61,18 +51,14 @@ public sealed class Rule : ComplexProperty
     private bool _isInError;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Rule" /> class.
+    ///     The rule priority.
     /// </summary>
-    public Rule()
-    {
-        //// New rule has priority as 0 by default
-        _priority = 1;
-        //// New rule is enabled by default
-        _isEnabled = true;
-        Conditions = new RulePredicates();
-        Actions = new RuleActions();
-        Exceptions = new RulePredicates();
-    }
+    private int _priority;
+
+    /// <summary>
+    ///     The rule ID.
+    /// </summary>
+    private string _ruleId;
 
     /// <summary>
     ///     Gets or sets the Id of this rule.
@@ -143,6 +129,20 @@ public sealed class Rule : ComplexProperty
     ///     its conditions evaluate to true.
     /// </summary>
     public RulePredicates Exceptions { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Rule" /> class.
+    /// </summary>
+    public Rule()
+    {
+        //// New rule has priority as 0 by default
+        _priority = 1;
+        //// New rule is enabled by default
+        _isEnabled = true;
+        Conditions = new RulePredicates();
+        Actions = new RuleActions();
+        Exceptions = new RulePredicates();
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

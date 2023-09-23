@@ -33,8 +33,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class LegacyAvailabilityTimeZone : ComplexProperty
 {
     private TimeSpan _bias;
-    private LegacyAvailabilityTimeZoneTime _standardTime;
     private LegacyAvailabilityTimeZoneTime _daylightTime;
+    private LegacyAvailabilityTimeZoneTime _standardTime;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="LegacyAvailabilityTimeZone" /> class.

@@ -34,35 +34,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
 {
     /// <summary>
-    ///     Creates a new instance of the <see cref="PersonaEmailAddress" /> class.
+    ///     Email address details
     /// </summary>
-    public PersonaEmailAddress()
-    {
-        _emailAddress = new EmailAddress();
-    }
-
-    /// <summary>
-    ///     Creates a new instance of the <see cref="EmailAddress" /> class.
-    /// </summary>
-    /// <param name="smtpAddress">The SMTP address used to initialize the PersonaEmailAddress.</param>
-    public PersonaEmailAddress(string smtpAddress)
-        : this()
-    {
-        EwsUtilities.ValidateParam(smtpAddress);
-        Address = smtpAddress;
-    }
-
-    /// <summary>
-    ///     Creates a new instance of the <see cref="PersonaEmailAddress" /> class.
-    /// </summary>
-    /// <param name="name">The name used to initialize the PersonaEmailAddress.</param>
-    /// <param name="smtpAddress">The SMTP address used to initialize the PersonaEmailAddress.</param>
-    public PersonaEmailAddress(string name, string smtpAddress)
-        : this(smtpAddress)
-    {
-        EwsUtilities.ValidateParam(name);
-        Name = name;
-    }
+    private readonly EmailAddress _emailAddress;
 
     /// <summary>
     ///     Name accessors
@@ -116,9 +90,50 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
     public string OriginalDisplayName { get; set; }
 
     /// <summary>
-    ///     Email address details
+    ///     Creates a new instance of the <see cref="PersonaEmailAddress" /> class.
     /// </summary>
-    private readonly EmailAddress _emailAddress;
+    public PersonaEmailAddress()
+    {
+        _emailAddress = new EmailAddress();
+    }
+
+    /// <summary>
+    ///     Creates a new instance of the <see cref="EmailAddress" /> class.
+    /// </summary>
+    /// <param name="smtpAddress">The SMTP address used to initialize the PersonaEmailAddress.</param>
+    public PersonaEmailAddress(string smtpAddress)
+        : this()
+    {
+        EwsUtilities.ValidateParam(smtpAddress);
+        Address = smtpAddress;
+    }
+
+    /// <summary>
+    ///     Creates a new instance of the <see cref="PersonaEmailAddress" /> class.
+    /// </summary>
+    /// <param name="name">The name used to initialize the PersonaEmailAddress.</param>
+    /// <param name="smtpAddress">The SMTP address used to initialize the PersonaEmailAddress.</param>
+    public PersonaEmailAddress(string name, string smtpAddress)
+        : this(smtpAddress)
+    {
+        EwsUtilities.ValidateParam(name);
+        Name = name;
+    }
+
+
+    #region ISearchStringProvider methods
+
+    /// <summary>
+    ///     Get a string representation for using this instance in a search filter.
+    /// </summary>
+    /// <returns>String representation of instance.</returns>
+    string ISearchStringProvider.GetSearchString()
+    {
+        return Address;
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Defines an implicit conversion from a string representing an SMTP address to PeronaEmailAddress.
@@ -213,20 +228,6 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
             Id.WriteToXml(writer, XmlElementNames.ItemId);
         }
     }
-
-
-    #region ISearchStringProvider methods
-
-    /// <summary>
-    ///     Get a string representation for using this instance in a search filter.
-    /// </summary>
-    /// <returns>String representation of instance.</returns>
-    string ISearchStringProvider.GetSearchString()
-    {
-        return Address;
-    }
-
-    #endregion
 
 
     #region Object method overrides

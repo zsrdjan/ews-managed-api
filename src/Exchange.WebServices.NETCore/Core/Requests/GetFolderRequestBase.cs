@@ -33,6 +33,12 @@ internal abstract class GetFolderRequestBase<TResponse> : GetRequest<Folder, TRe
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the folder ids.
+    /// </summary>
+    /// <value>The folder ids.</value>
+    public FolderIdWrapperList FolderIds { get; } = new FolderIdWrapperList();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetFolderRequestBase&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -116,10 +122,4 @@ internal abstract class GetFolderRequestBase<TResponse> : GetRequest<Folder, TRe
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the folder ids.
-    /// </summary>
-    /// <value>The folder ids.</value>
-    public FolderIdWrapperList FolderIds { get; } = new FolderIdWrapperList();
 }

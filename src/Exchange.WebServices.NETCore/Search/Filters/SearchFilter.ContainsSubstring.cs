@@ -40,9 +40,36 @@ public abstract partial class SearchFilter
     [PublicAPI]
     public sealed class ContainsSubstring : PropertyBasedFilter
     {
-        private ContainmentMode _containmentMode = ContainmentMode.Substring;
         private ComparisonMode _comparisonMode = ComparisonMode.IgnoreCase;
+        private ContainmentMode _containmentMode = ContainmentMode.Substring;
         private string _value;
+
+        /// <summary>
+        ///     Gets or sets the containment mode.
+        /// </summary>
+        public ContainmentMode ContainmentMode
+        {
+            get => _containmentMode;
+            set => SetFieldValue(ref _containmentMode, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the comparison mode.
+        /// </summary>
+        public ComparisonMode ComparisonMode
+        {
+            get => _comparisonMode;
+            set => SetFieldValue(ref _comparisonMode, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the value to compare the specified property with.
+        /// </summary>
+        public string Value
+        {
+            get => _value;
+            set => SetFieldValue(ref _value, value);
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="SearchFilter.ContainsSubstring" /> class.
@@ -180,33 +207,6 @@ public abstract partial class SearchFilter
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Constant);
             writer.WriteAttributeValue(XmlAttributeNames.Value, Value);
             writer.WriteEndElement(); // Constant
-        }
-
-        /// <summary>
-        ///     Gets or sets the containment mode.
-        /// </summary>
-        public ContainmentMode ContainmentMode
-        {
-            get => _containmentMode;
-            set => SetFieldValue(ref _containmentMode, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the comparison mode.
-        /// </summary>
-        public ComparisonMode ComparisonMode
-        {
-            get => _comparisonMode;
-            set => SetFieldValue(ref _comparisonMode, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the value to compare the specified property with.
-        /// </summary>
-        public string Value
-        {
-            get => _value;
-            set => SetFieldValue(ref _value, value);
         }
     }
 }

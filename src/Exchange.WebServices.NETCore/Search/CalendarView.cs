@@ -36,6 +36,62 @@ public sealed class CalendarView : ViewBase
     private int? _maxItemsReturned;
 
     /// <summary>
+    ///     Gets or sets the start date.
+    /// </summary>
+    public DateTime StartDate { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the end date.
+    /// </summary>
+    public DateTime EndDate { get; set; }
+
+    /// <summary>
+    ///     The maximum number of items the search operation should return.
+    /// </summary>
+    public int? MaxItemsReturned
+    {
+        get => _maxItemsReturned;
+
+        set
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
+            }
+
+            _maxItemsReturned = value;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
+    /// </summary>
+    public ItemTraversal Traversal { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of CalendarView.
+    /// </summary>
+    /// <param name="startDate">The start date.</param>
+    /// <param name="endDate">The end date.</param>
+    public CalendarView(DateTime startDate, DateTime endDate)
+    {
+        StartDate = startDate;
+        EndDate = endDate;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of CalendarView.
+    /// </summary>
+    /// <param name="startDate">The start date.</param>
+    /// <param name="endDate">The end date.</param>
+    /// <param name="maxItemsReturned">The maximum number of items the search operation should return.</param>
+    public CalendarView(DateTime startDate, DateTime endDate, int maxItemsReturned)
+        : this(startDate, endDate)
+    {
+        MaxItemsReturned = maxItemsReturned;
+    }
+
+    /// <summary>
     ///     Writes the attributes to XML.
     /// </summary>
     /// <param name="writer">The writer.</param>
@@ -70,29 +126,6 @@ public sealed class CalendarView : ViewBase
     internal override ServiceObjectType GetServiceObjectType()
     {
         return ServiceObjectType.Item;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of CalendarView.
-    /// </summary>
-    /// <param name="startDate">The start date.</param>
-    /// <param name="endDate">The end date.</param>
-    public CalendarView(DateTime startDate, DateTime endDate)
-    {
-        StartDate = startDate;
-        EndDate = endDate;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of CalendarView.
-    /// </summary>
-    /// <param name="startDate">The start date.</param>
-    /// <param name="endDate">The end date.</param>
-    /// <param name="maxItemsReturned">The maximum number of items the search operation should return.</param>
-    public CalendarView(DateTime startDate, DateTime endDate, int maxItemsReturned)
-        : this(startDate, endDate)
-    {
-        MaxItemsReturned = maxItemsReturned;
     }
 
     /// <summary>
@@ -140,37 +173,4 @@ public sealed class CalendarView : ViewBase
     {
         return MaxItemsReturned;
     }
-
-    /// <summary>
-    ///     Gets or sets the start date.
-    /// </summary>
-    public DateTime StartDate { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the end date.
-    /// </summary>
-    public DateTime EndDate { get; set; }
-
-    /// <summary>
-    ///     The maximum number of items the search operation should return.
-    /// </summary>
-    public int? MaxItemsReturned
-    {
-        get => _maxItemsReturned;
-
-        set
-        {
-            if (value <= 0)
-            {
-                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
-            }
-
-            _maxItemsReturned = value;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
-    /// </summary>
-    public ItemTraversal Traversal { get; set; }
 }

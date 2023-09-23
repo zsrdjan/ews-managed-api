@@ -36,6 +36,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class DelegateInformation
 {
     /// <summary>
+    ///     Gets a list of responses for each of the delegate users concerned by the operation.
+    /// </summary>
+    public Collection<DelegateUserResponse> DelegateUserResponses { get; }
+
+    /// <summary>
+    ///     Gets a value indicating if and how meeting requests are delivered to delegates.
+    /// </summary>
+    public MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope { get; }
+
+    /// <summary>
     ///     Initializes a DelegateInformation object
     /// </summary>
     /// <param name="delegateUserResponses">List of DelegateUserResponses from a GetDelegates request</param>
@@ -48,15 +58,4 @@ public sealed class DelegateInformation
         DelegateUserResponses = new Collection<DelegateUserResponse>(delegateUserResponses);
         MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
     }
-
-
-    /// <summary>
-    ///     Gets a list of responses for each of the delegate users concerned by the operation.
-    /// </summary>
-    public Collection<DelegateUserResponse> DelegateUserResponses { get; }
-
-    /// <summary>
-    ///     Gets a value indicating if and how meeting requests are delivered to delegates.
-    /// </summary>
-    public MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope { get; }
 }

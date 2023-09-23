@@ -31,15 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetAppManifestsRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetAppManifestsRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetAppManifestsRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the api version supported by the client.
     ///     This tells Exchange service which app manifests should be returned based on the api version.
     /// </summary>
@@ -52,6 +43,15 @@ internal sealed class GetAppManifestsRequest : SimpleServiceRequestBase
     /// </summary>
     /// <value>The schema version supported.</value>
     internal string SchemaVersionSupported { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetAppManifestsRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetAppManifestsRequest(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
     ///     Validate request.

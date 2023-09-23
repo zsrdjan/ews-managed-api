@@ -35,6 +35,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class CalendarFolder : Folder
 {
     /// <summary>
+    ///     Initializes an unsaved local instance of <see cref="CalendarFolder" />. To bind to an existing calendar folder, use
+    ///     CalendarFolder.Bind() instead.
+    /// </summary>
+    /// <param name="service">The ExchangeService object to which the calendar folder will be bound.</param>
+    public CalendarFolder(ExchangeService service)
+        : base(service)
+    {
+    }
+
+    /// <summary>
     ///     Binds to an existing calendar folder and loads the specified set of properties.
     ///     Calling this method results in a call to EWS.
     /// </summary>
@@ -100,16 +110,6 @@ public class CalendarFolder : Folder
     )
     {
         return Bind(service, new FolderId(name), PropertySet.FirstClassProperties, token);
-    }
-
-    /// <summary>
-    ///     Initializes an unsaved local instance of <see cref="CalendarFolder" />. To bind to an existing calendar folder, use
-    ///     CalendarFolder.Bind() instead.
-    /// </summary>
-    /// <param name="service">The ExchangeService object to which the calendar folder will be bound.</param>
-    public CalendarFolder(ExchangeService service)
-        : base(service)
-    {
     }
 
     /// <summary>

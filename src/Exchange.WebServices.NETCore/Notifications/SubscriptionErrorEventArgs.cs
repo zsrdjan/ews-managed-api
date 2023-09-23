@@ -34,6 +34,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class SubscriptionErrorEventArgs : EventArgs
 {
     /// <summary>
+    ///     Gets the subscription for which an error occurred. If Subscription is null, the error applies to the entire
+    ///     connection.
+    /// </summary>
+    public StreamingSubscription? Subscription { get; internal set; }
+
+    /// <summary>
+    ///     Gets the exception representing the error. If Exception is null, the connection was cleanly closed by the server.
+    /// </summary>
+    public Exception Exception { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SubscriptionErrorEventArgs" /> class.
     /// </summary>
     /// <param name="subscription">
@@ -49,15 +60,4 @@ public class SubscriptionErrorEventArgs : EventArgs
         Subscription = subscription;
         Exception = exception;
     }
-
-    /// <summary>
-    ///     Gets the subscription for which an error occurred. If Subscription is null, the error applies to the entire
-    ///     connection.
-    /// </summary>
-    public StreamingSubscription? Subscription { get; internal set; }
-
-    /// <summary>
-    ///     Gets the exception representing the error. If Exception is null, the connection was cleanly closed by the server.
-    /// </summary>
-    public Exception Exception { get; internal set; }
 }

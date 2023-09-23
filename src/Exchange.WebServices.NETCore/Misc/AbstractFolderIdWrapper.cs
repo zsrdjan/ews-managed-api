@@ -31,19 +31,19 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class AbstractFolderIdWrapper
 {
     /// <summary>
+    ///     Initializes a new instance of AbstractFolderIdWrapper.
+    /// </summary>
+    internal AbstractFolderIdWrapper()
+    {
+    }
+
+    /// <summary>
     ///     Obtains the Folder object associated with the wrapper.
     /// </summary>
     /// <returns>The Folder object associated with the wrapper.</returns>
     public virtual Folder? GetFolder()
     {
         return null;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of AbstractFolderIdWrapper.
-    /// </summary>
-    internal AbstractFolderIdWrapper()
-    {
     }
 
     /// <summary>

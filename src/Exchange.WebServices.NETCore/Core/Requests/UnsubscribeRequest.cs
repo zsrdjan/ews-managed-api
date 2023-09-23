@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets or sets the subscription id.
+    /// </summary>
+    public string SubscriptionId { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UnsubscribeRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -112,9 +117,4 @@ internal class UnsubscribeRequest : MultiResponseServiceRequest<ServiceResponse>
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the subscription id.
-    /// </summary>
-    public string SubscriptionId { get; set; }
 }

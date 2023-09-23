@@ -33,9 +33,77 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class SeekToConditionItemView : ViewBase
 {
-    private int _pageSize;
     private SearchFilter _condition;
+    private int _pageSize;
     private ServiceObjectType _serviceObjType;
+
+    /// <summary>
+    ///     The maximum number of items or folders the search operation should return.
+    /// </summary>
+    public int PageSize
+    {
+        get => _pageSize;
+
+        set
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
+            }
+
+            _pageSize = value;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the base point of the offset.
+    /// </summary>
+    public OffsetBasePoint OffsetBasePoint { get; set; } = OffsetBasePoint.Beginning;
+
+    /// <summary>
+    ///     Gets or sets the condition for seek. Available search filter classes include SearchFilter.IsEqualTo,
+    ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
+    ///     is null, no search filters are applied.
+    /// </summary>
+    public SearchFilter Condition
+    {
+        get => _condition;
+        set { _condition = value ?? throw new ArgumentNullException(nameof(Condition)); }
+    }
+
+    /// <summary>
+    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
+    /// </summary>
+    public ItemTraversal Traversal { get; set; }
+
+    /// <summary>
+    ///     Gets the properties against which the returned items should be ordered.
+    /// </summary>
+    public OrderByCollection OrderBy { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SeekToConditionItemView" /> class.
+    /// </summary>
+    /// <param name="condition">Condition to be used when seeking.</param>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    public SeekToConditionItemView(SearchFilter condition, int pageSize)
+    {
+        Condition = condition;
+        PageSize = pageSize;
+        _serviceObjType = ServiceObjectType.Item;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SeekToConditionItemView" /> class.
+    /// </summary>
+    /// <param name="condition">Condition to be used when seeking.</param>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offsetBasePoint">The base point of the offset.</param>
+    public SeekToConditionItemView(SearchFilter condition, int pageSize, OffsetBasePoint offsetBasePoint)
+        : this(condition, pageSize)
+    {
+        OffsetBasePoint = offsetBasePoint;
+    }
 
     /// <summary>
     ///     Gets the type of service object this view applies to.
@@ -146,72 +214,4 @@ public sealed class SeekToConditionItemView : ViewBase
 
         InternalWriteSearchSettingsToXml(writer, groupBy);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="SeekToConditionItemView" /> class.
-    /// </summary>
-    /// <param name="condition">Condition to be used when seeking.</param>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    public SeekToConditionItemView(SearchFilter condition, int pageSize)
-    {
-        Condition = condition;
-        PageSize = pageSize;
-        _serviceObjType = ServiceObjectType.Item;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="SeekToConditionItemView" /> class.
-    /// </summary>
-    /// <param name="condition">Condition to be used when seeking.</param>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offsetBasePoint">The base point of the offset.</param>
-    public SeekToConditionItemView(SearchFilter condition, int pageSize, OffsetBasePoint offsetBasePoint)
-        : this(condition, pageSize)
-    {
-        OffsetBasePoint = offsetBasePoint;
-    }
-
-    /// <summary>
-    ///     The maximum number of items or folders the search operation should return.
-    /// </summary>
-    public int PageSize
-    {
-        get => _pageSize;
-
-        set
-        {
-            if (value <= 0)
-            {
-                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
-            }
-
-            _pageSize = value;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the base point of the offset.
-    /// </summary>
-    public OffsetBasePoint OffsetBasePoint { get; set; } = OffsetBasePoint.Beginning;
-
-    /// <summary>
-    ///     Gets or sets the condition for seek. Available search filter classes include SearchFilter.IsEqualTo,
-    ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
-    ///     is null, no search filters are applied.
-    /// </summary>
-    public SearchFilter Condition
-    {
-        get => _condition;
-        set { _condition = value ?? throw new ArgumentNullException(nameof(Condition)); }
-    }
-
-    /// <summary>
-    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
-    /// </summary>
-    public ItemTraversal Traversal { get; set; }
-
-    /// <summary>
-    ///     Gets the properties against which the returned items should be ordered.
-    /// </summary>
-    public OrderByCollection OrderBy { get; } = new();
 }

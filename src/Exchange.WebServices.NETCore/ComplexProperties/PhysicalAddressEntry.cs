@@ -46,6 +46,38 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     }
 
 
+    #region Classes
+
+    /// <summary>
+    ///     Schema definition for PhysicalAddress
+    /// </summary>
+    private static class PhysicalAddressSchema
+    {
+        public const string Street = "Street";
+        public const string City = "City";
+        public const string State = "State";
+        public const string CountryOrRegion = "CountryOrRegion";
+        public const string PostalCode = "PostalCode";
+
+
+        /// <summary>
+        ///     Gets the XML element names.
+        /// </summary>
+        /// <value>The XML element names.</value>
+        public static List<string> XmlElementNames =>
+            new List<string>
+            {
+                Street,
+                City,
+                State,
+                CountryOrRegion,
+                PostalCode,
+            };
+    }
+
+    #endregion
+
+
     #region Properties
 
     /// <summary>
@@ -246,38 +278,6 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, Key.ToString());
         writer.WriteEndElement(); // IndexedFieldURI
         writer.WriteEndElement(); // ewsObject.GetDeleteFieldXmlElementName()
-    }
-
-    #endregion
-
-
-    #region Classes
-
-    /// <summary>
-    ///     Schema definition for PhysicalAddress
-    /// </summary>
-    private static class PhysicalAddressSchema
-    {
-        public const string Street = "Street";
-        public const string City = "City";
-        public const string State = "State";
-        public const string CountryOrRegion = "CountryOrRegion";
-        public const string PostalCode = "PostalCode";
-
-
-        /// <summary>
-        ///     Gets the XML element names.
-        /// </summary>
-        /// <value>The XML element names.</value>
-        public static List<string> XmlElementNames =>
-            new List<string>
-            {
-                Street,
-                City,
-                State,
-                CountryOrRegion,
-                PostalCode,
-            };
     }
 
     #endregion

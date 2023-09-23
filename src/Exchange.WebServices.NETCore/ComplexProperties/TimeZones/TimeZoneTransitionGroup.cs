@@ -33,8 +33,70 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class TimeZoneTransitionGroup : ComplexProperty
 {
     private readonly TimeZoneDefinition _timeZoneDefinition;
-    private TimeZoneTransition _transitionToStandard;
     private TimeZoneTransition _transitionToDaylight;
+    private TimeZoneTransition _transitionToStandard;
+
+    /// <summary>
+    ///     Gets a value indicating whether this group contains a transition to the Daylight period.
+    /// </summary>
+    /// <value><c>true</c> if this group contains a transition to daylight; otherwise, <c>false</c>.</value>
+    internal bool SupportsDaylight => Transitions.Count == 2;
+
+    /// <summary>
+    ///     Gets the transition to the Daylight period.
+    /// </summary>
+    private TimeZoneTransition TransitionToDaylight
+    {
+        get
+        {
+            InitializeTransitions();
+
+            return _transitionToDaylight;
+        }
+    }
+
+    /// <summary>
+    ///     Gets the transition to the Standard period.
+    /// </summary>
+    private TimeZoneTransition TransitionToStandard
+    {
+        get
+        {
+            InitializeTransitions();
+
+            return _transitionToStandard;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the id of this group.
+    /// </summary>
+    internal string Id { get; set; }
+
+    /// <summary>
+    ///     Gets the transitions in this group.
+    /// </summary>
+    internal List<TimeZoneTransition> Transitions { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeZoneTransitionGroup" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition.</param>
+    internal TimeZoneTransitionGroup(TimeZoneDefinition timeZoneDefinition)
+    {
+        _timeZoneDefinition = timeZoneDefinition;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeZoneTransitionGroup" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition.</param>
+    /// <param name="id">The Id of the new transition group.</param>
+    internal TimeZoneTransitionGroup(TimeZoneDefinition timeZoneDefinition, string id)
+        : this(timeZoneDefinition)
+    {
+        Id = id;
+    }
 
     /// <summary>
     ///     Loads from XML.
@@ -207,48 +269,6 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
     }
 
     /// <summary>
-    ///     Represents custom time zone creation parameters.
-    /// </summary>
-    internal class CustomTimeZoneCreateParams
-    {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="CustomTimeZoneCreateParams" /> class.
-        /// </summary>
-        internal CustomTimeZoneCreateParams()
-        {
-        }
-
-        /// <summary>
-        ///     Gets or sets the base offset to UTC.
-        /// </summary>
-        internal TimeSpan BaseOffsetToUtc { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the display name of the standard period.
-        /// </summary>
-        internal string StandardDisplayName { get; set; }
-
-        /// <summary>
-        ///     Gets or sets the display name of the daylight period.
-        /// </summary>
-        internal string DaylightDisplayName { get; set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether the custom time zone should have a daylight period.
-        /// </summary>
-        /// <value>
-        ///     <c>true</c> if the custom time zone should have a daylight period; otherwise, <c>false</c>.
-        /// </value>
-        internal bool HasDaylightPeriod => !string.IsNullOrEmpty(DaylightDisplayName);
-    }
-
-    /// <summary>
-    ///     Gets a value indicating whether this group contains a transition to the Daylight period.
-    /// </summary>
-    /// <value><c>true</c> if this group contains a transition to daylight; otherwise, <c>false</c>.</value>
-    internal bool SupportsDaylight => Transitions.Count == 2;
-
-    /// <summary>
     ///     Initializes the private members holding references to the transitions to the Daylight
     ///     and Standard periods.
     /// </summary>
@@ -273,32 +293,6 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
         if (_transitionToStandard == null)
         {
             throw new ServiceLocalException(Strings.InvalidOrUnsupportedTimeZoneDefinition);
-        }
-    }
-
-    /// <summary>
-    ///     Gets the transition to the Daylight period.
-    /// </summary>
-    private TimeZoneTransition TransitionToDaylight
-    {
-        get
-        {
-            InitializeTransitions();
-
-            return _transitionToDaylight;
-        }
-    }
-
-    /// <summary>
-    ///     Gets the transition to the Standard period.
-    /// </summary>
-    private TimeZoneTransition TransitionToStandard
-    {
-        get
-        {
-            InitializeTransitions();
-
-            return _transitionToStandard;
         }
     }
 
@@ -367,32 +361,38 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeZoneTransitionGroup" /> class.
+    ///     Represents custom time zone creation parameters.
     /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition.</param>
-    internal TimeZoneTransitionGroup(TimeZoneDefinition timeZoneDefinition)
+    internal class CustomTimeZoneCreateParams
     {
-        _timeZoneDefinition = timeZoneDefinition;
+        /// <summary>
+        ///     Gets or sets the base offset to UTC.
+        /// </summary>
+        internal TimeSpan BaseOffsetToUtc { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the display name of the standard period.
+        /// </summary>
+        internal string StandardDisplayName { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the display name of the daylight period.
+        /// </summary>
+        internal string DaylightDisplayName { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the custom time zone should have a daylight period.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if the custom time zone should have a daylight period; otherwise, <c>false</c>.
+        /// </value>
+        internal bool HasDaylightPeriod => !string.IsNullOrEmpty(DaylightDisplayName);
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CustomTimeZoneCreateParams" /> class.
+        /// </summary>
+        internal CustomTimeZoneCreateParams()
+        {
+        }
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeZoneTransitionGroup" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition.</param>
-    /// <param name="id">The Id of the new transition group.</param>
-    internal TimeZoneTransitionGroup(TimeZoneDefinition timeZoneDefinition, string id)
-        : this(timeZoneDefinition)
-    {
-        Id = id;
-    }
-
-    /// <summary>
-    ///     Gets or sets the id of this group.
-    /// </summary>
-    internal string Id { get; set; }
-
-    /// <summary>
-    ///     Gets the transitions in this group.
-    /// </summary>
-    internal List<TimeZoneTransition> Transitions { get; } = new();
 }

@@ -34,21 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class FailedSearchMailbox
 {
     /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="mailbox">Mailbox identifier</param>
-    /// <param name="errorCode">Error code</param>
-    /// <param name="errorMessage">Error message</param>
-    /// <param name="isArchive">True if it is mailbox archive</param>
-    public FailedSearchMailbox(string mailbox, int errorCode, string errorMessage, bool isArchive = false)
-    {
-        Mailbox = mailbox;
-        ErrorCode = errorCode;
-        ErrorMessage = errorMessage;
-        IsArchive = isArchive;
-    }
-
-    /// <summary>
     ///     Mailbox identifier
     /// </summary>
     public string Mailbox { get; set; }
@@ -67,6 +52,21 @@ public sealed class FailedSearchMailbox
     ///     Whether it is archive mailbox or not
     /// </summary>
     public bool IsArchive { get; set; }
+
+    /// <summary>
+    ///     Constructor
+    /// </summary>
+    /// <param name="mailbox">Mailbox identifier</param>
+    /// <param name="errorCode">Error code</param>
+    /// <param name="errorMessage">Error message</param>
+    /// <param name="isArchive">True if it is mailbox archive</param>
+    public FailedSearchMailbox(string mailbox, int errorCode, string errorMessage, bool isArchive = false)
+    {
+        Mailbox = mailbox;
+        ErrorCode = errorCode;
+        ErrorMessage = errorMessage;
+        IsArchive = isArchive;
+    }
 
     /// <summary>
     ///     Load failed mailboxes xml

@@ -34,19 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class ClientAccessTokenRequest : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
-    /// </summary>
-    /// <param name="id">id</param>
-    /// <param name="tokenType">The tokenType.</param>
-    /// <param name="scope">The scope.</param>
-    public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType, string? scope = null)
-    {
-        Id = id;
-        TokenType = tokenType;
-        Scope = scope;
-    }
-
-    /// <summary>
     ///     Gets the App Id.
     /// </summary>
     public string Id { get; }
@@ -60,4 +47,17 @@ public class ClientAccessTokenRequest : ComplexProperty
     ///     Gets the token scope.
     /// </summary>
     public string? Scope { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientAccessTokenRequest" /> class.
+    /// </summary>
+    /// <param name="id">id</param>
+    /// <param name="tokenType">The tokenType.</param>
+    /// <param name="scope">The scope.</param>
+    public ClientAccessTokenRequest(string id, ClientAccessTokenType tokenType, string? scope = null)
+    {
+        Id = id;
+        TokenType = tokenType;
+        Scope = scope;
+    }
 }

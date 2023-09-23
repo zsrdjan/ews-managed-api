@@ -40,12 +40,56 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     private readonly List<PropertyDefinitionSortDirectionPair> _propDefSortOrderPairList;
 
     /// <summary>
+    ///     Gets the number of elements contained in the collection.
+    /// </summary>
+    public int Count => _propDefSortOrderPairList.Count;
+
+    /// <summary>
+    ///     Gets the element at the specified index from the collection.
+    /// </summary>
+    /// <param name="index">Index.</param>
+    public PropertyDefinitionSortDirectionPair this[int index] => _propDefSortOrderPairList[index];
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="OrderByCollection" /> class.
     /// </summary>
     internal OrderByCollection()
     {
         _propDefSortOrderPairList = new List<PropertyDefinitionSortDirectionPair>();
     }
+
+
+    #region IEnumerable<KeyValuePair<PropertyDefinitionBase,SortDirection>> Members
+
+    /// <summary>
+    ///     Returns an enumerator that iterates through the collection.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+    /// </returns>
+    public IEnumerator<KeyValuePair<PropertyDefinitionBase, SortDirection>> GetEnumerator()
+    {
+        return _propDefSortOrderPairList.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Returns an enumerator that iterates through a collection.
+    /// </summary>
+    /// <returns>
+    ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+    /// </returns>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _propDefSortOrderPairList.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Adds the specified property definition / sort direction pair to the collection.
@@ -81,11 +125,6 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
     {
         return _propDefSortOrderPairList.Exists(pair => pair.Key.Equals(propertyDefinition));
     }
-
-    /// <summary>
-    ///     Gets the number of elements contained in the collection.
-    /// </summary>
-    public int Count => _propDefSortOrderPairList.Count;
 
     /// <summary>
     ///     Removes the specified property definition from the collection.
@@ -155,42 +194,4 @@ public sealed class OrderByCollection : IEnumerable<PropertyDefinitionSortDirect
             writer.WriteEndElement();
         }
     }
-
-    /// <summary>
-    ///     Gets the element at the specified index from the collection.
-    /// </summary>
-    /// <param name="index">Index.</param>
-    public PropertyDefinitionSortDirectionPair this[int index] => _propDefSortOrderPairList[index];
-
-
-    #region IEnumerable<KeyValuePair<PropertyDefinitionBase,SortDirection>> Members
-
-    /// <summary>
-    ///     Returns an enumerator that iterates through the collection.
-    /// </summary>
-    /// <returns>
-    ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
-    /// </returns>
-    public IEnumerator<KeyValuePair<PropertyDefinitionBase, SortDirection>> GetEnumerator()
-    {
-        return _propDefSortOrderPairList.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Returns an enumerator that iterates through a collection.
-    /// </summary>
-    /// <returns>
-    ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-    /// </returns>
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return _propDefSortOrderPairList.GetEnumerator();
-    }
-
-    #endregion
 }

@@ -5,18 +5,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public class OutOfOfficeMessage
 {
+    public string Message { get; }
+
+    public DateTime? StartTime { get; }
+
+    public DateTime? EndTime { get; }
+
     public OutOfOfficeMessage(string message, DateTime? startTime, DateTime? endTime)
     {
         Message = message;
         StartTime = startTime;
         EndTime = endTime;
     }
-
-    public string Message { get; }
-
-    public DateTime? StartTime { get; }
-
-    public DateTime? EndTime { get; }
 }
 
 /// <summary>
@@ -25,6 +25,63 @@ public class OutOfOfficeMessage
 [PublicAPI]
 public sealed class MailTipsResponseMessage : ServiceResponse
 {
+    // MailTips node: https://msdn.microsoft.com/en-us/library/dd899507(v=exchg.140).aspx
+
+    /// <summary>
+    /// Represents the mailbox of the recipient.
+    /// </summary>
+    public Mailbox RecipientAddress { get; private set; }
+
+    /// <summary>
+    /// Indicates that the mail tips in this element could not be evaluated before the server's processing timeout expired.
+    /// </summary>
+    public string PendingMailTips { get; private set; }
+
+    /// <summary>
+    /// Represents the response message and a duration time for sending the response message.
+    /// </summary>
+    public OutOfOfficeMessage OutOfOffice { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the mailbox for the recipient is full.
+    /// </summary>
+    public bool? MailboxFull { get; private set; }
+
+    /// <summary>
+    /// Represents a customized mail tip message.
+    /// </summary>
+    public string CustomMailTip { get; private set; }
+
+    /// <summary>
+    /// Represents the count of all members in a group.
+    /// </summary>
+    public int? TotalMemberCount { get; private set; }
+
+    /// <summary>
+    /// Represents the count of external members in a group.
+    /// </summary>
+    public int? ExternalMemberCount { get; private set; }
+
+    /// <summary>
+    /// Represents the maximum message size the recipient can accept.
+    /// </summary>
+    public int? MaxMessageSize { get; private set; }
+
+    /// <summary>
+    /// Indicates whether delivery restrictions will prevent the sender's message from reaching the recipient.
+    /// </summary>
+    public bool? DeliveryRestricted { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the recipient's mailbox is being moderated.
+    /// </summary>
+    public bool? IsModerated { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the recipient is invalid.
+    /// </summary>
+    public bool? InvalidRecipient { get; private set; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MailTipsResponseMessage"/> class.
     /// </summary>
@@ -138,61 +195,4 @@ public sealed class MailTipsResponseMessage : ServiceResponse
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.MailTips);
     }
-
-    // MailTips node: https://msdn.microsoft.com/en-us/library/dd899507(v=exchg.140).aspx
-
-    /// <summary>
-    /// Represents the mailbox of the recipient.
-    /// </summary>
-    public Mailbox RecipientAddress { get; private set; }
-
-    /// <summary>
-    /// Indicates that the mail tips in this element could not be evaluated before the server's processing timeout expired.
-    /// </summary>
-    public string PendingMailTips { get; private set; }
-
-    /// <summary>
-    /// Represents the response message and a duration time for sending the response message.
-    /// </summary>
-    public OutOfOfficeMessage OutOfOffice { get; private set; }
-
-    /// <summary>
-    /// Indicates whether the mailbox for the recipient is full.
-    /// </summary>
-    public bool? MailboxFull { get; private set; }
-
-    /// <summary>
-    /// Represents a customized mail tip message.
-    /// </summary>
-    public string CustomMailTip { get; private set; }
-
-    /// <summary>
-    /// Represents the count of all members in a group.
-    /// </summary>
-    public int? TotalMemberCount { get; private set; }
-
-    /// <summary>
-    /// Represents the count of external members in a group.
-    /// </summary>
-    public int? ExternalMemberCount { get; private set; }
-
-    /// <summary>
-    /// Represents the maximum message size the recipient can accept.
-    /// </summary>
-    public int? MaxMessageSize { get; private set; }
-
-    /// <summary>
-    /// Indicates whether delivery restrictions will prevent the sender's message from reaching the recipient.
-    /// </summary>
-    public bool? DeliveryRestricted { get; private set; }
-
-    /// <summary>
-    /// Indicates whether the recipient's mailbox is being moderated.
-    /// </summary>
-    public bool? IsModerated { get; private set; }
-
-    /// <summary>
-    /// Indicates whether the recipient is invalid.
-    /// </summary>
-    public bool? InvalidRecipient { get; private set; }
 }

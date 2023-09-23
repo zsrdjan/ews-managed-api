@@ -34,31 +34,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class FolderView : PagedView
 {
     /// <summary>
-    ///     Gets the name of the view XML element.
+    ///     Gets or sets the search traversal mode. Defaults to FolderTraversal.Shallow.
     /// </summary>
-    /// <returns>XML element name.</returns>
-    internal override string GetViewXmlElementName()
-    {
-        return XmlElementNames.IndexedPageFolderView;
-    }
-
-    /// <summary>
-    ///     Gets the type of service object this view applies to.
-    /// </summary>
-    /// <returns>A ServiceObjectType value.</returns>
-    internal override ServiceObjectType GetServiceObjectType()
-    {
-        return ServiceObjectType.Folder;
-    }
-
-    /// <summary>
-    ///     Writes the attributes to XML.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-    {
-        writer.WriteAttributeValue(XmlAttributeNames.Traversal, Traversal);
-    }
+    public FolderTraversal Traversal { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FolderView" /> class.
@@ -91,7 +69,29 @@ public sealed class FolderView : PagedView
     }
 
     /// <summary>
-    ///     Gets or sets the search traversal mode. Defaults to FolderTraversal.Shallow.
+    ///     Gets the name of the view XML element.
     /// </summary>
-    public FolderTraversal Traversal { get; set; }
+    /// <returns>XML element name.</returns>
+    internal override string GetViewXmlElementName()
+    {
+        return XmlElementNames.IndexedPageFolderView;
+    }
+
+    /// <summary>
+    ///     Gets the type of service object this view applies to.
+    /// </summary>
+    /// <returns>A ServiceObjectType value.</returns>
+    internal override ServiceObjectType GetServiceObjectType()
+    {
+        return ServiceObjectType.Folder;
+    }
+
+    /// <summary>
+    ///     Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteAttributeValue(XmlAttributeNames.Traversal, Traversal);
+    }
 }

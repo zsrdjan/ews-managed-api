@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class NonIndexableItemDetailsResult
 {
     /// <summary>
+    ///     Collection of items
+    /// </summary>
+    public NonIndexableItem[]? Items { get; set; }
+
+    /// <summary>
+    ///     Failed mailboxes
+    /// </summary>
+    public FailedSearchMailbox[]? FailedMailboxes { get; set; }
+
+    /// <summary>
     ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
@@ -75,14 +85,4 @@ public sealed class NonIndexableItemDetailsResult
 
         return nonIndexableItemDetailsResult;
     }
-
-    /// <summary>
-    ///     Collection of items
-    /// </summary>
-    public NonIndexableItem[]? Items { get; set; }
-
-    /// <summary>
-    ///     Failed mailboxes
-    /// </summary>
-    public FailedSearchMailbox[]? FailedMailboxes { get; set; }
 }

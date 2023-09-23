@@ -34,6 +34,41 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class Conflict : ComplexProperty
 {
     /// <summary>
+    ///     Gets the type of the conflict.
+    /// </summary>
+    public ConflictType ConflictType { get; }
+
+    /// <summary>
+    ///     Gets the number of users, resources, and rooms in the conflicting group. The value of this property
+    ///     is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
+    /// </summary>
+    public int NumberOfMembers { get; private set; }
+
+    /// <summary>
+    ///     Gets the number of members who are available (whose status is Free) in the conflicting group. The value
+    ///     of this property is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
+    /// </summary>
+    public int NumberOfMembersAvailable { get; private set; }
+
+    /// <summary>
+    ///     Gets the number of members who have a conflict (whose status is Busy, OOF or Tentative) in the conflicting
+    ///     group. The value of this property is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
+    /// </summary>
+    public int NumberOfMembersWithConflict { get; private set; }
+
+    /// <summary>
+    ///     Gets the number of members who do not have published free/busy data in the conflicting group. The value
+    ///     of this property is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
+    /// </summary>
+    public int NumberOfMembersWithNoData { get; private set; }
+
+    /// <summary>
+    ///     Gets the free/busy status of the conflicting attendee. The value of this property is only meaningful when
+    ///     ConflictType is equal to ConflictType.IndividualAttendee.
+    /// </summary>
+    public LegacyFreeBusyStatus FreeBusyStatus { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="Conflict" /> class.
     /// </summary>
     /// <param name="conflictType">The type of the conflict.</param>
@@ -82,39 +117,4 @@ public sealed class Conflict : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the type of the conflict.
-    /// </summary>
-    public ConflictType ConflictType { get; }
-
-    /// <summary>
-    ///     Gets the number of users, resources, and rooms in the conflicting group. The value of this property
-    ///     is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
-    /// </summary>
-    public int NumberOfMembers { get; private set; }
-
-    /// <summary>
-    ///     Gets the number of members who are available (whose status is Free) in the conflicting group. The value
-    ///     of this property is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
-    /// </summary>
-    public int NumberOfMembersAvailable { get; private set; }
-
-    /// <summary>
-    ///     Gets the number of members who have a conflict (whose status is Busy, OOF or Tentative) in the conflicting
-    ///     group. The value of this property is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
-    /// </summary>
-    public int NumberOfMembersWithConflict { get; private set; }
-
-    /// <summary>
-    ///     Gets the number of members who do not have published free/busy data in the conflicting group. The value
-    ///     of this property is only meaningful when ConflictType is equal to ConflictType.GroupConflict.
-    /// </summary>
-    public int NumberOfMembersWithNoData { get; private set; }
-
-    /// <summary>
-    ///     Gets the free/busy status of the conflicting attendee. The value of this property is only meaningful when
-    ///     ConflictType is equal to ConflictType.IndividualAttendee.
-    /// </summary>
-    public LegacyFreeBusyStatus FreeBusyStatus { get; private set; }
 }

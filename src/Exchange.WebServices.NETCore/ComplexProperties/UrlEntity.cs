@@ -34,16 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class UrlEntity : ExtractedEntity
 {
     /// <summary>
+    ///     Gets the meeting suggestion Location.
+    /// </summary>
+    public string Url { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UrlEntity" /> class.
     /// </summary>
     internal UrlEntity()
     {
     }
-
-    /// <summary>
-    ///     Gets the meeting suggestion Location.
-    /// </summary>
-    public string Url { get; internal set; }
 
     /// <summary>
     ///     Tries to read element from XML.

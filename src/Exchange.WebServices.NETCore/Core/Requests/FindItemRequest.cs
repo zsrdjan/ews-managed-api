@@ -33,6 +33,12 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     where TItem : Item
 {
     /// <summary>
+    ///     Gets or sets the group by.
+    /// </summary>
+    /// <value>The group by.</value>
+    public Grouping? GroupBy { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="FindItemRequest&lt;TItem&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -97,10 +103,4 @@ internal sealed class FindItemRequest<TItem> : FindRequest<FindItemResponse<TIte
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the group by.
-    /// </summary>
-    /// <value>The group by.</value>
-    public Grouping? GroupBy { get; set; }
 }

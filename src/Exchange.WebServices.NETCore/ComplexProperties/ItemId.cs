@@ -41,6 +41,15 @@ public class ItemId : ServiceId
     }
 
     /// <summary>
+    ///     Initializes a new instance of ItemId.
+    /// </summary>
+    /// <param name="uniqueId">The unique Id used to initialize the ItemId.</param>
+    public ItemId(string uniqueId)
+        : base(uniqueId)
+    {
+    }
+
+    /// <summary>
     ///     Defines an implicit conversion between string and ItemId.
     /// </summary>
     /// <param name="uniqueId">The unique Id to convert to ItemId.</param>
@@ -57,14 +66,5 @@ public class ItemId : ServiceId
     internal override string GetXmlElementName()
     {
         return XmlElementNames.ItemId;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of ItemId.
-    /// </summary>
-    /// <param name="uniqueId">The unique Id used to initialize the ItemId.</param>
-    public ItemId(string uniqueId)
-        : base(uniqueId)
-    {
     }
 }

@@ -34,6 +34,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ItemEvent : NotificationEvent
 {
     /// <summary>
+    ///     Gets the Id of the item this event applies to.
+    /// </summary>
+    public ItemId ItemId { get; private set; }
+
+    /// <summary>
+    ///     Gets the Id of the item that was moved or copied. OldItemId is only meaningful
+    ///     when EventType is equal to either EventType.Moved or EventType.Copied. For
+    ///     all other event types, OldItemId is null.
+    /// </summary>
+    public ItemId OldItemId { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ItemEvent" /> class.
     /// </summary>
     /// <param name="eventType">Type of the event.</param>
@@ -77,16 +89,4 @@ public sealed class ItemEvent : NotificationEvent
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the Id of the item this event applies to.
-    /// </summary>
-    public ItemId ItemId { get; private set; }
-
-    /// <summary>
-    ///     Gets the Id of the item that was moved or copied. OldItemId is only meaningful
-    ///     when EventType is equal to either EventType.Moved or EventType.Copied. For
-    ///     all other event types, OldItemId is null.
-    /// </summary>
-    public ItemId OldItemId { get; private set; }
 }

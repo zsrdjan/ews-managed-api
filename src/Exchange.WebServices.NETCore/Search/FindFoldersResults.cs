@@ -36,13 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class FindFoldersResults : IEnumerable<Folder>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="FindFoldersResults" /> class.
-    /// </summary>
-    internal FindFoldersResults()
-    {
-    }
-
-    /// <summary>
     ///     Gets the total number of folders matching the search criteria available in the searched folder.
     /// </summary>
     public int TotalCount { get; internal set; }
@@ -63,6 +56,13 @@ public sealed class FindFoldersResults : IEnumerable<Folder>
     ///     Gets a collection containing the folders that were found by the search operation.
     /// </summary>
     public Collection<Folder> Folders { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FindFoldersResults" /> class.
+    /// </summary>
+    internal FindFoldersResults()
+    {
+    }
 
 
     #region IEnumerable<Folder> Members

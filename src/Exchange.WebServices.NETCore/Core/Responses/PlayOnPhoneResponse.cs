@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class PlayOnPhoneResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the Id of the phone call.
+    /// </summary>
+    internal PhoneCallId PhoneCallId { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PlayOnPhoneResponse" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -51,9 +56,4 @@ internal sealed class PlayOnPhoneResponse : ServiceResponse
         PhoneCallId.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.PhoneCallId);
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.PhoneCallId);
     }
-
-    /// <summary>
-    ///     Gets the Id of the phone call.
-    /// </summary>
-    internal PhoneCallId PhoneCallId { get; }
 }

@@ -37,6 +37,23 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class Appointment : Item, ICalendarActionProvider
 {
     /// <summary>
+    ///     Gets the default setting for sending cancellations on Delete.
+    /// </summary>
+    /// <returns>If Delete() is called on Appointment, we want to send cancellations and save a copy.</returns>
+    internal override SendCancellationsMode? DefaultSendCancellationsMode => SendCancellationsMode.SendToAllAndSaveCopy;
+
+    /// <summary>
+    ///     Gets the default settings for sending invitations on Save.
+    /// </summary>
+    internal override SendInvitationsMode? DefaultSendInvitationsMode => SendInvitationsMode.SendToAllAndSaveCopy;
+
+    /// <summary>
+    ///     Gets the default settings for sending invitations or cancellations on Update.
+    /// </summary>
+    internal override SendInvitationsOrCancellationsMode? DefaultSendInvitationsOrCancellationsMode =>
+        SendInvitationsOrCancellationsMode.SendToAllAndSaveCopy;
+
+    /// <summary>
     ///     Initializes an unsaved local instance of <see cref="Appointment" />. To bind to an existing appointment, use
     ///     Appointment.Bind() instead.
     /// </summary>
@@ -71,6 +88,71 @@ public class Appointment : Item, ICalendarActionProvider
                 StartTimeZone = parentAttachment.Service.TimeZone;
             }
         }
+    }
+
+    /// <summary>
+    ///     Creates a local meeting acceptance message that can be customized and sent.
+    /// </summary>
+    /// <param name="tentative">Specifies whether the meeting will be tentatively accepted.</param>
+    /// <returns>An AcceptMeetingInvitationMessage representing the meeting acceptance message. </returns>
+    public AcceptMeetingInvitationMessage CreateAcceptMessage(bool tentative)
+    {
+        return new AcceptMeetingInvitationMessage(this, tentative);
+    }
+
+    /// <summary>
+    ///     Creates a local meeting declination message that can be customized and sent.
+    /// </summary>
+    /// <returns>A DeclineMeetingInvitation representing the meeting declination message. </returns>
+    public DeclineMeetingInvitationMessage CreateDeclineMessage()
+    {
+        return new DeclineMeetingInvitationMessage(this);
+    }
+
+    /// <summary>
+    ///     Accepts the meeting. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
+    /// <returns>
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
+    /// </returns>
+    public Task<CalendarActionResults> Accept(bool sendResponse)
+    {
+        return InternalAccept(false, sendResponse);
+    }
+
+    /// <summary>
+    ///     Tentatively accepts the meeting. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
+    /// <returns>
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
+    /// </returns>
+    public Task<CalendarActionResults> AcceptTentatively(bool sendResponse)
+    {
+        return InternalAccept(true, sendResponse);
+    }
+
+    /// <summary>
+    ///     Declines the meeting invitation. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
+    /// <returns>
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
+    /// </returns>
+    public Task<CalendarActionResults> Decline(bool sendResponse)
+    {
+        var decline = CreateDeclineMessage();
+
+        if (sendResponse)
+        {
+            return decline.SendAndSaveCopy();
+        }
+
+        return decline.Save();
     }
 
     /// <summary>
@@ -421,57 +503,12 @@ public class Appointment : Item, ICalendarActionProvider
     }
 
     /// <summary>
-    ///     Creates a local meeting acceptance message that can be customized and sent.
-    /// </summary>
-    /// <param name="tentative">Specifies whether the meeting will be tentatively accepted.</param>
-    /// <returns>An AcceptMeetingInvitationMessage representing the meeting acceptance message. </returns>
-    public AcceptMeetingInvitationMessage CreateAcceptMessage(bool tentative)
-    {
-        return new AcceptMeetingInvitationMessage(this, tentative);
-    }
-
-    /// <summary>
     ///     Creates a local meeting cancellation message that can be customized and sent.
     /// </summary>
     /// <returns>A CancelMeetingMessage representing the meeting cancellation message. </returns>
     public CancelMeetingMessage CreateCancelMeetingMessage()
     {
         return new CancelMeetingMessage(this);
-    }
-
-    /// <summary>
-    ///     Creates a local meeting declination message that can be customized and sent.
-    /// </summary>
-    /// <returns>A DeclineMeetingInvitation representing the meeting declination message. </returns>
-    public DeclineMeetingInvitationMessage CreateDeclineMessage()
-    {
-        return new DeclineMeetingInvitationMessage(this);
-    }
-
-    /// <summary>
-    ///     Accepts the meeting. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
-    /// <returns>
-    ///     A CalendarActionResults object containing the various items that were created or modified as a
-    ///     results of this operation.
-    /// </returns>
-    public Task<CalendarActionResults> Accept(bool sendResponse)
-    {
-        return InternalAccept(false, sendResponse);
-    }
-
-    /// <summary>
-    ///     Tentatively accepts the meeting. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
-    /// <returns>
-    ///     A CalendarActionResults object containing the various items that were created or modified as a
-    ///     results of this operation.
-    /// </returns>
-    public Task<CalendarActionResults> AcceptTentatively(bool sendResponse)
-    {
-        return InternalAccept(true, sendResponse);
     }
 
     /// <summary>
@@ -521,43 +558,6 @@ public class Appointment : Item, ICalendarActionProvider
         cancelMsg.Body = cancellationMessageText;
         return cancelMsg.SendAndSaveCopy();
     }
-
-    /// <summary>
-    ///     Declines the meeting invitation. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
-    /// <returns>
-    ///     A CalendarActionResults object containing the various items that were created or modified as a
-    ///     results of this operation.
-    /// </returns>
-    public Task<CalendarActionResults> Decline(bool sendResponse)
-    {
-        var decline = CreateDeclineMessage();
-
-        if (sendResponse)
-        {
-            return decline.SendAndSaveCopy();
-        }
-
-        return decline.Save();
-    }
-
-    /// <summary>
-    ///     Gets the default setting for sending cancellations on Delete.
-    /// </summary>
-    /// <returns>If Delete() is called on Appointment, we want to send cancellations and save a copy.</returns>
-    internal override SendCancellationsMode? DefaultSendCancellationsMode => SendCancellationsMode.SendToAllAndSaveCopy;
-
-    /// <summary>
-    ///     Gets the default settings for sending invitations on Save.
-    /// </summary>
-    internal override SendInvitationsMode? DefaultSendInvitationsMode => SendInvitationsMode.SendToAllAndSaveCopy;
-
-    /// <summary>
-    ///     Gets the default settings for sending invitations or cancellations on Update.
-    /// </summary>
-    internal override SendInvitationsOrCancellationsMode? DefaultSendInvitationsOrCancellationsMode =>
-        SendInvitationsOrCancellationsMode.SendToAllAndSaveCopy;
 
 
     #region Properties

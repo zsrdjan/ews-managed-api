@@ -34,45 +34,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     where TKey : notnull
 {
-    private readonly Dictionary<TKey, object> _items = new();
-    private readonly List<TKey> _removedItems = new();
     private readonly List<TKey> _addedItems = new();
+    private readonly Dictionary<TKey, object> _items = new();
     private readonly List<TKey> _modifiedItems = new();
-
-    /// <summary>
-    ///     Add item to change list.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    /// <param name="changeList">The change list.</param>
-    private static void InternalAddItemToChangeList(TKey key, ICollection<TKey> changeList)
-    {
-        if (!changeList.Contains(key))
-        {
-            changeList.Add(key);
-        }
-    }
-
-    /// <summary>
-    ///     Triggers dispatch of the change event.
-    /// </summary>
-    private void Changed()
-    {
-        OnChange?.Invoke();
-    }
-
-    /// <summary>
-    ///     Remove item.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    private void InternalRemoveItem(TKey key)
-    {
-        if (TryGetValue(key, out _))
-        {
-            _items.Remove(key);
-            _removedItems.Add(key);
-            Changed();
-        }
-    }
+    private readonly List<TKey> _removedItems = new();
 
     /// <summary>
     ///     Gets the added items.
@@ -91,46 +56,6 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// </summary>
     /// <value>The modified items.</value>
     internal IEnumerable<TKey> ModifiedItems => _modifiedItems;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="SimplePropertyBag&lt;TKey&gt;" /> class.
-    /// </summary>
-    public SimplePropertyBag()
-    {
-    }
-
-    /// <summary>
-    ///     Clears the change log.
-    /// </summary>
-    public void ClearChangeLog()
-    {
-        _removedItems.Clear();
-        _addedItems.Clear();
-        _modifiedItems.Clear();
-    }
-
-    /// <summary>
-    ///     Determines whether the specified key is in the property bag.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    /// <returns>
-    ///     <c>true</c> if the specified key exists; otherwise, <c>false</c>.
-    /// </returns>
-    public bool ContainsKey(TKey key)
-    {
-        return _items.ContainsKey(key);
-    }
-
-    /// <summary>
-    ///     Tries to get value.
-    /// </summary>
-    /// <param name="key">The key.</param>
-    /// <param name="value">The value.</param>
-    /// <returns>True if value exists in property bag.</returns>
-    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out object value)
-    {
-        return _items.TryGetValue(key, out value);
-    }
 
     /// <summary>
     ///     Gets or sets the <see cref="object" /> with the specified key.
@@ -186,9 +111,11 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     }
 
     /// <summary>
-    ///     Occurs when Changed.
+    ///     Initializes a new instance of the <see cref="SimplePropertyBag&lt;TKey&gt;" /> class.
     /// </summary>
-    public event PropertyBagChangedDelegate? OnChange;
+    public SimplePropertyBag()
+    {
+    }
 
 
     #region IEnumerable<KeyValuePair<TKey,object>> Members
@@ -217,4 +144,78 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     }
 
     #endregion
+
+
+    /// <summary>
+    ///     Add item to change list.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="changeList">The change list.</param>
+    private static void InternalAddItemToChangeList(TKey key, ICollection<TKey> changeList)
+    {
+        if (!changeList.Contains(key))
+        {
+            changeList.Add(key);
+        }
+    }
+
+    /// <summary>
+    ///     Triggers dispatch of the change event.
+    /// </summary>
+    private void Changed()
+    {
+        OnChange?.Invoke();
+    }
+
+    /// <summary>
+    ///     Remove item.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    private void InternalRemoveItem(TKey key)
+    {
+        if (TryGetValue(key, out _))
+        {
+            _items.Remove(key);
+            _removedItems.Add(key);
+            Changed();
+        }
+    }
+
+    /// <summary>
+    ///     Clears the change log.
+    /// </summary>
+    public void ClearChangeLog()
+    {
+        _removedItems.Clear();
+        _addedItems.Clear();
+        _modifiedItems.Clear();
+    }
+
+    /// <summary>
+    ///     Determines whether the specified key is in the property bag.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <returns>
+    ///     <c>true</c> if the specified key exists; otherwise, <c>false</c>.
+    /// </returns>
+    public bool ContainsKey(TKey key)
+    {
+        return _items.ContainsKey(key);
+    }
+
+    /// <summary>
+    ///     Tries to get value.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="value">The value.</param>
+    /// <returns>True if value exists in property bag.</returns>
+    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out object value)
+    {
+        return _items.TryGetValue(key, out value);
+    }
+
+    /// <summary>
+    ///     Occurs when Changed.
+    /// </summary>
+    public event PropertyBagChangedDelegate? OnChange;
 }

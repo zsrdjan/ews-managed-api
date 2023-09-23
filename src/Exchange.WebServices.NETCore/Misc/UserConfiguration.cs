@@ -46,98 +46,16 @@ public class UserConfiguration
 
     // TODO: Consider using SimplePropertyBag class to store XmlData & BinaryData property values.
     private readonly ExchangeService _service;
-    private byte[]? _xmlData;
     private byte[]? _binaryData;
-    private UserConfigurationProperties _propertiesAvailableForAccess;
-    private UserConfigurationProperties _updatedProperties;
 
     /// <summary>
     ///     Indicates whether changes trigger an update or create operation.
     /// </summary>
     private bool _isNew;
 
-    /// <summary>
-    ///     Initializes a new instance of <see cref="UserConfiguration" /> class.
-    /// </summary>
-    /// <param name="service">The service to which the user configuration is bound.</param>
-    public UserConfiguration(ExchangeService service)
-        : this(service, PropertiesAvailableForNewObject)
-    {
-    }
-
-    /// <summary>
-    ///     Writes a byte array to Xml.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="byteArray">Byte array to write.</param>
-    /// <param name="xmlElementName">Name of the Xml element.</param>
-    private static void WriteByteArrayToXml(EwsServiceXmlWriter writer, byte[]? byteArray, string xmlElementName)
-    {
-        EwsUtilities.Assert(writer != null, "UserConfiguration.WriteByteArrayToXml", "writer is null");
-        EwsUtilities.Assert(xmlElementName != null, "UserConfiguration.WriteByteArrayToXml", "xmlElementName is null");
-
-        writer.WriteStartElement(XmlNamespace.Types, xmlElementName);
-
-        if (byteArray != null && byteArray.Length > 0)
-        {
-            writer.WriteValue(Convert.ToBase64String(byteArray), xmlElementName);
-        }
-
-        writer.WriteEndElement();
-    }
-
-    /// <summary>
-    ///     Writes to Xml.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="xmlNamespace">The XML namespace.</param>
-    /// <param name="name">The user configuration name.</param>
-    /// <param name="parentFolderId">The Id of the folder containing the user configuration.</param>
-    internal static void WriteUserConfigurationNameToXml(
-        EwsServiceXmlWriter writer,
-        XmlNamespace xmlNamespace,
-        string name,
-        FolderId parentFolderId
-    )
-    {
-        EwsUtilities.Assert(writer != null, "UserConfiguration.WriteUserConfigurationNameToXml", "writer is null");
-        EwsUtilities.Assert(name != null, "UserConfiguration.WriteUserConfigurationNameToXml", "name is null");
-        EwsUtilities.Assert(
-            parentFolderId != null,
-            "UserConfiguration.WriteUserConfigurationNameToXml",
-            "parentFolderId is null"
-        );
-
-        writer.WriteStartElement(xmlNamespace, XmlElementNames.UserConfigurationName);
-
-        writer.WriteAttributeValue(XmlAttributeNames.Name, name);
-
-        parentFolderId.WriteToXml(writer);
-
-        writer.WriteEndElement();
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of <see cref="UserConfiguration" /> class.
-    /// </summary>
-    /// <param name="service">The service to which the user configuration is bound.</param>
-    /// <param name="requestedProperties">The properties requested for this user configuration.</param>
-    internal UserConfiguration(ExchangeService service, UserConfigurationProperties requestedProperties)
-    {
-        EwsUtilities.ValidateParam(service);
-
-        if (service.RequestedServerVersion < ObjectVersion)
-        {
-            throw new ServiceVersionException(
-                string.Format(Strings.ObjectTypeIncompatibleWithRequestVersion, GetType().Name, ObjectVersion)
-            );
-        }
-
-        _service = service;
-        _isNew = true;
-
-        InitializeProperties(requestedProperties);
-    }
+    private UserConfigurationProperties _propertiesAvailableForAccess;
+    private UserConfigurationProperties _updatedProperties;
+    private byte[]? _xmlData;
 
     /// <summary>
     ///     Gets the name of the user configuration.
@@ -199,6 +117,89 @@ public class UserConfiguration
     ///     Gets a value indicating whether this user configuration has been modified.
     /// </summary>
     public bool IsDirty => _updatedProperties != NoProperties || Dictionary.IsDirty;
+
+    /// <summary>
+    ///     Initializes a new instance of <see cref="UserConfiguration" /> class.
+    /// </summary>
+    /// <param name="service">The service to which the user configuration is bound.</param>
+    public UserConfiguration(ExchangeService service)
+        : this(service, PropertiesAvailableForNewObject)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of <see cref="UserConfiguration" /> class.
+    /// </summary>
+    /// <param name="service">The service to which the user configuration is bound.</param>
+    /// <param name="requestedProperties">The properties requested for this user configuration.</param>
+    internal UserConfiguration(ExchangeService service, UserConfigurationProperties requestedProperties)
+    {
+        EwsUtilities.ValidateParam(service);
+
+        if (service.RequestedServerVersion < ObjectVersion)
+        {
+            throw new ServiceVersionException(
+                string.Format(Strings.ObjectTypeIncompatibleWithRequestVersion, GetType().Name, ObjectVersion)
+            );
+        }
+
+        _service = service;
+        _isNew = true;
+
+        InitializeProperties(requestedProperties);
+    }
+
+    /// <summary>
+    ///     Writes a byte array to Xml.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="byteArray">Byte array to write.</param>
+    /// <param name="xmlElementName">Name of the Xml element.</param>
+    private static void WriteByteArrayToXml(EwsServiceXmlWriter writer, byte[]? byteArray, string xmlElementName)
+    {
+        EwsUtilities.Assert(writer != null, "UserConfiguration.WriteByteArrayToXml", "writer is null");
+        EwsUtilities.Assert(xmlElementName != null, "UserConfiguration.WriteByteArrayToXml", "xmlElementName is null");
+
+        writer.WriteStartElement(XmlNamespace.Types, xmlElementName);
+
+        if (byteArray != null && byteArray.Length > 0)
+        {
+            writer.WriteValue(Convert.ToBase64String(byteArray), xmlElementName);
+        }
+
+        writer.WriteEndElement();
+    }
+
+    /// <summary>
+    ///     Writes to Xml.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="xmlNamespace">The XML namespace.</param>
+    /// <param name="name">The user configuration name.</param>
+    /// <param name="parentFolderId">The Id of the folder containing the user configuration.</param>
+    internal static void WriteUserConfigurationNameToXml(
+        EwsServiceXmlWriter writer,
+        XmlNamespace xmlNamespace,
+        string name,
+        FolderId parentFolderId
+    )
+    {
+        EwsUtilities.Assert(writer != null, "UserConfiguration.WriteUserConfigurationNameToXml", "writer is null");
+        EwsUtilities.Assert(name != null, "UserConfiguration.WriteUserConfigurationNameToXml", "name is null");
+        EwsUtilities.Assert(
+            parentFolderId != null,
+            "UserConfiguration.WriteUserConfigurationNameToXml",
+            "parentFolderId is null"
+        );
+
+        writer.WriteStartElement(xmlNamespace, XmlElementNames.UserConfigurationName);
+
+        writer.WriteAttributeValue(XmlAttributeNames.Name, name);
+
+        parentFolderId.WriteToXml(writer);
+
+        writer.WriteEndElement();
+    }
 
     /// <summary>
     ///     Binds to an existing user configuration and loads the specified properties.

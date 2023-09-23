@@ -38,15 +38,6 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     private readonly bool _isCalendarFolder;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="FolderPermissionCollection" /> class.
-    /// </summary>
-    /// <param name="owner">The folder owner.</param>
-    internal FolderPermissionCollection(Folder owner)
-    {
-        _isCalendarFolder = owner is CalendarFolder;
-    }
-
-    /// <summary>
     ///     Gets the name of the inner collection XML element.
     /// </summary>
     /// <value>XML element name.</value>
@@ -59,6 +50,20 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     /// <value>XML element name.</value>
     private string CollectionItemXmlElementName =>
         _isCalendarFolder ? XmlElementNames.CalendarPermission : XmlElementNames.Permission;
+
+    /// <summary>
+    ///     Gets a list of unknown user Ids in the collection.
+    /// </summary>
+    public Collection<string> UnknownEntries { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FolderPermissionCollection" /> class.
+    /// </summary>
+    /// <param name="owner">The folder owner.</param>
+    internal FolderPermissionCollection(Folder owner)
+    {
+        _isCalendarFolder = owner is CalendarFolder;
+    }
 
     /// <summary>
     ///     Gets the name of the collection item XML element.
@@ -185,9 +190,4 @@ public sealed class FolderPermissionCollection : ComplexPropertyCollection<Folde
     {
         InternalRemoveAt(index);
     }
-
-    /// <summary>
-    ///     Gets a list of unknown user Ids in the collection.
-    /// </summary>
-    public Collection<string> UnknownEntries { get; } = new();
 }

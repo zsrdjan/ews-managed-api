@@ -37,6 +37,27 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class SubscriptionBase
 {
     /// <summary>
+    ///     Gets the session.
+    /// </summary>
+    /// <value>The session.</value>
+    internal ExchangeService Service { get; }
+
+    /// <summary>
+    ///     Gets the Id of the subscription.
+    /// </summary>
+    public string Id { get; internal set; }
+
+    /// <summary>
+    ///     Gets the latest watermark of the subscription. Watermark is always null for streaming subscriptions.
+    /// </summary>
+    public string Watermark { get; internal set; }
+
+    /// <summary>
+    ///     Gets whether or not this subscription uses watermarks.
+    /// </summary>
+    protected virtual bool UsesWatermark => true;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SubscriptionBase" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -85,25 +106,4 @@ public abstract class SubscriptionBase
             Watermark = reader.ReadElementValue(XmlNamespace.Messages, XmlElementNames.Watermark);
         }
     }
-
-    /// <summary>
-    ///     Gets the session.
-    /// </summary>
-    /// <value>The session.</value>
-    internal ExchangeService Service { get; }
-
-    /// <summary>
-    ///     Gets the Id of the subscription.
-    /// </summary>
-    public string Id { get; internal set; }
-
-    /// <summary>
-    ///     Gets the latest watermark of the subscription. Watermark is always null for streaming subscriptions.
-    /// </summary>
-    public string Watermark { get; internal set; }
-
-    /// <summary>
-    ///     Gets whether or not this subscription uses watermarks.
-    /// </summary>
-    protected virtual bool UsesWatermark => true;
 }

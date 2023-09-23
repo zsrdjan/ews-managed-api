@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class EwsServiceXmlReader : EwsXmlReader
 {
     /// <summary>
+    ///     Gets the service.
+    /// </summary>
+    /// <value>The service.</value>
+    public ExchangeService Service { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EwsServiceXmlReader" /> class.
     /// </summary>
     /// <param name="stream">The stream.</param>
@@ -192,10 +198,4 @@ internal class EwsServiceXmlReader : EwsXmlReader
             summaryPropertiesOnly
         );
     }
-
-    /// <summary>
-    ///     Gets the service.
-    /// </summary>
-    /// <value>The service.</value>
-    public ExchangeService Service { get; }
 }

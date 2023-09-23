@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ResolveNamesResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets a list of name resolution suggestions.
+    /// </summary>
+    public NameResolutionCollection Resolutions { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ResolveNamesResponse" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -63,9 +68,4 @@ internal sealed class ResolveNamesResponse : ServiceResponse
             base.InternalThrowIfNecessary();
         }
     }
-
-    /// <summary>
-    ///     Gets a list of name resolution suggestions.
-    /// </summary>
-    public NameResolutionCollection Resolutions { get; }
 }

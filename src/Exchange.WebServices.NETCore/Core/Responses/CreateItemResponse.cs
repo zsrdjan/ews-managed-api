@@ -33,6 +33,15 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     private readonly Item? _item;
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="CreateItemResponse" /> class.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    internal CreateItemResponse(Item? item)
+    {
+        _item = item;
+    }
+
+    /// <summary>
     ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -41,15 +50,6 @@ internal sealed class CreateItemResponse : CreateItemResponseBase
     internal override Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         return _item;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="CreateItemResponse" /> class.
-    /// </summary>
-    /// <param name="item">The item.</param>
-    internal CreateItemResponse(Item? item)
-    {
-        _item = item;
     }
 
     /// <summary>

@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetNonIndexableItemStatisticsRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Mailboxes
+    /// </summary>
+    public string[] Mailboxes { get; set; }
+
+    /// <summary>
+    ///     Whether to search archive only
+    /// </summary>
+    public bool SearchArchiveOnly { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetNonIndexableItemStatisticsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -118,14 +128,4 @@ internal sealed class GetNonIndexableItemStatisticsRequest : SimpleServiceReques
             await InternalExecuteAsync<GetNonIndexableItemStatisticsResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Mailboxes
-    /// </summary>
-    public string[] Mailboxes { get; set; }
-
-    /// <summary>
-    ///     Whether to search archive only
-    /// </summary>
-    public bool SearchArchiveOnly { get; set; }
 }

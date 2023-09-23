@@ -33,6 +33,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class InstallAppResponse : ServiceResponse
 {
     /// <summary>
+    ///     Was this first install
+    /// </summary>
+    public bool? WasFirstInstall { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="InstallAppResponse" /> class.
     /// </summary>
     public InstallAppResponse()
@@ -53,9 +58,4 @@ internal sealed class InstallAppResponse : ServiceResponse
             WasFirstInstall = reader.ReadElementValue<bool>(XmlNamespace.NotSpecified, XmlElementNames.WasFirstInstall);
         }
     }
-
-    /// <summary>
-    ///     Was this first install
-    /// </summary>
-    public bool? WasFirstInstall { get; private set; }
 }

@@ -33,8 +33,46 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class SearchFolderParameters : ComplexProperty
 {
-    private SearchFolderTraversal _traversal;
     private SearchFilter? _searchFilter;
+    private SearchFolderTraversal _traversal;
+
+    /// <summary>
+    ///     Gets or sets the traversal mode for the search folder.
+    /// </summary>
+    public SearchFolderTraversal Traversal
+    {
+        get => _traversal;
+        set => SetFieldValue(ref _traversal, value);
+    }
+
+    /// <summary>
+    ///     Gets the list of root folders the search folder searches in.
+    /// </summary>
+    public FolderIdCollection RootFolderIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the search filter associated with the search folder. Available search filter classes include
+    ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
+    /// </summary>
+    public SearchFilter? SearchFilter
+    {
+        get => _searchFilter;
+
+        set
+        {
+            if (_searchFilter != null)
+            {
+                _searchFilter.OnChange -= PropertyChanged;
+            }
+
+            SetFieldValue(ref _searchFilter, value);
+
+            if (_searchFilter != null)
+            {
+                _searchFilter.OnChange += PropertyChanged;
+            }
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SearchFolderParameters" /> class.
@@ -128,43 +166,5 @@ public sealed class SearchFolderParameters : ComplexProperty
 
         // Validate the search filter
         SearchFilter?.InternalValidate();
-    }
-
-    /// <summary>
-    ///     Gets or sets the traversal mode for the search folder.
-    /// </summary>
-    public SearchFolderTraversal Traversal
-    {
-        get => _traversal;
-        set => SetFieldValue(ref _traversal, value);
-    }
-
-    /// <summary>
-    ///     Gets the list of root folders the search folder searches in.
-    /// </summary>
-    public FolderIdCollection RootFolderIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the search filter associated with the search folder. Available search filter classes include
-    ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
-    /// </summary>
-    public SearchFilter? SearchFilter
-    {
-        get => _searchFilter;
-
-        set
-        {
-            if (_searchFilter != null)
-            {
-                _searchFilter.OnChange -= PropertyChanged;
-            }
-
-            SetFieldValue(ref _searchFilter, value);
-
-            if (_searchFilter != null)
-            {
-                _searchFilter.OnChange += PropertyChanged;
-            }
-        }
     }
 }

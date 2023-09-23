@@ -34,6 +34,36 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ChangeHighlights : ComplexProperty
 {
     /// <summary>
+    ///     Gets a value indicating whether the location has changed.
+    /// </summary>
+    public bool HasLocationChanged { get; private set; }
+
+    /// <summary>
+    ///     Gets the old location
+    /// </summary>
+    public string Location { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the the start time has changed.
+    /// </summary>
+    public bool HasStartTimeChanged { get; private set; }
+
+    /// <summary>
+    ///     Gets the old start date and time of the meeting.
+    /// </summary>
+    public DateTime Start { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the the end time has changed.
+    /// </summary>
+    public bool HasEndTimeChanged { get; private set; }
+
+    /// <summary>
+    ///     Gets the old end date and time of the meeting.
+    /// </summary>
+    public DateTime End { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ChangeHighlights" /> class.
     /// </summary>
     internal ChangeHighlights()
@@ -85,34 +115,4 @@ public sealed class ChangeHighlights : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether the location has changed.
-    /// </summary>
-    public bool HasLocationChanged { get; private set; }
-
-    /// <summary>
-    ///     Gets the old location
-    /// </summary>
-    public string Location { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the the start time has changed.
-    /// </summary>
-    public bool HasStartTimeChanged { get; private set; }
-
-    /// <summary>
-    ///     Gets the old start date and time of the meeting.
-    /// </summary>
-    public DateTime Start { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the the end time has changed.
-    /// </summary>
-    public bool HasEndTimeChanged { get; private set; }
-
-    /// <summary>
-    ///     Gets the old end date and time of the meeting.
-    /// </summary>
-    public DateTime End { get; private set; }
 }

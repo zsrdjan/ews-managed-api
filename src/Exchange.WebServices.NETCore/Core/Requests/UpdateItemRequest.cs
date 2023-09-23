@@ -31,16 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItemResponse>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="UpdateItemRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
-    internal UpdateItemRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-        : base(service, errorHandlingMode)
-    {
-    }
-
-    /// <summary>
     ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value>
@@ -60,6 +50,52 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
 
             return false;
         }
+    }
+
+    /// <summary>
+    ///     Gets or sets the message disposition.
+    /// </summary>
+    /// <value>The message disposition.</value>
+    public MessageDisposition? MessageDisposition { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the conflict resolution mode.
+    /// </summary>
+    /// <value>The conflict resolution mode.</value>
+    public ConflictResolutionMode ConflictResolutionMode { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the send invitations or cancellations mode.
+    /// </summary>
+    /// <value>The send invitations or cancellations mode.</value>
+    public SendInvitationsOrCancellationsMode? SendInvitationsOrCancellationsMode { get; set; }
+
+    /// <summary>
+    ///     Gets or sets whether to suppress read receipts
+    /// </summary>
+    /// <value>Whether to suppress read receipts</value>
+    public bool SuppressReadReceipts { get; set; }
+
+    /// <summary>
+    ///     Gets the items.
+    /// </summary>
+    /// <value>The items.</value>
+    public List<Item> Items { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the saved items destination folder.
+    /// </summary>
+    /// <value>The saved items destination folder.</value>
+    public FolderId? SavedItemsDestinationFolder { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UpdateItemRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
+    internal UpdateItemRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service, errorHandlingMode)
+    {
     }
 
     /// <summary>
@@ -207,40 +243,4 @@ internal sealed class UpdateItemRequest : MultiResponseServiceRequest<UpdateItem
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the message disposition.
-    /// </summary>
-    /// <value>The message disposition.</value>
-    public MessageDisposition? MessageDisposition { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the conflict resolution mode.
-    /// </summary>
-    /// <value>The conflict resolution mode.</value>
-    public ConflictResolutionMode ConflictResolutionMode { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the send invitations or cancellations mode.
-    /// </summary>
-    /// <value>The send invitations or cancellations mode.</value>
-    public SendInvitationsOrCancellationsMode? SendInvitationsOrCancellationsMode { get; set; }
-
-    /// <summary>
-    ///     Gets or sets whether to suppress read receipts
-    /// </summary>
-    /// <value>Whether to suppress read receipts</value>
-    public bool SuppressReadReceipts { get; set; }
-
-    /// <summary>
-    ///     Gets the items.
-    /// </summary>
-    /// <value>The items.</value>
-    public List<Item> Items { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the saved items destination folder.
-    /// </summary>
-    /// <value>The saved items destination folder.</value>
-    public FolderId? SavedItemsDestinationFolder { get; set; }
 }

@@ -31,6 +31,31 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Mailboxes
+    /// </summary>
+    public string[] Mailboxes { get; set; }
+
+    /// <summary>
+    ///     Page size
+    /// </summary>
+    public int? PageSize { get; set; }
+
+    /// <summary>
+    ///     Page item reference
+    /// </summary>
+    public string PageItemReference { get; set; }
+
+    /// <summary>
+    ///     Page direction
+    /// </summary>
+    public SearchPageDirection? PageDirection { get; set; }
+
+    /// <summary>
+    ///     Whether to search archive only
+    /// </summary>
+    public bool SearchArchiveOnly { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetNonIndexableItemDetailsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -137,29 +162,4 @@ internal sealed class GetNonIndexableItemDetailsRequest : SimpleServiceRequestBa
             await InternalExecuteAsync<GetNonIndexableItemDetailsResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Mailboxes
-    /// </summary>
-    public string[] Mailboxes { get; set; }
-
-    /// <summary>
-    ///     Page size
-    /// </summary>
-    public int? PageSize { get; set; }
-
-    /// <summary>
-    ///     Page item reference
-    /// </summary>
-    public string PageItemReference { get; set; }
-
-    /// <summary>
-    ///     Page direction
-    /// </summary>
-    public SearchPageDirection? PageDirection { get; set; }
-
-    /// <summary>
-    ///     Whether to search archive only
-    /// </summary>
-    public bool SearchArchiveOnly { get; set; }
 }

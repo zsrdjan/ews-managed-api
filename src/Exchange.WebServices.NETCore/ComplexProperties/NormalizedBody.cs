@@ -34,6 +34,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class NormalizedBody : ComplexProperty
 {
     /// <summary>
+    ///     Gets the type of the normalized body's text.
+    /// </summary>
+    public BodyType BodyType { get; internal set; }
+
+    /// <summary>
+    ///     Gets the text of the normalized body.
+    /// </summary>
+    public string? Text { get; internal set; }
+
+    /// <summary>
+    ///     Gets whether the body is truncated.
+    /// </summary>
+    public bool IsTruncated { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="NormalizedBody" /> class.
     /// </summary>
     internal NormalizedBody()
@@ -95,21 +110,6 @@ public sealed class NormalizedBody : ComplexProperty
             writer.WriteValue(Text, XmlElementNames.NormalizedBody);
         }
     }
-
-    /// <summary>
-    ///     Gets the type of the normalized body's text.
-    /// </summary>
-    public BodyType BodyType { get; internal set; }
-
-    /// <summary>
-    ///     Gets the text of the normalized body.
-    /// </summary>
-    public string? Text { get; internal set; }
-
-    /// <summary>
-    ///     Gets whether the body is truncated.
-    /// </summary>
-    public bool IsTruncated { get; internal set; }
 
 
     #region Object method overrides

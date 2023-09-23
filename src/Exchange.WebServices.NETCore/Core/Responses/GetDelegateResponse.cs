@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetDelegateResponse : DelegateManagementResponse
 {
     /// <summary>
+    ///     Gets a value indicating if and how meeting requests are delivered to delegates.
+    /// </summary>
+    internal MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope { get; private set; } =
+        MeetingRequestsDeliveryScope.NoForward;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetDelegateResponse" /> class.
     /// </summary>
     /// <param name="readDelegateUsers">if set to <c>true</c> [read delegate users].</param>
@@ -64,10 +70,4 @@ internal sealed class GetDelegateResponse : DelegateManagementResponse
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating if and how meeting requests are delivered to delegates.
-    /// </summary>
-    internal MeetingRequestsDeliveryScope MeetingRequestsDeliveryScope { get; private set; } =
-        MeetingRequestsDeliveryScope.NoForward;
 }

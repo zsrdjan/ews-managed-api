@@ -31,16 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ExpandGroupResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets a list of the group's members.
+    /// </summary>
+    public ExpandGroupResults Members { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ExpandGroupResponse" /> class.
     /// </summary>
     internal ExpandGroupResponse()
     {
     }
-
-    /// <summary>
-    ///     Gets a list of the group's members.
-    /// </summary>
-    public ExpandGroupResults Members { get; } = new();
 
     /// <summary>
     ///     Reads response elements from XML.

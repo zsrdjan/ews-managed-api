@@ -36,6 +36,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class TimeWindow : ISelfValidate
 {
     /// <summary>
+    ///     Gets or sets the start date and time.
+    /// </summary>
+    public DateTime StartTime { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the end date and time.
+    /// </summary>
+    public DateTime EndTime { get; set; }
+
+    /// <summary>
+    ///     Gets the duration.
+    /// </summary>
+    internal TimeSpan Duration => EndTime - StartTime;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="TimeWindow" /> class.
     /// </summary>
     internal TimeWindow()
@@ -54,15 +69,22 @@ public sealed class TimeWindow : ISelfValidate
         EndTime = endTime;
     }
 
-    /// <summary>
-    ///     Gets or sets the start date and time.
-    /// </summary>
-    public DateTime StartTime { get; set; }
+
+    #region ISelfValidate Members
 
     /// <summary>
-    ///     Gets or sets the end date and time.
+    ///     Validates this instance.
     /// </summary>
-    public DateTime EndTime { get; set; }
+    void ISelfValidate.Validate()
+    {
+        if (StartTime >= EndTime)
+        {
+            throw new ArgumentException(Strings.TimeWindowStartTimeMustBeGreaterThanEndTime);
+        }
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Loads from XML.
@@ -122,25 +144,4 @@ public sealed class TimeWindow : ISelfValidate
     {
         WriteToXml(writer, xmlElementName, StartTime, EndTime);
     }
-
-    /// <summary>
-    ///     Gets the duration.
-    /// </summary>
-    internal TimeSpan Duration => EndTime - StartTime;
-
-
-    #region ISelfValidate Members
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    void ISelfValidate.Validate()
-    {
-        if (StartTime >= EndTime)
-        {
-            throw new ArgumentException(Strings.TimeWindowStartTimeMustBeGreaterThanEndTime);
-        }
-    }
-
-    #endregion
 }

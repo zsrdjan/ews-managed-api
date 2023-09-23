@@ -38,6 +38,43 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     private readonly string _itemXmlElementName = XmlElementNames.String;
 
     /// <summary>
+    ///     Gets the number of strings in the list.
+    /// </summary>
+    public int Count => _items.Count;
+
+    /// <summary>
+    ///     Gets or sets the string at the specified index.
+    /// </summary>
+    /// <param name="index">The index of the string to get or set.</param>
+    /// <returns>The string at the specified index.</returns>
+    public string this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
+            }
+
+            return _items[index];
+        }
+
+        set
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
+            }
+
+            if (_items[index] != value)
+            {
+                _items[index] = value;
+                Changed();
+            }
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="StringList" /> class.
     /// </summary>
     public StringList()
@@ -61,6 +98,35 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     {
         _itemXmlElementName = itemXmlElementName;
     }
+
+
+    #region IEnumerable<string> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<string> GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -186,71 +252,6 @@ public sealed class StringList : ComplexProperty, IEnumerable<string>
     {
         return string.Join(",", _items.ToArray());
     }
-
-    /// <summary>
-    ///     Gets the number of strings in the list.
-    /// </summary>
-    public int Count => _items.Count;
-
-    /// <summary>
-    ///     Gets or sets the string at the specified index.
-    /// </summary>
-    /// <param name="index">The index of the string to get or set.</param>
-    /// <returns>The string at the specified index.</returns>
-    public string this[int index]
-    {
-        get
-        {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
-            }
-
-            return _items[index];
-        }
-
-        set
-        {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
-            }
-
-            if (_items[index] != value)
-            {
-                _items[index] = value;
-                Changed();
-            }
-        }
-    }
-
-
-    #region IEnumerable<string> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<string> GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
-
-    #endregion
 
 
     /// <summary>

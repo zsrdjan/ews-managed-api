@@ -36,6 +36,47 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     private readonly List<AbstractFolderIdWrapper> _ids = new();
 
     /// <summary>
+    ///     Gets the id count.
+    /// </summary>
+    /// <value>The count.</value>
+    internal int Count => _ids.Count;
+
+    /// <summary>
+    ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.AbstractFolderIdWrapper" /> at the specified index.
+    /// </summary>
+    /// <param name="index">the index</param>
+    internal AbstractFolderIdWrapper this[int index] => _ids[index];
+
+
+    #region IEnumerable<AbstractFolderIdWrapper> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<AbstractFolderIdWrapper> GetEnumerator()
+    {
+        return _ids.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _ids.GetEnumerator();
+    }
+
+    #endregion
+
+
+    /// <summary>
     ///     Adds the specified folder.
     /// </summary>
     /// <param name="folder">The folder.</param>
@@ -105,18 +146,6 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
     }
 
     /// <summary>
-    ///     Gets the id count.
-    /// </summary>
-    /// <value>The count.</value>
-    internal int Count => _ids.Count;
-
-    /// <summary>
-    ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.AbstractFolderIdWrapper" /> at the specified index.
-    /// </summary>
-    /// <param name="index">the index</param>
-    internal AbstractFolderIdWrapper this[int index] => _ids[index];
-
-    /// <summary>
     ///     Validates list of folderIds against a specified request version.
     /// </summary>
     /// <param name="version">The version.</param>
@@ -127,32 +156,4 @@ internal class FolderIdWrapperList : IEnumerable<AbstractFolderIdWrapper>
             folderIdWrapper.Validate(version);
         }
     }
-
-
-    #region IEnumerable<AbstractFolderIdWrapper> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<AbstractFolderIdWrapper> GetEnumerator()
-    {
-        return _ids.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _ids.GetEnumerator();
-    }
-
-    #endregion
 }

@@ -34,17 +34,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ExtractedEntity : ComplexProperty
 {
     /// <summary>
+    ///     Gets the Position.
+    /// </summary>
+    public EmailPosition Position { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ExtractedEntity" /> class.
     /// </summary>
     internal ExtractedEntity()
     {
         Namespace = XmlNamespace.Types;
     }
-
-    /// <summary>
-    ///     Gets the Position.
-    /// </summary>
-    public EmailPosition Position { get; internal set; }
 
     /// <summary>
     ///     Tries to read element from XML.

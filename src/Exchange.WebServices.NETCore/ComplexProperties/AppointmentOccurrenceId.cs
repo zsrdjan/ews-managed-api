@@ -39,17 +39,6 @@ public sealed class AppointmentOccurrenceId : ItemId
     private int _occurrenceIndex;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AppointmentOccurrenceId" /> class.
-    /// </summary>
-    /// <param name="recurringMasterUniqueId">The Id of the recurring master the Id represents an occurrence of.</param>
-    /// <param name="occurrenceIndex">The index of the occurrence.</param>
-    public AppointmentOccurrenceId(string recurringMasterUniqueId, int occurrenceIndex)
-        : base(recurringMasterUniqueId)
-    {
-        OccurrenceIndex = occurrenceIndex;
-    }
-
-    /// <summary>
     ///     Gets or sets the index of the occurrence. Note that the occurrence index starts at one not zero.
     /// </summary>
     public int OccurrenceIndex
@@ -66,6 +55,17 @@ public sealed class AppointmentOccurrenceId : ItemId
 
             _occurrenceIndex = value;
         }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AppointmentOccurrenceId" /> class.
+    /// </summary>
+    /// <param name="recurringMasterUniqueId">The Id of the recurring master the Id represents an occurrence of.</param>
+    /// <param name="occurrenceIndex">The index of the occurrence.</param>
+    public AppointmentOccurrenceId(string recurringMasterUniqueId, int occurrenceIndex)
+        : base(recurringMasterUniqueId)
+    {
+        OccurrenceIndex = occurrenceIndex;
     }
 
     /// <summary>

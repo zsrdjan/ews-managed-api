@@ -34,6 +34,52 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ConversationIndexedItemView : PagedView
 {
     /// <summary>
+    ///     Gets the properties against which the returned items should be ordered.
+    /// </summary>
+    public OrderByCollection OrderBy { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the conversation query traversal mode.
+    /// </summary>
+    public ConversationQueryTraversal? Traversal { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the view filter.
+    /// </summary>
+    public ViewFilter? ViewFilter { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    public ConversationIndexedItemView(int pageSize)
+        : base(pageSize)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    public ConversationIndexedItemView(int pageSize, int offset)
+        : base(pageSize, offset)
+    {
+        Offset = offset;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    /// <param name="offsetBasePoint">The base point of the offset.</param>
+    public ConversationIndexedItemView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
+        : base(pageSize, offset, offsetBasePoint)
+    {
+    }
+
+    /// <summary>
     ///     Gets the type of service object this view applies to.
     /// </summary>
     /// <returns>A ServiceObjectType value.</returns>
@@ -109,50 +155,4 @@ public sealed class ConversationIndexedItemView : PagedView
 
         writer.WriteEndElement(); // this.GetViewXmlElementName()
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    public ConversationIndexedItemView(int pageSize)
-        : base(pageSize)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    public ConversationIndexedItemView(int pageSize, int offset)
-        : base(pageSize, offset)
-    {
-        Offset = offset;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    /// <param name="offsetBasePoint">The base point of the offset.</param>
-    public ConversationIndexedItemView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
-        : base(pageSize, offset, offsetBasePoint)
-    {
-    }
-
-    /// <summary>
-    ///     Gets the properties against which the returned items should be ordered.
-    /// </summary>
-    public OrderByCollection OrderBy { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the conversation query traversal mode.
-    /// </summary>
-    public ConversationQueryTraversal? Traversal { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the view filter.
-    /// </summary>
-    public ViewFilter? ViewFilter { get; set; }
 }

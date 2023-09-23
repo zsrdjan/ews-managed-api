@@ -36,8 +36,81 @@ namespace Microsoft.Exchange.WebServices.Data;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public abstract class PagedView : ViewBase
 {
-    private int _pageSize;
     private int _offset;
+    private int _pageSize;
+
+    /// <summary>
+    ///     The maximum number of items or folders the search operation should return.
+    /// </summary>
+    public int PageSize
+    {
+        get => _pageSize;
+
+        set
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
+            }
+
+            _pageSize = value;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the base point of the offset.
+    /// </summary>
+    public OffsetBasePoint OffsetBasePoint { get; set; } = OffsetBasePoint.Beginning;
+
+    /// <summary>
+    ///     Gets or sets the offset.
+    /// </summary>
+    public int Offset
+    {
+        get => _offset;
+
+        set
+        {
+            if (value < 0)
+            {
+                throw new ArgumentException(Strings.OffsetMustBeGreaterThanZero);
+            }
+
+            _offset = value;
+        }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PagedView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    internal PagedView(int pageSize)
+    {
+        PageSize = pageSize;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PagedView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    internal PagedView(int pageSize, int offset)
+        : this(pageSize)
+    {
+        Offset = offset;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PagedView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    /// <param name="offsetBasePoint">The base point of the offset.</param>
+    internal PagedView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
+        : this(pageSize, offset)
+    {
+        OffsetBasePoint = offsetBasePoint;
+    }
 
     /// <summary>
     ///     Write to XML.
@@ -80,78 +153,5 @@ public abstract class PagedView : ViewBase
     internal override void WriteOrderByToXml(EwsServiceXmlWriter writer)
     {
         // No order by for paged view
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="PagedView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    internal PagedView(int pageSize)
-    {
-        PageSize = pageSize;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="PagedView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    internal PagedView(int pageSize, int offset)
-        : this(pageSize)
-    {
-        Offset = offset;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="PagedView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    /// <param name="offsetBasePoint">The base point of the offset.</param>
-    internal PagedView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
-        : this(pageSize, offset)
-    {
-        OffsetBasePoint = offsetBasePoint;
-    }
-
-    /// <summary>
-    ///     The maximum number of items or folders the search operation should return.
-    /// </summary>
-    public int PageSize
-    {
-        get => _pageSize;
-
-        set
-        {
-            if (value <= 0)
-            {
-                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
-            }
-
-            _pageSize = value;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the base point of the offset.
-    /// </summary>
-    public OffsetBasePoint OffsetBasePoint { get; set; } = OffsetBasePoint.Beginning;
-
-    /// <summary>
-    ///     Gets or sets the offset.
-    /// </summary>
-    public int Offset
-    {
-        get => _offset;
-
-        set
-        {
-            if (value < 0)
-            {
-                throw new ArgumentException(Strings.OffsetMustBeGreaterThanZero);
-            }
-
-            _offset = value;
-        }
     }
 }

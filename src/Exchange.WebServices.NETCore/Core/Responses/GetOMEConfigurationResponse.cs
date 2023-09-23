@@ -34,16 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetOMEConfigurationResponse : ServiceResponse
 {
     /// <summary>
+    ///     The XML representation of EncryptionConfigurationData
+    /// </summary>
+    public string? Xml { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetOMEConfigurationResponse" /> class.
     /// </summary>
     internal GetOMEConfigurationResponse()
     {
     }
-
-    /// <summary>
-    ///     The XML representation of EncryptionConfigurationData
-    /// </summary>
-    public string? Xml { get; private set; }
 
     /// <summary>
     ///     Reads response elements from XML.

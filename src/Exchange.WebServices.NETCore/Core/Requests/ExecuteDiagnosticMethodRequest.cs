@@ -33,6 +33,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceRequest<ExecuteDiagnosticMethodResponse>
 {
     /// <summary>
+    ///     Gets or sets the verb of the method to execute.
+    /// </summary>
+    internal string Verb { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the parameter to the executing method.
+    /// </summary>
+    internal XmlNode Parameter { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ExecuteDiagnosticMethodRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -83,16 +93,6 @@ internal sealed class ExecuteDiagnosticMethodRequest : MultiResponseServiceReque
         // when using this method for tests running under older versions.
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the verb of the method to execute.
-    /// </summary>
-    internal string Verb { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the parameter to the executing method.
-    /// </summary>
-    internal XmlNode Parameter { get; set; }
 
     /// <summary>
     ///     Creates the service response.

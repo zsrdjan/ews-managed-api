@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetPasswordExpirationDateRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets or sets the room list to retrieve rooms from.
+    /// </summary>
+    internal string MailboxSmtpAddress { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetPasswordExpirationDateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -98,9 +103,4 @@ internal sealed class GetPasswordExpirationDateRequest : SimpleServiceRequestBas
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Gets or sets the room list to retrieve rooms from.
-    /// </summary>
-    internal string MailboxSmtpAddress { get; set; }
 }

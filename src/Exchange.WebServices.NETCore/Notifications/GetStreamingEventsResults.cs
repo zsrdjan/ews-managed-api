@@ -33,20 +33,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetStreamingEventsResults
 {
     /// <summary>
-    ///     Structure to track a subscription and its associated notification events.
+    ///     Gets the notification collection.
     /// </summary>
-    internal struct NotificationGroup
-    {
-        /// <summary>
-        ///     Subscription Id
-        /// </summary>
-        internal string SubscriptionId;
-
-        /// <summary>
-        ///     Events in the response associated with the subscription id.
-        /// </summary>
-        internal Collection<NotificationEvent> Events;
-    }
+    /// <value>The notification collection.</value>
+    internal Collection<NotificationGroup> Notifications { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetStreamingEventsResults" /> class.
@@ -141,8 +131,18 @@ internal sealed class GetStreamingEventsResults
     }
 
     /// <summary>
-    ///     Gets the notification collection.
+    ///     Structure to track a subscription and its associated notification events.
     /// </summary>
-    /// <value>The notification collection.</value>
-    internal Collection<NotificationGroup> Notifications { get; } = new();
+    internal struct NotificationGroup
+    {
+        /// <summary>
+        ///     Subscription Id
+        /// </summary>
+        internal string SubscriptionId;
+
+        /// <summary>
+        ///     Events in the response associated with the subscription id.
+        /// </summary>
+        internal Collection<NotificationEvent> Events;
+    }
 }

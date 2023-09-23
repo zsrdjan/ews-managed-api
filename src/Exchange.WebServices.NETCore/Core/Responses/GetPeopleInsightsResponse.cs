@@ -34,17 +34,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetPeopleInsightsResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the People
+    /// </summary>
+    internal Collection<Person> People { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetPeopleInsightsResponse" /> class.
     /// </summary>
     public GetPeopleInsightsResponse()
     {
         People = new Collection<Person>();
     }
-
-    /// <summary>
-    ///     Gets the People
-    /// </summary>
-    internal Collection<Person> People { get; private set; }
 
     /// <summary>
     ///     Read Person from XML.

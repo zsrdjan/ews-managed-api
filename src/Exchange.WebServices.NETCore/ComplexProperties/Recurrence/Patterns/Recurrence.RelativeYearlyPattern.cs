@@ -49,6 +49,60 @@ public abstract partial class Recurrence
         internal override string XmlElementName => XmlElementNames.RelativeYearlyRecurrence;
 
         /// <summary>
+        ///     Gets or sets the relative position of the day specified in DayOfTheWeek within the month.
+        /// </summary>
+        public DayOfTheWeekIndex DayOfTheWeekIndex
+        {
+            get => GetFieldValueOrThrowIfNull(_dayOfTheWeekIndex, "DayOfTheWeekIndex");
+            set => SetFieldValue(ref _dayOfTheWeekIndex, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the day of the week when each occurrence happens.
+        /// </summary>
+        public DayOfTheWeek DayOfTheWeek
+        {
+            get => GetFieldValueOrThrowIfNull(_dayOfTheWeek, "DayOfTheWeek");
+            set => SetFieldValue(ref _dayOfTheWeek, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the month of the year when each occurrence happens.
+        /// </summary>
+        public Month Month
+        {
+            get => GetFieldValueOrThrowIfNull(_month, "Month");
+            set => SetFieldValue(ref _month, value);
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="RelativeYearlyPattern" /> class.
+        /// </summary>
+        public RelativeYearlyPattern()
+        {
+        }
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="RelativeYearlyPattern" /> class.
+        /// </summary>
+        /// <param name="startDate">The date and time when the recurrence starts.</param>
+        /// <param name="month">The month of the year each occurrence happens.</param>
+        /// <param name="dayOfTheWeek">The day of the week each occurrence happens.</param>
+        /// <param name="dayOfTheWeekIndex">The relative position of the day within the month.</param>
+        public RelativeYearlyPattern(
+            DateTime startDate,
+            Month month,
+            DayOfTheWeek dayOfTheWeek,
+            DayOfTheWeekIndex dayOfTheWeekIndex
+        )
+            : base(startDate)
+        {
+            Month = month;
+            DayOfTheWeek = dayOfTheWeek;
+            DayOfTheWeekIndex = dayOfTheWeekIndex;
+        }
+
+        /// <summary>
         ///     Write properties to XML.
         /// </summary>
         /// <param name="writer">The writer.</param>
@@ -100,33 +154,6 @@ public abstract partial class Recurrence
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="RelativeYearlyPattern" /> class.
-        /// </summary>
-        public RelativeYearlyPattern()
-        {
-        }
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="RelativeYearlyPattern" /> class.
-        /// </summary>
-        /// <param name="startDate">The date and time when the recurrence starts.</param>
-        /// <param name="month">The month of the year each occurrence happens.</param>
-        /// <param name="dayOfTheWeek">The day of the week each occurrence happens.</param>
-        /// <param name="dayOfTheWeekIndex">The relative position of the day within the month.</param>
-        public RelativeYearlyPattern(
-            DateTime startDate,
-            Month month,
-            DayOfTheWeek dayOfTheWeek,
-            DayOfTheWeekIndex dayOfTheWeekIndex
-        )
-            : base(startDate)
-        {
-            Month = month;
-            DayOfTheWeek = dayOfTheWeek;
-            DayOfTheWeekIndex = dayOfTheWeekIndex;
-        }
-
-        /// <summary>
         ///     Validates this instance.
         /// </summary>
         internal override void InternalValidate()
@@ -162,33 +189,6 @@ public abstract partial class Recurrence
                    _dayOfTheWeek == otherYearlyPattern._dayOfTheWeek &&
                    _dayOfTheWeekIndex == otherYearlyPattern._dayOfTheWeekIndex &&
                    _month == otherYearlyPattern._month;
-        }
-
-        /// <summary>
-        ///     Gets or sets the relative position of the day specified in DayOfTheWeek within the month.
-        /// </summary>
-        public DayOfTheWeekIndex DayOfTheWeekIndex
-        {
-            get => GetFieldValueOrThrowIfNull(_dayOfTheWeekIndex, "DayOfTheWeekIndex");
-            set => SetFieldValue(ref _dayOfTheWeekIndex, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the day of the week when each occurrence happens.
-        /// </summary>
-        public DayOfTheWeek DayOfTheWeek
-        {
-            get => GetFieldValueOrThrowIfNull(_dayOfTheWeek, "DayOfTheWeek");
-            set => SetFieldValue(ref _dayOfTheWeek, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the month of the year when each occurrence happens.
-        /// </summary>
-        public Month Month
-        {
-            get => GetFieldValueOrThrowIfNull(_month, "Month");
-            set => SetFieldValue(ref _month, value);
         }
     }
 }

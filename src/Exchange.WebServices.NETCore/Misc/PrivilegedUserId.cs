@@ -54,6 +54,30 @@ internal sealed class PrivilegedUserId
     private PrivilegedUserIdBudgetType? _budgetType;
 
     /// <summary>
+    ///     Gets or sets the type of the Id.
+    /// </summary>
+    public ConnectingIdType IdType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the user Id.
+    /// </summary>
+    public string Id { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the special logon type.
+    /// </summary>
+    public PrivilegedLogonType LogonType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the budget type.
+    /// </summary>
+    public PrivilegedUserIdBudgetType? BudgetType
+    {
+        get => _budgetType;
+        set => _budgetType = value;
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PrivilegedUserId" /> class.
     /// </summary>
     public PrivilegedUserId()
@@ -97,29 +121,5 @@ internal sealed class PrivilegedUserId
         writer.WriteElementValue(XmlNamespace.Types, IdType.ToString(), Id);
         writer.WriteEndElement(); // ConnectingSID
         writer.WriteEndElement(); // OpenAsAdminOrSystemService
-    }
-
-    /// <summary>
-    ///     Gets or sets the type of the Id.
-    /// </summary>
-    public ConnectingIdType IdType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the user Id.
-    /// </summary>
-    public string Id { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the special logon type.
-    /// </summary>
-    public PrivilegedLogonType LogonType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the budget type.
-    /// </summary>
-    public PrivilegedUserIdBudgetType? BudgetType
-    {
-        get => _budgetType;
-        set => _budgetType = value;
     }
 }

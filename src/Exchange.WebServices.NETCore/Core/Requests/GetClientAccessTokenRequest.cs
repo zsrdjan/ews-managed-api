@@ -30,6 +30,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class GetClientAccessTokenRequest : MultiResponseServiceRequest<GetClientAccessTokenResponse>
 {
+    internal ClientAccessTokenRequest[] TokenRequests { get; set; }
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetClientAccessTokenRequest" /> class.
     /// </summary>
@@ -140,6 +142,4 @@ internal sealed class GetClientAccessTokenRequest : MultiResponseServiceRequest<
     {
         return ExchangeVersion.Exchange2013;
     }
-
-    internal ClientAccessTokenRequest[] TokenRequests { get; set; }
 }

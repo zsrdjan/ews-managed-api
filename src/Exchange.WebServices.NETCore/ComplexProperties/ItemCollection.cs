@@ -42,11 +42,63 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
     private readonly List<TItem> _items = new();
 
     /// <summary>
+    ///     Gets the total number of items in the collection.
+    /// </summary>
+    public int Count => _items.Count;
+
+    /// <summary>
+    ///     Gets the item at the specified index.
+    /// </summary>
+    /// <param name="index">The zero-based index of the item to get.</param>
+    /// <returns>The item at the specified index.</returns>
+    public TItem this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
+            }
+
+            return _items[index];
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ItemCollection&lt;TItem&gt;" /> class.
     /// </summary>
     internal ItemCollection()
     {
     }
+
+
+    #region IEnumerable<TItem> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<TItem> GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Loads from XML.
@@ -79,55 +131,4 @@ public sealed class ItemCollection<TItem> : ComplexProperty, IEnumerable<TItem>
             } while (!reader.IsEndElement(XmlNamespace.Types, localElementName));
         }
     }
-
-    /// <summary>
-    ///     Gets the total number of items in the collection.
-    /// </summary>
-    public int Count => _items.Count;
-
-    /// <summary>
-    ///     Gets the item at the specified index.
-    /// </summary>
-    /// <param name="index">The zero-based index of the item to get.</param>
-    /// <returns>The item at the specified index.</returns>
-    public TItem this[int index]
-    {
-        get
-        {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
-            }
-
-            return _items[index];
-        }
-    }
-
-
-    #region IEnumerable<TItem> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<TItem> GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
-
-    #endregion
 }

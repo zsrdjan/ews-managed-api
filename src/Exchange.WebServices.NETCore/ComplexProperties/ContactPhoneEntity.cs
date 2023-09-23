@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ContactPhoneEntity : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ContactPhoneEntity" /> class.
-    /// </summary>
-    internal ContactPhoneEntity()
-    {
-    }
-
-    /// <summary>
     ///     Gets the phone entity OriginalPhoneString.
     /// </summary>
     public string OriginalPhoneString { get; internal set; }
@@ -54,6 +47,13 @@ public sealed class ContactPhoneEntity : ComplexProperty
     ///     Gets the phone entity Type.
     /// </summary>
     public string Type { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ContactPhoneEntity" /> class.
+    /// </summary>
+    internal ContactPhoneEntity()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

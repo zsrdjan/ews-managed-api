@@ -36,6 +36,11 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
     readonly List<RetentionPolicyTag> _retentionPolicyTags = new List<RetentionPolicyTag>();
 
     /// <summary>
+    ///     Retention policy tags result.
+    /// </summary>
+    public RetentionPolicyTag[] RetentionPolicyTags => _retentionPolicyTags.ToArray();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserRetentionPolicyTagsResponse" /> class.
     /// </summary>
     internal GetUserRetentionPolicyTagsResponse()
@@ -67,9 +72,4 @@ public sealed class GetUserRetentionPolicyTagsResponse : ServiceResponse
             reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RetentionPolicyTags);
         }
     }
-
-    /// <summary>
-    ///     Retention policy tags result.
-    /// </summary>
-    public RetentionPolicyTag[] RetentionPolicyTags => _retentionPolicyTags.ToArray();
 }

@@ -31,6 +31,24 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFolderHierarchyResponse>
 {
     /// <summary>
+    ///     Gets or sets the property set.
+    /// </summary>
+    /// <value>The property set.</value>
+    public PropertySet PropertySet { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the sync folder id.
+    /// </summary>
+    /// <value>The sync folder id.</value>
+    public FolderId SyncFolderId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the state of the sync.
+    /// </summary>
+    /// <value>The state of the sync.</value>
+    public string SyncState { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SyncFolderHierarchyRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -127,22 +145,4 @@ internal class SyncFolderHierarchyRequest : MultiResponseServiceRequest<SyncFold
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the property set.
-    /// </summary>
-    /// <value>The property set.</value>
-    public PropertySet PropertySet { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the sync folder id.
-    /// </summary>
-    /// <value>The sync folder id.</value>
-    public FolderId SyncFolderId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the state of the sync.
-    /// </summary>
-    /// <value>The state of the sync.</value>
-    public string SyncState { get; set; }
 }

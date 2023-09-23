@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MoveCopyFolderResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the new (moved or copied) folder.
+    /// </summary>
+    public Folder Folder { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyFolderResponse" /> class.
     /// </summary>
     internal MoveCopyFolderResponse()
@@ -69,9 +74,4 @@ public sealed class MoveCopyFolderResponse : ServiceResponse
 
         Folder = folders[0];
     }
-
-    /// <summary>
-    ///     Gets the new (moved or copied) folder.
-    /// </summary>
-    public Folder Folder { get; private set; }
 }

@@ -34,6 +34,50 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
     private UserConfiguration? _userConfiguration;
 
     /// <summary>
+    ///     Gets or sets the name.
+    /// </summary>
+    /// <value>The name.</value>
+    internal string Name { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the parent folder Id.
+    /// </summary>
+    /// <value>The parent folder Id.</value>
+    internal FolderId ParentFolderId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the user configuration.
+    /// </summary>
+    /// <value>The user configuration.</value>
+    internal UserConfiguration UserConfiguration
+    {
+        get => _userConfiguration;
+
+        set
+        {
+            _userConfiguration = value;
+
+            Name = _userConfiguration.Name;
+            ParentFolderId = _userConfiguration.ParentFolderId;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the properties.
+    /// </summary>
+    /// <value>The properties.</value>
+    internal UserConfigurationProperties Properties { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserConfigurationRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetUserConfigurationRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
@@ -127,48 +171,4 @@ internal class GetUserConfigurationRequest : MultiResponseServiceRequest<GetUser
             Properties.ToString().Replace(EnumDelimiter, string.Empty)
         );
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="GetUserConfigurationRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetUserConfigurationRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the name.
-    /// </summary>
-    /// <value>The name.</value>
-    internal string Name { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the parent folder Id.
-    /// </summary>
-    /// <value>The parent folder Id.</value>
-    internal FolderId ParentFolderId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the user configuration.
-    /// </summary>
-    /// <value>The user configuration.</value>
-    internal UserConfiguration UserConfiguration
-    {
-        get => _userConfiguration;
-
-        set
-        {
-            _userConfiguration = value;
-
-            Name = _userConfiguration.Name;
-            ParentFolderId = _userConfiguration.ParentFolderId;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the properties.
-    /// </summary>
-    /// <value>The properties.</value>
-    internal UserConfigurationProperties Properties { get; set; }
 }

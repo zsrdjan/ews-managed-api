@@ -33,14 +33,10 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     where TResponse : ServiceResponse
 {
     /// <summary>
-    ///     Validates request.
+    ///     Gets the folder ids.
     /// </summary>
-    internal override void Validate()
-    {
-        base.Validate();
-        EwsUtilities.ValidateParamCollection(FolderIds);
-        FolderIds.Validate(Service.RequestedServerVersion);
-    }
+    /// <value>The folder ids.</value>
+    internal FolderIdWrapperList FolderIds { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyFolderRequest&lt;TResponse&gt;" /> class.
@@ -50,6 +46,16 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     internal MoveCopyFolderRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
         : base(service, errorHandlingMode)
     {
+    }
+
+    /// <summary>
+    ///     Validates request.
+    /// </summary>
+    internal override void Validate()
+    {
+        base.Validate();
+        EwsUtilities.ValidateParamCollection(FolderIds);
+        FolderIds.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
@@ -69,10 +75,4 @@ internal abstract class MoveCopyFolderRequest<TResponse> : MoveCopyRequest<Folde
     {
         return FolderIds.Count;
     }
-
-    /// <summary>
-    ///     Gets the folder ids.
-    /// </summary>
-    /// <value>The folder ids.</value>
-    internal FolderIdWrapperList FolderIds { get; } = new();
 }

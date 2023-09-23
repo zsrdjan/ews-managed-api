@@ -45,6 +45,38 @@ public abstract partial class SearchFilter
         private object? _value;
 
         /// <summary>
+        ///     Gets or sets the definition of the property to compare with. Property definitions are available as static members
+        ///     from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName,
+        ///     etc.)
+        ///     The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
+        /// </summary>
+        public PropertyDefinitionBase? OtherPropertyDefinition
+        {
+            get => _otherPropertyDefinition;
+
+            set
+            {
+                SetFieldValue(ref _otherPropertyDefinition, value);
+                _value = null;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
+        ///     are mutually exclusive; setting one resets the other to null.
+        /// </summary>
+        public object? Value
+        {
+            get => _value;
+
+            set
+            {
+                SetFieldValue(ref _value, value);
+                _otherPropertyDefinition = null;
+            }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="RelationalFilter" /> class.
         /// </summary>
         internal RelationalFilter()
@@ -167,38 +199,6 @@ public abstract partial class SearchFilter
             }
 
             writer.WriteEndElement(); // FieldURIOrConstant
-        }
-
-        /// <summary>
-        ///     Gets or sets the definition of the property to compare with. Property definitions are available as static members
-        ///     from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName,
-        ///     etc.)
-        ///     The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
-        /// </summary>
-        public PropertyDefinitionBase? OtherPropertyDefinition
-        {
-            get => _otherPropertyDefinition;
-
-            set
-            {
-                SetFieldValue(ref _otherPropertyDefinition, value);
-                _value = null;
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the value to compare with. The Value and OtherPropertyDefinition properties
-        ///     are mutually exclusive; setting one resets the other to null.
-        /// </summary>
-        public object? Value
-        {
-            get => _value;
-
-            set
-            {
-                SetFieldValue(ref _value, value);
-                _otherPropertyDefinition = null;
-            }
         }
     }
 }

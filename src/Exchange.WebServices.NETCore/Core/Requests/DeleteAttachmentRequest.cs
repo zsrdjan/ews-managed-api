@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<DeleteAttachmentResponse>
 {
     /// <summary>
+    ///     Gets the attachments.
+    /// </summary>
+    /// <value>The attachments.</value>
+    public List<Attachment> Attachments { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteAttachmentRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -128,10 +134,4 @@ internal sealed class DeleteAttachmentRequest : MultiResponseServiceRequest<Dele
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the attachments.
-    /// </summary>
-    /// <value>The attachments.</value>
-    public List<Attachment> Attachments { get; } = new();
 }

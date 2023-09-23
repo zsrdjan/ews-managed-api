@@ -34,13 +34,24 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class Grouping : ISelfValidate
 {
     /// <summary>
-    ///     Validates this grouping.
+    ///     Gets or sets the sort direction.
     /// </summary>
-    private void InternalValidate()
-    {
-        EwsUtilities.ValidateParam(GroupOn, "GroupOn");
-        EwsUtilities.ValidateParam(AggregateOn, "AggregateOn");
-    }
+    public SortDirection SortDirection { get; set; } = SortDirection.Ascending;
+
+    /// <summary>
+    ///     Gets or sets the property to group on.
+    /// </summary>
+    public PropertyDefinitionBase GroupOn { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the property to aggregate on.
+    /// </summary>
+    public PropertyDefinitionBase AggregateOn { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the types of aggregate to calculate.
+    /// </summary>
+    public AggregateType AggregateType { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Grouping" /> class.
@@ -73,6 +84,29 @@ public sealed class Grouping : ISelfValidate
         AggregateType = aggregateType;
     }
 
+
+    #region ISelfValidate Members
+
+    /// <summary>
+    ///     Implements ISelfValidate.Validate. Validates this grouping.
+    /// </summary>
+    void ISelfValidate.Validate()
+    {
+        InternalValidate();
+    }
+
+    #endregion
+
+
+    /// <summary>
+    ///     Validates this grouping.
+    /// </summary>
+    private void InternalValidate()
+    {
+        EwsUtilities.ValidateParam(GroupOn, "GroupOn");
+        EwsUtilities.ValidateParam(AggregateOn, "AggregateOn");
+    }
+
     /// <summary>
     ///     Writes to XML.
     /// </summary>
@@ -93,37 +127,4 @@ public sealed class Grouping : ISelfValidate
 
         writer.WriteEndElement(); // GroupBy
     }
-
-    /// <summary>
-    ///     Gets or sets the sort direction.
-    /// </summary>
-    public SortDirection SortDirection { get; set; } = SortDirection.Ascending;
-
-    /// <summary>
-    ///     Gets or sets the property to group on.
-    /// </summary>
-    public PropertyDefinitionBase GroupOn { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the property to aggregate on.
-    /// </summary>
-    public PropertyDefinitionBase AggregateOn { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the types of aggregate to calculate.
-    /// </summary>
-    public AggregateType AggregateType { get; set; }
-
-
-    #region ISelfValidate Members
-
-    /// <summary>
-    ///     Implements ISelfValidate.Validate. Validates this grouping.
-    /// </summary>
-    void ISelfValidate.Validate()
-    {
-        InternalValidate();
-    }
-
-    #endregion
 }

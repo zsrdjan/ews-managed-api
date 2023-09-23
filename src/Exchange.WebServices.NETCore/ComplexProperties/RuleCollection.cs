@@ -41,14 +41,6 @@ public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
     private readonly List<Rule> _rules;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RuleCollection" /> class.
-    /// </summary>
-    internal RuleCollection()
-    {
-        _rules = new List<Rule>();
-    }
-
-    /// <summary>
     ///     Gets a value indicating whether an Outlook rule blob exists in the user's
     ///     mailbox. To update rules with EWS when the Outlook rule blob exists, call
     ///     SetInboxRules passing true as the value of the removeOutlookBlob parameter.
@@ -76,6 +68,14 @@ public sealed class RuleCollection : ComplexProperty, IEnumerable<Rule>
 
             return _rules[index];
         }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RuleCollection" /> class.
+    /// </summary>
+    internal RuleCollection()
+    {
+        _rules = new List<Rule>();
     }
 
     /// <summary>

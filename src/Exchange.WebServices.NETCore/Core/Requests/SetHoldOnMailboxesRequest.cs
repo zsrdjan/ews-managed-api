@@ -31,6 +31,41 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Action type
+    /// </summary>
+    public HoldAction ActionType { get; set; }
+
+    /// <summary>
+    ///     Hold id
+    /// </summary>
+    public string HoldId { get; set; }
+
+    /// <summary>
+    ///     Query
+    /// </summary>
+    public string Query { get; set; }
+
+    /// <summary>
+    ///     Collection of mailboxes to be held/unheld
+    /// </summary>
+    public string[] Mailboxes { get; set; }
+
+    /// <summary>
+    ///     Query language
+    /// </summary>
+    public string Language { get; set; }
+
+    /// <summary>
+    ///     InPlaceHold Identity
+    /// </summary>
+    public string InPlaceHoldIdentity { get; set; }
+
+    /// <summary>
+    ///     Item hold period
+    /// </summary>
+    public string ItemHoldPeriod { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SetHoldOnMailboxesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -142,39 +177,4 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     {
         return ExchangeVersion.Exchange2013;
     }
-
-    /// <summary>
-    ///     Action type
-    /// </summary>
-    public HoldAction ActionType { get; set; }
-
-    /// <summary>
-    ///     Hold id
-    /// </summary>
-    public string HoldId { get; set; }
-
-    /// <summary>
-    ///     Query
-    /// </summary>
-    public string Query { get; set; }
-
-    /// <summary>
-    ///     Collection of mailboxes to be held/unheld
-    /// </summary>
-    public string[] Mailboxes { get; set; }
-
-    /// <summary>
-    ///     Query language
-    /// </summary>
-    public string Language { get; set; }
-
-    /// <summary>
-    ///     InPlaceHold Identity
-    /// </summary>
-    public string InPlaceHoldIdentity { get; set; }
-
-    /// <summary>
-    ///     Item hold period
-    /// </summary>
-    public string ItemHoldPeriod { get; set; }
 }

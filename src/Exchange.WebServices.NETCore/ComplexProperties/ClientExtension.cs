@@ -34,59 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ClientExtension : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClientExtension" /> class.
-    /// </summary>
-    internal ClientExtension()
-    {
-        Namespace = XmlNamespace.Types;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ClientExtension" /> class.
-    /// </summary>
-    /// <param name="type">Extension type</param>
-    /// <param name="scope">Extension install scope</param>
-    /// <param name="manifestStream">Manifest stream, can be null</param>
-    /// <param name="marketplaceAssetId">The asset ID for Office Marketplace</param>
-    /// <param name="marketplaceContentMarket">The content market for Office Marketplace</param>
-    /// <param name="isAvailable">Whether extension is available</param>
-    /// <param name="isMandatory">Whether extension is mandatory</param>
-    /// <param name="isEnabledByDefault">Whether extension is enabled by default</param>
-    /// <param name="providedTo">Who the extension is provided for (e.g. "entire org" or "specific users")</param>
-    /// <param name="specificUsers">List of users extension is provided for, can be null</param>
-    /// <param name="appStatus">App status</param>
-    /// <param name="etoken">Etoken</param>
-    public ClientExtension(
-        ExtensionType type,
-        ExtensionInstallScope scope,
-        Stream manifestStream,
-        string marketplaceAssetId,
-        string marketplaceContentMarket,
-        bool isAvailable,
-        bool isMandatory,
-        bool isEnabledByDefault,
-        ClientExtensionProvidedTo providedTo,
-        StringList specificUsers,
-        string appStatus,
-        string etoken
-    )
-        : this()
-    {
-        Type = type;
-        Scope = scope;
-        ManifestStream = manifestStream;
-        MarketplaceAssetID = marketplaceAssetId;
-        MarketplaceContentMarket = marketplaceContentMarket;
-        IsAvailable = isAvailable;
-        IsMandatory = isMandatory;
-        IsEnabledByDefault = isEnabledByDefault;
-        ProvidedTo = providedTo;
-        SpecificUsers = specificUsers;
-        AppStatus = appStatus;
-        Etoken = etoken;
-    }
-
-    /// <summary>
     ///     Gets or sets the extension type.
     /// </summary>
     public ExtensionType Type { get; set; }
@@ -150,6 +97,59 @@ public sealed class ClientExtension : ComplexProperty
     ///     Gets or sets the user list this extension is provided to.
     /// </summary>
     public StringList? SpecificUsers { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientExtension" /> class.
+    /// </summary>
+    internal ClientExtension()
+    {
+        Namespace = XmlNamespace.Types;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientExtension" /> class.
+    /// </summary>
+    /// <param name="type">Extension type</param>
+    /// <param name="scope">Extension install scope</param>
+    /// <param name="manifestStream">Manifest stream, can be null</param>
+    /// <param name="marketplaceAssetId">The asset ID for Office Marketplace</param>
+    /// <param name="marketplaceContentMarket">The content market for Office Marketplace</param>
+    /// <param name="isAvailable">Whether extension is available</param>
+    /// <param name="isMandatory">Whether extension is mandatory</param>
+    /// <param name="isEnabledByDefault">Whether extension is enabled by default</param>
+    /// <param name="providedTo">Who the extension is provided for (e.g. "entire org" or "specific users")</param>
+    /// <param name="specificUsers">List of users extension is provided for, can be null</param>
+    /// <param name="appStatus">App status</param>
+    /// <param name="etoken">Etoken</param>
+    public ClientExtension(
+        ExtensionType type,
+        ExtensionInstallScope scope,
+        Stream manifestStream,
+        string marketplaceAssetId,
+        string marketplaceContentMarket,
+        bool isAvailable,
+        bool isMandatory,
+        bool isEnabledByDefault,
+        ClientExtensionProvidedTo providedTo,
+        StringList specificUsers,
+        string appStatus,
+        string etoken
+    )
+        : this()
+    {
+        Type = type;
+        Scope = scope;
+        ManifestStream = manifestStream;
+        MarketplaceAssetID = marketplaceAssetId;
+        MarketplaceContentMarket = marketplaceContentMarket;
+        IsAvailable = isAvailable;
+        IsMandatory = isMandatory;
+        IsEnabledByDefault = isEnabledByDefault;
+        ProvidedTo = providedTo;
+        SpecificUsers = specificUsers;
+        AppStatus = appStatus;
+        Etoken = etoken;
+    }
 
     /// <summary>
     ///     Reads attributes from XML.

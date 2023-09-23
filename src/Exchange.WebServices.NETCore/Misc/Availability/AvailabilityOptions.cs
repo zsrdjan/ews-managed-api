@@ -33,100 +33,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class AvailabilityOptions
 {
-    private int _mergedFreeBusyInterval = 30;
     private int _goodSuggestionThreshold = 25;
-    private int _maximumSuggestionsPerDay = 10;
     private int _maximumNonWorkHoursSuggestionsPerDay;
+    private int _maximumSuggestionsPerDay = 10;
     private int _meetingDuration = 60;
-
-    /// <summary>
-    ///     Validates this instance against the specified time window.
-    /// </summary>
-    /// <param name="timeWindow">The time window.</param>
-    internal void Validate(TimeSpan timeWindow)
-    {
-        if (TimeSpan.FromMinutes(MergedFreeBusyInterval) > timeWindow)
-        {
-            throw new ArgumentException(
-                Strings.MergedFreeBusyIntervalMustBeSmallerThanTimeWindow,
-                "MergedFreeBusyInterval"
-            );
-        }
-
-        EwsUtilities.ValidateParamAllowNull(DetailedSuggestionsWindow);
-    }
-
-    /// <summary>
-    ///     Writes to XML.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="request">The request being emitted.</param>
-    internal void WriteToXml(EwsServiceXmlWriter writer, GetUserAvailabilityRequest request)
-    {
-        if (request.IsFreeBusyViewRequested)
-        {
-            writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FreeBusyViewOptions);
-
-            request.TimeWindow.WriteToXmlUnscopedDatesOnly(writer, XmlElementNames.TimeWindow);
-
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.MergedFreeBusyIntervalInMinutes,
-                MergedFreeBusyInterval
-            );
-
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RequestedView, RequestedFreeBusyView);
-
-            writer.WriteEndElement(); // FreeBusyViewOptions
-        }
-
-        if (request.IsSuggestionsViewRequested)
-        {
-            writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.SuggestionsViewOptions);
-
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.GoodThreshold, GoodSuggestionThreshold);
-
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MaximumResultsByDay, MaximumSuggestionsPerDay);
-
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.MaximumNonWorkHourResultsByDay,
-                MaximumNonWorkHoursSuggestionsPerDay
-            );
-
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MeetingDurationInMinutes, MeetingDuration);
-
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.MinimumSuggestionQuality,
-                MinimumSuggestionQuality
-            );
-
-            var timeWindowToSerialize = DetailedSuggestionsWindow ?? request.TimeWindow;
-
-            timeWindowToSerialize.WriteToXmlUnscopedDatesOnly(writer, XmlElementNames.DetailedSuggestionsWindow);
-
-            if (CurrentMeetingTime.HasValue)
-            {
-                writer.WriteElementValue(
-                    XmlNamespace.Types,
-                    XmlElementNames.CurrentMeetingTime,
-                    CurrentMeetingTime.Value
-                );
-            }
-
-            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.GlobalObjectId, GlobalObjectId);
-
-            writer.WriteEndElement(); // SuggestionsViewOptions
-        }
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AvailabilityOptions" /> class.
-    /// </summary>
-    public AvailabilityOptions()
-    {
-    }
+    private int _mergedFreeBusyInterval = 30;
 
     /// <summary>
     ///     Gets or sets the time difference between two successive slots in a FreeBusyMerged view.
@@ -260,4 +171,93 @@ public sealed class AvailabilityOptions
     ///     GetUserAvailability.
     /// </summary>
     public string GlobalObjectId { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AvailabilityOptions" /> class.
+    /// </summary>
+    public AvailabilityOptions()
+    {
+    }
+
+    /// <summary>
+    ///     Validates this instance against the specified time window.
+    /// </summary>
+    /// <param name="timeWindow">The time window.</param>
+    internal void Validate(TimeSpan timeWindow)
+    {
+        if (TimeSpan.FromMinutes(MergedFreeBusyInterval) > timeWindow)
+        {
+            throw new ArgumentException(
+                Strings.MergedFreeBusyIntervalMustBeSmallerThanTimeWindow,
+                "MergedFreeBusyInterval"
+            );
+        }
+
+        EwsUtilities.ValidateParamAllowNull(DetailedSuggestionsWindow);
+    }
+
+    /// <summary>
+    ///     Writes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="request">The request being emitted.</param>
+    internal void WriteToXml(EwsServiceXmlWriter writer, GetUserAvailabilityRequest request)
+    {
+        if (request.IsFreeBusyViewRequested)
+        {
+            writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FreeBusyViewOptions);
+
+            request.TimeWindow.WriteToXmlUnscopedDatesOnly(writer, XmlElementNames.TimeWindow);
+
+            writer.WriteElementValue(
+                XmlNamespace.Types,
+                XmlElementNames.MergedFreeBusyIntervalInMinutes,
+                MergedFreeBusyInterval
+            );
+
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RequestedView, RequestedFreeBusyView);
+
+            writer.WriteEndElement(); // FreeBusyViewOptions
+        }
+
+        if (request.IsSuggestionsViewRequested)
+        {
+            writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.SuggestionsViewOptions);
+
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.GoodThreshold, GoodSuggestionThreshold);
+
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MaximumResultsByDay, MaximumSuggestionsPerDay);
+
+            writer.WriteElementValue(
+                XmlNamespace.Types,
+                XmlElementNames.MaximumNonWorkHourResultsByDay,
+                MaximumNonWorkHoursSuggestionsPerDay
+            );
+
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.MeetingDurationInMinutes, MeetingDuration);
+
+            writer.WriteElementValue(
+                XmlNamespace.Types,
+                XmlElementNames.MinimumSuggestionQuality,
+                MinimumSuggestionQuality
+            );
+
+            var timeWindowToSerialize = DetailedSuggestionsWindow ?? request.TimeWindow;
+
+            timeWindowToSerialize.WriteToXmlUnscopedDatesOnly(writer, XmlElementNames.DetailedSuggestionsWindow);
+
+            if (CurrentMeetingTime.HasValue)
+            {
+                writer.WriteElementValue(
+                    XmlNamespace.Types,
+                    XmlElementNames.CurrentMeetingTime,
+                    CurrentMeetingTime.Value
+                );
+            }
+
+            writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.GlobalObjectId, GlobalObjectId);
+
+            writer.WriteEndElement(); // SuggestionsViewOptions
+        }
+    }
 }

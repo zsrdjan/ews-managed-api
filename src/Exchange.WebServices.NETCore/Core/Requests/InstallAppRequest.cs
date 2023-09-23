@@ -31,6 +31,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class InstallAppRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     The plain text manifest stream.
+    /// </summary>
+    private readonly Stream _manifestStream;
+
+    /// <summary>
+    ///     The asset id of the addin in marketplace
+    /// </summary>
+    private readonly string _marketplaceAssetId;
+
+    /// <summary>
+    ///     The target market for content
+    /// </summary>
+    private readonly string _marketplaceContentMarket;
+
+    /// <summary>
+    ///     Whether to send welcome email or not
+    /// </summary>
+    private readonly bool _sendWelcomeEmail;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="InstallAppRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -131,24 +151,4 @@ internal sealed class InstallAppRequest : SimpleServiceRequestBase
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     The plain text manifest stream.
-    /// </summary>
-    private readonly Stream _manifestStream;
-
-    /// <summary>
-    ///     The asset id of the addin in marketplace
-    /// </summary>
-    private readonly string _marketplaceAssetId;
-
-    /// <summary>
-    ///     The target market for content
-    /// </summary>
-    private readonly string _marketplaceContentMarket;
-
-    /// <summary>
-    ///     Whether to send welcome email or not
-    /// </summary>
-    private readonly bool _sendWelcomeEmail;
 }

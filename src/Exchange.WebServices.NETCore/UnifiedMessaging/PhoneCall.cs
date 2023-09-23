@@ -35,9 +35,29 @@ public sealed class PhoneCall : ComplexProperty
 {
     private const string SuccessfulResponseText = "OK";
     private const int SuccessfulResponseCode = 200;
+    private readonly PhoneCallId _id;
 
     private readonly ExchangeService _service;
-    private readonly PhoneCallId _id;
+
+    /// <summary>
+    ///     Gets a value indicating the last known state of this phone call.
+    /// </summary>
+    public PhoneCallState State { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating the reason why this phone call failed to connect.
+    /// </summary>
+    public ConnectionFailureCause ConnectionFailureCause { get; private set; }
+
+    /// <summary>
+    ///     Gets the SIP response text of this phone call.
+    /// </summary>
+    public string SIPResponseText { get; private set; }
+
+    /// <summary>
+    ///     Gets the SIP response code of this phone call.
+    /// </summary>
+    public int SIPResponseCode { get; private set; }
 
     /// <summary>
     ///     PhoneCall Constructor.
@@ -128,24 +148,4 @@ public sealed class PhoneCall : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating the last known state of this phone call.
-    /// </summary>
-    public PhoneCallState State { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating the reason why this phone call failed to connect.
-    /// </summary>
-    public ConnectionFailureCause ConnectionFailureCause { get; private set; }
-
-    /// <summary>
-    ///     Gets the SIP response text of this phone call.
-    /// </summary>
-    public string SIPResponseText { get; private set; }
-
-    /// <summary>
-    ///     Gets the SIP response code of this phone call.
-    /// </summary>
-    public int SIPResponseCode { get; private set; }
 }

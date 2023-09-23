@@ -44,10 +44,10 @@ public sealed class ExchangeService : ExchangeServiceBase
 {
     private const string TargetServerVersionHeaderName = "X-EWS-TargetVersion";
 
+    private string _targetServerVersion;
+
 
     private UnifiedMessaging? _unifiedMessaging;
-
-    private string _targetServerVersion;
 
 
     /// <summary>
@@ -242,6 +242,99 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
         return responses[0].Items;
+    }
+
+    #endregion
+
+
+    #region PeopleInsights operations
+
+    /// <summary>
+    ///     This method is for retreiving people insight for given email addresses
+    /// </summary>
+    /// <param name="emailAddresses">Specified eamiladdresses to retrieve</param>
+    /// <param name="token"></param>
+    /// <returns>The collection of Person objects containing the insight info</returns>
+    public async Task<Collection<Person>> GetPeopleInsights(
+        IEnumerable<string> emailAddresses,
+        CancellationToken token = default
+    )
+    {
+        var request = new GetPeopleInsightsRequest(this);
+        request.EmailAddresses.AddRange(emailAddresses);
+
+        var response = await request.Execute(token).ConfigureAwait(false);
+        return response.People;
+    }
+
+    #endregion
+
+
+    #region MailTips operations
+
+    /// <summary>
+    /// Gets MailTips for given users. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendingAs">E-mail address that a user is trying to send as.</param>
+    /// <param name="recipients">Collection of recipients that would receive a copy of the message.</param>
+    /// <param name="requested">Mail tips requested from the service.</param>
+    /// <param name="token"></param>
+    /// <returns>List of GetMailTips results.</returns>
+    public Task<GetMailTipsResults> GetMailTips(
+        string sendingAs,
+        Mailbox[] recipients,
+        MailTipsRequested requested,
+        CancellationToken token = default
+    )
+    {
+        var request = new GetMailTipsRequest(this)
+        {
+            SendingAs = sendingAs,
+            Recipients = recipients,
+            MailTipsRequested = requested,
+        };
+
+        return request.Execute(token);
+    }
+
+    #endregion
+
+
+    #region MRM operations
+
+    /// <summary>
+    ///     Get user retention policy tags.
+    /// </summary>
+    /// <returns>Service response object.</returns>
+    public Task<GetUserRetentionPolicyTagsResponse> GetUserRetentionPolicyTags(CancellationToken token = default)
+    {
+        var request = new GetUserRetentionPolicyTagsRequest(this);
+
+        return request.Execute(token);
+    }
+
+    #endregion
+
+
+    #region Diagnostic Method -- Only used by test
+
+    /// <summary>
+    ///     Executes the diagnostic method.
+    /// </summary>
+    /// <param name="verb">The verb.</param>
+    /// <param name="parameter">The parameter.</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    internal async Task<XmlDocument> ExecuteDiagnosticMethod(string verb, XmlNode parameter, CancellationToken token)
+    {
+        var request = new ExecuteDiagnosticMethodRequest(this)
+        {
+            Verb = verb,
+            Parameter = parameter,
+        };
+
+        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
+        return responses[0].ReturnValue;
     }
 
     #endregion
@@ -2432,29 +2525,6 @@ public sealed class ExchangeService : ExchangeServiceBase
     #endregion
 
 
-    #region PeopleInsights operations
-
-    /// <summary>
-    ///     This method is for retreiving people insight for given email addresses
-    /// </summary>
-    /// <param name="emailAddresses">Specified eamiladdresses to retrieve</param>
-    /// <param name="token"></param>
-    /// <returns>The collection of Person objects containing the insight info</returns>
-    public async Task<Collection<Person>> GetPeopleInsights(
-        IEnumerable<string> emailAddresses,
-        CancellationToken token = default
-    )
-    {
-        var request = new GetPeopleInsightsRequest(this);
-        request.EmailAddresses.AddRange(emailAddresses);
-
-        var response = await request.Execute(token).ConfigureAwait(false);
-        return response.People;
-    }
-
-    #endregion
-
-
     #region Attachment operations
 
     /// <summary>
@@ -3681,36 +3751,6 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         var response = await request.Execute(token).ConfigureAwait(false);
         return response.Rooms;
-    }
-
-    #endregion
-
-
-    #region MailTips operations
-
-    /// <summary>
-    /// Gets MailTips for given users. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendingAs">E-mail address that a user is trying to send as.</param>
-    /// <param name="recipients">Collection of recipients that would receive a copy of the message.</param>
-    /// <param name="requested">Mail tips requested from the service.</param>
-    /// <param name="token"></param>
-    /// <returns>List of GetMailTips results.</returns>
-    public Task<GetMailTipsResults> GetMailTips(
-        string sendingAs,
-        Mailbox[] recipients,
-        MailTipsRequested requested,
-        CancellationToken token = default
-    )
-    {
-        var request = new GetMailTipsRequest(this)
-        {
-            SendingAs = sendingAs,
-            Recipients = recipients,
-            MailTipsRequested = requested,
-        };
-
-        return request.Execute(token);
     }
 
     #endregion
@@ -5565,22 +5605,6 @@ public sealed class ExchangeService : ExchangeServiceBase
     #endregion
 
 
-    #region MRM operations
-
-    /// <summary>
-    ///     Get user retention policy tags.
-    /// </summary>
-    /// <returns>Service response object.</returns>
-    public Task<GetUserRetentionPolicyTagsResponse> GetUserRetentionPolicyTags(CancellationToken token = default)
-    {
-        var request = new GetUserRetentionPolicyTagsRequest(this);
-
-        return request.Execute(token);
-    }
-
-    #endregion
-
-
     #region ClientAccessTokens
 
     /// <summary>
@@ -6029,30 +6053,6 @@ public sealed class ExchangeService : ExchangeServiceBase
         );
 
         return request.Execute(token);
-    }
-
-    #endregion
-
-
-    #region Diagnostic Method -- Only used by test
-
-    /// <summary>
-    ///     Executes the diagnostic method.
-    /// </summary>
-    /// <param name="verb">The verb.</param>
-    /// <param name="parameter">The parameter.</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    internal async Task<XmlDocument> ExecuteDiagnosticMethod(string verb, XmlNode parameter, CancellationToken token)
-    {
-        var request = new ExecuteDiagnosticMethodRequest(this)
-        {
-            Verb = verb,
-            Parameter = parameter,
-        };
-
-        var responses = await request.ExecuteAsync(token).ConfigureAwait(false);
-        return responses[0].ReturnValue;
     }
 
     #endregion

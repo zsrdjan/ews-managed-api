@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
 {
     /// <summary>
+    ///     Gets the index attribute of IndexedFieldURI element.
+    /// </summary>
+    public string Index { get; }
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(string);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="IndexedPropertyDefinition" /> class.
     /// </summary>
     /// <param name="uri">The FieldURI attribute of the IndexedFieldURI element.</param>
@@ -58,11 +68,6 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
                 idxPropDef1.Uri == idxPropDef2.Uri &&
                 idxPropDef1.Index == idxPropDef2.Index);
     }
-
-    /// <summary>
-    ///     Gets the index attribute of IndexedFieldURI element.
-    /// </summary>
-    public string Index { get; }
 
     /// <summary>
     ///     Writes the attributes to XML.
@@ -138,9 +143,4 @@ public sealed class IndexedPropertyDefinition : ServiceObjectPropertyDefinition
     {
         return Uri.GetHashCode() ^ Index.GetHashCode();
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(string);
 }

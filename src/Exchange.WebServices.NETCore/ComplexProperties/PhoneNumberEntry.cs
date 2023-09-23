@@ -39,6 +39,15 @@ public sealed class PhoneNumberEntry : DictionaryEntryProperty<PhoneNumberKey>
     private string _phoneNumber;
 
     /// <summary>
+    ///     Gets or sets the phone number of the entry.
+    /// </summary>
+    public string PhoneNumber
+    {
+        get => _phoneNumber;
+        set => SetFieldValue(ref _phoneNumber, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PhoneNumberEntry" /> class.
     /// </summary>
     internal PhoneNumberEntry()
@@ -72,14 +81,5 @@ public sealed class PhoneNumberEntry : DictionaryEntryProperty<PhoneNumberKey>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteValue(PhoneNumber, XmlElementNames.PhoneNumber);
-    }
-
-    /// <summary>
-    ///     Gets or sets the phone number of the entry.
-    /// </summary>
-    public string PhoneNumber
-    {
-        get => _phoneNumber;
-        set => SetFieldValue(ref _phoneNumber, value);
     }
 }

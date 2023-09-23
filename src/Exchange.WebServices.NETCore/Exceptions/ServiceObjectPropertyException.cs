@@ -36,6 +36,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class ServiceObjectPropertyException : PropertyException
 {
     /// <summary>
+    ///     Gets the definition of the property that caused the exception.
+    /// </summary>
+    /// <remarks>The definition of the property that is at the origin of the exception.</remarks>
+    public PropertyDefinitionBase PropertyDefinition { get; }
+
+    /// <summary>
     ///     ServiceObjectPropertyException constructor.
     /// </summary>
     /// <param name="propertyDefinition">The definition of the property that is at the origin of the exception.</param>
@@ -105,10 +111,4 @@ public class ServiceObjectPropertyException : PropertyException
 
         info.AddValue("PropertyDefinition", PropertyDefinition, typeof(PropertyDefinitionBase));
     }
-
-    /// <summary>
-    ///     Gets the definition of the property that caused the exception.
-    /// </summary>
-    /// <remarks>The definition of the property that is at the origin of the exception.</remarks>
-    public PropertyDefinitionBase PropertyDefinition { get; }
 }

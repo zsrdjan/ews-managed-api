@@ -33,6 +33,22 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets a value indicating how errors should be handled.
+    /// </summary>
+    internal ServiceErrorHandling ErrorHandlingMode { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MultiResponseServiceRequest&lt;TResponse&gt;" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
+    internal MultiResponseServiceRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service)
+    {
+        ErrorHandlingMode = errorHandlingMode;
+    }
+
+    /// <summary>
     ///     Parses the response.
     /// </summary>
     /// <param name="reader">The reader.</param>
@@ -109,17 +125,6 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
     protected abstract int GetExpectedResponseMessageCount();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MultiResponseServiceRequest&lt;TResponse&gt;" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
-    internal MultiResponseServiceRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-        : base(service)
-    {
-        ErrorHandlingMode = errorHandlingMode;
-    }
-
-    /// <summary>
     ///     Executes this request.
     /// </summary>
     /// <returns>Service response collection.</returns>
@@ -141,9 +146,4 @@ internal abstract class MultiResponseServiceRequest<TResponse> : SimpleServiceRe
 
         return serviceResponses;
     }
-
-    /// <summary>
-    ///     Gets a value indicating how errors should be handled.
-    /// </summary>
-    internal ServiceErrorHandling ErrorHandlingMode { get; }
 }

@@ -31,6 +31,22 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets or sets the address of the mailbox in which to update the inbox rules.
+    /// </summary>
+    internal string MailboxSmtpAddress { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether or not to remove OutlookRuleBlob from
+    ///     the rule collection.
+    /// </summary>
+    internal bool RemoveOutlookRuleBlob { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the RuleOperation collection.
+    /// </summary>
+    internal IEnumerable<RuleOperation> InboxRuleOperations { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateInboxRulesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -138,20 +154,4 @@ internal sealed class UpdateInboxRulesRequest : SimpleServiceRequestBase
 
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Gets or sets the address of the mailbox in which to update the inbox rules.
-    /// </summary>
-    internal string MailboxSmtpAddress { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether or not to remove OutlookRuleBlob from
-    ///     the rule collection.
-    /// </summary>
-    internal bool RemoveOutlookRuleBlob { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the RuleOperation collection.
-    /// </summary>
-    internal IEnumerable<RuleOperation> InboxRuleOperations { get; set; }
 }

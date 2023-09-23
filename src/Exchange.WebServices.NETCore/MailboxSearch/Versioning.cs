@@ -56,18 +56,6 @@ internal interface IDiscoveryVersionable
 internal static class DiscoverySchemaChanges
 {
     /// <summary>
-    ///     Initializes static members of the <see cref="DiscoverySchemaChanges" /> class.
-    /// </summary>
-    static DiscoverySchemaChanges()
-    {
-        // Schema change for passing extended data with the SearchMailboxes request
-        SearchMailboxesExtendedData = new SchemaChange("15.0.730.0");
-
-        // Schema change for additional search scopes such as "AllMailboxes", "PublicFolders", "SearchId" etc with the SearchMailboxes request
-        SearchMailboxesAdditionalSearchScopes = new SchemaChange("15.0.730.0");
-    }
-
-    /// <summary>
     ///     Gets the search mailboxes extended data.
     /// </summary>
     /// <value>
@@ -82,6 +70,18 @@ internal static class DiscoverySchemaChanges
     ///     The search mailboxes additional search scopes.
     /// </value>
     internal static SchemaChange SearchMailboxesAdditionalSearchScopes { get; private set; }
+
+    /// <summary>
+    ///     Initializes static members of the <see cref="DiscoverySchemaChanges" /> class.
+    /// </summary>
+    static DiscoverySchemaChanges()
+    {
+        // Schema change for passing extended data with the SearchMailboxes request
+        SearchMailboxesExtendedData = new SchemaChange("15.0.730.0");
+
+        // Schema change for additional search scopes such as "AllMailboxes", "PublicFolders", "SearchId" etc with the SearchMailboxes request
+        SearchMailboxesAdditionalSearchScopes = new SchemaChange("15.0.730.0");
+    }
 
     /// <summary>
     ///     Class Feature

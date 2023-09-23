@@ -34,6 +34,51 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class RetentionPolicyTag
 {
     /// <summary>
+    ///     Retention policy tag display name.
+    /// </summary>
+    public string? DisplayName { get; set; }
+
+    /// <summary>
+    ///     Retention Id.
+    /// </summary>
+    public Guid RetentionId { get; set; }
+
+    /// <summary>
+    ///     Retention period in time span.
+    /// </summary>
+    public int RetentionPeriod { get; set; }
+
+    /// <summary>
+    ///     Retention type.
+    /// </summary>
+    public ElcFolderType Type { get; set; }
+
+    /// <summary>
+    ///     Retention action.
+    /// </summary>
+    public RetentionActionType RetentionAction { get; set; }
+
+    /// <summary>
+    ///     Retention policy tag description.
+    /// </summary>
+    public string? Description { get; set; }
+
+    /// <summary>
+    ///     Is this a visible tag?
+    /// </summary>
+    public bool IsVisible { get; set; }
+
+    /// <summary>
+    ///     Is this a opted into tag?
+    /// </summary>
+    public bool OptedInto { get; set; }
+
+    /// <summary>
+    ///     Is this an archive tag?
+    /// </summary>
+    public bool IsArchive { get; set; }
+
+    /// <summary>
     ///     Constructor
     /// </summary>
     public RetentionPolicyTag()
@@ -106,49 +151,4 @@ public sealed class RetentionPolicyTag
 
         return retentionPolicyTag;
     }
-
-    /// <summary>
-    ///     Retention policy tag display name.
-    /// </summary>
-    public string? DisplayName { get; set; }
-
-    /// <summary>
-    ///     Retention Id.
-    /// </summary>
-    public Guid RetentionId { get; set; }
-
-    /// <summary>
-    ///     Retention period in time span.
-    /// </summary>
-    public int RetentionPeriod { get; set; }
-
-    /// <summary>
-    ///     Retention type.
-    /// </summary>
-    public ElcFolderType Type { get; set; }
-
-    /// <summary>
-    ///     Retention action.
-    /// </summary>
-    public RetentionActionType RetentionAction { get; set; }
-
-    /// <summary>
-    ///     Retention policy tag description.
-    /// </summary>
-    public string? Description { get; set; }
-
-    /// <summary>
-    ///     Is this a visible tag?
-    /// </summary>
-    public bool IsVisible { get; set; }
-
-    /// <summary>
-    ///     Is this a opted into tag?
-    /// </summary>
-    public bool OptedInto { get; set; }
-
-    /// <summary>
-    ///     Is this an archive tag?
-    /// </summary>
-    public bool IsArchive { get; set; }
 }

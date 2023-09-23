@@ -31,6 +31,20 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets or sets the SMTP address.
+    /// </summary>
+    internal string SmtpAddress { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserOofSettingsRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetUserOofSettingsRequest(ExchangeService service)
+        : base(service)
+    {
+    }
+
+    /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name,</returns>
@@ -106,15 +120,6 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetUserOofSettingsRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetUserOofSettingsRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
@@ -124,9 +129,4 @@ internal sealed class GetUserOofSettingsRequest : SimpleServiceRequestBase
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Gets or sets the SMTP address.
-    /// </summary>
-    internal string SmtpAddress { get; set; }
 }

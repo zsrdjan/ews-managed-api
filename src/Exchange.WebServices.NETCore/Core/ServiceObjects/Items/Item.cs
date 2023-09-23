@@ -36,6 +36,27 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class Item : ServiceObject
 {
     /// <summary>
+    ///     Gets the parent attachment of this item.
+    /// </summary>
+    internal ItemAttachment ParentAttachment { get; }
+
+    /// <summary>
+    ///     Gets Id of the root item for this item.
+    /// </summary>
+    internal ItemId RootItemId
+    {
+        get
+        {
+            if (IsAttachment && ParentAttachment.Owner != null)
+            {
+                return ParentAttachment.Owner.RootItemId;
+            }
+
+            return Id;
+        }
+    }
+
+    /// <summary>
     ///     Initializes an unsaved local instance of <see cref="Item" />. To bind to an existing item, use Item.Bind() instead.
     /// </summary>
     /// <param name="service">The ExchangeService object to which the item will be bound.</param>
@@ -319,27 +340,6 @@ public class Item : ServiceObject
     internal bool HasUnprocessedAttachmentChanges()
     {
         return Attachments.HasUnprocessedChanges();
-    }
-
-    /// <summary>
-    ///     Gets the parent attachment of this item.
-    /// </summary>
-    internal ItemAttachment ParentAttachment { get; }
-
-    /// <summary>
-    ///     Gets Id of the root item for this item.
-    /// </summary>
-    internal ItemId RootItemId
-    {
-        get
-        {
-            if (IsAttachment && ParentAttachment.Owner != null)
-            {
-                return ParentAttachment.Owner.RootItemId;
-            }
-
-            return Id;
-        }
     }
 
     /// <summary>

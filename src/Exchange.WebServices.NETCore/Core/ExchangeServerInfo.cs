@@ -34,6 +34,35 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ExchangeServerInfo
 {
     /// <summary>
+    ///     Gets the Major Exchange server version number
+    /// </summary>
+    public int MajorVersion { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Minor Exchange server version number
+    /// </summary>
+    public int MinorVersion { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Major Exchange server build number
+    /// </summary>
+    public int MajorBuildNumber { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Minor Exchange server build number
+    /// </summary>
+    public int MinorBuildNumber { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Exchange server version string (e.g. "Exchange2010")
+    /// </summary>
+    /// <remarks>
+    ///     The version is a string rather than an enum since its possible for the client to
+    ///     be connected to a later server for which there would be no appropriate enum value.
+    /// </remarks>
+    public string VersionString { get; internal set; }
+
+    /// <summary>
     ///     Default constructor
     /// </summary>
     internal ExchangeServerInfo()
@@ -62,35 +91,6 @@ public sealed class ExchangeServerInfo
             VersionString = reader.ReadAttributeValue("Version"),
         };
     }
-
-    /// <summary>
-    ///     Gets the Major Exchange server version number
-    /// </summary>
-    public int MajorVersion { get; internal set; }
-
-    /// <summary>
-    ///     Gets the Minor Exchange server version number
-    /// </summary>
-    public int MinorVersion { get; internal set; }
-
-    /// <summary>
-    ///     Gets the Major Exchange server build number
-    /// </summary>
-    public int MajorBuildNumber { get; internal set; }
-
-    /// <summary>
-    ///     Gets the Minor Exchange server build number
-    /// </summary>
-    public int MinorBuildNumber { get; internal set; }
-
-    /// <summary>
-    ///     Gets the Exchange server version string (e.g. "Exchange2010")
-    /// </summary>
-    /// <remarks>
-    ///     The version is a string rather than an enum since its possible for the client to
-    ///     be connected to a later server for which there would be no appropriate enum value.
-    /// </remarks>
-    public string VersionString { get; internal set; }
 
     /// <summary>
     ///     Override ToString method

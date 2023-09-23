@@ -36,6 +36,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class WorkingHours : ComplexProperty
 {
     /// <summary>
+    ///     Gets the time zone to which the working hours apply.
+    /// </summary>
+    public TimeZoneInfo TimeZone { get; private set; }
+
+    /// <summary>
+    ///     Gets the working days of the attendees.
+    /// </summary>
+    public Collection<DayOfTheWeek> DaysOfTheWeek { get; } = new();
+
+    /// <summary>
+    ///     Gets the time of the day the attendee starts working.
+    /// </summary>
+    public TimeSpan StartTime { get; private set; }
+
+    /// <summary>
+    ///     Gets the time of the day the attendee stops working.
+    /// </summary>
+    public TimeSpan EndTime { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="WorkingHours" /> class.
     /// </summary>
     internal WorkingHours()
@@ -107,24 +127,4 @@ public sealed class WorkingHours : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the time zone to which the working hours apply.
-    /// </summary>
-    public TimeZoneInfo TimeZone { get; private set; }
-
-    /// <summary>
-    ///     Gets the working days of the attendees.
-    /// </summary>
-    public Collection<DayOfTheWeek> DaysOfTheWeek { get; } = new();
-
-    /// <summary>
-    ///     Gets the time of the day the attendee starts working.
-    /// </summary>
-    public TimeSpan StartTime { get; private set; }
-
-    /// <summary>
-    ///     Gets the time of the day the attendee stops working.
-    /// </summary>
-    public TimeSpan EndTime { get; private set; }
 }

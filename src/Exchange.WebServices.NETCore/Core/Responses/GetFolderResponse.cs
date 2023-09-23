@@ -36,6 +36,11 @@ public sealed class GetFolderResponse : ServiceResponse
     private readonly PropertySet _propertySet;
 
     /// <summary>
+    ///     Gets the folder that was retrieved.
+    /// </summary>
+    public Folder? Folder { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetFolderResponse" /> class.
     /// </summary>
     /// <param name="folder">The folder.</param>
@@ -82,9 +87,4 @@ public sealed class GetFolderResponse : ServiceResponse
 
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Folder>(service, xmlElementName);
     }
-
-    /// <summary>
-    ///     Gets the folder that was retrieved.
-    /// </summary>
-    public Folder? Folder { get; private set; }
 }

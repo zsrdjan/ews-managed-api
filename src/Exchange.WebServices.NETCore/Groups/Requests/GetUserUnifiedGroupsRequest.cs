@@ -31,15 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetUserUnifiedGroupsRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetUserUnifiedGroupsRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the RequestedUnifiedGroupsSet
     /// </summary>
     public IEnumerable<RequestedUnifiedGroupsSet>? RequestedUnifiedGroupsSets { get; set; }
@@ -48,6 +39,15 @@ internal sealed class GetUserUnifiedGroupsRequest : SimpleServiceRequestBase
     ///     Gets or sets the UserSmptAddress
     /// </summary>
     public string UserSmtpAddress { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserUnifiedGroupsRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetUserUnifiedGroupsRequest(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
     ///     Gets the name of the response XML element.

@@ -34,6 +34,66 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class OofSettings : ComplexProperty, ISelfValidate
 {
     /// <summary>
+    ///     Gets or sets the user's OOF state.
+    /// </summary>
+    /// <value>The user's OOF state.</value>
+    public OofState State { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating who should receive external OOF messages.
+    /// </summary>
+    public OofExternalAudience ExternalAudience { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the duration of the OOF status when State is set to OofState.Scheduled.
+    /// </summary>
+    public TimeWindow Duration { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the OOF response sent other users in the user's domain or trusted domain.
+    /// </summary>
+    public OofReply InternalReply { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the OOF response sent to addresses outside the user's domain or trusted domain.
+    /// </summary>
+    public OofReply ExternalReply { get; set; }
+
+    /// <summary>
+    ///     Gets a value indicating the authorized external OOF notifications.
+    /// </summary>
+    public OofExternalAudience AllowExternalOof { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of OofSettings.
+    /// </summary>
+    public OofSettings()
+    {
+    }
+
+
+    #region ISelfValidate Members
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    void ISelfValidate.Validate()
+    {
+        if (State == OofState.Scheduled)
+        {
+            if (Duration == null)
+            {
+                throw new ArgumentException(Strings.DurationMustBeSpecifiedWhenScheduled);
+            }
+
+            EwsUtilities.ValidateParam(Duration);
+        }
+    }
+
+    #endregion
+
+
+    /// <summary>
     ///     Serializes an OofReply. Emits an empty OofReply in case the one passed in is null.
     /// </summary>
     /// <param name="oofReply">The oof reply.</param>
@@ -49,13 +109,6 @@ public sealed class OofSettings : ComplexProperty, ISelfValidate
         {
             OofReply.WriteEmptyReplyToXml(writer, xmlElementName);
         }
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of OofSettings.
-    /// </summary>
-    public OofSettings()
-    {
     }
 
     /// <summary>
@@ -122,56 +175,4 @@ public sealed class OofSettings : ComplexProperty, ISelfValidate
         SerializeOofReply(InternalReply, writer, XmlElementNames.InternalReply);
         SerializeOofReply(ExternalReply, writer, XmlElementNames.ExternalReply);
     }
-
-    /// <summary>
-    ///     Gets or sets the user's OOF state.
-    /// </summary>
-    /// <value>The user's OOF state.</value>
-    public OofState State { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating who should receive external OOF messages.
-    /// </summary>
-    public OofExternalAudience ExternalAudience { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the duration of the OOF status when State is set to OofState.Scheduled.
-    /// </summary>
-    public TimeWindow Duration { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the OOF response sent other users in the user's domain or trusted domain.
-    /// </summary>
-    public OofReply InternalReply { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the OOF response sent to addresses outside the user's domain or trusted domain.
-    /// </summary>
-    public OofReply ExternalReply { get; set; }
-
-    /// <summary>
-    ///     Gets a value indicating the authorized external OOF notifications.
-    /// </summary>
-    public OofExternalAudience AllowExternalOof { get; internal set; }
-
-
-    #region ISelfValidate Members
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    void ISelfValidate.Validate()
-    {
-        if (State == OofState.Scheduled)
-        {
-            if (Duration == null)
-            {
-                throw new ArgumentException(Strings.DurationMustBeSpecifiedWhenScheduled);
-            }
-
-            EwsUtilities.ValidateParam(Duration);
-        }
-    }
-
-    #endregion
 }

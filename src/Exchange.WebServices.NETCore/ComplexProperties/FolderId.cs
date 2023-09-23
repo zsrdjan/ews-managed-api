@@ -36,6 +36,34 @@ public sealed class FolderId : ServiceId
     private readonly WellKnownFolderName? _folderName;
 
     /// <summary>
+    ///     Gets the name of the folder associated with the folder Id. Name and Id are mutually exclusive; if one is set, the
+    ///     other is null.
+    /// </summary>
+    public WellKnownFolderName? FolderName => _folderName;
+
+    /// <summary>
+    ///     Gets the mailbox of the folder. Mailbox is only set when FolderName is set.
+    /// </summary>
+    public Mailbox? Mailbox { get; }
+
+    /// <summary>
+    ///     True if this instance is valid, false otherthise.
+    /// </summary>
+    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
+    internal override bool IsValid
+    {
+        get
+        {
+            if (FolderName.HasValue)
+            {
+                return Mailbox == null || Mailbox.IsValid;
+            }
+
+            return base.IsValid;
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="FolderId" /> class.
     /// </summary>
     internal FolderId()
@@ -117,17 +145,6 @@ public sealed class FolderId : ServiceId
     }
 
     /// <summary>
-    ///     Gets the name of the folder associated with the folder Id. Name and Id are mutually exclusive; if one is set, the
-    ///     other is null.
-    /// </summary>
-    public WellKnownFolderName? FolderName => _folderName;
-
-    /// <summary>
-    ///     Gets the mailbox of the folder. Mailbox is only set when FolderName is set.
-    /// </summary>
-    public Mailbox? Mailbox { get; }
-
-    /// <summary>
     ///     Defines an implicit conversion between string and FolderId.
     /// </summary>
     /// <param name="uniqueId">The unique Id to convert to FolderId.</param>
@@ -145,23 +162,6 @@ public sealed class FolderId : ServiceId
     public static implicit operator FolderId(WellKnownFolderName folderName)
     {
         return new FolderId(folderName);
-    }
-
-    /// <summary>
-    ///     True if this instance is valid, false otherthise.
-    /// </summary>
-    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
-    internal override bool IsValid
-    {
-        get
-        {
-            if (FolderName.HasValue)
-            {
-                return Mailbox == null || Mailbox.IsValid;
-            }
-
-            return base.IsValid;
-        }
     }
 
     /// <summary>

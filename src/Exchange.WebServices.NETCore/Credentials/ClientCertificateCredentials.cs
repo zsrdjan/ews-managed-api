@@ -37,6 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ClientCertificateCredentials : ExchangeCredentials
 {
     /// <summary>
+    ///     Gets the client certificates collection.
+    /// </summary>
+    public X509CertificateCollection ClientCertificates { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ClientCertificateCredentials" /> class.
     /// </summary>
     /// <param name="clientCertificates">The client certificates.</param>
@@ -46,10 +51,4 @@ public sealed class ClientCertificateCredentials : ExchangeCredentials
 
         ClientCertificates = clientCertificates;
     }
-
-
-    /// <summary>
-    ///     Gets the client certificates collection.
-    /// </summary>
-    public X509CertificateCollection ClientCertificates { get; }
 }

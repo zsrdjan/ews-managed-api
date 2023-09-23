@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class TypedPropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    /// </summary>
+    internal override bool IsNullable { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="TypedPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -85,11 +90,6 @@ internal abstract class TypedPropertyDefinition : PropertyDefinition
     /// <param name="value">The value.</param>
     /// <returns>Typed value.</returns>
     internal abstract object Parse(string value);
-
-    /// <summary>
-    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
-    /// </summary>
-    internal override bool IsNullable { get; }
 
     /// <summary>
     ///     Convert instance to string.

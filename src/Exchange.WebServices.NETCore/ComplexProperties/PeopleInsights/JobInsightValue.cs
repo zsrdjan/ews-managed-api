@@ -35,13 +35,13 @@ public sealed class JobInsightValue : InsightValue
 {
     private string _company;
     private string _companyDescription;
-    private string _companyTicker;
-    private string _companyLogoUrl;
-    private string _companyWebsiteUrl;
     private string _companyLinkedInUrl;
-    private string _title;
-    private long _startUtcTicks;
+    private string _companyLogoUrl;
+    private string _companyTicker;
+    private string _companyWebsiteUrl;
     private long _endUtcTicks;
+    private long _startUtcTicks;
+    private string _title;
 
     /// <summary>
     ///     Gets the Company

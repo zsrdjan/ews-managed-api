@@ -33,11 +33,85 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class FileAttachment : Attachment
 {
-    private string? _fileName;
-    private Stream? _contentStream;
     private byte[]? _content;
-    private Stream? _loadToStream;
+    private Stream? _contentStream;
+    private string? _fileName;
     private bool _isContactPhoto;
+    private Stream? _loadToStream;
+
+    /// <summary>
+    ///     Gets the name of the file the attachment is linked to.
+    /// </summary>
+    public string? FileName
+    {
+        get => _fileName;
+
+        internal set
+        {
+            ThrowIfThisIsNotNew();
+
+            _fileName = value;
+            _content = null;
+            _contentStream = null;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the content stream.
+    /// </summary>
+    /// <value>The content stream.</value>
+    internal Stream? ContentStream
+    {
+        get => _contentStream;
+
+        set
+        {
+            ThrowIfThisIsNotNew();
+
+            _contentStream = value;
+            _content = null;
+            _fileName = null;
+        }
+    }
+
+    /// <summary>
+    ///     Gets the content of the attachment into memory. Content is set only when Load() is called.
+    /// </summary>
+    public byte[]? Content
+    {
+        get => _content;
+
+        internal set
+        {
+            ThrowIfThisIsNotNew();
+
+            _content = value;
+            _fileName = null;
+            _contentStream = null;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether this attachment is a contact photo.
+    /// </summary>
+    public bool IsContactPhoto
+    {
+        get
+        {
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
+
+            return _isContactPhoto;
+        }
+
+        set
+        {
+            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
+
+            ThrowIfThisIsNotNew();
+
+            _isContactPhoto = value;
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FileAttachment" /> class.
@@ -218,79 +292,5 @@ public sealed class FileAttachment : Attachment
         _fileName = fileName;
         _content = null;
         _contentStream = null;
-    }
-
-    /// <summary>
-    ///     Gets the name of the file the attachment is linked to.
-    /// </summary>
-    public string? FileName
-    {
-        get => _fileName;
-
-        internal set
-        {
-            ThrowIfThisIsNotNew();
-
-            _fileName = value;
-            _content = null;
-            _contentStream = null;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the content stream.
-    /// </summary>
-    /// <value>The content stream.</value>
-    internal Stream? ContentStream
-    {
-        get => _contentStream;
-
-        set
-        {
-            ThrowIfThisIsNotNew();
-
-            _contentStream = value;
-            _content = null;
-            _fileName = null;
-        }
-    }
-
-    /// <summary>
-    ///     Gets the content of the attachment into memory. Content is set only when Load() is called.
-    /// </summary>
-    public byte[]? Content
-    {
-        get => _content;
-
-        internal set
-        {
-            ThrowIfThisIsNotNew();
-
-            _content = value;
-            _fileName = null;
-            _contentStream = null;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether this attachment is a contact photo.
-    /// </summary>
-    public bool IsContactPhoto
-    {
-        get
-        {
-            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
-
-            return _isContactPhoto;
-        }
-
-        set
-        {
-            EwsUtilities.ValidatePropertyVersion(Service, ExchangeVersion.Exchange2010, "IsContactPhoto");
-
-            ThrowIfThisIsNotNew();
-
-            _isContactPhoto = value;
-        }
     }
 }

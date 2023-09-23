@@ -36,11 +36,52 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
     private readonly List<AbstractItemIdWrapper> _itemIds = new();
 
     /// <summary>
+    ///     Gets the count.
+    /// </summary>
+    /// <value>The count.</value>
+    internal int Count => _itemIds.Count;
+
+    /// <summary>
+    ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.Item" /> at the specified index.
+    /// </summary>
+    /// <param name="index">the index</param>
+    internal Item this[int index] => _itemIds[index].GetItem();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ItemIdWrapperList" /> class.
     /// </summary>
     internal ItemIdWrapperList()
     {
     }
+
+
+    #region IEnumerable<AbstractItemIdWrapper> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<AbstractItemIdWrapper> GetEnumerator()
+    {
+        return _itemIds.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _itemIds.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Adds the specified item.
@@ -104,44 +145,4 @@ internal class ItemIdWrapperList : IEnumerable<AbstractItemIdWrapper>
             writer.WriteEndElement();
         }
     }
-
-    /// <summary>
-    ///     Gets the count.
-    /// </summary>
-    /// <value>The count.</value>
-    internal int Count => _itemIds.Count;
-
-    /// <summary>
-    ///     Gets the <see cref="Microsoft.Exchange.WebServices.Data.Item" /> at the specified index.
-    /// </summary>
-    /// <param name="index">the index</param>
-    internal Item this[int index] => _itemIds[index].GetItem();
-
-
-    #region IEnumerable<AbstractItemIdWrapper> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<AbstractItemIdWrapper> GetEnumerator()
-    {
-        return _itemIds.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _itemIds.GetEnumerator();
-    }
-
-    #endregion
 }

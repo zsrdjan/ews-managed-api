@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class DateTimePropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    /// </summary>
+    internal override bool IsNullable { get; }
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => IsNullable ? typeof(DateTime?) : typeof(DateTime);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DateTimePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -168,14 +178,4 @@ internal class DateTimePropertyDefinition : PropertyDefinition
 
         return dateTime;
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
-    /// </summary>
-    internal override bool IsNullable { get; }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => IsNullable ? typeof(DateTime?) : typeof(DateTime);
 }

@@ -33,6 +33,23 @@ internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TRespon
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the item ids.
+    /// </summary>
+    /// <value>The item ids.</value>
+    public ItemIdWrapperList ItemIds { get; } = new();
+
+    /// <summary>
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.
+    /// </value>
+    internal override bool EmitTimeZoneHeader =>
+        // currently we do not emit "ItemResponseShapeType.IncludeMimeContent".
+        //
+        PropertySet.Contains(ItemSchema.MimeContent);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetItemRequestBase&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -115,21 +132,4 @@ internal abstract class GetItemRequestBase<TResponse> : GetRequest<Item, TRespon
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the item ids.
-    /// </summary>
-    /// <value>The item ids.</value>
-    public ItemIdWrapperList ItemIds { get; } = new();
-
-    /// <summary>
-    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.
-    /// </value>
-    internal override bool EmitTimeZoneHeader =>
-        // currently we do not emit "ItemResponseShapeType.IncludeMimeContent".
-        //
-        PropertySet.Contains(ItemSchema.MimeContent);
 }

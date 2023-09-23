@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<MeetingResponse>
 {
     /// <summary>
+    ///     Gets a value indicating whether the associated meeting is tentatively accepted.
+    /// </summary>
+    public bool Tentative { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AcceptMeetingInvitationMessage" /> class.
     /// </summary>
     /// <param name="referenceItem">The reference item.</param>
@@ -76,9 +81,4 @@ public sealed class AcceptMeetingInvitationMessage : CalendarResponseMessage<Mee
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether the associated meeting is tentatively accepted.
-    /// </summary>
-    public bool Tentative { get; }
 }

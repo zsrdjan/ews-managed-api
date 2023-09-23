@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class PermissionSetPropertyDefinition : ComplexPropertyDefinitionBase
 {
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(FolderPermissionCollection);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PermissionSetPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -64,9 +69,4 @@ internal class PermissionSetPropertyDefinition : ComplexPropertyDefinitionBase
 
         return new FolderPermissionCollection(folder);
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(FolderPermissionCollection);
 }

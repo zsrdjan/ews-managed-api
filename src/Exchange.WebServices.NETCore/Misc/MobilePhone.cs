@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MobilePhone : ISelfValidate
 {
     /// <summary>
+    ///     Gets or sets the name associated with this mobile phone.
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the number of this mobile phone.
+    /// </summary>
+    public string PhoneNumber { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MobilePhone" /> class.
     /// </summary>
     public MobilePhone()
@@ -50,16 +60,6 @@ public sealed class MobilePhone : ISelfValidate
         Name = name;
         PhoneNumber = phoneNumber;
     }
-
-    /// <summary>
-    ///     Gets or sets the name associated with this mobile phone.
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the number of this mobile phone.
-    /// </summary>
-    public string PhoneNumber { get; set; }
 
     /// <summary>
     ///     Validates this instance.

@@ -35,15 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class MeetingResponseSchema : MeetingMessageSchema
 {
     /// <summary>
-    ///     Field URIs for MeetingMessage.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string ProposedStart = "meeting:ProposedStart";
-        public const string ProposedEnd = "meeting:ProposedEnd";
-    }
-
-    /// <summary>
     ///     Defines the Start property.
     /// </summary>
     public static readonly PropertyDefinition Start = AppointmentSchema.Start;
@@ -99,6 +90,13 @@ public class MeetingResponseSchema : MeetingMessageSchema
     internal new static readonly MeetingResponseSchema Instance = new();
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
+    /// </summary>
+    internal MeetingResponseSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -120,9 +118,11 @@ public class MeetingResponseSchema : MeetingMessageSchema
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
+    ///     Field URIs for MeetingMessage.
     /// </summary>
-    internal MeetingResponseSchema()
+    private static class FieldUris
     {
+        public const string ProposedStart = "meeting:ProposedStart";
+        public const string ProposedEnd = "meeting:ProposedEnd";
     }
 }

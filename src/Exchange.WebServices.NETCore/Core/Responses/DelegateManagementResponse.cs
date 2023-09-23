@@ -32,8 +32,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class DelegateManagementResponse : ServiceResponse
 {
-    private readonly bool _readDelegateUsers;
     private readonly List<DelegateUser>? _delegateUsers;
+    private readonly bool _readDelegateUsers;
+
+    /// <summary>
+    ///     Gets a collection of responses for each of the delegate users concerned by the operation.
+    /// </summary>
+    internal Collection<DelegateUserResponse> DelegateUserResponses { get; private set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateManagementResponse" /> class.
@@ -85,9 +90,4 @@ internal class DelegateManagementResponse : ServiceResponse
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a collection of responses for each of the delegate users concerned by the operation.
-    /// </summary>
-    internal Collection<DelegateUserResponse> DelegateUserResponses { get; private set; }
 }

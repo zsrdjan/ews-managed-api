@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetSearchableMailboxesRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Search filter
+    /// </summary>
+    public string SearchFilter { get; set; }
+
+    /// <summary>
+    ///     Expand group membership
+    /// </summary>
+    public bool ExpandGroupMembership { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetSearchableMailboxesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -101,14 +111,4 @@ internal sealed class GetSearchableMailboxesRequest : SimpleServiceRequestBase
         var serviceResponse = await InternalExecuteAsync<GetSearchableMailboxesResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Search filter
-    /// </summary>
-    public string SearchFilter { get; set; }
-
-    /// <summary>
-    ///     Expand group membership
-    /// </summary>
-    public bool ExpandGroupMembership { get; set; }
 }

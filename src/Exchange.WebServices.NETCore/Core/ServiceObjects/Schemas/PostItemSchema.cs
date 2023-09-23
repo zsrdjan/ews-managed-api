@@ -35,14 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PostItemSchema : ItemSchema
 {
     /// <summary>
-    ///     Field URIs for PostItem.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string PostedTime = "postitem:PostedTime";
-    }
-
-    /// <summary>
     ///     Defines the ConversationIndex property.
     /// </summary>
     public static readonly PropertyDefinition ConversationIndex = EmailMessageSchema.ConversationIndex;
@@ -91,6 +83,13 @@ public sealed class PostItemSchema : ItemSchema
     internal new static readonly PostItemSchema Instance = new();
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="PostItemSchema" /> class.
+    /// </summary>
+    internal PostItemSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -112,9 +111,10 @@ public sealed class PostItemSchema : ItemSchema
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="PostItemSchema" /> class.
+    ///     Field URIs for PostItem.
     /// </summary>
-    internal PostItemSchema()
+    private static class FieldUris
     {
+        public const string PostedTime = "postitem:PostedTime";
     }
 }

@@ -84,6 +84,14 @@ internal class EwsHttpWebRequest
     /// </returns>
     public string UserAgent { get; set; }
 
+    /// <summary>
+    ///     Gets a <see cref="T:System.IO.Stream" /> object to use to write request data.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="T:System.IO.Stream" /> to use to write request data.
+    /// </returns>
+    public string Content { get; set; }
+
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebRequest" /> class.
@@ -95,14 +103,6 @@ internal class EwsHttpWebRequest
         _httpClient = httpClient;
         RequestUri = uri;
     }
-
-    /// <summary>
-    ///     Gets a <see cref="T:System.IO.Stream" /> object to use to write request data.
-    /// </summary>
-    /// <returns>
-    ///     A <see cref="T:System.IO.Stream" /> to use to write request data.
-    /// </returns>
-    public string Content { get; set; }
 
     /// <summary>
     ///     Returns a response from an Internet resource.

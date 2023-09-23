@@ -38,16 +38,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
 {
+    private static readonly Type[] ValidTypes =
+    {
+        typeof(bool), typeof(byte), typeof(DateTime), typeof(int), typeof(long), typeof(string), typeof(uint),
+        typeof(ulong),
+    };
+
     // TODO: Consider implementing IsDirty mechanism in ComplexProperty.
     private readonly Dictionary<object, object> _dictionary;
-
-    /// <summary>
-    ///     Initializes a new instance of <see cref="UserConfigurationDictionary" /> class.
-    /// </summary>
-    internal UserConfigurationDictionary()
-    {
-        _dictionary = new Dictionary<object, object>();
-    }
 
     /// <summary>
     ///     Gets or sets the element with the specified key.
@@ -67,6 +65,40 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             Changed();
         }
     }
+
+    /// <summary>
+    ///     Gets the number of elements in the user configuration dictionary.
+    /// </summary>
+    public int Count => _dictionary.Count;
+
+
+    /// <summary>
+    ///     Gets or sets the isDirty flag.
+    /// </summary>
+    internal bool IsDirty { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of <see cref="UserConfigurationDictionary" /> class.
+    /// </summary>
+    internal UserConfigurationDictionary()
+    {
+        _dictionary = new Dictionary<object, object>();
+    }
+
+
+    #region IEnumerable members
+
+    /// <summary>
+    ///     Returns an enumerator that iterates through the user configuration dictionary.
+    /// </summary>
+    /// <returns>An IEnumerator that can be used to iterate through the user configuration dictionary.</returns>
+    public IEnumerator GetEnumerator()
+    {
+        return _dictionary.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Adds an element with the provided key and value to the user configuration dictionary.
@@ -124,11 +156,6 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
     }
 
     /// <summary>
-    ///     Gets the number of elements in the user configuration dictionary.
-    /// </summary>
-    public int Count => _dictionary.Count;
-
-    /// <summary>
     ///     Removes all items from the user configuration dictionary.
     /// </summary>
     public void Clear()
@@ -140,26 +167,6 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             Changed();
         }
     }
-
-
-    #region IEnumerable members
-
-    /// <summary>
-    ///     Returns an enumerator that iterates through the user configuration dictionary.
-    /// </summary>
-    /// <returns>An IEnumerator that can be used to iterate through the user configuration dictionary.</returns>
-    public IEnumerator GetEnumerator()
-    {
-        return _dictionary.GetEnumerator();
-    }
-
-    #endregion
-
-
-    /// <summary>
-    ///     Gets or sets the isDirty flag.
-    /// </summary>
-    internal bool IsDirty { get; set; }
 
     /// <summary>
     ///     Instance was changed.
@@ -734,12 +741,6 @@ public sealed class UserConfigurationDictionary : ComplexProperty, IEnumerable
             }
         }
     }
-
-    private static readonly Type[] ValidTypes =
-    {
-        typeof(bool), typeof(byte), typeof(DateTime), typeof(int), typeof(long), typeof(string), typeof(uint),
-        typeof(ulong),
-    };
 
     /// <summary>
     ///     Validates the dictionary object type.

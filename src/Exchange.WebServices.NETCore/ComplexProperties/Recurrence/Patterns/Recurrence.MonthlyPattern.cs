@@ -42,6 +42,30 @@ public abstract partial class Recurrence
         private int? _dayOfMonth;
 
         /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <value>The name of the XML element.</value>
+        internal override string XmlElementName => XmlElementNames.AbsoluteMonthlyRecurrence;
+
+        /// <summary>
+        ///     Gets or sets the day of the month when each occurrence happens. DayOfMonth must be between 1 and 31.
+        /// </summary>
+        public int DayOfMonth
+        {
+            get => GetFieldValueOrThrowIfNull(_dayOfMonth, "DayOfMonth");
+
+            set
+            {
+                if (value < 1 || value > 31)
+                {
+                    throw new ArgumentOutOfRangeException("DayOfMonth", Strings.DayOfMonthMustBeBetween1And31);
+                }
+
+                SetFieldValue(ref _dayOfMonth, value);
+            }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="Recurrence.MonthlyPattern" /> class.
         /// </summary>
         public MonthlyPattern()
@@ -59,12 +83,6 @@ public abstract partial class Recurrence
         {
             DayOfMonth = dayOfMonth;
         }
-
-        /// <summary>
-        ///     Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal override string XmlElementName => XmlElementNames.AbsoluteMonthlyRecurrence;
 
         /// <summary>
         ///     Write properties to XML.
@@ -113,24 +131,6 @@ public abstract partial class Recurrence
             if (!_dayOfMonth.HasValue)
             {
                 throw new ServiceValidationException(Strings.DayOfMonthMustBeBetween1And31);
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the day of the month when each occurrence happens. DayOfMonth must be between 1 and 31.
-        /// </summary>
-        public int DayOfMonth
-        {
-            get => GetFieldValueOrThrowIfNull(_dayOfMonth, "DayOfMonth");
-
-            set
-            {
-                if (value < 1 || value > 31)
-                {
-                    throw new ArgumentOutOfRangeException("DayOfMonth", Strings.DayOfMonthMustBeBetween1And31);
-                }
-
-                SetFieldValue(ref _dayOfMonth, value);
             }
         }
 

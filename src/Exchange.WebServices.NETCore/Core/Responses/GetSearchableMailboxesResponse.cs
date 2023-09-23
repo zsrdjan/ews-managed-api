@@ -36,6 +36,16 @@ public sealed class GetSearchableMailboxesResponse : ServiceResponse
     readonly List<SearchableMailbox> _searchableMailboxes = new List<SearchableMailbox>();
 
     /// <summary>
+    ///     Searchable mailboxes result
+    /// </summary>
+    public SearchableMailbox[] SearchableMailboxes => _searchableMailboxes.ToArray();
+
+    /// <summary>
+    ///     Failed mailboxes
+    /// </summary>
+    public FailedSearchMailbox[] FailedMailboxes { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetSearchableMailboxesResponse" /> class.
     /// </summary>
     internal GetSearchableMailboxesResponse()
@@ -71,14 +81,4 @@ public sealed class GetSearchableMailboxesResponse : ServiceResponse
             FailedMailboxes = FailedSearchMailbox.LoadFailedMailboxesXml(XmlNamespace.Messages, reader);
         }
     }
-
-    /// <summary>
-    ///     Searchable mailboxes result
-    /// </summary>
-    public SearchableMailbox[] SearchableMailboxes => _searchableMailboxes.ToArray();
-
-    /// <summary>
-    ///     Failed mailboxes
-    /// </summary>
-    public FailedSearchMailbox[] FailedMailboxes { get; set; }
 }

@@ -222,161 +222,17 @@ public sealed class FolderPermission : ComplexProperty
         }
     );
 
-    private UserId? _userId;
     private bool _canCreateItems;
     private bool _canCreateSubFolders;
+    private PermissionScope _deleteItems;
+    private PermissionScope _editItems;
+    private bool _isFolderContact;
     private bool _isFolderOwner;
     private bool _isFolderVisible;
-    private bool _isFolderContact;
-    private PermissionScope _editItems;
-    private PermissionScope _deleteItems;
-    private FolderPermissionReadAccess _readItems;
     private FolderPermissionLevel _permissionLevel;
+    private FolderPermissionReadAccess _readItems;
 
-    /// <summary>
-    ///     Determines whether the specified folder permission is the same as this one. The comparison
-    ///     does not take UserId and PermissionLevel into consideration.
-    /// </summary>
-    /// <param name="permission">The folder permission to compare with this folder permission.</param>
-    /// <returns>
-    ///     True is the specified folder permission is equal to this one, false otherwise.
-    /// </returns>
-    private bool IsEqualTo(FolderPermission permission)
-    {
-        return CanCreateItems == permission.CanCreateItems &&
-               CanCreateSubFolders == permission.CanCreateSubFolders &&
-               IsFolderContact == permission.IsFolderContact &&
-               IsFolderVisible == permission.IsFolderVisible &&
-               IsFolderOwner == permission.IsFolderOwner &&
-               EditItems == permission.EditItems &&
-               DeleteItems == permission.DeleteItems &&
-               ReadItems == permission.ReadItems;
-    }
-
-    /// <summary>
-    ///     Create a copy of this FolderPermission instance.
-    /// </summary>
-    /// <returns>
-    ///     Clone of this instance.
-    /// </returns>
-    private FolderPermission Clone()
-    {
-        return (FolderPermission)MemberwiseClone();
-    }
-
-    /// <summary>
-    ///     Determines the permission level of this folder permission based on its individual settings,
-    ///     and sets the PermissionLevel property accordingly.
-    /// </summary>
-    private void AdjustPermissionLevel()
-    {
-        foreach (var keyValuePair in DefaultPermissions)
-        {
-            if (IsEqualTo(keyValuePair.Value))
-            {
-                _permissionLevel = keyValuePair.Key;
-                return;
-            }
-        }
-
-        _permissionLevel = FolderPermissionLevel.Custom;
-    }
-
-    /// <summary>
-    ///     Copies the values of the individual permissions of the specified folder permission
-    ///     to this folder permissions.
-    /// </summary>
-    /// <param name="permission">The folder permission to copy the values from.</param>
-    private void AssignIndividualPermissions(FolderPermission permission)
-    {
-        _canCreateItems = permission.CanCreateItems;
-        _canCreateSubFolders = permission.CanCreateSubFolders;
-        _isFolderContact = permission.IsFolderContact;
-        _isFolderOwner = permission.IsFolderOwner;
-        _isFolderVisible = permission.IsFolderVisible;
-        _editItems = permission.EditItems;
-        _deleteItems = permission.DeleteItems;
-        _readItems = permission.ReadItems;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
-    /// </summary>
-    public FolderPermission()
-    {
-        UserId = new UserId();
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
-    /// </summary>
-    /// <param name="userId">The Id of the user  the permission applies to.</param>
-    /// <param name="permissionLevel">The level of the permission.</param>
-    public FolderPermission(UserId userId, FolderPermissionLevel permissionLevel)
-    {
-        EwsUtilities.ValidateParam(userId);
-
-        _userId = userId;
-        PermissionLevel = permissionLevel;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
-    /// </summary>
-    /// <param name="primarySmtpAddress">The primary SMTP address of the user the permission applies to.</param>
-    /// <param name="permissionLevel">The level of the permission.</param>
-    public FolderPermission(string primarySmtpAddress, FolderPermissionLevel permissionLevel)
-    {
-        _userId = new UserId(primarySmtpAddress);
-        PermissionLevel = permissionLevel;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
-    /// </summary>
-    /// <param name="standardUser">The standard user the permission applies to.</param>
-    /// <param name="permissionLevel">The level of the permission.</param>
-    public FolderPermission(StandardUser standardUser, FolderPermissionLevel permissionLevel)
-    {
-        _userId = new UserId(standardUser);
-        PermissionLevel = permissionLevel;
-    }
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    /// <param name="isCalendarFolder">if set to <c>true</c> calendar permissions are allowed.</param>
-    /// <param name="permissionIndex">Index of the permission.</param>
-    internal void Validate(bool isCalendarFolder, int permissionIndex)
-    {
-        // Check UserId
-        if (!UserId.IsValid())
-        {
-            throw new ServiceValidationException(
-                string.Format(Strings.FolderPermissionHasInvalidUserId, permissionIndex)
-            );
-        }
-
-        // If this permission is to be used for a non-calendar folder make sure that read access and permission level aren't set to Calendar-only values
-        if (!isCalendarFolder)
-        {
-            if (_readItems == FolderPermissionReadAccess.TimeAndSubjectAndLocation ||
-                _readItems == FolderPermissionReadAccess.TimeOnly)
-            {
-                throw new ServiceLocalException(
-                    string.Format(Strings.ReadAccessInvalidForNonCalendarFolder, _readItems)
-                );
-            }
-
-            if (_permissionLevel == FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation ||
-                _permissionLevel == FolderPermissionLevel.FreeBusyTimeOnly)
-            {
-                throw new ServiceLocalException(
-                    string.Format(Strings.PermissionLevelInvalidForNonCalendarFolder, _permissionLevel)
-                );
-            }
-        }
-    }
+    private UserId? _userId;
 
     /// <summary>
     ///     Gets the Id of the user the permission applies to.
@@ -547,6 +403,151 @@ public sealed class FolderPermission : ComplexProperty
             }
 
             return _permissionLevel;
+        }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
+    /// </summary>
+    public FolderPermission()
+    {
+        UserId = new UserId();
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
+    /// </summary>
+    /// <param name="userId">The Id of the user  the permission applies to.</param>
+    /// <param name="permissionLevel">The level of the permission.</param>
+    public FolderPermission(UserId userId, FolderPermissionLevel permissionLevel)
+    {
+        EwsUtilities.ValidateParam(userId);
+
+        _userId = userId;
+        PermissionLevel = permissionLevel;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
+    /// </summary>
+    /// <param name="primarySmtpAddress">The primary SMTP address of the user the permission applies to.</param>
+    /// <param name="permissionLevel">The level of the permission.</param>
+    public FolderPermission(string primarySmtpAddress, FolderPermissionLevel permissionLevel)
+    {
+        _userId = new UserId(primarySmtpAddress);
+        PermissionLevel = permissionLevel;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FolderPermission" /> class.
+    /// </summary>
+    /// <param name="standardUser">The standard user the permission applies to.</param>
+    /// <param name="permissionLevel">The level of the permission.</param>
+    public FolderPermission(StandardUser standardUser, FolderPermissionLevel permissionLevel)
+    {
+        _userId = new UserId(standardUser);
+        PermissionLevel = permissionLevel;
+    }
+
+    /// <summary>
+    ///     Determines whether the specified folder permission is the same as this one. The comparison
+    ///     does not take UserId and PermissionLevel into consideration.
+    /// </summary>
+    /// <param name="permission">The folder permission to compare with this folder permission.</param>
+    /// <returns>
+    ///     True is the specified folder permission is equal to this one, false otherwise.
+    /// </returns>
+    private bool IsEqualTo(FolderPermission permission)
+    {
+        return CanCreateItems == permission.CanCreateItems &&
+               CanCreateSubFolders == permission.CanCreateSubFolders &&
+               IsFolderContact == permission.IsFolderContact &&
+               IsFolderVisible == permission.IsFolderVisible &&
+               IsFolderOwner == permission.IsFolderOwner &&
+               EditItems == permission.EditItems &&
+               DeleteItems == permission.DeleteItems &&
+               ReadItems == permission.ReadItems;
+    }
+
+    /// <summary>
+    ///     Create a copy of this FolderPermission instance.
+    /// </summary>
+    /// <returns>
+    ///     Clone of this instance.
+    /// </returns>
+    private FolderPermission Clone()
+    {
+        return (FolderPermission)MemberwiseClone();
+    }
+
+    /// <summary>
+    ///     Determines the permission level of this folder permission based on its individual settings,
+    ///     and sets the PermissionLevel property accordingly.
+    /// </summary>
+    private void AdjustPermissionLevel()
+    {
+        foreach (var keyValuePair in DefaultPermissions)
+        {
+            if (IsEqualTo(keyValuePair.Value))
+            {
+                _permissionLevel = keyValuePair.Key;
+                return;
+            }
+        }
+
+        _permissionLevel = FolderPermissionLevel.Custom;
+    }
+
+    /// <summary>
+    ///     Copies the values of the individual permissions of the specified folder permission
+    ///     to this folder permissions.
+    /// </summary>
+    /// <param name="permission">The folder permission to copy the values from.</param>
+    private void AssignIndividualPermissions(FolderPermission permission)
+    {
+        _canCreateItems = permission.CanCreateItems;
+        _canCreateSubFolders = permission.CanCreateSubFolders;
+        _isFolderContact = permission.IsFolderContact;
+        _isFolderOwner = permission.IsFolderOwner;
+        _isFolderVisible = permission.IsFolderVisible;
+        _editItems = permission.EditItems;
+        _deleteItems = permission.DeleteItems;
+        _readItems = permission.ReadItems;
+    }
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    /// <param name="isCalendarFolder">if set to <c>true</c> calendar permissions are allowed.</param>
+    /// <param name="permissionIndex">Index of the permission.</param>
+    internal void Validate(bool isCalendarFolder, int permissionIndex)
+    {
+        // Check UserId
+        if (!UserId.IsValid())
+        {
+            throw new ServiceValidationException(
+                string.Format(Strings.FolderPermissionHasInvalidUserId, permissionIndex)
+            );
+        }
+
+        // If this permission is to be used for a non-calendar folder make sure that read access and permission level aren't set to Calendar-only values
+        if (!isCalendarFolder)
+        {
+            if (_readItems == FolderPermissionReadAccess.TimeAndSubjectAndLocation ||
+                _readItems == FolderPermissionReadAccess.TimeOnly)
+            {
+                throw new ServiceLocalException(
+                    string.Format(Strings.ReadAccessInvalidForNonCalendarFolder, _readItems)
+                );
+            }
+
+            if (_permissionLevel == FolderPermissionLevel.FreeBusyTimeAndSubjectAndLocation ||
+                _permissionLevel == FolderPermissionLevel.FreeBusyTimeOnly)
+            {
+                throw new ServiceLocalException(
+                    string.Format(Strings.PermissionLevelInvalidForNonCalendarFolder, _permissionLevel)
+                );
+            }
         }
     }
 

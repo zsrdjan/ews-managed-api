@@ -35,27 +35,6 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
     private Month? _month;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
-    /// </summary>
-    public TimeChangeRecurrence()
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
-    /// </summary>
-    /// <param name="dayOfTheWeekIndex">The index of the day in the month at which the time change occurs.</param>
-    /// <param name="dayOfTheWeek">The day of the week the time change occurs.</param>
-    /// <param name="month">The month the time change occurs.</param>
-    public TimeChangeRecurrence(DayOfTheWeekIndex dayOfTheWeekIndex, DayOfTheWeek dayOfTheWeek, Month month)
-        : this()
-    {
-        _dayOfTheWeekIndex = dayOfTheWeekIndex;
-        _dayOfTheWeek = dayOfTheWeek;
-        _month = month;
-    }
-
-    /// <summary>
     ///     Gets or sets the index of the day in the month at which the time change occurs.
     /// </summary>
     public DayOfTheWeekIndex? DayOfTheWeekIndex
@@ -80,6 +59,27 @@ internal sealed class TimeChangeRecurrence : ComplexProperty
     {
         get => _month;
         set => SetFieldValue(ref _month, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
+    /// </summary>
+    public TimeChangeRecurrence()
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChangeRecurrence" /> class.
+    /// </summary>
+    /// <param name="dayOfTheWeekIndex">The index of the day in the month at which the time change occurs.</param>
+    /// <param name="dayOfTheWeek">The day of the week the time change occurs.</param>
+    /// <param name="month">The month the time change occurs.</param>
+    public TimeChangeRecurrence(DayOfTheWeekIndex dayOfTheWeekIndex, DayOfTheWeek dayOfTheWeek, Month month)
+        : this()
+    {
+        _dayOfTheWeekIndex = dayOfTheWeekIndex;
+        _dayOfTheWeek = dayOfTheWeek;
+        _month = month;
     }
 
     /// <summary>

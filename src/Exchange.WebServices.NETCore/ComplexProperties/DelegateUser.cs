@@ -34,6 +34,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class DelegateUser : ComplexProperty
 {
     /// <summary>
+    ///     Gets the user Id of the delegate user.
+    /// </summary>
+    public UserId UserId { get; private set; } = new();
+
+    /// <summary>
+    ///     Gets the list of delegate user's permissions.
+    /// </summary>
+    public DelegatePermissions Permissions { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets a value indicating if the delegate user should receive copies of meeting requests.
+    /// </summary>
+    public bool ReceiveCopiesOfMeetingMessages { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating if the delegate user should be able to view the principal's private items.
+    /// </summary>
+    public bool ViewPrivateItems { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateUser" /> class.
     /// </summary>
     public DelegateUser()
@@ -64,26 +84,6 @@ public sealed class DelegateUser : ComplexProperty
     {
         UserId.StandardUser = standardUser;
     }
-
-    /// <summary>
-    ///     Gets the user Id of the delegate user.
-    /// </summary>
-    public UserId UserId { get; private set; } = new();
-
-    /// <summary>
-    ///     Gets the list of delegate user's permissions.
-    /// </summary>
-    public DelegatePermissions Permissions { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets a value indicating if the delegate user should receive copies of meeting requests.
-    /// </summary>
-    public bool ReceiveCopiesOfMeetingMessages { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating if the delegate user should be able to view the principal's private items.
-    /// </summary>
-    public bool ViewPrivateItems { get; set; }
 
     /// <summary>
     ///     Tries to read element from XML.

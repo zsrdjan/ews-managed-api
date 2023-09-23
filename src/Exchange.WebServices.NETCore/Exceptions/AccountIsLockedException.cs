@@ -37,6 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class AccountIsLockedException : ServiceRemoteException
 {
     /// <summary>
+    ///     Gets the URL of a web page where the user can navigate to unlock his or her account.
+    /// </summary>
+    public Uri? AccountUnlockUrl { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AccountIsLockedException" /> class.
     /// </summary>
     /// <param name="message">Error message text.</param>
@@ -78,9 +83,4 @@ public class AccountIsLockedException : ServiceRemoteException
 
         info.AddValue("AccountUnlockUrl", AccountUnlockUrl, typeof(Uri));
     }
-
-    /// <summary>
-    ///     Gets the URL of a web page where the user can navigate to unlock his or her account.
-    /// </summary>
-    public Uri? AccountUnlockUrl { get; private set; }
 }

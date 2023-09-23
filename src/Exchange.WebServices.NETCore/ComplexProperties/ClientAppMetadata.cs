@@ -34,14 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ClientAppMetadata : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClientAppMetadata" /> class.
-    /// </summary>
-    internal ClientAppMetadata()
-    {
-        Namespace = XmlNamespace.Types;
-    }
-
-    /// <summary>
     ///     The End node url for the app.
     /// </summary>
     public string EndNodeUrl { get; private set; }
@@ -55,6 +47,14 @@ public sealed class ClientAppMetadata : ComplexProperty
     ///     The app status for the app.
     /// </summary>
     public string AppStatus { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientAppMetadata" /> class.
+    /// </summary>
+    internal ClientAppMetadata()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

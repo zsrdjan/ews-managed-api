@@ -34,6 +34,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class FolderChange : Change
 {
     /// <summary>
+    ///     Gets the folder the change applies to. Folder is null when ChangeType is equal to
+    ///     ChangeType.Delete. In that case, use the FolderId property to retrieve the Id of
+    ///     the folder that was deleted.
+    /// </summary>
+    public Folder Folder => (Folder)ServiceObject;
+
+    /// <summary>
+    ///     Gets the Id of the folder the change applies to.
+    /// </summary>
+    public FolderId FolderId => (FolderId)Id;
+
+    /// <summary>
     ///     Initializes a new instance of FolderChange.
     /// </summary>
     internal FolderChange()
@@ -48,16 +60,4 @@ public sealed class FolderChange : Change
     {
         return new FolderId();
     }
-
-    /// <summary>
-    ///     Gets the folder the change applies to. Folder is null when ChangeType is equal to
-    ///     ChangeType.Delete. In that case, use the FolderId property to retrieve the Id of
-    ///     the folder that was deleted.
-    /// </summary>
-    public Folder Folder => (Folder)ServiceObject;
-
-    /// <summary>
-    ///     Gets the Id of the folder the change applies to.
-    /// </summary>
-    public FolderId FolderId => (FolderId)Id;
 }

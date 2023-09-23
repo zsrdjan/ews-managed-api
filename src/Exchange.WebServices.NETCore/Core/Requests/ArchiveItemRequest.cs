@@ -31,6 +31,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemResponse>
 {
     /// <summary>
+    ///     Gets or sets the Archive source folder id.
+    /// </summary>
+    /// <value>The archive source folder id.</value>
+    public FolderId SourceFolderId { get; set; }
+
+    /// <summary>
+    ///     Gets the item ids.
+    /// </summary>
+    /// <value>The item ids.</value>
+    internal ItemIdWrapperList Ids { get; } = new ItemIdWrapperList();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ArchiveItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -59,18 +71,6 @@ internal class ArchiveItemRequest : MultiResponseServiceRequest<ArchiveItemRespo
     {
         return new ArchiveItemResponse();
     }
-
-    /// <summary>
-    ///     Gets or sets the Archive source folder id.
-    /// </summary>
-    /// <value>The archive source folder id.</value>
-    public FolderId SourceFolderId { get; set; }
-
-    /// <summary>
-    ///     Gets the item ids.
-    /// </summary>
-    /// <value>The item ids.</value>
-    internal ItemIdWrapperList Ids { get; } = new ItemIdWrapperList();
 
     /// <summary>
     ///     Gets the expected response message count.

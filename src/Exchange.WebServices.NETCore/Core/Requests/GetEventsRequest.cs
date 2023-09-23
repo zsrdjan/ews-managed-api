@@ -31,6 +31,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class GetEventsRequest : MultiResponseServiceRequest<GetEventsResponse>
 {
     /// <summary>
+    ///     Gets or sets the subscription id.
+    /// </summary>
+    /// <value>The subscription id.</value>
+    public string SubscriptionId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the watermark.
+    /// </summary>
+    /// <value>The watermark.</value>
+    public string Watermark { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetEventsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -115,16 +127,4 @@ internal class GetEventsRequest : MultiResponseServiceRequest<GetEventsResponse>
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the subscription id.
-    /// </summary>
-    /// <value>The subscription id.</value>
-    public string SubscriptionId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the watermark.
-    /// </summary>
-    /// <value>The watermark.</value>
-    public string Watermark { get; set; }
 }

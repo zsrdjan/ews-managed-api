@@ -35,6 +35,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SetUserPhotoRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     email address accessor
+    /// </summary>
+    internal string EmailAddress { get; set; }
+
+    internal byte[] Photo { get; set; }
+
+    /// <summary>
     ///     Default constructor
     /// </summary>
     /// <param name="service">Exchange web service</param>
@@ -42,13 +49,6 @@ internal sealed class SetUserPhotoRequest : SimpleServiceRequestBase
         : base(service)
     {
     }
-
-    /// <summary>
-    ///     email address accessor
-    /// </summary>
-    internal string EmailAddress { get; set; }
-
-    internal byte[] Photo { get; set; }
 
     /// <summary>
     ///     Validate request.

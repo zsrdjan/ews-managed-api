@@ -35,6 +35,18 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets or sets the service objects.
+    /// </summary>
+    /// <value>The objects.</value>
+    internal IEnumerable<TServiceObject> Objects { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the parent folder id.
+    /// </summary>
+    /// <value>The parent folder id.</value>
+    public FolderId? ParentFolderId { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="CreateRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -99,16 +111,4 @@ internal abstract class CreateRequest<TServiceObject, TResponse> : MultiResponse
 
         writer.WriteEndElement();
     }
-
-    /// <summary>
-    ///     Gets or sets the service objects.
-    /// </summary>
-    /// <value>The objects.</value>
-    internal IEnumerable<TServiceObject> Objects { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the parent folder id.
-    /// </summary>
-    /// <value>The parent folder id.</value>
-    public FolderId? ParentFolderId { get; set; }
 }

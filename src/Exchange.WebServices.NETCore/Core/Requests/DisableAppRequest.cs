@@ -60,6 +60,16 @@ public enum DisableReasonType
 internal sealed class DisableAppRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Extension id
+    /// </summary>
+    private string Id { get; set; }
+
+    /// <summary>
+    ///     Disable reason
+    /// </summary>
+    private DisableReasonType DisableReason { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DisableAppRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -131,14 +141,4 @@ internal sealed class DisableAppRequest : SimpleServiceRequestBase
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Extension id
-    /// </summary>
-    private string Id { get; set; }
-
-    /// <summary>
-    ///     Disable reason
-    /// </summary>
-    private DisableReasonType DisableReason { get; set; }
 }

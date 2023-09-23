@@ -37,6 +37,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class UpdateInboxRulesException : ServiceRemoteException
 {
     /// <summary>
+    ///     Gets the ServiceResponse when service operation failed remotely.
+    /// </summary>
+    public ServiceResponse ServiceResponse { get; }
+
+    /// <summary>
+    ///     Gets the rule operation error collection.
+    /// </summary>
+    public RuleOperationErrorCollection Errors { get; }
+
+    /// <summary>
+    ///     Gets the rule operation error code.
+    /// </summary>
+    public ServiceError ErrorCode => ServiceResponse.ErrorCode;
+
+    /// <summary>
+    ///     Gets the rule operation error message.
+    /// </summary>
+    public string ErrorMessage => ServiceResponse.ErrorMessage;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateInboxRulesException" /> class.
     /// </summary>
     /// <param name="serviceResponse">The rule operation service response.</param>
@@ -86,24 +106,4 @@ public sealed class UpdateInboxRulesException : ServiceRemoteException
         info.AddValue("Errors", Errors, typeof(RuleOperationErrorCollection));
         info.AddValue("ServiceResponse", ServiceResponse, typeof(ServiceResponse));
     }
-
-    /// <summary>
-    ///     Gets the ServiceResponse when service operation failed remotely.
-    /// </summary>
-    public ServiceResponse ServiceResponse { get; }
-
-    /// <summary>
-    ///     Gets the rule operation error collection.
-    /// </summary>
-    public RuleOperationErrorCollection Errors { get; }
-
-    /// <summary>
-    ///     Gets the rule operation error code.
-    /// </summary>
-    public ServiceError ErrorCode => ServiceResponse.ErrorCode;
-
-    /// <summary>
-    ///     Gets the rule operation error message.
-    /// </summary>
-    public string ErrorMessage => ServiceResponse.ErrorMessage;
 }

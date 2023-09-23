@@ -33,14 +33,15 @@ internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, T
     where TResponse : ServiceResponse
 {
     /// <summary>
-    ///     Validates request.
+    ///     Gets the item ids.
     /// </summary>
-    internal override void Validate()
-    {
-        base.Validate();
+    /// <value>The item ids.</value>
+    internal ItemIdWrapperList ItemIds { get; } = new();
 
-        EwsUtilities.ValidateParam(ItemIds);
-    }
+    /// <summary>
+    ///     Gets or sets flag indicating whether we require that the service return new item ids.
+    /// </summary>
+    internal bool? ReturnNewItemIds { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyItemRequest&lt;TResponse&gt;" /> class.
@@ -50,6 +51,16 @@ internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, T
     internal MoveCopyItemRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
         : base(service, errorHandlingMode)
     {
+    }
+
+    /// <summary>
+    ///     Validates request.
+    /// </summary>
+    internal override void Validate()
+    {
+        base.Validate();
+
+        EwsUtilities.ValidateParam(ItemIds);
     }
 
     /// <summary>
@@ -74,15 +85,4 @@ internal abstract class MoveCopyItemRequest<TResponse> : MoveCopyRequest<Item, T
     {
         return ItemIds.Count;
     }
-
-    /// <summary>
-    ///     Gets the item ids.
-    /// </summary>
-    /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets flag indicating whether we require that the service return new item ids.
-    /// </summary>
-    internal bool? ReturnNewItemIds { get; set; }
 }

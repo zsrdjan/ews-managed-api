@@ -49,15 +49,6 @@ public class RetentionTagBase : ComplexProperty
     private Guid _retentionId;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RetentionTagBase" /> class.
-    /// </summary>
-    /// <param name="xmlElementName">Xml element name.</param>
-    public RetentionTagBase(string xmlElementName)
-    {
-        _xmlElementName = xmlElementName;
-    }
-
-    /// <summary>
     ///     Gets or sets if the tag is explicit.
     /// </summary>
     public bool IsExplicit
@@ -73,6 +64,15 @@ public class RetentionTagBase : ComplexProperty
     {
         get => _retentionId;
         set => SetFieldValue(ref _retentionId, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RetentionTagBase" /> class.
+    /// </summary>
+    /// <param name="xmlElementName">Xml element name.</param>
+    public RetentionTagBase(string xmlElementName)
+    {
+        _xmlElementName = xmlElementName;
     }
 
     /// <summary>

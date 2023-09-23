@@ -35,65 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class ItemSchema : ServiceObjectSchema
 {
     /// <summary>
-    ///     Field URIs for Item.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string ItemId = "item:ItemId";
-        public const string ParentFolderId = "item:ParentFolderId";
-        public const string ItemClass = "item:ItemClass";
-        public const string MimeContent = "item:MimeContent";
-        public const string MimeContentUTF8 = "item:MimeContentUTF8";
-        public const string Attachments = "item:Attachments";
-        public const string Subject = "item:Subject";
-        public const string DateTimeReceived = "item:DateTimeReceived";
-        public const string Size = "item:Size";
-        public const string Categories = "item:Categories";
-        public const string HasAttachments = "item:HasAttachments";
-        public const string Importance = "item:Importance";
-        public const string InReplyTo = "item:InReplyTo";
-        public const string InternetMessageHeaders = "item:InternetMessageHeaders";
-        public const string IsAssociated = "item:IsAssociated";
-        public const string IsDraft = "item:IsDraft";
-        public const string IsFromMe = "item:IsFromMe";
-        public const string IsResend = "item:IsResend";
-        public const string IsSubmitted = "item:IsSubmitted";
-        public const string IsUnmodified = "item:IsUnmodified";
-        public const string DateTimeSent = "item:DateTimeSent";
-        public const string DateTimeCreated = "item:DateTimeCreated";
-        public const string Body = "item:Body";
-        public const string ResponseObjects = "item:ResponseObjects";
-        public const string Sensitivity = "item:Sensitivity";
-        public const string ReminderDueBy = "item:ReminderDueBy";
-        public const string ReminderIsSet = "item:ReminderIsSet";
-        public const string ReminderMinutesBeforeStart = "item:ReminderMinutesBeforeStart";
-        public const string DisplayTo = "item:DisplayTo";
-        public const string DisplayCc = "item:DisplayCc";
-        public const string Culture = "item:Culture";
-        public const string EffectiveRights = "item:EffectiveRights";
-        public const string LastModifiedName = "item:LastModifiedName";
-        public const string LastModifiedTime = "item:LastModifiedTime";
-        public const string WebClientReadFormQueryString = "item:WebClientReadFormQueryString";
-        public const string WebClientEditFormQueryString = "item:WebClientEditFormQueryString";
-        public const string ConversationId = "item:ConversationId";
-        public const string UniqueBody = "item:UniqueBody";
-        public const string StoreEntryId = "item:StoreEntryId";
-        public const string InstanceKey = "item:InstanceKey";
-        public const string NormalizedBody = "item:NormalizedBody";
-        public const string EntityExtractionResult = "item:EntityExtractionResult";
-        public const string Flag = "item:Flag";
-        public const string PolicyTag = "item:PolicyTag";
-        public const string ArchiveTag = "item:ArchiveTag";
-        public const string RetentionDate = "item:RetentionDate";
-        public const string Preview = "item:Preview";
-        public const string TextBody = "item:TextBody";
-        public const string IconIndex = "item:IconIndex";
-        public const string Hashtags = "item:Hashtags";
-        public const string Mentions = "item:Mentions";
-        public const string MentionedMe = "item:MentionedMe";
-    }
-
-    /// <summary>
     ///     Defines the Id property.
     /// </summary>
     public static readonly PropertyDefinition Id = new ComplexPropertyDefinition<ItemId>(
@@ -661,6 +602,13 @@ public class ItemSchema : ServiceObjectSchema
     internal static readonly ItemSchema Instance = new();
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemSchema" /> class.
+    /// </summary>
+    internal ItemSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -728,9 +676,61 @@ public class ItemSchema : ServiceObjectSchema
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemSchema" /> class.
+    ///     Field URIs for Item.
     /// </summary>
-    internal ItemSchema()
+    private static class FieldUris
     {
+        public const string ItemId = "item:ItemId";
+        public const string ParentFolderId = "item:ParentFolderId";
+        public const string ItemClass = "item:ItemClass";
+        public const string MimeContent = "item:MimeContent";
+        public const string MimeContentUTF8 = "item:MimeContentUTF8";
+        public const string Attachments = "item:Attachments";
+        public const string Subject = "item:Subject";
+        public const string DateTimeReceived = "item:DateTimeReceived";
+        public const string Size = "item:Size";
+        public const string Categories = "item:Categories";
+        public const string HasAttachments = "item:HasAttachments";
+        public const string Importance = "item:Importance";
+        public const string InReplyTo = "item:InReplyTo";
+        public const string InternetMessageHeaders = "item:InternetMessageHeaders";
+        public const string IsAssociated = "item:IsAssociated";
+        public const string IsDraft = "item:IsDraft";
+        public const string IsFromMe = "item:IsFromMe";
+        public const string IsResend = "item:IsResend";
+        public const string IsSubmitted = "item:IsSubmitted";
+        public const string IsUnmodified = "item:IsUnmodified";
+        public const string DateTimeSent = "item:DateTimeSent";
+        public const string DateTimeCreated = "item:DateTimeCreated";
+        public const string Body = "item:Body";
+        public const string ResponseObjects = "item:ResponseObjects";
+        public const string Sensitivity = "item:Sensitivity";
+        public const string ReminderDueBy = "item:ReminderDueBy";
+        public const string ReminderIsSet = "item:ReminderIsSet";
+        public const string ReminderMinutesBeforeStart = "item:ReminderMinutesBeforeStart";
+        public const string DisplayTo = "item:DisplayTo";
+        public const string DisplayCc = "item:DisplayCc";
+        public const string Culture = "item:Culture";
+        public const string EffectiveRights = "item:EffectiveRights";
+        public const string LastModifiedName = "item:LastModifiedName";
+        public const string LastModifiedTime = "item:LastModifiedTime";
+        public const string WebClientReadFormQueryString = "item:WebClientReadFormQueryString";
+        public const string WebClientEditFormQueryString = "item:WebClientEditFormQueryString";
+        public const string ConversationId = "item:ConversationId";
+        public const string UniqueBody = "item:UniqueBody";
+        public const string StoreEntryId = "item:StoreEntryId";
+        public const string InstanceKey = "item:InstanceKey";
+        public const string NormalizedBody = "item:NormalizedBody";
+        public const string EntityExtractionResult = "item:EntityExtractionResult";
+        public const string Flag = "item:Flag";
+        public const string PolicyTag = "item:PolicyTag";
+        public const string ArchiveTag = "item:ArchiveTag";
+        public const string RetentionDate = "item:RetentionDate";
+        public const string Preview = "item:Preview";
+        public const string TextBody = "item:TextBody";
+        public const string IconIndex = "item:IconIndex";
+        public const string Hashtags = "item:Hashtags";
+        public const string Mentions = "item:Mentions";
+        public const string MentionedMe = "item:MentionedMe";
     }
 }

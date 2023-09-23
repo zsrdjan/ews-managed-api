@@ -41,6 +41,92 @@ public abstract class ServiceObject
     private string _xmlElementName;
 
     /// <summary>
+    ///     The property bag holding property values for this object.
+    /// </summary>
+    internal PropertyBag PropertyBag { get; }
+
+    /// <summary>
+    ///     Gets the schema associated with this type of object.
+    /// </summary>
+    public ServiceObjectSchema Schema => GetSchema();
+
+    /// <summary>
+    ///     Gets the value of specified property in this instance.
+    /// </summary>
+    /// <param name="propertyDefinition">Definition of the property to get.</param>
+    /// <exception cref="ServiceVersionException">Raised if this property requires a later version of Exchange.</exception>
+    /// <exception cref="PropertyException">
+    ///     Raised if this property hasn't been assigned or loaded. Raised for set if property
+    ///     cannot be updated or deleted.
+    /// </exception>
+    public object? this[PropertyDefinitionBase propertyDefinition]
+    {
+        get
+        {
+            if (propertyDefinition is PropertyDefinition propDef)
+            {
+                return PropertyBag[propDef];
+            }
+
+            var extendedPropDef = propertyDefinition as ExtendedPropertyDefinition;
+            if (extendedPropDef != null)
+            {
+                if (TryGetExtendedProperty(extendedPropDef, out object? propertyValue))
+                {
+                    return propertyValue;
+                }
+
+                throw new ServiceObjectPropertyException(
+                    Strings.MustLoadOrAssignPropertyBeforeAccess,
+                    propertyDefinition
+                );
+            }
+
+            // Other subclasses of PropertyDefinitionBase are not supported.
+            throw new NotSupportedException(
+                string.Format(Strings.OperationNotSupportedForPropertyDefinitionType, propertyDefinition.GetType().Name)
+            );
+        }
+    }
+
+    /// <summary>
+    ///     Gets the ExchangeService the object is bound to.
+    /// </summary>
+    public ExchangeService Service { get; internal set; }
+
+    /// <summary>
+    ///     Indicates whether this object is a real store item, or if it's a local object
+    ///     that has yet to be saved.
+    /// </summary>
+    public virtual bool IsNew
+    {
+        get
+        {
+            var id = GetId();
+
+            return id == null ? true : !id.IsValid;
+        }
+    }
+
+    /// <summary>
+    ///     Gets a value indicating whether the object has been modified and should be saved.
+    /// </summary>
+    public bool IsDirty => PropertyBag.IsDirty;
+
+    /// <summary>
+    ///     Internal constructor.
+    /// </summary>
+    /// <param name="service">EWS service to which this object belongs.</param>
+    internal ServiceObject(ExchangeService service)
+    {
+        EwsUtilities.ValidateParam(service);
+        EwsUtilities.ValidateServiceObjectVersion(this, service.RequestedServerVersion);
+
+        Service = service;
+        PropertyBag = new PropertyBag(this);
+    }
+
+    /// <summary>
     ///     Triggers dispatch of the change event.
     /// </summary>
     internal void Changed()
@@ -174,29 +260,6 @@ public abstract class ServiceObject
     }
 
     /// <summary>
-    ///     The property bag holding property values for this object.
-    /// </summary>
-    internal PropertyBag PropertyBag { get; }
-
-    /// <summary>
-    ///     Internal constructor.
-    /// </summary>
-    /// <param name="service">EWS service to which this object belongs.</param>
-    internal ServiceObject(ExchangeService service)
-    {
-        EwsUtilities.ValidateParam(service);
-        EwsUtilities.ValidateServiceObjectVersion(this, service.RequestedServerVersion);
-
-        Service = service;
-        PropertyBag = new PropertyBag(this);
-    }
-
-    /// <summary>
-    ///     Gets the schema associated with this type of object.
-    /// </summary>
-    public ServiceObjectSchema Schema => GetSchema();
-
-    /// <summary>
     ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
@@ -315,45 +378,6 @@ public abstract class ServiceObject
     }
 
     /// <summary>
-    ///     Gets the value of specified property in this instance.
-    /// </summary>
-    /// <param name="propertyDefinition">Definition of the property to get.</param>
-    /// <exception cref="ServiceVersionException">Raised if this property requires a later version of Exchange.</exception>
-    /// <exception cref="PropertyException">
-    ///     Raised if this property hasn't been assigned or loaded. Raised for set if property
-    ///     cannot be updated or deleted.
-    /// </exception>
-    public object? this[PropertyDefinitionBase propertyDefinition]
-    {
-        get
-        {
-            if (propertyDefinition is PropertyDefinition propDef)
-            {
-                return PropertyBag[propDef];
-            }
-
-            var extendedPropDef = propertyDefinition as ExtendedPropertyDefinition;
-            if (extendedPropDef != null)
-            {
-                if (TryGetExtendedProperty(extendedPropDef, out object? propertyValue))
-                {
-                    return propertyValue;
-                }
-
-                throw new ServiceObjectPropertyException(
-                    Strings.MustLoadOrAssignPropertyBeforeAccess,
-                    propertyDefinition
-                );
-            }
-
-            // Other subclasses of PropertyDefinitionBase are not supported.
-            throw new NotSupportedException(
-                string.Format(Strings.OperationNotSupportedForPropertyDefinitionType, propertyDefinition.GetType().Name)
-            );
-        }
-    }
-
-    /// <summary>
     ///     Try to get the value of a specified extended property in this instance.
     /// </summary>
     /// <param name="propertyDefinition">The property definition.</param>
@@ -441,11 +465,6 @@ public abstract class ServiceObject
     }
 
     /// <summary>
-    ///     Gets the ExchangeService the object is bound to.
-    /// </summary>
-    public ExchangeService Service { get; internal set; }
-
-    /// <summary>
     ///     The property definition for the Id of this object.
     /// </summary>
     /// <returns>A PropertyDefinition instance.</returns>
@@ -471,25 +490,6 @@ public abstract class ServiceObject
 
         return (ServiceId)serviceId;
     }
-
-    /// <summary>
-    ///     Indicates whether this object is a real store item, or if it's a local object
-    ///     that has yet to be saved.
-    /// </summary>
-    public virtual bool IsNew
-    {
-        get
-        {
-            var id = GetId();
-
-            return id == null ? true : !id.IsValid;
-        }
-    }
-
-    /// <summary>
-    ///     Gets a value indicating whether the object has been modified and should be saved.
-    /// </summary>
-    public bool IsDirty => PropertyBag.IsDirty;
 
     /// <summary>
     ///     Gets the extended properties collection.

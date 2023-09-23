@@ -41,6 +41,89 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     where TComplexProperty : ComplexProperty
 {
     /// <summary>
+    ///     Gets the items.
+    /// </summary>
+    /// <value>The items.</value>
+    internal List<TComplexProperty> Items { get; } = new();
+
+    /// <summary>
+    ///     Gets the added items.
+    /// </summary>
+    /// <value>The added items.</value>
+    internal List<TComplexProperty> AddedItems { get; } = new();
+
+    /// <summary>
+    ///     Gets the modified items.
+    /// </summary>
+    /// <value>The modified items.</value>
+    internal List<TComplexProperty> ModifiedItems { get; } = new();
+
+    /// <summary>
+    ///     Gets the removed items.
+    /// </summary>
+    /// <value>The removed items.</value>
+    internal List<TComplexProperty> RemovedItems { get; } = new();
+
+    /// <summary>
+    ///     Gets the total number of properties in the collection.
+    /// </summary>
+    public int Count => Items.Count;
+
+    /// <summary>
+    ///     Gets the property at the specified index.
+    /// </summary>
+    /// <param name="index">The zero-based index of the property to get.</param>
+    /// <returns>The property at the specified index.</returns>
+    public TComplexProperty this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
+            }
+
+            return Items[index];
+        }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ComplexPropertyCollection&lt;TComplexProperty&gt;" /> class.
+    /// </summary>
+    internal ComplexPropertyCollection()
+    {
+    }
+
+
+    #region IEnumerable<TComplexProperty> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<TComplexProperty> GetEnumerator()
+    {
+        return Items.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return Items.GetEnumerator();
+    }
+
+    #endregion
+
+
+    /// <summary>
     ///     Creates the complex property.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -53,13 +136,6 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     /// <param name="complexProperty">The complex property.</param>
     /// <returns>XML element name.</returns>
     internal abstract string GetCollectionItemXmlElementName(TComplexProperty complexProperty);
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ComplexPropertyCollection&lt;TComplexProperty&gt;" /> class.
-    /// </summary>
-    internal ComplexPropertyCollection()
-    {
-    }
 
     /// <summary>
     ///     Item changed.
@@ -223,30 +299,6 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     }
 
     /// <summary>
-    ///     Gets the items.
-    /// </summary>
-    /// <value>The items.</value>
-    internal List<TComplexProperty> Items { get; } = new();
-
-    /// <summary>
-    ///     Gets the added items.
-    /// </summary>
-    /// <value>The added items.</value>
-    internal List<TComplexProperty> AddedItems { get; } = new();
-
-    /// <summary>
-    ///     Gets the modified items.
-    /// </summary>
-    /// <value>The modified items.</value>
-    internal List<TComplexProperty> ModifiedItems { get; } = new();
-
-    /// <summary>
-    ///     Gets the removed items.
-    /// </summary>
-    /// <value>The removed items.</value>
-    internal List<TComplexProperty> RemovedItems { get; } = new();
-
-    /// <summary>
     ///     Add complex property.
     /// </summary>
     /// <param name="complexProperty">The complex property.</param>
@@ -361,57 +413,6 @@ public abstract class ComplexPropertyCollection<TComplexProperty> : ComplexPrope
     {
         return Items.IndexOf(complexProperty);
     }
-
-    /// <summary>
-    ///     Gets the total number of properties in the collection.
-    /// </summary>
-    public int Count => Items.Count;
-
-    /// <summary>
-    ///     Gets the property at the specified index.
-    /// </summary>
-    /// <param name="index">The zero-based index of the property to get.</param>
-    /// <returns>The property at the specified index.</returns>
-    public TComplexProperty this[int index]
-    {
-        get
-        {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
-            }
-
-            return Items[index];
-        }
-    }
-
-
-    #region IEnumerable<TComplexProperty> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<TComplexProperty> GetEnumerator()
-    {
-        return Items.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return Items.GetEnumerator();
-    }
-
-    #endregion
 
 
     #region ICustomXmlUpdateSerializer Members

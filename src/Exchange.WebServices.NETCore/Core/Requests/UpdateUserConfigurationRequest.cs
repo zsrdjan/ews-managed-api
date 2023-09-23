@@ -33,6 +33,25 @@ internal class UpdateUserConfigurationRequest : MultiResponseServiceRequest<Serv
     protected UserConfiguration _userConfiguration;
 
     /// <summary>
+    ///     Gets or sets the user configuration.
+    /// </summary>
+    /// <value>The user configuration.</value>
+    public UserConfiguration UserConfiguration
+    {
+        get => _userConfiguration;
+        set => _userConfiguration = value;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UpdateUserConfigurationRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal UpdateUserConfigurationRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
@@ -105,24 +124,5 @@ internal class UpdateUserConfigurationRequest : MultiResponseServiceRequest<Serv
     {
         // Write UserConfiguration element
         _userConfiguration.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.UserConfiguration);
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="UpdateUserConfigurationRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal UpdateUserConfigurationRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the user configuration.
-    /// </summary>
-    /// <value>The user configuration.</value>
-    public UserConfiguration UserConfiguration
-    {
-        get => _userConfiguration;
-        set => _userConfiguration = value;
     }
 }

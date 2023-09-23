@@ -32,9 +32,23 @@ internal class GetStreamingEventsRequest : HangingServiceRequestBase
 {
     internal const int HeartbeatFrequencyDefault = 45000; ////45s in ms
     private static int _heartbeatFrequency = HeartbeatFrequencyDefault;
+    private readonly int _connectionTimeout;
 
     private readonly IEnumerable<string> _subscriptionIds;
-    private readonly int _connectionTimeout;
+
+
+    #region Test hooks
+
+    /// <summary>
+    ///     Allow test code to change heartbeat value
+    /// </summary>
+    internal static int HeartbeatFrequency
+    {
+        set => _heartbeatFrequency = value;
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetStreamingEventsRequest" /> class.
@@ -116,17 +130,4 @@ internal class GetStreamingEventsRequest : HangingServiceRequestBase
 
         return response;
     }
-
-
-    #region Test hooks
-
-    /// <summary>
-    ///     Allow test code to change heartbeat value
-    /// </summary>
-    internal static int HeartbeatFrequency
-    {
-        set => _heartbeatFrequency = value;
-    }
-
-    #endregion
 }

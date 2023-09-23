@@ -34,6 +34,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetClientAccessTokenResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the Id.
+    /// </summary>
+    public string Id { get; private set; }
+
+    /// <summary>
+    ///     Gets the token type.
+    /// </summary>
+    public ClientAccessTokenType TokenType { get; private set; }
+
+    /// <summary>
+    ///     Gets the token value.
+    /// </summary>
+    public string TokenValue { get; private set; }
+
+    /// <summary>
+    ///     Gets the TTL value in minutes.
+    /// </summary>
+    public int TTL { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetClientAccessTokenResponse" /> class.
     /// </summary>
     /// <param name="id">Id</param>
@@ -63,24 +83,4 @@ public sealed class GetClientAccessTokenResponse : ServiceResponse
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.Token);
     }
-
-    /// <summary>
-    ///     Gets the Id.
-    /// </summary>
-    public string Id { get; private set; }
-
-    /// <summary>
-    ///     Gets the token type.
-    /// </summary>
-    public ClientAccessTokenType TokenType { get; private set; }
-
-    /// <summary>
-    ///     Gets the token value.
-    /// </summary>
-    public string TokenValue { get; private set; }
-
-    /// <summary>
-    ///     Gets the TTL value in minutes.
-    /// </summary>
-    public int TTL { get; private set; }
 }

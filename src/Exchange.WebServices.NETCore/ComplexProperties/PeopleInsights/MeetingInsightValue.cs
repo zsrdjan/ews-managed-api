@@ -34,14 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MeetingInsightValue : InsightValue
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MeetingInsightValue" /> class.
-    /// </summary>
-    public MeetingInsightValue()
-    {
-        Attendees = new ProfileInsightValueCollection();
-    }
-
-    /// <summary>
     ///     Gets the Id
     /// </summary>
     public string Id { get; internal set; }
@@ -75,6 +67,14 @@ public sealed class MeetingInsightValue : InsightValue
     ///     Gets the Attendees
     /// </summary>
     public ProfileInsightValueCollection Attendees { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MeetingInsightValue" /> class.
+    /// </summary>
+    public MeetingInsightValue()
+    {
+        Attendees = new ProfileInsightValueCollection();
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

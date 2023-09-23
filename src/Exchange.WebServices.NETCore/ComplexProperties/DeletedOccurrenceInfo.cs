@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class DeletedOccurrenceInfo : ComplexProperty
 {
     /// <summary>
+    ///     Gets the original start date and time of the deleted occurrence.
+    /// </summary>
+    public DateTime OriginalStart { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DeletedOccurrenceInfo" /> class.
     /// </summary>
     internal DeletedOccurrenceInfo()
@@ -60,9 +65,4 @@ public class DeletedOccurrenceInfo : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the original start date and time of the deleted occurrence.
-    /// </summary>
-    public DateTime OriginalStart { get; private set; }
 }

@@ -33,6 +33,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SuggestionsResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets a list of suggested days.
+    /// </summary>
+    internal Collection<Suggestion> Suggestions { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SuggestionsResponse" /> class.
     /// </summary>
     internal SuggestionsResponse()
@@ -61,9 +66,4 @@ internal sealed class SuggestionsResponse : ServiceResponse
             }
         } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.SuggestionDayResultArray));
     }
-
-    /// <summary>
-    ///     Gets a list of suggested days.
-    /// </summary>
-    internal Collection<Suggestion> Suggestions { get; } = new();
 }

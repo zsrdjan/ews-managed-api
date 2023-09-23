@@ -34,12 +34,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class CreateItemResponseBase : ServiceResponse
 {
     /// <summary>
-    ///     Gets Item instance.
+    ///     Gets the items.
     /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="xmlElementName">Name of the XML element.</param>
-    /// <returns>Item.</returns>
-    internal abstract Item? GetObjectInstance(ExchangeService service, string xmlElementName);
+    public List<Item> Items { get; private set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CreateItemResponseBase" /> class.
@@ -47,6 +44,14 @@ internal abstract class CreateItemResponseBase : ServiceResponse
     internal CreateItemResponseBase()
     {
     }
+
+    /// <summary>
+    ///     Gets Item instance.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    /// <returns>Item.</returns>
+    internal abstract Item? GetObjectInstance(ExchangeService service, string xmlElementName);
 
     /// <summary>
     ///     Reads response elements from XML.
@@ -64,9 +69,4 @@ internal abstract class CreateItemResponseBase : ServiceResponse
             false
         );
     }
-
-    /// <summary>
-    ///     Gets the items.
-    /// </summary>
-    public List<Item> Items { get; private set; }
 }

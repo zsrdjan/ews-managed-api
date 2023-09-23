@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(EffectiveRights);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EffectiveRightsPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -153,9 +158,4 @@ internal sealed class EffectiveRightsPropertyDefinition : PropertyDefinition
     {
         // EffectiveRights is a read-only property, no need to implement this.
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(EffectiveRights);
 }

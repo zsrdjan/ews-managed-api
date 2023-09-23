@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets the collection of Emailaddress.
+    /// </summary>
+    internal List<string> EmailAddresses { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetPeopleInsightsRequest" /> class.
     /// </summary>
     /// <param name="service">The service</param>
@@ -39,11 +44,6 @@ internal sealed class GetPeopleInsightsRequest : SimpleServiceRequestBase
     {
         EmailAddresses = new List<string>();
     }
-
-    /// <summary>
-    ///     Gets the collection of Emailaddress.
-    /// </summary>
-    internal List<string> EmailAddresses { get; set; }
 
     /// <summary>
     ///     Validate the request

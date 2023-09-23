@@ -36,6 +36,32 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class MeetingCancellation : MeetingMessage
 {
     /// <summary>
+    ///     Gets the start time of the appointment.
+    /// </summary>
+    public DateTime Start => (DateTime)PropertyBag[MeetingCancellationSchema.Start];
+
+    /// <summary>
+    ///     Gets the end time of the appointment.
+    /// </summary>
+    public DateTime End => (DateTime)PropertyBag[MeetingCancellationSchema.End];
+
+    /// <summary>
+    ///     Gets the location of this appointment.
+    /// </summary>
+    public string Location => (string)PropertyBag[MeetingCancellationSchema.Location];
+
+    /// <summary>
+    ///     Gets the recurrence pattern for this meeting request.
+    /// </summary>
+    public Recurrence Recurrence => (Recurrence)PropertyBag[AppointmentSchema.Recurrence];
+
+    /// <summary>
+    ///     Gets the Enhanced location object.
+    /// </summary>
+    public EnhancedLocation EnhancedLocation =>
+        (EnhancedLocation)PropertyBag[MeetingCancellationSchema.EnhancedLocation];
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MeetingCancellation" /> class.
     /// </summary>
     /// <param name="parentAttachment">The parent attachment.</param>
@@ -121,30 +147,4 @@ public class MeetingCancellation : MeetingMessage
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the start time of the appointment.
-    /// </summary>
-    public DateTime Start => (DateTime)PropertyBag[MeetingCancellationSchema.Start];
-
-    /// <summary>
-    ///     Gets the end time of the appointment.
-    /// </summary>
-    public DateTime End => (DateTime)PropertyBag[MeetingCancellationSchema.End];
-
-    /// <summary>
-    ///     Gets the location of this appointment.
-    /// </summary>
-    public string Location => (string)PropertyBag[MeetingCancellationSchema.Location];
-
-    /// <summary>
-    ///     Gets the recurrence pattern for this meeting request.
-    /// </summary>
-    public Recurrence Recurrence => (Recurrence)PropertyBag[AppointmentSchema.Recurrence];
-
-    /// <summary>
-    ///     Gets the Enhanced location object.
-    /// </summary>
-    public EnhancedLocation EnhancedLocation =>
-        (EnhancedLocation)PropertyBag[MeetingCancellationSchema.EnhancedLocation];
 }

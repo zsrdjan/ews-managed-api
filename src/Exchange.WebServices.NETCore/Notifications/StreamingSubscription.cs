@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class StreamingSubscription : SubscriptionBase
 {
     /// <summary>
+    ///     Gets the service used to create this subscription.
+    /// </summary>
+    public new ExchangeService Service => base.Service;
+
+    /// <summary>
+    ///     Gets a value indicating whether this subscription uses watermarks.
+    /// </summary>
+    protected override bool UsesWatermark => false;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="StreamingSubscription" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -60,14 +70,4 @@ public sealed class StreamingSubscription : SubscriptionBase
     {
         return Service.Unsubscribe(Id, token);
     }
-
-    /// <summary>
-    ///     Gets the service used to create this subscription.
-    /// </summary>
-    public new ExchangeService Service => base.Service;
-
-    /// <summary>
-    ///     Gets a value indicating whether this subscription uses watermarks.
-    /// </summary>
-    protected override bool UsesWatermark => false;
 }

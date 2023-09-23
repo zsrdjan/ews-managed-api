@@ -40,6 +40,18 @@ public abstract partial class Recurrence
     public sealed class DailyRegenerationPattern : IntervalPattern
     {
         /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <value>The name of the XML element.</value>
+        internal override string XmlElementName => XmlElementNames.DailyRegeneration;
+
+        /// <summary>
+        ///     Gets a value indicating whether this instance is a regeneration pattern.
+        /// </summary>
+        /// <value><c>true</c> if this instance is a regeneration pattern; otherwise, <c>false</c>.</value>
+        internal override bool IsRegenerationPattern => true;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="DailyRegenerationPattern" /> class.
         /// </summary>
         public DailyRegenerationPattern()
@@ -58,17 +70,5 @@ public abstract partial class Recurrence
             : base(startDate, interval)
         {
         }
-
-        /// <summary>
-        ///     Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal override string XmlElementName => XmlElementNames.DailyRegeneration;
-
-        /// <summary>
-        ///     Gets a value indicating whether this instance is a regeneration pattern.
-        /// </summary>
-        /// <value><c>true</c> if this instance is a regeneration pattern; otherwise, <c>false</c>.</value>
-        internal override bool IsRegenerationPattern => true;
     }
 }

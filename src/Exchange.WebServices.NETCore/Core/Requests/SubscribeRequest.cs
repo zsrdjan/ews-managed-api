@@ -33,6 +33,32 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
     where TSubscription : SubscriptionBase
 {
     /// <summary>
+    ///     Gets the folder ids.
+    /// </summary>
+    public FolderIdWrapperList FolderIds { get; private set; }
+
+    /// <summary>
+    ///     Gets the event types.
+    /// </summary>
+    public List<EventType> EventTypes { get; private set; }
+
+    /// <summary>
+    ///     Gets or sets the watermark.
+    /// </summary>
+    public string Watermark { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SubscribeRequest&lt;TSubscription&gt;" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal SubscribeRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+        FolderIds = new FolderIdWrapperList();
+        EventTypes = new List<EventType>();
+    }
+
+    /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
@@ -139,30 +165,4 @@ internal abstract class SubscribeRequest<TSubscription> : MultiResponseServiceRe
 
         writer.WriteEndElement();
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="SubscribeRequest&lt;TSubscription&gt;" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal SubscribeRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
-        FolderIds = new FolderIdWrapperList();
-        EventTypes = new List<EventType>();
-    }
-
-    /// <summary>
-    ///     Gets the folder ids.
-    /// </summary>
-    public FolderIdWrapperList FolderIds { get; private set; }
-
-    /// <summary>
-    ///     Gets the event types.
-    /// </summary>
-    public List<EventType> EventTypes { get; private set; }
-
-    /// <summary>
-    ///     Gets or sets the watermark.
-    /// </summary>
-    public string Watermark { get; set; }
 }

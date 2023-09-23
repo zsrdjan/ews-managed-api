@@ -31,6 +31,25 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SetUserOofSettingsRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets or sets the SMTP address.
+    /// </summary>
+    public string SmtpAddress { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the oof settings.
+    /// </summary>
+    public OofSettings OofSettings { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SetUserOofSettingsRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal SetUserOofSettingsRequest(ExchangeService service)
+        : base(service)
+    {
+    }
+
+    /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
@@ -96,15 +115,6 @@ internal sealed class SetUserOofSettingsRequest : SimpleServiceRequestBase
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="SetUserOofSettingsRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal SetUserOofSettingsRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Executes this request.
     /// </summary>
     /// <returns>Service response.</returns>
@@ -114,14 +124,4 @@ internal sealed class SetUserOofSettingsRequest : SimpleServiceRequestBase
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Gets or sets the SMTP address.
-    /// </summary>
-    public string SmtpAddress { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the oof settings.
-    /// </summary>
-    public OofSettings OofSettings { get; set; }
 }

@@ -34,6 +34,21 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 public sealed class RequestedUnifiedGroupsSet : ComplexProperty
 {
     /// <summary>
+    ///     Gets or sets the sort type for the list of groups to be returned
+    /// </summary>
+    public UnifiedGroupsSortType SortType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the filter Type for the list of groups to be returned
+    /// </summary>
+    public UnifiedGroupsFilterType FilterType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the Sort Direction for the list of groups to be returned.
+    /// </summary>
+    public SortDirection SortDirection { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="RequestedUnifiedGroupsSet" /> class.
     /// </summary>
     public RequestedUnifiedGroupsSet()
@@ -56,21 +71,6 @@ public sealed class RequestedUnifiedGroupsSet : ComplexProperty
         SortType = sortType;
         SortDirection = sortDirection;
     }
-
-    /// <summary>
-    ///     Gets or sets the sort type for the list of groups to be returned
-    /// </summary>
-    public UnifiedGroupsSortType SortType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the filter Type for the list of groups to be returned
-    /// </summary>
-    public UnifiedGroupsFilterType FilterType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the Sort Direction for the list of groups to be returned.
-    /// </summary>
-    public SortDirection SortDirection { get; set; }
 
     /// <summary>
     ///     Writes to XML.

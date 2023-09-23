@@ -40,9 +40,15 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
     where TEntry : DictionaryEntryProperty<TKey>
     where TKey : notnull
 {
-    private readonly Dictionary<TKey, TEntry> _removedEntries = new();
     private readonly List<TKey> _addedEntries = new();
     private readonly List<TKey> _modifiedEntries = new();
+    private readonly Dictionary<TKey, TEntry> _removedEntries = new();
+
+    /// <summary>
+    ///     Gets the entries.
+    /// </summary>
+    /// <value>The entries.</value>
+    internal Dictionary<TKey, TEntry> Entries { get; } = new();
 
     /// <summary>
     ///     Entry was changed.
@@ -259,12 +265,6 @@ public abstract class DictionaryProperty<TKey, TEntry> : ComplexProperty, ICusto
             keyValuePair.Value.WriteToXml(writer, GetEntryXmlElementName(keyValuePair.Value));
         }
     }
-
-    /// <summary>
-    ///     Gets the entries.
-    /// </summary>
-    /// <value>The entries.</value>
-    internal Dictionary<TKey, TEntry> Entries { get; } = new();
 
     /// <summary>
     ///     Determines whether this instance contains the specified key.

@@ -34,6 +34,27 @@ namespace Microsoft.Exchange.WebServices.Data;
 [ServiceObjectDefinition(XmlElementNames.SearchFolder)]
 public class SearchFolder : Folder
 {
+    #region Properties
+
+    /// <summary>
+    ///     Gets the search parameters associated with the search folder.
+    /// </summary>
+    public SearchFolderParameters SearchParameters =>
+        (SearchFolderParameters)PropertyBag[SearchFolderSchema.SearchParameters];
+
+    #endregion
+
+
+    /// <summary>
+    ///     Initializes an unsaved local instance of <see cref="SearchFolder" />. To bind to an existing search folder, use
+    ///     SearchFolder.Bind() instead.
+    /// </summary>
+    /// <param name="service">The ExchangeService object to which the search folder will be bound.</param>
+    public SearchFolder(ExchangeService service)
+        : base(service)
+    {
+    }
+
     /// <summary>
     ///     Binds to an existing search folder and loads the specified set of properties.
     ///     Calling this method results in a call to EWS.
@@ -103,16 +124,6 @@ public class SearchFolder : Folder
     }
 
     /// <summary>
-    ///     Initializes an unsaved local instance of <see cref="SearchFolder" />. To bind to an existing search folder, use
-    ///     SearchFolder.Bind() instead.
-    /// </summary>
-    /// <param name="service">The ExchangeService object to which the search folder will be bound.</param>
-    public SearchFolder(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Internal method to return the schema associated with this type of object.
     /// </summary>
     /// <returns>The schema associated with this type of object.</returns>
@@ -142,15 +153,4 @@ public class SearchFolder : Folder
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-
-    #region Properties
-
-    /// <summary>
-    ///     Gets the search parameters associated with the search folder.
-    /// </summary>
-    public SearchFolderParameters SearchParameters =>
-        (SearchFolderParameters)PropertyBag[SearchFolderSchema.SearchParameters];
-
-    #endregion
 }

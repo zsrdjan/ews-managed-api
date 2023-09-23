@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ArchiveItemResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the copied or moved item.
+    /// </summary>
+    public Item Item { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ArchiveItemResponse" /> class.
     /// </summary>
     internal ArchiveItemResponse()
@@ -72,9 +77,4 @@ public sealed class ArchiveItemResponse : ServiceResponse
             Item = items[0];
         }
     }
-
-    /// <summary>
-    ///     Gets the copied or moved item.
-    /// </summary>
-    public Item Item { get; private set; }
 }

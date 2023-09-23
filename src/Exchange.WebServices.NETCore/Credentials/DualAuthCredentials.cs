@@ -39,6 +39,12 @@ public sealed class DualAuthCredentials : ExchangeCredentials
 {
     internal ICredentials Credentials { get; set; }
 
+
+    /// <summary>
+    ///     Gets the client certificates collection.
+    /// </summary>
+    public X509CertificateCollection ClientCertificates { get; }
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="DualAuthCredentials" /> class.
     /// </summary>
@@ -52,10 +58,4 @@ public sealed class DualAuthCredentials : ExchangeCredentials
         ClientCertificates = clientCertificates;
         Credentials = new NetworkCredential(userName, password);
     }
-
-
-    /// <summary>
-    ///     Gets the client certificates collection.
-    /// </summary>
-    public X509CertificateCollection ClientCertificates { get; }
 }

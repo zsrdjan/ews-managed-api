@@ -36,6 +36,27 @@ internal delegate object CreateServiceObjectWithAttachmentParam(ItemAttachment i
 internal class ServiceObjectInfo
 {
     /// <summary>
+    ///     Return Dictionary that maps from element name to ServiceObject Type.
+    /// </summary>
+    internal Dictionary<string, Type> XmlElementNameToServiceObjectClassMap { get; } = new();
+
+    /// <summary>
+    ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithServiceParam delegate with
+    ///     ExchangeService parameter.
+    /// </summary>
+    internal Dictionary<Type, CreateServiceObjectWithServiceParam> ServiceObjectConstructorsWithServiceParam { get; } =
+        new();
+
+    /// <summary>
+    ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithAttachmentParam delegate with
+    ///     ItemAttachment parameter.
+    /// </summary>
+    internal Dictionary<Type, CreateServiceObjectWithAttachmentParam> ServiceObjectConstructorsWithAttachmentParam
+    {
+        get;
+    } = new();
+
+    /// <summary>
     ///     Default constructor
     /// </summary>
     internal ServiceObjectInfo()
@@ -194,25 +215,4 @@ internal class ServiceObjectInfo
             ServiceObjectConstructorsWithAttachmentParam.Add(type, createServiceObjectWithAttachmentParam);
         }
     }
-
-    /// <summary>
-    ///     Return Dictionary that maps from element name to ServiceObject Type.
-    /// </summary>
-    internal Dictionary<string, Type> XmlElementNameToServiceObjectClassMap { get; } = new();
-
-    /// <summary>
-    ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithServiceParam delegate with
-    ///     ExchangeService parameter.
-    /// </summary>
-    internal Dictionary<Type, CreateServiceObjectWithServiceParam> ServiceObjectConstructorsWithServiceParam { get; } =
-        new();
-
-    /// <summary>
-    ///     Return Dictionary that maps from ServiceObject Type to CreateServiceObjectWithAttachmentParam delegate with
-    ///     ItemAttachment parameter.
-    /// </summary>
-    internal Dictionary<Type, CreateServiceObjectWithAttachmentParam> ServiceObjectConstructorsWithAttachmentParam
-    {
-        get;
-    } = new();
 }

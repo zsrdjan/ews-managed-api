@@ -37,6 +37,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class WebCredentials : ExchangeCredentials
 {
     /// <summary>
+    ///     Gets the Credentials from this instance.
+    /// </summary>
+    /// <value>The credentials.</value>
+    public ICredentials Credentials { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="WebCredentials" /> class to use
     ///     the default network credentials.
     /// </summary>
@@ -77,12 +83,6 @@ public sealed class WebCredentials : ExchangeCredentials
         : this(new NetworkCredential(username, password, domain))
     {
     }
-
-    /// <summary>
-    ///     Gets the Credentials from this instance.
-    /// </summary>
-    /// <value>The credentials.</value>
-    public ICredentials Credentials { get; }
 
     /// <summary>
     ///     Adjusts the URL endpoint based on the credentials.

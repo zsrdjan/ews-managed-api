@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ByteArrayPropertyDefinition : TypedPropertyDefinition
 {
     /// <summary>
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    /// </summary>
+    internal override bool IsNullable => true;
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(byte[]);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ByteArrayPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -66,14 +76,4 @@ internal sealed class ByteArrayPropertyDefinition : TypedPropertyDefinition
     {
         return Convert.ToBase64String((byte[])value);
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
-    /// </summary>
-    internal override bool IsNullable => true;
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(byte[]);
 }

@@ -34,6 +34,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class PropertyDefinitionBase
 {
     /// <summary>
+    ///     Gets the minimum Exchange version that supports this property.
+    /// </summary>
+    /// <value>The version.</value>
+    public abstract ExchangeVersion Version { get; }
+
+    /// <summary>
+    ///     Gets the type of the property.
+    /// </summary>
+    public abstract Type Type { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PropertyDefinitionBase" /> class.
     /// </summary>
     internal PropertyDefinitionBase()
@@ -92,21 +103,10 @@ public abstract class PropertyDefinitionBase
     internal abstract void WriteAttributesToXml(EwsServiceXmlWriter writer);
 
     /// <summary>
-    ///     Gets the minimum Exchange version that supports this property.
-    /// </summary>
-    /// <value>The version.</value>
-    public abstract ExchangeVersion Version { get; }
-
-    /// <summary>
     ///     Gets the property definition's printable name.
     /// </summary>
     /// <returns>The property definition's printable name.</returns>
     internal abstract string GetPrintableName();
-
-    /// <summary>
-    ///     Gets the type of the property.
-    /// </summary>
-    public abstract Type Type { get; }
 
     /// <summary>
     ///     Writes to XML.

@@ -34,6 +34,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PullSubscription : SubscriptionBase
 {
     /// <summary>
+    ///     Gets a value indicating whether more events are available on the server.
+    ///     MoreEventsAvailable is undefined (null) until GetEvents is called.
+    /// </summary>
+    public bool? MoreEventsAvailable { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PullSubscription" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -64,10 +70,4 @@ public sealed class PullSubscription : SubscriptionBase
     {
         return Service.Unsubscribe(Id, token);
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether more events are available on the server.
-    ///     MoreEventsAvailable is undefined (null) until GetEvents is called.
-    /// </summary>
-    public bool? MoreEventsAvailable { get; private set; }
 }

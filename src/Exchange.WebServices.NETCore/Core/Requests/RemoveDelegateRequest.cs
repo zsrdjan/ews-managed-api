@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateManagementResponse>
 {
     /// <summary>
+    ///     Gets the user ids.
+    /// </summary>
+    /// <value>The user ids.</value>
+    public List<UserId> UserIds { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="RemoveDelegateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -102,10 +108,4 @@ internal class RemoveDelegateRequest : DelegateManagementRequestBase<DelegateMan
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the user ids.
-    /// </summary>
-    /// <value>The user ids.</value>
-    public List<UserId> UserIds { get; } = new();
 }

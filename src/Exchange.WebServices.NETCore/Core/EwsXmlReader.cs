@@ -34,9 +34,55 @@ internal class EwsXmlReader
 {
     private const int ReadWriteBufferSize = 4096;
 
+    private readonly XmlReader _xmlReader;
+
     private XmlNodeType _prevNodeType = XmlNodeType.None;
 
-    private readonly XmlReader _xmlReader;
+    /// <summary>
+    ///     Gets a value indicating whether this instance has attributes.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if this instance has attributes; otherwise, <c>false</c>.
+    /// </value>
+    public bool HasAttributes => _xmlReader.AttributeCount > 0;
+
+    /// <summary>
+    ///     Gets a value indicating whether current element is empty.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if current element is empty element; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsEmptyElement => _xmlReader.IsEmptyElement;
+
+    /// <summary>
+    ///     Gets the local name of the current element.
+    /// </summary>
+    /// <value>The local name of the current element.</value>
+    public string LocalName => _xmlReader.LocalName;
+
+    /// <summary>
+    ///     Gets the namespace prefix.
+    /// </summary>
+    /// <value>The namespace prefix.</value>
+    public string NamespacePrefix => _xmlReader.Prefix;
+
+    /// <summary>
+    ///     Gets the namespace URI.
+    /// </summary>
+    /// <value>The namespace URI.</value>
+    public string NamespaceUri => _xmlReader.NamespaceURI;
+
+    /// <summary>
+    ///     Gets the type of the node.
+    /// </summary>
+    /// <value>The type of the node.</value>
+    public XmlNodeType NodeType => _xmlReader.NodeType;
+
+    /// <summary>
+    ///     Gets the type of the prev node.
+    /// </summary>
+    /// <value>The type of the prev node.</value>
+    public XmlNodeType PrevNodeType => _prevNodeType;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsXmlReader" /> class.
@@ -883,50 +929,4 @@ internal class EwsXmlReader
     {
         _xmlReader.ReadToDescendant(localName, EwsUtilities.GetNamespaceUri(xmlNamespace));
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this instance has attributes.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if this instance has attributes; otherwise, <c>false</c>.
-    /// </value>
-    public bool HasAttributes => _xmlReader.AttributeCount > 0;
-
-    /// <summary>
-    ///     Gets a value indicating whether current element is empty.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if current element is empty element; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsEmptyElement => _xmlReader.IsEmptyElement;
-
-    /// <summary>
-    ///     Gets the local name of the current element.
-    /// </summary>
-    /// <value>The local name of the current element.</value>
-    public string LocalName => _xmlReader.LocalName;
-
-    /// <summary>
-    ///     Gets the namespace prefix.
-    /// </summary>
-    /// <value>The namespace prefix.</value>
-    public string NamespacePrefix => _xmlReader.Prefix;
-
-    /// <summary>
-    ///     Gets the namespace URI.
-    /// </summary>
-    /// <value>The namespace URI.</value>
-    public string NamespaceUri => _xmlReader.NamespaceURI;
-
-    /// <summary>
-    ///     Gets the type of the node.
-    /// </summary>
-    /// <value>The type of the node.</value>
-    public XmlNodeType NodeType => _xmlReader.NodeType;
-
-    /// <summary>
-    ///     Gets the type of the prev node.
-    /// </summary>
-    /// <value>The type of the prev node.</value>
-    public XmlNodeType PrevNodeType => _prevNodeType;
 }

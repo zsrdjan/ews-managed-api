@@ -36,22 +36,15 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
 {
     /// <summary>
-    ///     True, if all members are returned.
-    ///     EWS always returns true on ExpandDL, i.e. all members are returned.
-    /// </summary>
-    private bool _includesAllMembers;
-
-    /// <summary>
     ///     DL members.
     /// </summary>
     private readonly Collection<EmailAddress> _members = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ExpandGroupResults" /> class.
+    ///     True, if all members are returned.
+    ///     EWS always returns true on ExpandDL, i.e. all members are returned.
     /// </summary>
-    internal ExpandGroupResults()
-    {
-    }
+    private bool _includesAllMembers;
 
     /// <summary>
     ///     Gets the number of members that were returned by the ExpandGroup operation. Count might be
@@ -69,6 +62,13 @@ public sealed class ExpandGroupResults : IEnumerable<EmailAddress>
     ///     Gets the members of the expanded group.
     /// </summary>
     public Collection<EmailAddress> Members => _members;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExpandGroupResults" /> class.
+    /// </summary>
+    internal ExpandGroupResults()
+    {
+    }
 
 
     #region IEnumerable<EmailAddress> Members

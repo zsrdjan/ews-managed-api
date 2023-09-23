@@ -41,6 +41,15 @@ public sealed class PersonaId : ServiceId
     }
 
     /// <summary>
+    ///     Creates a new instance of PersonaId.
+    /// </summary>
+    /// <param name="uniqueId">The unique Id used to initialize the <see cref="PersonaId" />.</param>
+    public PersonaId(string uniqueId)
+        : base(uniqueId)
+    {
+    }
+
+    /// <summary>
     ///     Defines an implicit conversion from Id string to PersonaId.
     /// </summary>
     /// <param name="uniqueId">The unique Id to convert to PersonaId.</param>
@@ -78,15 +87,6 @@ public sealed class PersonaId : ServiceId
     internal override string GetXmlElementName()
     {
         return XmlElementNames.PersonaId;
-    }
-
-    /// <summary>
-    ///     Creates a new instance of PersonaId.
-    /// </summary>
-    /// <param name="uniqueId">The unique Id used to initialize the <see cref="PersonaId" />.</param>
-    public PersonaId(string uniqueId)
-        : base(uniqueId)
-    {
     }
 
     /// <summary>

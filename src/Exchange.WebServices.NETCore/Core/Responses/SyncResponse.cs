@@ -43,6 +43,16 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
     private readonly PropertySet _propertySet;
 
     /// <summary>
+    ///     Gets a list of changes that occurred on the synchronized folder.
+    /// </summary>
+    public ChangeCollection<TChange> Changes { get; } = new();
+
+    /// <summary>
+    ///     Gets a value indicating whether this request returns full or summary properties.
+    /// </summary>
+    internal abstract bool SummaryPropertiesOnly { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SyncResponse&lt;TServiceObject, TChange&gt;" /> class.
     /// </summary>
     /// <param name="propertySet">Property set.</param>
@@ -183,14 +193,4 @@ public abstract class SyncResponse<TServiceObject, TChange> : ServiceResponse
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.Changes));
         }
     }
-
-    /// <summary>
-    ///     Gets a list of changes that occurred on the synchronized folder.
-    /// </summary>
-    public ChangeCollection<TChange> Changes { get; } = new();
-
-    /// <summary>
-    ///     Gets a value indicating whether this request returns full or summary properties.
-    /// </summary>
-    internal abstract bool SummaryPropertiesOnly { get; }
 }

@@ -34,15 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     Default constructor
-    /// </summary>
-    /// <param name="service">Exchange web service</param>
-    internal GetUserPhotoRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     email address accessor
     /// </summary>
     internal string EmailAddress { get; set; }
@@ -56,6 +47,15 @@ internal sealed class GetUserPhotoRequest : SimpleServiceRequestBase
     ///     EntityTag accessor
     /// </summary>
     internal string EntityTag { get; set; }
+
+    /// <summary>
+    ///     Default constructor
+    /// </summary>
+    /// <param name="service">Exchange web service</param>
+    internal GetUserPhotoRequest(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
     ///     Creates a NotFound instance of the result

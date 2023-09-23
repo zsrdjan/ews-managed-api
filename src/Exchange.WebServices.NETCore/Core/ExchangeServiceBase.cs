@@ -53,25 +53,17 @@ public abstract class ExchangeServiceBase
     /// </summary>
     private const string DefaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
 
-    private static readonly object LockObj = new();
-
     /// <summary>
     ///     Special HTTP status code that indicates that the account is locked.
     /// </summary>
     internal const HttpStatusCode AccountIsLocked = (HttpStatusCode)456;
 
+    private static readonly object LockObj = new();
+
     /// <summary>
     ///     The binary secret.
     /// </summary>
     private static byte[]? _binarySecret;
-
-
-    private ExchangeCredentials? _credentials;
-
-    private bool _traceEnabled;
-    private ITraceListener? _traceListener = new EwsTraceListener();
-    private string _userAgent = DefaultUserAgent;
-    private TimeZoneDefinition? _timeZoneDefinition;
 
     /// <summary>
     ///     Underlying HttpWebRequest.
@@ -82,6 +74,14 @@ public abstract class ExchangeServiceBase
     {
         AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
     };
+
+
+    private ExchangeCredentials? _credentials;
+    private TimeZoneDefinition? _timeZoneDefinition;
+
+    private bool _traceEnabled;
+    private ITraceListener? _traceListener = new EwsTraceListener();
+    private string _userAgent = DefaultUserAgent;
 
 
     /// <summary>
@@ -367,18 +367,6 @@ public abstract class ExchangeServiceBase
 
 
     /// <summary>
-    ///     Occurs when the http response headers of a server call is captured.
-    /// </summary>
-    public event ResponseHeadersCapturedHandler? OnResponseHeadersCaptured;
-
-    /// <summary>
-    ///     Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to
-    ///     Exchange.
-    /// </summary>
-    public event CustomXmlSerializationDelegate? OnSerializeCustomSoapHeaders;
-
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="ExchangeServiceBase" /> class.
     /// </summary>
     internal ExchangeServiceBase()
@@ -456,6 +444,18 @@ public abstract class ExchangeServiceBase
     }
 
 
+    /// <summary>
+    ///     Occurs when the http response headers of a server call is captured.
+    /// </summary>
+    public event ResponseHeadersCapturedHandler? OnResponseHeadersCaptured;
+
+    /// <summary>
+    ///     Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to
+    ///     Exchange.
+    /// </summary>
+    public event CustomXmlSerializationDelegate? OnSerializeCustomSoapHeaders;
+
+
     #region Event handlers
 
     /// <summary>
@@ -467,6 +467,18 @@ public abstract class ExchangeServiceBase
         EwsUtilities.Assert(writer != null, "ExchangeService.DoOnSerializeCustomSoapHeaders", "writer is null");
 
         OnSerializeCustomSoapHeaders?.Invoke(writer);
+    }
+
+    #endregion
+
+
+    #region Validation
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal virtual void Validate()
+    {
     }
 
     #endregion
@@ -824,18 +836,6 @@ public abstract class ExchangeServiceBase
     internal void SetCustomUserAgent(string userAgent)
     {
         _userAgent = userAgent;
-    }
-
-    #endregion
-
-
-    #region Validation
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    internal virtual void Validate()
-    {
     }
 
     #endregion

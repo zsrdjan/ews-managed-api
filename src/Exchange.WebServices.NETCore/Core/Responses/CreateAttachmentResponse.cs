@@ -36,6 +36,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class CreateAttachmentResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the attachment that was created.
+    /// </summary>
+    internal Attachment Attachment { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="CreateAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
@@ -61,9 +66,4 @@ public sealed class CreateAttachmentResponse : ServiceResponse
 
         reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.Attachments);
     }
-
-    /// <summary>
-    ///     Gets the attachment that was created.
-    /// </summary>
-    internal Attachment Attachment { get; }
 }

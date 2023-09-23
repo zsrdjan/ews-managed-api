@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetNonIndexableItemStatisticsResponse : ServiceResponse
 {
     /// <summary>
+    ///     List of non indexable statistic
+    /// </summary>
+    public List<NonIndexableItemStatistic> NonIndexableStatistics { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetNonIndexableItemStatisticsResponse" /> class.
     /// </summary>
     internal GetNonIndexableItemStatisticsResponse()
@@ -50,9 +55,4 @@ public sealed class GetNonIndexableItemStatisticsResponse : ServiceResponse
 
         NonIndexableStatistics = NonIndexableItemStatistic.LoadFromXml(reader);
     }
-
-    /// <summary>
-    ///     List of non indexable statistic
-    /// </summary>
-    public List<NonIndexableItemStatistic> NonIndexableStatistics { get; internal set; }
 }

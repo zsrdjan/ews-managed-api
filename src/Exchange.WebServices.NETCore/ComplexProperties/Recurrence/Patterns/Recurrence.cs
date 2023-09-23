@@ -33,9 +33,70 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public abstract partial class Recurrence : ComplexProperty
 {
-    private DateTime? _startDate;
-    private int? _numberOfOccurrences;
     private DateTime? _endDate;
+    private int? _numberOfOccurrences;
+    private DateTime? _startDate;
+
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal abstract string XmlElementName { get; }
+
+    /// <summary>
+    ///     Gets a value indicating whether this instance is regeneration pattern.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if this instance is regeneration pattern; otherwise, <c>false</c>.
+    /// </value>
+    internal virtual bool IsRegenerationPattern => false;
+
+    /// <summary>
+    ///     Gets or sets the date and time when the recurrence start.
+    /// </summary>
+    public DateTime StartDate
+    {
+        get => GetFieldValueOrThrowIfNull(_startDate, "StartDate");
+        set => _startDate = value;
+    }
+
+    /// <summary>
+    ///     Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
+    /// </summary>
+    public bool HasEnd => _numberOfOccurrences.HasValue || _endDate.HasValue;
+
+    /// <summary>
+    ///     Gets or sets the number of occurrences after which the recurrence ends. Setting NumberOfOccurrences resets EndDate.
+    /// </summary>
+    public int? NumberOfOccurrences
+    {
+        get => _numberOfOccurrences;
+
+        set
+        {
+            if (value < 1)
+            {
+                throw new ArgumentException(Strings.NumberOfOccurrencesMustBeGreaterThanZero);
+            }
+
+            SetFieldValue(ref _numberOfOccurrences, value);
+            _endDate = null;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the date after which the recurrence ends. Setting EndDate resets NumberOfOccurrences.
+    /// </summary>
+    public DateTime? EndDate
+    {
+        get => _endDate;
+
+        set
+        {
+            SetFieldValue(ref _endDate, value);
+            _numberOfOccurrences = null;
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Recurrence" /> class.
@@ -53,20 +114,6 @@ public abstract partial class Recurrence : ComplexProperty
     {
         _startDate = startDate;
     }
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <value>The name of the XML element.</value>
-    internal abstract string XmlElementName { get; }
-
-    /// <summary>
-    ///     Gets a value indicating whether this instance is regeneration pattern.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if this instance is regeneration pattern; otherwise, <c>false</c>.
-    /// </value>
-    internal virtual bool IsRegenerationPattern => false;
 
     /// <summary>
     ///     Write properties to XML.
@@ -125,20 +172,6 @@ public abstract partial class Recurrence : ComplexProperty
     }
 
     /// <summary>
-    ///     Gets or sets the date and time when the recurrence start.
-    /// </summary>
-    public DateTime StartDate
-    {
-        get => GetFieldValueOrThrowIfNull(_startDate, "StartDate");
-        set => _startDate = value;
-    }
-
-    /// <summary>
-    ///     Gets a value indicating whether the pattern has a fixed number of occurrences or an end date.
-    /// </summary>
-    public bool HasEnd => _numberOfOccurrences.HasValue || _endDate.HasValue;
-
-    /// <summary>
     ///     Sets up this recurrence so that it never ends. Calling NeverEnds is equivalent to setting both NumberOfOccurrences
     ///     and EndDate to null.
     /// </summary>
@@ -159,39 +192,6 @@ public abstract partial class Recurrence : ComplexProperty
         if (!_startDate.HasValue)
         {
             throw new ServiceValidationException(Strings.RecurrencePatternMustHaveStartDate);
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the number of occurrences after which the recurrence ends. Setting NumberOfOccurrences resets EndDate.
-    /// </summary>
-    public int? NumberOfOccurrences
-    {
-        get => _numberOfOccurrences;
-
-        set
-        {
-            if (value < 1)
-            {
-                throw new ArgumentException(Strings.NumberOfOccurrencesMustBeGreaterThanZero);
-            }
-
-            SetFieldValue(ref _numberOfOccurrences, value);
-            _endDate = null;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the date after which the recurrence ends. Setting EndDate resets NumberOfOccurrences.
-    /// </summary>
-    public DateTime? EndDate
-    {
-        get => _endDate;
-
-        set
-        {
-            SetFieldValue(ref _endDate, value);
-            _numberOfOccurrences = null;
         }
     }
 

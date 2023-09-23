@@ -34,12 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
 {
-    private readonly string _windowsLiveId;
-    private readonly string _password;
-    private Uri _windowsLiveUrl;
-    private bool _traceEnabled;
-    private ITraceListener _traceListener = new EwsTraceListener();
-
     // XML-Encryption Namespace.
     internal const string XmlEncNamespace = "http://www.w3.org/2001/04/xmlenc#";
 
@@ -56,23 +50,16 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     // The reqstatus we should receive from Windows Live.
     internal const string SuccessfulReqstatus = "0x0";
 
-    // The default Windows Live URL.
-    internal static readonly Uri DefaultWindowsLiveUrl = new Uri("https://login.live.com/rst2.srf");
-
     // The reference we use for creating the XML signature.
     internal const string XmlSignatureReference = "_EWSTKREF";
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="WindowsLiveCredentials" /> class.
-    /// </summary>
-    /// <param name="windowsLiveId">The user's WindowsLiveId.</param>
-    /// <param name="password">The password.</param>
-    public WindowsLiveCredentials(string windowsLiveId, string password)
-    {
-        _windowsLiveId = windowsLiveId ?? throw new ArgumentNullException(nameof(windowsLiveId));
-        _password = password ?? throw new ArgumentNullException(nameof(password));
-        _windowsLiveUrl = DefaultWindowsLiveUrl;
-    }
+    // The default Windows Live URL.
+    internal static readonly Uri DefaultWindowsLiveUrl = new Uri("https://login.live.com/rst2.srf");
+    private readonly string _password;
+    private readonly string _windowsLiveId;
+    private bool _traceEnabled;
+    private ITraceListener _traceListener = new EwsTraceListener();
+    private Uri _windowsLiveUrl;
 
     /// <summary>
     ///     Gets or sets a flag indicating whether tracing is enabled.
@@ -123,6 +110,24 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     }
 
     /// <summary>
+    ///     Gets or sets a value indicating whether this <see cref="WindowsLiveCredentials" /> has been authenticated.
+    /// </summary>
+    /// <value><c>true</c> if authenticated; otherwise, <c>false</c>.</value>
+    public bool IsAuthenticated { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="WindowsLiveCredentials" /> class.
+    /// </summary>
+    /// <param name="windowsLiveId">The user's WindowsLiveId.</param>
+    /// <param name="password">The password.</param>
+    public WindowsLiveCredentials(string windowsLiveId, string password)
+    {
+        _windowsLiveId = windowsLiveId ?? throw new ArgumentNullException(nameof(windowsLiveId));
+        _password = password ?? throw new ArgumentNullException(nameof(password));
+        _windowsLiveUrl = DefaultWindowsLiveUrl;
+    }
+
+    /// <summary>
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
@@ -137,12 +142,6 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             EwsUrl = request.RequestUri;
         }
     }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether this <see cref="WindowsLiveCredentials" /> has been authenticated.
-    /// </summary>
-    /// <value><c>true</c> if authenticated; otherwise, <c>false</c>.</value>
-    public bool IsAuthenticated { get; internal set; }
 
     /// <summary>
     ///     Function that sends the token request to Windows Live.

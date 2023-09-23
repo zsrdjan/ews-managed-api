@@ -34,6 +34,47 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ItemView : PagedView
 {
     /// <summary>
+    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
+    /// </summary>
+    public ItemTraversal Traversal { get; set; }
+
+    /// <summary>
+    ///     Gets the properties against which the returned items should be ordered.
+    /// </summary>
+    public OrderByCollection OrderBy { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    public ItemView(int pageSize)
+        : base(pageSize)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    public ItemView(int pageSize, int offset)
+        : base(pageSize, offset)
+    {
+        Offset = offset;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    /// <param name="offsetBasePoint">The base point of the offset.</param>
+    public ItemView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
+        : base(pageSize, offset, offsetBasePoint)
+    {
+    }
+
+    /// <summary>
     ///     Gets the name of the view XML element.
     /// </summary>
     /// <returns>XML element name.</returns>
@@ -80,45 +121,4 @@ public sealed class ItemView : PagedView
     {
         OrderBy.WriteToXml(writer, XmlElementNames.SortOrder);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    public ItemView(int pageSize)
-        : base(pageSize)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    public ItemView(int pageSize, int offset)
-        : base(pageSize, offset)
-    {
-        Offset = offset;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    /// <param name="offsetBasePoint">The base point of the offset.</param>
-    public ItemView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
-        : base(pageSize, offset, offsetBasePoint)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the search traversal mode. Defaults to ItemTraversal.Shallow.
-    /// </summary>
-    public ItemTraversal Traversal { get; set; }
-
-    /// <summary>
-    ///     Gets the properties against which the returned items should be ordered.
-    /// </summary>
-    public OrderByCollection OrderBy { get; } = new();
 }

@@ -44,13 +44,6 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
     private RuleErrorCollection _ruleErrors;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RuleOperationError" /> class.
-    /// </summary>
-    internal RuleOperationError()
-    {
-    }
-
-    /// <summary>
     ///     Gets the operation that resulted in an error.
     /// </summary>
     public RuleOperation Operation { get; private set; }
@@ -77,6 +70,42 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
             return _ruleErrors[index];
         }
     }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RuleOperationError" /> class.
+    /// </summary>
+    internal RuleOperationError()
+    {
+    }
+
+
+    #region IEnumerable<RuleError> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<RuleError> GetEnumerator()
+    {
+        return _ruleErrors.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _ruleErrors.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -119,32 +148,4 @@ public sealed class RuleOperationError : ComplexProperty, IEnumerable<RuleError>
 
         Operation = operations.Current;
     }
-
-
-    #region IEnumerable<RuleError> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<RuleError> GetEnumerator()
-    {
-        return _ruleErrors.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _ruleErrors.GetEnumerator();
-    }
-
-    #endregion
 }

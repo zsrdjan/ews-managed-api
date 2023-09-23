@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MeetingSuggestion : ExtractedEntity
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MeetingSuggestion" /> class.
-    /// </summary>
-    internal MeetingSuggestion()
-    {
-    }
-
-    /// <summary>
     ///     Gets the meeting suggestion Attendees.
     /// </summary>
     public EmailUserEntityCollection Attendees { get; internal set; }
@@ -69,6 +62,13 @@ public sealed class MeetingSuggestion : ExtractedEntity
     ///     Gets the meeting suggestion EndTime.
     /// </summary>
     public DateTime? EndTime { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MeetingSuggestion" /> class.
+    /// </summary>
+    internal MeetingSuggestion()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

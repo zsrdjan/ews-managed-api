@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class CreateFolderRequest : CreateRequest<Folder, ServiceResponse>
 {
     /// <summary>
+    ///     Gets or sets the folders.
+    /// </summary>
+    /// <value>The folders.</value>
+    public IEnumerable<Folder> Folders
+    {
+        get => Objects;
+        set => Objects = value;
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="CreateFolderRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -118,15 +128,5 @@ internal sealed class CreateFolderRequest : CreateRequest<Folder, ServiceRespons
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
     {
         return ExchangeVersion.Exchange2007_SP1;
-    }
-
-    /// <summary>
-    ///     Gets or sets the folders.
-    /// </summary>
-    /// <value>The folders.</value>
-    public IEnumerable<Folder> Folders
-    {
-        get => Objects;
-        set => Objects = value;
     }
 }

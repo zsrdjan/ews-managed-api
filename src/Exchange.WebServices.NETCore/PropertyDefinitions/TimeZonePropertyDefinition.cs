@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class TimeZonePropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(TimeZoneInfo);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="TimeZonePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -87,9 +92,4 @@ internal class TimeZonePropertyDefinition : PropertyDefinition
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(TimeZoneInfo);
 }

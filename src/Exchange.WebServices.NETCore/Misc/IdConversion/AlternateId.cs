@@ -39,6 +39,21 @@ public class AlternateId : AlternateIdBase
     internal const string SchemaTypeName = "AlternateIdType";
 
     /// <summary>
+    ///     Gets or sets the Id.
+    /// </summary>
+    public string UniqueId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the mailbox to which the Id belongs.
+    /// </summary>
+    public string Mailbox { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the type (primary or archive) mailbox to which the Id belongs.
+    /// </summary>
+    public bool IsArchive { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AlternateId" /> class.
     /// </summary>
     public AlternateId()
@@ -72,21 +87,6 @@ public class AlternateId : AlternateIdBase
         Mailbox = mailbox;
         IsArchive = isArchive;
     }
-
-    /// <summary>
-    ///     Gets or sets the Id.
-    /// </summary>
-    public string UniqueId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the mailbox to which the Id belongs.
-    /// </summary>
-    public string Mailbox { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the type (primary or archive) mailbox to which the Id belongs.
-    /// </summary>
-    public bool IsArchive { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.

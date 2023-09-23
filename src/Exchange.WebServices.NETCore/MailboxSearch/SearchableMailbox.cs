@@ -34,6 +34,41 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class SearchableMailbox
 {
     /// <summary>
+    ///     Guid
+    /// </summary>
+    public Guid Guid { get; set; }
+
+    /// <summary>
+    ///     Smtp address
+    /// </summary>
+    public string SmtpAddress { get; set; }
+
+    /// <summary>
+    ///     If true, this is an external mailbox
+    /// </summary>
+    public bool IsExternalMailbox { get; set; }
+
+    /// <summary>
+    ///     External email address for the mailbox
+    /// </summary>
+    public string ExternalEmailAddress { get; set; }
+
+    /// <summary>
+    ///     Display name
+    /// </summary>
+    public string DisplayName { get; set; }
+
+    /// <summary>
+    ///     Is a membership group
+    /// </summary>
+    public bool IsMembershipGroup { get; set; }
+
+    /// <summary>
+    ///     Reference id
+    /// </summary>
+    public string ReferenceId { get; set; }
+
+    /// <summary>
     ///     Constructor
     /// </summary>
     public SearchableMailbox()
@@ -105,39 +140,4 @@ public sealed class SearchableMailbox
 
         return searchableMailbox;
     }
-
-    /// <summary>
-    ///     Guid
-    /// </summary>
-    public Guid Guid { get; set; }
-
-    /// <summary>
-    ///     Smtp address
-    /// </summary>
-    public string SmtpAddress { get; set; }
-
-    /// <summary>
-    ///     If true, this is an external mailbox
-    /// </summary>
-    public bool IsExternalMailbox { get; set; }
-
-    /// <summary>
-    ///     External email address for the mailbox
-    /// </summary>
-    public string ExternalEmailAddress { get; set; }
-
-    /// <summary>
-    ///     Display name
-    /// </summary>
-    public string DisplayName { get; set; }
-
-    /// <summary>
-    ///     Is a membership group
-    /// </summary>
-    public bool IsMembershipGroup { get; set; }
-
-    /// <summary>
-    ///     Reference id
-    /// </summary>
-    public string ReferenceId { get; set; }
 }

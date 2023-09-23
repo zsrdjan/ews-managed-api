@@ -42,6 +42,26 @@ public abstract partial class Recurrence
         private DayOfWeek? _firstDayOfWeek;
 
         /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <value>The name of the XML element.</value>
+        internal override string XmlElementName => XmlElementNames.WeeklyRecurrence;
+
+        /// <summary>
+        ///     Gets the list of the days of the week when occurrences happen.
+        /// </summary>
+        public DayOfTheWeekCollection DaysOfTheWeek { get; } = new();
+
+        /// <summary>
+        ///     Gets or sets the first day of the week for this recurrence.
+        /// </summary>
+        public DayOfWeek FirstDayOfWeek
+        {
+            get => GetFieldValueOrThrowIfNull(_firstDayOfWeek, "FirstDayOfWeek");
+            set => SetFieldValue(ref _firstDayOfWeek, value);
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="WeeklyPattern" /> class.
         /// </summary>
         public WeeklyPattern()
@@ -69,12 +89,6 @@ public abstract partial class Recurrence
         {
             Changed();
         }
-
-        /// <summary>
-        ///     Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal override string XmlElementName => XmlElementNames.WeeklyRecurrence;
 
         /// <summary>
         ///     Write properties to XML.
@@ -160,20 +174,6 @@ public abstract partial class Recurrence
             return base.IsSame(otherRecurrence) &&
                    DaysOfTheWeek.ToString(",") == otherWeeklyPattern.DaysOfTheWeek.ToString(",") &&
                    _firstDayOfWeek == otherWeeklyPattern._firstDayOfWeek;
-        }
-
-        /// <summary>
-        ///     Gets the list of the days of the week when occurrences happen.
-        /// </summary>
-        public DayOfTheWeekCollection DaysOfTheWeek { get; } = new();
-
-        /// <summary>
-        ///     Gets or sets the first day of the week for this recurrence.
-        /// </summary>
-        public DayOfWeek FirstDayOfWeek
-        {
-            get => GetFieldValueOrThrowIfNull(_firstDayOfWeek, "FirstDayOfWeek");
-            set => SetFieldValue(ref _firstDayOfWeek, value);
         }
     }
 }

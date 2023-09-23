@@ -37,49 +37,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class ConversationSchema : ServiceObjectSchema
 {
     /// <summary>
-    ///     Field URIs for Item.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string ConversationId = "conversation:ConversationId";
-        public const string ConversationTopic = "conversation:ConversationTopic";
-        public const string UniqueRecipients = "conversation:UniqueRecipients";
-        public const string GlobalUniqueRecipients = "conversation:GlobalUniqueRecipients";
-        public const string UniqueUnreadSenders = "conversation:UniqueUnreadSenders";
-        public const string GlobalUniqueUnreadSenders = "conversation:GlobalUniqueUnreadSenders";
-        public const string UniqueSenders = "conversation:UniqueSenders";
-        public const string GlobalUniqueSenders = "conversation:GlobalUniqueSenders";
-        public const string LastDeliveryTime = "conversation:LastDeliveryTime";
-        public const string GlobalLastDeliveryTime = "conversation:GlobalLastDeliveryTime";
-        public const string Categories = "conversation:Categories";
-        public const string GlobalCategories = "conversation:GlobalCategories";
-        public const string FlagStatus = "conversation:FlagStatus";
-        public const string GlobalFlagStatus = "conversation:GlobalFlagStatus";
-        public const string HasAttachments = "conversation:HasAttachments";
-        public const string GlobalHasAttachments = "conversation:GlobalHasAttachments";
-        public const string MessageCount = "conversation:MessageCount";
-        public const string GlobalMessageCount = "conversation:GlobalMessageCount";
-        public const string UnreadCount = "conversation:UnreadCount";
-        public const string GlobalUnreadCount = "conversation:GlobalUnreadCount";
-        public const string Size = "conversation:Size";
-        public const string GlobalSize = "conversation:GlobalSize";
-        public const string ItemClasses = "conversation:ItemClasses";
-        public const string GlobalItemClasses = "conversation:GlobalItemClasses";
-        public const string Importance = "conversation:Importance";
-        public const string GlobalImportance = "conversation:GlobalImportance";
-        public const string ItemIds = "conversation:ItemIds";
-        public const string GlobalItemIds = "conversation:GlobalItemIds";
-        public const string LastModifiedTime = "conversation:LastModifiedTime";
-        public const string InstanceKey = "conversation:InstanceKey";
-        public const string Preview = "conversation:Preview";
-        public const string IconIndex = "conversation:IconIndex";
-        public const string GlobalIconIndex = "conversation:GlobalIconIndex";
-        public const string DraftItemIds = "conversation:DraftItemIds";
-        public const string HasIrm = "conversation:HasIrm";
-        public const string GlobalHasIrm = "conversation:GlobalHasIrm";
-    }
-
-    /// <summary>
     ///     Defines the Id property.
     /// </summary>
     public static readonly PropertyDefinition Id = new ComplexPropertyDefinition<ConversationId>(
@@ -457,6 +414,13 @@ public class ConversationSchema : ServiceObjectSchema
     internal static readonly ConversationSchema Instance = new();
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="ConversationSchema" /> class.
+    /// </summary>
+    internal ConversationSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -506,9 +470,45 @@ public class ConversationSchema : ServiceObjectSchema
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ConversationSchema" /> class.
+    ///     Field URIs for Item.
     /// </summary>
-    internal ConversationSchema()
+    private static class FieldUris
     {
+        public const string ConversationId = "conversation:ConversationId";
+        public const string ConversationTopic = "conversation:ConversationTopic";
+        public const string UniqueRecipients = "conversation:UniqueRecipients";
+        public const string GlobalUniqueRecipients = "conversation:GlobalUniqueRecipients";
+        public const string UniqueUnreadSenders = "conversation:UniqueUnreadSenders";
+        public const string GlobalUniqueUnreadSenders = "conversation:GlobalUniqueUnreadSenders";
+        public const string UniqueSenders = "conversation:UniqueSenders";
+        public const string GlobalUniqueSenders = "conversation:GlobalUniqueSenders";
+        public const string LastDeliveryTime = "conversation:LastDeliveryTime";
+        public const string GlobalLastDeliveryTime = "conversation:GlobalLastDeliveryTime";
+        public const string Categories = "conversation:Categories";
+        public const string GlobalCategories = "conversation:GlobalCategories";
+        public const string FlagStatus = "conversation:FlagStatus";
+        public const string GlobalFlagStatus = "conversation:GlobalFlagStatus";
+        public const string HasAttachments = "conversation:HasAttachments";
+        public const string GlobalHasAttachments = "conversation:GlobalHasAttachments";
+        public const string MessageCount = "conversation:MessageCount";
+        public const string GlobalMessageCount = "conversation:GlobalMessageCount";
+        public const string UnreadCount = "conversation:UnreadCount";
+        public const string GlobalUnreadCount = "conversation:GlobalUnreadCount";
+        public const string Size = "conversation:Size";
+        public const string GlobalSize = "conversation:GlobalSize";
+        public const string ItemClasses = "conversation:ItemClasses";
+        public const string GlobalItemClasses = "conversation:GlobalItemClasses";
+        public const string Importance = "conversation:Importance";
+        public const string GlobalImportance = "conversation:GlobalImportance";
+        public const string ItemIds = "conversation:ItemIds";
+        public const string GlobalItemIds = "conversation:GlobalItemIds";
+        public const string LastModifiedTime = "conversation:LastModifiedTime";
+        public const string InstanceKey = "conversation:InstanceKey";
+        public const string Preview = "conversation:Preview";
+        public const string IconIndex = "conversation:IconIndex";
+        public const string GlobalIconIndex = "conversation:GlobalIconIndex";
+        public const string DraftItemIds = "conversation:DraftItemIds";
+        public const string HasIrm = "conversation:HasIrm";
+        public const string GlobalHasIrm = "conversation:GlobalHasIrm";
     }
 }

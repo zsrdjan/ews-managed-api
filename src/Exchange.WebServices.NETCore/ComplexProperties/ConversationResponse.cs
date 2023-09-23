@@ -36,15 +36,6 @@ public sealed class ConversationResponse : ComplexProperty
     private readonly PropertySet _propertySet;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ConversationResponse" /> class.
-    /// </summary>
-    /// <param name="propertySet">The property set.</param>
-    internal ConversationResponse(PropertySet propertySet)
-    {
-        _propertySet = propertySet;
-    }
-
-    /// <summary>
     ///     Gets the conversation id.
     /// </summary>
     public ConversationId ConversationId { get; internal set; }
@@ -58,6 +49,15 @@ public sealed class ConversationResponse : ComplexProperty
     ///     Gets the conversation nodes.
     /// </summary>
     public ConversationNodeCollection ConversationNodes { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ConversationResponse" /> class.
+    /// </summary>
+    /// <param name="propertySet">The property set.</param>
+    internal ConversationResponse(PropertySet propertySet)
+    {
+        _propertySet = propertySet;
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ImpersonatedUserId
 {
     /// <summary>
+    ///     Gets or sets the type of the Id.
+    /// </summary>
+    public ConnectingIdType IdType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the user Id.
+    /// </summary>
+    public string Id { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ImpersonatedUserId" /> class.
     /// </summary>
     public ImpersonatedUserId()
@@ -77,14 +87,4 @@ public sealed class ImpersonatedUserId
         writer.WriteEndElement(); // ConnectingSID
         writer.WriteEndElement(); // ExchangeImpersonation
     }
-
-    /// <summary>
-    ///     Gets or sets the type of the Id.
-    /// </summary>
-    public ConnectingIdType IdType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the user Id.
-    /// </summary>
-    public string Id { get; set; }
 }

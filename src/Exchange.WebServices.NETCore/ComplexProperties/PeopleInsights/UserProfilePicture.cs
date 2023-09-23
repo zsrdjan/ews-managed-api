@@ -34,9 +34,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class UserProfilePicture : InsightValue
 {
     private string _blob;
+    private string _imageType;
     private string _photoSize;
     private string _url;
-    private string _imageType;
 
     /// <summary>
     ///     Gets the Blob

@@ -36,6 +36,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class VotingInformation : ComplexProperty
 {
     /// <summary>
+    ///     Gets the list of user options.
+    /// </summary>
+    public Collection<VotingOptionData> UserOptions { get; } = new();
+
+    /// <summary>
+    ///     Gets the voting response.
+    /// </summary>
+    public string VotingResponse { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="VotingInformation" /> class.
     /// </summary>
     internal VotingInformation()
@@ -81,14 +91,4 @@ public sealed class VotingInformation : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the list of user options.
-    /// </summary>
-    public Collection<VotingOptionData> UserOptions { get; } = new();
-
-    /// <summary>
-    ///     Gets the voting response.
-    /// </summary>
-    public string VotingResponse { get; private set; }
 }

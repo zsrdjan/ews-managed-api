@@ -34,14 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class EmailUserEntity : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EmailUserEntity" /> class.
-    /// </summary>
-    internal EmailUserEntity()
-    {
-        Namespace = XmlNamespace.Types;
-    }
-
-    /// <summary>
     ///     Gets the EmailUser entity Name.
     /// </summary>
     public string Name { get; internal set; }
@@ -50,6 +42,14 @@ public sealed class EmailUserEntity : ComplexProperty
     ///     Gets the EmailUser entity UserId.
     /// </summary>
     public string UserId { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EmailUserEntity" /> class.
+    /// </summary>
+    internal EmailUserEntity()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

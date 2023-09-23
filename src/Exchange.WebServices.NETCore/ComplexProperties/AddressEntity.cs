@@ -34,16 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class AddressEntity : ExtractedEntity
 {
     /// <summary>
+    ///     Gets the meeting suggestion Location.
+    /// </summary>
+    public string Address { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AddressEntity" /> class.
     /// </summary>
     internal AddressEntity()
     {
     }
-
-    /// <summary>
-    ///     Gets the meeting suggestion Location.
-    /// </summary>
-    public string Address { get; internal set; }
 
     /// <summary>
     ///     Tries to read element from XML.

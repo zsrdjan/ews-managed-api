@@ -49,14 +49,19 @@ internal abstract class ServiceRequestBase
 
     private const string ExplicitLogonUserHeaderName = "X-OWA-ExplicitLogonUser";
 
+    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
+    private const string XmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+    private const string ClientStatisticsRequestHeader = "X-ClientStatistics";
+
     private static readonly string[] RequestIdResponseHeaders =
     {
         "RequestId", "request-id",
     };
 
-    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
-    private const string XmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
-    private const string ClientStatisticsRequestHeader = "X-ClientStatistics";
+    /// <summary>
+    ///     Maintains the collection of client side statistics for requests already completed
+    /// </summary>
+    private static readonly List<string> ClientStatisticsCache = new();
 
 
     /// <summary>
@@ -70,9 +75,20 @@ internal abstract class ServiceRequestBase
     internal string AnchorMailbox { get; set; }
 
     /// <summary>
-    ///     Maintains the collection of client side statistics for requests already completed
+    ///     Gets the service.
     /// </summary>
-    private static readonly List<string> ClientStatisticsCache = new();
+    /// <value>The service.</value>
+    internal ExchangeService Service { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceRequestBase" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ServiceRequestBase(ExchangeService service)
+    {
+        Service = service ?? throw new ArgumentNullException(nameof(service));
+        ThrowIfNotSupportedByRequestedServerVersion();
+    }
 
     /// <summary>
     ///     Gets the response stream (may be wrapped with GZip/Deflate stream to decompress content)
@@ -118,6 +134,71 @@ internal abstract class ServiceRequestBase
         }
 
         return responseStream;
+    }
+
+
+    /// <summary>
+    ///     Validate request.
+    /// </summary>
+    internal virtual void Validate()
+    {
+        Service.Validate();
+    }
+
+    /// <summary>
+    ///     Writes XML body.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal void WriteBodyToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteStartElement(XmlNamespace.Messages, GetXmlElementName());
+
+        WriteAttributesToXml(writer);
+        WriteElementsToXml(writer);
+
+        writer.WriteEndElement(); // m:this.GetXmlElementName()
+    }
+
+    /// <summary>
+    ///     Writes XML attributes.
+    /// </summary>
+    /// <remarks>
+    ///     Subclass will override if it has XML attributes.
+    /// </remarks>
+    /// <param name="writer">The writer.</param>
+    internal virtual void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+    }
+
+    /// <summary>
+    ///     Allows the subclasses to add their own header information
+    /// </summary>
+    /// <param name="webHeaderCollection">The HTTP request headers</param>
+    internal virtual void AddHeaders(HttpRequestHeaders webHeaderCollection)
+    {
+        if (!string.IsNullOrEmpty(AnchorMailbox))
+        {
+            webHeaderCollection.TryAddWithoutValidation(AnchorMailboxHeaderName, AnchorMailbox);
+            webHeaderCollection.TryAddWithoutValidation(ExplicitLogonUserHeaderName, AnchorMailbox);
+        }
+    }
+
+    /// <summary>
+    ///     Throw exception if request is not supported in requested server version.
+    /// </summary>
+    /// <exception cref="ServiceVersionException">Raised if request requires a later version of Exchange.</exception>
+    internal void ThrowIfNotSupportedByRequestedServerVersion()
+    {
+        if (Service.RequestedServerVersion < GetMinimumRequiredServerVersion())
+        {
+            throw new ServiceVersionException(
+                string.Format(
+                    Strings.RequestIncompatibleWithRequestVersion,
+                    GetXmlElementName(),
+                    GetMinimumRequiredServerVersion()
+                )
+            );
+        }
     }
 
 
@@ -176,87 +257,6 @@ internal abstract class ServiceRequestBase
     internal virtual bool EmitTimeZoneHeader => false;
 
     #endregion
-
-
-    /// <summary>
-    ///     Validate request.
-    /// </summary>
-    internal virtual void Validate()
-    {
-        Service.Validate();
-    }
-
-    /// <summary>
-    ///     Writes XML body.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    internal void WriteBodyToXml(EwsServiceXmlWriter writer)
-    {
-        writer.WriteStartElement(XmlNamespace.Messages, GetXmlElementName());
-
-        WriteAttributesToXml(writer);
-        WriteElementsToXml(writer);
-
-        writer.WriteEndElement(); // m:this.GetXmlElementName()
-    }
-
-    /// <summary>
-    ///     Writes XML attributes.
-    /// </summary>
-    /// <remarks>
-    ///     Subclass will override if it has XML attributes.
-    /// </remarks>
-    /// <param name="writer">The writer.</param>
-    internal virtual void WriteAttributesToXml(EwsServiceXmlWriter writer)
-    {
-    }
-
-    /// <summary>
-    ///     Allows the subclasses to add their own header information
-    /// </summary>
-    /// <param name="webHeaderCollection">The HTTP request headers</param>
-    internal virtual void AddHeaders(HttpRequestHeaders webHeaderCollection)
-    {
-        if (!string.IsNullOrEmpty(AnchorMailbox))
-        {
-            webHeaderCollection.TryAddWithoutValidation(AnchorMailboxHeaderName, AnchorMailbox);
-            webHeaderCollection.TryAddWithoutValidation(ExplicitLogonUserHeaderName, AnchorMailbox);
-        }
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ServiceRequestBase" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal ServiceRequestBase(ExchangeService service)
-    {
-        Service = service ?? throw new ArgumentNullException(nameof(service));
-        ThrowIfNotSupportedByRequestedServerVersion();
-    }
-
-    /// <summary>
-    ///     Gets the service.
-    /// </summary>
-    /// <value>The service.</value>
-    internal ExchangeService Service { get; }
-
-    /// <summary>
-    ///     Throw exception if request is not supported in requested server version.
-    /// </summary>
-    /// <exception cref="ServiceVersionException">Raised if request requires a later version of Exchange.</exception>
-    internal void ThrowIfNotSupportedByRequestedServerVersion()
-    {
-        if (Service.RequestedServerVersion < GetMinimumRequiredServerVersion())
-        {
-            throw new ServiceVersionException(
-                string.Format(
-                    Strings.RequestIncompatibleWithRequestVersion,
-                    GetXmlElementName(),
-                    GetMinimumRequiredServerVersion()
-                )
-            );
-        }
-    }
 
 
     #region HttpWebRequest-based implementation

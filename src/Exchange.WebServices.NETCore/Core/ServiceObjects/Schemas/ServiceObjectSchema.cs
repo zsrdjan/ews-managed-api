@@ -109,11 +109,73 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     );
 
     /// <summary>
-    ///     Delegate that takes a property definition and matching static field info.
+    ///     Defines the ExtendedProperties property.
     /// </summary>
-    /// <param name="propertyDefinition">Property definition.</param>
-    /// <param name="fieldInfo">Field info.</param>
-    internal delegate void PropertyFieldInfoDelegate(PropertyDefinition propertyDefinition, FieldInfo fieldInfo);
+    public static readonly PropertyDefinition ExtendedProperties =
+        new ComplexPropertyDefinition<ExtendedPropertyCollection>(
+            XmlElementNames.ExtendedProperty,
+            PropertyDefinitionFlags.AutoInstantiateOnRead |
+            PropertyDefinitionFlags.ReuseInstance |
+            PropertyDefinitionFlags.CanSet |
+            PropertyDefinitionFlags.CanUpdate,
+            ExchangeVersion.Exchange2007_SP1,
+            () => new ExtendedPropertyCollection()
+        );
+
+    private readonly Dictionary<string, PropertyDefinition> _properties = new();
+    private readonly List<PropertyDefinition> _visibleProperties = new();
+
+    /// <summary>
+    ///     Gets the list of first class properties for this service object type.
+    /// </summary>
+    internal List<PropertyDefinition> FirstClassProperties { get; } = new();
+
+    /// <summary>
+    ///     Gets the list of first class summary properties for this service object type.
+    /// </summary>
+    internal List<PropertyDefinition> FirstClassSummaryProperties { get; } = new();
+
+    /// <summary>
+    ///     Gets the list of indexed properties for this service object type.
+    /// </summary>
+    internal List<IndexedPropertyDefinition> IndexedProperties { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceObjectSchema" /> class.
+    /// </summary>
+    internal ServiceObjectSchema()
+    {
+        RegisterProperties();
+    }
+
+
+    #region IEnumerable<SimplePropertyDefinition> Members
+
+    /// <summary>
+    ///     Obtains an enumerator for the properties of the schema.
+    /// </summary>
+    /// <returns>An IEnumerator instance.</returns>
+    public IEnumerator<PropertyDefinition> GetEnumerator()
+    {
+        return _visibleProperties.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Obtains an enumerator for the properties of the schema.
+    /// </summary>
+    /// <returns>An IEnumerator instance.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _visibleProperties.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Call delegate for each public static PropertyDefinition field in type.
@@ -200,14 +262,6 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ServiceObjectSchema" /> class.
-    /// </summary>
-    internal ServiceObjectSchema()
-    {
-        RegisterProperties();
-    }
-
-    /// <summary>
     ///     Finds the property definition.
     /// </summary>
     /// <param name="uri">The URI.</param>
@@ -233,23 +287,6 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
             }
         }
     }
-
-    /// <summary>
-    ///     Defines the ExtendedProperties property.
-    /// </summary>
-    public static readonly PropertyDefinition ExtendedProperties =
-        new ComplexPropertyDefinition<ExtendedPropertyCollection>(
-            XmlElementNames.ExtendedProperty,
-            PropertyDefinitionFlags.AutoInstantiateOnRead |
-            PropertyDefinitionFlags.ReuseInstance |
-            PropertyDefinitionFlags.CanSet |
-            PropertyDefinitionFlags.CanUpdate,
-            ExchangeVersion.Exchange2007_SP1,
-            () => new ExtendedPropertyCollection()
-        );
-
-    private readonly Dictionary<string, PropertyDefinition> _properties = new();
-    private readonly List<PropertyDefinition> _visibleProperties = new();
 
     /// <summary>
     ///     Registers a schema property.
@@ -314,21 +351,6 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
     }
 
     /// <summary>
-    ///     Gets the list of first class properties for this service object type.
-    /// </summary>
-    internal List<PropertyDefinition> FirstClassProperties { get; } = new();
-
-    /// <summary>
-    ///     Gets the list of first class summary properties for this service object type.
-    /// </summary>
-    internal List<PropertyDefinition> FirstClassSummaryProperties { get; } = new();
-
-    /// <summary>
-    ///     Gets the list of indexed properties for this service object type.
-    /// </summary>
-    internal List<IndexedPropertyDefinition> IndexedProperties { get; } = new();
-
-    /// <summary>
     ///     Tries to get property definition.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -342,31 +364,10 @@ public abstract class ServiceObjectSchema : IEnumerable<PropertyDefinition>
         return _properties.TryGetValue(xmlElementName, out propertyDefinition);
     }
 
-
-    #region IEnumerable<SimplePropertyDefinition> Members
-
     /// <summary>
-    ///     Obtains an enumerator for the properties of the schema.
+    ///     Delegate that takes a property definition and matching static field info.
     /// </summary>
-    /// <returns>An IEnumerator instance.</returns>
-    public IEnumerator<PropertyDefinition> GetEnumerator()
-    {
-        return _visibleProperties.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Obtains an enumerator for the properties of the schema.
-    /// </summary>
-    /// <returns>An IEnumerator instance.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _visibleProperties.GetEnumerator();
-    }
-
-    #endregion
+    /// <param name="propertyDefinition">Property definition.</param>
+    /// <param name="fieldInfo">Field info.</param>
+    internal delegate void PropertyFieldInfoDelegate(PropertyDefinition propertyDefinition, FieldInfo fieldInfo);
 }

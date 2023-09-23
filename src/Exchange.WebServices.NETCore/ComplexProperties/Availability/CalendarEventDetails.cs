@@ -34,6 +34,46 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class CalendarEventDetails : ComplexProperty
 {
     /// <summary>
+    ///     Gets the store Id of the calendar event.
+    /// </summary>
+    public string StoreId { get; private set; }
+
+    /// <summary>
+    ///     Gets the subject of the calendar event.
+    /// </summary>
+    public string Subject { get; private set; }
+
+    /// <summary>
+    ///     Gets the location of the calendar event.
+    /// </summary>
+    public string Location { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the calendar event is a meeting.
+    /// </summary>
+    public bool IsMeeting { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the calendar event is recurring.
+    /// </summary>
+    public bool IsRecurring { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the calendar event is an exception in a recurring series.
+    /// </summary>
+    public bool IsException { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the calendar event has a reminder set.
+    /// </summary>
+    public bool IsReminderSet { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the calendar event is private.
+    /// </summary>
+    public bool IsPrivate { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="CalendarEventDetails" /> class.
     /// </summary>
     internal CalendarEventDetails()
@@ -95,44 +135,4 @@ public sealed class CalendarEventDetails : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the store Id of the calendar event.
-    /// </summary>
-    public string StoreId { get; private set; }
-
-    /// <summary>
-    ///     Gets the subject of the calendar event.
-    /// </summary>
-    public string Subject { get; private set; }
-
-    /// <summary>
-    ///     Gets the location of the calendar event.
-    /// </summary>
-    public string Location { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the calendar event is a meeting.
-    /// </summary>
-    public bool IsMeeting { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the calendar event is recurring.
-    /// </summary>
-    public bool IsRecurring { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the calendar event is an exception in a recurring series.
-    /// </summary>
-    public bool IsException { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the calendar event has a reminder set.
-    /// </summary>
-    public bool IsReminderSet { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the calendar event is private.
-    /// </summary>
-    public bool IsPrivate { get; private set; }
 }

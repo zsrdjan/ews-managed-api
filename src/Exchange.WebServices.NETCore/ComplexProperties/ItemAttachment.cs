@@ -39,24 +39,6 @@ public class ItemAttachment : Attachment
     private Item? _item;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
-    /// </summary>
-    /// <param name="owner">The owner of the attachment.</param>
-    internal ItemAttachment(Item owner)
-        : base(owner)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal ItemAttachment(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Gets the item associated with the attachment.
     /// </summary>
     public Item? Item
@@ -79,6 +61,24 @@ public class ItemAttachment : Attachment
                 _item.OnChange += ItemChanged;
             }
         }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
+    /// </summary>
+    /// <param name="owner">The owner of the attachment.</param>
+    internal ItemAttachment(Item owner)
+        : base(owner)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemAttachment" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ItemAttachment(ExchangeService service)
+        : base(service)
+    {
     }
 
     /// <summary>

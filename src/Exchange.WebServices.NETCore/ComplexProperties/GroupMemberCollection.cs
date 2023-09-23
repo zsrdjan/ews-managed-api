@@ -47,6 +47,61 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     }
 
     /// <summary>
+    ///     Writes the update to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="ownerObject">The ews object.</param>
+    /// <param name="propertyDefinition">Property definition.</param>
+    /// <returns>True if property generated serialization.</returns>
+    bool ICustomUpdateSerializer.WriteSetUpdateToXml(
+        EwsServiceXmlWriter writer,
+        ServiceObject ownerObject,
+        PropertyDefinition propertyDefinition
+    )
+    {
+        if (_collectionIsCleared)
+        {
+            if (AddedItems.Count == 0)
+            {
+                // Delete the whole members collection
+                WriteDeleteMembersCollectionToXml(writer);
+            }
+            else
+            {
+                // The collection is cleared, so Set
+                WriteSetOrAppendMembersToXml(writer, AddedItems, true);
+            }
+        }
+        else
+        {
+            // The collection is not cleared, i.e. dl.Members.Clear() is not called.
+            // Append AddedItems.
+            WriteSetOrAppendMembersToXml(writer, AddedItems, false);
+
+            // Since member replacement is not supported by server
+            // Delete old ModifiedItems, then recreate new instead.
+            WriteDeleteMembersToXml(writer, ModifiedItems);
+            WriteSetOrAppendMembersToXml(writer, ModifiedItems, false);
+
+            // Delete RemovedItems.
+            WriteDeleteMembersToXml(writer, RemovedItems);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    ///     Writes the deletion update to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="ewsObject">The ews object.</param>
+    /// <returns>True if property generated serialization.</returns>
+    bool ICustomUpdateSerializer.WriteDeleteUpdateToXml(EwsServiceXmlWriter writer, ServiceObject ewsObject)
+    {
+        return false;
+    }
+
+    /// <summary>
     ///     Finds the member with the specified key in the collection.
     ///     Members that have not yet been saved do not have a key.
     /// </summary>
@@ -243,61 +298,6 @@ public sealed class GroupMemberCollection : ComplexPropertyCollection<GroupMembe
     public bool Remove(GroupMember member)
     {
         return InternalRemove(member);
-    }
-
-    /// <summary>
-    ///     Writes the update to XML.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="ownerObject">The ews object.</param>
-    /// <param name="propertyDefinition">Property definition.</param>
-    /// <returns>True if property generated serialization.</returns>
-    bool ICustomUpdateSerializer.WriteSetUpdateToXml(
-        EwsServiceXmlWriter writer,
-        ServiceObject ownerObject,
-        PropertyDefinition propertyDefinition
-    )
-    {
-        if (_collectionIsCleared)
-        {
-            if (AddedItems.Count == 0)
-            {
-                // Delete the whole members collection
-                WriteDeleteMembersCollectionToXml(writer);
-            }
-            else
-            {
-                // The collection is cleared, so Set
-                WriteSetOrAppendMembersToXml(writer, AddedItems, true);
-            }
-        }
-        else
-        {
-            // The collection is not cleared, i.e. dl.Members.Clear() is not called.
-            // Append AddedItems.
-            WriteSetOrAppendMembersToXml(writer, AddedItems, false);
-
-            // Since member replacement is not supported by server
-            // Delete old ModifiedItems, then recreate new instead.
-            WriteDeleteMembersToXml(writer, ModifiedItems);
-            WriteSetOrAppendMembersToXml(writer, ModifiedItems, false);
-
-            // Delete RemovedItems.
-            WriteDeleteMembersToXml(writer, RemovedItems);
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    ///     Writes the deletion update to XML.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="ewsObject">The ews object.</param>
-    /// <returns>True if property generated serialization.</returns>
-    bool ICustomUpdateSerializer.WriteDeleteUpdateToXml(EwsServiceXmlWriter writer, ServiceObject ewsObject)
-    {
-        return false;
     }
 
     /// <summary>

@@ -37,6 +37,24 @@ public sealed class InternetMessageHeader : ComplexProperty
     private string _value;
 
     /// <summary>
+    ///     The name of the header.
+    /// </summary>
+    public string Name
+    {
+        get => _name;
+        set => SetFieldValue(ref _name, value);
+    }
+
+    /// <summary>
+    ///     The value of the header.
+    /// </summary>
+    public string Value
+    {
+        get => _value;
+        set => SetFieldValue(ref _value, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="InternetMessageHeader" /> class.
     /// </summary>
     internal InternetMessageHeader()
@@ -86,23 +104,5 @@ public sealed class InternetMessageHeader : ComplexProperty
     public override string ToString()
     {
         return $"{Name}={Value}";
-    }
-
-    /// <summary>
-    ///     The name of the header.
-    /// </summary>
-    public string Name
-    {
-        get => _name;
-        set => SetFieldValue(ref _name, value);
-    }
-
-    /// <summary>
-    ///     The value of the header.
-    /// </summary>
-    public string Value
-    {
-        get => _value;
-        set => SetFieldValue(ref _value, value);
     }
 }

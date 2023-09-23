@@ -37,6 +37,24 @@ public class MessageBody : ComplexProperty
     private string _text;
 
     /// <summary>
+    ///     Gets or sets the type of the message body's text.
+    /// </summary>
+    public BodyType BodyType
+    {
+        get => _bodyType;
+        set => SetFieldValue(ref _bodyType, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the text of the message body.
+    /// </summary>
+    public string? Text
+    {
+        get => _text;
+        set => SetFieldValue(ref _text, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MessageBody" /> class.
     /// </summary>
     public MessageBody()
@@ -123,24 +141,6 @@ public class MessageBody : ComplexProperty
         {
             writer.WriteValue(Text, XmlElementNames.Body);
         }
-    }
-
-    /// <summary>
-    ///     Gets or sets the type of the message body's text.
-    /// </summary>
-    public BodyType BodyType
-    {
-        get => _bodyType;
-        set => SetFieldValue(ref _bodyType, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the text of the message body.
-    /// </summary>
-    public string? Text
-    {
-        get => _text;
-        set => SetFieldValue(ref _text, value);
     }
 
 

@@ -38,6 +38,11 @@ internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
     private readonly KeyInfoNode _keyInfoNode;
 
     /// <summary>
+    ///     Gets the flag indicating whether any sign action need taken.
+    /// </summary>
+    internal override bool NeedSignature => true;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PartnerTokenCredentials" /> class.
     /// </summary>
     /// <param name="securityToken">The token.</param>
@@ -76,11 +81,6 @@ internal sealed class PartnerTokenCredentials : WSSecurityBasedCredentials
     {
         return new Uri(GetUriWithoutSuffix(url) + WsSecuritySymmetricKeyPathSuffix);
     }
-
-    /// <summary>
-    ///     Gets the flag indicating whether any sign action need taken.
-    /// </summary>
-    internal override bool NeedSignature => true;
 
     /// <summary>
     ///     Add the signature element to the memory stream.

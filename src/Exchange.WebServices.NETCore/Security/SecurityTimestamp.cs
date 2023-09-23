@@ -34,20 +34,28 @@ internal sealed class SecurityTimestamp
     //
     internal const string DefaultTimestampValidityDurationString = "00:05:00";
 
+    internal const string DefaultFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
+
     internal static readonly TimeSpan DefaultTimestampValidityDuration =
         TimeSpan.Parse(DefaultTimestampValidityDurationString);
 
-    internal const string DefaultFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
-
     //                            012345678901234567890123
     internal static readonly TimeSpan DefaultTimeToLive = DefaultTimestampValidityDuration;
-    private readonly string _id;
-    private readonly string _digestAlgorithm;
     private readonly byte[] _digest;
+    private readonly string _digestAlgorithm;
+    private readonly string _id;
     private char[]? _computedCreationTimeUtc;
     private char[]? _computedExpiryTimeUtc;
     private DateTime _creationTimeUtc;
     private DateTime _expiryTimeUtc;
+
+    public DateTime CreationTimeUtc => _creationTimeUtc;
+
+    public DateTime ExpiryTimeUtc => _expiryTimeUtc;
+
+    public string Id => _id;
+
+    public string DigestAlgorithm => _digestAlgorithm;
 
     internal SecurityTimestamp(
         DateTime creationTimeUtc,
@@ -80,14 +88,6 @@ internal sealed class SecurityTimestamp
         _digestAlgorithm = digestAlgorithm;
         _digest = digest;
     }
-
-    public DateTime CreationTimeUtc => _creationTimeUtc;
-
-    public DateTime ExpiryTimeUtc => _expiryTimeUtc;
-
-    public string Id => _id;
-
-    public string DigestAlgorithm => _digestAlgorithm;
 
     internal byte[] GetDigest()
     {

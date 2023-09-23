@@ -31,24 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetUserAvailabilityRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetUserAvailabilityRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <returns>XML element name,</returns>
-    internal override string GetXmlElementName()
-    {
-        return XmlElementNames.GetUserAvailabilityRequest;
-    }
-
-    /// <summary>
     ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value><c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.</value>
@@ -65,6 +47,45 @@ internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
     /// </summary>
     internal bool IsSuggestionsViewRequested =>
         RequestedData == AvailabilityData.Suggestions || RequestedData == AvailabilityData.FreeBusyAndSuggestions;
+
+    /// <summary>
+    ///     Gets or sets the attendees.
+    /// </summary>
+    public IEnumerable<AttendeeInfo> Attendees { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the time window in which to retrieve user availability information.
+    /// </summary>
+    public TimeWindow TimeWindow { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating what data is requested (free/busy and/or suggestions).
+    /// </summary>
+    public AvailabilityData RequestedData { get; set; } = AvailabilityData.FreeBusyAndSuggestions;
+
+    /// <summary>
+    ///     Gets an object that allows you to specify options controlling the information returned
+    ///     by the GetUserAvailability request.
+    /// </summary>
+    public AvailabilityOptions Options { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserAvailabilityRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetUserAvailabilityRequest(ExchangeService service)
+        : base(service)
+    {
+    }
+
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <returns>XML element name,</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.GetUserAvailabilityRequest;
+    }
 
     /// <summary>
     ///     Validate request.
@@ -183,25 +204,4 @@ internal sealed class GetUserAvailabilityRequest : SimpleServiceRequestBase
     {
         return await InternalExecuteAsync<GetUserAvailabilityResults>(token).ConfigureAwait(false);
     }
-
-    /// <summary>
-    ///     Gets or sets the attendees.
-    /// </summary>
-    public IEnumerable<AttendeeInfo> Attendees { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the time window in which to retrieve user availability information.
-    /// </summary>
-    public TimeWindow TimeWindow { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating what data is requested (free/busy and/or suggestions).
-    /// </summary>
-    public AvailabilityData RequestedData { get; set; } = AvailabilityData.FreeBusyAndSuggestions;
-
-    /// <summary>
-    ///     Gets an object that allows you to specify options controlling the information returned
-    ///     by the GetUserAvailability request.
-    /// </summary>
-    public AvailabilityOptions Options { get; set; }
 }

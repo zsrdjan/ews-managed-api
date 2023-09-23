@@ -34,6 +34,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class OccurrenceInfo : ComplexProperty
 {
     /// <summary>
+    ///     Gets the Id of the occurrence.
+    /// </summary>
+    public ItemId ItemId { get; private set; }
+
+    /// <summary>
+    ///     Gets the start date and time of the occurrence.
+    /// </summary>
+    public DateTime Start { get; private set; }
+
+    /// <summary>
+    ///     Gets the end date and time of the occurrence.
+    /// </summary>
+    public DateTime End { get; private set; }
+
+    /// <summary>
+    ///     Gets the original start date and time of the occurrence.
+    /// </summary>
+    public DateTime OriginalStart { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="OccurrenceInfo" /> class.
     /// </summary>
     internal OccurrenceInfo()
@@ -76,24 +96,4 @@ public sealed class OccurrenceInfo : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the Id of the occurrence.
-    /// </summary>
-    public ItemId ItemId { get; private set; }
-
-    /// <summary>
-    ///     Gets the start date and time of the occurrence.
-    /// </summary>
-    public DateTime Start { get; private set; }
-
-    /// <summary>
-    ///     Gets the end date and time of the occurrence.
-    /// </summary>
-    public DateTime End { get; private set; }
-
-    /// <summary>
-    ///     Gets the original start date and time of the occurrence.
-    /// </summary>
-    public DateTime OriginalStart { get; private set; }
 }

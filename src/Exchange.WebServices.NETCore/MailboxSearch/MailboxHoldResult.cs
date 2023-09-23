@@ -34,6 +34,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MailboxHoldStatus
 {
     /// <summary>
+    ///     Mailbox
+    /// </summary>
+    public string Mailbox { get; set; }
+
+    /// <summary>
+    ///     Hold status
+    /// </summary>
+    public HoldStatus Status { get; set; }
+
+    /// <summary>
+    ///     Additional info
+    /// </summary>
+    public string AdditionalInfo { get; set; }
+
+    /// <summary>
     ///     Constructor
     /// </summary>
     public MailboxHoldStatus()
@@ -52,21 +67,6 @@ public sealed class MailboxHoldStatus
         Status = status;
         AdditionalInfo = additionalInfo;
     }
-
-    /// <summary>
-    ///     Mailbox
-    /// </summary>
-    public string Mailbox { get; set; }
-
-    /// <summary>
-    ///     Hold status
-    /// </summary>
-    public HoldStatus Status { get; set; }
-
-    /// <summary>
-    ///     Additional info
-    /// </summary>
-    public string AdditionalInfo { get; set; }
 }
 
 /// <summary>
@@ -75,6 +75,21 @@ public sealed class MailboxHoldStatus
 [PublicAPI]
 public sealed class MailboxHoldResult
 {
+    /// <summary>
+    ///     Hold id
+    /// </summary>
+    public string? HoldId { get; set; }
+
+    /// <summary>
+    ///     Query
+    /// </summary>
+    public string? Query { get; set; }
+
+    /// <summary>
+    ///     Collection of mailbox status
+    /// </summary>
+    public MailboxHoldStatus[]? Statuses { get; set; }
+
     /// <summary>
     ///     Load from xml
     /// </summary>
@@ -119,19 +134,4 @@ public sealed class MailboxHoldResult
 
         return holdResult;
     }
-
-    /// <summary>
-    ///     Hold id
-    /// </summary>
-    public string? HoldId { get; set; }
-
-    /// <summary>
-    ///     Query
-    /// </summary>
-    public string? Query { get; set; }
-
-    /// <summary>
-    ///     Collection of mailbox status
-    /// </summary>
-    public MailboxHoldStatus[]? Statuses { get; set; }
 }

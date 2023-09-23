@@ -38,13 +38,6 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     where TItem : Item
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GroupedFindItemsResults&lt;TItem&gt;" /> class.
-    /// </summary>
-    internal GroupedFindItemsResults()
-    {
-    }
-
-    /// <summary>
     ///     Gets the total number of items matching the search criteria available in the searched folder.
     /// </summary>
     public int TotalCount { get; internal set; }
@@ -64,6 +57,13 @@ public sealed class GroupedFindItemsResults<TItem> : IEnumerable<ItemGroup<TItem
     ///     Gets the item groups returned by the search operation.
     /// </summary>
     public Collection<ItemGroup<TItem>> ItemGroups { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GroupedFindItemsResults&lt;TItem&gt;" /> class.
+    /// </summary>
+    internal GroupedFindItemsResults()
+    {
+    }
 
 
     #region IEnumerable<ItemGroup<TItem>> Members

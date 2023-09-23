@@ -36,6 +36,52 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
     private TimeSpan _timeOfDay;
 
     /// <summary>
+    ///     Gets if current time presents DST transition time
+    /// </summary>
+    internal bool HasTransitionTime => Month >= 1 && Month <= 12;
+
+    /// <summary>
+    ///     Gets or sets the delta.
+    /// </summary>
+    internal TimeSpan Delta
+    {
+        get => _delta;
+        set => _delta = value;
+    }
+
+    /// <summary>
+    ///     Gets or sets the time of day.
+    /// </summary>
+    internal TimeSpan TimeOfDay
+    {
+        get => _timeOfDay;
+        set => _timeOfDay = value;
+    }
+
+    /// <summary>
+    ///     Gets or sets a value that represents:
+    ///     - The day of the month when Year is non zero,
+    ///     - The index of the week in the month if Year is equal to zero.
+    /// </summary>
+    internal int DayOrder { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the month.
+    /// </summary>
+    internal int Month { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the day of the week.
+    /// </summary>
+    internal DayOfTheWeek DayOfTheWeek { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the year. If Year is 0, the time change occurs every year according to a recurring pattern;
+    ///     otherwise, the time change occurs at the date specified by Day, Month, Year.
+    /// </summary>
+    internal int Year { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="LegacyAvailabilityTimeZoneTime" /> class.
     /// </summary>
     internal LegacyAvailabilityTimeZoneTime()
@@ -171,50 +217,4 @@ internal sealed class LegacyAvailabilityTimeZoneTime : ComplexProperty
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Year, Year);
         }
     }
-
-    /// <summary>
-    ///     Gets if current time presents DST transition time
-    /// </summary>
-    internal bool HasTransitionTime => Month >= 1 && Month <= 12;
-
-    /// <summary>
-    ///     Gets or sets the delta.
-    /// </summary>
-    internal TimeSpan Delta
-    {
-        get => _delta;
-        set => _delta = value;
-    }
-
-    /// <summary>
-    ///     Gets or sets the time of day.
-    /// </summary>
-    internal TimeSpan TimeOfDay
-    {
-        get => _timeOfDay;
-        set => _timeOfDay = value;
-    }
-
-    /// <summary>
-    ///     Gets or sets a value that represents:
-    ///     - The day of the month when Year is non zero,
-    ///     - The index of the week in the month if Year is equal to zero.
-    /// </summary>
-    internal int DayOrder { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the month.
-    /// </summary>
-    internal int Month { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the day of the week.
-    /// </summary>
-    internal DayOfTheWeek DayOfTheWeek { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the year. If Year is 0, the time change occurs every year according to a recurring pattern;
-    ///     otherwise, the time change occurs at the date specified by Day, Month, Year.
-    /// </summary>
-    internal int Year { get; set; }
 }

@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class AlternateIdBase : ISelfValidate
 {
     /// <summary>
+    ///     Gets or sets the format in which the Id in expressed.
+    /// </summary>
+    public IdFormat Format { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AlternateIdBase" /> class.
     /// </summary>
     internal AlternateIdBase()
@@ -50,10 +55,19 @@ public abstract class AlternateIdBase : ISelfValidate
         Format = format;
     }
 
+
+    #region ISelfValidate Members
+
     /// <summary>
-    ///     Gets or sets the format in which the Id in expressed.
+    ///     Validates this instance.
     /// </summary>
-    public IdFormat Format { get; set; }
+    void ISelfValidate.Validate()
+    {
+        InternalValidate();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Gets the name of the XML element.
@@ -99,17 +113,4 @@ public abstract class AlternateIdBase : ISelfValidate
     {
         // nothing to do.
     }
-
-
-    #region ISelfValidate Members
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    void ISelfValidate.Validate()
-    {
-        InternalValidate();
-    }
-
-    #endregion
 }

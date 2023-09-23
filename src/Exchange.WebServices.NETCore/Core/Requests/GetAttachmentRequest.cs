@@ -31,6 +31,41 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAttachmentResponse>
 {
     /// <summary>
+    ///     Gets the attachments.
+    /// </summary>
+    /// <value>The attachments.</value>
+    public List<Attachment> Attachments { get; } = new();
+
+    /// <summary>
+    ///     Gets the attachment ids.
+    /// </summary>
+    /// <value>The attachment ids.</value>
+    public List<string> AttachmentIds { get; } = new();
+
+    /// <summary>
+    ///     Gets the additional properties.
+    /// </summary>
+    /// <value>The additional properties.</value>
+    public List<PropertyDefinitionBase> AdditionalProperties { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the type of the body.
+    /// </summary>
+    /// <value>The type of the body.</value>
+    public BodyType? BodyType { get; set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.
+    /// </value>
+    internal override bool EmitTimeZoneHeader =>
+        // we currently do not emit "AttachmentResponseShapeType.IncludeMimeContent"
+        //
+        AdditionalProperties.Contains(ItemSchema.MimeContent);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetAttachmentRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -161,41 +196,6 @@ internal sealed class GetAttachmentRequest : MultiResponseServiceRequest<GetAtta
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the attachments.
-    /// </summary>
-    /// <value>The attachments.</value>
-    public List<Attachment> Attachments { get; } = new();
-
-    /// <summary>
-    ///     Gets the attachment ids.
-    /// </summary>
-    /// <value>The attachment ids.</value>
-    public List<string> AttachmentIds { get; } = new();
-
-    /// <summary>
-    ///     Gets the additional properties.
-    /// </summary>
-    /// <value>The additional properties.</value>
-    public List<PropertyDefinitionBase> AdditionalProperties { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the type of the body.
-    /// </summary>
-    /// <value>The type of the body.</value>
-    public BodyType? BodyType { get; set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if the time zone should be emitted; otherwise, <c>false</c>.
-    /// </value>
-    internal override bool EmitTimeZoneHeader =>
-        // we currently do not emit "AttachmentResponseShapeType.IncludeMimeContent"
-        //
-        AdditionalProperties.Contains(ItemSchema.MimeContent);
 
     /// <summary>
     ///     Writes attachment id elements.

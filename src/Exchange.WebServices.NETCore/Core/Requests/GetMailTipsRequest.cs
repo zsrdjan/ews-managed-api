@@ -64,6 +64,16 @@ public enum MailTipsRequested
 /// </summary>
 internal sealed class GetMailTipsRequest : SimpleServiceRequestBase
 {
+    /// <summary>Gets or sets the attendees.</summary>
+    public EmailAddress SendingAs { get; set; }
+
+    /// <summary>Gets or sets the requested MailTips.</summary>
+    public MailTipsRequested MailTipsRequested { get; set; }
+
+    /// <summary>
+    /// Gets or sets who are the recipients/targets whose MailTips we are interested in.
+    /// </summary>
+    public Mailbox[] Recipients { get; set; }
     //https://msdn.microsoft.com/en-us/library/office/dd877060(v=exchg.140).aspx [GetMailTips Operation][2010]
     //https://msdn.microsoft.com/en-us/library/office/dd877060(v=exchg.150).aspx [GetMailTips Operation][2013]
 
@@ -132,15 +142,4 @@ internal sealed class GetMailTipsRequest : SimpleServiceRequestBase
     {
         return await InternalExecuteAsync<GetMailTipsResults>(token).ConfigureAwait(false);
     }
-
-    /// <summary>Gets or sets the attendees.</summary>
-    public EmailAddress SendingAs { get; set; }
-
-    /// <summary>Gets or sets the requested MailTips.</summary>
-    public MailTipsRequested MailTipsRequested { get; set; }
-
-    /// <summary>
-    /// Gets or sets who are the recipients/targets whose MailTips we are interested in.
-    /// </summary>
-    public Mailbox[] Recipients { get; set; }
 }

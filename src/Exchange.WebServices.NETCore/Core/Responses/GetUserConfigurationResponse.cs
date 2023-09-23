@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetUserConfigurationResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the user configuration that was created.
+    /// </summary>
+    public UserConfiguration UserConfiguration { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserConfigurationResponse" /> class.
     /// </summary>
     /// <param name="userConfiguration">The userConfiguration.</param>
@@ -55,9 +60,4 @@ internal sealed class GetUserConfigurationResponse : ServiceResponse
 
         UserConfiguration.LoadFromXml(reader);
     }
-
-    /// <summary>
-    ///     Gets the user configuration that was created.
-    /// </summary>
-    public UserConfiguration UserConfiguration { get; }
 }

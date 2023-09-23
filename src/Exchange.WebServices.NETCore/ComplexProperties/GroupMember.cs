@@ -40,6 +40,39 @@ public class GroupMember : ComplexProperty
     private EmailAddress? _addressInformation;
 
     /// <summary>
+    ///     Gets the key of the member.
+    /// </summary>
+    public string? Key { get; private set; }
+
+    /// <summary>
+    ///     Gets the address information of the member.
+    /// </summary>
+    public EmailAddress? AddressInformation
+    {
+        get => _addressInformation;
+
+        internal set
+        {
+            if (_addressInformation != null)
+            {
+                _addressInformation.OnChange -= AddressInformationChanged;
+            }
+
+            _addressInformation = value;
+
+            if (_addressInformation != null)
+            {
+                _addressInformation.OnChange += AddressInformationChanged;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets the status of the member.
+    /// </summary>
+    public MemberStatus Status { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GroupMember" /> class.
     /// </summary>
     public GroupMember()
@@ -169,39 +202,6 @@ public class GroupMember : ComplexProperty
 
         _addressInformation.Id = contact.Id;
     }
-
-    /// <summary>
-    ///     Gets the key of the member.
-    /// </summary>
-    public string? Key { get; private set; }
-
-    /// <summary>
-    ///     Gets the address information of the member.
-    /// </summary>
-    public EmailAddress? AddressInformation
-    {
-        get => _addressInformation;
-
-        internal set
-        {
-            if (_addressInformation != null)
-            {
-                _addressInformation.OnChange -= AddressInformationChanged;
-            }
-
-            _addressInformation = value;
-
-            if (_addressInformation != null)
-            {
-                _addressInformation.OnChange += AddressInformationChanged;
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets the status of the member.
-    /// </summary>
-    public MemberStatus Status { get; private set; }
 
     /// <summary>
     ///     Reads the member Key attribute from XML.

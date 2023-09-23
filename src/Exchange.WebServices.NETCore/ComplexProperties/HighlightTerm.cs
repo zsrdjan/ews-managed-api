@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class HighlightTerm : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="HighlightTerm" /> class.
-    /// </summary>
-    internal HighlightTerm()
-    {
-    }
-
-    /// <summary>
     ///     Gets term scope.
     /// </summary>
     public string Scope { get; private set; }
@@ -49,6 +42,13 @@ public sealed class HighlightTerm : ComplexProperty
     ///     Gets term value.
     /// </summary>
     public string Value { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="HighlightTerm" /> class.
+    /// </summary>
+    internal HighlightTerm()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

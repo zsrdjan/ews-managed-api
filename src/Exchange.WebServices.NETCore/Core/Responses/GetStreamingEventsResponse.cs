@@ -33,20 +33,15 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
     private readonly HangingServiceRequestBase _request;
 
     /// <summary>
-    ///     Enumeration of ConnectionStatus that can be returned by the server.
+    ///     Gets event results from subscription.
     /// </summary>
-    private enum ConnectionStatus
-    {
-        /// <summary>
-        ///     Simple heartbeat
-        /// </summary>
-        Ok,
+    internal GetStreamingEventsResults Results { get; } = new();
 
-        /// <summary>
-        ///     Server is closing the connection.
-        /// </summary>
-        Closed,
-    }
+    /// <summary>
+    ///     Gets the error subscription ids.
+    /// </summary>
+    /// <value>The error subscription ids.</value>
+    internal List<string>? ErrorSubscriptionIds { get; private set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetStreamingEventsResponse" /> class.
@@ -118,13 +113,18 @@ internal sealed class GetStreamingEventsResponse : ServiceResponse
     }
 
     /// <summary>
-    ///     Gets event results from subscription.
+    ///     Enumeration of ConnectionStatus that can be returned by the server.
     /// </summary>
-    internal GetStreamingEventsResults Results { get; } = new();
+    private enum ConnectionStatus
+    {
+        /// <summary>
+        ///     Simple heartbeat
+        /// </summary>
+        Ok,
 
-    /// <summary>
-    ///     Gets the error subscription ids.
-    /// </summary>
-    /// <value>The error subscription ids.</value>
-    internal List<string>? ErrorSubscriptionIds { get; private set; }
+        /// <summary>
+        ///     Server is closing the connection.
+        /// </summary>
+        Closed,
+    }
 }

@@ -47,6 +47,41 @@ internal static partial class EwsUtilities
     /// <value>The build version.</value>
     internal const string BuildVersion = "15.0.913.15";
 
+
+    internal const string XsFalse = "false";
+    internal const string XsTrue = "true";
+
+    internal const string EwsTypesNamespacePrefix = "t";
+    internal const string EwsMessagesNamespacePrefix = "m";
+    internal const string EwsErrorsNamespacePrefix = "e";
+    internal const string EwsSoapNamespacePrefix = "soap";
+    internal const string EwsXmlSchemaInstanceNamespacePrefix = "xsi";
+    internal const string PassportSoapFaultNamespacePrefix = "psf";
+    internal const string WsTrustFebruary2005NamespacePrefix = "wst";
+    internal const string WsAddressingNamespacePrefix = "wsa";
+    internal const string AutodiscoverSoapNamespacePrefix = "a";
+    internal const string WsSecurityUtilityNamespacePrefix = "wsu";
+    internal const string WsSecuritySecExtNamespacePrefix = "wsse";
+
+    internal const string EwsTypesNamespace = "http://schemas.microsoft.com/exchange/services/2006/types";
+    internal const string EwsMessagesNamespace = "http://schemas.microsoft.com/exchange/services/2006/messages";
+    internal const string EwsErrorsNamespace = "http://schemas.microsoft.com/exchange/services/2006/errors";
+    internal const string EwsSoapNamespace = "http://schemas.xmlsoap.org/soap/envelope/";
+    internal const string EwsSoap12Namespace = "http://www.w3.org/2003/05/soap-envelope";
+    internal const string EwsXmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+    internal const string PassportSoapFaultNamespace = "http://schemas.microsoft.com/Passport/SoapServices/SOAPFault";
+    internal const string WsTrustFebruary2005Namespace = "http://schemas.xmlsoap.org/ws/2005/02/trust";
+
+    internal const string WsAddressingNamespace = "http://www.w3.org/2005/08/addressing";
+
+    internal const string AutodiscoverSoapNamespace = "http://schemas.microsoft.com/exchange/2010/Autodiscover";
+
+    internal const string WsSecurityUtilityNamespace =
+        "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+
+    internal const string WsSecuritySecExtNamespace =
+        "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+
     /// <summary>
     ///     Map from XML element names to ServiceObject type and constructors.
     /// </summary>
@@ -112,41 +147,6 @@ internal static partial class EwsUtilities
         { "String", "string" },
         // @formatter:on
     };
-
-
-    internal const string XsFalse = "false";
-    internal const string XsTrue = "true";
-
-    internal const string EwsTypesNamespacePrefix = "t";
-    internal const string EwsMessagesNamespacePrefix = "m";
-    internal const string EwsErrorsNamespacePrefix = "e";
-    internal const string EwsSoapNamespacePrefix = "soap";
-    internal const string EwsXmlSchemaInstanceNamespacePrefix = "xsi";
-    internal const string PassportSoapFaultNamespacePrefix = "psf";
-    internal const string WsTrustFebruary2005NamespacePrefix = "wst";
-    internal const string WsAddressingNamespacePrefix = "wsa";
-    internal const string AutodiscoverSoapNamespacePrefix = "a";
-    internal const string WsSecurityUtilityNamespacePrefix = "wsu";
-    internal const string WsSecuritySecExtNamespacePrefix = "wsse";
-
-    internal const string EwsTypesNamespace = "http://schemas.microsoft.com/exchange/services/2006/types";
-    internal const string EwsMessagesNamespace = "http://schemas.microsoft.com/exchange/services/2006/messages";
-    internal const string EwsErrorsNamespace = "http://schemas.microsoft.com/exchange/services/2006/errors";
-    internal const string EwsSoapNamespace = "http://schemas.xmlsoap.org/soap/envelope/";
-    internal const string EwsSoap12Namespace = "http://www.w3.org/2003/05/soap-envelope";
-    internal const string EwsXmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
-    internal const string PassportSoapFaultNamespace = "http://schemas.microsoft.com/Passport/SoapServices/SOAPFault";
-    internal const string WsTrustFebruary2005Namespace = "http://schemas.xmlsoap.org/ws/2005/02/trust";
-
-    internal const string WsAddressingNamespace = "http://www.w3.org/2005/08/addressing";
-
-    internal const string AutodiscoverSoapNamespace = "http://schemas.microsoft.com/exchange/2010/Autodiscover";
-
-    internal const string WsSecurityUtilityNamespace =
-        "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
-
-    internal const string WsSecuritySecExtNamespace =
-        "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
 
 
     /// <summary>
@@ -326,6 +326,28 @@ internal static partial class EwsUtilities
 
         return null;
     }
+
+
+    #region EmailAddress parsing
+
+    /// <summary>
+    ///     Gets the domain name from an email address.
+    /// </summary>
+    /// <param name="emailAddress">The email address.</param>
+    /// <returns>Domain name.</returns>
+    internal static string DomainFromEmailAddress(string emailAddress)
+    {
+        var emailAddressParts = emailAddress.Split('@');
+
+        if (emailAddressParts.Length != 2 || string.IsNullOrEmpty(emailAddressParts[1]))
+        {
+            throw new FormatException(Strings.InvalidEmailAddress);
+        }
+
+        return emailAddressParts[1];
+    }
+
+    #endregion
 
 
     #region Tracing routines
@@ -960,28 +982,6 @@ internal static partial class EwsUtilities
     {
         // If type has a shortname (e.g. int for Int32) map to the short name.
         return TypeNameToShortNameMap.TryGetValue(typeName, out var name) ? name : typeName;
-    }
-
-    #endregion
-
-
-    #region EmailAddress parsing
-
-    /// <summary>
-    ///     Gets the domain name from an email address.
-    /// </summary>
-    /// <param name="emailAddress">The email address.</param>
-    /// <returns>Domain name.</returns>
-    internal static string DomainFromEmailAddress(string emailAddress)
-    {
-        var emailAddressParts = emailAddress.Split('@');
-
-        if (emailAddressParts.Length != 2 || string.IsNullOrEmpty(emailAddressParts[1]))
-        {
-            throw new FormatException(Strings.InvalidEmailAddress);
-        }
-
-        return emailAddressParts[1];
     }
 
     #endregion

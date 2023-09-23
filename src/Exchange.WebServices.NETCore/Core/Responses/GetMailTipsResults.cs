@@ -9,6 +9,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetMailTipsResults : ServiceResponse
 {
     /// <summary>
+    /// Gets a collection of MailTips responses for the requested recipients
+    /// </summary>
+    public ServiceResponseCollection<MailTipsResponseMessage> MailTipsResponses { get; internal set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GetMailTipsResults"/> class.
     /// </summary>
     internal GetMailTipsResults()
@@ -41,9 +46,4 @@ public sealed class GetMailTipsResults : ServiceResponse
             reader.EnsureCurrentNodeIsEndElement(XmlNamespace.Messages, XmlElementNames.ResponseMessages);
         }
     }
-
-    /// <summary>
-    /// Gets a collection of MailTips responses for the requested recipients
-    /// </summary>
-    public ServiceResponseCollection<MailTipsResponseMessage> MailTipsResponses { get; internal set; }
 }

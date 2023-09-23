@@ -33,6 +33,78 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class SoapFaultDetails
 {
     /// <summary>
+    ///     Gets or sets the SOAP fault code.
+    /// </summary>
+    /// <value>The SOAP fault code.</value>
+    internal string FaultCode { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the SOAP fault string.
+    /// </summary>
+    /// <value>The fault string.</value>
+    internal string FaultString { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the SOAP fault actor.
+    /// </summary>
+    /// <value>The fault actor.</value>
+    internal string FaultActor { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the response code returned by EWS requests.
+    /// </summary>
+    /// <remarks>Default to InternalServerError.</remarks>
+    /// <value>The response code.</value>
+    internal ServiceError ResponseCode { get; set; } = ServiceError.ErrorInternalServerError;
+
+    /// <summary>
+    ///     Gets or sets the message.
+    /// </summary>
+    /// <value>The message.</value>
+    internal string Message { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the error code.
+    /// </summary>
+    /// <value>The error code.</value>
+    internal ServiceError ErrorCode { get; set; } = ServiceError.NoError;
+
+    /// <summary>
+    ///     Gets or sets the type of the exception.
+    /// </summary>
+    /// <remarks>This is returned by UM requests. It's the name of the exception that was raised.</remarks>
+    /// <value>The type of the exception.</value>
+    internal string ExceptionType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the line number.
+    /// </summary>
+    /// <remarks>When a schema validation error is returned, this is the line number in the request where the error occurred.</remarks>
+    /// <value>The line number.</value>
+    internal int LineNumber { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the position within line.
+    /// </summary>
+    /// <remarks>
+    /// When a schema validation error is returned, this is the offset
+    /// into the line of the request where the error occurred.
+    /// </remarks>
+    /// <value>The position within line.</value>
+    internal int PositionWithinLine { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the error details dictionary.
+    /// </summary>
+    /// <remarks>
+    ///     Dictionary of key/value pairs from the MessageXml node in the fault. Usually empty but there are
+    ///     a few cases where SOAP faults may include MessageXml details (e.g. CASOverBudgetException includes
+    ///     BackoffTime value).
+    /// </remarks>
+    /// <value>The error details dictionary.</value>
+    internal Dictionary<string, string> ErrorDetails { get; set; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SoapFaultDetails" /> class.
     /// </summary>
     private SoapFaultDetails()
@@ -190,76 +262,4 @@ internal class SoapFaultDetails
             } while (!reader.IsEndElement(elementNs, XmlElementNames.MessageXml));
         }
     }
-
-    /// <summary>
-    ///     Gets or sets the SOAP fault code.
-    /// </summary>
-    /// <value>The SOAP fault code.</value>
-    internal string FaultCode { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the SOAP fault string.
-    /// </summary>
-    /// <value>The fault string.</value>
-    internal string FaultString { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the SOAP fault actor.
-    /// </summary>
-    /// <value>The fault actor.</value>
-    internal string FaultActor { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the response code returned by EWS requests.
-    /// </summary>
-    /// <remarks>Default to InternalServerError.</remarks>
-    /// <value>The response code.</value>
-    internal ServiceError ResponseCode { get; set; } = ServiceError.ErrorInternalServerError;
-
-    /// <summary>
-    ///     Gets or sets the message.
-    /// </summary>
-    /// <value>The message.</value>
-    internal string Message { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the error code.
-    /// </summary>
-    /// <value>The error code.</value>
-    internal ServiceError ErrorCode { get; set; } = ServiceError.NoError;
-
-    /// <summary>
-    ///     Gets or sets the type of the exception.
-    /// </summary>
-    /// <remarks>This is returned by UM requests. It's the name of the exception that was raised.</remarks>
-    /// <value>The type of the exception.</value>
-    internal string ExceptionType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the line number.
-    /// </summary>
-    /// <remarks>When a schema validation error is returned, this is the line number in the request where the error occurred.</remarks>
-    /// <value>The line number.</value>
-    internal int LineNumber { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the position within line.
-    /// </summary>
-    /// <remarks>
-    /// When a schema validation error is returned, this is the offset
-    /// into the line of the request where the error occurred.
-    /// </remarks>
-    /// <value>The position within line.</value>
-    internal int PositionWithinLine { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the error details dictionary.
-    /// </summary>
-    /// <remarks>
-    ///     Dictionary of key/value pairs from the MessageXml node in the fault. Usually empty but there are
-    ///     a few cases where SOAP faults may include MessageXml details (e.g. CASOverBudgetException includes
-    ///     BackoffTime value).
-    /// </remarks>
-    /// <value>The error details dictionary.</value>
-    internal Dictionary<string, string> ErrorDetails { get; set; } = new();
 }

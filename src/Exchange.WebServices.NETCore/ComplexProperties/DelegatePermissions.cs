@@ -36,24 +36,6 @@ public sealed class DelegatePermissions : ComplexProperty
     private readonly Dictionary<string, DelegateFolderPermission> _delegateFolderPermissions;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="DelegatePermissions" /> class.
-    /// </summary>
-    internal DelegatePermissions()
-    {
-        _delegateFolderPermissions = new Dictionary<string, DelegateFolderPermission>
-        {
-            // @formatter:off
-            { XmlElementNames.CalendarFolderPermissionLevel, new DelegateFolderPermission() },
-            { XmlElementNames.TasksFolderPermissionLevel, new DelegateFolderPermission() },
-            { XmlElementNames.InboxFolderPermissionLevel, new DelegateFolderPermission() },
-            { XmlElementNames.ContactsFolderPermissionLevel, new DelegateFolderPermission() },
-            { XmlElementNames.NotesFolderPermissionLevel, new DelegateFolderPermission() },
-            { XmlElementNames.JournalFolderPermissionLevel, new DelegateFolderPermission() },
-            // @formatter:on
-        };
-    }
-
-    /// <summary>
     ///     Gets or sets the delegate user's permission on the principal's calendar.
     /// </summary>
     public DelegateFolderPermissionLevel CalendarFolderPermissionLevel
@@ -105,6 +87,24 @@ public sealed class DelegatePermissions : ComplexProperty
     {
         get => _delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel;
         set => _delegateFolderPermissions[XmlElementNames.JournalFolderPermissionLevel].PermissionLevel = value;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DelegatePermissions" /> class.
+    /// </summary>
+    internal DelegatePermissions()
+    {
+        _delegateFolderPermissions = new Dictionary<string, DelegateFolderPermission>
+        {
+            // @formatter:off
+            { XmlElementNames.CalendarFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.TasksFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.InboxFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.ContactsFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.NotesFolderPermissionLevel, new DelegateFolderPermission() },
+            { XmlElementNames.JournalFolderPermissionLevel, new DelegateFolderPermission() },
+            // @formatter:on
+        };
     }
 
     /// <summary>
@@ -204,6 +204,16 @@ public sealed class DelegatePermissions : ComplexProperty
     private class DelegateFolderPermission
     {
         /// <summary>
+        ///     Gets or sets the delegate user's permission on a principal's folder.
+        /// </summary>
+        internal DelegateFolderPermissionLevel PermissionLevel { get; set; }
+
+        /// <summary>
+        ///     Gets IsExistingPermissionLevelCustom.
+        /// </summary>
+        internal bool IsExistingPermissionLevelCustom { get; private set; }
+
+        /// <summary>
         ///     Intializes this DelegateFolderPermission.
         /// </summary>
         /// <param name="permissionLevel">The DelegateFolderPermissionLevel</param>
@@ -220,15 +230,5 @@ public sealed class DelegatePermissions : ComplexProperty
         {
             Initialize(DelegateFolderPermissionLevel.None);
         }
-
-        /// <summary>
-        ///     Gets or sets the delegate user's permission on a principal's folder.
-        /// </summary>
-        internal DelegateFolderPermissionLevel PermissionLevel { get; set; }
-
-        /// <summary>
-        ///     Gets IsExistingPermissionLevelCustom.
-        /// </summary>
-        internal bool IsExistingPermissionLevelCustom { get; private set; }
     }
 }

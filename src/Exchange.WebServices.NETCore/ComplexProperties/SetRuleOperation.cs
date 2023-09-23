@@ -39,6 +39,20 @@ public sealed class SetRuleOperation : RuleOperation
     private Rule _rule;
 
     /// <summary>
+    ///     Gets or sets the rule to be updated.
+    /// </summary>
+    public Rule Rule
+    {
+        get => _rule;
+        set => SetFieldValue(ref _rule, value);
+    }
+
+    /// <summary>
+    ///     Gets the Xml element name of the SetRuleOperation object.
+    /// </summary>
+    internal override string XmlElementName => XmlElementNames.SetRuleOperation;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SetRuleOperation" /> class.
     /// </summary>
     public SetRuleOperation()
@@ -52,15 +66,6 @@ public sealed class SetRuleOperation : RuleOperation
     public SetRuleOperation(Rule rule)
     {
         _rule = rule;
-    }
-
-    /// <summary>
-    ///     Gets or sets the rule to be updated.
-    /// </summary>
-    public Rule Rule
-    {
-        get => _rule;
-        set => SetFieldValue(ref _rule, value);
     }
 
     /// <summary>
@@ -101,9 +106,4 @@ public sealed class SetRuleOperation : RuleOperation
     {
         EwsUtilities.ValidateParam(_rule, "Rule");
     }
-
-    /// <summary>
-    ///     Gets the Xml element name of the SetRuleOperation object.
-    /// </summary>
-    internal override string XmlElementName => XmlElementNames.SetRuleOperation;
 }

@@ -38,29 +38,6 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     private readonly List<TResponse> _responses = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ServiceResponseCollection&lt;TResponse&gt;" /> class.
-    /// </summary>
-    internal ServiceResponseCollection()
-    {
-    }
-
-    /// <summary>
-    ///     Adds specified response.
-    /// </summary>
-    /// <param name="response">The response.</param>
-    internal void Add(TResponse response)
-    {
-        EwsUtilities.Assert(response != null, "EwsResponseList.Add", "response is null");
-
-        if (response.Result > OverallResult)
-        {
-            OverallResult = response.Result;
-        }
-
-        _responses.Add(response);
-    }
-
-    /// <summary>
     ///     Gets the total number of responses in the list.
     /// </summary>
     public int Count => _responses.Count;
@@ -92,6 +69,13 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     /// </summary>
     public ServiceResult OverallResult { get; private set; } = ServiceResult.Success;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceResponseCollection&lt;TResponse&gt;" /> class.
+    /// </summary>
+    internal ServiceResponseCollection()
+    {
+    }
+
 
     #region IEnumerable<TResponse>
 
@@ -119,4 +103,21 @@ public sealed class ServiceResponseCollection<TResponse> : IEnumerable<TResponse
     }
 
     #endregion
+
+
+    /// <summary>
+    ///     Adds specified response.
+    /// </summary>
+    /// <param name="response">The response.</param>
+    internal void Add(TResponse response)
+    {
+        EwsUtilities.Assert(response != null, "EwsResponseList.Add", "response is null");
+
+        if (response.Result > OverallResult)
+        {
+            OverallResult = response.Result;
+        }
+
+        _responses.Add(response);
+    }
 }

@@ -38,6 +38,17 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     private readonly PropertySet _propertySet;
 
     /// <summary>
+    ///     Gets a grouped list of items matching the specified search criteria that were found in Exchange. ItemGroups is
+    ///     null if the search operation did not specify grouping options.
+    /// </summary>
+    public GroupedFindItemsResults<TItem> GroupedFindResults { get; private set; }
+
+    /// <summary>
+    ///     Gets the results of the search operation.
+    /// </summary>
+    public FindItemsResults<TItem> Results { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="FindItemResponse&lt;TItem&gt;" /> class.
     /// </summary>
     /// <param name="isGrouped">if set to <c>true</c> if grouped.</param>
@@ -182,15 +193,4 @@ internal sealed class FindItemResponse<TItem> : ServiceResponse
     {
         return EwsUtilities.CreateEwsObjectFromXmlElementName<TItem>(service, xmlElementName);
     }
-
-    /// <summary>
-    ///     Gets a grouped list of items matching the specified search criteria that were found in Exchange. ItemGroups is
-    ///     null if the search operation did not specify grouping options.
-    /// </summary>
-    public GroupedFindItemsResults<TItem> GroupedFindResults { get; private set; }
-
-    /// <summary>
-    ///     Gets the results of the search operation.
-    /// </summary>
-    public FindItemsResults<TItem> Results { get; private set; }
 }

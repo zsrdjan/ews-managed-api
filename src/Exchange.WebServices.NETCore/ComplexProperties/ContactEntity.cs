@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ContactEntity : ExtractedEntity
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ContactEntity" /> class.
-    /// </summary>
-    internal ContactEntity()
-    {
-    }
-
-    /// <summary>
     ///     Gets the contact entity PersonName.
     /// </summary>
     public string PersonName { get; internal set; }
@@ -74,6 +67,13 @@ public sealed class ContactEntity : ExtractedEntity
     ///     Gets the contact entity ContactString.
     /// </summary>
     public string ContactString { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ContactEntity" /> class.
+    /// </summary>
+    internal ContactEntity()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

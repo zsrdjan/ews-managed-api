@@ -32,6 +32,56 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     IDiscoveryVersionable
 {
     /// <summary>
+    ///     Collection of query + mailboxes
+    /// </summary>
+    public List<MailboxQuery> SearchQueries { get; set; } = new();
+
+    /// <summary>
+    ///     Search result type
+    /// </summary>
+    public SearchResultType ResultType { get; set; } = SearchResultType.PreviewOnly;
+
+    /// <summary>
+    ///     Preview item response shape
+    /// </summary>
+    public PreviewItemResponseShape? PreviewItemResponseShape { get; set; }
+
+    /// <summary>
+    ///     Sort order
+    /// </summary>
+    public SortDirection SortOrder { get; set; } = SortDirection.Ascending;
+
+    /// <summary>
+    ///     Sort by property name
+    /// </summary>
+    public string SortByProperty { get; set; }
+
+    /// <summary>
+    ///     Query language
+    /// </summary>
+    public string Language { get; set; }
+
+    /// <summary>
+    ///     Perform deduplication or not
+    /// </summary>
+    public bool PerformDeduplication { get; set; }
+
+    /// <summary>
+    ///     Page size
+    /// </summary>
+    public int PageSize { get; set; }
+
+    /// <summary>
+    ///     Page item reference
+    /// </summary>
+    public string PageItemReference { get; set; }
+
+    /// <summary>
+    ///     Page direction
+    /// </summary>
+    public SearchPageDirection PageDirection { get; set; } = SearchPageDirection.Next;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SearchMailboxesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -40,6 +90,14 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
         : base(service, errorHandlingMode)
     {
     }
+
+    /// <summary>
+    ///     Gets or sets the server version.
+    /// </summary>
+    /// <value>
+    ///     The server version.
+    /// </value>
+    long IDiscoveryVersionable.ServerVersion { get; set; }
 
     /// <summary>
     ///     Creates the service response.
@@ -301,62 +359,4 @@ internal sealed class SearchMailboxesRequest : MultiResponseServiceRequest<Searc
     {
         return ExchangeVersion.Exchange2013;
     }
-
-    /// <summary>
-    ///     Collection of query + mailboxes
-    /// </summary>
-    public List<MailboxQuery> SearchQueries { get; set; } = new();
-
-    /// <summary>
-    ///     Search result type
-    /// </summary>
-    public SearchResultType ResultType { get; set; } = SearchResultType.PreviewOnly;
-
-    /// <summary>
-    ///     Preview item response shape
-    /// </summary>
-    public PreviewItemResponseShape? PreviewItemResponseShape { get; set; }
-
-    /// <summary>
-    ///     Sort order
-    /// </summary>
-    public SortDirection SortOrder { get; set; } = SortDirection.Ascending;
-
-    /// <summary>
-    ///     Sort by property name
-    /// </summary>
-    public string SortByProperty { get; set; }
-
-    /// <summary>
-    ///     Query language
-    /// </summary>
-    public string Language { get; set; }
-
-    /// <summary>
-    ///     Perform deduplication or not
-    /// </summary>
-    public bool PerformDeduplication { get; set; }
-
-    /// <summary>
-    ///     Page size
-    /// </summary>
-    public int PageSize { get; set; }
-
-    /// <summary>
-    ///     Page item reference
-    /// </summary>
-    public string PageItemReference { get; set; }
-
-    /// <summary>
-    ///     Page direction
-    /// </summary>
-    public SearchPageDirection PageDirection { get; set; } = SearchPageDirection.Next;
-
-    /// <summary>
-    ///     Gets or sets the server version.
-    /// </summary>
-    /// <value>
-    ///     The server version.
-    /// </value>
-    long IDiscoveryVersionable.ServerVersion { get; set; }
 }

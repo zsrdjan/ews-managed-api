@@ -33,6 +33,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class RegisterConsentRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Extension id
+    /// </summary>
+    private string Id { get; set; }
+
+    /// <summary>
+    ///     User decision on the consent state of an extension
+    /// </summary>
+    private ConsentState ConsentState { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="RegisterConsentRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -44,16 +54,6 @@ internal sealed class RegisterConsentRequest : SimpleServiceRequestBase
         Id = id;
         ConsentState = state;
     }
-
-    /// <summary>
-    ///     Extension id
-    /// </summary>
-    private string Id { get; set; }
-
-    /// <summary>
-    ///     User decision on the consent state of an extension
-    /// </summary>
-    private ConsentState ConsentState { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.

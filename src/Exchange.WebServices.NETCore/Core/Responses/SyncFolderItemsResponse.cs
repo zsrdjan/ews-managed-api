@@ -34,6 +34,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
 {
     /// <summary>
+    ///     Gets a value indicating whether this request returns full or summary properties.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if summary properties only; otherwise, <c>false</c>.
+    /// </value>
+    internal override bool SummaryPropertiesOnly => true;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SyncFolderItemsResponse" /> class.
     /// </summary>
     /// <param name="propertySet">PropertySet from request.</param>
@@ -77,12 +85,4 @@ public sealed class SyncFolderItemsResponse : SyncResponse<Item, ItemChange>
     {
         return XmlElementNames.ItemId;
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this request returns full or summary properties.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if summary properties only; otherwise, <c>false</c>.
-    /// </value>
-    internal override bool SummaryPropertiesOnly => true;
 }

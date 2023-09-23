@@ -42,6 +42,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
 {
     /// <summary>
+    ///     Gets or sets the key.
+    /// </summary>
+    /// <value>The key.</value>
+    internal TKey Key { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DictionaryEntryProperty&lt;TKey&gt;" /> class.
     /// </summary>
     internal DictionaryEntryProperty()
@@ -56,12 +62,6 @@ public abstract class DictionaryEntryProperty<TKey> : ComplexProperty
     {
         Key = key;
     }
-
-    /// <summary>
-    ///     Gets or sets the key.
-    /// </summary>
-    /// <value>The key.</value>
-    internal TKey Key { get; set; }
 
     /// <summary>
     ///     Reads the attributes from XML.

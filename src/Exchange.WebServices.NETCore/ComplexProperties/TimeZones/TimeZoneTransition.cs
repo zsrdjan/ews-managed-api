@@ -36,8 +36,49 @@ internal class TimeZoneTransition : ComplexProperty
     private const string GroupTarget = "Group";
 
     private readonly TimeZoneDefinition _timeZoneDefinition;
-    private TimeZonePeriod? _targetPeriod;
     private TimeZoneTransitionGroup _targetGroup;
+    private TimeZonePeriod? _targetPeriod;
+
+    /// <summary>
+    ///     Gets the target period of the transition.
+    /// </summary>
+    internal TimeZonePeriod TargetPeriod => _targetPeriod;
+
+    /// <summary>
+    ///     Gets the target transition group of the transition.
+    /// </summary>
+    internal TimeZoneTransitionGroup TargetGroup => _targetGroup;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeZoneTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
+    internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition)
+    {
+        _timeZoneDefinition = timeZoneDefinition;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeZoneTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
+    /// <param name="targetGroup">The transition group the transition will target.</param>
+    internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition, TimeZoneTransitionGroup targetGroup)
+        : this(timeZoneDefinition)
+    {
+        _targetGroup = targetGroup;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeZoneTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
+    /// <param name="targetPeriod">The period the transition will target.</param>
+    internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
+        : this(timeZoneDefinition)
+    {
+        _targetPeriod = targetPeriod;
+    }
 
     /// <summary>
     ///     Creates a time zone period transition of the appropriate type given an XML element name.
@@ -202,45 +243,4 @@ internal class TimeZoneTransition : ComplexProperty
     {
         WriteToXml(writer, GetXmlElementName());
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeZoneTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
-    internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition)
-    {
-        _timeZoneDefinition = timeZoneDefinition;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeZoneTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
-    /// <param name="targetGroup">The transition group the transition will target.</param>
-    internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition, TimeZoneTransitionGroup targetGroup)
-        : this(timeZoneDefinition)
-    {
-        _targetGroup = targetGroup;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeZoneTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
-    /// <param name="targetPeriod">The period the transition will target.</param>
-    internal TimeZoneTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
-        : this(timeZoneDefinition)
-    {
-        _targetPeriod = targetPeriod;
-    }
-
-    /// <summary>
-    ///     Gets the target period of the transition.
-    /// </summary>
-    internal TimeZonePeriod TargetPeriod => _targetPeriod;
-
-    /// <summary>
-    ///     Gets the target transition group of the transition.
-    /// </summary>
-    internal TimeZoneTransitionGroup TargetGroup => _targetGroup;
 }

@@ -36,6 +36,36 @@ internal class TimeZonePeriod : ComplexProperty
     internal const string DaylightPeriodName = "Daylight";
 
     /// <summary>
+    ///     Gets a value indicating whether this period represents the Standard period.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if this instance is standard period; otherwise, <c>false</c>.
+    /// </value>
+    internal bool IsStandardPeriod => string.Compare(Name, StandardPeriodName, StringComparison.OrdinalIgnoreCase) == 0;
+
+    /// <summary>
+    ///     Gets or sets the bias to UTC associated with this period.
+    /// </summary>
+    internal TimeSpan Bias { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the name of this period.
+    /// </summary>
+    internal string Name { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the id of this period.
+    /// </summary>
+    internal string Id { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeZonePeriod" /> class.
+    /// </summary>
+    internal TimeZonePeriod()
+    {
+    }
+
+    /// <summary>
     ///     Reads the attributes from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
@@ -74,34 +104,4 @@ internal class TimeZonePeriod : ComplexProperty
     {
         WriteToXml(writer, XmlElementNames.Period);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeZonePeriod" /> class.
-    /// </summary>
-    internal TimeZonePeriod()
-    {
-    }
-
-    /// <summary>
-    ///     Gets a value indicating whether this period represents the Standard period.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if this instance is standard period; otherwise, <c>false</c>.
-    /// </value>
-    internal bool IsStandardPeriod => string.Compare(Name, StandardPeriodName, StringComparison.OrdinalIgnoreCase) == 0;
-
-    /// <summary>
-    ///     Gets or sets the bias to UTC associated with this period.
-    /// </summary>
-    internal TimeSpan Bias { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the name of this period.
-    /// </summary>
-    internal string Name { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the id of this period.
-    /// </summary>
-    internal string Id { get; set; }
 }

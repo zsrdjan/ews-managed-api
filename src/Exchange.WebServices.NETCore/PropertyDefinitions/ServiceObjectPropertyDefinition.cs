@@ -34,28 +34,15 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ServiceObjectPropertyDefinition : PropertyDefinitionBase
 {
     /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <returns>XML element name.</returns>
-    internal override string GetXmlElementName()
-    {
-        return XmlElementNames.FieldURI;
-    }
-
-    /// <summary>
     ///     Gets the minimum Exchange version that supports this property.
     /// </summary>
     /// <value>The version.</value>
     public override ExchangeVersion Version => ExchangeVersion.Exchange2007_SP1;
 
     /// <summary>
-    ///     Writes the attributes to XML.
+    ///     Gets the URI of the property definition.
     /// </summary>
-    /// <param name="writer">The writer.</param>
-    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
-    {
-        writer.WriteAttributeValue(XmlAttributeNames.FieldURI, Uri);
-    }
+    internal string Uri { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceObjectPropertyDefinition" /> class.
@@ -76,7 +63,20 @@ public abstract class ServiceObjectPropertyDefinition : PropertyDefinitionBase
     }
 
     /// <summary>
-    ///     Gets the URI of the property definition.
+    ///     Gets the name of the XML element.
     /// </summary>
-    internal string Uri { get; }
+    /// <returns>XML element name.</returns>
+    internal override string GetXmlElementName()
+    {
+        return XmlElementNames.FieldURI;
+    }
+
+    /// <summary>
+    ///     Writes the attributes to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal override void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteAttributeValue(XmlAttributeNames.FieldURI, Uri);
+    }
 }

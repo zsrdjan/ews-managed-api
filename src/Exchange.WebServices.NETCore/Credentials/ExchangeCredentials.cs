@@ -37,6 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ExchangeCredentials
 {
     /// <summary>
+    ///     Gets the flag indicating whether any sign action need taken.
+    /// </summary>
+    internal virtual bool NeedSignature => false;
+
+    /// <summary>
     ///     Performs an implicit conversion from <see cref="System.Net.NetworkCredential" /> to
     ///     <see cref="Microsoft.Exchange.WebServices.Data.ExchangeCredentials" />.
     ///     This allows a NetworkCredential object to be implicitly converted to an ExchangeCredential which is useful when
@@ -150,11 +155,6 @@ public abstract class ExchangeCredentials
     {
         return new Uri(GetUriWithoutSuffix(url));
     }
-
-    /// <summary>
-    ///     Gets the flag indicating whether any sign action need taken.
-    /// </summary>
-    internal virtual bool NeedSignature => false;
 
     /// <summary>
     ///     Add the signature element to the memory stream.

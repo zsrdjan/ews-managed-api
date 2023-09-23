@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    /// </summary>
+    internal override bool IsNullable => false;
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(ResponseActions);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ResponseObjectsPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -105,14 +115,4 @@ internal sealed class ResponseObjectsPropertyDefinition : PropertyDefinition
     {
         // ResponseObjects is a read-only property, no need to implement this.
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
-    /// </summary>
-    internal override bool IsNullable => false;
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(ResponseActions);
 }

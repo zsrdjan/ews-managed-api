@@ -34,6 +34,61 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class SearchMailboxesResult
 {
     /// <summary>
+    ///     Search queries
+    /// </summary>
+    public MailboxQuery[] SearchQueries { get; set; }
+
+    /// <summary>
+    ///     Result type
+    /// </summary>
+    public SearchResultType ResultType { get; set; }
+
+    /// <summary>
+    ///     Item count
+    /// </summary>
+    public long ItemCount { get; set; }
+
+    /// <summary>
+    ///     Total size
+    /// </summary>
+    public ulong Size { get; set; }
+
+    /// <summary>
+    ///     Page item count
+    /// </summary>
+    public int PageItemCount { get; set; }
+
+    /// <summary>
+    ///     Total page item size
+    /// </summary>
+    public ulong PageItemSize { get; set; }
+
+    /// <summary>
+    ///     Keyword statistics search result
+    /// </summary>
+    public KeywordStatisticsSearchResult[]? KeywordStats { get; set; }
+
+    /// <summary>
+    ///     Search preview items
+    /// </summary>
+    public SearchPreviewItem[]? PreviewItems { get; set; }
+
+    /// <summary>
+    ///     Failed mailboxes
+    /// </summary>
+    public FailedSearchMailbox[]? FailedMailboxes { get; set; }
+
+    /// <summary>
+    ///     Refiners
+    /// </summary>
+    public SearchRefinerItem[]? Refiners { get; set; }
+
+    /// <summary>
+    ///     Mailbox statistics
+    /// </summary>
+    public MailboxStatisticsItem[]? MailboxStats { get; set; }
+
+    /// <summary>
     ///     Load from xml
     /// </summary>
     /// <param name="reader">The reader</param>
@@ -348,61 +403,6 @@ public sealed class SearchMailboxesResult
 
         return extendedProperties.Count == 0 ? null : extendedProperties;
     }
-
-    /// <summary>
-    ///     Search queries
-    /// </summary>
-    public MailboxQuery[] SearchQueries { get; set; }
-
-    /// <summary>
-    ///     Result type
-    /// </summary>
-    public SearchResultType ResultType { get; set; }
-
-    /// <summary>
-    ///     Item count
-    /// </summary>
-    public long ItemCount { get; set; }
-
-    /// <summary>
-    ///     Total size
-    /// </summary>
-    public ulong Size { get; set; }
-
-    /// <summary>
-    ///     Page item count
-    /// </summary>
-    public int PageItemCount { get; set; }
-
-    /// <summary>
-    ///     Total page item size
-    /// </summary>
-    public ulong PageItemSize { get; set; }
-
-    /// <summary>
-    ///     Keyword statistics search result
-    /// </summary>
-    public KeywordStatisticsSearchResult[]? KeywordStats { get; set; }
-
-    /// <summary>
-    ///     Search preview items
-    /// </summary>
-    public SearchPreviewItem[]? PreviewItems { get; set; }
-
-    /// <summary>
-    ///     Failed mailboxes
-    /// </summary>
-    public FailedSearchMailbox[]? FailedMailboxes { get; set; }
-
-    /// <summary>
-    ///     Refiners
-    /// </summary>
-    public SearchRefinerItem[]? Refiners { get; set; }
-
-    /// <summary>
-    ///     Mailbox statistics
-    /// </summary>
-    public MailboxStatisticsItem[]? MailboxStats { get; set; }
 }
 
 

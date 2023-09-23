@@ -48,6 +48,31 @@ internal class EwsServiceXmlWriter : IDisposable
     private bool _isDisposed;
 
     /// <summary>
+    ///     Gets the internal XML writer.
+    /// </summary>
+    /// <value>The internal writer.</value>
+    public XmlWriter InternalWriter { get; }
+
+    /// <summary>
+    ///     Gets the service.
+    /// </summary>
+    /// <value>The service.</value>
+    public ExchangeServiceBase Service { get; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the time zone SOAP header was emitted through this writer.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if the time zone SOAP header was emitted; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsTimeZoneHeaderEmitted { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the SOAP message need WSSecurity Utility namespace.
+    /// </summary>
+    public bool RequireWsSecurityUtilityNamespace { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EwsServiceXmlWriter" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -63,6 +88,19 @@ internal class EwsServiceXmlWriter : IDisposable
         };
 
         InternalWriter = XmlWriter.Create(stream, settings);
+    }
+
+    /// <summary>
+    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    public void Dispose()
+    {
+        if (!_isDisposed)
+        {
+            InternalWriter.Dispose();
+
+            _isDisposed = true;
+        }
     }
 
     /// <summary>
@@ -134,19 +172,6 @@ internal class EwsServiceXmlWriter : IDisposable
         }
 
         return true;
-    }
-
-    /// <summary>
-    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    public void Dispose()
-    {
-        if (!_isDisposed)
-        {
-            InternalWriter.Dispose();
-
-            _isDisposed = true;
-        }
     }
 
     /// <summary>
@@ -380,29 +405,4 @@ internal class EwsServiceXmlWriter : IDisposable
             }
         } while (bytesRead > 0);
     }
-
-    /// <summary>
-    ///     Gets the internal XML writer.
-    /// </summary>
-    /// <value>The internal writer.</value>
-    public XmlWriter InternalWriter { get; }
-
-    /// <summary>
-    ///     Gets the service.
-    /// </summary>
-    /// <value>The service.</value>
-    public ExchangeServiceBase Service { get; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the time zone SOAP header was emitted through this writer.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if the time zone SOAP header was emitted; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsTimeZoneHeaderEmitted { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the SOAP message need WSSecurity Utility namespace.
-    /// </summary>
-    public bool RequireWsSecurityUtilityNamespace { get; set; }
 }
