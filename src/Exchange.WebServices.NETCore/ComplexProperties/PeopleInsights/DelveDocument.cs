@@ -33,16 +33,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class DelveDocument : InsightValue
 {
-    private double _rank;
     private string _author;
     private string _created;
-    private string _lastModifiedTime;
     private string _defaultEncodingUrl;
-    private string _fileType;
-    private string _title;
-    private string _lastEditor;
     private string _documentId;
+    private string _fileType;
+    private string _lastEditor;
+    private string _lastModifiedTime;
     private string _previewUrl;
+    private double _rank;
+    private string _title;
 
     /// <summary>
     ///     Gets the Rank

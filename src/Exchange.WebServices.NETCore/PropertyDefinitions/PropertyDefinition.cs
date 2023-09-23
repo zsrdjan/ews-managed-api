@@ -37,6 +37,42 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     private string _name;
 
     /// <summary>
+    ///     Gets the minimum Exchange version that supports this property.
+    /// </summary>
+    /// <value>The version.</value>
+    public override ExchangeVersion Version { get; }
+
+    /// <summary>
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    /// </summary>
+    internal virtual bool IsNullable => true;
+
+    /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal string XmlElementName { get; }
+
+    /// <summary>
+    ///     Gets the name of the property.
+    /// </summary>
+    public string Name
+    {
+        get
+        {
+            // Name is initialized at read time for all PropertyDefinition instances using Reflection.
+            if (string.IsNullOrEmpty(_name))
+            {
+                ServiceObjectSchema.InitializeSchemaPropertyNames();
+            }
+
+            return _name;
+        }
+
+        internal set => _name = value;
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -132,17 +168,6 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
     }
 
     /// <summary>
-    ///     Gets the minimum Exchange version that supports this property.
-    /// </summary>
-    /// <value>The version.</value>
-    public override ExchangeVersion Version { get; }
-
-    /// <summary>
-    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
-    /// </summary>
-    internal virtual bool IsNullable => true;
-
-    /// <summary>
     ///     Loads from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
@@ -160,31 +185,6 @@ public abstract class PropertyDefinition : ServiceObjectPropertyDefinition
         PropertyBag propertyBag,
         bool isUpdateOperation
     );
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <value>The name of the XML element.</value>
-    internal string XmlElementName { get; }
-
-    /// <summary>
-    ///     Gets the name of the property.
-    /// </summary>
-    public string Name
-    {
-        get
-        {
-            // Name is initialized at read time for all PropertyDefinition instances using Reflection.
-            if (string.IsNullOrEmpty(_name))
-            {
-                ServiceObjectSchema.InitializeSchemaPropertyNames();
-            }
-
-            return _name;
-        }
-
-        internal set => _name = value;
-    }
 
     /// <summary>
     ///     Gets the property definition's printable name.

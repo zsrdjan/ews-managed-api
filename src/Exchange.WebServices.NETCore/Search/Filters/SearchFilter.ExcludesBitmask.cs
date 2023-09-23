@@ -42,6 +42,15 @@ public abstract partial class SearchFilter
         private int _bitmask;
 
         /// <summary>
+        ///     Gets or sets the bitmask to compare the property with.
+        /// </summary>
+        public int Bitmask
+        {
+            get => _bitmask;
+            set => SetFieldValue(ref _bitmask, value);
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="SearchFilter.ExcludesBitmask" /> class.
         /// </summary>
         public ExcludesBitmask()
@@ -104,15 +113,6 @@ public abstract partial class SearchFilter
             writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.Bitmask);
             writer.WriteAttributeValue(XmlAttributeNames.Value, Bitmask);
             writer.WriteEndElement(); // Bitmask
-        }
-
-        /// <summary>
-        ///     Gets or sets the bitmask to compare the property with.
-        /// </summary>
-        public int Bitmask
-        {
-            get => _bitmask;
-            set => SetFieldValue(ref _bitmask, value);
         }
     }
 }

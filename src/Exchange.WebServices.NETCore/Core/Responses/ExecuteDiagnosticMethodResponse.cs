@@ -33,6 +33,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ExecuteDiagnosticMethodResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the return value.
+    /// </summary>
+    /// <value>The return value.</value>
+    internal XmlDocument ReturnValue { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ExecuteDiagnosticMethodResponse" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -58,10 +64,4 @@ internal sealed class ExecuteDiagnosticMethodResponse : ServiceResponse
         reader.SkipCurrentElement();
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.ReturnValue);
     }
-
-    /// <summary>
-    ///     Gets the return value.
-    /// </summary>
-    /// <value>The return value.</value>
-    internal XmlDocument ReturnValue { get; private set; }
 }

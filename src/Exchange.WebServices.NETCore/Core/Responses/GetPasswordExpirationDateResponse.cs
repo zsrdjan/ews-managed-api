@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetPasswordExpirationDateResponse : ServiceResponse
 {
     /// <summary>
+    ///     Password expiration date
+    /// </summary>
+    public DateTime? PasswordExpirationDate { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetPasswordExpirationDateResponse" /> class.
     /// </summary>
     internal GetPasswordExpirationDateResponse()
@@ -49,9 +54,4 @@ internal sealed class GetPasswordExpirationDateResponse : ServiceResponse
             XmlElementNames.PasswordExpirationDate
         );
     }
-
-    /// <summary>
-    ///     Password expiration date
-    /// </summary>
-    public DateTime? PasswordExpirationDate { get; private set; }
 }

@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PeopleQueryMode
 {
     /// <summary>
-    ///     This mode will attempt to find a good match as quickly as possible
-    ///     among the various potential sources. This is a good setting to use
-    ///     by default.
-    /// </summary>
-    public static PeopleQueryMode Auto { get; } = new();
-
-    /// <summary>
     ///     The Source string for Auto
     /// </summary>
     private const string AutoSourceString = "Auto";
@@ -49,6 +42,13 @@ public sealed class PeopleQueryMode
     ///     The sources used for this mode.
     /// </summary>
     internal readonly HashSet<string> Sources;
+
+    /// <summary>
+    ///     This mode will attempt to find a good match as quickly as possible
+    ///     among the various potential sources. This is a good setting to use
+    ///     by default.
+    /// </summary>
+    public static PeopleQueryMode Auto { get; } = new();
 
     /// <summary>
     ///     Creates a new instance of the <see cref="PeopleQueryMode" /> class.

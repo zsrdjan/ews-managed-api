@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetHoldOnMailboxesRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Hold id
+    /// </summary>
+    public string HoldId { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetHoldOnMailboxesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -109,9 +114,4 @@ internal sealed class GetHoldOnMailboxesRequest : SimpleServiceRequestBase
         var serviceResponse = await InternalExecuteAsync<GetHoldOnMailboxesResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Hold id
-    /// </summary>
-    public string HoldId { get; set; }
 }

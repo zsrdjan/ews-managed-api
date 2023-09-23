@@ -36,14 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ClientApp : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClientApp" /> class.
-    /// </summary>
-    internal ClientApp()
-    {
-        Namespace = XmlNamespace.Types;
-    }
-
-    /// <summary>
     ///     The manifest for the app.
     /// </summary>
     public XmlDocument Manifest { get; internal set; }
@@ -52,6 +44,14 @@ public sealed class ClientApp : ComplexProperty
     ///     Metadata related to the app.
     /// </summary>
     public ClientAppMetadata Metadata { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ClientApp" /> class.
+    /// </summary>
+    internal ClientApp()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
     ///     Helper to convert to xml document from the current value.

@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 internal sealed class UnifiedGroupIdentity : ComplexProperty
 {
     /// <summary>
+    ///     Gets or sets the IdentityType of the UnifiedGroup
+    /// </summary>
+    public UnifiedGroupIdentityType IdentityType { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the value associated with the IdentityType for the UnifiedGroup
+    /// </summary>
+    public string Value { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UnifiedGroupIdentity" />  class
     /// </summary>
     /// <param name="identityType">The identity type</param>
@@ -40,16 +50,6 @@ internal sealed class UnifiedGroupIdentity : ComplexProperty
         IdentityType = identityType;
         Value = value;
     }
-
-    /// <summary>
-    ///     Gets or sets the IdentityType of the UnifiedGroup
-    /// </summary>
-    public UnifiedGroupIdentityType IdentityType { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the value associated with the IdentityType for the UnifiedGroup
-    /// </summary>
-    public string Value { get; set; }
 
     /// <summary>
     ///     Writes to XML.

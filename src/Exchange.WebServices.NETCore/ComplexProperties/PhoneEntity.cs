@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PhoneEntity : ExtractedEntity
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="PhoneEntity" /> class.
-    /// </summary>
-    internal PhoneEntity()
-    {
-    }
-
-    /// <summary>
     ///     Gets the phone entity OriginalPhoneString.
     /// </summary>
     public string OriginalPhoneString { get; internal set; }
@@ -54,6 +47,13 @@ public sealed class PhoneEntity : ExtractedEntity
     ///     Gets the phone entity Type.
     /// </summary>
     public string Type { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PhoneEntity" /> class.
+    /// </summary>
+    internal PhoneEntity()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

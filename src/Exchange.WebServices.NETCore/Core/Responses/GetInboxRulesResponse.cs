@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetInboxRulesResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the rule collection in the response.
+    /// </summary>
+    internal RuleCollection Rules { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetInboxRulesResponse" /> class.
     /// </summary>
     internal GetInboxRulesResponse()
@@ -56,9 +61,4 @@ internal sealed class GetInboxRulesResponse : ServiceResponse
             Rules.LoadFromXml(reader, XmlNamespace.NotSpecified, XmlElementNames.InboxRules);
         }
     }
-
-    /// <summary>
-    ///     Gets the rule collection in the response.
-    /// </summary>
-    internal RuleCollection Rules { get; }
 }

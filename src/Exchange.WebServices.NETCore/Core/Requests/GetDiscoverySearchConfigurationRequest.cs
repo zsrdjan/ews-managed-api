@@ -31,6 +31,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetDiscoverySearchConfigurationRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Search Id
+    /// </summary>
+    public string? SearchId { get; set; }
+
+    /// <summary>
+    ///     Expand group membership
+    /// </summary>
+    public bool ExpandGroupMembership { get; set; }
+
+    /// <summary>
+    ///     In-Place hold configuration only
+    /// </summary>
+    public bool InPlaceHoldConfigurationOnly { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -107,19 +122,4 @@ internal sealed class GetDiscoverySearchConfigurationRequest : SimpleServiceRequ
             await InternalExecuteAsync<GetDiscoverySearchConfigurationResponse>(token).ConfigureAwait(false);
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Search Id
-    /// </summary>
-    public string? SearchId { get; set; }
-
-    /// <summary>
-    ///     Expand group membership
-    /// </summary>
-    public bool ExpandGroupMembership { get; set; }
-
-    /// <summary>
-    ///     In-Place hold configuration only
-    /// </summary>
-    public bool InPlaceHoldConfigurationOnly { get; set; }
 }

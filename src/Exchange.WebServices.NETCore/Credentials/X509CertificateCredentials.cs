@@ -56,6 +56,11 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
     private readonly KeyInfoClause _keyInfoClause;
 
     /// <summary>
+    ///     Gets the flag indicating whether any sign action need taken.
+    /// </summary>
+    internal override bool NeedSignature => true;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="X509CertificateCredentials" /> class.
     /// </summary>
     /// <remarks>The X509Certificate2 argument should have private key in order to sign the message.</remarks>
@@ -92,7 +97,7 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
         EwsUrl = request.RequestUri;
 
@@ -108,11 +113,6 @@ public sealed class X509CertificateCredentials : WSSecurityBasedCredentials
     {
         return new Uri(GetUriWithoutSuffix(url) + WsSecurityX509CertPathSuffix);
     }
-
-    /// <summary>
-    ///     Gets the flag indicating whether any sign action need taken.
-    /// </summary>
-    internal override bool NeedSignature => true;
 
     /// <summary>
     ///     Add the signature element to the memory stream.

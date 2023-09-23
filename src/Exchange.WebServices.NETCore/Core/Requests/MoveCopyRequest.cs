@@ -35,13 +35,10 @@ internal abstract class MoveCopyRequest<TServiceObject, TResponse> : MultiRespon
     where TResponse : ServiceResponse
 {
     /// <summary>
-    ///     Validates request.
+    ///     Gets or sets the destination folder id.
     /// </summary>
-    internal override void Validate()
-    {
-        EwsUtilities.ValidateParam(DestinationFolderId);
-        DestinationFolderId.Validate(Service.RequestedServerVersion);
-    }
+    /// <value>The destination folder id.</value>
+    public FolderId DestinationFolderId { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyRequest&lt;TServiceObject, TResponse&gt;" /> class.
@@ -51,6 +48,15 @@ internal abstract class MoveCopyRequest<TServiceObject, TResponse> : MultiRespon
     internal MoveCopyRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
         : base(service, errorHandlingMode)
     {
+    }
+
+    /// <summary>
+    ///     Validates request.
+    /// </summary>
+    internal override void Validate()
+    {
+        EwsUtilities.ValidateParam(DestinationFolderId);
+        DestinationFolderId.Validate(Service.RequestedServerVersion);
     }
 
     /// <summary>
@@ -71,10 +77,4 @@ internal abstract class MoveCopyRequest<TServiceObject, TResponse> : MultiRespon
 
         WriteIdsToXml(writer);
     }
-
-    /// <summary>
-    ///     Gets or sets the destination folder id.
-    /// </summary>
-    /// <value>The destination folder id.</value>
-    public FolderId DestinationFolderId { get; set; }
 }

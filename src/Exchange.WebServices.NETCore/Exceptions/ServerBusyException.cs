@@ -39,6 +39,12 @@ public class ServerBusyException : ServiceResponseException
     private readonly int _backOffMilliseconds;
 
     /// <summary>
+    ///     Suggested number of milliseconds to wait before attempting a request again. If zero,
+    ///     there is no suggested backoff time.
+    /// </summary>
+    public int BackOffMilliseconds => _backOffMilliseconds;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ServerBusyException" /> class.
     /// </summary>
     /// <param name="response">The ServiceResponse when service operation failed remotely.</param>
@@ -81,10 +87,4 @@ public class ServerBusyException : ServiceResponseException
 
         info.AddValue("BackOffMilliseconds", _backOffMilliseconds);
     }
-
-    /// <summary>
-    ///     Suggested number of milliseconds to wait before attempting a request again. If zero,
-    ///     there is no suggested backoff time.
-    /// </summary>
-    public int BackOffMilliseconds => _backOffMilliseconds;
 }

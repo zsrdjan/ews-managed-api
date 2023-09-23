@@ -31,6 +31,28 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets or sets the items.
+    /// </summary>
+    /// <value>The items.</value>
+    public IEnumerable<Item> Items { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the saved copy destination folder id.
+    /// </summary>
+    /// <value>The saved copy destination folder id.</value>
+    public FolderId? SavedCopyDestinationFolderId { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="SendItemRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
+    internal SendItemRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service, errorHandlingMode)
+    {
+    }
+
+    /// <summary>
     ///     Asserts the valid.
     /// </summary>
     internal override void Validate()
@@ -130,26 +152,4 @@ internal sealed class SendItemRequest : MultiResponseServiceRequest<ServiceRespo
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="SendItemRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
-    internal SendItemRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-        : base(service, errorHandlingMode)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the items.
-    /// </summary>
-    /// <value>The items.</value>
-    public IEnumerable<Item> Items { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the saved copy destination folder id.
-    /// </summary>
-    /// <value>The saved copy destination folder id.</value>
-    public FolderId? SavedCopyDestinationFolderId { get; set; }
 }

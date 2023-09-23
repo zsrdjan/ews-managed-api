@@ -42,6 +42,30 @@ public abstract partial class SearchFilter
         private SearchFilter? _searchFilter;
 
         /// <summary>
+        ///     Gets or sets the search filter to negate. Available search filter classes include
+        ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
+        /// </summary>
+        public SearchFilter? SearchFilter
+        {
+            get => _searchFilter;
+
+            set
+            {
+                if (_searchFilter != null)
+                {
+                    _searchFilter.OnChange -= SearchFilterChanged;
+                }
+
+                SetFieldValue(ref _searchFilter, value);
+
+                if (_searchFilter != null)
+                {
+                    _searchFilter.OnChange += SearchFilterChanged;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="SearchFilter.Not" /> class.
         /// </summary>
         public Not()
@@ -107,30 +131,6 @@ public abstract partial class SearchFilter
         internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
         {
             SearchFilter.WriteToXml(writer);
-        }
-
-        /// <summary>
-        ///     Gets or sets the search filter to negate. Available search filter classes include
-        ///     SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
-        /// </summary>
-        public SearchFilter? SearchFilter
-        {
-            get => _searchFilter;
-
-            set
-            {
-                if (_searchFilter != null)
-                {
-                    _searchFilter.OnChange -= SearchFilterChanged;
-                }
-
-                SetFieldValue(ref _searchFilter, value);
-
-                if (_searchFilter != null)
-                {
-                    _searchFilter.OnChange += SearchFilterChanged;
-                }
-            }
         }
     }
 }

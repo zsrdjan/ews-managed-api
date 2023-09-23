@@ -31,15 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetAppMarketplaceUrlRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetAppMarketplaceUrlRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetAppMarketplaceUrlRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the api version supported by the client.
     ///     This is used by EWS to generate a market place url with the correct version filter.
     /// </summary>
@@ -52,6 +43,15 @@ internal sealed class GetAppMarketplaceUrlRequest : SimpleServiceRequestBase
     /// </summary>
     /// <value>The schema version supported.</value>
     internal string SchemaVersionSupported { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetAppMarketplaceUrlRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetAppMarketplaceUrlRequest(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
     ///     Gets the name of the XML element.

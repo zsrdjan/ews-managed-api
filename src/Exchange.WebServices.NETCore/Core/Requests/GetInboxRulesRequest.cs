@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets or sets the address of the mailbox from which to get the inbox rules.
+    /// </summary>
+    internal string MailboxSmtpAddress { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetInboxRulesRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -38,11 +43,6 @@ internal sealed class GetInboxRulesRequest : SimpleServiceRequestBase
         : base(service)
     {
     }
-
-    /// <summary>
-    ///     Gets or sets the address of the mailbox from which to get the inbox rules.
-    /// </summary>
-    internal string MailboxSmtpAddress { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.

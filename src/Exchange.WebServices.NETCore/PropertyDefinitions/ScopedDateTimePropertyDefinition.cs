@@ -39,24 +39,6 @@ internal class ScopedDateTimePropertyDefinition : DateTimePropertyDefinition
     private readonly GetPropertyDefinitionCallback _getPropertyDefinitionCallback;
 
     /// <summary>
-    ///     Gets the time zone property to which to scope times.
-    /// </summary>
-    /// <param name="version">The EWS version for which the property is to be retrieved.</param>
-    /// <returns>The PropertyDefinition of the scoping time zone property.</returns>
-    private PropertyDefinition GetTimeZoneProperty(ExchangeVersion version)
-    {
-        var timeZoneProperty = _getPropertyDefinitionCallback(version);
-
-        EwsUtilities.Assert(
-            timeZoneProperty != null,
-            "ScopedDateTimePropertyDefinition.GetTimeZoneProperty",
-            "timeZoneProperty is null."
-        );
-
-        return timeZoneProperty;
-    }
-
-    /// <summary>
     ///     Initializes a new instance of the <see cref="ScopedDateTimePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -80,6 +62,24 @@ internal class ScopedDateTimePropertyDefinition : DateTimePropertyDefinition
         );
 
         _getPropertyDefinitionCallback = getPropertyDefinitionCallback;
+    }
+
+    /// <summary>
+    ///     Gets the time zone property to which to scope times.
+    /// </summary>
+    /// <param name="version">The EWS version for which the property is to be retrieved.</param>
+    /// <returns>The PropertyDefinition of the scoping time zone property.</returns>
+    private PropertyDefinition GetTimeZoneProperty(ExchangeVersion version)
+    {
+        var timeZoneProperty = _getPropertyDefinitionCallback(version);
+
+        EwsUtilities.Assert(
+            timeZoneProperty != null,
+            "ScopedDateTimePropertyDefinition.GetTimeZoneProperty",
+            "timeZoneProperty is null."
+        );
+
+        return timeZoneProperty;
     }
 
     /// <summary>

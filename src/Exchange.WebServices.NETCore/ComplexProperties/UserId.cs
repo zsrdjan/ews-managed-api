@@ -33,46 +33,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class UserId : ComplexProperty
 {
-    private string _sId;
-    private string _primarySmtpAddress;
     private string _displayName;
+    private string _primarySmtpAddress;
+    private string _sId;
     private StandardUser? _standardUser;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="UserId" /> class.
-    /// </summary>
-    public UserId()
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="UserId" /> class.
-    /// </summary>
-    /// <param name="primarySmtpAddress">The primary SMTP address used to initialize the UserId.</param>
-    public UserId(string primarySmtpAddress)
-        : this()
-    {
-        _primarySmtpAddress = primarySmtpAddress;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="UserId" /> class.
-    /// </summary>
-    /// <param name="standardUser">The StandardUser value used to initialize the UserId.</param>
-    public UserId(StandardUser standardUser)
-        : this()
-    {
-        _standardUser = standardUser;
-    }
-
-    /// <summary>
-    ///     Determines whether this instance is valid.
-    /// </summary>
-    /// <returns><c>true</c> if this instance is valid; otherwise, <c>false</c>.</returns>
-    internal bool IsValid()
-    {
-        return StandardUser.HasValue || !string.IsNullOrEmpty(PrimarySmtpAddress) || !string.IsNullOrEmpty(SID);
-    }
 
     /// <summary>
     ///     Gets or sets the SID of the user.
@@ -108,6 +72,42 @@ public sealed class UserId : ComplexProperty
     {
         get => _standardUser;
         set => SetFieldValue(ref _standardUser, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UserId" /> class.
+    /// </summary>
+    public UserId()
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UserId" /> class.
+    /// </summary>
+    /// <param name="primarySmtpAddress">The primary SMTP address used to initialize the UserId.</param>
+    public UserId(string primarySmtpAddress)
+        : this()
+    {
+        _primarySmtpAddress = primarySmtpAddress;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UserId" /> class.
+    /// </summary>
+    /// <param name="standardUser">The StandardUser value used to initialize the UserId.</param>
+    public UserId(StandardUser standardUser)
+        : this()
+    {
+        _standardUser = standardUser;
+    }
+
+    /// <summary>
+    ///     Determines whether this instance is valid.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is valid; otherwise, <c>false</c>.</returns>
+    internal bool IsValid()
+    {
+        return StandardUser.HasValue || !string.IsNullOrEmpty(PrimarySmtpAddress) || !string.IsNullOrEmpty(SID);
     }
 
     /// <summary>

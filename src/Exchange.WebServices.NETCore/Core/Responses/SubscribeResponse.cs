@@ -33,6 +33,11 @@ internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
     where TSubscription : SubscriptionBase
 {
     /// <summary>
+    ///     Gets the subscription that was created.
+    /// </summary>
+    public TSubscription Subscription { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeResponse&lt;TSubscription&gt;" /> class.
     /// </summary>
     /// <param name="subscription">The subscription.</param>
@@ -53,9 +58,4 @@ internal sealed class SubscribeResponse<TSubscription> : ServiceResponse
 
         Subscription.LoadFromXml(reader);
     }
-
-    /// <summary>
-    ///     Gets the subscription that was created.
-    /// </summary>
-    public TSubscription Subscription { get; }
 }

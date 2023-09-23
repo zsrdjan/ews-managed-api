@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ResponseMessage : ResponseObject<EmailMessage>
 {
     /// <summary>
+    ///     Gets a value indicating the type of response this object represents.
+    /// </summary>
+    public ResponseMessageType ResponseType { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ResponseMessage" /> class.
     /// </summary>
     /// <param name="referenceItem">The reference item.</param>
@@ -103,11 +108,6 @@ public sealed class ResponseMessage : ResponseObject<EmailMessage>
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating the type of response this object represents.
-    /// </summary>
-    public ResponseMessageType ResponseType { get; }
 
 
     #region Properties

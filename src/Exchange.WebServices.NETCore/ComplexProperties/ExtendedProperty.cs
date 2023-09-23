@@ -38,6 +38,25 @@ public sealed class ExtendedProperty : ComplexProperty
     private object _value;
 
     /// <summary>
+    ///     Gets the definition of the extended property.
+    /// </summary>
+    public ExtendedPropertyDefinition PropertyDefinition { get; private set; }
+
+    /// <summary>
+    ///     Gets or sets the value of the extended property.
+    /// </summary>
+    public object Value
+    {
+        get => _value;
+
+        set
+        {
+            EwsUtilities.ValidateParam(value);
+            SetFieldValue(ref _value, MapiTypeConverter.ChangeType(PropertyDefinition.MapiType, value));
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ExtendedProperty" /> class.
     /// </summary>
     internal ExtendedProperty()
@@ -133,25 +152,6 @@ public sealed class ExtendedProperty : ComplexProperty
                 XmlElementNames.Value,
                 MapiTypeConverter.ConvertToString(PropertyDefinition.MapiType, Value)
             );
-        }
-    }
-
-    /// <summary>
-    ///     Gets the definition of the extended property.
-    /// </summary>
-    public ExtendedPropertyDefinition PropertyDefinition { get; private set; }
-
-    /// <summary>
-    ///     Gets or sets the value of the extended property.
-    /// </summary>
-    public object Value
-    {
-        get => _value;
-
-        set
-        {
-            EwsUtilities.ValidateParam(value);
-            SetFieldValue(ref _value, MapiTypeConverter.ChangeType(PropertyDefinition.MapiType, value));
         }
     }
 

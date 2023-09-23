@@ -44,46 +44,6 @@ public class ServiceResponseException : ServiceRemoteException
     private const string StackTraceKey = "StackTrace";
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ServiceResponseException" /> class.
-    /// </summary>
-    /// <param name="response">The ServiceResponse when service operation failed remotely.</param>
-    internal ServiceResponseException(ServiceResponse response)
-    {
-        Response = response;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceResponseException" />
-    ///     class with serialized data.
-    /// </summary>
-    /// <param name="info">The object that holds the serialized object data.</param>
-    /// <param name="context">The contextual information about the source or destination.</param>
-    protected ServiceResponseException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-        Response = (ServiceResponse)info.GetValue("Response", typeof(ServiceResponse));
-    }
-
-    /// <summary>
-    ///     Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and
-    ///     additional exception information.
-    /// </summary>
-    /// <param name="info">The object that holds the serialized object data. </param>
-    /// <param name="context">The contextual information about the source or destination. </param>
-    /// <exception cref="T:System.ArgumentNullException">
-    ///     The <paramref name="info" /> object is a null reference (Nothing in
-    ///     Visual Basic).
-    /// </exception>
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        EwsUtilities.Assert(info != null, "ServiceResponseException.GetObjectData", "info is null");
-
-        base.GetObjectData(info, context);
-
-        info.AddValue("Response", Response, typeof(ServiceResponse));
-    }
-
-    /// <summary>
     ///     Gets the ServiceResponse for the exception.
     /// </summary>
     public ServiceResponse Response { get; }
@@ -121,5 +81,45 @@ public class ServiceResponseException : ServiceRemoteException
 
             return Response.ErrorMessage;
         }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceResponseException" /> class.
+    /// </summary>
+    /// <param name="response">The ServiceResponse when service operation failed remotely.</param>
+    internal ServiceResponseException(ServiceResponse response)
+    {
+        Response = response;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="T:Microsoft.Exchange.WebServices.Data.ServiceResponseException" />
+    ///     class with serialized data.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data.</param>
+    /// <param name="context">The contextual information about the source or destination.</param>
+    protected ServiceResponseException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
+        Response = (ServiceResponse)info.GetValue("Response", typeof(ServiceResponse));
+    }
+
+    /// <summary>
+    ///     Sets the <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object with the parameter name and
+    ///     additional exception information.
+    /// </summary>
+    /// <param name="info">The object that holds the serialized object data. </param>
+    /// <param name="context">The contextual information about the source or destination. </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///     The <paramref name="info" /> object is a null reference (Nothing in
+    ///     Visual Basic).
+    /// </exception>
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        EwsUtilities.Assert(info != null, "ServiceResponseException.GetObjectData", "info is null");
+
+        base.GetObjectData(info, context);
+
+        info.AddValue("Response", Response, typeof(ServiceResponse));
     }
 }

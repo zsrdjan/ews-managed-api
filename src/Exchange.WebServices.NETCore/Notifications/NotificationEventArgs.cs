@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class NotificationEventArgs : EventArgs
 {
     /// <summary>
+    ///     Gets the subscription for which notifications have been received.
+    /// </summary>
+    public StreamingSubscription Subscription { get; internal set; }
+
+    /// <summary>
+    ///     Gets the events that were received.
+    /// </summary>
+    public IEnumerable<NotificationEvent> Events { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="NotificationEventArgs" /> class.
     /// </summary>
     /// <param name="subscription">The subscription for which notifications have been received.</param>
@@ -43,14 +53,4 @@ public class NotificationEventArgs : EventArgs
         Subscription = subscription;
         Events = events;
     }
-
-    /// <summary>
-    ///     Gets the subscription for which notifications have been received.
-    /// </summary>
-    public StreamingSubscription Subscription { get; internal set; }
-
-    /// <summary>
-    ///     Gets the events that were received.
-    /// </summary>
-    public IEnumerable<NotificationEvent> Events { get; internal set; }
 }

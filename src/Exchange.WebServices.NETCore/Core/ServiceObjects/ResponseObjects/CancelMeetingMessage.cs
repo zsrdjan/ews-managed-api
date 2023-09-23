@@ -34,6 +34,20 @@ namespace Microsoft.Exchange.WebServices.Data;
 [ServiceObjectDefinition(XmlElementNames.CancelCalendarItem, ReturnedByServer = false)]
 public sealed class CancelMeetingMessage : CalendarResponseMessageBase<MeetingCancellation>
 {
+    #region Properties
+
+    /// <summary>
+    ///     Gets or sets the body of the response.
+    /// </summary>
+    public MessageBody Body
+    {
+        get => (MessageBody)PropertyBag[CancelMeetingMessageSchema.Body];
+        set => PropertyBag[CancelMeetingMessageSchema.Body] = value;
+    }
+
+    #endregion
+
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="CancelMeetingMessage" /> class.
     /// </summary>
@@ -60,18 +74,4 @@ public sealed class CancelMeetingMessage : CalendarResponseMessageBase<MeetingCa
     {
         return CancelMeetingMessageSchema.Instance;
     }
-
-
-    #region Properties
-
-    /// <summary>
-    ///     Gets or sets the body of the response.
-    /// </summary>
-    public MessageBody Body
-    {
-        get => (MessageBody)PropertyBag[CancelMeetingMessageSchema.Body];
-        set => PropertyBag[CancelMeetingMessageSchema.Body] = value;
-    }
-
-    #endregion
 }

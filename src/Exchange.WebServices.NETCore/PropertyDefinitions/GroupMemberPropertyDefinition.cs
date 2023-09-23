@@ -36,6 +36,19 @@ internal sealed class GroupMemberPropertyDefinition : ServiceObjectPropertyDefin
     private const string FieldUri = "distributionlist:Members:Member";
 
     /// <summary>
+    ///     Gets or sets the member's key.
+    /// </summary>
+    /// <remarks>
+    ///     Maps to the Index attribute of IndexedFieldURI element.
+    /// </remarks>
+    public string Key { get; set; }
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(string);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GroupMemberPropertyDefinition" /> class.
     /// </summary>
     /// <param name="key">The member's key.</param>
@@ -52,14 +65,6 @@ internal sealed class GroupMemberPropertyDefinition : ServiceObjectPropertyDefin
         : base(FieldUri)
     {
     }
-
-    /// <summary>
-    ///     Gets or sets the member's key.
-    /// </summary>
-    /// <remarks>
-    ///     Maps to the Index attribute of IndexedFieldURI element.
-    /// </remarks>
-    public string Key { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.
@@ -90,9 +95,4 @@ internal sealed class GroupMemberPropertyDefinition : ServiceObjectPropertyDefin
     {
         return $"{FieldUri}:{Key}";
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(string);
 }

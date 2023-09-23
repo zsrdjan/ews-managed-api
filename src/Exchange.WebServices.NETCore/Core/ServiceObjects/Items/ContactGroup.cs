@@ -53,32 +53,6 @@ public class ContactGroup : Item
     }
 
 
-    #region Properties
-
-    /// <summary>
-    ///     Gets the name under which this contact group is filed as.
-    /// </summary>
-    [RequiredServerVersion(ExchangeVersion.Exchange2010)]
-    public string FileAs => (string)PropertyBag[ContactSchema.FileAs];
-
-    /// <summary>
-    ///     Gets or sets the display name of the contact group.
-    /// </summary>
-    public string DisplayName
-    {
-        get => (string)PropertyBag[ContactSchema.DisplayName];
-        set => PropertyBag[ContactSchema.DisplayName] = value;
-    }
-
-    /// <summary>
-    ///     Gets the members of the contact group.
-    /// </summary>
-    [RequiredServerVersion(ExchangeVersion.Exchange2010)]
-    public GroupMemberCollection Members => (GroupMemberCollection)PropertyBag[ContactGroupSchema.Members];
-
-    #endregion
-
-
     /// <summary>
     ///     Binds to an existing contact group and loads the specified set of properties.
     ///     Calling this method results in a call to EWS.
@@ -138,4 +112,30 @@ public class ContactGroup : Item
         // Setting Subject out of sync with DisplayName breaks interop with OLK.
         throw new ServiceObjectPropertyException(Strings.PropertyIsReadOnly, ItemSchema.Subject);
     }
+
+
+    #region Properties
+
+    /// <summary>
+    ///     Gets the name under which this contact group is filed as.
+    /// </summary>
+    [RequiredServerVersion(ExchangeVersion.Exchange2010)]
+    public string FileAs => (string)PropertyBag[ContactSchema.FileAs];
+
+    /// <summary>
+    ///     Gets or sets the display name of the contact group.
+    /// </summary>
+    public string DisplayName
+    {
+        get => (string)PropertyBag[ContactSchema.DisplayName];
+        set => PropertyBag[ContactSchema.DisplayName] = value;
+    }
+
+    /// <summary>
+    ///     Gets the members of the contact group.
+    /// </summary>
+    [RequiredServerVersion(ExchangeVersion.Exchange2010)]
+    public GroupMemberCollection Members => (GroupMemberCollection)PropertyBag[ContactGroupSchema.Members];
+
+    #endregion
 }

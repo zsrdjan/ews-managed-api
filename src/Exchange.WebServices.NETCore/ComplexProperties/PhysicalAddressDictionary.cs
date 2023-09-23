@@ -38,15 +38,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PhysicalAddressDictionary : DictionaryProperty<PhysicalAddressKey, PhysicalAddressEntry>
 {
     /// <summary>
-    ///     Creates instance of dictionary entry.
-    /// </summary>
-    /// <returns>New instance.</returns>
-    internal override PhysicalAddressEntry CreateEntryInstance()
-    {
-        return new PhysicalAddressEntry();
-    }
-
-    /// <summary>
     ///     Gets or sets the physical address at the specified key.
     /// </summary>
     /// <param name="key">The key of the physical address to get or set.</param>
@@ -67,6 +58,15 @@ public sealed class PhysicalAddressDictionary : DictionaryProperty<PhysicalAddre
                 InternalAddOrReplace(value);
             }
         }
+    }
+
+    /// <summary>
+    ///     Creates instance of dictionary entry.
+    /// </summary>
+    /// <returns>New instance.</returns>
+    internal override PhysicalAddressEntry CreateEntryInstance()
+    {
+        return new PhysicalAddressEntry();
     }
 
     /// <summary>

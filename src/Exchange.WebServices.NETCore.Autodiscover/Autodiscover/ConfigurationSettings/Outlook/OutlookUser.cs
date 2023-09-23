@@ -40,18 +40,16 @@ internal sealed class OutlookUser
     ///     Converters to translate Outlook user settings.
     ///     Each entry maps to a lambda expression used to get the matching property from the OutlookUser instance.
     /// </summary>
-    private static readonly LazyMember<Dictionary<UserSettingName, Func<OutlookUser, string>>> ConverterDictionary =
-        new(
-            () => new Dictionary<UserSettingName, Func<OutlookUser, string>>
-            {
-                // @formatter:off
-                { UserSettingName.UserDisplayName, u => u._displayName },
-                { UserSettingName.UserDN, u => u._legacyDn },
-                { UserSettingName.UserDeploymentId, u => u._deploymentId },
-                { UserSettingName.AutoDiscoverSMTPAddress, u => u._autodiscoverAmtpAddress },
-                // @formatter:on
-            }
-        );
+    private static readonly IReadOnlyDictionary<UserSettingName, Func<OutlookUser, string>> ConverterDictionary =
+        new Dictionary<UserSettingName, Func<OutlookUser, string>>
+        {
+            // @formatter:off
+            { UserSettingName.UserDisplayName, u => u._displayName },
+            { UserSettingName.UserDN, u => u._legacyDn },
+            { UserSettingName.UserDeploymentId, u => u._deploymentId },
+            { UserSettingName.AutoDiscoverSMTPAddress, u => u._autodiscoverAmtpAddress },
+            // @formatter:on
+        };
 
     private string _displayName;
     private string _legacyDn;
@@ -118,7 +116,7 @@ internal sealed class OutlookUser
     internal void ConvertToUserSettings(List<UserSettingName> requestedSettings, GetUserSettingsResponse response)
     {
         // In English: collect converters that are contained in the requested settings.
-        var converterQuery = from converter in ConverterDictionary.Member
+        var converterQuery = from converter in ConverterDictionary
             where requestedSettings.Contains(converter.Key)
             select converter;
 
@@ -136,5 +134,5 @@ internal sealed class OutlookUser
     ///     Gets the available user settings.
     /// </summary>
     /// <value>The available user settings.</value>
-    internal static IEnumerable<UserSettingName> AvailableUserSettings => ConverterDictionary.Member.Keys;
+    internal static IEnumerable<UserSettingName> AvailableUserSettings => ConverterDictionary.Keys;
 }

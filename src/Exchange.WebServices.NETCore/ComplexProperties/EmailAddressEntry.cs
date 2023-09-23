@@ -42,6 +42,24 @@ public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
     private EmailAddress? _emailAddress;
 
     /// <summary>
+    ///     Gets or sets the e-mail address of the entry.
+    /// </summary>
+    public EmailAddress? EmailAddress
+    {
+        get => _emailAddress;
+
+        set
+        {
+            SetFieldValue(ref _emailAddress, value);
+
+            if (_emailAddress != null)
+            {
+                _emailAddress.OnChange += EmailAddressChanged;
+            }
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EmailAddressEntry" /> class.
     /// </summary>
     internal EmailAddressEntry()
@@ -123,24 +141,6 @@ public sealed class EmailAddressEntry : DictionaryEntryProperty<EmailAddressKey>
     internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
     {
         writer.WriteValue(EmailAddress.Address, XmlElementNames.EmailAddress);
-    }
-
-    /// <summary>
-    ///     Gets or sets the e-mail address of the entry.
-    /// </summary>
-    public EmailAddress? EmailAddress
-    {
-        get => _emailAddress;
-
-        set
-        {
-            SetFieldValue(ref _emailAddress, value);
-
-            if (_emailAddress != null)
-            {
-                _emailAddress.OnChange += EmailAddressChanged;
-            }
-        }
     }
 
     /// <summary>

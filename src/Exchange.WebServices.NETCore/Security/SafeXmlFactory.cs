@@ -31,10 +31,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Factory methods to safely instantiate XXE vulnerable object.
 /// </summary>
-internal class SafeXmlFactory
+internal static class SafeXmlFactory
 {
-    #region Members
-
     /// <summary>
     ///     Safe xml reader settings.
     /// </summary>
@@ -43,8 +41,6 @@ internal class SafeXmlFactory
         Async = true,
         DtdProcessing = DtdProcessing.Prohibit,
     };
-
-    #endregion
 
 
     #region XmlTextReader

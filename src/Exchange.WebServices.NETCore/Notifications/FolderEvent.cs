@@ -34,6 +34,25 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class FolderEvent : NotificationEvent
 {
     /// <summary>
+    ///     Gets the Id of the folder this event applies to.
+    /// </summary>
+    public FolderId FolderId { get; private set; }
+
+    /// <summary>
+    ///     Gets the Id of the folder that was moved or copied. OldFolderId is only meaningful
+    ///     when EventType is equal to either EventType.Moved or EventType.Copied. For all
+    ///     other event types, OldFolderId is null.
+    /// </summary>
+    public FolderId OldFolderId { get; private set; }
+
+    /// <summary>
+    ///     Gets the new number of unread messages. This is is only meaningful when
+    ///     EventType is equal to EventType.Modified. For all other event types,
+    ///     UnreadCount is null.
+    /// </summary>
+    public int? UnreadCount { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="FolderEvent" /> class.
     /// </summary>
     /// <param name="eventType">Type of the event.</param>
@@ -88,23 +107,4 @@ public class FolderEvent : NotificationEvent
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the Id of the folder this event applies to.
-    /// </summary>
-    public FolderId FolderId { get; private set; }
-
-    /// <summary>
-    ///     Gets the Id of the folder that was moved or copied. OldFolderId is only meaningful
-    ///     when EventType is equal to either EventType.Moved or EventType.Copied. For all
-    ///     other event types, OldFolderId is null.
-    /// </summary>
-    public FolderId OldFolderId { get; private set; }
-
-    /// <summary>
-    ///     Gets the new number of unread messages. This is is only meaningful when
-    ///     EventType is equal to EventType.Modified. For all other event types,
-    ///     UnreadCount is null.
-    /// </summary>
-    public int? UnreadCount { get; private set; }
 }

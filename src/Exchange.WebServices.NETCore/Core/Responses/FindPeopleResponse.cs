@@ -33,15 +33,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class FindPeopleResponse : ServiceResponse
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="FindPeopleResponse" /> class.
-    /// </summary>
-    internal FindPeopleResponse()
-    {
-        Results = new FindPeopleResults();
-        Sources = new List<string>();
-    }
-
-    /// <summary>
     ///     Gets the collection of Personas in results.
     /// </summary>
     internal ICollection<Persona> Personas => Results.Personas;
@@ -61,6 +52,15 @@ internal sealed class FindPeopleResponse : ServiceResponse
     ///     Whether we queried GAL
     /// </summary>
     internal ICollection<string> Sources { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FindPeopleResponse" /> class.
+    /// </summary>
+    internal FindPeopleResponse()
+    {
+        Results = new FindPeopleResults();
+        Sources = new List<string>();
+    }
 
     /// <summary>
     ///     Read Personas from XML.

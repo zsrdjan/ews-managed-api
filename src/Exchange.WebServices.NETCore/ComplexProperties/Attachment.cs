@@ -33,63 +33,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public abstract class Attachment : ComplexProperty
 {
-    private string _name;
-    private string _contentType;
     private string _contentId;
     private string _contentLocation;
-    private int _size;
-    private DateTime _lastModifiedTime;
+    private string _contentType;
     private bool _isInline;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="Attachment" /> class.
-    /// </summary>
-    /// <param name="owner">The owner.</param>
-    internal Attachment(Item? owner)
-    {
-        Owner = owner;
-
-        if (Owner != null)
-        {
-            Service = Owner.Service;
-        }
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="Attachment" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal Attachment(ExchangeService service)
-    {
-        Service = service;
-    }
-
-    /// <summary>
-    ///     Throws exception if this is not a new service object.
-    /// </summary>
-    internal void ThrowIfThisIsNotNew()
-    {
-        if (!IsNew)
-        {
-            throw new InvalidOperationException(Strings.AttachmentCannotBeUpdated);
-        }
-    }
-
-    /// <summary>
-    ///     Sets value of field.
-    /// </summary>
-    /// <remarks>
-    ///     We override the base implementation. Attachments cannot be modified so any attempts
-    ///     the change a property on an existing attachment is an error.
-    /// </remarks>
-    /// <typeparam name="T">Field type.</typeparam>
-    /// <param name="field">The field.</param>
-    /// <param name="value">The value.</param>
-    internal override void SetFieldValue<T>(ref T field, T value)
-    {
-        ThrowIfThisIsNotNew();
-        base.SetFieldValue(ref field, value);
-    }
+    private DateTime _lastModifiedTime;
+    private string _name;
+    private int _size;
 
     /// <summary>
     ///     Gets the Id of the attachment.
@@ -209,6 +159,56 @@ public abstract class Attachment : ComplexProperty
     ///     Gets the related exchange service.
     /// </summary>
     internal ExchangeService Service { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Attachment" /> class.
+    /// </summary>
+    /// <param name="owner">The owner.</param>
+    internal Attachment(Item? owner)
+    {
+        Owner = owner;
+
+        if (Owner != null)
+        {
+            Service = Owner.Service;
+        }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Attachment" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal Attachment(ExchangeService service)
+    {
+        Service = service;
+    }
+
+    /// <summary>
+    ///     Throws exception if this is not a new service object.
+    /// </summary>
+    internal void ThrowIfThisIsNotNew()
+    {
+        if (!IsNew)
+        {
+            throw new InvalidOperationException(Strings.AttachmentCannotBeUpdated);
+        }
+    }
+
+    /// <summary>
+    ///     Sets value of field.
+    /// </summary>
+    /// <remarks>
+    ///     We override the base implementation. Attachments cannot be modified so any attempts
+    ///     the change a property on an existing attachment is an error.
+    /// </remarks>
+    /// <typeparam name="T">Field type.</typeparam>
+    /// <param name="field">The field.</param>
+    /// <param name="value">The value.</param>
+    internal override void SetFieldValue<T>(ref T field, T value)
+    {
+        ThrowIfThisIsNotNew();
+        base.SetFieldValue(ref field, value);
+    }
 
     /// <summary>
     ///     Gets the name of the XML element.

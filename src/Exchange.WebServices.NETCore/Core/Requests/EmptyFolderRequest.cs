@@ -31,6 +31,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class EmptyFolderRequest : DeleteRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets the folder ids.
+    /// </summary>
+    /// <value>The folder ids.</value>
+    internal FolderIdWrapperList FolderIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether empty folder should also delete sub folders.
+    /// </summary>
+    /// <value><c>true</c> if empty folder should also delete sub folders, otherwise <c>false</c></value>
+    internal bool DeleteSubFolders { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EmptyFolderRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -125,16 +137,4 @@ internal sealed class EmptyFolderRequest : DeleteRequest<ServiceResponse>
     {
         return ExchangeVersion.Exchange2010_SP1;
     }
-
-    /// <summary>
-    ///     Gets the folder ids.
-    /// </summary>
-    /// <value>The folder ids.</value>
-    internal FolderIdWrapperList FolderIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether empty folder should also delete sub folders.
-    /// </summary>
-    /// <value><c>true</c> if empty folder should also delete sub folders, otherwise <c>false</c></value>
-    internal bool DeleteSubFolders { get; set; }
 }

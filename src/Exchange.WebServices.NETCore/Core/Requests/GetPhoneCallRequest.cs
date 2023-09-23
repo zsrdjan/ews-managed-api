@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Gets or sets the Id of the phone call.
+    /// </summary>
+    internal PhoneCallId Id { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetPhoneCallRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -97,9 +102,4 @@ internal sealed class GetPhoneCallRequest : SimpleServiceRequestBase
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Gets or sets the Id of the phone call.
-    /// </summary>
-    internal PhoneCallId Id { get; set; }
 }

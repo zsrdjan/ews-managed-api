@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class StringPropertyDefinition : TypedPropertyDefinition
 {
     /// <summary>
+    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
+    /// </summary>
+    internal override bool IsNullable => true;
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(string);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="StringPropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -56,14 +66,4 @@ internal class StringPropertyDefinition : TypedPropertyDefinition
     {
         return value;
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
-    /// </summary>
-    internal override bool IsNullable => true;
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(string);
 }

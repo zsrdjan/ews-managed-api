@@ -33,6 +33,22 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
     private DateTime _endDate;
 
     /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal override string XmlElementName => XmlElementNames.EndDateRecurrence;
+
+    /// <summary>
+    ///     Gets or sets the end date.
+    /// </summary>
+    /// <value>The end date.</value>
+    public DateTime EndDate
+    {
+        get => _endDate;
+        set => SetFieldValue(ref _endDate, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EndDateRecurrenceRange" /> class.
     /// </summary>
     public EndDateRecurrenceRange()
@@ -49,12 +65,6 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
     {
         _endDate = endDate;
     }
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <value>The name of the XML element.</value>
-    internal override string XmlElementName => XmlElementNames.EndDateRecurrence;
 
     /// <summary>
     ///     Setups the recurrence.
@@ -102,15 +112,5 @@ internal sealed class EndDateRecurrenceRange : RecurrenceRange
                 return false;
             }
         }
-    }
-
-    /// <summary>
-    ///     Gets or sets the end date.
-    /// </summary>
-    /// <value>The end date.</value>
-    public DateTime EndDate
-    {
-        get => _endDate;
-        set => SetFieldValue(ref _endDate, value);
     }
 }

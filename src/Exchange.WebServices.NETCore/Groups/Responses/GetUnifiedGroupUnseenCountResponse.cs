@@ -31,16 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 internal sealed class GetUnifiedGroupUnseenCountResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets or sets the unseen count
+    /// </summary>
+    public int UnseenCount { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUnifiedGroupUnseenCountResponse" /> class.
     /// </summary>
     internal GetUnifiedGroupUnseenCountResponse()
     {
     }
-
-    /// <summary>
-    ///     Gets or sets the unseen count
-    /// </summary>
-    public int UnseenCount { get; set; }
 
     /// <summary>
     ///     Read response elements from XML.

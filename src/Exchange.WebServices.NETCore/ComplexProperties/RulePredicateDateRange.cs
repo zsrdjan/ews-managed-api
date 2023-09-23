@@ -34,21 +34,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class RulePredicateDateRange : ComplexProperty
 {
     /// <summary>
-    ///     The start DateTime.
-    /// </summary>
-    private DateTime? _start;
-
-    /// <summary>
     ///     The end DateTime.
     /// </summary>
     private DateTime? _end;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RulePredicateDateRange" /> class.
+    ///     The start DateTime.
     /// </summary>
-    internal RulePredicateDateRange()
-    {
-    }
+    private DateTime? _start;
 
     /// <summary>
     ///     Gets or sets the range start date and time. If Start is set to null, no
@@ -68,6 +61,13 @@ public sealed class RulePredicateDateRange : ComplexProperty
     {
         get => _end;
         set => SetFieldValue(ref _end, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RulePredicateDateRange" /> class.
+    /// </summary>
+    internal RulePredicateDateRange()
+    {
     }
 
     /// <summary>

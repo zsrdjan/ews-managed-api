@@ -33,9 +33,49 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class EnhancedLocation : ComplexProperty
 {
-    private string _displayName;
     private string _annotation;
+    private string _displayName;
     private PersonaPostalAddress? _personaPostalAddress;
+
+    /// <summary>
+    ///     Gets or sets the Location DisplayName.
+    /// </summary>
+    public string DisplayName
+    {
+        get => _displayName;
+        set => SetFieldValue(ref _displayName, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the Location Annotation.
+    /// </summary>
+    public string Annotation
+    {
+        get => _annotation;
+        set => SetFieldValue(ref _annotation, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the Persona Postal Address.
+    /// </summary>
+    public PersonaPostalAddress? PersonaPostalAddress
+    {
+        get => _personaPostalAddress;
+        set
+        {
+            if (!_personaPostalAddress.Equals(value))
+            {
+                if (_personaPostalAddress != null)
+                {
+                    _personaPostalAddress.OnChange -= PersonaPostalAddress_OnChange;
+                }
+
+                SetFieldValue(ref _personaPostalAddress, value);
+
+                _personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
+            }
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EnhancedLocation" /> class.
@@ -107,46 +147,6 @@ public sealed class EnhancedLocation : ComplexProperty
             default:
             {
                 return false;
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the Location DisplayName.
-    /// </summary>
-    public string DisplayName
-    {
-        get => _displayName;
-        set => SetFieldValue(ref _displayName, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the Location Annotation.
-    /// </summary>
-    public string Annotation
-    {
-        get => _annotation;
-        set => SetFieldValue(ref _annotation, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the Persona Postal Address.
-    /// </summary>
-    public PersonaPostalAddress? PersonaPostalAddress
-    {
-        get => _personaPostalAddress;
-        set
-        {
-            if (!_personaPostalAddress.Equals(value))
-            {
-                if (_personaPostalAddress != null)
-                {
-                    _personaPostalAddress.OnChange -= PersonaPostalAddress_OnChange;
-                }
-
-                SetFieldValue(ref _personaPostalAddress, value);
-
-                _personaPostalAddress.OnChange += PersonaPostalAddress_OnChange;
             }
         }
     }

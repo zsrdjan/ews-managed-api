@@ -34,6 +34,76 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     private int _numberOfDays;
 
     /// <summary>
+    ///     Gets or sets the property set.
+    /// </summary>
+    /// <value>The property set.</value>
+    public PropertySet PropertySet { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the sync folder id.
+    /// </summary>
+    /// <value>The sync folder id.</value>
+    public FolderId SyncFolderId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the scope of the sync.
+    /// </summary>
+    /// <value>The scope of the sync.</value>
+    public SyncFolderItemsScope SyncScope { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the state of the sync.
+    /// </summary>
+    /// <value>The state of the sync.</value>
+    public string SyncState { get; set; }
+
+    /// <summary>
+    ///     Gets the list of ignored item ids.
+    /// </summary>
+    /// <value>The ignored item ids.</value>
+    public ItemIdWrapperList IgnoredItemIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the maximum number of changes returned by SyncFolderItems.
+    ///     Values must be between 1 and 512.
+    ///     Default is 100.
+    /// </summary>
+    public int MaxChangesReturned
+    {
+        get => _maxChangesReturned;
+
+        set
+        {
+            if (value < 1 || value > 512)
+            {
+                throw new ArgumentException(Strings.MaxChangesMustBeBetween1And512);
+            }
+
+            _maxChangesReturned = value;
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the number of days of content returned by SyncFolderItems.
+    ///     Zero means return all content.
+    ///     Default is zero.
+    /// </summary>
+    public int NumberOfDays
+    {
+        get => _numberOfDays;
+
+        set
+        {
+            if (value < 0)
+            {
+                throw new ArgumentException(Strings.NumberOfDaysMustBePositive);
+            }
+
+            _numberOfDays = value;
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SyncFolderItemsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -166,75 +236,5 @@ internal class SyncFolderItemsRequest : MultiResponseServiceRequest<SyncFolderIt
     internal override ExchangeVersion GetMinimumRequiredServerVersion()
     {
         return ExchangeVersion.Exchange2007_SP1;
-    }
-
-    /// <summary>
-    ///     Gets or sets the property set.
-    /// </summary>
-    /// <value>The property set.</value>
-    public PropertySet PropertySet { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the sync folder id.
-    /// </summary>
-    /// <value>The sync folder id.</value>
-    public FolderId SyncFolderId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the scope of the sync.
-    /// </summary>
-    /// <value>The scope of the sync.</value>
-    public SyncFolderItemsScope SyncScope { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the state of the sync.
-    /// </summary>
-    /// <value>The state of the sync.</value>
-    public string SyncState { get; set; }
-
-    /// <summary>
-    ///     Gets the list of ignored item ids.
-    /// </summary>
-    /// <value>The ignored item ids.</value>
-    public ItemIdWrapperList IgnoredItemIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the maximum number of changes returned by SyncFolderItems.
-    ///     Values must be between 1 and 512.
-    ///     Default is 100.
-    /// </summary>
-    public int MaxChangesReturned
-    {
-        get => _maxChangesReturned;
-
-        set
-        {
-            if (value < 1 || value > 512)
-            {
-                throw new ArgumentException(Strings.MaxChangesMustBeBetween1And512);
-            }
-
-            _maxChangesReturned = value;
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the number of days of content returned by SyncFolderItems.
-    ///     Zero means return all content.
-    ///     Default is zero.
-    /// </summary>
-    public int NumberOfDays
-    {
-        get => _numberOfDays;
-
-        set
-        {
-            if (value < 0)
-            {
-                throw new ArgumentException(Strings.NumberOfDaysMustBePositive);
-            }
-
-            _numberOfDays = value;
-        }
     }
 }

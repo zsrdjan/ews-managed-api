@@ -31,6 +31,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class MarkAllItemsAsReadRequest : MultiResponseServiceRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets the folder ids.
+    /// </summary>
+    internal FolderIdWrapperList FolderIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether items should be marked as read/unread.
+    /// </summary>
+    internal bool ReadFlag { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether read receipts should be suppressed for items.
+    /// </summary>
+    internal bool SuppressReadReceipts { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MarkAllItemsAsReadRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -117,19 +132,4 @@ internal sealed class MarkAllItemsAsReadRequest : MultiResponseServiceRequest<Se
     {
         return ExchangeVersion.Exchange2013;
     }
-
-    /// <summary>
-    ///     Gets the folder ids.
-    /// </summary>
-    internal FolderIdWrapperList FolderIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether items should be marked as read/unread.
-    /// </summary>
-    internal bool ReadFlag { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether read receipts should be suppressed for items.
-    /// </summary>
-    internal bool SuppressReadReceipts { get; set; }
 }

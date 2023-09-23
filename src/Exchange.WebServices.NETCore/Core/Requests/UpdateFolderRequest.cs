@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets the list of folders.
+    /// </summary>
+    /// <value>The folders.</value>
+    public List<Folder> Folders { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateFolderRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -131,10 +137,4 @@ internal sealed class UpdateFolderRequest : MultiResponseServiceRequest<ServiceR
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the list of folders.
-    /// </summary>
-    /// <value>The folders.</value>
-    public List<Folder> Folders { get; } = new();
 }

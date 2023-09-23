@@ -23,18 +23,41 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using JetBrains.Annotations;
+
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
 ///     Represents a phone call.
 /// </summary>
+[PublicAPI]
 public sealed class PhoneCall : ComplexProperty
 {
     private const string SuccessfulResponseText = "OK";
     private const int SuccessfulResponseCode = 200;
+    private readonly PhoneCallId _id;
 
     private readonly ExchangeService _service;
-    private readonly PhoneCallId _id;
+
+    /// <summary>
+    ///     Gets a value indicating the last known state of this phone call.
+    /// </summary>
+    public PhoneCallState State { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating the reason why this phone call failed to connect.
+    /// </summary>
+    public ConnectionFailureCause ConnectionFailureCause { get; private set; }
+
+    /// <summary>
+    ///     Gets the SIP response text of this phone call.
+    /// </summary>
+    public string SIPResponseText { get; private set; }
+
+    /// <summary>
+    ///     Gets the SIP response code of this phone call.
+    /// </summary>
+    public int SIPResponseCode { get; private set; }
 
     /// <summary>
     ///     PhoneCall Constructor.
@@ -86,7 +109,7 @@ public sealed class PhoneCall : ComplexProperty
             throw new ServiceLocalException(Strings.PhoneCallAlreadyDisconnected);
         }
 
-        await _service.UnifiedMessaging.DisconnectPhoneCall(_id, token);
+        await _service.UnifiedMessaging.DisconnectPhoneCall(_id, token).ConfigureAwait(false);
         State = PhoneCallState.Disconnected;
     }
 
@@ -100,39 +123,29 @@ public sealed class PhoneCall : ComplexProperty
         switch (reader.LocalName)
         {
             case XmlElementNames.PhoneCallState:
+            {
                 State = reader.ReadElementValue<PhoneCallState>();
                 return true;
+            }
             case XmlElementNames.ConnectionFailureCause:
+            {
                 ConnectionFailureCause = reader.ReadElementValue<ConnectionFailureCause>();
                 return true;
+            }
             case XmlElementNames.SIPResponseText:
+            {
                 SIPResponseText = reader.ReadElementValue();
                 return true;
+            }
             case XmlElementNames.SIPResponseCode:
+            {
                 SIPResponseCode = reader.ReadElementValue<int>();
                 return true;
+            }
             default:
+            {
                 return false;
+            }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating the last known state of this phone call.
-    /// </summary>
-    public PhoneCallState State { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating the reason why this phone call failed to connect.
-    /// </summary>
-    public ConnectionFailureCause ConnectionFailureCause { get; private set; }
-
-    /// <summary>
-    ///     Gets the SIP response text of this phone call.
-    /// </summary>
-    public string SIPResponseText { get; private set; }
-
-    /// <summary>
-    ///     Gets the SIP response code of this phone call.
-    /// </summary>
-    public int SIPResponseCode { get; private set; }
 }

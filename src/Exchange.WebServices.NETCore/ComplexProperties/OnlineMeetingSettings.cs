@@ -100,6 +100,11 @@ public enum Presenters
 public class OnlineMeetingSettings : ComplexProperty
 {
     /// <summary>
+    ///     Routing type.
+    /// </summary>
+    private OnlineMeetingAccessLevel _accessLevel;
+
+    /// <summary>
     ///     Email address.
     /// </summary>
     private LobbyBypass _lobbyBypass;
@@ -107,12 +112,34 @@ public class OnlineMeetingSettings : ComplexProperty
     /// <summary>
     ///     Routing type.
     /// </summary>
-    private OnlineMeetingAccessLevel _accessLevel;
+    private Presenters _presenters;
 
     /// <summary>
-    ///     Routing type.
+    ///     Gets or sets the online meeting setting that describes whether users dialing in by phone have to wait in the lobby.
     /// </summary>
-    private Presenters _presenters;
+    public LobbyBypass LobbyBypass
+    {
+        get => _lobbyBypass;
+        set => SetFieldValue(ref _lobbyBypass, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the online meeting setting that describes access permission to the meeting.
+    /// </summary>
+    public OnlineMeetingAccessLevel AccessLevel
+    {
+        get => _accessLevel;
+        set => SetFieldValue(ref _accessLevel, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the online meeting setting that defines the meeting leaders.
+    /// </summary>
+    public Presenters Presenters
+    {
+        get => _presenters;
+        set => SetFieldValue(ref _presenters, value);
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnlineMeetingSettings" /> class.
@@ -147,33 +174,6 @@ public class OnlineMeetingSettings : ComplexProperty
         LobbyBypass = onlineMeetingSettings.LobbyBypass;
         AccessLevel = onlineMeetingSettings.AccessLevel;
         Presenters = onlineMeetingSettings.Presenters;
-    }
-
-    /// <summary>
-    ///     Gets or sets the online meeting setting that describes whether users dialing in by phone have to wait in the lobby.
-    /// </summary>
-    public LobbyBypass LobbyBypass
-    {
-        get => _lobbyBypass;
-        set => SetFieldValue(ref _lobbyBypass, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the online meeting setting that describes access permission to the meeting.
-    /// </summary>
-    public OnlineMeetingAccessLevel AccessLevel
-    {
-        get => _accessLevel;
-        set => SetFieldValue(ref _accessLevel, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the online meeting setting that defines the meeting leaders.
-    /// </summary>
-    public Presenters Presenters
-    {
-        get => _presenters;
-        set => SetFieldValue(ref _presenters, value);
     }
 
     /// <summary>

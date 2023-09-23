@@ -34,6 +34,28 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class NotificationEvent
 {
     /// <summary>
+    ///     Gets the type of this event.
+    /// </summary>
+    public EventType EventType { get; }
+
+    /// <summary>
+    ///     Gets the date and time when the event occurred.
+    /// </summary>
+    public DateTime TimeStamp { get; }
+
+    /// <summary>
+    ///     Gets the Id of the parent folder of the item or folder this event applies to.
+    /// </summary>
+    public FolderId ParentFolderId { get; internal set; }
+
+    /// <summary>
+    ///     Gets the Id of the old parent folder of the item or folder this event applies to.
+    ///     OldParentFolderId is only meaningful when EventType is equal to either EventType.Moved or
+    ///     EventType.Copied. For all other event types, OldParentFolderId is null.
+    /// </summary>
+    public FolderId OldParentFolderId { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="NotificationEvent" /> class.
     /// </summary>
     /// <param name="eventType">Type of the event.</param>
@@ -63,26 +85,4 @@ public abstract class NotificationEvent
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Types, xmlElementName);
     }
-
-    /// <summary>
-    ///     Gets the type of this event.
-    /// </summary>
-    public EventType EventType { get; }
-
-    /// <summary>
-    ///     Gets the date and time when the event occurred.
-    /// </summary>
-    public DateTime TimeStamp { get; }
-
-    /// <summary>
-    ///     Gets the Id of the parent folder of the item or folder this event applies to.
-    /// </summary>
-    public FolderId ParentFolderId { get; internal set; }
-
-    /// <summary>
-    ///     Gets the Id of the old parent folder of the item or folder this event applies to.
-    ///     OldParentFolderId is only meaningful when EventType is equal to either EventType.Moved or
-    ///     EventType.Copied. For all other event types, OldParentFolderId is null.
-    /// </summary>
-    public FolderId OldParentFolderId { get; internal set; }
 }

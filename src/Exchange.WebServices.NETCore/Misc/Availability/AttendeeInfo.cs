@@ -34,6 +34,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class AttendeeInfo : ISelfValidate
 {
     /// <summary>
+    ///     Gets or sets the SMTP address of this attendee.
+    /// </summary>
+    public string SmtpAddress { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the type of this attendee.
+    /// </summary>
+    public MeetingAttendeeType AttendeeType { get; set; } = MeetingAttendeeType.Required;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether times when this attendee is not available should be returned.
+    /// </summary>
+    public bool ExcludeConflicts { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AttendeeInfo" /> class.
     /// </summary>
     public AttendeeInfo()
@@ -64,6 +79,20 @@ public sealed class AttendeeInfo : ISelfValidate
         SmtpAddress = smtpAddress;
     }
 
+
+    #region ISelfValidate Members
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    void ISelfValidate.Validate()
+    {
+        EwsUtilities.ValidateParam(SmtpAddress);
+    }
+
+    #endregion
+
+
     /// <summary>
     ///     Defines an implicit conversion between a string representing an SMTP address and AttendeeInfo.
     /// </summary>
@@ -92,32 +121,4 @@ public sealed class AttendeeInfo : ISelfValidate
 
         writer.WriteEndElement(); // MailboxData
     }
-
-    /// <summary>
-    ///     Gets or sets the SMTP address of this attendee.
-    /// </summary>
-    public string SmtpAddress { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the type of this attendee.
-    /// </summary>
-    public MeetingAttendeeType AttendeeType { get; set; } = MeetingAttendeeType.Required;
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether times when this attendee is not available should be returned.
-    /// </summary>
-    public bool ExcludeConflicts { get; set; }
-
-
-    #region ISelfValidate Members
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    void ISelfValidate.Validate()
-    {
-        EwsUtilities.ValidateParam(SmtpAddress);
-    }
-
-    #endregion
 }

@@ -31,6 +31,20 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServerTimeZonesResponse>
 {
     /// <summary>
+    ///     Gets or sets the ids of the time zones that should be returned by the server.
+    /// </summary>
+    internal IEnumerable<string>? Ids { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetServerTimeZonesRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal GetServerTimeZonesRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
@@ -41,15 +55,6 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
         {
             EwsUtilities.ValidateParamCollection(Ids);
         }
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="GetServerTimeZonesRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal GetServerTimeZonesRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
     }
 
     /// <summary>
@@ -126,9 +131,4 @@ internal class GetServerTimeZonesRequest : MultiResponseServiceRequest<GetServer
             writer.WriteEndElement(); // Ids
         }
     }
-
-    /// <summary>
-    ///     Gets or sets the ids of the time zones that should be returned by the server.
-    /// </summary>
-    internal IEnumerable<string>? Ids { get; set; }
 }

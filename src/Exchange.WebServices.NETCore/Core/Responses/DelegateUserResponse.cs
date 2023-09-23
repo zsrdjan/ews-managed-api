@@ -36,6 +36,11 @@ public sealed class DelegateUserResponse : ServiceResponse
     private readonly bool _readDelegateUser;
 
     /// <summary>
+    ///     The delegate user that was involved in the operation.
+    /// </summary>
+    public DelegateUser? DelegateUser { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateUserResponse" /> class.
     /// </summary>
     /// <param name="readDelegateUser">if set to <c>true</c> [read delegate user].</param>
@@ -64,9 +69,4 @@ public sealed class DelegateUserResponse : ServiceResponse
             DelegateUser.LoadFromXml(reader, XmlNamespace.Messages, reader.LocalName);
         }
     }
-
-    /// <summary>
-    ///     The delegate user that was involved in the operation.
-    /// </summary>
-    public DelegateUser? DelegateUser { get; private set; }
 }

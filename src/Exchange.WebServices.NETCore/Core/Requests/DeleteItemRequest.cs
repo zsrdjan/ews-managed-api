@@ -31,6 +31,30 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets the item ids.
+    /// </summary>
+    /// <value>The item ids.</value>
+    internal ItemIdWrapperList ItemIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the affected task occurrences.
+    /// </summary>
+    /// <value>The affected task occurrences.</value>
+    internal AffectedTaskOccurrence? AffectedTaskOccurrences { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the send cancellations.
+    /// </summary>
+    /// <value>The send cancellations.</value>
+    internal SendCancellationsMode? SendCancellationsMode { get; set; }
+
+    /// <summary>
+    ///     Gets or sets whether to suppress read receipts
+    /// </summary>
+    /// <value>Whether to suppress read receipts</value>
+    public bool SuppressReadReceipts { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteItemRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -148,28 +172,4 @@ internal sealed class DeleteItemRequest : DeleteRequest<ServiceResponse>
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the item ids.
-    /// </summary>
-    /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the affected task occurrences.
-    /// </summary>
-    /// <value>The affected task occurrences.</value>
-    internal AffectedTaskOccurrence? AffectedTaskOccurrences { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the send cancellations.
-    /// </summary>
-    /// <value>The send cancellations.</value>
-    internal SendCancellationsMode? SendCancellationsMode { get; set; }
-
-    /// <summary>
-    ///     Gets or sets whether to suppress read receipts
-    /// </summary>
-    /// <value>Whether to suppress read receipts</value>
-    public bool SuppressReadReceipts { get; set; }
 }

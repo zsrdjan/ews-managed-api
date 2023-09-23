@@ -38,6 +38,11 @@ public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteEx
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets a list of responses returned by the web method.
+    /// </summary>
+    public ServiceResponseCollection<TResponse> ServiceResponses { get; }
+
+    /// <summary>
     ///     Initializes a new instance of MultiServiceResponseException.
     /// </summary>
     /// <param name="serviceResponses">The list of responses to be associated with this exception.</param>
@@ -101,9 +106,4 @@ public abstract class BatchServiceResponseException<TResponse> : ServiceRemoteEx
 
         info.AddValue("Responses", ServiceResponses, typeof(ServiceResponseCollection<TResponse>));
     }
-
-    /// <summary>
-    ///     Gets a list of responses returned by the web method.
-    /// </summary>
-    public ServiceResponseCollection<TResponse> ServiceResponses { get; }
 }

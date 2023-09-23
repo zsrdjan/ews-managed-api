@@ -31,6 +31,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class AddDelegateRequest : DelegateManagementRequestBase<DelegateManagementResponse>
 {
     /// <summary>
+    ///     Gets or sets the meeting requests delivery scope.
+    /// </summary>
+    /// <value>The meeting requests delivery scope.</value>
+    public MeetingRequestsDeliveryScope? MeetingRequestsDeliveryScope { get; set; }
+
+    /// <summary>
+    ///     Gets the delegate users.
+    /// </summary>
+    /// <value>The delegate users.</value>
+    public List<DelegateUser> DelegateUsers { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AddDelegateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -120,16 +132,4 @@ internal class AddDelegateRequest : DelegateManagementRequestBase<DelegateManage
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the meeting requests delivery scope.
-    /// </summary>
-    /// <value>The meeting requests delivery scope.</value>
-    public MeetingRequestsDeliveryScope? MeetingRequestsDeliveryScope { get; set; }
-
-    /// <summary>
-    ///     Gets the delegate users.
-    /// </summary>
-    /// <value>The delegate users.</value>
-    public List<DelegateUser> DelegateUsers { get; } = new();
 }

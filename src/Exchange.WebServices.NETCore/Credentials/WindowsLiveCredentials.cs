@@ -34,12 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
 {
-    private readonly string _windowsLiveId;
-    private readonly string _password;
-    private Uri _windowsLiveUrl;
-    private bool _traceEnabled;
-    private ITraceListener _traceListener = new EwsTraceListener();
-
     // XML-Encryption Namespace.
     internal const string XmlEncNamespace = "http://www.w3.org/2001/04/xmlenc#";
 
@@ -56,23 +50,16 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     // The reqstatus we should receive from Windows Live.
     internal const string SuccessfulReqstatus = "0x0";
 
-    // The default Windows Live URL.
-    internal static readonly Uri DefaultWindowsLiveUrl = new Uri("https://login.live.com/rst2.srf");
-
     // The reference we use for creating the XML signature.
     internal const string XmlSignatureReference = "_EWSTKREF";
 
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="WindowsLiveCredentials" /> class.
-    /// </summary>
-    /// <param name="windowsLiveId">The user's WindowsLiveId.</param>
-    /// <param name="password">The password.</param>
-    public WindowsLiveCredentials(string windowsLiveId, string password)
-    {
-        _windowsLiveId = windowsLiveId ?? throw new ArgumentNullException(nameof(windowsLiveId));
-        _password = password ?? throw new ArgumentNullException(nameof(password));
-        _windowsLiveUrl = DefaultWindowsLiveUrl;
-    }
+    // The default Windows Live URL.
+    internal static readonly Uri DefaultWindowsLiveUrl = new Uri("https://login.live.com/rst2.srf");
+    private readonly string _password;
+    private readonly string _windowsLiveId;
+    private bool _traceEnabled;
+    private ITraceListener _traceListener = new EwsTraceListener();
+    private Uri _windowsLiveUrl;
 
     /// <summary>
     ///     Gets or sets a flag indicating whether tracing is enabled.
@@ -123,26 +110,38 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     }
 
     /// <summary>
+    ///     Gets or sets a value indicating whether this <see cref="WindowsLiveCredentials" /> has been authenticated.
+    /// </summary>
+    /// <value><c>true</c> if authenticated; otherwise, <c>false</c>.</value>
+    public bool IsAuthenticated { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="WindowsLiveCredentials" /> class.
+    /// </summary>
+    /// <param name="windowsLiveId">The user's WindowsLiveId.</param>
+    /// <param name="password">The password.</param>
+    public WindowsLiveCredentials(string windowsLiveId, string password)
+    {
+        _windowsLiveId = windowsLiveId ?? throw new ArgumentNullException(nameof(windowsLiveId));
+        _password = password ?? throw new ArgumentNullException(nameof(password));
+        _windowsLiveUrl = DefaultWindowsLiveUrl;
+    }
+
+    /// <summary>
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal override async System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override async System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
         if (EwsUrl == null || EwsUrl != request.RequestUri)
         {
             IsAuthenticated = false;
-            await MakeTokenRequestToWindowsLive(request.RequestUri);
+            await MakeTokenRequestToWindowsLive(request.RequestUri).ConfigureAwait(false);
 
             IsAuthenticated = true;
             EwsUrl = request.RequestUri;
         }
     }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether this <see cref="WindowsLiveCredentials" /> has been authenticated.
-    /// </summary>
-    /// <value><c>true</c> if authenticated; otherwise, <c>false</c>.</value>
-    public bool IsAuthenticated { get; internal set; }
 
     /// <summary>
     ///     Function that sends the token request to Windows Live.
@@ -466,10 +465,8 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             {
                 if (TraceEnabled)
                 {
-                    var logMessage = string.Format(
-                        "Windows Live reported an error retrieving the token - {0}",
-                        rstResponse.ReadOuterXml()
-                    );
+                    var logMessage =
+                        $"Windows Live reported an error retrieving the token - {rstResponse.ReadOuterXml()}";
                     _traceListener.Trace("WindowsLiveResponse", logMessage);
                 }
 
@@ -505,27 +502,25 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     Grabs the issued token information out of a response from Windows Live.
     /// </summary>
     /// <param name="response">The token response</param>
-    private void ProcessTokenResponse(HttpWebResponse response)
+    private void ProcessTokenResponse(WebResponse response)
     {
         // NOTE: We're not tracing responses here because they contain the actual token information
         // from Windows Live.    
-        using (var responseStream = response.GetResponseStream())
-        {
-            // Always start fresh (nulls in all the data we're going to fill in).
-            SecurityToken = null;
+        using var responseStream = response.GetResponseStream();
+        // Always start fresh (nulls in all the data we're going to fill in).
+        SecurityToken = null;
 
-            var rstResponse = new EwsXmlReader(responseStream);
+        var rstResponse = new EwsXmlReader(responseStream);
 
-            rstResponse.Read(XmlNodeType.XmlDeclaration);
-            rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPEnvelopeElementName);
+        rstResponse.Read(XmlNodeType.XmlDeclaration);
+        rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPEnvelopeElementName);
 
-            // Process the SOAP headers from the response.
-            ReadWindowsLiveRstResponseHeaders(rstResponse);
+        // Process the SOAP headers from the response.
+        ReadWindowsLiveRstResponseHeaders(rstResponse);
 
-            rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPBodyElementName);
+        rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPBodyElementName);
 
-            // Process the SOAP body from the response.
-            ParseWindowsLiveRstResponseBody(rstResponse);
-        }
+        // Process the SOAP body from the response.
+        ParseWindowsLiveRstResponseBody(rstResponse);
     }
 }

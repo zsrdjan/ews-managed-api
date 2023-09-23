@@ -36,13 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetClientExtensionResponse : ServiceResponse
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetClientExtensionResponse" /> class.
-    /// </summary>
-    internal GetClientExtensionResponse()
-    {
-    }
-
-    /// <summary>
     ///     Gets all ClientExtension returned
     /// </summary>
     public Collection<ClientExtension> ClientExtensions { get; } = new();
@@ -51,6 +44,13 @@ public sealed class GetClientExtensionResponse : ServiceResponse
     ///     Gets org raw master table xml
     /// </summary>
     public string RawMasterTableXml { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetClientExtensionResponse" /> class.
+    /// </summary>
+    internal GetClientExtensionResponse()
+    {
+    }
 
     /// <summary>
     ///     Reads response elements from XML.

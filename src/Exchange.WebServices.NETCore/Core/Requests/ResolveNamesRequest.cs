@@ -30,8 +30,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveNamesResponse>
 {
-    private static readonly LazyMember<Dictionary<ResolveNameSearchLocation, string>> SearchScopeMap = new(
-        () => new Dictionary<ResolveNameSearchLocation, string>
+    private static readonly IReadOnlyDictionary<ResolveNameSearchLocation, string> SearchScopeMap =
+        new Dictionary<ResolveNameSearchLocation, string>
         {
             // @formatter:off
             { ResolveNameSearchLocation.DirectoryOnly, "ActiveDirectory" },
@@ -39,8 +39,48 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
             { ResolveNameSearchLocation.ContactsOnly, "Contacts" },
             { ResolveNameSearchLocation.ContactsThenDirectory, "ContactsActiveDirectory" },
             // @formatter:on
-        }
-    );
+        };
+
+    /// <summary>
+    ///     Gets or sets the name to resolve.
+    /// </summary>
+    /// <value>The name to resolve.</value>
+    public string NameToResolve { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to return full contact data or not.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
+    /// </value>
+    public bool ReturnFullContactData { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the search location.
+    /// </summary>
+    /// <value>The search scope.</value>
+    public ResolveNameSearchLocation SearchLocation { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the PropertySet for Contact Data
+    /// </summary>
+    /// <value>The PropertySet</value>
+    public PropertySet? ContactDataPropertySet { get; set; }
+
+    /// <summary>
+    ///     Gets the parent folder ids.
+    /// </summary>
+    /// <value>The parent folder ids.</value>
+    public FolderIdWrapperList ParentFolderIds { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ResolveNamesRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ResolveNamesRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
 
     /// <summary>
     ///     Asserts the valid.
@@ -90,15 +130,6 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ResolveNamesRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal ResolveNamesRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
-    }
-
-    /// <summary>
     ///     Gets the expected response message count.
     /// </summary>
     /// <returns>Number of expected response messages.</returns>
@@ -115,7 +146,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     {
         writer.WriteAttributeValue(XmlAttributeNames.ReturnFullContactData, ReturnFullContactData);
 
-        SearchScopeMap.Member.TryGetValue(SearchLocation, out var searchScope);
+        SearchScopeMap.TryGetValue(SearchLocation, out var searchScope);
 
         EwsUtilities.Assert(
             !string.IsNullOrEmpty(searchScope),
@@ -126,10 +157,7 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
         string? propertySet = null;
         if (ContactDataPropertySet != null)
         {
-            PropertySet.DefaultPropertySetMap.Member.TryGetValue(
-                ContactDataPropertySet.BasePropertySet,
-                out propertySet
-            );
+            PropertySet.DefaultPropertySetMap.TryGetValue(ContactDataPropertySet.BasePropertySet, out propertySet);
         }
 
         if (!Service.Exchange2007CompatibilityMode)
@@ -162,36 +190,4 @@ internal sealed class ResolveNamesRequest : MultiResponseServiceRequest<ResolveN
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the name to resolve.
-    /// </summary>
-    /// <value>The name to resolve.</value>
-    public string NameToResolve { get; set; }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether to return full contact data or not.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if should return full contact data; otherwise, <c>false</c>.
-    /// </value>
-    public bool ReturnFullContactData { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the search location.
-    /// </summary>
-    /// <value>The search scope.</value>
-    public ResolveNameSearchLocation SearchLocation { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the PropertySet for Contact Data
-    /// </summary>
-    /// <value>The PropertySet</value>
-    public PropertySet? ContactDataPropertySet { get; set; }
-
-    /// <summary>
-    ///     Gets the parent folder ids.
-    /// </summary>
-    /// <value>The parent folder ids.</value>
-    public FolderIdWrapperList ParentFolderIds { get; } = new();
 }

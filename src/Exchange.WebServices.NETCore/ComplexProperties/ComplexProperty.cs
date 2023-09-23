@@ -38,6 +38,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ComplexProperty : ISelfValidate
 {
     /// <summary>
+    ///     Gets or sets the namespace.
+    /// </summary>
+    /// <value>The namespace.</value>
+    internal XmlNamespace Namespace { get; set; } = XmlNamespace.Types;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ComplexProperty" /> class.
     /// </summary>
     internal ComplexProperty()
@@ -45,10 +51,12 @@ public abstract class ComplexProperty : ISelfValidate
     }
 
     /// <summary>
-    ///     Gets or sets the namespace.
+    ///     Implements ISelfValidate.Validate. Validates this instance.
     /// </summary>
-    /// <value>The namespace.</value>
-    internal XmlNamespace Namespace { get; set; } = XmlNamespace.Types;
+    void ISelfValidate.Validate()
+    {
+        InternalValidate();
+    }
 
     /// <summary>
     ///     Instance was changed.
@@ -265,14 +273,6 @@ public abstract class ComplexProperty : ISelfValidate
     ///     Occurs when property changed.
     /// </summary>
     internal event ComplexPropertyChangedDelegate? OnChange;
-
-    /// <summary>
-    ///     Implements ISelfValidate.Validate. Validates this instance.
-    /// </summary>
-    void ISelfValidate.Validate()
-    {
-        InternalValidate();
-    }
 
     /// <summary>
     ///     Validates this instance.

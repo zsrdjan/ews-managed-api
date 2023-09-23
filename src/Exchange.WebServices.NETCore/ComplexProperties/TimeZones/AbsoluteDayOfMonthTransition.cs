@@ -33,6 +33,30 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
 {
     /// <summary>
+    ///     Gets the day of then month when this transition occurs.
+    /// </summary>
+    internal int DayOfMonth { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteDayOfMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    internal AbsoluteDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition)
+        : base(timeZoneDefinition)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteDayOfMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    /// <param name="targetPeriod">The period the transition will target.</param>
+    internal AbsoluteDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
+        : base(timeZoneDefinition, targetPeriod)
+    {
+    }
+
+    /// <summary>
     ///     Gets the XML element name associated with the transition.
     /// </summary>
     /// <returns>The XML element name associated with the transition.</returns>
@@ -99,28 +123,4 @@ internal class AbsoluteDayOfMonthTransition : AbsoluteMonthTransition
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Day, DayOfMonth);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AbsoluteDayOfMonthTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-    internal AbsoluteDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition)
-        : base(timeZoneDefinition)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AbsoluteDayOfMonthTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-    /// <param name="targetPeriod">The period the transition will target.</param>
-    internal AbsoluteDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
-        : base(timeZoneDefinition, targetPeriod)
-    {
-    }
-
-    /// <summary>
-    ///     Gets the day of then month when this transition occurs.
-    /// </summary>
-    internal int DayOfMonth { get; private set; }
 }

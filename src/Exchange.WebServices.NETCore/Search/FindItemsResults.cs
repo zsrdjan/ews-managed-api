@@ -38,13 +38,6 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     where TItem : Item
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="FindItemsResults&lt;T&gt;" /> class.
-    /// </summary>
-    internal FindItemsResults()
-    {
-    }
-
-    /// <summary>
     ///     Gets the total number of items matching the search criteria available in the searched folder.
     /// </summary>
     public int TotalCount { get; internal set; }
@@ -69,6 +62,13 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     ///     Gets a collection containing the highlight terms that were found by the search operation.
     /// </summary>
     public Collection<HighlightTerm> HighlightTerms { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FindItemsResults&lt;T&gt;" /> class.
+    /// </summary>
+    internal FindItemsResults()
+    {
+    }
 
 
     #region IEnumerable<T> Members

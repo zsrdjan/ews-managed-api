@@ -52,6 +52,16 @@ internal enum HangingRequestDisconnectReason
 internal class HangingRequestDisconnectEventArgs : EventArgs
 {
     /// <summary>
+    ///     Gets the reason that the user was disconnected.
+    /// </summary>
+    public HangingRequestDisconnectReason Reason { get; internal set; }
+
+    /// <summary>
+    ///     Gets the exception that caused the disconnection. Can be null.
+    /// </summary>
+    public Exception? Exception { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="HangingRequestDisconnectEventArgs" /> class.
     /// </summary>
     /// <param name="reason">The reason.</param>
@@ -61,16 +71,6 @@ internal class HangingRequestDisconnectEventArgs : EventArgs
         Reason = reason;
         Exception = exception;
     }
-
-    /// <summary>
-    ///     Gets the reason that the user was disconnected.
-    /// </summary>
-    public HangingRequestDisconnectReason Reason { get; internal set; }
-
-    /// <summary>
-    ///     Gets the exception that caused the disconnection. Can be null.
-    /// </summary>
-    public Exception? Exception { get; internal set; }
 }
 
 /// <summary>
@@ -79,31 +79,10 @@ internal class HangingRequestDisconnectEventArgs : EventArgs
 internal abstract class HangingServiceRequestBase : ServiceRequestBase
 {
     /// <summary>
-    ///     Callback delegate to handle asynchronous responses.
-    /// </summary>
-    /// <param name="response">Response received from the server</param>
-    internal delegate void HandleResponseObject(object response);
-
-    /// <summary>
     ///     Test switch to log all bytes that come across the wire.
     ///     Helpful when parsing fails before certain bytes hit the trace logs.
     /// </summary>
     internal const bool LogAllWireBytes = false;
-
-    /// <summary>
-    ///     Callback delegate to handle response objects
-    /// </summary>
-    private readonly HandleResponseObject _responseHandler;
-
-    /// <summary>
-    ///     Response from the server.
-    /// </summary>
-    private IEwsHttpWebResponse _response;
-
-    /// <summary>
-    ///     Request to the server.
-    /// </summary>
-    private IEwsHttpWebRequest _request;
 
     /// <summary>
     ///     Expected minimum frequency in responses, in milliseconds.
@@ -116,16 +95,29 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     private readonly object _lockObject = new();
 
     /// <summary>
-    ///     Delegate method to handle a hanging request disconnection.
+    ///     Callback delegate to handle response objects
     /// </summary>
-    /// <param name="sender">The object invoking the delegate.</param>
-    /// <param name="args">Event data.</param>
-    internal delegate void HangingRequestDisconnectHandler(object sender, HangingRequestDisconnectEventArgs args);
+    private readonly HandleResponseObject _responseHandler;
+
+    private readonly CancellationTokenSource _tokenSource = new();
+
+    private System.Threading.Tasks.Task _readTask;
 
     /// <summary>
-    ///     Occurs when the hanging request is disconnected.
+    ///     Request to the server.
     /// </summary>
-    internal event HangingRequestDisconnectHandler OnDisconnect;
+    private EwsHttpWebRequest _request;
+
+    /// <summary>
+    ///     Response from the server.
+    /// </summary>
+    private IEwsHttpWebResponse _response;
+
+    /// <summary>
+    ///     Gets a value indicating whether this instance is connected.
+    /// </summary>
+    /// <value><c>true</c> if this instance is connected; otherwise, <c>false</c>.</value>
+    internal bool IsConnected { get; private set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="HangingServiceRequestBase" /> class.
@@ -141,25 +133,46 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     }
 
     /// <summary>
+    ///     Occurs when the hanging request is disconnected.
+    /// </summary>
+    internal event HangingRequestDisconnectHandler OnDisconnect;
+
+    /// <summary>
     ///     Executes the request.
     /// </summary>
-    internal void InternalExecute(CancellationToken token)
+    internal void InternalExecute()
     {
         lock (_lockObject)
         {
-            var tuple = ValidateAndEmitRequest(token).GetAwaiter().GetResult();
+            var (request, response) = ValidateAndEmitRequest(true, _tokenSource.Token).GetAwaiter().GetResult();
 
-            _request = tuple.Item1;
-            _response = tuple.Item2;
+            _request = request;
+            _response = response;
 
-            InternalOnConnect();
+            if (!IsConnected)
+            {
+                IsConnected = true;
+
+                // Trace Http headers
+                Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
+
+                // Run parser on separate task-thread
+                _readTask = System.Threading.Tasks.Task.Factory.StartNew(
+                        async () => await ParseResponses(_tokenSource.Token),
+                        _tokenSource.Token,
+                        TaskCreationOptions.LongRunning,
+                        TaskScheduler.Default
+                    )
+                    .GetAwaiter()
+                    .GetResult();
+            }
         }
     }
 
     /// <summary>
     ///     Parses the responses.
     /// </summary>
-    private async System.Threading.Tasks.Task ParseResponses()
+    private async System.Threading.Tasks.Task ParseResponses(CancellationToken cancellationToken)
     {
         try
         {
@@ -169,7 +182,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
             {
                 var traceEwsResponse = Service.IsTraceEnabledFor(TraceFlags.EwsResponse);
 
-                await using var responseStream = await _response.GetResponseStream();
+                await using var responseStream = await _response.GetResponseStream(cancellationToken);
                 var tracingStream = new HangingTraceStream(responseStream, Service)
                 {
                     ReadTimeout = 2 * _heartbeatFrequencyMilliseconds,
@@ -186,16 +199,14 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
 
                 while (IsConnected)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     object? responseObject;
                     if (traceEwsResponse)
                     {
                         try
                         {
-                            responseObject = await ReadResponseAsync(
-                                ewsXmlReader,
-                                _response.Headers,
-                                CancellationToken.None
-                            );
+                            responseObject = await ReadResponseAsync(ewsXmlReader, _response.Headers);
                         }
                         finally
                         {
@@ -209,15 +220,15 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
                     }
                     else
                     {
-                        responseObject = await ReadResponseAsync(
-                            ewsXmlReader,
-                            _response.Headers,
-                            CancellationToken.None
-                        );
+                        responseObject = await ReadResponseAsync(ewsXmlReader, _response.Headers);
                     }
 
                     _responseHandler(responseObject);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // Operation was cancelled, do nothing
             }
             catch (TimeoutException ex)
             {
@@ -269,20 +280,12 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     }
 
     /// <summary>
-    ///     Gets a value indicating whether this instance is connected.
-    /// </summary>
-    /// <value><c>true</c> if this instance is connected; otherwise, <c>false</c>.</value>
-    internal bool IsConnected { get; private set; }
-
-    /// <summary>
     ///     Disconnects the request.
     /// </summary>
     internal void Disconnect()
     {
         lock (_lockObject)
         {
-            _request.Abort();
-            _response.Close();
             Disconnect(HangingRequestDisconnectReason.UserInitiated, null);
         }
     }
@@ -296,27 +299,15 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     {
         if (IsConnected)
         {
+            _tokenSource.Cancel();
+            // We do not care about exceptions here, as the ParseResponse handler provides a catch-all handler
+            _readTask.GetAwaiter().GetResult();
+
             _response.Close();
             InternalOnDisconnect(reason, exception);
         }
     }
 
-    /// <summary>
-    ///     Perform any bookkeeping needed when we connect
-    /// </summary>
-    private void InternalOnConnect()
-    {
-        if (!IsConnected)
-        {
-            IsConnected = true;
-
-            // Trace Http headers
-            Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
-
-            // TODO: async?
-            ParseResponses().GetAwaiter().GetResult();
-        }
-    }
 
     /// <summary>
     ///     Perform any bookkeeping needed when we disconnect (cleanly or forcefully)
@@ -346,12 +337,21 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     ///     Reads any preamble data not part of the core response.
     /// </summary>
     /// <param name="ewsXmlReader">The EwsServiceXmlReader.</param>
-    /// <param name="token"></param>
-    protected override System.Threading.Tasks.Task ReadPreambleAsync(
-        EwsServiceXmlReader ewsXmlReader,
-        CancellationToken token
-    )
+    protected override System.Threading.Tasks.Task ReadPreambleAsync(EwsServiceXmlReader ewsXmlReader)
     {
         return System.Threading.Tasks.Task.CompletedTask;
     }
+
+    /// <summary>
+    ///     Callback delegate to handle asynchronous responses.
+    /// </summary>
+    /// <param name="response">Response received from the server</param>
+    internal delegate void HandleResponseObject(object response);
+
+    /// <summary>
+    ///     Delegate method to handle a hanging request disconnection.
+    /// </summary>
+    /// <param name="sender">The object invoking the delegate.</param>
+    /// <param name="args">Event data.</param>
+    internal delegate void HangingRequestDisconnectHandler(object sender, HangingRequestDisconnectEventArgs args);
 }

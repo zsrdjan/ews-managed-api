@@ -33,6 +33,11 @@ internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefiniti
     where TPropertyValue : struct
 {
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => IsNullable ? typeof(TPropertyValue?) : typeof(TPropertyValue);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GenericPropertyDefinition&lt;T&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -88,9 +93,4 @@ internal class GenericPropertyDefinition<TPropertyValue> : TypedPropertyDefiniti
     {
         return EwsUtilities.Parse<TPropertyValue>(value);
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => IsNullable ? typeof(TPropertyValue?) : typeof(TPropertyValue);
 }

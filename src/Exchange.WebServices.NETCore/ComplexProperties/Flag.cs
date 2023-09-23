@@ -33,10 +33,46 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class Flag : ComplexProperty
 {
+    private DateTime _completeDate;
+    private DateTime _dueDate;
     private ItemFlagStatus _flagStatus;
     private DateTime _startDate;
-    private DateTime _dueDate;
-    private DateTime _completeDate;
+
+    /// <summary>
+    ///     Gets or sets the flag status.
+    /// </summary>
+    public ItemFlagStatus FlagStatus
+    {
+        get => _flagStatus;
+        set => SetFieldValue(ref _flagStatus, value);
+    }
+
+    /// <summary>
+    ///     Gets the start date.
+    /// </summary>
+    public DateTime StartDate
+    {
+        get => _startDate;
+        set => SetFieldValue(ref _startDate, value);
+    }
+
+    /// <summary>
+    ///     Gets the due date.
+    /// </summary>
+    public DateTime DueDate
+    {
+        get => _dueDate;
+        set => SetFieldValue(ref _dueDate, value);
+    }
+
+    /// <summary>
+    ///     Gets the complete date.
+    /// </summary>
+    public DateTime CompleteDate
+    {
+        get => _completeDate;
+        set => SetFieldValue(ref _completeDate, value);
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Flag" /> class.
@@ -106,41 +142,5 @@ public sealed class Flag : ComplexProperty
     internal void Validate()
     {
         EwsUtilities.ValidateParam(_flagStatus, "FlagStatus");
-    }
-
-    /// <summary>
-    ///     Gets or sets the flag status.
-    /// </summary>
-    public ItemFlagStatus FlagStatus
-    {
-        get => _flagStatus;
-        set => SetFieldValue(ref _flagStatus, value);
-    }
-
-    /// <summary>
-    ///     Gets the start date.
-    /// </summary>
-    public DateTime StartDate
-    {
-        get => _startDate;
-        set => SetFieldValue(ref _startDate, value);
-    }
-
-    /// <summary>
-    ///     Gets the due date.
-    /// </summary>
-    public DateTime DueDate
-    {
-        get => _dueDate;
-        set => SetFieldValue(ref _dueDate, value);
-    }
-
-    /// <summary>
-    ///     Gets the complete date.
-    /// </summary>
-    public DateTime CompleteDate
-    {
-        get => _completeDate;
-        set => SetFieldValue(ref _completeDate, value);
     }
 }

@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscription>
 {
     /// <summary>
+    ///     Gets or sets the timeout.
+    /// </summary>
+    /// <value>The timeout.</value>
+    public int Timeout { get; set; } = 30;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeToPullNotificationsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -91,10 +97,4 @@ internal class SubscribeToPullNotificationsRequest : SubscribeRequest<PullSubscr
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the timeout.
-    /// </summary>
-    /// <value>The timeout.</value>
-    public int Timeout { get; set; } = 30;
 }

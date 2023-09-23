@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetAppMarketplaceUrlResponse : ServiceResponse
 {
     /// <summary>
+    ///     App Marketplace Url
+    /// </summary>
+    public string AppMarketplaceUrl { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetAppMarketplaceUrlResponse" /> class.
     /// </summary>
     internal GetAppMarketplaceUrlResponse()
@@ -49,9 +54,4 @@ internal sealed class GetAppMarketplaceUrlResponse : ServiceResponse
             XmlElementNames.AppMarketplaceUrl
         );
     }
-
-    /// <summary>
-    ///     App Marketplace Url
-    /// </summary>
-    public string AppMarketplaceUrl { get; private set; }
 }

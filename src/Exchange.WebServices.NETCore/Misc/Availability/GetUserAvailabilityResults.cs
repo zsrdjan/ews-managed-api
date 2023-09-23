@@ -36,13 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetUserAvailabilityResults
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetUserAvailabilityResults" /> class.
-    /// </summary>
-    internal GetUserAvailabilityResults()
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the suggestions response for the requested meeting time.
     /// </summary>
     internal SuggestionsResponse? SuggestionsResponse { get; set; }
@@ -69,5 +62,12 @@ public sealed class GetUserAvailabilityResults
 
             return SuggestionsResponse.Suggestions;
         }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetUserAvailabilityResults" /> class.
+    /// </summary>
+    internal GetUserAvailabilityResults()
+    {
     }
 }

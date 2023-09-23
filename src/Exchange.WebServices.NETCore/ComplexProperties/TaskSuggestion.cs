@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class TaskSuggestion : ExtractedEntity
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="TaskSuggestion" /> class.
-    /// </summary>
-    internal TaskSuggestion()
-    {
-    }
-
-    /// <summary>
     ///     Gets the meeting suggestion TaskString.
     /// </summary>
     public string TaskString { get; internal set; }
@@ -49,6 +42,13 @@ public sealed class TaskSuggestion : ExtractedEntity
     ///     Gets the meeting suggestion Assignees.
     /// </summary>
     public EmailUserEntityCollection Assignees { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TaskSuggestion" /> class.
+    /// </summary>
+    internal TaskSuggestion()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

@@ -39,19 +39,9 @@ public sealed class ReferenceAttachment : Attachment
     private string _attachLongPathName;
 
     /// <summary>
-    ///     The ProviderType of the attachment.
+    ///     The AttachmentIsFolder of the attachment.
     /// </summary>
-    private string _providerType;
-
-    /// <summary>
-    ///     The ProviderEndpointUrl of the attachment.
-    /// </summary>
-    private string _providerEndpointUrl;
-
-    /// <summary>
-    ///     The AttachmentThumbnailUrl of the attachment.
-    /// </summary>
-    private string _attachmentThumbnailUrl;
+    private bool _attachmentIsFolder;
 
     /// <summary>
     ///     The AttachmentPreviewUrl of the attachment.
@@ -59,14 +49,87 @@ public sealed class ReferenceAttachment : Attachment
     private string _attachmentPreviewUrl;
 
     /// <summary>
+    ///     The AttachmentThumbnailUrl of the attachment.
+    /// </summary>
+    private string _attachmentThumbnailUrl;
+
+    /// <summary>
     ///     The PermissionType of the attachment.
     /// </summary>
     private int _permissionType;
 
     /// <summary>
-    ///     The AttachmentIsFolder of the attachment.
+    ///     The ProviderEndpointUrl of the attachment.
     /// </summary>
-    private bool _attachmentIsFolder;
+    private string _providerEndpointUrl;
+
+    /// <summary>
+    ///     The ProviderType of the attachment.
+    /// </summary>
+    private string _providerType;
+
+    /// <summary>
+    ///     Gets or sets a fully-qualified path identifying the attachment.
+    /// </summary>
+    public string AttachLongPathName
+    {
+        get => _attachLongPathName;
+        set => SetFieldValue(ref _attachLongPathName, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the type of the attachment provider.
+    /// </summary>
+    public string ProviderType
+    {
+        get => _providerType;
+        set => SetFieldValue(ref _providerType, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the URL of the attachment provider.
+    /// </summary>
+    public string ProviderEndpointUrl
+    {
+        get => _providerEndpointUrl;
+        set => SetFieldValue(ref _providerEndpointUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the URL of the attachment thumbnail.
+    /// </summary>
+    public string AttachmentThumbnailUrl
+    {
+        get => _attachmentThumbnailUrl;
+        set => SetFieldValue(ref _attachmentThumbnailUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the URL of the attachment preview.
+    /// </summary>
+    public string AttachmentPreviewUrl
+    {
+        get => _attachmentPreviewUrl;
+        set => SetFieldValue(ref _attachmentPreviewUrl, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the permission of the attachment.
+    /// </summary>
+    public int PermissionType
+    {
+        get => _permissionType;
+        set => SetFieldValue(ref _permissionType, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the attachment points to a folder.
+    /// </summary>
+    public bool AttachmentIsFolder
+    {
+        get => _attachmentIsFolder;
+        set => SetFieldValue(ref _attachmentIsFolder, value);
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ReferenceAttachment" /> class.
@@ -169,68 +232,5 @@ public sealed class ReferenceAttachment : Attachment
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AttachmentPreviewUrl, AttachmentPreviewUrl);
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.PermissionType, PermissionType);
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.AttachmentIsFolder, AttachmentIsFolder);
-    }
-
-    /// <summary>
-    ///     Gets or sets a fully-qualified path identifying the attachment.
-    /// </summary>
-    public string AttachLongPathName
-    {
-        get => _attachLongPathName;
-        set => SetFieldValue(ref _attachLongPathName, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the type of the attachment provider.
-    /// </summary>
-    public string ProviderType
-    {
-        get => _providerType;
-        set => SetFieldValue(ref _providerType, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the URL of the attachment provider.
-    /// </summary>
-    public string ProviderEndpointUrl
-    {
-        get => _providerEndpointUrl;
-        set => SetFieldValue(ref _providerEndpointUrl, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the URL of the attachment thumbnail.
-    /// </summary>
-    public string AttachmentThumbnailUrl
-    {
-        get => _attachmentThumbnailUrl;
-        set => SetFieldValue(ref _attachmentThumbnailUrl, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the URL of the attachment preview.
-    /// </summary>
-    public string AttachmentPreviewUrl
-    {
-        get => _attachmentPreviewUrl;
-        set => SetFieldValue(ref _attachmentPreviewUrl, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the permission of the attachment.
-    /// </summary>
-    public int PermissionType
-    {
-        get => _permissionType;
-        set => SetFieldValue(ref _permissionType, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the attachment points to a folder.
-    /// </summary>
-    public bool AttachmentIsFolder
-    {
-        get => _attachmentIsFolder;
-        set => SetFieldValue(ref _attachmentIsFolder, value);
     }
 }

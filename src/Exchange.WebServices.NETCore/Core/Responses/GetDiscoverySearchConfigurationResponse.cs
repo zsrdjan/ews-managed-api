@@ -36,6 +36,11 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
     private readonly List<DiscoverySearchConfiguration> _configurations = new();
 
     /// <summary>
+    ///     Searchable mailboxes result
+    /// </summary>
+    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations => _configurations.ToArray();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetDiscoverySearchConfigurationResponse" /> class.
     /// </summary>
     internal GetDiscoverySearchConfigurationResponse()
@@ -67,9 +72,4 @@ public sealed class GetDiscoverySearchConfigurationResponse : ServiceResponse
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.DiscoverySearchConfigurations);
     }
-
-    /// <summary>
-    ///     Searchable mailboxes result
-    /// </summary>
-    public DiscoverySearchConfiguration[] DiscoverySearchConfigurations => _configurations.ToArray();
 }

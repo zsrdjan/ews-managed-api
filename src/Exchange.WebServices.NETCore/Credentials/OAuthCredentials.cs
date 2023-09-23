@@ -29,7 +29,6 @@ using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
-
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -47,14 +46,14 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
 
     private readonly string? _token;
 
-    private readonly ICredentials _credentials;
+    internal ICredentials Credentials { get; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OAuthCredentials" /> class.
     /// </summary>
     /// <param name="token">The JSON web token string.</param>
     public OAuthCredentials(string token)
-        : this(token, false)
+        : this(token, verbatim: false)
     {
     }
 
@@ -84,7 +83,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
                 var authType = token.Substring(0, whiteSpacePosition);
                 if (string.Compare(authType, BearerAuthenticationType, StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    throw new ArgumentException(Strings.InvalidAuthScheme);
+                    throw new ArgumentException(Strings.InvalidAuthScheme, nameof(token));
                 }
 
                 rawToken = token.Substring(whiteSpacePosition + 1);
@@ -92,7 +91,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
 
             if (!ValidTokenPattern.IsMatch(rawToken))
             {
-                throw new ArgumentException(Strings.InvalidOAuthToken);
+                throw new ArgumentException(Strings.InvalidOAuthToken, nameof(token));
             }
         }
 
@@ -108,25 +107,19 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
     {
         EwsUtilities.ValidateParam(credentials);
 
-        _credentials = credentials;
+        Credentials = credentials;
     }
 
     /// <summary>
     ///     Add the Authorization header to a service request.
     /// </summary>
     /// <param name="request">The request</param>
-    internal override System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal override System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
-        base.PrepareWebRequest(request);
-
         if (_token != null)
         {
             request.Headers.Remove(HttpRequestHeader.Authorization.ToString());
             request.Headers.Authorization = new AuthenticationHeaderValue(BearerAuthenticationType, _token);
-        }
-        else
-        {
-            request.Credentials = _credentials;
         }
 
         return System.Threading.Tasks.Task.CompletedTask;

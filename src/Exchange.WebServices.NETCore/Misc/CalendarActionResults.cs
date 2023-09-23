@@ -35,18 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class CalendarActionResults
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CalendarActionResults" /> class.
-    /// </summary>
-    /// <param name="items">Collection of items that were created or modified as a result of a calendar action.</param>
-    internal CalendarActionResults(IEnumerable<Item> items)
-    {
-        Appointment = EwsUtilities.FindFirstItemOfType<Appointment>(items);
-        MeetingRequest = EwsUtilities.FindFirstItemOfType<MeetingRequest>(items);
-        MeetingResponse = EwsUtilities.FindFirstItemOfType<MeetingResponse>(items);
-        MeetingCancellation = EwsUtilities.FindFirstItemOfType<MeetingCancellation>(items);
-    }
-
-    /// <summary>
     ///     Gets the meeting that was accepted, tentatively accepted or declined.
     /// </summary>
     /// <remarks>
@@ -85,4 +73,16 @@ public sealed class CalendarActionResults
     ///     attendees of a meeting when the meeting is cancelled.
     /// </summary>
     public MeetingCancellation? MeetingCancellation { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CalendarActionResults" /> class.
+    /// </summary>
+    /// <param name="items">Collection of items that were created or modified as a result of a calendar action.</param>
+    internal CalendarActionResults(IEnumerable<Item> items)
+    {
+        Appointment = EwsUtilities.FindFirstItemOfType<Appointment>(items);
+        MeetingRequest = EwsUtilities.FindFirstItemOfType<MeetingRequest>(items);
+        MeetingResponse = EwsUtilities.FindFirstItemOfType<MeetingResponse>(items);
+        MeetingCancellation = EwsUtilities.FindFirstItemOfType<MeetingCancellation>(items);
+    }
 }

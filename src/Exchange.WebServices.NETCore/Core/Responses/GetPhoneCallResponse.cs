@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetPhoneCallResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the phone call.
+    /// </summary>
+    internal PhoneCall PhoneCall { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetPhoneCallResponse" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -51,9 +56,4 @@ internal sealed class GetPhoneCallResponse : ServiceResponse
         PhoneCall.LoadFromXml(reader, XmlNamespace.Messages, XmlElementNames.PhoneCallInformation);
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.PhoneCallInformation);
     }
-
-    /// <summary>
-    ///     Gets the phone call.
-    /// </summary>
-    internal PhoneCall PhoneCall { get; }
 }

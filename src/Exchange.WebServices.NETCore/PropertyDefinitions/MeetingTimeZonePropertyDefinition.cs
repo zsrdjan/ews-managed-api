@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(MeetingTimeZone);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MeetingTimeZonePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -76,9 +81,4 @@ internal class MeetingTimeZonePropertyDefinition : PropertyDefinition
 
         value?.WriteToXml(writer, XmlElementName);
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(MeetingTimeZone);
 }

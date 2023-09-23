@@ -37,6 +37,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ViewBase
 {
     /// <summary>
+    ///     Gets or sets the property set. PropertySet determines which properties will be loaded on found items. If
+    ///     PropertySet is null,
+    ///     all first class properties are loaded on found items.
+    /// </summary>
+    public PropertySet? PropertySet { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ViewBase" /> class.
     /// </summary>
     internal ViewBase()
@@ -134,11 +141,4 @@ public abstract class ViewBase
         // If property set is null, default is FirstClassProperties
         return PropertySet ?? PropertySet.FirstClassProperties;
     }
-
-    /// <summary>
-    ///     Gets or sets the property set. PropertySet determines which properties will be loaded on found items. If
-    ///     PropertySet is null,
-    ///     all first class properties are loaded on found items.
-    /// </summary>
-    public PropertySet? PropertySet { get; set; }
 }

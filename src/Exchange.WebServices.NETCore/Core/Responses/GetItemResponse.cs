@@ -36,6 +36,11 @@ public sealed class GetItemResponse : ServiceResponse
     private readonly PropertySet _propertySet;
 
     /// <summary>
+    ///     Gets the item that was retrieved.
+    /// </summary>
+    public Item? Item { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetItemResponse" /> class.
     /// </summary>
     /// <param name="item">The item.</param>
@@ -82,9 +87,4 @@ public sealed class GetItemResponse : ServiceResponse
 
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
     }
-
-    /// <summary>
-    ///     Gets the item that was retrieved.
-    /// </summary>
-    public Item? Item { get; private set; }
 }

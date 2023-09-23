@@ -34,6 +34,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class UniqueBody : ComplexProperty
 {
     /// <summary>
+    ///     Gets the type of the unique body's text.
+    /// </summary>
+    public BodyType BodyType { get; private set; }
+
+    /// <summary>
+    ///     Gets the text of the unique body.
+    /// </summary>
+    public string? Text { get; private set; }
+
+    /// <summary>
+    ///     Gets whether the unique body is truncated.
+    /// </summary>
+    public bool IsTruncated { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UniqueBody" /> class.
     /// </summary>
     internal UniqueBody()
@@ -95,21 +110,6 @@ public sealed class UniqueBody : ComplexProperty
             writer.WriteValue(Text, XmlElementNames.UniqueBody);
         }
     }
-
-    /// <summary>
-    ///     Gets the type of the unique body's text.
-    /// </summary>
-    public BodyType BodyType { get; private set; }
-
-    /// <summary>
-    ///     Gets the text of the unique body.
-    /// </summary>
-    public string? Text { get; private set; }
-
-    /// <summary>
-    ///     Gets whether the unique body is truncated.
-    /// </summary>
-    public bool IsTruncated { get; private set; }
 
 
     #region Object method overrides

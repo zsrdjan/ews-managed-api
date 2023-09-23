@@ -31,6 +31,17 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateResponse>
 {
     /// <summary>
+    ///     Gets the user ids.
+    /// </summary>
+    /// <value>The user ids.</value>
+    public List<UserId> UserIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether permissions are included.
+    /// </summary>
+    public bool IncludePermissions { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetDelegateRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -109,15 +120,4 @@ internal class GetDelegateRequest : DelegateManagementRequestBase<GetDelegateRes
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the user ids.
-    /// </summary>
-    /// <value>The user ids.</value>
-    public List<UserId> UserIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether permissions are included.
-    /// </summary>
-    public bool IncludePermissions { get; set; }
 }

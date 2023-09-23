@@ -59,8 +59,49 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     /// </summary>
     internal const string WsSecurityPathSuffix = "/wssecurity";
 
-    private readonly bool _addTimestamp;
     private static XmlNamespaceManager? _namespaceManager;
+
+    private readonly bool _addTimestamp;
+
+    /// <summary>
+    ///     Gets or sets the security token.
+    /// </summary>
+    internal string? SecurityToken { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the EWS URL.
+    /// </summary>
+    internal Uri? EwsUrl { get; set; }
+
+    /// <summary>
+    ///     Gets the XmlNamespaceManager which is used to select node during signing the message.
+    /// </summary>
+    internal static XmlNamespaceManager NamespaceManager
+    {
+        get
+        {
+            if (_namespaceManager == null)
+            {
+                _namespaceManager = new XmlNamespaceManager(new NameTable());
+                _namespaceManager.AddNamespace(
+                    EwsUtilities.WsSecurityUtilityNamespacePrefix,
+                    EwsUtilities.WsSecurityUtilityNamespace
+                );
+                _namespaceManager.AddNamespace(
+                    EwsUtilities.WsAddressingNamespacePrefix,
+                    EwsUtilities.WsAddressingNamespace
+                );
+                _namespaceManager.AddNamespace(EwsUtilities.EwsSoapNamespacePrefix, EwsUtilities.EwsSoapNamespace);
+                _namespaceManager.AddNamespace(EwsUtilities.EwsTypesNamespacePrefix, EwsUtilities.EwsTypesNamespace);
+                _namespaceManager.AddNamespace(
+                    EwsUtilities.WsSecuritySecExtNamespacePrefix,
+                    EwsUtilities.WsSecuritySecExtNamespace
+                );
+            }
+
+            return _namespaceManager;
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="WSSecurityBasedCredentials" /> class.
@@ -89,13 +130,6 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
         _addTimestamp = addTimestamp;
     }
 
-    /// <summary>
-    ///     This method is called to pre-authenticate credentials before a service request is made.
-    /// </summary>
-    internal override void PreAuthenticate()
-    {
-        // Nothing special to do here.
-    }
 
     /// <summary>
     ///     Emit the extra namespace aliases used for WS-Security and WS-Addressing.
@@ -193,45 +227,5 @@ public abstract class WSSecurityBasedCredentials : ExchangeCredentials
     internal override Uri AdjustUrl(Uri url)
     {
         return new Uri(GetUriWithoutSuffix(url) + WsSecurityPathSuffix);
-    }
-
-    /// <summary>
-    ///     Gets or sets the security token.
-    /// </summary>
-    internal string? SecurityToken { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the EWS URL.
-    /// </summary>
-    internal Uri? EwsUrl { get; set; }
-
-    /// <summary>
-    ///     Gets the XmlNamespaceManager which is used to select node during signing the message.
-    /// </summary>
-    internal static XmlNamespaceManager NamespaceManager
-    {
-        get
-        {
-            if (_namespaceManager == null)
-            {
-                _namespaceManager = new XmlNamespaceManager(new NameTable());
-                _namespaceManager.AddNamespace(
-                    EwsUtilities.WsSecurityUtilityNamespacePrefix,
-                    EwsUtilities.WsSecurityUtilityNamespace
-                );
-                _namespaceManager.AddNamespace(
-                    EwsUtilities.WsAddressingNamespacePrefix,
-                    EwsUtilities.WsAddressingNamespace
-                );
-                _namespaceManager.AddNamespace(EwsUtilities.EwsSoapNamespacePrefix, EwsUtilities.EwsSoapNamespace);
-                _namespaceManager.AddNamespace(EwsUtilities.EwsTypesNamespacePrefix, EwsUtilities.EwsTypesNamespace);
-                _namespaceManager.AddNamespace(
-                    EwsUtilities.WsSecuritySecExtNamespacePrefix,
-                    EwsUtilities.WsSecuritySecExtNamespace
-                );
-            }
-
-            return _namespaceManager;
-        }
     }
 }

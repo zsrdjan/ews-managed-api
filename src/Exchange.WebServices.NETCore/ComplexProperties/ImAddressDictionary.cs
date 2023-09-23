@@ -38,24 +38,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAddressEntry>
 {
     /// <summary>
-    ///     Gets the field URI.
-    /// </summary>
-    /// <returns>Field URI.</returns>
-    internal override string GetFieldUri()
-    {
-        return "contacts:ImAddress";
-    }
-
-    /// <summary>
-    ///     Creates instance of dictionary entry.
-    /// </summary>
-    /// <returns>New instance.</returns>
-    internal override ImAddressEntry CreateEntryInstance()
-    {
-        return new ImAddressEntry();
-    }
-
-    /// <summary>
     ///     Gets or sets the Instant Messaging address at the specified key.
     /// </summary>
     /// <param name="key">The key of the Instant Messaging address to get or set.</param>
@@ -84,6 +66,24 @@ public sealed class ImAddressDictionary : DictionaryProperty<ImAddressKey, ImAdd
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     Gets the field URI.
+    /// </summary>
+    /// <returns>Field URI.</returns>
+    internal override string GetFieldUri()
+    {
+        return "contacts:ImAddress";
+    }
+
+    /// <summary>
+    ///     Creates instance of dictionary entry.
+    /// </summary>
+    /// <returns>New instance.</returns>
+    internal override ImAddressEntry CreateEntryInstance()
+    {
+        return new ImAddressEntry();
     }
 
     /// <summary>

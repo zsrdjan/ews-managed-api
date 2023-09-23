@@ -42,19 +42,6 @@ public abstract class Change
     private ServiceId _id;
 
     /// <summary>
-    ///     Initializes a new instance of Change.
-    /// </summary>
-    internal Change()
-    {
-    }
-
-    /// <summary>
-    ///     Creates an Id of the appropriate class.
-    /// </summary>
-    /// <returns>A ServiceId.</returns>
-    internal abstract ServiceId CreateId();
-
-    /// <summary>
     ///     Gets the type of the change.
     /// </summary>
     public ChangeType ChangeType { get; internal set; }
@@ -72,4 +59,17 @@ public abstract class Change
         get => ServiceObject != null ? ServiceObject.GetId() : _id;
         set => _id = value;
     }
+
+    /// <summary>
+    ///     Initializes a new instance of Change.
+    /// </summary>
+    internal Change()
+    {
+    }
+
+    /// <summary>
+    ///     Creates an Id of the appropriate class.
+    /// </summary>
+    /// <returns>A ServiceId.</returns>
+    internal abstract ServiceId CreateId();
 }

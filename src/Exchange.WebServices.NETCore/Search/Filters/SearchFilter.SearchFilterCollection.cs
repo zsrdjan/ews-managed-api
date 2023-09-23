@@ -42,6 +42,44 @@ public abstract partial class SearchFilter
         private readonly List<SearchFilter> _searchFilters = new();
 
         /// <summary>
+        ///     Gets the total number of search filters in the collection.
+        /// </summary>
+        public int Count => _searchFilters.Count;
+
+        /// <summary>
+        ///     Gets or sets the search filter at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the search filter to get or set.</param>
+        /// <returns>The search filter at the specified index.</returns>
+        public SearchFilter this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
+                }
+
+                return _searchFilters[index];
+            }
+
+            set
+            {
+                if (index < 0 || index >= Count)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
+                }
+
+                _searchFilters[index] = value;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the logical operator that links the search filters in this collection.
+        /// </summary>
+        public LogicalOperator LogicalOperator { get; set; } = LogicalOperator.And;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="SearchFilter.SearchFilterCollection" /> class.
         ///     The LogicalOperator property is initialized to LogicalOperator.And.
         /// </summary>
@@ -79,6 +117,35 @@ public abstract partial class SearchFilter
         {
             AddRange(searchFilters);
         }
+
+
+        #region IEnumerable<SearchCondition> Members
+
+        /// <summary>
+        ///     Gets an enumerator that iterates through the elements of the collection.
+        /// </summary>
+        /// <returns>An IEnumerator for the collection.</returns>
+        public IEnumerator<SearchFilter> GetEnumerator()
+        {
+            return _searchFilters.GetEnumerator();
+        }
+
+        #endregion
+
+
+        #region IEnumerable Members
+
+        /// <summary>
+        ///     Gets an enumerator that iterates through the elements of the collection.
+        /// </summary>
+        /// <returns>An IEnumerator for the collection.</returns>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _searchFilters.GetEnumerator();
+        }
+
+        #endregion
+
 
         /// <summary>
         ///     Validate instance.
@@ -262,71 +329,5 @@ public abstract partial class SearchFilter
             _searchFilters.RemoveAt(index);
             Changed();
         }
-
-        /// <summary>
-        ///     Gets the total number of search filters in the collection.
-        /// </summary>
-        public int Count => _searchFilters.Count;
-
-        /// <summary>
-        ///     Gets or sets the search filter at the specified index.
-        /// </summary>
-        /// <param name="index">The zero-based index of the search filter to get or set.</param>
-        /// <returns>The search filter at the specified index.</returns>
-        public SearchFilter this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= Count)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
-                }
-
-                return _searchFilters[index];
-            }
-
-            set
-            {
-                if (index < 0 || index >= Count)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(index), Strings.IndexIsOutOfRange);
-                }
-
-                _searchFilters[index] = value;
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the logical operator that links the search filters in this collection.
-        /// </summary>
-        public LogicalOperator LogicalOperator { get; set; } = LogicalOperator.And;
-
-
-        #region IEnumerable<SearchCondition> Members
-
-        /// <summary>
-        ///     Gets an enumerator that iterates through the elements of the collection.
-        /// </summary>
-        /// <returns>An IEnumerator for the collection.</returns>
-        public IEnumerator<SearchFilter> GetEnumerator()
-        {
-            return _searchFilters.GetEnumerator();
-        }
-
-        #endregion
-
-
-        #region IEnumerable Members
-
-        /// <summary>
-        ///     Gets an enumerator that iterates through the elements of the collection.
-        /// </summary>
-        /// <returns>An IEnumerator for the collection.</returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _searchFilters.GetEnumerator();
-        }
-
-        #endregion
     }
 }

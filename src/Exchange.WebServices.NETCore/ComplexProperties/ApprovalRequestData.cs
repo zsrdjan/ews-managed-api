@@ -34,6 +34,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ApprovalRequestData : ComplexProperty
 {
     /// <summary>
+    ///     Gets a value indicating whether this is an undecided approval request.
+    /// </summary>
+    public bool IsUndecidedApprovalRequest { get; private set; }
+
+    /// <summary>
+    ///     Gets the approval decision on the request.
+    /// </summary>
+    public int ApprovalDecision { get; private set; }
+
+    /// <summary>
+    ///     Gets the name of the user who made the decision.
+    /// </summary>
+    public string ApprovalDecisionMaker { get; private set; }
+
+    /// <summary>
+    ///     Gets the time at which the decision was made.
+    /// </summary>
+    public DateTime ApprovalDecisionTime { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ApprovalRequestData" /> class.
     /// </summary>
     internal ApprovalRequestData()
@@ -75,24 +95,4 @@ public sealed class ApprovalRequestData : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this is an undecided approval request.
-    /// </summary>
-    public bool IsUndecidedApprovalRequest { get; private set; }
-
-    /// <summary>
-    ///     Gets the approval decision on the request.
-    /// </summary>
-    public int ApprovalDecision { get; private set; }
-
-    /// <summary>
-    ///     Gets the name of the user who made the decision.
-    /// </summary>
-    public string ApprovalDecisionMaker { get; private set; }
-
-    /// <summary>
-    ///     Gets the time at which the decision was made.
-    /// </summary>
-    public DateTime ApprovalDecisionTime { get; private set; }
 }

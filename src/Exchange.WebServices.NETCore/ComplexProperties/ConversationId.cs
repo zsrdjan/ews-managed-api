@@ -41,6 +41,15 @@ public class ConversationId : ServiceId
     }
 
     /// <summary>
+    ///     Initializes a new instance of ConversationId.
+    /// </summary>
+    /// <param name="uniqueId">The unique Id used to initialize the <see cref="ConversationId" />.</param>
+    public ConversationId(string uniqueId)
+        : base(uniqueId)
+    {
+    }
+
+    /// <summary>
     ///     Defines an implicit conversion between string and ConversationId.
     /// </summary>
     /// <param name="uniqueId">The unique Id to convert to ConversationId.</param>
@@ -78,15 +87,6 @@ public class ConversationId : ServiceId
     internal override string GetXmlElementName()
     {
         return XmlElementNames.ConversationId;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of ConversationId.
-    /// </summary>
-    /// <param name="uniqueId">The unique Id used to initialize the <see cref="ConversationId" />.</param>
-    public ConversationId(string uniqueId)
-        : base(uniqueId)
-    {
     }
 
     /// <summary>

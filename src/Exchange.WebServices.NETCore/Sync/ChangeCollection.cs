@@ -38,24 +38,6 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     private readonly List<TChange> _changes = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ChangeCollection&lt;TChange&gt;" /> class.
-    /// </summary>
-    internal ChangeCollection()
-    {
-    }
-
-    /// <summary>
-    ///     Adds the specified change.
-    /// </summary>
-    /// <param name="change">The change.</param>
-    internal void Add(TChange change)
-    {
-        EwsUtilities.Assert(change != null, "ChangeList.Add", "change is null");
-
-        _changes.Add(change);
-    }
-
-    /// <summary>
     ///     Gets the number of changes in the collection.
     /// </summary>
     public int Count => _changes.Count;
@@ -88,6 +70,13 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     /// </summary>
     public bool MoreChangesAvailable { get; internal set; }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ChangeCollection&lt;TChange&gt;" /> class.
+    /// </summary>
+    internal ChangeCollection()
+    {
+    }
+
 
     #region IEnumerable<TChange> Members
 
@@ -115,4 +104,16 @@ public sealed class ChangeCollection<TChange> : IEnumerable<TChange>
     }
 
     #endregion
+
+
+    /// <summary>
+    ///     Adds the specified change.
+    /// </summary>
+    /// <param name="change">The change.</param>
+    internal void Add(TChange change)
+    {
+        EwsUtilities.Assert(change != null, "ChangeList.Add", "change is null");
+
+        _changes.Add(change);
+    }
 }

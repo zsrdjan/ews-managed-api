@@ -44,6 +44,24 @@ public abstract partial class Recurrence
         private int _interval = 1;
 
         /// <summary>
+        ///     Gets or sets the interval between occurrences.
+        /// </summary>
+        public int Interval
+        {
+            get => _interval;
+
+            set
+            {
+                if (value < 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), Strings.IntervalMustBeGreaterOrEqualToOne);
+                }
+
+                SetFieldValue(ref _interval, value);
+            }
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="IntervalPattern" /> class.
         /// </summary>
         internal IntervalPattern()
@@ -100,24 +118,6 @@ public abstract partial class Recurrence
                 {
                     return false;
                 }
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the interval between occurrences.
-        /// </summary>
-        public int Interval
-        {
-            get => _interval;
-
-            set
-            {
-                if (value < 1)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value), Strings.IntervalMustBeGreaterOrEqualToOne);
-                }
-
-                SetFieldValue(ref _interval, value);
             }
         }
 

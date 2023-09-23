@@ -33,14 +33,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddressKey>
 {
-    #region Fields
-
     private readonly SimplePropertyBag<string> _propertyBag;
 
-    #endregion
-
-
-    #region Constructors
 
     /// <summary>
     ///     Initializes a new instance of PhysicalAddressEntry
@@ -49,6 +43,36 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
     {
         _propertyBag = new SimplePropertyBag<string>();
         _propertyBag.OnChange += PropertyBagChanged;
+    }
+
+
+    #region Classes
+
+    /// <summary>
+    ///     Schema definition for PhysicalAddress
+    /// </summary>
+    private static class PhysicalAddressSchema
+    {
+        public const string Street = "Street";
+        public const string City = "City";
+        public const string State = "State";
+        public const string CountryOrRegion = "CountryOrRegion";
+        public const string PostalCode = "PostalCode";
+
+
+        /// <summary>
+        ///     Gets the XML element names.
+        /// </summary>
+        /// <value>The XML element names.</value>
+        public static List<string> XmlElementNames =>
+            new List<string>
+            {
+                Street,
+                City,
+                State,
+                CountryOrRegion,
+                PostalCode,
+            };
     }
 
     #endregion
@@ -254,43 +278,6 @@ public sealed class PhysicalAddressEntry : DictionaryEntryProperty<PhysicalAddre
         writer.WriteAttributeValue(XmlAttributeNames.FieldIndex, Key.ToString());
         writer.WriteEndElement(); // IndexedFieldURI
         writer.WriteEndElement(); // ewsObject.GetDeleteFieldXmlElementName()
-    }
-
-    #endregion
-
-
-    #region Classes
-
-    /// <summary>
-    ///     Schema definition for PhysicalAddress
-    /// </summary>
-    private static class PhysicalAddressSchema
-    {
-        public const string Street = "Street";
-        public const string City = "City";
-        public const string State = "State";
-        public const string CountryOrRegion = "CountryOrRegion";
-        public const string PostalCode = "PostalCode";
-
-        /// <summary>
-        ///     List of XML element names.
-        /// </summary>
-        private static readonly LazyMember<List<string>> xmlElementNames = new(
-            () => new List<string>
-            {
-                Street,
-                City,
-                State,
-                CountryOrRegion,
-                PostalCode,
-            }
-        );
-
-        /// <summary>
-        ///     Gets the XML element names.
-        /// </summary>
-        /// <value>The XML element names.</value>
-        public static List<string> XmlElementNames => xmlElementNames.Member;
     }
 
     #endregion

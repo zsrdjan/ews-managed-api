@@ -34,36 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class StreamingSubscriptionConnection : IDisposable
 {
     /// <summary>
-    ///     Mapping of streaming id to subscriptions currently on the connection.
-    /// </summary>
-    private Dictionary<string, StreamingSubscription> _subscriptions = new();
-
-    /// <summary>
-    ///     connection lifetime, in minutes
-    /// </summary>
-    private readonly int _connectionTimeout;
-
-    /// <summary>
-    ///     ExchangeService instance used to make the EWS call.
-    /// </summary>
-    private ExchangeService _session;
-
-    /// <summary>
-    ///     Value indicating whether the class is disposed.
-    /// </summary>
-    private bool _isDisposed;
-
-    /// <summary>
-    ///     Currently used instance of a GetStreamingEventsRequest connected to EWS.
-    /// </summary>
-    private GetStreamingEventsRequest? _currentHangingRequest;
-
-    /// <summary>
-    ///     Lock object
-    /// </summary>
-    private readonly object _lockObject = new();
-
-    /// <summary>
     ///     Represents a delegate that is invoked when notifications are received from the server
     /// </summary>
     /// <param name="sender">The StreamingSubscriptionConnection instance that received the events.</param>
@@ -78,19 +48,68 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     public delegate void SubscriptionErrorDelegate(object sender, SubscriptionErrorEventArgs args);
 
     /// <summary>
-    ///     Occurs when notifications are received from the server.
+    ///     connection lifetime, in minutes
     /// </summary>
-    public event NotificationEventDelegate? OnNotificationEvent;
+    private readonly int _connectionTimeout;
 
     /// <summary>
-    ///     Occurs when a subscription encounters an error.
+    ///     Lock object
     /// </summary>
-    public event SubscriptionErrorDelegate? OnSubscriptionError;
+    private readonly object _lockObject = new();
 
     /// <summary>
-    ///     Occurs when a streaming subscription connection is disconnected from the server.
+    ///     Currently used instance of a GetStreamingEventsRequest connected to EWS.
     /// </summary>
-    public event SubscriptionErrorDelegate? OnDisconnect;
+    private GetStreamingEventsRequest? _currentHangingRequest;
+
+    /// <summary>
+    ///     Value indicating whether the class is disposed.
+    /// </summary>
+    private bool _isDisposed;
+
+    /// <summary>
+    ///     ExchangeService instance used to make the EWS call.
+    /// </summary>
+    private ExchangeService _session;
+
+    /// <summary>
+    ///     Mapping of streaming id to subscriptions currently on the connection.
+    /// </summary>
+    private Dictionary<string, StreamingSubscription> _subscriptions = new();
+
+    /// <summary>
+    ///     Getting the current subscriptions in this connection.
+    /// </summary>
+    public IEnumerable<StreamingSubscription> CurrentSubscriptions
+    {
+        get
+        {
+            var result = new List<StreamingSubscription>();
+            lock (_lockObject)
+            {
+                result.AddRange(_subscriptions.Values);
+            }
+
+            return result;
+        }
+    }
+
+    /// <summary>
+    ///     Gets a value indicating whether this connection is opened
+    /// </summary>
+    public bool IsOpen
+    {
+        get
+        {
+            ThrowIfDisposed();
+            if (_currentHangingRequest == null)
+            {
+                return false;
+            }
+
+            return _currentHangingRequest.IsConnected;
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="StreamingSubscriptionConnection" /> class.
@@ -140,21 +159,19 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     }
 
     /// <summary>
-    ///     Getting the current subscriptions in this connection.
+    ///     Occurs when notifications are received from the server.
     /// </summary>
-    public IEnumerable<StreamingSubscription> CurrentSubscriptions
-    {
-        get
-        {
-            var result = new List<StreamingSubscription>();
-            lock (_lockObject)
-            {
-                result.AddRange(_subscriptions.Values);
-            }
+    public event NotificationEventDelegate? OnNotificationEvent;
 
-            return result;
-        }
-    }
+    /// <summary>
+    ///     Occurs when a subscription encounters an error.
+    /// </summary>
+    public event SubscriptionErrorDelegate? OnSubscriptionError;
+
+    /// <summary>
+    ///     Occurs when a streaming subscription connection is disconnected from the server.
+    /// </summary>
+    public event SubscriptionErrorDelegate? OnDisconnect;
 
     /// <summary>
     ///     Adds a subscription to this connection.
@@ -204,7 +221,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     ///     This results in a long-standing call to EWS.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when Open is called while connected.</exception>
-    public void Open(CancellationToken token = default)
+    public void Open()
     {
         lock (_lockObject)
         {
@@ -226,7 +243,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
 
             _currentHangingRequest.OnDisconnect += OnRequestDisconnect;
 
-            _currentHangingRequest.InternalExecute(token);
+            _currentHangingRequest.InternalExecute();
         }
     }
 
@@ -258,7 +275,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
 
             // Further down in the stack, this will result in a call to our OnRequestDisconnect event handler,
             // doing the necessary cleanup.
-            _currentHangingRequest.Disconnect();
+            _currentHangingRequest?.Disconnect();
         }
     }
 
@@ -271,23 +288,6 @@ public sealed class StreamingSubscriptionConnection : IDisposable
         _currentHangingRequest = null;
 
         OnDisconnect?.Invoke(this, new SubscriptionErrorEventArgs(null, ex));
-    }
-
-    /// <summary>
-    ///     Gets a value indicating whether this connection is opened
-    /// </summary>
-    public bool IsOpen
-    {
-        get
-        {
-            ThrowIfDisposed();
-            if (_currentHangingRequest == null)
-            {
-                return false;
-            }
-
-            return _currentHangingRequest.IsConnected;
-        }
     }
 
     /// <summary>

@@ -33,6 +33,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class WorkingPeriod : ComplexProperty
 {
     /// <summary>
+    ///     Gets a collection of work days.
+    /// </summary>
+    internal Collection<DayOfTheWeek> DaysOfWeek { get; } = new Collection<DayOfTheWeek>();
+
+    /// <summary>
+    ///     Gets the start time of the period.
+    /// </summary>
+    internal TimeSpan StartTime { get; private set; }
+
+    /// <summary>
+    ///     Gets the end time of the period.
+    /// </summary>
+    internal TimeSpan EndTime { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="WorkingPeriod" /> class.
     /// </summary>
     internal WorkingPeriod()
@@ -69,19 +84,4 @@ internal sealed class WorkingPeriod : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a collection of work days.
-    /// </summary>
-    internal Collection<DayOfTheWeek> DaysOfWeek { get; } = new Collection<DayOfTheWeek>();
-
-    /// <summary>
-    ///     Gets the start time of the period.
-    /// </summary>
-    internal TimeSpan StartTime { get; private set; }
-
-    /// <summary>
-    ///     Gets the end time of the period.
-    /// </summary>
-    internal TimeSpan EndTime { get; private set; }
 }

@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class RuleError : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RuleError" /> class.
-    /// </summary>
-    internal RuleError()
-    {
-    }
-
-    /// <summary>
     ///     Gets the property which failed validation.
     /// </summary>
     public RuleProperty RuleProperty { get; private set; }
@@ -59,6 +52,13 @@ public sealed class RuleError : ComplexProperty
     ///     Gets the value that failed validation.
     /// </summary>
     public string Value { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RuleError" /> class.
+    /// </summary>
+    internal RuleError()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

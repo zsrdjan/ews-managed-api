@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UpdateInboxRulesResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the rule operation errors in the response.
+    /// </summary>
+    internal RuleOperationErrorCollection Errors { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateInboxRulesResponse" /> class.
     /// </summary>
     internal UpdateInboxRulesResponse()
@@ -62,9 +67,4 @@ internal sealed class UpdateInboxRulesResponse : ServiceResponse
 
         return false;
     }
-
-    /// <summary>
-    ///     Gets the rule operation errors in the response.
-    /// </summary>
-    internal RuleOperationErrorCollection Errors { get; }
 }

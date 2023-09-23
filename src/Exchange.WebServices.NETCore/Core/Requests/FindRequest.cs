@@ -33,6 +33,33 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the parent folder ids.
+    /// </summary>
+    public FolderIdWrapperList ParentFolderIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the search filter. Available search filter classes include SearchFilter.IsEqualTo,
+    ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
+    ///     is null, no search filters are applied.
+    /// </summary>
+    public SearchFilter? SearchFilter { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the query string for indexed search.
+    /// </summary>
+    public string QueryString { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the query string highlight terms.
+    /// </summary>
+    internal bool ReturnHighlightTerms { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the view controlling the number of items or folders returned.
+    /// </summary>
+    public ViewBase View { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="FindRequest&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -162,31 +189,4 @@ internal abstract class FindRequest<TResponse> : MultiResponseServiceRequest<TRe
             writer.WriteEndElement();
         }
     }
-
-    /// <summary>
-    ///     Gets the parent folder ids.
-    /// </summary>
-    public FolderIdWrapperList ParentFolderIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the search filter. Available search filter classes include SearchFilter.IsEqualTo,
-    ///     SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. If SearchFilter
-    ///     is null, no search filters are applied.
-    /// </summary>
-    public SearchFilter? SearchFilter { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the query string for indexed search.
-    /// </summary>
-    public string QueryString { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the query string highlight terms.
-    /// </summary>
-    internal bool ReturnHighlightTerms { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the view controlling the number of items or folders returned.
-    /// </summary>
-    public ViewBase View { get; set; }
 }

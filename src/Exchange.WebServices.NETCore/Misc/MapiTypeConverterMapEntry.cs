@@ -35,23 +35,21 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Map CLR types used for MAPI properties to matching default values.
     /// </summary>
-    private static readonly LazyMember<Dictionary<Type, object?>> DefaultValueMap = new(
-        () => new Dictionary<Type, object?>
-        {
-            // @formatter:off
-            { typeof(bool), false },
-            { typeof(byte[]), null },
-            { typeof(short), (short)0 },
-            { typeof(int), 0 },
-            { typeof(long), (long)0 },
-            { typeof(float), (float)0.0 },
-            { typeof(double), 0.0 },
-            { typeof(DateTime), DateTime.MinValue },
-            { typeof(Guid), Guid.Empty },
-            { typeof(string), null },
-            // @formatter:on
-        }
-    );
+    private static readonly IReadOnlyDictionary<Type, object?> DefaultValueMap = new Dictionary<Type, object?>
+    {
+        // @formatter:off
+        { typeof(bool), false },
+        { typeof(byte[]), null },
+        { typeof(short), (short)0 },
+        { typeof(int), 0 },
+        { typeof(long), (long)0 },
+        { typeof(float), (float)0.0 },
+        { typeof(double), 0.0 },
+        { typeof(DateTime), DateTime.MinValue },
+        { typeof(Guid), Guid.Empty },
+        { typeof(string), null },
+        // @formatter:on
+    };
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MapiTypeConverterMapEntry" /> class.
@@ -66,7 +64,7 @@ internal class MapiTypeConverterMapEntry
     internal MapiTypeConverterMapEntry(Type type)
     {
         EwsUtilities.Assert(
-            DefaultValueMap.Member.ContainsKey(type),
+            DefaultValueMap.ContainsKey(type),
             "MapiTypeConverterMapEntry ctor",
             $"No default value entry for type {type.Name}"
         );
@@ -109,6 +107,7 @@ internal class MapiTypeConverterMapEntry
         {
             throw new ArgumentException(
                 string.Format(Strings.ValueOfTypeCannotBeConverted, value, value.GetType(), Type),
+                nameof(value),
                 ex
             );
         }
@@ -167,22 +166,28 @@ internal class MapiTypeConverterMapEntry
     {
         if (value is not Array array)
         {
-            throw new ArgumentException(string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type));
+            throw new ArgumentException(
+                string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type),
+                nameof(value)
+            );
         }
 
         if (array.Rank != 1)
         {
-            throw new ArgumentException(Strings.ArrayMustHaveSingleDimension);
+            throw new ArgumentException(Strings.ArrayMustHaveSingleDimension, nameof(value));
         }
 
         if (array.Length == 0)
         {
-            throw new ArgumentException(Strings.ArrayMustHaveAtLeastOneElement);
+            throw new ArgumentException(Strings.ArrayMustHaveAtLeastOneElement, nameof(value));
         }
 
         if (array.GetType().GetElementType() != Type)
         {
-            throw new ArgumentException(string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type));
+            throw new ArgumentException(
+                string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type),
+                nameof(value)
+            );
         }
     }
 
@@ -193,7 +198,7 @@ internal class MapiTypeConverterMapEntry
     ///     Gets or sets the string parser.
     /// </summary>
     /// <remarks>For array types, this method is called for each array element.</remarks>
-    internal Func<string, object> Parse { get; set; }
+    internal Func<string?, object?> Parse { get; set; }
 
     /// <summary>
     ///     Gets or sets the string to object converter.
@@ -216,7 +221,7 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Gets the default value for the type.
     /// </summary>
-    internal object DefaultValue => DefaultValueMap.Member[Type];
+    internal object DefaultValue => DefaultValueMap[Type];
 
     #endregion
 }

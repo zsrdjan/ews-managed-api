@@ -35,21 +35,156 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class PersonaPostalAddress : ComplexProperty
 {
-    private string _street;
-    private string _city;
-    private string _state;
-    private string _country;
-    private string _postalCode;
-    private string _postOfficeBox;
-    private string _type;
-    private double? _latitude;
-    private double? _longitude;
     private double? _accuracy;
     private double? _altitude;
     private double? _altitudeAccuracy;
+    private string _city;
+    private string _country;
     private string _formattedAddress;
-    private string _uri;
+    private double? _latitude;
+    private double? _longitude;
+    private string _postalCode;
+    private string _postOfficeBox;
     private LocationSource _source;
+    private string _state;
+    private string _street;
+    private string _type;
+    private string _uri;
+
+    /// <summary>
+    ///     Gets or sets the street.
+    /// </summary>
+    public string Street
+    {
+        get => _street;
+        set => SetFieldValue(ref _street, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the City.
+    /// </summary>
+    public string City
+    {
+        get => _city;
+        set => SetFieldValue(ref _city, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the state.
+    /// </summary>
+    public string State
+    {
+        get => _state;
+        set => SetFieldValue(ref _state, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the Country.
+    /// </summary>
+    public string Country
+    {
+        get => _country;
+        set => SetFieldValue(ref _country, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the postalCode.
+    /// </summary>
+    public string PostalCode
+    {
+        get => _postalCode;
+        set => SetFieldValue(ref _postalCode, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the postOfficeBox.
+    /// </summary>
+    public string PostOfficeBox
+    {
+        get => _postOfficeBox;
+        set => SetFieldValue(ref _postOfficeBox, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the type.
+    /// </summary>
+    public string Type
+    {
+        get => _type;
+        set => SetFieldValue(ref _type, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the location source type.
+    /// </summary>
+    public LocationSource Source
+    {
+        get => _source;
+        set => SetFieldValue(ref _source, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the location Uri.
+    /// </summary>
+    public string Uri
+    {
+        get => _uri;
+        set => SetFieldValue(ref _uri, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating location latitude.
+    /// </summary>
+    public double? Latitude
+    {
+        get => _latitude;
+        set => SetFieldValue(ref _latitude, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating location longitude.
+    /// </summary>
+    public double? Longitude
+    {
+        get => _longitude;
+        set => SetFieldValue(ref _longitude, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the location accuracy.
+    /// </summary>
+    public double? Accuracy
+    {
+        get => _accuracy;
+        set => SetFieldValue(ref _accuracy, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the location altitude.
+    /// </summary>
+    public double? Altitude
+    {
+        get => _altitude;
+        set => SetFieldValue(ref _altitude, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the location altitude accuracy.
+    /// </summary>
+    public double? AltitudeAccuracy
+    {
+        get => _altitudeAccuracy;
+        set => SetFieldValue(ref _altitudeAccuracy, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the street address.
+    /// </summary>
+    public string FormattedAddress
+    {
+        get => _formattedAddress;
+        set => SetFieldValue(ref _formattedAddress, value);
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PersonaPostalAddress" /> class.
@@ -215,141 +350,6 @@ public sealed class PersonaPostalAddress : ComplexProperty
                 TryReadElementFromXml(reader);
             }
         } while (!reader.IsEndElement(XmlNamespace.Types, XmlElementNames.PersonaPostalAddress));
-    }
-
-    /// <summary>
-    ///     Gets or sets the street.
-    /// </summary>
-    public string Street
-    {
-        get => _street;
-        set => SetFieldValue(ref _street, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the City.
-    /// </summary>
-    public string City
-    {
-        get => _city;
-        set => SetFieldValue(ref _city, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the state.
-    /// </summary>
-    public string State
-    {
-        get => _state;
-        set => SetFieldValue(ref _state, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the Country.
-    /// </summary>
-    public string Country
-    {
-        get => _country;
-        set => SetFieldValue(ref _country, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the postalCode.
-    /// </summary>
-    public string PostalCode
-    {
-        get => _postalCode;
-        set => SetFieldValue(ref _postalCode, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the postOfficeBox.
-    /// </summary>
-    public string PostOfficeBox
-    {
-        get => _postOfficeBox;
-        set => SetFieldValue(ref _postOfficeBox, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the type.
-    /// </summary>
-    public string Type
-    {
-        get => _type;
-        set => SetFieldValue(ref _type, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the location source type.
-    /// </summary>
-    public LocationSource Source
-    {
-        get => _source;
-        set => SetFieldValue(ref _source, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the location Uri.
-    /// </summary>
-    public string Uri
-    {
-        get => _uri;
-        set => SetFieldValue(ref _uri, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets a value indicating location latitude.
-    /// </summary>
-    public double? Latitude
-    {
-        get => _latitude;
-        set => SetFieldValue(ref _latitude, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets a value indicating location longitude.
-    /// </summary>
-    public double? Longitude
-    {
-        get => _longitude;
-        set => SetFieldValue(ref _longitude, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the location accuracy.
-    /// </summary>
-    public double? Accuracy
-    {
-        get => _accuracy;
-        set => SetFieldValue(ref _accuracy, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the location altitude.
-    /// </summary>
-    public double? Altitude
-    {
-        get => _altitude;
-        set => SetFieldValue(ref _altitude, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the location altitude accuracy.
-    /// </summary>
-    public double? AltitudeAccuracy
-    {
-        get => _altitudeAccuracy;
-        set => SetFieldValue(ref _altitudeAccuracy, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the street address.
-    /// </summary>
-    public string FormattedAddress
-    {
-        get => _formattedAddress;
-        set => SetFieldValue(ref _formattedAddress, value);
     }
 
     /// <summary>

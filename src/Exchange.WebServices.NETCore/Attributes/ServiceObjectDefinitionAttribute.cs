@@ -32,16 +32,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ServiceObjectDefinitionAttribute : Attribute
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ServiceObjectDefinitionAttribute" /> class.
-    /// </summary>
-    /// <param name="xmlElementName">Name of the XML element.</param>
-    internal ServiceObjectDefinitionAttribute(string xmlElementName)
-    {
-        XmlElementName = xmlElementName;
-        ReturnedByServer = true;
-    }
-
-    /// <summary>
     ///     Gets the name of the XML element.
     /// </summary>
     /// <value>The name of the XML element.</value>
@@ -51,4 +41,14 @@ internal sealed class ServiceObjectDefinitionAttribute : Attribute
     ///     True if this ServiceObject can be returned by the server as an object, false otherwise.
     /// </summary>
     public bool ReturnedByServer { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceObjectDefinitionAttribute" /> class.
+    /// </summary>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    internal ServiceObjectDefinitionAttribute(string xmlElementName)
+    {
+        XmlElementName = xmlElementName;
+        ReturnedByServer = true;
+    }
 }

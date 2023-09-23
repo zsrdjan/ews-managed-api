@@ -39,6 +39,48 @@ public class ServiceResponse
     private readonly Dictionary<string, string> _errorDetails = new();
 
     /// <summary>
+    ///     Gets a value indicating whether a batch request stopped processing before the end.
+    /// </summary>
+    internal bool BatchProcessingStopped =>
+        Result == ServiceResult.Warning && ErrorCode == ServiceError.ErrorBatchProcessingStopped;
+
+    /// <summary>
+    ///     Gets the result associated with this response.
+    /// </summary>
+    public ServiceResult Result { get; private set; }
+
+    /// <summary>
+    ///     Gets the error code associated with this response.
+    /// </summary>
+    public ServiceError ErrorCode { get; private set; }
+
+    /// <summary>
+    ///     Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null.
+    ///     ErrorMessage is localized according to the PreferredCulture property of the ExchangeService object that
+    ///     was used to call the method that generated the response.
+    /// </summary>
+    public string ErrorMessage { get; internal set; }
+
+    /// <summary>
+    ///     Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null.
+    ///     Error details will only available for some error codes. For example, when error code is
+    ///     ErrorRecurrenceHasNoOccurrence,
+    ///     the ErrorDetailsDictionary will contain keys for EffectiveStartDate and EffectiveEndDate.
+    /// </summary>
+    /// <value>The error details dictionary.</value>
+    public IDictionary<string, string> ErrorDetails => _errorDetails;
+
+    /// <summary>
+    ///     Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties
+    ///     returns null.
+    ///     ErrorProperties is only available for some error codes. For example, when the error code is
+    ///     ErrorInvalidPropertyForOperation,
+    ///     ErrorProperties will contain the definition of the property that was invalid for the request.
+    /// </summary>
+    /// <value>The error properties list.</value>
+    public Collection<PropertyDefinitionBase> ErrorProperties { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceResponse" /> class.
     /// </summary>
     internal ServiceResponse()
@@ -272,46 +314,4 @@ public class ServiceResponse
             throw new ServiceResponseException(this);
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether a batch request stopped processing before the end.
-    /// </summary>
-    internal bool BatchProcessingStopped =>
-        Result == ServiceResult.Warning && ErrorCode == ServiceError.ErrorBatchProcessingStopped;
-
-    /// <summary>
-    ///     Gets the result associated with this response.
-    /// </summary>
-    public ServiceResult Result { get; private set; }
-
-    /// <summary>
-    ///     Gets the error code associated with this response.
-    /// </summary>
-    public ServiceError ErrorCode { get; private set; }
-
-    /// <summary>
-    ///     Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null.
-    ///     ErrorMessage is localized according to the PreferredCulture property of the ExchangeService object that
-    ///     was used to call the method that generated the response.
-    /// </summary>
-    public string ErrorMessage { get; internal set; }
-
-    /// <summary>
-    ///     Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null.
-    ///     Error details will only available for some error codes. For example, when error code is
-    ///     ErrorRecurrenceHasNoOccurrence,
-    ///     the ErrorDetailsDictionary will contain keys for EffectiveStartDate and EffectiveEndDate.
-    /// </summary>
-    /// <value>The error details dictionary.</value>
-    public IDictionary<string, string> ErrorDetails => _errorDetails;
-
-    /// <summary>
-    ///     Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties
-    ///     returns null.
-    ///     ErrorProperties is only available for some error codes. For example, when the error code is
-    ///     ErrorInvalidPropertyForOperation,
-    ///     ErrorProperties will contain the definition of the property that was invalid for the request.
-    /// </summary>
-    /// <value>The error properties list.</value>
-    public Collection<PropertyDefinitionBase> ErrorProperties { get; } = new();
 }

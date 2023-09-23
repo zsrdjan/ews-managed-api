@@ -33,61 +33,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class CompleteName : ComplexProperty
 {
-    #region Properties
-
-    /// <summary>
-    ///     Gets the contact's title.
-    /// </summary>
-    public string Title { get; private set; }
-
-    /// <summary>
-    ///     Gets the given name (first name) of the contact.
-    /// </summary>
-    public string GivenName { get; private set; }
-
-    /// <summary>
-    ///     Gets the middle name of the contact.
-    /// </summary>
-    public string MiddleName { get; private set; }
-
-    /// <summary>
-    ///     Gets the surname (last name) of the contact.
-    /// </summary>
-    public string Surname { get; private set; }
-
-    /// <summary>
-    ///     Gets the suffix of the contact.
-    /// </summary>
-    public string Suffix { get; private set; }
-
-    /// <summary>
-    ///     Gets the initials of the contact.
-    /// </summary>
-    public string Initials { get; private set; }
-
-    /// <summary>
-    ///     Gets the full name of the contact.
-    /// </summary>
-    public string FullName { get; private set; }
-
-    /// <summary>
-    ///     Gets the nickname of the contact.
-    /// </summary>
-    public string NickName { get; private set; }
-
-    /// <summary>
-    ///     Gets the Yomi given name (first name) of the contact.
-    /// </summary>
-    public string YomiGivenName { get; private set; }
-
-    /// <summary>
-    ///     Gets the Yomi surname (last name) of the contact.
-    /// </summary>
-    public string YomiSurname { get; private set; }
-
-    #endregion
-
-
     /// <summary>
     ///     Tries to read element from XML.
     /// </summary>
@@ -171,4 +116,59 @@ public sealed class CompleteName : ComplexProperty
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.YomiFirstName, YomiGivenName);
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.YomiLastName, YomiSurname);
     }
+
+
+    #region Properties
+
+    /// <summary>
+    ///     Gets the contact's title.
+    /// </summary>
+    public string Title { get; private set; }
+
+    /// <summary>
+    ///     Gets the given name (first name) of the contact.
+    /// </summary>
+    public string GivenName { get; private set; }
+
+    /// <summary>
+    ///     Gets the middle name of the contact.
+    /// </summary>
+    public string MiddleName { get; private set; }
+
+    /// <summary>
+    ///     Gets the surname (last name) of the contact.
+    /// </summary>
+    public string Surname { get; private set; }
+
+    /// <summary>
+    ///     Gets the suffix of the contact.
+    /// </summary>
+    public string Suffix { get; private set; }
+
+    /// <summary>
+    ///     Gets the initials of the contact.
+    /// </summary>
+    public string Initials { get; private set; }
+
+    /// <summary>
+    ///     Gets the full name of the contact.
+    /// </summary>
+    public string FullName { get; private set; }
+
+    /// <summary>
+    ///     Gets the nickname of the contact.
+    /// </summary>
+    public string NickName { get; private set; }
+
+    /// <summary>
+    ///     Gets the Yomi given name (first name) of the contact.
+    /// </summary>
+    public string YomiGivenName { get; private set; }
+
+    /// <summary>
+    ///     Gets the Yomi surname (last name) of the contact.
+    /// </summary>
+    public string YomiSurname { get; private set; }
+
+    #endregion
 }

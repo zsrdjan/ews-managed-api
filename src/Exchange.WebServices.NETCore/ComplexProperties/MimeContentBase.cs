@@ -44,6 +44,24 @@ public abstract class MimeContentBase : ComplexProperty
     private byte[]? _content;
 
     /// <summary>
+    ///     Gets or sets the character set of the content.
+    /// </summary>
+    public string? CharacterSet
+    {
+        get => _characterSet;
+        set => SetFieldValue(ref _characterSet, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the content.
+    /// </summary>
+    public byte[]? Content
+    {
+        get => _content;
+        set => SetFieldValue(ref _content, value);
+    }
+
+    /// <summary>
     ///     Reads attributes from XML.
     ///     This should always be UTF-8 for MimeContentUTF8
     /// </summary>
@@ -81,23 +99,5 @@ public abstract class MimeContentBase : ComplexProperty
         {
             writer.WriteBase64ElementValue(Content);
         }
-    }
-
-    /// <summary>
-    ///     Gets or sets the character set of the content.
-    /// </summary>
-    public string? CharacterSet
-    {
-        get => _characterSet;
-        set => SetFieldValue(ref _characterSet, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the content.
-    /// </summary>
-    public byte[]? Content
-    {
-        get => _content;
-        set => SetFieldValue(ref _content, value);
     }
 }

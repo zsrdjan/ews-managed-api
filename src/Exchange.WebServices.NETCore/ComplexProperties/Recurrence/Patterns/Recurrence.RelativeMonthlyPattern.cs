@@ -43,6 +43,30 @@ public abstract partial class Recurrence
         private DayOfTheWeekIndex? _dayOfTheWeekIndex;
 
         /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <value>The name of the XML element.</value>
+        internal override string XmlElementName => XmlElementNames.RelativeMonthlyRecurrence;
+
+        /// <summary>
+        ///     Gets or sets the relative position of the day specified in DayOfTheWeek within the month.
+        /// </summary>
+        public DayOfTheWeekIndex DayOfTheWeekIndex
+        {
+            get => GetFieldValueOrThrowIfNull(_dayOfTheWeekIndex, "DayOfTheWeekIndex");
+            set => SetFieldValue(ref _dayOfTheWeekIndex, value);
+        }
+
+        /// <summary>
+        ///     The day of the week when each occurrence happens.
+        /// </summary>
+        public DayOfTheWeek DayOfTheWeek
+        {
+            get => GetFieldValueOrThrowIfNull(_dayOfTheWeek, "DayOfTheWeek");
+            set => SetFieldValue(ref _dayOfTheWeek, value);
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="RelativeMonthlyPattern" /> class.
         /// </summary>
         public RelativeMonthlyPattern()
@@ -67,12 +91,6 @@ public abstract partial class Recurrence
             DayOfTheWeek = dayOfTheWeek;
             DayOfTheWeekIndex = dayOfTheWeekIndex;
         }
-
-        /// <summary>
-        ///     Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal override string XmlElementName => XmlElementNames.RelativeMonthlyRecurrence;
 
         /// <summary>
         ///     Write properties to XML.
@@ -148,24 +166,6 @@ public abstract partial class Recurrence
             return base.IsSame(otherRecurrence) &&
                    _dayOfTheWeek == otherRelativeMonthlyPattern._dayOfTheWeek &&
                    _dayOfTheWeekIndex == otherRelativeMonthlyPattern._dayOfTheWeekIndex;
-        }
-
-        /// <summary>
-        ///     Gets or sets the relative position of the day specified in DayOfTheWeek within the month.
-        /// </summary>
-        public DayOfTheWeekIndex DayOfTheWeekIndex
-        {
-            get => GetFieldValueOrThrowIfNull(_dayOfTheWeekIndex, "DayOfTheWeekIndex");
-            set => SetFieldValue(ref _dayOfTheWeekIndex, value);
-        }
-
-        /// <summary>
-        ///     The day of the week when each occurrence happens.
-        /// </summary>
-        public DayOfTheWeek DayOfTheWeek
-        {
-            get => GetFieldValueOrThrowIfNull(_dayOfTheWeek, "DayOfTheWeek");
-            set => SetFieldValue(ref _dayOfTheWeek, value);
         }
     }
 }

@@ -33,20 +33,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class HangingTraceStream : Stream
 {
-    private readonly Stream _underlyingStream;
     private readonly ExchangeService _service;
+    private readonly Stream _underlyingStream;
     private MemoryStream? _responseCopy;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="HangingTraceStream" /> class.
-    /// </summary>
-    /// <param name="stream">The stream.</param>
-    /// <param name="service">The service.</param>
-    internal HangingTraceStream(Stream stream, ExchangeService service)
-    {
-        _underlyingStream = stream;
-        _service = service;
-    }
 
     public override int ReadTimeout { get; set; }
 
@@ -71,16 +60,6 @@ internal class HangingTraceStream : Stream
     public override bool CanWrite => false;
 
     /// <summary>
-    ///     When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written
-    ///     to the underlying device.
-    /// </summary>
-    /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
-    public override void Flush()
-    {
-        // no-op
-    }
-
-    /// <summary>
     ///     Gets the length in bytes of the stream.
     /// </summary>
     /// <returns>A long value representing the length of the stream in bytes.</returns>
@@ -98,6 +77,27 @@ internal class HangingTraceStream : Stream
         get => throw new NotSupportedException();
 
         set => throw new NotSupportedException();
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="HangingTraceStream" /> class.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="service">The service.</param>
+    internal HangingTraceStream(Stream stream, ExchangeService service)
+    {
+        _underlyingStream = stream;
+        _service = service;
+    }
+
+    /// <summary>
+    ///     When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written
+    ///     to the underlying device.
+    /// </summary>
+    /// <exception cref="T:System.IO.IOException">An I/O error occurs. </exception>
+    public override void Flush()
+    {
+        // no-op
     }
 
     /// <summary>

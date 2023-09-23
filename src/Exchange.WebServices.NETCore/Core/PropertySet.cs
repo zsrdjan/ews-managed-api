@@ -27,8 +27,6 @@ using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
 
-using DefaultPropertySetDictionary = LazyMember<Dictionary<BasePropertySet, string>>;
-
 /// <summary>
 ///     Represents a set of item or folder properties. Property sets are used to indicate what properties of an item or
 ///     folder should be loaded when binding to an existing item or folder or when loading an item or folder's properties.
@@ -50,20 +48,14 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     /// <summary>
     ///     Maps BasePropertySet values to EWS's BaseShape values.
     /// </summary>
-    private static readonly DefaultPropertySetDictionary defaultPropertySetMap = new(
-        () => new Dictionary<BasePropertySet, string>
+    internal static readonly IReadOnlyDictionary<BasePropertySet, string> DefaultPropertySetMap =
+        new Dictionary<BasePropertySet, string>
         { 
             // @formatter:off
             { BasePropertySet.IdOnly, "IdOnly" },
             { BasePropertySet.FirstClassProperties, "AllProperties" },
             // @formatter:on
-        }
-    );
-
-    /// <summary>
-    ///     The base property set this property set is based upon.
-    /// </summary>
-    private BasePropertySet _basePropertySet;
+        };
 
     /// <summary>
     ///     The list of additional properties included in this property set.
@@ -71,35 +63,15 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     private readonly List<PropertyDefinitionBase> _additionalProperties = new();
 
     /// <summary>
-    ///     The requested body type for get and find operations. If null, the "best body" is returned.
+    ///     Value indicating whether or not to add a blank target attribute to anchor links.
     /// </summary>
-    private BodyType? _requestedBodyType;
+    private bool? _addTargetToLinks;
+
 
     /// <summary>
-    ///     The requested unique body type for get and find operations. If null, the should return the same value as body type.
+    ///     The base property set this property set is based upon.
     /// </summary>
-    private BodyType? _requestedUniqueBodyType;
-
-    /// <summary>
-    ///     The requested normalized body type for get and find operations. If null, the should return the same value as body
-    ///     type.
-    /// </summary>
-    private BodyType? _requestedNormalizedBodyType;
-
-    /// <summary>
-    ///     Value indicating whether or not the server should filter HTML content.
-    /// </summary>
-    private bool? _filterHtml;
-
-    /// <summary>
-    ///     Value indicating whether or not the server should convert HTML code page to UTF8.
-    /// </summary>
-    private bool? _convertHtmlCodePageToUtf8;
-
-    /// <summary>
-    ///     Value of the URL template to use for the src attribute of inline IMG elements.
-    /// </summary>
-    private string _inlineImageUrlTemplate;
+    private BasePropertySet _basePropertySet;
 
     /// <summary>
     ///     Value indicating whether or not the server should block references to external images.
@@ -107,9 +79,19 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     private bool? _blockExternalImages;
 
     /// <summary>
-    ///     Value indicating whether or not to add a blank target attribute to anchor links.
+    ///     Value indicating whether or not the server should convert HTML code page to UTF8.
     /// </summary>
-    private bool? _addTargetToLinks;
+    private bool? _convertHtmlCodePageToUtf8;
+
+    /// <summary>
+    ///     Value indicating whether or not the server should filter HTML content.
+    /// </summary>
+    private bool? _filterHtml;
+
+    /// <summary>
+    ///     Value of the URL template to use for the src attribute of inline IMG elements.
+    /// </summary>
+    private string _inlineImageUrlTemplate;
 
     /// <summary>
     ///     Value indicating whether or not this PropertySet can be modified.
@@ -122,206 +104,20 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     private int? _maximumBodySize;
 
     /// <summary>
-    ///     Initializes a new instance of PropertySet.
+    ///     The requested body type for get and find operations. If null, the "best body" is returned.
     /// </summary>
-    /// <param name="basePropertySet">The base property set to base the property set upon.</param>
-    /// <param name="additionalProperties">
-    ///     Additional properties to include in the property set. Property definitions are
-    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
-    ///     ContactSchema.GivenName, etc.)
-    /// </param>
-    public PropertySet(BasePropertySet basePropertySet, params PropertyDefinitionBase[]? additionalProperties)
-        : this(basePropertySet, (IEnumerable<PropertyDefinitionBase>?)additionalProperties)
-    {
-    }
+    private BodyType? _requestedBodyType;
 
     /// <summary>
-    ///     Initializes a new instance of PropertySet.
+    ///     The requested normalized body type for get and find operations. If null, the should return the same value as body
+    ///     type.
     /// </summary>
-    /// <param name="basePropertySet">The base property set to base the property set upon.</param>
-    /// <param name="additionalProperties">
-    ///     Additional properties to include in the property set. Property definitions are
-    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
-    ///     ContactSchema.GivenName, etc.)
-    /// </param>
-    public PropertySet(BasePropertySet basePropertySet, IEnumerable<PropertyDefinitionBase>? additionalProperties)
-    {
-        _basePropertySet = basePropertySet;
-
-        if (additionalProperties != null)
-        {
-            _additionalProperties.AddRange(additionalProperties);
-        }
-    }
+    private BodyType? _requestedNormalizedBodyType;
 
     /// <summary>
-    ///     Initializes a new instance of PropertySet based upon BasePropertySet.IdOnly.
+    ///     The requested unique body type for get and find operations. If null, the should return the same value as body type.
     /// </summary>
-    public PropertySet()
-        : this(BasePropertySet.IdOnly, null)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of PropertySet.
-    /// </summary>
-    /// <param name="basePropertySet">The base property set to base the property set upon.</param>
-    public PropertySet(BasePropertySet basePropertySet)
-        : this(basePropertySet, null)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of PropertySet based upon BasePropertySet.IdOnly.
-    /// </summary>
-    /// <param name="additionalProperties">
-    ///     Additional properties to include in the property set. Property definitions are
-    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
-    ///     ContactSchema.GivenName, etc.)
-    /// </param>
-    public PropertySet(params PropertyDefinitionBase[] additionalProperties)
-        : this(BasePropertySet.IdOnly, additionalProperties)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of PropertySet based upon BasePropertySet.IdOnly.
-    /// </summary>
-    /// <param name="additionalProperties">
-    ///     Additional properties to include in the property set. Property definitions are
-    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
-    ///     ContactSchema.GivenName, etc.)
-    /// </param>
-    public PropertySet(IEnumerable<PropertyDefinitionBase> additionalProperties)
-        : this(BasePropertySet.IdOnly, additionalProperties)
-    {
-    }
-
-    /// <summary>
-    ///     Implements an implicit conversion between PropertySet and BasePropertySet.
-    /// </summary>
-    /// <param name="basePropertySet">The BasePropertySet value to convert from.</param>
-    /// <returns>A PropertySet instance based on the specified base property set.</returns>
-    public static implicit operator PropertySet(BasePropertySet basePropertySet)
-    {
-        return new PropertySet(basePropertySet);
-    }
-
-    /// <summary>
-    ///     Adds the specified property to the property set.
-    /// </summary>
-    /// <param name="property">The property to add.</param>
-    public void Add(PropertyDefinitionBase property)
-    {
-        ThrowIfReadonly();
-        EwsUtilities.ValidateParam(property, "property");
-
-        if (!_additionalProperties.Contains(property))
-        {
-            _additionalProperties.Add(property);
-        }
-    }
-
-    /// <summary>
-    ///     Adds the specified properties to the property set.
-    /// </summary>
-    /// <param name="properties">The properties to add.</param>
-    public void AddRange(IEnumerable<PropertyDefinitionBase> properties)
-    {
-        ThrowIfReadonly();
-        EwsUtilities.ValidateParamCollection(properties, "properties");
-
-        foreach (var property in properties)
-        {
-            Add(property);
-        }
-    }
-
-    /// <summary>
-    ///     Remove all explicitly added properties from the property set.
-    /// </summary>
-    public void Clear()
-    {
-        ThrowIfReadonly();
-        _additionalProperties.Clear();
-    }
-
-    /// <summary>
-    ///     Creates a read-only PropertySet.
-    /// </summary>
-    /// <param name="basePropertySet">The base property set.</param>
-    /// <returns>PropertySet</returns>
-    private static PropertySet CreateReadonlyPropertySet(BasePropertySet basePropertySet)
-    {
-        var propertySet = new PropertySet(basePropertySet);
-        propertySet._isReadOnly = true;
-        return propertySet;
-    }
-
-    /// <summary>
-    ///     Gets the name of the shape.
-    /// </summary>
-    /// <param name="serviceObjectType">Type of the service object.</param>
-    /// <returns>Shape name.</returns>
-    private static string GetShapeName(ServiceObjectType serviceObjectType)
-    {
-        switch (serviceObjectType)
-        {
-            case ServiceObjectType.Item:
-                return XmlElementNames.ItemShape;
-            case ServiceObjectType.Folder:
-                return XmlElementNames.FolderShape;
-            case ServiceObjectType.Conversation:
-                return XmlElementNames.ConversationShape;
-            case ServiceObjectType.Persona:
-                return XmlElementNames.PersonaShape;
-            default:
-                EwsUtilities.Assert(
-                    false,
-                    "PropertySet.GetShapeName",
-                    string.Format(
-                        "An unexpected object type {0} for property shape. This code path should never be reached.",
-                        serviceObjectType
-                    )
-                );
-                return string.Empty;
-        }
-    }
-
-    /// <summary>
-    ///     Throws if readonly property set.
-    /// </summary>
-    private void ThrowIfReadonly()
-    {
-        if (_isReadOnly)
-        {
-            throw new NotSupportedException(Strings.PropertySetCannotBeModified);
-        }
-    }
-
-    /// <summary>
-    ///     Determines whether the specified property has been explicitly added to this property set using the Add or AddRange
-    ///     methods.
-    /// </summary>
-    /// <param name="property">The property.</param>
-    /// <returns>
-    ///     <c>true</c> if this property set contains the specified propert]; otherwise, <c>false</c>.
-    /// </returns>
-    public bool Contains(PropertyDefinitionBase property)
-    {
-        return _additionalProperties.Contains(property);
-    }
-
-    /// <summary>
-    ///     Removes the specified property from the set.
-    /// </summary>
-    /// <param name="property">The property to remove.</param>
-    /// <returns>true if the property was successfully removed, false otherwise.</returns>
-    public bool Remove(PropertyDefinitionBase property)
-    {
-        ThrowIfReadonly();
-        return _additionalProperties.Remove(property);
-    }
+    private BodyType? _requestedUniqueBodyType;
 
     /// <summary>
     ///     Gets or sets the base property set the property set is based upon.
@@ -470,6 +266,115 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     public PropertyDefinitionBase this[int index] => _additionalProperties[index];
 
     /// <summary>
+    ///     Initializes a new instance of PropertySet.
+    /// </summary>
+    /// <param name="basePropertySet">The base property set to base the property set upon.</param>
+    /// <param name="additionalProperties">
+    ///     Additional properties to include in the property set. Property definitions are
+    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+    ///     ContactSchema.GivenName, etc.)
+    /// </param>
+    public PropertySet(BasePropertySet basePropertySet, params PropertyDefinitionBase[]? additionalProperties)
+        : this(basePropertySet, (IEnumerable<PropertyDefinitionBase>?)additionalProperties)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of PropertySet.
+    /// </summary>
+    /// <param name="basePropertySet">The base property set to base the property set upon.</param>
+    /// <param name="additionalProperties">
+    ///     Additional properties to include in the property set. Property definitions are
+    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+    ///     ContactSchema.GivenName, etc.)
+    /// </param>
+    public PropertySet(BasePropertySet basePropertySet, IEnumerable<PropertyDefinitionBase>? additionalProperties)
+    {
+        _basePropertySet = basePropertySet;
+
+        if (additionalProperties != null)
+        {
+            _additionalProperties.AddRange(additionalProperties);
+        }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of PropertySet based upon BasePropertySet.IdOnly.
+    /// </summary>
+    public PropertySet()
+        : this(BasePropertySet.IdOnly, null)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of PropertySet.
+    /// </summary>
+    /// <param name="basePropertySet">The base property set to base the property set upon.</param>
+    public PropertySet(BasePropertySet basePropertySet)
+        : this(basePropertySet, null)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of PropertySet based upon BasePropertySet.IdOnly.
+    /// </summary>
+    /// <param name="additionalProperties">
+    ///     Additional properties to include in the property set. Property definitions are
+    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+    ///     ContactSchema.GivenName, etc.)
+    /// </param>
+    public PropertySet(params PropertyDefinitionBase[] additionalProperties)
+        : this(BasePropertySet.IdOnly, additionalProperties)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of PropertySet based upon BasePropertySet.IdOnly.
+    /// </summary>
+    /// <param name="additionalProperties">
+    ///     Additional properties to include in the property set. Property definitions are
+    ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+    ///     ContactSchema.GivenName, etc.)
+    /// </param>
+    public PropertySet(IEnumerable<PropertyDefinitionBase> additionalProperties)
+        : this(BasePropertySet.IdOnly, additionalProperties)
+    {
+    }
+
+
+    #region IEnumerable<PropertyDefinitionBase> Members
+
+    /// <summary>
+    ///     Returns an enumerator that iterates through the collection.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+    /// </returns>
+    public IEnumerator<PropertyDefinitionBase> GetEnumerator()
+    {
+        return _additionalProperties.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Returns an enumerator that iterates through a collection.
+    /// </summary>
+    /// <returns>
+    ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+    /// </returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _additionalProperties.GetEnumerator();
+    }
+
+    #endregion
+
+
+    /// <summary>
     ///     Implements ISelfValidate.Validate. Validates this property set.
     /// </summary>
     void ISelfValidate.Validate()
@@ -478,12 +383,145 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     }
 
     /// <summary>
-    ///     Maps BasePropertySet values to EWS's BaseShape values.
+    ///     Implements an implicit conversion between PropertySet and BasePropertySet.
     /// </summary>
-    internal static DefaultPropertySetDictionary DefaultPropertySetMap => defaultPropertySetMap;
+    /// <param name="basePropertySet">The BasePropertySet value to convert from.</param>
+    /// <returns>A PropertySet instance based on the specified base property set.</returns>
+    public static implicit operator PropertySet(BasePropertySet basePropertySet)
+    {
+        return new PropertySet(basePropertySet);
+    }
 
     /// <summary>
-    ///     Writes additonal properties to XML.
+    ///     Adds the specified property to the property set.
+    /// </summary>
+    /// <param name="property">The property to add.</param>
+    public void Add(PropertyDefinitionBase property)
+    {
+        ThrowIfReadonly();
+        EwsUtilities.ValidateParam(property);
+
+        if (!_additionalProperties.Contains(property))
+        {
+            _additionalProperties.Add(property);
+        }
+    }
+
+    /// <summary>
+    ///     Adds the specified properties to the property set.
+    /// </summary>
+    /// <param name="properties">The properties to add.</param>
+    public void AddRange(IEnumerable<PropertyDefinitionBase> properties)
+    {
+        ThrowIfReadonly();
+        EwsUtilities.ValidateParamCollection(properties);
+
+        foreach (var property in properties)
+        {
+            Add(property);
+        }
+    }
+
+    /// <summary>
+    ///     Remove all explicitly added properties from the property set.
+    /// </summary>
+    public void Clear()
+    {
+        ThrowIfReadonly();
+        _additionalProperties.Clear();
+    }
+
+    /// <summary>
+    ///     Creates a read-only PropertySet.
+    /// </summary>
+    /// <param name="basePropertySet">The base property set.</param>
+    /// <returns>PropertySet</returns>
+    private static PropertySet CreateReadonlyPropertySet(BasePropertySet basePropertySet)
+    {
+        return new PropertySet(basePropertySet)
+        {
+            _isReadOnly = true,
+        };
+    }
+
+    /// <summary>
+    ///     Gets the name of the shape.
+    /// </summary>
+    /// <param name="serviceObjectType">Type of the service object.</param>
+    /// <returns>Shape name.</returns>
+    private static string GetShapeName(ServiceObjectType serviceObjectType)
+    {
+        switch (serviceObjectType)
+        {
+            case ServiceObjectType.Item:
+            {
+                return XmlElementNames.ItemShape;
+            }
+            case ServiceObjectType.Folder:
+            {
+                return XmlElementNames.FolderShape;
+            }
+            case ServiceObjectType.Conversation:
+            {
+                return XmlElementNames.ConversationShape;
+            }
+            case ServiceObjectType.Persona:
+            {
+                return XmlElementNames.PersonaShape;
+            }
+            default:
+            {
+                EwsUtilities.Assert(
+                    false,
+                    "PropertySet.GetShapeName",
+                    string.Format(
+                        "An unexpected object type {0} for property shape. This code path should never be reached.",
+                        serviceObjectType
+                    )
+                );
+                return string.Empty;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Throws if readonly property set.
+    /// </summary>
+    private void ThrowIfReadonly()
+    {
+        if (_isReadOnly)
+        {
+            throw new NotSupportedException(Strings.PropertySetCannotBeModified);
+        }
+    }
+
+    /// <summary>
+    ///     Determines whether the specified property has been explicitly added to this property set using the Add or AddRange
+    ///     methods.
+    /// </summary>
+    /// <param name="property">The property.</param>
+    /// <returns>
+    ///     <c>true</c> if this property set contains the specified property; otherwise, <c>false</c>.
+    /// </returns>
+    public bool Contains(PropertyDefinitionBase property)
+    {
+        return _additionalProperties.Contains(property);
+    }
+
+    /// <summary>
+    ///     Removes the specified property from the set.
+    /// </summary>
+    /// <param name="property">The property to remove.</param>
+    /// <returns>true if the property was successfully removed, false otherwise.</returns>
+    public bool Remove(PropertyDefinitionBase property)
+    {
+        ThrowIfReadonly();
+        return _additionalProperties.Remove(property);
+    }
+
+
+    /// <summary>
+    ///     Writes additional properties to XML.
     /// </summary>
     /// <param name="writer">The writer to write to.</param>
     /// <param name="propertyDefinitions">The property definitions to write.</param>
@@ -528,8 +566,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
     {
         foreach (var propDefBase in _additionalProperties)
         {
-            var propertyDefinition = propDefBase as PropertyDefinition;
-            if (propertyDefinition != null)
+            if (propDefBase is PropertyDefinition propertyDefinition)
             {
                 if (propertyDefinition.Version > request.Service.RequestedServerVersion)
                 {
@@ -655,11 +692,7 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
 
         writer.WriteStartElement(XmlNamespace.Messages, shapeElementName);
 
-        writer.WriteElementValue(
-            XmlNamespace.Types,
-            XmlElementNames.BaseShape,
-            defaultPropertySetMap.Member[BasePropertySet]
-        );
+        writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.BaseShape, DefaultPropertySetMap[BasePropertySet]);
 
         if (serviceObjectType == ServiceObjectType.Item)
         {
@@ -746,36 +779,4 @@ public sealed class PropertySet : ISelfValidate, IEnumerable<PropertyDefinitionB
 
         writer.WriteEndElement(); // Item/FolderShape
     }
-
-
-    #region IEnumerable<PropertyDefinitionBase> Members
-
-    /// <summary>
-    ///     Returns an enumerator that iterates through the collection.
-    /// </summary>
-    /// <returns>
-    ///     A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
-    /// </returns>
-    public IEnumerator<PropertyDefinitionBase> GetEnumerator()
-    {
-        return _additionalProperties.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Returns an enumerator that iterates through a collection.
-    /// </summary>
-    /// <returns>
-    ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-    /// </returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _additionalProperties.GetEnumerator();
-    }
-
-    #endregion
 }

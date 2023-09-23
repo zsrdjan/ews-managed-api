@@ -33,18 +33,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class SetUserPhotoResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets GetUserPhoto results.
+    /// </summary>
+    /// <returns>GetUserPhoto results.</returns>
+    internal SetUserPhotoResults Results { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserPhotoResponse" /> class.
     /// </summary>
     internal SetUserPhotoResponse()
     {
         Results = new SetUserPhotoResults();
     }
-
-    /// <summary>
-    ///     Gets GetUserPhoto results.
-    /// </summary>
-    /// <returns>GetUserPhoto results.</returns>
-    internal SetUserPhotoResults Results { get; private set; }
 
     /// <summary>
     ///     Read Photo results from XML.

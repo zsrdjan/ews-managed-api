@@ -35,6 +35,66 @@ internal sealed class Time
     private readonly int _seconds;
 
     /// <summary>
+    ///     Gets or sets the hours.
+    /// </summary>
+    internal int Hours
+    {
+        get => _hours;
+
+        init
+        {
+            if (value >= 0 && value < 24)
+            {
+                _hours = value;
+            }
+            else
+            {
+                throw new ArgumentException(Strings.HourMustBeBetween0And23, nameof(value));
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the minutes.
+    /// </summary>
+    internal int Minutes
+    {
+        get => _minutes;
+
+        init
+        {
+            if (value >= 0 && value < 60)
+            {
+                _minutes = value;
+            }
+            else
+            {
+                throw new ArgumentException(Strings.MinuteMustBeBetween0And59, nameof(value));
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets the seconds.
+    /// </summary>
+    internal int Seconds
+    {
+        get => _seconds;
+
+        init
+        {
+            if (value >= 0 && value < 60)
+            {
+                _seconds = value;
+            }
+            else
+            {
+                throw new ArgumentException(Strings.SecondMustBeBetween0And59, nameof(value));
+            }
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of Time.
     /// </summary>
     internal Time()
@@ -99,65 +159,5 @@ internal sealed class Time
     internal int ConvertToMinutes()
     {
         return Minutes + Hours * 60;
-    }
-
-    /// <summary>
-    ///     Gets or sets the hours.
-    /// </summary>
-    internal int Hours
-    {
-        get => _hours;
-
-        init
-        {
-            if (value >= 0 && value < 24)
-            {
-                _hours = value;
-            }
-            else
-            {
-                throw new ArgumentException(Strings.HourMustBeBetween0And23);
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the minutes.
-    /// </summary>
-    internal int Minutes
-    {
-        get => _minutes;
-
-        init
-        {
-            if (value >= 0 && value < 60)
-            {
-                _minutes = value;
-            }
-            else
-            {
-                throw new ArgumentException(Strings.MinuteMustBeBetween0And59);
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Gets or sets the seconds.
-    /// </summary>
-    internal int Seconds
-    {
-        get => _seconds;
-
-        init
-        {
-            if (value >= 0 && value < 60)
-            {
-                _seconds = value;
-            }
-            else
-            {
-                throw new ArgumentException(Strings.SecondMustBeBetween0And59);
-            }
-        }
     }
 }

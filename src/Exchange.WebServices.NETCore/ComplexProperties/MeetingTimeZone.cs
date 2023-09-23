@@ -30,10 +30,46 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class MeetingTimeZone : ComplexProperty
 {
-    private string _name;
     private TimeSpan? _baseOffset;
-    private TimeChange _standard;
     private TimeChange _daylight;
+    private string _name;
+    private TimeChange _standard;
+
+    /// <summary>
+    ///     Gets or sets the name of the time zone.
+    /// </summary>
+    public string Name
+    {
+        get => _name;
+        set => SetFieldValue(ref _name, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the base offset of the time zone from the UTC time zone.
+    /// </summary>
+    public TimeSpan? BaseOffset
+    {
+        get => _baseOffset;
+        set => SetFieldValue(ref _baseOffset, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a TimeChange defining when the time changes to Standard Time.
+    /// </summary>
+    public TimeChange? Standard
+    {
+        get => _standard;
+        set => SetFieldValue(ref _standard, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets a TimeChange defining when the time changes to Daylight Saving Time.
+    /// </summary>
+    public TimeChange? Daylight
+    {
+        get => _daylight;
+        set => SetFieldValue(ref _daylight, value);
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MeetingTimeZone" /> class.
@@ -170,41 +206,5 @@ internal sealed class MeetingTimeZone : ComplexProperty
         // because TimeZoneInfo doesn't support absolute date transitions. So if
         // there is no system time zone that has a matching Id, we return null.
         return result;
-    }
-
-    /// <summary>
-    ///     Gets or sets the name of the time zone.
-    /// </summary>
-    public string Name
-    {
-        get => _name;
-        set => SetFieldValue(ref _name, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the base offset of the time zone from the UTC time zone.
-    /// </summary>
-    public TimeSpan? BaseOffset
-    {
-        get => _baseOffset;
-        set => SetFieldValue(ref _baseOffset, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets a TimeChange defining when the time changes to Standard Time.
-    /// </summary>
-    public TimeChange? Standard
-    {
-        get => _standard;
-        set => SetFieldValue(ref _standard, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets a TimeChange defining when the time changes to Daylight Saving Time.
-    /// </summary>
-    public TimeChange? Daylight
-    {
-        get => _daylight;
-        set => SetFieldValue(ref _daylight, value);
     }
 }

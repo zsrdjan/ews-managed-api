@@ -37,6 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ExchangeCredentials
 {
     /// <summary>
+    ///     Gets the flag indicating whether any sign action need taken.
+    /// </summary>
+    internal virtual bool NeedSignature => false;
+
+    /// <summary>
     ///     Performs an implicit conversion from <see cref="System.Net.NetworkCredential" /> to
     ///     <see cref="Microsoft.Exchange.WebServices.Data.ExchangeCredentials" />.
     ///     This allows a NetworkCredential object to be implicitly converted to an ExchangeCredential which is useful when
@@ -103,18 +108,10 @@ public abstract class ExchangeCredentials
     }
 
     /// <summary>
-    ///     This method is called to pre-authenticate credentials before a service request is made.
-    /// </summary>
-    internal virtual void PreAuthenticate()
-    {
-        // do nothing by default.
-    }
-
-    /// <summary>
     ///     This method is called to apply credentials to a service request before the request is made.
     /// </summary>
     /// <param name="request">The request.</param>
-    internal virtual System.Threading.Tasks.Task PrepareWebRequest(IEwsHttpWebRequest request)
+    internal virtual System.Threading.Tasks.Task PrepareWebRequest(EwsHttpWebRequest request)
     {
         // do nothing by default.
         return System.Threading.Tasks.Task.CompletedTask;
@@ -158,11 +155,6 @@ public abstract class ExchangeCredentials
     {
         return new Uri(GetUriWithoutSuffix(url));
     }
-
-    /// <summary>
-    ///     Gets the flag indicating whether any sign action need taken.
-    /// </summary>
-    internal virtual bool NeedSignature => false;
 
     /// <summary>
     ///     Add the signature element to the memory stream.

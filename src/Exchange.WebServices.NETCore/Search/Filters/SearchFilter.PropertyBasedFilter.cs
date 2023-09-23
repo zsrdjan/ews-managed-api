@@ -44,6 +44,17 @@ public abstract partial class SearchFilter
         private PropertyDefinitionBase _propertyDefinition;
 
         /// <summary>
+        ///     Gets or sets the definition of the property that is involved in the search filter. Property definitions are
+        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
+        ///     ContactSchema.GivenName, etc.)
+        /// </summary>
+        public PropertyDefinitionBase PropertyDefinition
+        {
+            get => _propertyDefinition;
+            set => SetFieldValue(ref _propertyDefinition, value);
+        }
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="SearchFilter.PropertyBasedFilter" /> class.
         /// </summary>
         internal PropertyBasedFilter()
@@ -87,17 +98,6 @@ public abstract partial class SearchFilter
         internal override void WriteElementsToXml(EwsServiceXmlWriter writer)
         {
             PropertyDefinition.WriteToXml(writer);
-        }
-
-        /// <summary>
-        ///     Gets or sets the definition of the property that is involved in the search filter. Property definitions are
-        ///     available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start,
-        ///     ContactSchema.GivenName, etc.)
-        /// </summary>
-        public PropertyDefinitionBase PropertyDefinition
-        {
-            get => _propertyDefinition;
-            set => SetFieldValue(ref _propertyDefinition, value);
         }
     }
 }

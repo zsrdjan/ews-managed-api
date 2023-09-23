@@ -38,24 +38,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, PhoneNumberEntry>
 {
     /// <summary>
-    ///     Gets the field URI.
-    /// </summary>
-    /// <returns>Field URI.</returns>
-    internal override string GetFieldUri()
-    {
-        return "contacts:PhoneNumber";
-    }
-
-    /// <summary>
-    ///     Creates instance of dictionary entry.
-    /// </summary>
-    /// <returns>New instance.</returns>
-    internal override PhoneNumberEntry CreateEntryInstance()
-    {
-        return new PhoneNumberEntry();
-    }
-
-    /// <summary>
     ///     Gets or sets the phone number at the specified key.
     /// </summary>
     /// <param name="key">The key of the phone number to get or set.</param>
@@ -84,6 +66,24 @@ public sealed class PhoneNumberDictionary : DictionaryProperty<PhoneNumberKey, P
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     Gets the field URI.
+    /// </summary>
+    /// <returns>Field URI.</returns>
+    internal override string GetFieldUri()
+    {
+        return "contacts:PhoneNumber";
+    }
+
+    /// <summary>
+    ///     Creates instance of dictionary entry.
+    /// </summary>
+    /// <returns>New instance.</returns>
+    internal override PhoneNumberEntry CreateEntryInstance()
+    {
+        return new PhoneNumberEntry();
     }
 
     /// <summary>

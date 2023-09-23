@@ -31,16 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<GetConversationItemsResponse>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GetConversationItemsRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="errorHandlingMode">Error handling mode.</param>
-    internal GetConversationItemsRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-        : base(service, errorHandlingMode)
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the conversations.
     /// </summary>
     internal List<ConversationRequest> Conversations { get; set; }
@@ -66,6 +56,16 @@ internal sealed class GetConversationItemsRequest : MultiResponseServiceRequest<
     ///     Gets or sets the mailbox search location to include in the search.
     /// </summary>
     internal MailboxSearchLocation? MailboxScope { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GetConversationItemsRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode">Error handling mode.</param>
+    internal GetConversationItemsRequest(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service, errorHandlingMode)
+    {
+    }
 
     /// <summary>
     ///     Validate request.

@@ -34,14 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class EntityExtractionResult : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EntityExtractionResult" /> class.
-    /// </summary>
-    internal EntityExtractionResult()
-    {
-        Namespace = XmlNamespace.Types;
-    }
-
-    /// <summary>
     ///     Gets the extracted Addresses.
     /// </summary>
     public AddressEntityCollection Addresses { get; internal set; }
@@ -75,6 +67,14 @@ public sealed class EntityExtractionResult : ComplexProperty
     ///     Gets the extracted PhoneNumbers.
     /// </summary>
     public PhoneEntityCollection PhoneNumbers { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EntityExtractionResult" /> class.
+    /// </summary>
+    internal EntityExtractionResult()
+    {
+        Namespace = XmlNamespace.Types;
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

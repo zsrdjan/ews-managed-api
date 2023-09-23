@@ -35,32 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class EmailMessageSchema : ItemSchema
 {
     /// <summary>
-    ///     Field URIs for EmailMessage.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string ConversationIndex = "message:ConversationIndex";
-        public const string ConversationTopic = "message:ConversationTopic";
-        public const string InternetMessageId = "message:InternetMessageId";
-        public const string IsRead = "message:IsRead";
-        public const string IsResponseRequested = "message:IsResponseRequested";
-        public const string IsReadReceiptRequested = "message:IsReadReceiptRequested";
-        public const string IsDeliveryReceiptRequested = "message:IsDeliveryReceiptRequested";
-        public const string References = "message:References";
-        public const string ReplyTo = "message:ReplyTo";
-        public const string From = "message:From";
-        public const string Sender = "message:Sender";
-        public const string ToRecipients = "message:ToRecipients";
-        public const string CcRecipients = "message:CcRecipients";
-        public const string BccRecipients = "message:BccRecipients";
-        public const string ReceivedBy = "message:ReceivedBy";
-        public const string ReceivedRepresenting = "message:ReceivedRepresenting";
-        public const string ApprovalRequestData = "message:ApprovalRequestData";
-        public const string VotingInformation = "message:VotingInformation";
-        public const string Likers = "message:Likers";
-    }
-
-    /// <summary>
     ///     Defines the ToRecipients property.
     /// </summary>
     public static readonly PropertyDefinition ToRecipients = new ComplexPropertyDefinition<EmailAddressCollection>(
@@ -295,6 +269,13 @@ public class EmailMessageSchema : ItemSchema
     internal new static readonly EmailMessageSchema Instance = new();
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="EmailMessageSchema" /> class.
+    /// </summary>
+    internal EmailMessageSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -327,9 +308,28 @@ public class EmailMessageSchema : ItemSchema
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EmailMessageSchema" /> class.
+    ///     Field URIs for EmailMessage.
     /// </summary>
-    internal EmailMessageSchema()
+    private static class FieldUris
     {
+        public const string ConversationIndex = "message:ConversationIndex";
+        public const string ConversationTopic = "message:ConversationTopic";
+        public const string InternetMessageId = "message:InternetMessageId";
+        public const string IsRead = "message:IsRead";
+        public const string IsResponseRequested = "message:IsResponseRequested";
+        public const string IsReadReceiptRequested = "message:IsReadReceiptRequested";
+        public const string IsDeliveryReceiptRequested = "message:IsDeliveryReceiptRequested";
+        public const string References = "message:References";
+        public const string ReplyTo = "message:ReplyTo";
+        public const string From = "message:From";
+        public const string Sender = "message:Sender";
+        public const string ToRecipients = "message:ToRecipients";
+        public const string CcRecipients = "message:CcRecipients";
+        public const string BccRecipients = "message:BccRecipients";
+        public const string ReceivedBy = "message:ReceivedBy";
+        public const string ReceivedRepresenting = "message:ReceivedRepresenting";
+        public const string ApprovalRequestData = "message:ApprovalRequestData";
+        public const string VotingInformation = "message:VotingInformation";
+        public const string Likers = "message:Likers";
     }
 }

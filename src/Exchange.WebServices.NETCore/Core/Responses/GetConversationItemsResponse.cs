@@ -36,6 +36,12 @@ public sealed class GetConversationItemsResponse : ServiceResponse
     private readonly PropertySet _propertySet;
 
     /// <summary>
+    ///     Gets or sets the conversation.
+    /// </summary>
+    /// <value>The conversation.</value>
+    public ConversationResponse Conversation { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetConversationItemsResponse" /> class.
     /// </summary>
     /// <param name="propertySet">The property set.</param>
@@ -43,12 +49,6 @@ public sealed class GetConversationItemsResponse : ServiceResponse
     {
         _propertySet = propertySet;
     }
-
-    /// <summary>
-    ///     Gets or sets the conversation.
-    /// </summary>
-    /// <value>The conversation.</value>
-    public ConversationResponse Conversation { get; set; }
 
     /// <summary>
     ///     Read Conversations from XML.

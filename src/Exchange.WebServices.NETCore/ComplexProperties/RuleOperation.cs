@@ -34,14 +34,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class RuleOperation : ComplexProperty
 {
     /// <summary>
+    ///     Gets the XML element name of the rule operation.
+    /// </summary>
+    internal abstract string XmlElementName { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="RuleOperation" /> class.
     /// </summary>
     internal RuleOperation()
     {
     }
-
-    /// <summary>
-    ///     Gets the XML element name of the rule operation.
-    /// </summary>
-    internal abstract string XmlElementName { get; }
 }

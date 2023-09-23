@@ -28,26 +28,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Represents an implementation of IEwsHttpWebRequestFactory using EwsHttpWebRequest.
 /// </summary>
-internal class EwsHttpWebRequestFactory : IEwsHttpWebRequestFactory
+internal static class EwsHttpWebRequestFactory
 {
-    #region IEwsHttpWebRequestFactory Members
-
-    /// <summary>
-    ///     Create a new instance of <see cref="EwsHttpWebRequest" />.
-    /// </summary>
-    /// <param name="uri">The service URI.</param>
-    /// <returns>An instance of <see cref="IEwsHttpWebRequest" />./// </returns>
-    IEwsHttpWebRequest IEwsHttpWebRequestFactory.CreateRequest(Uri uri)
-    {
-        return new EwsHttpWebRequest(uri);
-    }
-
     /// <summary>
     ///     Creates response from a EwsHttpClientException.
     /// </summary>
     /// <param name="exception">The exception.</param>
     /// <returns>Instance of IEwsHttpWebResponse.</returns>
-    IEwsHttpWebResponse IEwsHttpWebRequestFactory.CreateExceptionResponse(EwsHttpClientException exception)
+    public static IEwsHttpWebResponse CreateExceptionResponse(EwsHttpClientException exception)
     {
         EwsUtilities.ValidateParam(exception);
 
@@ -58,6 +46,4 @@ internal class EwsHttpWebRequestFactory : IEwsHttpWebRequestFactory
 
         return new EwsHttpWebResponse(exception.Response);
     }
-
-    #endregion
 }

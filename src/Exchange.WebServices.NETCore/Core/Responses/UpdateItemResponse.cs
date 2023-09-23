@@ -36,6 +36,17 @@ public sealed class UpdateItemResponse : ServiceResponse
     private readonly Item _item;
 
     /// <summary>
+    ///     Gets the item that was returned by the update operation. ReturnedItem is set only when a recurring Task
+    ///     is marked as complete or when its recurrence pattern changes.
+    /// </summary>
+    public Item? ReturnedItem { get; private set; }
+
+    /// <summary>
+    ///     Gets the number of property conflicts that were resolved during the update operation.
+    /// </summary>
+    public int ConflictCount { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateItemResponse" /> class.
     /// </summary>
     /// <param name="item">The item.</param>
@@ -108,15 +119,4 @@ public sealed class UpdateItemResponse : ServiceResponse
 
         return ReturnedItem;
     }
-
-    /// <summary>
-    ///     Gets the item that was returned by the update operation. ReturnedItem is set only when a recurring Task
-    ///     is marked as complete or when its recurrence pattern changes.
-    /// </summary>
-    public Item? ReturnedItem { get; private set; }
-
-    /// <summary>
-    ///     Gets the number of property conflicts that were resolved during the update operation.
-    /// </summary>
-    public int ConflictCount { get; private set; }
 }

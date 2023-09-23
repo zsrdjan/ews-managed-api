@@ -33,6 +33,47 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public class Mailbox : ComplexProperty, ISearchStringProvider
 {
+    #region ISearchStringProvider methods
+
+    /// <summary>
+    ///     Get a string representation for using this instance in a search filter.
+    /// </summary>
+    /// <returns>String representation of instance.</returns>
+    string ISearchStringProvider.GetSearchString()
+    {
+        return Address;
+    }
+
+    #endregion
+
+
+    #region Operator overloads
+
+    /// <summary>
+    ///     Defines an implicit conversion between a string representing an SMTP address and Mailbox.
+    /// </summary>
+    /// <param name="smtpAddress">The SMTP address to convert to EmailAddress.</param>
+    /// <returns>A Mailbox initialized with the specified SMTP address.</returns>
+    public static implicit operator Mailbox(string smtpAddress)
+    {
+        return new Mailbox(smtpAddress);
+    }
+
+    #endregion
+
+
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(Address, "address");
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(RoutingType, "routingType");
+    }
+
+
     #region Constructors
 
     /// <summary>
@@ -87,21 +128,6 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     #endregion
 
 
-    #region Operator overloads
-
-    /// <summary>
-    ///     Defines an implicit conversion between a string representing an SMTP address and Mailbox.
-    /// </summary>
-    /// <param name="smtpAddress">The SMTP address to convert to EmailAddress.</param>
-    /// <returns>A Mailbox initialized with the specified SMTP address.</returns>
-    public static implicit operator Mailbox(string smtpAddress)
-    {
-        return new Mailbox(smtpAddress);
-    }
-
-    #endregion
-
-
     #region Xml Methods
 
     /// <summary>
@@ -141,32 +167,6 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     }
 
     #endregion
-
-
-    #region ISearchStringProvider methods
-
-    /// <summary>
-    ///     Get a string representation for using this instance in a search filter.
-    /// </summary>
-    /// <returns>String representation of instance.</returns>
-    string ISearchStringProvider.GetSearchString()
-    {
-        return Address;
-    }
-
-    #endregion
-
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    internal override void InternalValidate()
-    {
-        base.InternalValidate();
-
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(Address, "address");
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(RoutingType, "routingType");
-    }
 
 
     #region Object method overrides

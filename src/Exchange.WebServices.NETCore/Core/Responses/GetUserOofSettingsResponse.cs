@@ -31,15 +31,15 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetUserOofSettingsResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets or sets the OOF settings.
+    /// </summary>
+    /// <value>The oof settings.</value>
+    public OofSettings OofSettings { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetUserOofSettingsResponse" /> class.
     /// </summary>
     internal GetUserOofSettingsResponse()
     {
     }
-
-    /// <summary>
-    ///     Gets or sets the OOF settings.
-    /// </summary>
-    /// <value>The oof settings.</value>
-    public OofSettings OofSettings { get; internal set; }
 }

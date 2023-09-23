@@ -33,6 +33,35 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
 {
     /// <summary>
+    ///     Gets the day of the week when the transition occurs.
+    /// </summary>
+    internal DayOfTheWeek DayOfTheWeek { get; private set; }
+
+    /// <summary>
+    ///     Gets the index of the week in the month when the transition occurs.
+    /// </summary>
+    internal int WeekIndex { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RelativeDayOfMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    internal RelativeDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition)
+        : base(timeZoneDefinition)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RelativeDayOfMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    /// <param name="targetPeriod">The period the transition will target.</param>
+    internal RelativeDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
+        : base(timeZoneDefinition, targetPeriod)
+    {
+    }
+
+    /// <summary>
     ///     Gets the XML element name associated with the transition.
     /// </summary>
     /// <returns>The XML element name associated with the transition.</returns>
@@ -113,33 +142,4 @@ internal class RelativeDayOfMonthTransition : AbsoluteMonthTransition
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Occurrence, WeekIndex);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="RelativeDayOfMonthTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-    internal RelativeDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition)
-        : base(timeZoneDefinition)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="RelativeDayOfMonthTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-    /// <param name="targetPeriod">The period the transition will target.</param>
-    internal RelativeDayOfMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
-        : base(timeZoneDefinition, targetPeriod)
-    {
-    }
-
-    /// <summary>
-    ///     Gets the day of the week when the transition occurs.
-    /// </summary>
-    internal DayOfTheWeek DayOfTheWeek { get; private set; }
-
-    /// <summary>
-    ///     Gets the index of the week in the month when the transition occurs.
-    /// </summary>
-    internal int WeekIndex { get; private set; }
 }

@@ -42,6 +42,11 @@ internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefi
     private readonly CreateComplexPropertyDelegate<TComplexProperty> _propertyCreationDelegate;
 
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(TComplexProperty);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ComplexPropertyDefinition&lt;TComplexProperty&gt;" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -119,9 +124,4 @@ internal class ComplexPropertyDefinition<TComplexProperty> : ComplexPropertyDefi
 
         return complexProperty;
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(TComplexProperty);
 }

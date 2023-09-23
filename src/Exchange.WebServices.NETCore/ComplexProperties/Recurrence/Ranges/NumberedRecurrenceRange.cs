@@ -30,6 +30,22 @@ internal sealed class NumberedRecurrenceRange : RecurrenceRange
     private int? _numberOfOccurrences;
 
     /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal override string XmlElementName => XmlElementNames.NumberedRecurrence;
+
+    /// <summary>
+    ///     Gets or sets the number of occurrences.
+    /// </summary>
+    /// <value>The number of occurrences.</value>
+    public int? NumberOfOccurrences
+    {
+        get => _numberOfOccurrences;
+        set => SetFieldValue(ref _numberOfOccurrences, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="NumberedRecurrenceRange" /> class.
     /// </summary>
     public NumberedRecurrenceRange()
@@ -46,12 +62,6 @@ internal sealed class NumberedRecurrenceRange : RecurrenceRange
     {
         _numberOfOccurrences = numberOfOccurrences;
     }
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <value>The name of the XML element.</value>
-    internal override string XmlElementName => XmlElementNames.NumberedRecurrence;
 
     /// <summary>
     ///     Setups the recurrence.
@@ -98,15 +108,5 @@ internal sealed class NumberedRecurrenceRange : RecurrenceRange
             default:
                 return false;
         }
-    }
-
-    /// <summary>
-    ///     Gets or sets the number of occurrences.
-    /// </summary>
-    /// <value>The number of occurrences.</value>
-    public int? NumberOfOccurrences
-    {
-        get => _numberOfOccurrences;
-        set => SetFieldValue(ref _numberOfOccurrences, value);
     }
 }

@@ -36,6 +36,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class AttendeeAvailability : ServiceResponse
 {
     /// <summary>
+    ///     Gets a collection of calendar events for the attendee.
+    /// </summary>
+    public Collection<CalendarEvent> CalendarEvents { get; } = new();
+
+    /// <summary>
+    ///     Gets the free/busy view type that wes retrieved for the attendee.
+    /// </summary>
+    public FreeBusyViewType ViewType { get; private set; }
+
+    /// <summary>
+    ///     Gets a collection of merged free/busy status for the attendee.
+    /// </summary>
+    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus { get; } = new();
+
+    /// <summary>
+    ///     Gets the working hours of the attendee.
+    /// </summary>
+    public WorkingHours WorkingHours { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AttendeeAvailability" /> class.
     /// </summary>
     internal AttendeeAvailability()
@@ -118,24 +138,4 @@ public sealed class AttendeeAvailability : ServiceResponse
             }
         } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.FreeBusyView));
     }
-
-    /// <summary>
-    ///     Gets a collection of calendar events for the attendee.
-    /// </summary>
-    public Collection<CalendarEvent> CalendarEvents { get; } = new();
-
-    /// <summary>
-    ///     Gets the free/busy view type that wes retrieved for the attendee.
-    /// </summary>
-    public FreeBusyViewType ViewType { get; private set; }
-
-    /// <summary>
-    ///     Gets a collection of merged free/busy status for the attendee.
-    /// </summary>
-    public Collection<LegacyFreeBusyStatus> MergedFreeBusyStatus { get; } = new();
-
-    /// <summary>
-    ///     Gets the working hours of the attendee.
-    /// </summary>
-    public WorkingHours WorkingHours { get; private set; }
 }

@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class Person : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a local instance of <see cref="Person" />
-    /// </summary>
-    public Person()
-    {
-    }
-
-    /// <summary>
     ///     Gets the EmailAddress.
     /// </summary>
     public string EmailAddress { get; internal set; }
@@ -184,6 +177,13 @@ public class Person : ComplexProperty
     ///     Gets the user profile picture.
     /// </summary>
     public UserProfilePicture UserProfilePicture { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a local instance of <see cref="Person" />
+    /// </summary>
+    public Person()
+    {
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

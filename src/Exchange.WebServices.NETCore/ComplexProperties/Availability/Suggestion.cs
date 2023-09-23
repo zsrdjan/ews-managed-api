@@ -37,6 +37,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class Suggestion : ComplexProperty
 {
     /// <summary>
+    ///     Gets the date and time of the suggestion.
+    /// </summary>
+    public DateTime Date { get; private set; }
+
+    /// <summary>
+    ///     Gets the quality of the suggestion.
+    /// </summary>
+    public SuggestionQuality Quality { get; private set; }
+
+    /// <summary>
+    ///     Gets a collection of suggested times within the suggested day.
+    /// </summary>
+    public Collection<TimeSuggestion> TimeSuggestions { get; } = new Collection<TimeSuggestion>();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="Suggestion" /> class.
     /// </summary>
     internal Suggestion()
@@ -100,19 +115,4 @@ public sealed class Suggestion : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the date and time of the suggestion.
-    /// </summary>
-    public DateTime Date { get; private set; }
-
-    /// <summary>
-    ///     Gets the quality of the suggestion.
-    /// </summary>
-    public SuggestionQuality Quality { get; private set; }
-
-    /// <summary>
-    ///     Gets a collection of suggested times within the suggested day.
-    /// </summary>
-    public Collection<TimeSuggestion> TimeSuggestions { get; } = new Collection<TimeSuggestion>();
 }

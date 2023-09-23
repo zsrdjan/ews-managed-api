@@ -35,8 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
 {
-    #region Constants
-
     private const string FieldFormat = "{0}: {1} ";
 
     private const string PropertySetFieldName = nameof(PropertySet);
@@ -45,18 +43,53 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     private const string NameFieldName = nameof(Name);
     private const string IdFieldName = nameof(Id);
     private const string MapiTypeFieldName = nameof(MapiType);
+    private int? _id;
 
-    #endregion
-
-
-    #region Fields
 
     private DefaultExtendedPropertySet? _propertySet;
     private Guid? _propertySetId;
     private int? _tag;
-    private int? _id;
 
-    #endregion
+    /// <summary>
+    ///     Gets the minimum Exchange version that supports this extended property.
+    /// </summary>
+    /// <value>The version.</value>
+    public override ExchangeVersion Version => ExchangeVersion.Exchange2007_SP1;
+
+    /// <summary>
+    ///     Gets the property set of the extended property.
+    /// </summary>
+    public DefaultExtendedPropertySet? PropertySet => _propertySet;
+
+    /// <summary>
+    ///     Gets the property set Id or the extended property.
+    /// </summary>
+    public Guid? PropertySetId => _propertySetId;
+
+    /// <summary>
+    ///     Gets the extended property's tag.
+    /// </summary>
+    public int? Tag => _tag;
+
+    /// <summary>
+    ///     Gets the name of the extended property.
+    /// </summary>
+    public string? Name { get; private set; }
+
+    /// <summary>
+    ///     Gets the Id of the extended property.
+    /// </summary>
+    public int? Id => _id;
+
+    /// <summary>
+    ///     Gets the MAPI type of the extended property.
+    /// </summary>
+    public MapiPropertyType MapiType { get; private set; }
+
+    /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => MapiTypeConverter.MapiTypeConverterMap[MapiType].Type;
 
 
     /// <summary>
@@ -176,12 +209,6 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     {
         return XmlElementNames.ExtendedFieldURI;
     }
-
-    /// <summary>
-    ///     Gets the minimum Exchange version that supports this extended property.
-    /// </summary>
-    /// <value>The version.</value>
-    public override ExchangeVersion Version => ExchangeVersion.Exchange2007_SP1;
 
     /// <summary>
     ///     Writes the attributes to XML.
@@ -327,39 +354,4 @@ public sealed class ExtendedPropertyDefinition : PropertyDefinitionBase
     {
         return fieldValue != null ? string.Format(FieldFormat, name, fieldValue.ToString()) : string.Empty;
     }
-
-    /// <summary>
-    ///     Gets the property set of the extended property.
-    /// </summary>
-    public DefaultExtendedPropertySet? PropertySet => _propertySet;
-
-    /// <summary>
-    ///     Gets the property set Id or the extended property.
-    /// </summary>
-    public Guid? PropertySetId => _propertySetId;
-
-    /// <summary>
-    ///     Gets the extended property's tag.
-    /// </summary>
-    public int? Tag => _tag;
-
-    /// <summary>
-    ///     Gets the name of the extended property.
-    /// </summary>
-    public string? Name { get; private set; }
-
-    /// <summary>
-    ///     Gets the Id of the extended property.
-    /// </summary>
-    public int? Id => _id;
-
-    /// <summary>
-    ///     Gets the MAPI type of the extended property.
-    /// </summary>
-    public MapiPropertyType MapiType { get; private set; }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => MapiTypeConverter.MapiTypeConverterMap[MapiType].Type;
 }

@@ -36,11 +36,52 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
     private readonly List<DayOfTheWeek> _items = new();
 
     /// <summary>
+    ///     Gets the DayOfTheWeek at a specific index in the collection.
+    /// </summary>
+    /// <param name="index">Index</param>
+    /// <returns>DayOfTheWeek at index</returns>
+    public DayOfTheWeek this[int index] => _items[index];
+
+    /// <summary>
+    ///     Gets the number of days in the collection.
+    /// </summary>
+    public int Count => _items.Count;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DayOfTheWeekCollection" /> class.
     /// </summary>
     internal DayOfTheWeekCollection()
     {
     }
+
+
+    #region IEnumerable<DayOfTheWeek> Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    public IEnumerator<DayOfTheWeek> GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    #endregion
+
+
+    #region IEnumerable Members
+
+    /// <summary>
+    ///     Gets an enumerator that iterates through the elements of the collection.
+    /// </summary>
+    /// <returns>An IEnumerator for the collection.</returns>
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return _items.GetEnumerator();
+    }
+
+    #endregion
+
 
     /// <summary>
     ///     Convert to string.
@@ -168,44 +209,4 @@ public sealed class DayOfTheWeekCollection : ComplexProperty, IEnumerable<DayOfT
         _items.RemoveAt(index);
         Changed();
     }
-
-    /// <summary>
-    ///     Gets the DayOfTheWeek at a specific index in the collection.
-    /// </summary>
-    /// <param name="index">Index</param>
-    /// <returns>DayOfTheWeek at index</returns>
-    public DayOfTheWeek this[int index] => _items[index];
-
-    /// <summary>
-    ///     Gets the number of days in the collection.
-    /// </summary>
-    public int Count => _items.Count;
-
-
-    #region IEnumerable<DayOfTheWeek> Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    public IEnumerator<DayOfTheWeek> GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region IEnumerable Members
-
-    /// <summary>
-    ///     Gets an enumerator that iterates through the elements of the collection.
-    /// </summary>
-    /// <returns>An IEnumerator for the collection.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-        return _items.GetEnumerator();
-    }
-
-    #endregion
 }

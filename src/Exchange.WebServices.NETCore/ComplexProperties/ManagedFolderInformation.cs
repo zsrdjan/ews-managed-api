@@ -37,6 +37,56 @@ public sealed class ManagedFolderInformation : ComplexProperty
     private string _homePage;
 
     /// <summary>
+    ///     Gets a value indicating whether the user can delete objects in the folder.
+    /// </summary>
+    public bool? CanDelete { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the user can rename or move objects in the folder.
+    /// </summary>
+    public bool? CanRenameOrMove { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the client application must display the Comment property to the user.
+    /// </summary>
+    public bool? MustDisplayComment { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the folder has a quota.
+    /// </summary>
+    public bool? HasQuota { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the folder is the root of the managed folder hierarchy.
+    /// </summary>
+    public bool? IsManagedFoldersRoot { get; private set; }
+
+    /// <summary>
+    ///     Gets the Managed Folder Id of the folder.
+    /// </summary>
+    public string ManagedFolderId { get; private set; }
+
+    /// <summary>
+    ///     Gets the comment associated with the folder.
+    /// </summary>
+    public string Comment => _comment;
+
+    /// <summary>
+    ///     Gets the storage quota of the folder.
+    /// </summary>
+    public int? StorageQuota { get; private set; }
+
+    /// <summary>
+    ///     Gets the size of the folder.
+    /// </summary>
+    public int? FolderSize { get; private set; }
+
+    /// <summary>
+    ///     Gets the home page associated with the folder.
+    /// </summary>
+    public string HomePage => _homePage;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ManagedFolderInformation" /> class.
     /// </summary>
     internal ManagedFolderInformation()
@@ -108,54 +158,4 @@ public sealed class ManagedFolderInformation : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether the user can delete objects in the folder.
-    /// </summary>
-    public bool? CanDelete { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the user can rename or move objects in the folder.
-    /// </summary>
-    public bool? CanRenameOrMove { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the client application must display the Comment property to the user.
-    /// </summary>
-    public bool? MustDisplayComment { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the folder has a quota.
-    /// </summary>
-    public bool? HasQuota { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the folder is the root of the managed folder hierarchy.
-    /// </summary>
-    public bool? IsManagedFoldersRoot { get; private set; }
-
-    /// <summary>
-    ///     Gets the Managed Folder Id of the folder.
-    /// </summary>
-    public string ManagedFolderId { get; private set; }
-
-    /// <summary>
-    ///     Gets the comment associated with the folder.
-    /// </summary>
-    public string Comment => _comment;
-
-    /// <summary>
-    ///     Gets the storage quota of the folder.
-    /// </summary>
-    public int? StorageQuota { get; private set; }
-
-    /// <summary>
-    ///     Gets the size of the folder.
-    /// </summary>
-    public int? FolderSize { get; private set; }
-
-    /// <summary>
-    ///     Gets the home page associated with the folder.
-    /// </summary>
-    public string HomePage => _homePage;
 }

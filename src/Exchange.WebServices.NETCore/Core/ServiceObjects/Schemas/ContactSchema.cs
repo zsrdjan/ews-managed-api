@@ -35,63 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class ContactSchema : ItemSchema
 {
     /// <summary>
-    ///     FieldURIs for contacts.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string FileAs = "contacts:FileAs";
-        public const string FileAsMapping = "contacts:FileAsMapping";
-        public const string DisplayName = "contacts:DisplayName";
-        public const string GivenName = "contacts:GivenName";
-        public const string Initials = "contacts:Initials";
-        public const string MiddleName = "contacts:MiddleName";
-        public const string NickName = "contacts:Nickname";
-        public const string CompleteName = "contacts:CompleteName";
-        public const string CompanyName = "contacts:CompanyName";
-        public const string EmailAddress = "contacts:EmailAddress";
-        public const string EmailAddresses = "contacts:EmailAddresses";
-        public const string PhysicalAddresses = "contacts:PhysicalAddresses";
-        public const string PhoneNumber = "contacts:PhoneNumber";
-        public const string PhoneNumbers = "contacts:PhoneNumbers";
-        public const string AssistantName = "contacts:AssistantName";
-        public const string Birthday = "contacts:Birthday";
-        public const string BusinessHomePage = "contacts:BusinessHomePage";
-        public const string Children = "contacts:Children";
-        public const string Companies = "contacts:Companies";
-        public const string ContactSource = "contacts:ContactSource";
-        public const string Department = "contacts:Department";
-        public const string Generation = "contacts:Generation";
-        public const string ImAddress = "contacts:ImAddress";
-        public const string ImAddresses = "contacts:ImAddresses";
-        public const string JobTitle = "contacts:JobTitle";
-        public const string Manager = "contacts:Manager";
-        public const string Mileage = "contacts:Mileage";
-        public const string OfficeLocation = "contacts:OfficeLocation";
-        public const string PhysicalAddressCity = "contacts:PhysicalAddress:City";
-        public const string PhysicalAddressCountryOrRegion = "contacts:PhysicalAddress:CountryOrRegion";
-        public const string PhysicalAddressState = "contacts:PhysicalAddress:State";
-        public const string PhysicalAddressStreet = "contacts:PhysicalAddress:Street";
-        public const string PhysicalAddressPostalCode = "contacts:PhysicalAddress:PostalCode";
-        public const string PostalAddressIndex = "contacts:PostalAddressIndex";
-        public const string Profession = "contacts:Profession";
-        public const string SpouseName = "contacts:SpouseName";
-        public const string Surname = "contacts:Surname";
-        public const string WeddingAnniversary = "contacts:WeddingAnniversary";
-        public const string HasPicture = "contacts:HasPicture";
-        public const string PhoneticFullName = "contacts:PhoneticFullName";
-        public const string PhoneticFirstName = "contacts:PhoneticFirstName";
-        public const string PhoneticLastName = "contacts:PhoneticLastName";
-        public const string Alias = "contacts:Alias";
-        public const string Notes = "contacts:Notes";
-        public const string Photo = "contacts:Photo";
-        public const string UserSMIMECertificate = "contacts:UserSMIMECertificate";
-        public const string MSExchangeCertificate = "contacts:MSExchangeCertificate";
-        public const string DirectoryId = "contacts:DirectoryId";
-        public const string ManagerMailbox = "contacts:ManagerMailbox";
-        public const string DirectReports = "contacts:DirectReports";
-    }
-
-    /// <summary>
     ///     Defines the FileAs property.
     /// </summary>
     public static readonly PropertyDefinition FileAs = new StringPropertyDefinition(
@@ -495,6 +438,167 @@ public class ContactSchema : ItemSchema
     );
 
 
+    // This must be declared after the property definitions
+    internal new static readonly ContactSchema Instance = new();
+
+    internal ContactSchema()
+    {
+    }
+
+    /// <summary>
+    ///     Registers properties.
+    /// </summary>
+    /// <remarks>
+    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
+    ///     types.xsd)
+    /// </remarks>
+    internal override void RegisterProperties()
+    {
+        base.RegisterProperties();
+
+        RegisterProperty(FileAs);
+        RegisterProperty(FileAsMapping);
+        RegisterProperty(DisplayName);
+        RegisterProperty(GivenName);
+        RegisterProperty(Initials);
+        RegisterProperty(MiddleName);
+        RegisterProperty(NickName);
+        RegisterProperty(CompleteName);
+        RegisterProperty(CompanyName);
+        RegisterProperty(EmailAddresses);
+        RegisterProperty(PhysicalAddresses);
+        RegisterProperty(PhoneNumbers);
+        RegisterProperty(AssistantName);
+        RegisterProperty(Birthday);
+        RegisterProperty(BusinessHomePage);
+        RegisterProperty(Children);
+        RegisterProperty(Companies);
+        RegisterProperty(ContactSource);
+        RegisterProperty(Department);
+        RegisterProperty(Generation);
+        RegisterProperty(ImAddresses);
+        RegisterProperty(JobTitle);
+        RegisterProperty(Manager);
+        RegisterProperty(Mileage);
+        RegisterProperty(OfficeLocation);
+        RegisterProperty(PostalAddressIndex);
+        RegisterProperty(Profession);
+        RegisterProperty(SpouseName);
+        RegisterProperty(Surname);
+        RegisterProperty(WeddingAnniversary);
+        RegisterProperty(HasPicture);
+        RegisterProperty(PhoneticFullName);
+        RegisterProperty(PhoneticFirstName);
+        RegisterProperty(PhoneticLastName);
+        RegisterProperty(Alias);
+        RegisterProperty(Notes);
+        RegisterProperty(Photo);
+        RegisterProperty(UserSMIMECertificate);
+        RegisterProperty(MSExchangeCertificate);
+        RegisterProperty(DirectoryId);
+        RegisterProperty(ManagerMailbox);
+        RegisterProperty(DirectReports);
+
+        RegisterIndexedProperty(EmailAddress1);
+        RegisterIndexedProperty(EmailAddress2);
+        RegisterIndexedProperty(EmailAddress3);
+        RegisterIndexedProperty(ImAddress1);
+        RegisterIndexedProperty(ImAddress2);
+        RegisterIndexedProperty(ImAddress3);
+        RegisterIndexedProperty(AssistantPhone);
+        RegisterIndexedProperty(BusinessFax);
+        RegisterIndexedProperty(BusinessPhone);
+        RegisterIndexedProperty(BusinessPhone2);
+        RegisterIndexedProperty(Callback);
+        RegisterIndexedProperty(CarPhone);
+        RegisterIndexedProperty(CompanyMainPhone);
+        RegisterIndexedProperty(HomeFax);
+        RegisterIndexedProperty(HomePhone);
+        RegisterIndexedProperty(HomePhone2);
+        RegisterIndexedProperty(Isdn);
+        RegisterIndexedProperty(MobilePhone);
+        RegisterIndexedProperty(OtherFax);
+        RegisterIndexedProperty(OtherTelephone);
+        RegisterIndexedProperty(Pager);
+        RegisterIndexedProperty(PrimaryPhone);
+        RegisterIndexedProperty(RadioPhone);
+        RegisterIndexedProperty(Telex);
+        RegisterIndexedProperty(TtyTddPhone);
+        RegisterIndexedProperty(BusinessAddressStreet);
+        RegisterIndexedProperty(BusinessAddressCity);
+        RegisterIndexedProperty(BusinessAddressState);
+        RegisterIndexedProperty(BusinessAddressCountryOrRegion);
+        RegisterIndexedProperty(BusinessAddressPostalCode);
+        RegisterIndexedProperty(HomeAddressStreet);
+        RegisterIndexedProperty(HomeAddressCity);
+        RegisterIndexedProperty(HomeAddressState);
+        RegisterIndexedProperty(HomeAddressCountryOrRegion);
+        RegisterIndexedProperty(HomeAddressPostalCode);
+        RegisterIndexedProperty(OtherAddressStreet);
+        RegisterIndexedProperty(OtherAddressCity);
+        RegisterIndexedProperty(OtherAddressState);
+        RegisterIndexedProperty(OtherAddressCountryOrRegion);
+        RegisterIndexedProperty(OtherAddressPostalCode);
+    }
+
+    /// <summary>
+    ///     FieldURIs for contacts.
+    /// </summary>
+    private static class FieldUris
+    {
+        public const string FileAs = "contacts:FileAs";
+        public const string FileAsMapping = "contacts:FileAsMapping";
+        public const string DisplayName = "contacts:DisplayName";
+        public const string GivenName = "contacts:GivenName";
+        public const string Initials = "contacts:Initials";
+        public const string MiddleName = "contacts:MiddleName";
+        public const string NickName = "contacts:Nickname";
+        public const string CompleteName = "contacts:CompleteName";
+        public const string CompanyName = "contacts:CompanyName";
+        public const string EmailAddress = "contacts:EmailAddress";
+        public const string EmailAddresses = "contacts:EmailAddresses";
+        public const string PhysicalAddresses = "contacts:PhysicalAddresses";
+        public const string PhoneNumber = "contacts:PhoneNumber";
+        public const string PhoneNumbers = "contacts:PhoneNumbers";
+        public const string AssistantName = "contacts:AssistantName";
+        public const string Birthday = "contacts:Birthday";
+        public const string BusinessHomePage = "contacts:BusinessHomePage";
+        public const string Children = "contacts:Children";
+        public const string Companies = "contacts:Companies";
+        public const string ContactSource = "contacts:ContactSource";
+        public const string Department = "contacts:Department";
+        public const string Generation = "contacts:Generation";
+        public const string ImAddress = "contacts:ImAddress";
+        public const string ImAddresses = "contacts:ImAddresses";
+        public const string JobTitle = "contacts:JobTitle";
+        public const string Manager = "contacts:Manager";
+        public const string Mileage = "contacts:Mileage";
+        public const string OfficeLocation = "contacts:OfficeLocation";
+        public const string PhysicalAddressCity = "contacts:PhysicalAddress:City";
+        public const string PhysicalAddressCountryOrRegion = "contacts:PhysicalAddress:CountryOrRegion";
+        public const string PhysicalAddressState = "contacts:PhysicalAddress:State";
+        public const string PhysicalAddressStreet = "contacts:PhysicalAddress:Street";
+        public const string PhysicalAddressPostalCode = "contacts:PhysicalAddress:PostalCode";
+        public const string PostalAddressIndex = "contacts:PostalAddressIndex";
+        public const string Profession = "contacts:Profession";
+        public const string SpouseName = "contacts:SpouseName";
+        public const string Surname = "contacts:Surname";
+        public const string WeddingAnniversary = "contacts:WeddingAnniversary";
+        public const string HasPicture = "contacts:HasPicture";
+        public const string PhoneticFullName = "contacts:PhoneticFullName";
+        public const string PhoneticFirstName = "contacts:PhoneticFirstName";
+        public const string PhoneticLastName = "contacts:PhoneticLastName";
+        public const string Alias = "contacts:Alias";
+        public const string Notes = "contacts:Notes";
+        public const string Photo = "contacts:Photo";
+        public const string UserSMIMECertificate = "contacts:UserSMIMECertificate";
+        public const string MSExchangeCertificate = "contacts:MSExchangeCertificate";
+        public const string DirectoryId = "contacts:DirectoryId";
+        public const string ManagerMailbox = "contacts:ManagerMailbox";
+        public const string DirectReports = "contacts:DirectReports";
+    }
+
+
     #region Directory Only Properties
 
     /// <summary>
@@ -870,108 +974,4 @@ public class ContactSchema : ItemSchema
     );
 
     #endregion
-
-
-    // This must be declared after the property definitions
-    internal new static readonly ContactSchema Instance = new();
-
-    /// <summary>
-    ///     Registers properties.
-    /// </summary>
-    /// <remarks>
-    ///     IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in
-    ///     types.xsd)
-    /// </remarks>
-    internal override void RegisterProperties()
-    {
-        base.RegisterProperties();
-
-        RegisterProperty(FileAs);
-        RegisterProperty(FileAsMapping);
-        RegisterProperty(DisplayName);
-        RegisterProperty(GivenName);
-        RegisterProperty(Initials);
-        RegisterProperty(MiddleName);
-        RegisterProperty(NickName);
-        RegisterProperty(CompleteName);
-        RegisterProperty(CompanyName);
-        RegisterProperty(EmailAddresses);
-        RegisterProperty(PhysicalAddresses);
-        RegisterProperty(PhoneNumbers);
-        RegisterProperty(AssistantName);
-        RegisterProperty(Birthday);
-        RegisterProperty(BusinessHomePage);
-        RegisterProperty(Children);
-        RegisterProperty(Companies);
-        RegisterProperty(ContactSource);
-        RegisterProperty(Department);
-        RegisterProperty(Generation);
-        RegisterProperty(ImAddresses);
-        RegisterProperty(JobTitle);
-        RegisterProperty(Manager);
-        RegisterProperty(Mileage);
-        RegisterProperty(OfficeLocation);
-        RegisterProperty(PostalAddressIndex);
-        RegisterProperty(Profession);
-        RegisterProperty(SpouseName);
-        RegisterProperty(Surname);
-        RegisterProperty(WeddingAnniversary);
-        RegisterProperty(HasPicture);
-        RegisterProperty(PhoneticFullName);
-        RegisterProperty(PhoneticFirstName);
-        RegisterProperty(PhoneticLastName);
-        RegisterProperty(Alias);
-        RegisterProperty(Notes);
-        RegisterProperty(Photo);
-        RegisterProperty(UserSMIMECertificate);
-        RegisterProperty(MSExchangeCertificate);
-        RegisterProperty(DirectoryId);
-        RegisterProperty(ManagerMailbox);
-        RegisterProperty(DirectReports);
-
-        RegisterIndexedProperty(EmailAddress1);
-        RegisterIndexedProperty(EmailAddress2);
-        RegisterIndexedProperty(EmailAddress3);
-        RegisterIndexedProperty(ImAddress1);
-        RegisterIndexedProperty(ImAddress2);
-        RegisterIndexedProperty(ImAddress3);
-        RegisterIndexedProperty(AssistantPhone);
-        RegisterIndexedProperty(BusinessFax);
-        RegisterIndexedProperty(BusinessPhone);
-        RegisterIndexedProperty(BusinessPhone2);
-        RegisterIndexedProperty(Callback);
-        RegisterIndexedProperty(CarPhone);
-        RegisterIndexedProperty(CompanyMainPhone);
-        RegisterIndexedProperty(HomeFax);
-        RegisterIndexedProperty(HomePhone);
-        RegisterIndexedProperty(HomePhone2);
-        RegisterIndexedProperty(Isdn);
-        RegisterIndexedProperty(MobilePhone);
-        RegisterIndexedProperty(OtherFax);
-        RegisterIndexedProperty(OtherTelephone);
-        RegisterIndexedProperty(Pager);
-        RegisterIndexedProperty(PrimaryPhone);
-        RegisterIndexedProperty(RadioPhone);
-        RegisterIndexedProperty(Telex);
-        RegisterIndexedProperty(TtyTddPhone);
-        RegisterIndexedProperty(BusinessAddressStreet);
-        RegisterIndexedProperty(BusinessAddressCity);
-        RegisterIndexedProperty(BusinessAddressState);
-        RegisterIndexedProperty(BusinessAddressCountryOrRegion);
-        RegisterIndexedProperty(BusinessAddressPostalCode);
-        RegisterIndexedProperty(HomeAddressStreet);
-        RegisterIndexedProperty(HomeAddressCity);
-        RegisterIndexedProperty(HomeAddressState);
-        RegisterIndexedProperty(HomeAddressCountryOrRegion);
-        RegisterIndexedProperty(HomeAddressPostalCode);
-        RegisterIndexedProperty(OtherAddressStreet);
-        RegisterIndexedProperty(OtherAddressCity);
-        RegisterIndexedProperty(OtherAddressState);
-        RegisterIndexedProperty(OtherAddressCountryOrRegion);
-        RegisterIndexedProperty(OtherAddressPostalCode);
-    }
-
-    internal ContactSchema()
-    {
-    }
 }

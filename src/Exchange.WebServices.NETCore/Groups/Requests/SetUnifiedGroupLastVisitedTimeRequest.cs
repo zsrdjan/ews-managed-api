@@ -31,11 +31,6 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 internal sealed class SetUnifiedGroupLastVisitedTimeRequest : SimpleServiceRequestBase
 {
     /// <summary>
-    ///     The last visited time utc for the group
-    /// </summary>
-    private readonly DateTime _lastVisitedTimeUtc;
-
-    /// <summary>
     ///     The identify type associated with the group
     /// </summary>
     private readonly UnifiedGroupIdentityType _identityType;
@@ -44,6 +39,11 @@ internal sealed class SetUnifiedGroupLastVisitedTimeRequest : SimpleServiceReque
     ///     The value of identity associated with the group
     /// </summary>
     private readonly string _identityValue;
+
+    /// <summary>
+    ///     The last visited time utc for the group
+    /// </summary>
+    private readonly DateTime _lastVisitedTimeUtc;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetUnifiedGroupLastVisitedTimeRequest" /> class.

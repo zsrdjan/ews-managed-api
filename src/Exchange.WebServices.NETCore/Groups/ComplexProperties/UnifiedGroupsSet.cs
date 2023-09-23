@@ -34,13 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data.Groups;
 public class UnifiedGroupsSet : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="UnifiedGroupsSet" /> class.
-    /// </summary>
-    internal UnifiedGroupsSet()
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the FilterType associated with this set
     /// </summary>
     public UnifiedGroupsFilterType FilterType { get; set; }
@@ -54,6 +47,13 @@ public class UnifiedGroupsSet : ComplexProperty
     ///     Gets the Groups contained in this set.
     /// </summary>
     public List<UnifiedGroup> Groups { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="UnifiedGroupsSet" /> class.
+    /// </summary>
+    internal UnifiedGroupsSet()
+    {
+    }
 
     /// <summary>
     ///     Read Conversations from XML.

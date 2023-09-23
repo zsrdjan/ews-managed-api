@@ -54,6 +54,71 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
+    ///     Creates a local meeting acceptance message that can be customized and sent.
+    /// </summary>
+    /// <param name="tentative">Specifies whether the meeting will be tentatively accepted.</param>
+    /// <returns>An AcceptMeetingInvitationMessage representing the meeting acceptance message. </returns>
+    public AcceptMeetingInvitationMessage CreateAcceptMessage(bool tentative)
+    {
+        return new AcceptMeetingInvitationMessage(this, tentative);
+    }
+
+    /// <summary>
+    ///     Creates a local meeting declination message that can be customized and sent.
+    /// </summary>
+    /// <returns>A DeclineMeetingInvitation representing the meeting declination message. </returns>
+    public DeclineMeetingInvitationMessage CreateDeclineMessage()
+    {
+        return new DeclineMeetingInvitationMessage(this);
+    }
+
+    /// <summary>
+    ///     Accepts the meeting. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
+    /// <returns>
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
+    /// </returns>
+    public Task<CalendarActionResults> Accept(bool sendResponse)
+    {
+        return InternalAccept(false, sendResponse);
+    }
+
+    /// <summary>
+    ///     Tentatively accepts the meeting. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
+    /// <returns>
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
+    /// </returns>
+    public Task<CalendarActionResults> AcceptTentatively(bool sendResponse)
+    {
+        return InternalAccept(true, sendResponse);
+    }
+
+    /// <summary>
+    ///     Declines the meeting invitation. Calling this method results in a call to EWS.
+    /// </summary>
+    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
+    /// <returns>
+    ///     A CalendarActionResults object containing the various items that were created or modified as a
+    ///     results of this operation.
+    /// </returns>
+    public Task<CalendarActionResults> Decline(bool sendResponse)
+    {
+        var decline = CreateDeclineMessage();
+
+        if (sendResponse)
+        {
+            return decline.SendAndSaveCopy();
+        }
+
+        return decline.Save();
+    }
+
+    /// <summary>
     ///     Binds to an existing meeting request and loads the specified set of properties.
     ///     Calling this method results in a call to EWS.
     /// </summary>
@@ -103,51 +168,6 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
     }
 
     /// <summary>
-    ///     Creates a local meeting acceptance message that can be customized and sent.
-    /// </summary>
-    /// <param name="tentative">Specifies whether the meeting will be tentatively accepted.</param>
-    /// <returns>An AcceptMeetingInvitationMessage representing the meeting acceptance message. </returns>
-    public AcceptMeetingInvitationMessage CreateAcceptMessage(bool tentative)
-    {
-        return new AcceptMeetingInvitationMessage(this, tentative);
-    }
-
-    /// <summary>
-    ///     Creates a local meeting declination message that can be customized and sent.
-    /// </summary>
-    /// <returns>A DeclineMeetingInvitation representing the meeting declination message. </returns>
-    public DeclineMeetingInvitationMessage CreateDeclineMessage()
-    {
-        return new DeclineMeetingInvitationMessage(this);
-    }
-
-    /// <summary>
-    ///     Accepts the meeting. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
-    /// <returns>
-    ///     A CalendarActionResults object containing the various items that were created or modified as a
-    ///     results of this operation.
-    /// </returns>
-    public Task<CalendarActionResults> Accept(bool sendResponse)
-    {
-        return InternalAccept(false, sendResponse);
-    }
-
-    /// <summary>
-    ///     Tentatively accepts the meeting. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
-    /// <returns>
-    ///     A CalendarActionResults object containing the various items that were created or modified as a
-    ///     results of this operation.
-    /// </returns>
-    public Task<CalendarActionResults> AcceptTentatively(bool sendResponse)
-    {
-        return InternalAccept(true, sendResponse);
-    }
-
-    /// <summary>
     ///     Accepts the meeting.
     /// </summary>
     /// <param name="tentative">True if tentative accept.</param>
@@ -166,26 +186,6 @@ public class MeetingRequest : MeetingMessage, ICalendarActionProvider
         }
 
         return accept.Save();
-    }
-
-    /// <summary>
-    ///     Declines the meeting invitation. Calling this method results in a call to EWS.
-    /// </summary>
-    /// <param name="sendResponse">Indicates whether to send a response to the organizer.</param>
-    /// <returns>
-    ///     A CalendarActionResults object containing the various items that were created or modified as a
-    ///     results of this operation.
-    /// </returns>
-    public Task<CalendarActionResults> Decline(bool sendResponse)
-    {
-        var decline = CreateDeclineMessage();
-
-        if (sendResponse)
-        {
-            return decline.SendAndSaveCopy();
-        }
-
-        return decline.Save();
     }
 
 

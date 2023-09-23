@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MailboxQuery
 {
     /// <summary>
+    ///     Search query
+    /// </summary>
+    public string Query { get; set; }
+
+    /// <summary>
+    ///     Set of mailbox and scope pair
+    /// </summary>
+    public MailboxSearchScope[] MailboxSearchScopes { get; set; }
+
+    /// <summary>
     ///     Constructor
     /// </summary>
     /// <param name="query">Search query</param>
@@ -43,16 +53,6 @@ public sealed class MailboxQuery
         Query = query;
         MailboxSearchScopes = searchScopes;
     }
-
-    /// <summary>
-    ///     Search query
-    /// </summary>
-    public string Query { get; set; }
-
-    /// <summary>
-    ///     Set of mailbox and scope pair
-    /// </summary>
-    public MailboxSearchScope[] MailboxSearchScopes { get; set; }
 }
 
 /// <summary>
@@ -61,18 +61,6 @@ public sealed class MailboxQuery
 [PublicAPI]
 public sealed class MailboxSearchScope
 {
-    /// <summary>
-    ///     Constructor
-    /// </summary>
-    /// <param name="mailbox">Mailbox</param>
-    /// <param name="searchScope">Search scope</param>
-    public MailboxSearchScope(string mailbox, MailboxSearchLocation searchScope = MailboxSearchLocation.All)
-    {
-        Mailbox = mailbox;
-        SearchScope = searchScope;
-        ExtendedAttributes = new ExtendedAttributes();
-    }
-
     /// <summary>
     ///     Mailbox
     /// </summary>
@@ -93,6 +81,18 @@ public sealed class MailboxSearchScope
     /// </summary>
     /// <value>The extended data.</value>
     public ExtendedAttributes? ExtendedAttributes { get; private set; }
+
+    /// <summary>
+    ///     Constructor
+    /// </summary>
+    /// <param name="mailbox">Mailbox</param>
+    /// <param name="searchScope">Search scope</param>
+    public MailboxSearchScope(string mailbox, MailboxSearchLocation searchScope = MailboxSearchLocation.All)
+    {
+        Mailbox = mailbox;
+        SearchScope = searchScope;
+        ExtendedAttributes = new ExtendedAttributes();
+    }
 }
 
 /// <summary>
@@ -101,6 +101,16 @@ public sealed class MailboxSearchScope
 [PublicAPI]
 public sealed class PreviewItemMailbox
 {
+    /// <summary>
+    ///     Mailbox id
+    /// </summary>
+    public string MailboxId { get; set; }
+
+    /// <summary>
+    ///     Primary smtp address
+    /// </summary>
+    public string PrimarySmtpAddress { get; set; }
+
     /// <summary>
     ///     Constructor
     /// </summary>
@@ -118,14 +128,4 @@ public sealed class PreviewItemMailbox
         MailboxId = mailboxId;
         PrimarySmtpAddress = primarySmtpAddress;
     }
-
-    /// <summary>
-    ///     Mailbox id
-    /// </summary>
-    public string MailboxId { get; set; }
-
-    /// <summary>
-    ///     Primary smtp address
-    /// </summary>
-    public string PrimarySmtpAddress { get; set; }
 }

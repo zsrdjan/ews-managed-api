@@ -36,13 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class GetUserPhotoResults
 {
     /// <summary>
-    ///     Creates a new instance of the <see cref="GetUserPhotoResults" /> class.
-    /// </summary>
-    internal GetUserPhotoResults()
-    {
-    }
-
-    /// <summary>
     ///     Accessors for the picture data
     /// </summary>
     public byte[] Photo { get; internal set; }
@@ -66,4 +59,11 @@ public sealed class GetUserPhotoResults
     ///     The status of the photo response
     /// </summary>
     public GetUserPhotoStatus Status { get; internal set; }
+
+    /// <summary>
+    ///     Creates a new instance of the <see cref="GetUserPhotoResults" /> class.
+    /// </summary>
+    internal GetUserPhotoResults()
+    {
+    }
 }

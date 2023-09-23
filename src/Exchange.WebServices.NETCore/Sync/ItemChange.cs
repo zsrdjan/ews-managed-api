@@ -34,22 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ItemChange : Change
 {
     /// <summary>
-    ///     Initializes a new instance of ItemChange.
-    /// </summary>
-    internal ItemChange()
-    {
-    }
-
-    /// <summary>
-    ///     Creates an ItemId instance.
-    /// </summary>
-    /// <returns>A ItemId.</returns>
-    internal override ServiceId CreateId()
-    {
-        return new ItemId();
-    }
-
-    /// <summary>
     ///     Gets the item the change applies to. Item is null when ChangeType is equal to
     ///     either ChangeType.Delete or ChangeType.ReadFlagChange. In those cases, use the
     ///     ItemId property to retrieve the Id of the item that was deleted or whose IsRead
@@ -67,4 +51,20 @@ public sealed class ItemChange : Change
     ///     Gets the Id of the item the change applies to.
     /// </summary>
     public ItemId ItemId => (ItemId)Id;
+
+    /// <summary>
+    ///     Initializes a new instance of ItemChange.
+    /// </summary>
+    internal ItemChange()
+    {
+    }
+
+    /// <summary>
+    ///     Creates an ItemId instance.
+    /// </summary>
+    /// <returns>A ItemId.</returns>
+    internal override ServiceId CreateId()
+    {
+        return new ItemId();
+    }
 }

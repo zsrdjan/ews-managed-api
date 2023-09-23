@@ -33,9 +33,9 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class SetClientExtensionAction : ComplexProperty
 {
-    private readonly SetClientExtensionActionId _setClientExtensionActionId;
-    private readonly string _extensionId;
     private readonly ClientExtension? _clientExtension;
+    private readonly string _extensionId;
+    private readonly SetClientExtensionActionId _setClientExtensionActionId;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetClientExtensionAction" /> class.

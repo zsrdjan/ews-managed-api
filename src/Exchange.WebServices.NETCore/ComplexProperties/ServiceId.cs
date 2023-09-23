@@ -34,6 +34,23 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ServiceId : ComplexProperty
 {
     /// <summary>
+    ///     True if this instance is valid, false otherthise.
+    /// </summary>
+    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
+    internal virtual bool IsValid => !string.IsNullOrEmpty(UniqueId);
+
+    /// <summary>
+    ///     Gets the unique Id of the Exchange object.
+    /// </summary>
+    public string? UniqueId { get; internal set; }
+
+    /// <summary>
+    ///     Gets the change key associated with the Exchange object. The change key represents the
+    ///     the version of the associated item or folder.
+    /// </summary>
+    public string? ChangeKey { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ServiceId" /> class.
     /// </summary>
     internal ServiceId()
@@ -96,23 +113,6 @@ public abstract class ServiceId : ComplexProperty
         UniqueId = source.UniqueId;
         ChangeKey = source.ChangeKey;
     }
-
-    /// <summary>
-    ///     True if this instance is valid, false otherthise.
-    /// </summary>
-    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
-    internal virtual bool IsValid => !string.IsNullOrEmpty(UniqueId);
-
-    /// <summary>
-    ///     Gets the unique Id of the Exchange object.
-    /// </summary>
-    public string? UniqueId { get; internal set; }
-
-    /// <summary>
-    ///     Gets the change key associated with the Exchange object. The change key represents the
-    ///     the version of the associated item or folder.
-    /// </summary>
-    public string? ChangeKey { get; internal set; }
 
     /// <summary>
     ///     Determines whether two ServiceId instances are equal (including ChangeKeys)

@@ -33,6 +33,12 @@ internal abstract class DelegateManagementRequestBase<TResponse> : SimpleService
     where TResponse : DelegateManagementResponse
 {
     /// <summary>
+    ///     Gets or sets the mailbox.
+    /// </summary>
+    /// <value>The mailbox.</value>
+    public Mailbox Mailbox { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateManagementRequestBase&lt;TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -91,10 +97,4 @@ internal abstract class DelegateManagementRequestBase<TResponse> : SimpleService
 
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Gets or sets the mailbox.
-    /// </summary>
-    /// <value>The mailbox.</value>
-    public Mailbox Mailbox { get; set; }
 }

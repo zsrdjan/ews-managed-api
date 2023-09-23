@@ -323,3 +323,4 @@ resharper_csharp_outdent_statement_labels = true
 resharper_place_attribute_on_same_line = never
 resharper_wrap_chained_binary_expressions = chop_if_long
 
+MA0004.report = Always        # Always report missing ConfigureAwait whatever the context

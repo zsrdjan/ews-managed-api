@@ -39,19 +39,14 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     internal const string SmtpRoutingType = "SMTP";
 
     /// <summary>
-    ///     Display name.
-    /// </summary>
-    private string _name;
-
-    /// <summary>
     ///     Email address.
     /// </summary>
     private string _address;
 
     /// <summary>
-    ///     Routing type.
+    ///     ItemId - Contact or PDL.
     /// </summary>
-    private string _routingType;
+    private ItemId? _id;
 
     /// <summary>
     ///     Mailbox type.
@@ -59,9 +54,63 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
     private MailboxType? _mailboxType;
 
     /// <summary>
-    ///     ItemId - Contact or PDL.
+    ///     Display name.
     /// </summary>
-    private ItemId? _id;
+    private string _name;
+
+    /// <summary>
+    ///     Routing type.
+    /// </summary>
+    private string _routingType;
+
+    /// <summary>
+    ///     Gets or sets the name associated with the e-mail address.
+    /// </summary>
+    public string Name
+    {
+        get => _name;
+        set => SetFieldValue(ref _name, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the actual address associated with the e-mail address. The type of the Address property
+    ///     must match the specified routing type. If RoutingType is not set, Address is assumed to be an SMTP
+    ///     address.
+    /// </summary>
+    public string Address
+    {
+        get => _address;
+        set => SetFieldValue(ref _address, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the routing type associated with the e-mail address. If RoutingType is not set,
+    ///     Address is assumed to be an SMTP address.
+    /// </summary>
+    public string RoutingType
+    {
+        get => _routingType;
+        set => SetFieldValue(ref _routingType, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the type of the e-mail address.
+    /// </summary>
+    public MailboxType? MailboxType
+    {
+        get => _mailboxType;
+        set => SetFieldValue(ref _mailboxType, value);
+    }
+
+    /// <summary>
+    ///     Gets or sets the Id of the contact the e-mail address represents. When Id is specified, Address
+    ///     should be set to null.
+    /// </summary>
+    public ItemId? Id
+    {
+        get => _id;
+        set => SetFieldValue(ref _id, value);
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EmailAddress" /> class.
@@ -147,54 +196,20 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
         Id = mailbox.Id;
     }
 
-    /// <summary>
-    ///     Gets or sets the name associated with the e-mail address.
-    /// </summary>
-    public string Name
-    {
-        get => _name;
-        set => SetFieldValue(ref _name, value);
-    }
+
+    #region ISearchStringProvider methods
 
     /// <summary>
-    ///     Gets or sets the actual address associated with the e-mail address. The type of the Address property
-    ///     must match the specified routing type. If RoutingType is not set, Address is assumed to be an SMTP
-    ///     address.
+    ///     Get a string representation for using this instance in a search filter.
     /// </summary>
-    public string Address
+    /// <returns>String representation of instance.</returns>
+    string ISearchStringProvider.GetSearchString()
     {
-        get => _address;
-        set => SetFieldValue(ref _address, value);
+        return Address;
     }
 
-    /// <summary>
-    ///     Gets or sets the routing type associated with the e-mail address. If RoutingType is not set,
-    ///     Address is assumed to be an SMTP address.
-    /// </summary>
-    public string RoutingType
-    {
-        get => _routingType;
-        set => SetFieldValue(ref _routingType, value);
-    }
+    #endregion
 
-    /// <summary>
-    ///     Gets or sets the type of the e-mail address.
-    /// </summary>
-    public MailboxType? MailboxType
-    {
-        get => _mailboxType;
-        set => SetFieldValue(ref _mailboxType, value);
-    }
-
-    /// <summary>
-    ///     Gets or sets the Id of the contact the e-mail address represents. When Id is specified, Address
-    ///     should be set to null.
-    /// </summary>
-    public ItemId? Id
-    {
-        get => _id;
-        set => SetFieldValue(ref _id, value);
-    }
 
     /// <summary>
     ///     Defines an implicit conversion between a string representing an SMTP address and EmailAddress.
@@ -264,20 +279,6 @@ public class EmailAddress : ComplexProperty, ISearchStringProvider
             Id.WriteToXml(writer, XmlElementNames.ItemId);
         }
     }
-
-
-    #region ISearchStringProvider methods
-
-    /// <summary>
-    ///     Get a string representation for using this instance in a search filter.
-    /// </summary>
-    /// <returns>String representation of instance.</returns>
-    string ISearchStringProvider.GetSearchString()
-    {
-        return Address;
-    }
-
-    #endregion
 
 
     #region Object method overrides

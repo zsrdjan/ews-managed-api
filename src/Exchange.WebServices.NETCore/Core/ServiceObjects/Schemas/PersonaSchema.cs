@@ -35,40 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class PersonaSchema : ItemSchema
 {
     /// <summary>
-    ///     FieldURIs for persona.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string PersonaId = "persona:PersonaId";
-        public const string PersonaType = "persona:PersonaType";
-        public const string CreationTime = "persona:CreationTime";
-        public const string DisplayNameFirstLastHeader = "persona:DisplayNameFirstLastHeader";
-        public const string DisplayNameLastFirstHeader = "persona:DisplayNameLastFirstHeader";
-        public const string DisplayName = "persona:DisplayName";
-        public const string DisplayNameFirstLast = "persona:DisplayNameFirstLast";
-        public const string DisplayNameLastFirst = "persona:DisplayNameLastFirst";
-        public const string FileAs = "persona:FileAs";
-        public const string Generation = "persona:Generation";
-        public const string DisplayNamePrefix = "persona:DisplayNamePrefix";
-        public const string GivenName = "persona:GivenName";
-        public const string Surname = "persona:Surname";
-        public const string Title = "persona:Title";
-        public const string CompanyName = "persona:CompanyName";
-        public const string EmailAddress = "persona:EmailAddress";
-        public const string EmailAddresses = "persona:EmailAddresses";
-        public const string ImAddress = "persona:ImAddress";
-        public const string HomeCity = "persona:HomeCity";
-        public const string WorkCity = "persona:WorkCity";
-        public const string Alias = "persona:Alias";
-        public const string RelevanceScore = "persona:RelevanceScore";
-        public const string Attributions = "persona:Attributions";
-        public const string OfficeLocations = "persona:OfficeLocations";
-        public const string ImAddresses = "persona:ImAddresses";
-        public const string Departments = "persona:Departments";
-        public const string ThirdPartyPhotoUrls = "persona:ThirdPartyPhotoUrls";
-    }
-
-    /// <summary>
     ///     Defines the PersonaId property.
     /// </summary>
     public static readonly PropertyDefinition PersonaId = new ComplexPropertyDefinition<ItemId>(
@@ -443,6 +409,13 @@ public class PersonaSchema : ItemSchema
     internal new static readonly PersonaSchema Instance = new();
 
     /// <summary>
+    ///     internal constructor
+    /// </summary>
+    internal PersonaSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -483,9 +456,36 @@ public class PersonaSchema : ItemSchema
     }
 
     /// <summary>
-    ///     internal constructor
+    ///     FieldURIs for persona.
     /// </summary>
-    internal PersonaSchema()
+    private static class FieldUris
     {
+        public const string PersonaId = "persona:PersonaId";
+        public const string PersonaType = "persona:PersonaType";
+        public const string CreationTime = "persona:CreationTime";
+        public const string DisplayNameFirstLastHeader = "persona:DisplayNameFirstLastHeader";
+        public const string DisplayNameLastFirstHeader = "persona:DisplayNameLastFirstHeader";
+        public const string DisplayName = "persona:DisplayName";
+        public const string DisplayNameFirstLast = "persona:DisplayNameFirstLast";
+        public const string DisplayNameLastFirst = "persona:DisplayNameLastFirst";
+        public const string FileAs = "persona:FileAs";
+        public const string Generation = "persona:Generation";
+        public const string DisplayNamePrefix = "persona:DisplayNamePrefix";
+        public const string GivenName = "persona:GivenName";
+        public const string Surname = "persona:Surname";
+        public const string Title = "persona:Title";
+        public const string CompanyName = "persona:CompanyName";
+        public const string EmailAddress = "persona:EmailAddress";
+        public const string EmailAddresses = "persona:EmailAddresses";
+        public const string ImAddress = "persona:ImAddress";
+        public const string HomeCity = "persona:HomeCity";
+        public const string WorkCity = "persona:WorkCity";
+        public const string Alias = "persona:Alias";
+        public const string RelevanceScore = "persona:RelevanceScore";
+        public const string Attributions = "persona:Attributions";
+        public const string OfficeLocations = "persona:OfficeLocations";
+        public const string ImAddresses = "persona:ImAddresses";
+        public const string Departments = "persona:Departments";
+        public const string ThirdPartyPhotoUrls = "persona:ThirdPartyPhotoUrls";
     }
 }

@@ -34,6 +34,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class EwsEnumAttribute : Attribute
 {
     /// <summary>
+    ///     Gets the name of the name used for the enum in the protocol.
+    /// </summary>
+    /// <value>The name of the name used for the enum in the protocol.</value>
+    internal string SchemaName { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EwsEnumAttribute" /> class.
     /// </summary>
     /// <param name="schemaName">The name used in the protocol for the enum.</param>
@@ -41,10 +47,4 @@ internal sealed class EwsEnumAttribute : Attribute
     {
         SchemaName = schemaName;
     }
-
-    /// <summary>
-    ///     Gets the name of the name used for the enum in the protocol.
-    /// </summary>
-    /// <value>The name of the name used for the enum in the protocol.</value>
-    internal string SchemaName { get; }
 }

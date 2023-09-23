@@ -33,15 +33,15 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class CompanyInsightValue : InsightValue
 {
-    private string _name;
-    private string _satoriId;
     private string _description;
     private string _descriptionAttribution;
+    private string _financeSymbol;
     private string _imageUrl;
     private string _imageUrlAttribution;
-    private string _yearFound;
-    private string _financeSymbol;
+    private string _name;
+    private string _satoriId;
     private string _websiteUrl;
+    private string _yearFound;
 
     /// <summary>
     ///     Gets the Name

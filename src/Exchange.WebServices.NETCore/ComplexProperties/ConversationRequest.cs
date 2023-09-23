@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ConversationRequest : ComplexProperty
 {
     /// <summary>
+    ///     Gets or sets the conversation id.
+    /// </summary>
+    public ConversationId ConversationId { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the sync state representing the current state of the conversation for synchronization purposes.
+    /// </summary>
+    public string? SyncState { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ConversationRequest" /> class.
     /// </summary>
     public ConversationRequest()
@@ -47,16 +57,6 @@ public sealed class ConversationRequest : ComplexProperty
         ConversationId = conversationId;
         SyncState = syncState;
     }
-
-    /// <summary>
-    ///     Gets or sets the conversation id.
-    /// </summary>
-    public ConversationId ConversationId { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the sync state representing the current state of the conversation for synchronization purposes.
-    /// </summary>
-    public string? SyncState { get; set; }
 
     /// <summary>
     ///     Writes to XML.

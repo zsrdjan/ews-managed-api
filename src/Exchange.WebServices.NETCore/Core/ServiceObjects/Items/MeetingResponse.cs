@@ -36,6 +36,41 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class MeetingResponse : MeetingMessage
 {
     /// <summary>
+    ///     Gets the start time of the appointment.
+    /// </summary>
+    public DateTime Start => (DateTime)PropertyBag[MeetingResponseSchema.Start];
+
+    /// <summary>
+    ///     Gets the end time of the appointment.
+    /// </summary>
+    public DateTime End => (DateTime)PropertyBag[MeetingResponseSchema.End];
+
+    /// <summary>
+    ///     Gets the location of this appointment.
+    /// </summary>
+    public string Location => (string)PropertyBag[MeetingResponseSchema.Location];
+
+    /// <summary>
+    ///     Gets the recurrence pattern for this meeting request.
+    /// </summary>
+    public Recurrence Recurrence => (Recurrence)PropertyBag[AppointmentSchema.Recurrence];
+
+    /// <summary>
+    ///     Gets the proposed start time of the appointment.
+    /// </summary>
+    public DateTime ProposedStart => (DateTime)PropertyBag[MeetingResponseSchema.ProposedStart];
+
+    /// <summary>
+    ///     Gets the proposed end time of the appointment.
+    /// </summary>
+    public DateTime ProposedEnd => (DateTime)PropertyBag[MeetingResponseSchema.ProposedEnd];
+
+    /// <summary>
+    ///     Gets the Enhanced location object.
+    /// </summary>
+    public EnhancedLocation EnhancedLocation => (EnhancedLocation)PropertyBag[MeetingResponseSchema.EnhancedLocation];
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MeetingResponse" /> class.
     /// </summary>
     /// <param name="parentAttachment">The parent attachment.</param>
@@ -101,39 +136,4 @@ public class MeetingResponse : MeetingMessage
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the start time of the appointment.
-    /// </summary>
-    public DateTime Start => (DateTime)PropertyBag[MeetingResponseSchema.Start];
-
-    /// <summary>
-    ///     Gets the end time of the appointment.
-    /// </summary>
-    public DateTime End => (DateTime)PropertyBag[MeetingResponseSchema.End];
-
-    /// <summary>
-    ///     Gets the location of this appointment.
-    /// </summary>
-    public string Location => (string)PropertyBag[MeetingResponseSchema.Location];
-
-    /// <summary>
-    ///     Gets the recurrence pattern for this meeting request.
-    /// </summary>
-    public Recurrence Recurrence => (Recurrence)PropertyBag[AppointmentSchema.Recurrence];
-
-    /// <summary>
-    ///     Gets the proposed start time of the appointment.
-    /// </summary>
-    public DateTime ProposedStart => (DateTime)PropertyBag[MeetingResponseSchema.ProposedStart];
-
-    /// <summary>
-    ///     Gets the proposed end time of the appointment.
-    /// </summary>
-    public DateTime ProposedEnd => (DateTime)PropertyBag[MeetingResponseSchema.ProposedEnd];
-
-    /// <summary>
-    ///     Gets the Enhanced location object.
-    /// </summary>
-    public EnhancedLocation EnhancedLocation => (EnhancedLocation)PropertyBag[MeetingResponseSchema.EnhancedLocation];
 }

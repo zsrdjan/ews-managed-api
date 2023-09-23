@@ -36,20 +36,20 @@ public sealed class ItemAttachment<TItem> : ItemAttachment
     where TItem : Item
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemAttachment&lt;TItem&gt;" /> class.
-    /// </summary>
-    /// <param name="owner">The owner of the attachment.</param>
-    internal ItemAttachment(Item owner)
-        : base(owner)
-    {
-    }
-
-    /// <summary>
     ///     Gets the item associated with the attachment.
     /// </summary>
     public new TItem? Item
     {
         get => (TItem?)base.Item;
         internal set => base.Item = value;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemAttachment&lt;TItem&gt;" /> class.
+    /// </summary>
+    /// <param name="owner">The owner of the attachment.</param>
+    internal ItemAttachment(Item owner)
+        : base(owner)
+    {
     }
 }

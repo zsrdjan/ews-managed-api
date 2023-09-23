@@ -31,6 +31,37 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<CreateAttachmentResponse>
 {
     /// <summary>
+    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
+    /// </summary>
+    internal override bool EmitTimeZoneHeader
+    {
+        get
+        {
+            foreach (var itemAttachment in Attachments.OfType<ItemAttachment>())
+            {
+                if (itemAttachment.Item != null && itemAttachment.Item.GetIsTimeZoneHeaderRequired(false))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    /// <summary>
+    ///     Gets the attachments.
+    /// </summary>
+    /// <value>The attachments.</value>
+    public List<Attachment> Attachments { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the parent item id.
+    /// </summary>
+    /// <value>The parent item id.</value>
+    public string ParentItemId { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="CreateAttachmentRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -123,35 +154,4 @@ internal sealed class CreateAttachmentRequest : MultiResponseServiceRequest<Crea
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
-    /// </summary>
-    internal override bool EmitTimeZoneHeader
-    {
-        get
-        {
-            foreach (var itemAttachment in Attachments.OfType<ItemAttachment>())
-            {
-                if (itemAttachment.Item != null && itemAttachment.Item.GetIsTimeZoneHeaderRequired(false))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    /// <summary>
-    ///     Gets the attachments.
-    /// </summary>
-    /// <value>The attachments.</value>
-    public List<Attachment> Attachments { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the parent item id.
-    /// </summary>
-    /// <value>The parent item id.</value>
-    public string ParentItemId { get; set; }
 }

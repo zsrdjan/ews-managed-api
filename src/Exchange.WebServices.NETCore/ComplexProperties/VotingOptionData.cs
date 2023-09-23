@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class VotingOptionData : ComplexProperty
 {
     /// <summary>
+    ///     Gets the display name for the voting option.
+    /// </summary>
+    public string DisplayName { get; private set; }
+
+    /// <summary>
+    ///     Gets the send prompt.
+    /// </summary>
+    public SendPrompt SendPrompt { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="VotingOptionData" /> class.
     /// </summary>
     internal VotingOptionData()
@@ -65,14 +75,4 @@ public sealed class VotingOptionData : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the display name for the voting option.
-    /// </summary>
-    public string DisplayName { get; private set; }
-
-    /// <summary>
-    ///     Gets the send prompt.
-    /// </summary>
-    public SendPrompt SendPrompt { get; private set; }
 }

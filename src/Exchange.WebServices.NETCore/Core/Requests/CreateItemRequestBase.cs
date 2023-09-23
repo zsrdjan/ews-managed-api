@@ -35,16 +35,6 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
     where TResponse : ServiceResponse
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CreateItemRequestBase&lt;TServiceObject, TResponse&gt;" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
-    protected CreateItemRequestBase(ExchangeService service, ServiceErrorHandling errorHandlingMode)
-        : base(service, errorHandlingMode)
-    {
-    }
-
-    /// <summary>
     ///     Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
     /// </summary>
     /// <value>
@@ -64,6 +54,38 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
 
             return false;
         }
+    }
+
+    /// <summary>
+    ///     Gets or sets the message disposition.
+    /// </summary>
+    /// <value>The message disposition.</value>
+    public MessageDisposition? MessageDisposition { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the send invitations mode.
+    /// </summary>
+    /// <value>The send invitations mode.</value>
+    public SendInvitationsMode? SendInvitationsMode { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the items.
+    /// </summary>
+    /// <value>The items.</value>
+    public IEnumerable<TServiceObject> Items
+    {
+        get => Objects;
+        set => Objects = value;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="CreateItemRequestBase&lt;TServiceObject, TResponse&gt;" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="errorHandlingMode"> Indicates how errors should be handled.</param>
+    protected CreateItemRequestBase(ExchangeService service, ServiceErrorHandling errorHandlingMode)
+        : base(service, errorHandlingMode)
+    {
     }
 
     /// <summary>
@@ -138,27 +160,5 @@ internal abstract class CreateItemRequestBase<TServiceObject, TResponse> : Creat
         {
             writer.WriteAttributeValue(XmlAttributeNames.SendMeetingInvitations, SendInvitationsMode.Value);
         }
-    }
-
-    /// <summary>
-    ///     Gets or sets the message disposition.
-    /// </summary>
-    /// <value>The message disposition.</value>
-    public MessageDisposition? MessageDisposition { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the send invitations mode.
-    /// </summary>
-    /// <value>The send invitations mode.</value>
-    public SendInvitationsMode? SendInvitationsMode { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the items.
-    /// </summary>
-    /// <value>The items.</value>
-    public IEnumerable<TServiceObject> Items
-    {
-        get => Objects;
-        set => Objects = value;
     }
 }

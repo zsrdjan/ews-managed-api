@@ -36,6 +36,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class TimeSuggestion : ComplexProperty
 {
     /// <summary>
+    ///     Gets the suggested time.
+    /// </summary>
+    public DateTime MeetingTime { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the suggested time is within working hours.
+    /// </summary>
+    public bool IsWorkTime { get; private set; }
+
+    /// <summary>
+    ///     Gets the quality of the suggestion.
+    /// </summary>
+    public SuggestionQuality Quality { get; private set; }
+
+    /// <summary>
+    ///     Gets a collection of conflicts at the suggested time.
+    /// </summary>
+    public Collection<Conflict> Conflicts { get; } = new Collection<Conflict>();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="TimeSuggestion" /> class.
     /// </summary>
     internal TimeSuggestion()
@@ -128,24 +148,4 @@ public sealed class TimeSuggestion : ComplexProperty
             }
         }
     }
-
-    /// <summary>
-    ///     Gets the suggested time.
-    /// </summary>
-    public DateTime MeetingTime { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the suggested time is within working hours.
-    /// </summary>
-    public bool IsWorkTime { get; private set; }
-
-    /// <summary>
-    ///     Gets the quality of the suggestion.
-    /// </summary>
-    public SuggestionQuality Quality { get; private set; }
-
-    /// <summary>
-    ///     Gets a collection of conflicts at the suggested time.
-    /// </summary>
-    public Collection<Conflict> Conflicts { get; } = new Collection<Conflict>();
 }

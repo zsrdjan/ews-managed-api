@@ -33,6 +33,35 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal abstract class AbsoluteMonthTransition : TimeZoneTransition
 {
     /// <summary>
+    ///     Gets the time offset from midnight when the transition occurs.
+    /// </summary>
+    internal TimeSpan TimeOffset { get; private set; }
+
+    /// <summary>
+    ///     Gets the month when the transition occurs.
+    /// </summary>
+    internal int Month { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition)
+        : base(timeZoneDefinition)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteMonthTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
+    /// <param name="targetPeriod">The period the transition will target.</param>
+    internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
+        : base(timeZoneDefinition, targetPeriod)
+    {
+    }
+
+    /// <summary>
     ///     Initializes this transition based on the specified transition time.
     /// </summary>
     /// <param name="transitionTime">The transition time to initialize from.</param>
@@ -98,33 +127,4 @@ internal abstract class AbsoluteMonthTransition : TimeZoneTransition
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.Month, Month);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AbsoluteMonthTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-    internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition)
-        : base(timeZoneDefinition)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AbsoluteMonthTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition this transition belongs to.</param>
-    /// <param name="targetPeriod">The period the transition will target.</param>
-    internal AbsoluteMonthTransition(TimeZoneDefinition timeZoneDefinition, TimeZonePeriod targetPeriod)
-        : base(timeZoneDefinition, targetPeriod)
-    {
-    }
-
-    /// <summary>
-    ///     Gets the time offset from midnight when the transition occurs.
-    /// </summary>
-    internal TimeSpan TimeOffset { get; private set; }
-
-    /// <summary>
-    ///     Gets the month when the transition occurs.
-    /// </summary>
-    internal int Month { get; private set; }
 }

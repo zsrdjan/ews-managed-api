@@ -38,6 +38,22 @@ public sealed class FindFolderResponse : ServiceResponse
     private readonly PropertySet _propertySet;
 
     /// <summary>
+    ///     Gets the results of the search operation.
+    /// </summary>
+    public FindFoldersResults Results { get; } = new();
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FindFolderResponse" /> class.
+    /// </summary>
+    /// <param name="propertySet">The property set from, the request.</param>
+    internal FindFolderResponse(PropertySet propertySet)
+    {
+        _propertySet = propertySet;
+
+        EwsUtilities.Assert(_propertySet != null, "FindFolderResponse.ctor", "PropertySet should not be null");
+    }
+
+    /// <summary>
     ///     Reads response elements from XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
@@ -91,20 +107,4 @@ public sealed class FindFolderResponse : ServiceResponse
     {
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Folder>(service, xmlElementName);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="FindFolderResponse" /> class.
-    /// </summary>
-    /// <param name="propertySet">The property set from, the request.</param>
-    internal FindFolderResponse(PropertySet propertySet)
-    {
-        _propertySet = propertySet;
-
-        EwsUtilities.Assert(_propertySet != null, "FindFolderResponse.ctor", "PropertySet should not be null");
-    }
-
-    /// <summary>
-    ///     Gets the results of the search operation.
-    /// </summary>
-    public FindFoldersResults Results { get; } = new();
 }

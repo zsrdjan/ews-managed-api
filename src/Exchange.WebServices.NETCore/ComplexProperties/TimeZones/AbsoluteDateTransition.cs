@@ -35,6 +35,30 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class AbsoluteDateTransition : TimeZoneTransition
 {
     /// <summary>
+    ///     Gets or sets the absolute date and time when the transition occurs.
+    /// </summary>
+    internal DateTime DateTime { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteDateTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
+    internal AbsoluteDateTransition(TimeZoneDefinition timeZoneDefinition)
+        : base(timeZoneDefinition)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AbsoluteDateTransition" /> class.
+    /// </summary>
+    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
+    /// <param name="targetGroup">The transition group the transition will target.</param>
+    internal AbsoluteDateTransition(TimeZoneDefinition timeZoneDefinition, TimeZoneTransitionGroup targetGroup)
+        : base(timeZoneDefinition, targetGroup)
+    {
+    }
+
+    /// <summary>
     ///     Initializes this transition based on the specified transition time.
     /// </summary>
     /// <param name="transitionTime">The transition time to initialize from.</param>
@@ -84,28 +108,4 @@ internal class AbsoluteDateTransition : TimeZoneTransition
 
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.DateTime, DateTime);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AbsoluteDateTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
-    internal AbsoluteDateTransition(TimeZoneDefinition timeZoneDefinition)
-        : base(timeZoneDefinition)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AbsoluteDateTransition" /> class.
-    /// </summary>
-    /// <param name="timeZoneDefinition">The time zone definition the transition will belong to.</param>
-    /// <param name="targetGroup">The transition group the transition will target.</param>
-    internal AbsoluteDateTransition(TimeZoneDefinition timeZoneDefinition, TimeZoneTransitionGroup targetGroup)
-        : base(timeZoneDefinition, targetGroup)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the absolute date and time when the transition occurs.
-    /// </summary>
-    internal DateTime DateTime { get; set; }
 }

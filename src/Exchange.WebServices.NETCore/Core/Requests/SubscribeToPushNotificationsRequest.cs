@@ -31,6 +31,24 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscription>
 {
     /// <summary>
+    ///     Gets or sets the frequency.
+    /// </summary>
+    /// <value>The frequency.</value>
+    public int Frequency { get; set; } = 30;
+
+    /// <summary>
+    ///     Gets or sets the URL.
+    /// </summary>
+    /// <value>The URL.</value>
+    public Uri Url { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the URL.
+    /// </summary>
+    /// <value>The URL.</value>
+    public string? CallerData { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeToPushNotificationsRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -99,22 +117,4 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the frequency.
-    /// </summary>
-    /// <value>The frequency.</value>
-    public int Frequency { get; set; } = 30;
-
-    /// <summary>
-    ///     Gets or sets the URL.
-    /// </summary>
-    /// <value>The URL.</value>
-    public Uri Url { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the URL.
-    /// </summary>
-    /// <value>The URL.</value>
-    public string CallerData { get; set; }
 }

@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class PhoneCallId : ComplexProperty
 {
     /// <summary>
+    ///     Gets or sets the Id of the phone call.
+    /// </summary>
+    internal string Id { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="PhoneCallId" /> class.
     /// </summary>
     internal PhoneCallId()
@@ -72,9 +77,4 @@ internal sealed class PhoneCallId : ComplexProperty
     {
         WriteToXml(writer, XmlElementNames.PhoneCallId);
     }
-
-    /// <summary>
-    ///     Gets or sets the Id of the phone call.
-    /// </summary>
-    internal string Id { get; set; }
 }

@@ -34,14 +34,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class FindConversationResponse : ServiceResponse
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="FindConversationResponse" /> class.
-    /// </summary>
-    internal FindConversationResponse()
-    {
-        Results = new FindConversationResults();
-    }
-
-    /// <summary>
     ///     Gets the collection of conversations in results.
     /// </summary>
     internal Collection<Conversation> Conversations => Results.Conversations;
@@ -51,6 +43,14 @@ internal sealed class FindConversationResponse : ServiceResponse
     /// </summary>
     /// <returns>FindConversation results.</returns>
     internal FindConversationResults Results { get; private set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FindConversationResponse" /> class.
+    /// </summary>
+    internal FindConversationResponse()
+    {
+        Results = new FindConversationResults();
+    }
 
     /// <summary>
     ///     Read Conversations from XML.

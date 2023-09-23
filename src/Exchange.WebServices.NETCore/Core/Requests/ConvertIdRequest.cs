@@ -31,6 +31,18 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class ConvertIdRequest : MultiResponseServiceRequest<ConvertIdResponse>
 {
     /// <summary>
+    ///     Gets or sets the destination format.
+    /// </summary>
+    /// <value>The destination format.</value>
+    public IdFormat DestinationFormat { get; set; } = IdFormat.EwsId;
+
+    /// <summary>
+    ///     Gets the ids.
+    /// </summary>
+    /// <value>The ids.</value>
+    public List<AlternateIdBase> Ids { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ConvertIdRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -122,16 +134,4 @@ internal sealed class ConvertIdRequest : MultiResponseServiceRequest<ConvertIdRe
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets or sets the destination format.
-    /// </summary>
-    /// <value>The destination format.</value>
-    public IdFormat DestinationFormat { get; set; } = IdFormat.EwsId;
-
-    /// <summary>
-    ///     Gets the ids.
-    /// </summary>
-    /// <value>The ids.</value>
-    public List<AlternateIdBase> Ids { get; } = new();
 }

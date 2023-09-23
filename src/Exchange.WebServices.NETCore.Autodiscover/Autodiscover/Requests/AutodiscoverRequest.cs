@@ -139,10 +139,12 @@ internal abstract class AutodiscoverRequest
                 var ewsXmlReader = new EwsXmlReader(memoryStream);
 
                 // WCF may not generate an XML declaration.
-                ewsXmlReader.Read();
+                await ewsXmlReader.ReadAsync().ConfigureAwait(false);
+
                 if (ewsXmlReader.NodeType == XmlNodeType.XmlDeclaration)
                 {
-                    ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+                    await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName)
+                        .ConfigureAwait(false);
                 }
                 else if (ewsXmlReader.NodeType != XmlNodeType.Element ||
                          ewsXmlReader.LocalName != XmlElementNames.SOAPEnvelopeElementName ||
@@ -155,7 +157,8 @@ internal abstract class AutodiscoverRequest
 
                 var response = ReadSoapBody(ewsXmlReader);
 
-                ewsXmlReader.ReadEndElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+                await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName)
+                    .ConfigureAwait(false);
 
                 if (response.ErrorCode == AutodiscoverErrorCode.NoError)
                 {
@@ -169,7 +172,7 @@ internal abstract class AutodiscoverRequest
         {
             if (ex.IsProtocolError && ex.Response != null)
             {
-                var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(ex);
+                var httpWebResponse = EwsHttpWebRequestFactory.CreateExceptionResponse(ex);
 
                 if (IsRedirectionResponse(httpWebResponse))
                 {
@@ -217,7 +220,7 @@ internal abstract class AutodiscoverRequest
             return;
         }
 
-        var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
+        var httpWebResponse = EwsHttpWebRequestFactory.CreateExceptionResponse(webException);
 
         if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
         {

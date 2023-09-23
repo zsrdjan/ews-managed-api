@@ -36,6 +36,17 @@ public sealed class NameResolution
     private readonly NameResolutionCollection _owner;
 
     /// <summary>
+    ///     Gets the mailbox of the suggested resolved name.
+    /// </summary>
+    public EmailAddress Mailbox { get; } = new();
+
+    /// <summary>
+    ///     Gets the contact information of the suggested resolved name. This property is only available when
+    ///     ResolveName is called with returnContactDetails = true.
+    /// </summary>
+    public Contact Contact { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="NameResolution" /> class.
     /// </summary>
     /// <param name="owner">The owner.</param>
@@ -72,15 +83,4 @@ public sealed class NameResolution
             reader.EnsureCurrentNodeIsEndElement(XmlNamespace.Types, XmlElementNames.Resolution);
         }
     }
-
-    /// <summary>
-    ///     Gets the mailbox of the suggested resolved name.
-    /// </summary>
-    public EmailAddress Mailbox { get; } = new();
-
-    /// <summary>
-    ///     Gets the contact information of the suggested resolved name. This property is only available when
-    ///     ResolveName is called with returnContactDetails = true.
-    /// </summary>
-    public Contact Contact { get; private set; }
 }

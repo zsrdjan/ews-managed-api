@@ -38,6 +38,7 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// </summary>
     private readonly HttpResponseMessage _response;
 
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebResponse" /> class.
     /// </summary>
@@ -47,8 +48,14 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
         _response = response;
     }
 
+    /// <summary>
+    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
+    void IDisposable.Dispose()
+    {
+        _response.Dispose();
+    }
 
-    #region IEwsHttpWebResponse Members
 
     /// <summary>
     ///     Closes the response stream.
@@ -61,12 +68,13 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// <summary>
     ///     Gets the stream that is used to read the body of the response from the server.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     ///     A <see cref="T:System.IO.Stream" /> containing the body of the response.
     /// </returns>
-    Task<Stream> IEwsHttpWebResponse.GetResponseStream()
+    Task<Stream> IEwsHttpWebResponse.GetResponseStream(CancellationToken cancellationToken)
     {
-        return _response.Content.ReadAsStreamAsync();
+        return _response.Content.ReadAsStreamAsync(cancellationToken);
     }
 
     /// <summary>
@@ -115,19 +123,4 @@ internal class EwsHttpWebResponse : IEwsHttpWebResponse
     /// <value></value>
     /// <returns>System.Version that contains the HTTP protocol version of the response.</returns>
     Version IEwsHttpWebResponse.ProtocolVersion => _response.Version;
-
-    #endregion
-
-
-    #region IDisposable Members
-
-    /// <summary>
-    ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    void IDisposable.Dispose()
-    {
-        _response.Dispose();
-    }
-
-    #endregion
 }

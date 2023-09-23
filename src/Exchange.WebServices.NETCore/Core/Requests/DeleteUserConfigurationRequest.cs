@@ -31,6 +31,27 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets or sets the name.
+    /// </summary>
+    /// <value>The name.</value>
+    internal string Name { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the parent folder Id.
+    /// </summary>
+    /// <value>The parent folder Id.</value>
+    internal FolderId ParentFolderId { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DeleteUserConfigurationRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal DeleteUserConfigurationRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
@@ -106,25 +127,4 @@ internal class DeleteUserConfigurationRequest : MultiResponseServiceRequest<Serv
         // Write UserConfigurationName element
         UserConfiguration.WriteUserConfigurationNameToXml(writer, XmlNamespace.Messages, Name, ParentFolderId);
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="DeleteUserConfigurationRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal DeleteUserConfigurationRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the name.
-    /// </summary>
-    /// <value>The name.</value>
-    internal string Name { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the parent folder Id.
-    /// </summary>
-    /// <value>The parent folder Id.</value>
-    internal FolderId ParentFolderId { get; set; }
 }

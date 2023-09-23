@@ -36,16 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class FindConversationResults
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="FindConversationResults" /> class.
-    /// </summary>
-    internal FindConversationResults()
-    {
-        Conversations = new Collection<Conversation>();
-        HighlightTerms = new Collection<HighlightTerm>();
-        TotalCount = null;
-    }
-
-    /// <summary>
     ///     Gets a collection containing the conversations that were found by the search operation.
     /// </summary>
     public Collection<Conversation> Conversations { get; internal set; }
@@ -64,4 +54,14 @@ public sealed class FindConversationResults
     ///     Gets the indexed offset of the first conversation by the search operation.
     /// </summary>
     public int? IndexedOffset { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="FindConversationResults" /> class.
+    /// </summary>
+    internal FindConversationResults()
+    {
+        Conversations = new Collection<Conversation>();
+        HighlightTerms = new Collection<HighlightTerm>();
+        TotalCount = null;
+    }
 }

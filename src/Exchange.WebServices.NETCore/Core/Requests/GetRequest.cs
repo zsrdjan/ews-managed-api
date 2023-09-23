@@ -35,6 +35,12 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     where TResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets or sets the property set.
+    /// </summary>
+    /// <value>The property set.</value>
+    public PropertySet PropertySet { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetRequest&lt;TServiceObject, TResponse&gt;" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -68,10 +74,4 @@ internal abstract class GetRequest<TServiceObject, TResponse> : MultiResponseSer
     {
         PropertySet.WriteToXml(writer, GetServiceObjectType());
     }
-
-    /// <summary>
-    ///     Gets or sets the property set.
-    /// </summary>
-    /// <value>The property set.</value>
-    public PropertySet PropertySet { get; set; }
 }

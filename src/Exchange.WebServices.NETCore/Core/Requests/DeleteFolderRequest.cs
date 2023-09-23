@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class DeleteFolderRequest : DeleteRequest<ServiceResponse>
 {
     /// <summary>
+    ///     Gets the folder ids.
+    /// </summary>
+    /// <value>The folder ids.</value>
+    internal FolderIdWrapperList FolderIds { get; } = new();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteFolderRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -114,10 +120,4 @@ internal sealed class DeleteFolderRequest : DeleteRequest<ServiceResponse>
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Gets the folder ids.
-    /// </summary>
-    /// <value>The folder ids.</value>
-    internal FolderIdWrapperList FolderIds { get; } = new();
 }

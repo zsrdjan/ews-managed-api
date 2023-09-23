@@ -31,6 +31,28 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunkResponse>
 {
     /// <summary>
+    ///     Gets the item ids.
+    /// </summary>
+    /// <value>The item ids.</value>
+    internal ItemIdWrapperList ItemIds { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the isJunk flag.
+    ///     If true, add sender to junk email rule
+    ///     If false,remove sender to junk email rule
+    /// </summary>
+    /// <value>The IsJunk flag.</value>
+    internal bool IsJunk { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the MoveItem flag.
+    ///     If true, item is moved to junk folder if IsJunk is true. Item is moved to inbox if IsJunk is false.
+    ///     If false, item is not moved.
+    /// </summary>
+    /// <value>The MoveItem flag.</value>
+    internal bool MoveItem { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MarkAsJunkRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -123,26 +145,4 @@ internal sealed class MarkAsJunkRequest : MultiResponseServiceRequest<MarkAsJunk
     {
         return ExchangeVersion.Exchange2013;
     }
-
-    /// <summary>
-    ///     Gets the item ids.
-    /// </summary>
-    /// <value>The item ids.</value>
-    internal ItemIdWrapperList ItemIds { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the isJunk flag.
-    ///     If true, add sender to junk email rule
-    ///     If false,remove sender to junk email rule
-    /// </summary>
-    /// <value>The IsJunk flag.</value>
-    internal bool IsJunk { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the MoveItem flag.
-    ///     If true, item is moved to junk folder if IsJunk is true. Item is moved to inbox if IsJunk is false.
-    ///     If false, item is not moved.
-    /// </summary>
-    /// <value>The MoveItem flag.</value>
-    internal bool MoveItem { get; set; }
 }

@@ -30,39 +30,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal sealed class TimeChange : ComplexProperty
 {
-    private string _timeZoneName;
-    private TimeSpan? _offset;
-    private Time? _time;
     private DateTime? _absoluteDate;
+    private TimeSpan? _offset;
     private TimeChangeRecurrence? _recurrence;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
-    /// </summary>
-    public TimeChange()
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
-    /// </summary>
-    /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
-    public TimeChange(TimeSpan offset)
-        : this()
-    {
-        _offset = offset;
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
-    /// </summary>
-    /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
-    /// <param name="time">The time at which the change occurs.</param>
-    public TimeChange(TimeSpan offset, Time time)
-        : this(offset)
-    {
-        _time = time;
-    }
+    private Time? _time;
+    private string _timeZoneName;
 
     /// <summary>
     ///     Gets or sets the name of the associated time zone.
@@ -127,6 +99,34 @@ internal sealed class TimeChange : ComplexProperty
                 _absoluteDate = null;
             }
         }
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
+    /// </summary>
+    public TimeChange()
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
+    /// </summary>
+    /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
+    public TimeChange(TimeSpan offset)
+        : this()
+    {
+        _offset = offset;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="TimeChange" /> class.
+    /// </summary>
+    /// <param name="offset">The offset since the beginning of the year when the change occurs.</param>
+    /// <param name="time">The time at which the change occurs.</param>
+    public TimeChange(TimeSpan offset, Time time)
+        : this(offset)
+    {
+        _time = time;
     }
 
     /// <summary>

@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class SetHoldOnMailboxesResponse : ServiceResponse
 {
     /// <summary>
+    ///     Mailbox hold result
+    /// </summary>
+    public MailboxHoldResult HoldResult { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SetHoldOnMailboxesResponse" /> class.
     /// </summary>
     internal SetHoldOnMailboxesResponse()
@@ -50,9 +55,4 @@ public sealed class SetHoldOnMailboxesResponse : ServiceResponse
 
         HoldResult = MailboxHoldResult.LoadFromXml(reader);
     }
-
-    /// <summary>
-    ///     Mailbox hold result
-    /// </summary>
-    public MailboxHoldResult HoldResult { get; private set; }
 }

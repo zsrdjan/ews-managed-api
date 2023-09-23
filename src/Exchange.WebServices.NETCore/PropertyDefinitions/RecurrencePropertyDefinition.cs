@@ -33,6 +33,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class RecurrencePropertyDefinition : PropertyDefinition
 {
     /// <summary>
+    ///     Gets the property type.
+    /// </summary>
+    public override Type Type => typeof(Recurrence);
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="RecurrencePropertyDefinition" /> class.
     /// </summary>
     /// <param name="xmlElementName">Name of the XML element.</param>
@@ -133,9 +138,4 @@ internal sealed class RecurrencePropertyDefinition : PropertyDefinition
 
         value?.WriteToXml(writer, XmlElementNames.Recurrence);
     }
-
-    /// <summary>
-    ///     Gets the property type.
-    /// </summary>
-    public override Type Type => typeof(Recurrence);
 }

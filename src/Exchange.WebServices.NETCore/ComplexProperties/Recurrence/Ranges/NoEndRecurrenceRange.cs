@@ -31,6 +31,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class NoEndRecurrenceRange : RecurrenceRange
 {
     /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal override string XmlElementName => XmlElementNames.NoEndRecurrence;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="NoEndRecurrenceRange" /> class.
     /// </summary>
     public NoEndRecurrenceRange()
@@ -45,12 +51,6 @@ internal sealed class NoEndRecurrenceRange : RecurrenceRange
         : base(startDate)
     {
     }
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <value>The name of the XML element.</value>
-    internal override string XmlElementName => XmlElementNames.NoEndRecurrence;
 
     /// <summary>
     ///     Setups the recurrence.

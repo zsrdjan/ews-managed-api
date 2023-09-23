@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class MarkAsJunkResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the moved item id.
+    /// </summary>
+    public ItemId MovedItemId { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetItemResponse" /> class.
     /// </summary>
     internal MarkAsJunkResponse()
@@ -58,9 +63,4 @@ public class MarkAsJunkResponse : ServiceResponse
             reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.MovedItemId);
         }
     }
-
-    /// <summary>
-    ///     Gets the moved item id.
-    /// </summary>
-    public ItemId MovedItemId { get; private set; }
 }

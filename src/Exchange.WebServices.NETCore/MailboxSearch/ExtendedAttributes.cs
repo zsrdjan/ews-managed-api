@@ -42,6 +42,18 @@ public sealed class ExtendedAttributes : List<ExtendedAttribute>
 public sealed class ExtendedAttribute
 {
     /// <summary>
+    ///     Gets or sets the name.
+    /// </summary>
+    /// <value>The name.</value>
+    public string Name { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the value.
+    /// </summary>
+    /// <value>The value.</value>
+    public string Value { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ExtendedAttribute" /> class.
     /// </summary>
     public ExtendedAttribute()
@@ -58,16 +70,4 @@ public sealed class ExtendedAttribute
         Name = name;
         Value = value;
     }
-
-    /// <summary>
-    ///     Gets or sets the name.
-    /// </summary>
-    /// <value>The name.</value>
-    public string Name { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the value.
-    /// </summary>
-    /// <value>The value.</value>
-    public string Value { get; set; }
 }

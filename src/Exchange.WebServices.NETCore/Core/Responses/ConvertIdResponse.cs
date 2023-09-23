@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class ConvertIdResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the converted Id.
+    /// </summary>
+    public AlternateIdBase ConvertedId { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ConvertIdResponse" /> class.
     /// </summary>
     internal ConvertIdResponse()
@@ -89,9 +94,4 @@ public sealed class ConvertIdResponse : ServiceResponse
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.AlternateId);
     }
-
-    /// <summary>
-    ///     Gets the converted Id.
-    /// </summary>
-    public AlternateIdBase ConvertedId { get; private set; }
 }

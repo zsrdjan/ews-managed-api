@@ -31,6 +31,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class UninstallAppRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Extension ID
+    /// </summary>
+    private string ID { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="UninstallAppRequest" /> class.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -99,9 +104,4 @@ internal sealed class UninstallAppRequest : SimpleServiceRequestBase
         serviceResponse.ThrowIfNecessary();
         return serviceResponse;
     }
-
-    /// <summary>
-    ///     Extension ID
-    /// </summary>
-    private string ID { get; set; }
 }

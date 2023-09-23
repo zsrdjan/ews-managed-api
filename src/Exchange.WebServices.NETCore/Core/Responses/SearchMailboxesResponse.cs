@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class SearchMailboxesResponse : ServiceResponse
 {
     /// <summary>
+    ///     Search mailboxes result
+    /// </summary>
+    public SearchMailboxesResult SearchResult { get; internal set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="SearchMailboxesResponse" /> class.
     /// </summary>
     internal SearchMailboxesResponse()
@@ -52,9 +57,4 @@ public sealed class SearchMailboxesResponse : ServiceResponse
 
         SearchResult = SearchMailboxesResult.LoadFromXml(reader);
     }
-
-    /// <summary>
-    ///     Search mailboxes result
-    /// </summary>
-    public SearchMailboxesResult SearchResult { get; internal set; }
 }

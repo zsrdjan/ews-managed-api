@@ -43,33 +43,24 @@ public class TimeZoneDefinition : ComplexProperty
     private readonly List<TimeZoneTransition> _transitions = new();
 
     /// <summary>
-    ///     Compares the transitions.
+    ///     Gets or sets the name of this time zone definition.
     /// </summary>
-    /// <param name="x">The first transition.</param>
-    /// <param name="y">The second transition.</param>
-    /// <returns>A negative number if x is less than y, 0 if x and y are equal, a positive number if x is greater than y.</returns>
-    private int CompareTransitions(TimeZoneTransition x, TimeZoneTransition y)
-    {
-        if (x == y)
-        {
-            return 0;
-        }
+    internal string Name { get; set; }
 
-        if (x.GetType() == typeof(TimeZoneTransition))
-        {
-            return -1;
-        }
+    /// <summary>
+    ///     Gets or sets the Id of this time zone definition.
+    /// </summary>
+    public string Id { get; set; }
 
-        if (y.GetType() == typeof(TimeZoneTransition))
-        {
-            return 1;
-        }
+    /// <summary>
+    ///     Gets the periods associated with this time zone definition, indexed by Id.
+    /// </summary>
+    internal Dictionary<string, TimeZonePeriod> Periods { get; } = new();
 
-        var firstTransition = (AbsoluteDateTransition)x;
-        var secondTransition = (AbsoluteDateTransition)y;
-
-        return DateTime.Compare(firstTransition.DateTime, secondTransition.DateTime);
-    }
+    /// <summary>
+    ///     Gets the transition groups associated with this time zone definition, indexed by Id.
+    /// </summary>
+    internal Dictionary<string, TimeZoneTransitionGroup> TransitionGroups { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TimeZoneDefinition" /> class.
@@ -186,6 +177,35 @@ public class TimeZoneDefinition : ComplexProperty
                 _transitions.Add(transitionToDummyGroup);
             }
         }
+    }
+
+    /// <summary>
+    ///     Compares the transitions.
+    /// </summary>
+    /// <param name="x">The first transition.</param>
+    /// <param name="y">The second transition.</param>
+    /// <returns>A negative number if x is less than y, 0 if x and y are equal, a positive number if x is greater than y.</returns>
+    private int CompareTransitions(TimeZoneTransition x, TimeZoneTransition y)
+    {
+        if (x == y)
+        {
+            return 0;
+        }
+
+        if (x.GetType() == typeof(TimeZoneTransition))
+        {
+            return -1;
+        }
+
+        if (y.GetType() == typeof(TimeZoneTransition))
+        {
+            return 1;
+        }
+
+        var firstTransition = (AbsoluteDateTransition)x;
+        var secondTransition = (AbsoluteDateTransition)y;
+
+        return DateTime.Compare(firstTransition.DateTime, secondTransition.DateTime);
     }
 
     /// <summary>
@@ -523,24 +543,4 @@ public class TimeZoneDefinition : ComplexProperty
 
         return result;
     }
-
-    /// <summary>
-    ///     Gets or sets the name of this time zone definition.
-    /// </summary>
-    internal string Name { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the Id of this time zone definition.
-    /// </summary>
-    public string Id { get; set; }
-
-    /// <summary>
-    ///     Gets the periods associated with this time zone definition, indexed by Id.
-    /// </summary>
-    internal Dictionary<string, TimeZonePeriod> Periods { get; } = new();
-
-    /// <summary>
-    ///     Gets the transition groups associated with this time zone definition, indexed by Id.
-    /// </summary>
-    internal Dictionary<string, TimeZoneTransitionGroup> TransitionGroups { get; } = new();
 }

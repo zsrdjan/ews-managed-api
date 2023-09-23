@@ -38,24 +38,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey, EmailAddressEntry>
 {
     /// <summary>
-    ///     Gets the field URI.
-    /// </summary>
-    /// <returns>Field URI.</returns>
-    internal override string GetFieldUri()
-    {
-        return "contacts:EmailAddress";
-    }
-
-    /// <summary>
-    ///     Creates instance of dictionary entry.
-    /// </summary>
-    /// <returns>New instance.</returns>
-    internal override EmailAddressEntry CreateEntryInstance()
-    {
-        return new EmailAddressEntry();
-    }
-
-    /// <summary>
     ///     Gets or sets the e-mail address at the specified key.
     /// </summary>
     /// <param name="key">The key of the e-mail address to get or set.</param>
@@ -84,6 +66,24 @@ public sealed class EmailAddressDictionary : DictionaryProperty<EmailAddressKey,
                 }
             }
         }
+    }
+
+    /// <summary>
+    ///     Gets the field URI.
+    /// </summary>
+    /// <returns>Field URI.</returns>
+    internal override string GetFieldUri()
+    {
+        return "contacts:EmailAddress";
+    }
+
+    /// <summary>
+    ///     Creates instance of dictionary entry.
+    /// </summary>
+    /// <returns>New instance.</returns>
+    internal override EmailAddressEntry CreateEntryInstance()
+    {
+        return new EmailAddressEntry();
     }
 
     /// <summary>

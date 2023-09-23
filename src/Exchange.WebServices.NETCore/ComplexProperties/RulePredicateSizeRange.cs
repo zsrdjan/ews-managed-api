@@ -34,21 +34,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class RulePredicateSizeRange : ComplexProperty
 {
     /// <summary>
-    ///     Minimum Size.
-    /// </summary>
-    private int? _minimumSize;
-
-    /// <summary>
     ///     Mamixmum Size.
     /// </summary>
     private int? _maximumSize;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RulePredicateSizeRange" /> class.
+    ///     Minimum Size.
     /// </summary>
-    internal RulePredicateSizeRange()
-    {
-    }
+    private int? _minimumSize;
 
     /// <summary>
     ///     Gets or sets the minimum size, in kilobytes. If MinimumSize is set to
@@ -68,6 +61,13 @@ public sealed class RulePredicateSizeRange : ComplexProperty
     {
         get => _maximumSize;
         set => SetFieldValue(ref _maximumSize, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RulePredicateSizeRange" /> class.
+    /// </summary>
+    internal RulePredicateSizeRange()
+    {
     }
 
     /// <summary>

@@ -39,6 +39,11 @@ public class AlternatePublicFolderItemId : AlternatePublicFolderId
     internal new const string SchemaTypeName = "AlternatePublicFolderItemIdType";
 
     /// <summary>
+    ///     The Id of the public folder item.
+    /// </summary>
+    public string ItemId { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="AlternatePublicFolderItemId" /> class.
     /// </summary>
     public AlternatePublicFolderItemId()
@@ -56,11 +61,6 @@ public class AlternatePublicFolderItemId : AlternatePublicFolderId
     {
         ItemId = itemId;
     }
-
-    /// <summary>
-    ///     The Id of the public folder item.
-    /// </summary>
-    public string ItemId { get; set; }
 
     /// <summary>
     ///     Gets the name of the XML element.

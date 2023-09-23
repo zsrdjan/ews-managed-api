@@ -36,8 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal abstract class ServiceRequestBase
 {
-    #region Private Constants
-
     /// <summary>
     ///     The two constants below are used to set the AnchorMailbox and ExplicitLogonUser values
     ///     in the request header.
@@ -51,16 +49,19 @@ internal abstract class ServiceRequestBase
 
     private const string ExplicitLogonUserHeaderName = "X-OWA-ExplicitLogonUser";
 
+    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
+    private const string XmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+    private const string ClientStatisticsRequestHeader = "X-ClientStatistics";
+
     private static readonly string[] RequestIdResponseHeaders =
     {
         "RequestId", "request-id",
     };
 
-    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
-    private const string XmlSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
-    private const string ClientStatisticsRequestHeader = "X-ClientStatistics";
-
-    #endregion
+    /// <summary>
+    ///     Maintains the collection of client side statistics for requests already completed
+    /// </summary>
+    private static readonly List<string> ClientStatisticsCache = new();
 
 
     /// <summary>
@@ -71,12 +72,23 @@ internal abstract class ServiceRequestBase
     ///     will route the request directly to the mailbox server against which the request
     ///     is to be executed.
     /// </remarks>
-    internal string AnchorMailbox { get; set; }
+    internal string? AnchorMailbox { get; set; }
 
     /// <summary>
-    ///     Maintains the collection of client side statistics for requests already completed
+    ///     Gets the service.
     /// </summary>
-    private static readonly List<string> ClientStatisticsCache = new();
+    /// <value>The service.</value>
+    internal ExchangeService Service { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ServiceRequestBase" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ServiceRequestBase(ExchangeService service)
+    {
+        Service = service ?? throw new ArgumentNullException(nameof(service));
+        ThrowIfNotSupportedByRequestedServerVersion();
+    }
 
     /// <summary>
     ///     Gets the response stream (may be wrapped with GZip/Deflate stream to decompress content)
@@ -122,6 +134,71 @@ internal abstract class ServiceRequestBase
         }
 
         return responseStream;
+    }
+
+
+    /// <summary>
+    ///     Validate request.
+    /// </summary>
+    internal virtual void Validate()
+    {
+        Service.Validate();
+    }
+
+    /// <summary>
+    ///     Writes XML body.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal void WriteBodyToXml(EwsServiceXmlWriter writer)
+    {
+        writer.WriteStartElement(XmlNamespace.Messages, GetXmlElementName());
+
+        WriteAttributesToXml(writer);
+        WriteElementsToXml(writer);
+
+        writer.WriteEndElement(); // m:this.GetXmlElementName()
+    }
+
+    /// <summary>
+    ///     Writes XML attributes.
+    /// </summary>
+    /// <remarks>
+    ///     Subclass will override if it has XML attributes.
+    /// </remarks>
+    /// <param name="writer">The writer.</param>
+    internal virtual void WriteAttributesToXml(EwsServiceXmlWriter writer)
+    {
+    }
+
+    /// <summary>
+    ///     Allows the subclasses to add their own header information
+    /// </summary>
+    /// <param name="webHeaderCollection">The HTTP request headers</param>
+    internal virtual void AddHeaders(HttpRequestHeaders webHeaderCollection)
+    {
+        if (!string.IsNullOrEmpty(AnchorMailbox))
+        {
+            webHeaderCollection.TryAddWithoutValidation(AnchorMailboxHeaderName, AnchorMailbox);
+            webHeaderCollection.TryAddWithoutValidation(ExplicitLogonUserHeaderName, AnchorMailbox);
+        }
+    }
+
+    /// <summary>
+    ///     Throw exception if request is not supported in requested server version.
+    /// </summary>
+    /// <exception cref="ServiceVersionException">Raised if request requires a later version of Exchange.</exception>
+    internal void ThrowIfNotSupportedByRequestedServerVersion()
+    {
+        if (Service.RequestedServerVersion < GetMinimumRequiredServerVersion())
+        {
+            throw new ServiceVersionException(
+                string.Format(
+                    Strings.RequestIncompatibleWithRequestVersion,
+                    GetXmlElementName(),
+                    GetMinimumRequiredServerVersion()
+                )
+            );
+        }
     }
 
 
@@ -180,87 +257,6 @@ internal abstract class ServiceRequestBase
     internal virtual bool EmitTimeZoneHeader => false;
 
     #endregion
-
-
-    /// <summary>
-    ///     Validate request.
-    /// </summary>
-    internal virtual void Validate()
-    {
-        Service.Validate();
-    }
-
-    /// <summary>
-    ///     Writes XML body.
-    /// </summary>
-    /// <param name="writer">The writer.</param>
-    internal void WriteBodyToXml(EwsServiceXmlWriter writer)
-    {
-        writer.WriteStartElement(XmlNamespace.Messages, GetXmlElementName());
-
-        WriteAttributesToXml(writer);
-        WriteElementsToXml(writer);
-
-        writer.WriteEndElement(); // m:this.GetXmlElementName()
-    }
-
-    /// <summary>
-    ///     Writes XML attributes.
-    /// </summary>
-    /// <remarks>
-    ///     Subclass will override if it has XML attributes.
-    /// </remarks>
-    /// <param name="writer">The writer.</param>
-    internal virtual void WriteAttributesToXml(EwsServiceXmlWriter writer)
-    {
-    }
-
-    /// <summary>
-    ///     Allows the subclasses to add their own header information
-    /// </summary>
-    /// <param name="webHeaderCollection">The HTTP request headers</param>
-    internal virtual void AddHeaders(HttpRequestHeaders webHeaderCollection)
-    {
-        if (!string.IsNullOrEmpty(AnchorMailbox))
-        {
-            webHeaderCollection.TryAddWithoutValidation(AnchorMailboxHeaderName, AnchorMailbox);
-            webHeaderCollection.TryAddWithoutValidation(ExplicitLogonUserHeaderName, AnchorMailbox);
-        }
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ServiceRequestBase" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal ServiceRequestBase(ExchangeService service)
-    {
-        Service = service ?? throw new ArgumentNullException(nameof(service));
-        ThrowIfNotSupportedByRequestedServerVersion();
-    }
-
-    /// <summary>
-    ///     Gets the service.
-    /// </summary>
-    /// <value>The service.</value>
-    internal ExchangeService Service { get; }
-
-    /// <summary>
-    ///     Throw exception if request is not supported in requested server version.
-    /// </summary>
-    /// <exception cref="ServiceVersionException">Raised if request requires a later version of Exchange.</exception>
-    internal void ThrowIfNotSupportedByRequestedServerVersion()
-    {
-        if (Service.RequestedServerVersion < GetMinimumRequiredServerVersion())
-        {
-            throw new ServiceVersionException(
-                string.Format(
-                    Strings.RequestIncompatibleWithRequestVersion,
-                    GetXmlElementName(),
-                    GetMinimumRequiredServerVersion()
-                )
-            );
-        }
-    }
 
 
     #region HttpWebRequest-based implementation
@@ -385,7 +381,7 @@ internal abstract class ServiceRequestBase
     ///     Emits the request.
     /// </summary>
     /// <param name="request">The request.</param>
-    private void EmitRequest(IEwsHttpWebRequest request)
+    private void EmitRequest(EwsHttpWebRequest request)
     {
         using var memoryStream = new MemoryStream();
         using (var writer = new EwsServiceXmlWriter(Service, memoryStream))
@@ -395,7 +391,7 @@ internal abstract class ServiceRequestBase
 
         memoryStream.Position = 0;
 
-        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 4096, true);
+        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 8192, true);
         request.Content = reader.ReadToEnd();
     }
 
@@ -405,7 +401,7 @@ internal abstract class ServiceRequestBase
     /// <param name="request">The request.</param>
     /// <param name="needSignature"></param>
     /// <param name="needTrace"></param>
-    private void TraceAndEmitRequest(IEwsHttpWebRequest request, bool needSignature, bool needTrace)
+    private void TraceAndEmitRequest(EwsHttpWebRequest request, bool needSignature, bool needTrace)
     {
         using var memoryStream = new MemoryStream();
         using (var writer = new EwsServiceXmlWriter(Service, memoryStream))
@@ -425,7 +421,8 @@ internal abstract class ServiceRequestBase
         }
 
         memoryStream.Position = 0;
-        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 4096, true);
+
+        using var reader = new StreamReader(memoryStream, Encoding.UTF8, false, 8192, true);
         request.Content = reader.ReadToEnd();
     }
 
@@ -439,20 +436,14 @@ internal abstract class ServiceRequestBase
     {
         ReadPreamble(ewsXmlReader);
         ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+
         ReadSoapHeader(ewsXmlReader);
         ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
 
         ewsXmlReader.ReadStartElement(XmlNamespace.Messages, GetResponseXmlElementName());
 
-        object serviceResponse;
-        if (responseHeaders != null)
-        {
-            serviceResponse = ParseResponse(ewsXmlReader, responseHeaders);
-        }
-        else
-        {
-            serviceResponse = ParseResponse(ewsXmlReader);
-        }
+        var serviceResponse = responseHeaders != null ? ParseResponse(ewsXmlReader, responseHeaders)
+            : ParseResponse(ewsXmlReader);
 
         ewsXmlReader.ReadEndElementIfNecessary(XmlNamespace.Messages, GetResponseXmlElementName());
 
@@ -466,36 +457,34 @@ internal abstract class ServiceRequestBase
     /// </summary>
     /// <param name="ewsXmlReader">The XML reader.</param>
     /// <param name="responseHeaders">HTTP response headers</param>
-    /// <param name="token"></param>
     /// <returns>Service response.</returns>
     protected async Task<object> ReadResponseAsync(
         EwsServiceXmlReader ewsXmlReader,
-        HttpResponseHeaders? responseHeaders,
-        CancellationToken token
+        HttpResponseHeaders? responseHeaders
     )
     {
-        object serviceResponse;
+        await ReadPreambleAsync(ewsXmlReader).ConfigureAwait(false);
 
-        await ReadPreambleAsync(ewsXmlReader, token);
-        await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName, token);
-        await ReadSoapHeaderAsync(ewsXmlReader, token);
-        await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName, token);
+        await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName)
+            .ConfigureAwait(false);
 
-        await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Messages, GetResponseXmlElementName(), token);
+        await ReadSoapHeaderAsync(ewsXmlReader).ConfigureAwait(false);
 
-        if (responseHeaders != null)
-        {
-            serviceResponse = ParseResponse(ewsXmlReader, responseHeaders);
-        }
-        else
-        {
-            serviceResponse = ParseResponse(ewsXmlReader);
-        }
+        await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName)
+            .ConfigureAwait(false);
+
+        await ewsXmlReader.ReadStartElementAsync(XmlNamespace.Messages, GetResponseXmlElementName())
+            .ConfigureAwait(false);
+
+        var serviceResponse = responseHeaders != null ? ParseResponse(ewsXmlReader, responseHeaders)
+            : ParseResponse(ewsXmlReader);
 
         ewsXmlReader.ReadEndElementIfNecessary(XmlNamespace.Messages, GetResponseXmlElementName());
 
-        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName, token);
-        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName, token);
+        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName)
+            .ConfigureAwait(false);
+        await ewsXmlReader.ReadEndElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName)
+            .ConfigureAwait(false);
         return serviceResponse;
     }
 
@@ -512,13 +501,9 @@ internal abstract class ServiceRequestBase
     ///     Reads any preamble data not part of the core response.
     /// </summary>
     /// <param name="ewsXmlReader">The EwsServiceXmlReader.</param>
-    /// <param name="token"></param>
-    protected virtual System.Threading.Tasks.Task ReadPreambleAsync(
-        EwsServiceXmlReader ewsXmlReader,
-        CancellationToken token
-    )
+    protected virtual System.Threading.Tasks.Task ReadPreambleAsync(EwsServiceXmlReader ewsXmlReader)
     {
-        return ReadXmlDeclarationAsync(ewsXmlReader, token);
+        return ReadXmlDeclarationAsync(ewsXmlReader);
     }
 
     /// <summary>
@@ -546,13 +531,14 @@ internal abstract class ServiceRequestBase
     ///     Read SOAP header and extract server version
     /// </summary>
     /// <param name="reader">EwsServiceXmlReader</param>
-    /// <param name="token"></param>
-    private async System.Threading.Tasks.Task ReadSoapHeaderAsync(EwsServiceXmlReader reader, CancellationToken token)
+    private async System.Threading.Tasks.Task ReadSoapHeaderAsync(EwsServiceXmlReader reader)
     {
-        await reader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName, token);
+        await reader.ReadStartElementAsync(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName)
+            .ConfigureAwait(false);
+
         do
         {
-            await reader.ReadAsync(token);
+            await reader.ReadAsync().ConfigureAwait(false);
 
             // Is this the ServerVersionInfo?
             if (reader.IsStartElement(XmlNamespace.Types, XmlElementNames.ServerVersionInfo))
@@ -641,96 +627,91 @@ internal abstract class ServiceRequestBase
     /// <summary>
     ///     Validates request parameters, and emits the request to the server.
     /// </summary>
+    /// <param name="headersOnly"></param>
     /// <param name="token"></param>
     /// <returns>The response returned by the server.</returns>
-    protected async Task<Tuple<IEwsHttpWebRequest, IEwsHttpWebResponse>> ValidateAndEmitRequest(CancellationToken token)
+    protected async Task<(EwsHttpWebRequest request, IEwsHttpWebResponse response)> ValidateAndEmitRequest(
+        bool headersOnly,
+        CancellationToken token
+    )
     {
         Validate();
 
         var request = await BuildEwsHttpWebRequest().ConfigureAwait(false);
+        if (Service.SendClientLatencies)
+        {
+            string? clientStatisticsToAdd = null;
+
+            lock (ClientStatisticsCache)
+            {
+                if (ClientStatisticsCache.Count > 0)
+                {
+                    clientStatisticsToAdd = ClientStatisticsCache[0];
+                    ClientStatisticsCache.RemoveAt(0);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(clientStatisticsToAdd))
+            {
+                request.Headers.TryAddWithoutValidation(ClientStatisticsRequestHeader, clientStatisticsToAdd);
+            }
+        }
+
+        var startTime = DateTime.UtcNow;
+        IEwsHttpWebResponse? response = null;
+
         try
+        {
+            response = await GetEwsHttpWebResponse(request, headersOnly, token).ConfigureAwait(false);
+        }
+        finally
         {
             if (Service.SendClientLatencies)
             {
-                string? clientStatisticsToAdd = null;
+                var clientSideLatency = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                var requestId = string.Empty;
+                var soapAction = GetType().Name.Replace("Request", string.Empty, StringComparison.Ordinal);
+
+                if (response?.Headers != null)
+                {
+                    foreach (var requestIdHeader in RequestIdResponseHeaders)
+                    {
+                        if (response.Headers.TryGetValues(requestIdHeader, out var values))
+                        {
+                            requestId = values.First();
+                            break;
+                        }
+                    }
+                }
+
+                var sb = new StringBuilder();
+                sb.Append("MessageId=");
+                sb.Append(requestId);
+                sb.Append(",ResponseTime=");
+                sb.Append(clientSideLatency);
+                sb.Append(",SoapAction=");
+                sb.Append(soapAction);
+                sb.Append(';');
 
                 lock (ClientStatisticsCache)
                 {
-                    if (ClientStatisticsCache.Count > 0)
-                    {
-                        clientStatisticsToAdd = ClientStatisticsCache[0];
-                        ClientStatisticsCache.RemoveAt(0);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(clientStatisticsToAdd))
-                {
-                    request.Headers.TryAddWithoutValidation(ClientStatisticsRequestHeader, clientStatisticsToAdd);
+                    ClientStatisticsCache.Add(sb.ToString());
                 }
             }
-
-            var startTime = DateTime.UtcNow;
-            IEwsHttpWebResponse? response = null;
-
-            try
-            {
-                response = await GetEwsHttpWebResponse(request, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (Service.SendClientLatencies)
-                {
-                    var clientSideLatency = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
-                    var requestId = string.Empty;
-                    var soapAction = GetType().Name.Replace("Request", string.Empty);
-
-                    if (response?.Headers != null)
-                    {
-                        foreach (var requestIdHeader in RequestIdResponseHeaders)
-                        {
-                            if (response.Headers.TryGetValues(requestIdHeader, out var values))
-                            {
-                                requestId = values.First();
-                                break;
-                            }
-                        }
-                    }
-
-                    var sb = new StringBuilder();
-                    sb.Append("MessageId=");
-                    sb.Append(requestId);
-                    sb.Append(",ResponseTime=");
-                    sb.Append(clientSideLatency);
-                    sb.Append(",SoapAction=");
-                    sb.Append(soapAction);
-                    sb.Append(';');
-
-                    lock (ClientStatisticsCache)
-                    {
-                        ClientStatisticsCache.Add(sb.ToString());
-                    }
-                }
-            }
-
-            return Tuple.Create(request, response);
         }
-        catch (Exception)
-        {
-            request.Dispose();
-            throw;
-        }
+
+        return (request, response);
     }
 
     /// <summary>
     ///     Builds the IEwsHttpWebRequest object for current service request with exception handling.
     /// </summary>
     /// <returns>An IEwsHttpWebRequest instance</returns>
-    protected async Task<IEwsHttpWebRequest> BuildEwsHttpWebRequest()
+    protected async Task<EwsHttpWebRequest> BuildEwsHttpWebRequest()
     {
-        IEwsHttpWebRequest? request = null;
         try
         {
-            request = await Service.PrepareHttpWebRequest(GetXmlElementName());
+            var request = await Service.PrepareHttpWebRequest(GetXmlElementName()).ConfigureAwait(false);
 
             Service.TraceHttpRequestHeaders(TraceFlags.EwsRequestHttpHeaders, request);
 
@@ -758,18 +739,14 @@ internal abstract class ServiceRequestBase
         {
             if (ex.IsProtocolError && ex.Response != null)
             {
-                await ProcessEwsHttpClientException(ex);
+                await ProcessEwsHttpClientException(ex).ConfigureAwait(false);
             }
-
-            request?.Dispose();
 
             // Wrap exception if the above code block didn't throw
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, ex.Message), ex);
         }
         catch (IOException e)
         {
-            request?.Dispose();
-
             // Wrap exception.
             throw new ServiceRequestException(string.Format(Strings.ServiceRequestFailed, e.Message), e);
         }
@@ -779,19 +756,24 @@ internal abstract class ServiceRequestBase
     ///     Gets the IEwsHttpWebRequest object from the specified IEwsHttpWebRequest object with exception handling
     /// </summary>
     /// <param name="request">The specified IEwsHttpWebRequest</param>
+    /// <param name="headersOnly"></param>
     /// <param name="token"></param>
     /// <returns>An IEwsHttpWebResponse instance</returns>
-    protected async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(IEwsHttpWebRequest request, CancellationToken token)
+    private async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(
+        EwsHttpWebRequest request,
+        bool headersOnly,
+        CancellationToken token
+    )
     {
         try
         {
-            return await request.GetResponse(token).ConfigureAwait(false);
+            return await request.GetResponse(headersOnly, token).ConfigureAwait(false);
         }
         catch (EwsHttpClientException ex)
         {
             if (ex.IsProtocolError && ex.Response != null)
             {
-                await ProcessEwsHttpClientException(ex);
+                await ProcessEwsHttpClientException(ex).ConfigureAwait(false);
             }
 
             // Wrap exception if the above code block didn't throw
@@ -810,85 +792,87 @@ internal abstract class ServiceRequestBase
     /// <param name="webException">The web exception.</param>
     private async System.Threading.Tasks.Task ProcessEwsHttpClientException(EwsHttpClientException webException)
     {
-        if (webException.Response != null)
+        if (webException.Response == null)
         {
-            using var httpWebResponse = Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
+            return;
+        }
 
-            if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+        using var httpWebResponse = EwsHttpWebRequestFactory.CreateExceptionResponse(webException);
+
+        if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+        {
+            Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, httpWebResponse);
+
+            // If tracing is enabled, we read the entire response into a MemoryStream so that we
+            // can pass it along to the ITraceListener. Then we parse the response from the 
+            // MemoryStream.
+            SoapFaultDetails? soapFaultDetails;
+            if (Service.IsTraceEnabledFor(TraceFlags.EwsResponse))
             {
-                Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, httpWebResponse);
-
-                // If tracing is enabled, we read the entire response into a MemoryStream so that we
-                // can pass it along to the ITraceListener. Then we parse the response from the 
-                // MemoryStream.
-                SoapFaultDetails? soapFaultDetails;
-                if (Service.IsTraceEnabledFor(TraceFlags.EwsResponse))
+                using var memoryStream = new MemoryStream();
+                await using (var serviceResponseStream = await GetResponseStream(httpWebResponse).ConfigureAwait(false))
                 {
-                    using var memoryStream = new MemoryStream();
-                    await using (var serviceResponseStream = await GetResponseStream(httpWebResponse))
-                    {
-                        // Copy response to in-memory stream and reset position to start.
-                        EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
-                        memoryStream.Position = 0;
-                    }
-
-                    TraceResponseXml(httpWebResponse, memoryStream);
-
-                    var reader = new EwsServiceXmlReader(memoryStream, Service);
-                    soapFaultDetails = ReadSoapFault(reader);
-                }
-                else
-                {
-                    await using var stream = await GetResponseStream(httpWebResponse);
-                    var reader = new EwsServiceXmlReader(stream, Service);
-                    soapFaultDetails = ReadSoapFault(reader);
+                    // Copy response to in-memory stream and reset position to start.
+                    await serviceResponseStream.CopyToAsync(memoryStream).ConfigureAwait(false);
+                    memoryStream.Position = 0;
                 }
 
-                if (soapFaultDetails != null)
-                {
-                    switch (soapFaultDetails.ResponseCode)
-                    {
-                        case ServiceError.ErrorInvalidServerVersion:
-                        {
-                            throw new ServiceVersionException(Strings.ServerVersionNotSupported);
-                        }
-                        case ServiceError.ErrorSchemaValidation:
-                        {
-                            // If we're talking to an E12 server (8.00.xxxx.xxx), a schema validation error is the same as a version mismatch error.
-                            // (Which only will happen if we send a request that's not valid for E12).
-                            if (Service.ServerInfo != null &&
-                                Service.ServerInfo.MajorVersion == 8 &&
-                                Service.ServerInfo.MinorVersion == 0)
-                            {
-                                throw new ServiceVersionException(Strings.ServerVersionNotSupported);
-                            }
+                TraceResponseXml(httpWebResponse, memoryStream);
 
-                            break;
-                        }
-                        case ServiceError.ErrorIncorrectSchemaVersion:
-                        {
-                            // This shouldn't happen. It indicates that a request wasn't valid for the version that was specified.
-                            EwsUtilities.Assert(
-                                false,
-                                "ServiceRequestBase.ProcessEwsHttpClientException",
-                                "Exchange server supports requested version but request was invalid for that version"
-                            );
-                            break;
-                        }
-                        case ServiceError.ErrorServerBusy:
-                        {
-                            throw new ServerBusyException(new ServiceResponse(soapFaultDetails));
-                        }
-                    }
-
-                    // General fall-through case: throw a ServiceResponseException
-                    throw new ServiceResponseException(new ServiceResponse(soapFaultDetails));
-                }
+                var reader = new EwsServiceXmlReader(memoryStream, Service);
+                soapFaultDetails = ReadSoapFault(reader);
             }
             else
             {
-                Service.ProcessHttpErrorResponse(httpWebResponse, webException);
+                await using var stream = await GetResponseStream(httpWebResponse).ConfigureAwait(false);
+                var reader = new EwsServiceXmlReader(stream, Service);
+                soapFaultDetails = ReadSoapFault(reader);
             }
+
+            if (soapFaultDetails != null)
+            {
+                switch (soapFaultDetails.ResponseCode)
+                {
+                    case ServiceError.ErrorInvalidServerVersion:
+                    {
+                        throw new ServiceVersionException(Strings.ServerVersionNotSupported);
+                    }
+                    case ServiceError.ErrorSchemaValidation:
+                    {
+                        // If we're talking to an E12 server (8.00.xxxx.xxx), a schema validation error is the same as a version mismatch error.
+                        // (Which only will happen if we send a request that's not valid for E12).
+                        if (Service.ServerInfo != null &&
+                            Service.ServerInfo.MajorVersion == 8 &&
+                            Service.ServerInfo.MinorVersion == 0)
+                        {
+                            throw new ServiceVersionException(Strings.ServerVersionNotSupported);
+                        }
+
+                        break;
+                    }
+                    case ServiceError.ErrorIncorrectSchemaVersion:
+                    {
+                        // This shouldn't happen. It indicates that a request wasn't valid for the version that was specified.
+                        EwsUtilities.Assert(
+                            condition: false,
+                            "ServiceRequestBase.ProcessEwsHttpClientException",
+                            "Exchange server supports requested version but request was invalid for that version"
+                        );
+                        break;
+                    }
+                    case ServiceError.ErrorServerBusy:
+                    {
+                        throw new ServerBusyException(new ServiceResponse(soapFaultDetails));
+                    }
+                }
+
+                // General fall-through case: throw a ServiceResponseException
+                throw new ServiceResponseException(new ServiceResponse(soapFaultDetails));
+            }
+        }
+        else
+        {
+            Service.ProcessHttpErrorResponse(httpWebResponse, webException);
         }
     }
 
@@ -946,15 +930,11 @@ internal abstract class ServiceRequestBase
     ///     Try to read the XML declaration. If it's not there, the server didn't return XML.
     /// </summary>
     /// <param name="reader">The reader.</param>
-    /// <param name="token"></param>
-    private static async System.Threading.Tasks.Task ReadXmlDeclarationAsync(
-        EwsXmlReader reader,
-        CancellationToken token
-    )
+    private static async System.Threading.Tasks.Task ReadXmlDeclarationAsync(EwsXmlReader reader)
     {
         try
         {
-            await reader.ReadAsync(XmlNodeType.XmlDeclaration, token);
+            await reader.ReadAsync(XmlNodeType.XmlDeclaration).ConfigureAwait(false);
         }
         catch (XmlException ex)
         {

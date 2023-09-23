@@ -33,10 +33,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class EducationInsightValue : InsightValue
 {
-    private string _institute;
     private string _degree;
-    private long _startUtcTicks;
     private long _endUtcTicks;
+    private string _institute;
+    private long _startUtcTicks;
 
     /// <summary>
     ///     Gets the Institute

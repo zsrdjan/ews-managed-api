@@ -34,9 +34,55 @@ internal class EwsXmlReader
 {
     private const int ReadWriteBufferSize = 4096;
 
+    private readonly XmlReader _xmlReader;
+
     private XmlNodeType _prevNodeType = XmlNodeType.None;
 
-    private readonly XmlReader _xmlReader;
+    /// <summary>
+    ///     Gets a value indicating whether this instance has attributes.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if this instance has attributes; otherwise, <c>false</c>.
+    /// </value>
+    public bool HasAttributes => _xmlReader.AttributeCount > 0;
+
+    /// <summary>
+    ///     Gets a value indicating whether current element is empty.
+    /// </summary>
+    /// <value>
+    ///     <c>true</c> if current element is empty element; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsEmptyElement => _xmlReader.IsEmptyElement;
+
+    /// <summary>
+    ///     Gets the local name of the current element.
+    /// </summary>
+    /// <value>The local name of the current element.</value>
+    public string LocalName => _xmlReader.LocalName;
+
+    /// <summary>
+    ///     Gets the namespace prefix.
+    /// </summary>
+    /// <value>The namespace prefix.</value>
+    public string NamespacePrefix => _xmlReader.Prefix;
+
+    /// <summary>
+    ///     Gets the namespace URI.
+    /// </summary>
+    /// <value>The namespace URI.</value>
+    public string NamespaceUri => _xmlReader.NamespaceURI;
+
+    /// <summary>
+    ///     Gets the type of the node.
+    /// </summary>
+    /// <value>The type of the node.</value>
+    public XmlNodeType NodeType => _xmlReader.NodeType;
+
+    /// <summary>
+    ///     Gets the type of the prev node.
+    /// </summary>
+    /// <value>The type of the prev node.</value>
+    public XmlNodeType PrevNodeType => _prevNodeType;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsXmlReader" /> class.
@@ -123,12 +169,10 @@ internal class EwsXmlReader
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
     /// <param name="nodeType">Type of the node.</param>
-    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalReadElementAsync(
         XmlNamespace xmlNamespace,
         string localName,
-        XmlNodeType nodeType,
-        CancellationToken token
+        XmlNodeType nodeType
     )
     {
         if (xmlNamespace == XmlNamespace.NotSpecified)
@@ -137,7 +181,7 @@ internal class EwsXmlReader
         }
         else
         {
-            await ReadAsync(nodeType, token);
+            await ReadAsync(nodeType).ConfigureAwait(false);
 
             if (LocalName != localName || NamespaceUri != EwsUtilities.GetNamespaceUri(xmlNamespace))
             {
@@ -186,15 +230,13 @@ internal class EwsXmlReader
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="localName">Name of the local.</param>
     /// <param name="nodeType">Type of the node.</param>
-    /// <param name="token"></param>
     private async System.Threading.Tasks.Task InternalReadElementAsync(
         string namespacePrefix,
         string localName,
-        XmlNodeType nodeType,
-        CancellationToken token
+        XmlNodeType nodeType
     )
     {
-        await ReadAsync(nodeType, token);
+        await ReadAsync(nodeType);
 
         if (LocalName != localName || NamespacePrefix != namespacePrefix)
         {
@@ -231,14 +273,14 @@ internal class EwsXmlReader
     /// <summary>
     ///     Reads the next node.
     /// </summary>
-    public async System.Threading.Tasks.Task ReadAsync(CancellationToken token)
+    public async System.Threading.Tasks.Task ReadAsync()
     {
         _prevNodeType = _xmlReader.NodeType;
 
         // XmlReader.Read returns true if the next node was read successfully; false if there 
         // are no more nodes to read. The caller to EwsXmlReader.Read expects that there's another node to 
         // read. Throw an exception if not true.
-        var nodeRead = await _xmlReader.ReadAsync();
+        var nodeRead = await _xmlReader.ReadAsync().ConfigureAwait(false);
         if (!nodeRead)
         {
             throw new ServiceXmlDeserializationException(Strings.UnexpectedEndOfXmlDocument);
@@ -265,10 +307,9 @@ internal class EwsXmlReader
     ///     Reads the specified node type.
     /// </summary>
     /// <param name="nodeType">Type of the node.</param>
-    /// <param name="token"></param>
-    public async System.Threading.Tasks.Task ReadAsync(XmlNodeType nodeType, CancellationToken token)
+    public async System.Threading.Tasks.Task ReadAsync(XmlNodeType nodeType)
     {
-        await ReadAsync(token);
+        await ReadAsync().ConfigureAwait(false);
 
         if (NodeType != nodeType)
         {
@@ -592,14 +633,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="localName">Name of the local.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadStartElementAsync(
-        string namespacePrefix,
-        string localName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadStartElementAsync(string namespacePrefix, string localName)
     {
-        return InternalReadElementAsync(namespacePrefix, localName, XmlNodeType.Element, token);
+        return InternalReadElementAsync(namespacePrefix, localName, XmlNodeType.Element);
     }
 
     /// <summary>
@@ -607,14 +643,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadStartElementAsync(
-        XmlNamespace xmlNamespace,
-        string localName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadStartElementAsync(XmlNamespace xmlNamespace, string localName)
     {
-        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.Element, token);
+        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.Element);
     }
 
     /// <summary>
@@ -642,14 +673,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="namespacePrefix">The namespace prefix.</param>
     /// <param name="elementName">Name of the element.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadEndElementAsync(
-        string namespacePrefix,
-        string elementName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadEndElementAsync(string namespacePrefix, string elementName)
     {
-        return InternalReadElementAsync(namespacePrefix, elementName, XmlNodeType.EndElement, token);
+        return InternalReadElementAsync(namespacePrefix, elementName, XmlNodeType.EndElement);
     }
 
     /// <summary>
@@ -657,14 +683,9 @@ internal class EwsXmlReader
     /// </summary>
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">Name of the local.</param>
-    /// <param name="token"></param>
-    public System.Threading.Tasks.Task ReadEndElementAsync(
-        XmlNamespace xmlNamespace,
-        string localName,
-        CancellationToken token
-    )
+    public System.Threading.Tasks.Task ReadEndElementAsync(XmlNamespace xmlNamespace, string localName)
     {
-        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.EndElement, token);
+        return InternalReadElementAsync(xmlNamespace, localName, XmlNodeType.EndElement);
     }
 
     /// <summary>
@@ -908,50 +929,4 @@ internal class EwsXmlReader
     {
         _xmlReader.ReadToDescendant(localName, EwsUtilities.GetNamespaceUri(xmlNamespace));
     }
-
-    /// <summary>
-    ///     Gets a value indicating whether this instance has attributes.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if this instance has attributes; otherwise, <c>false</c>.
-    /// </value>
-    public bool HasAttributes => _xmlReader.AttributeCount > 0;
-
-    /// <summary>
-    ///     Gets a value indicating whether current element is empty.
-    /// </summary>
-    /// <value>
-    ///     <c>true</c> if current element is empty element; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsEmptyElement => _xmlReader.IsEmptyElement;
-
-    /// <summary>
-    ///     Gets the local name of the current element.
-    /// </summary>
-    /// <value>The local name of the current element.</value>
-    public string LocalName => _xmlReader.LocalName;
-
-    /// <summary>
-    ///     Gets the namespace prefix.
-    /// </summary>
-    /// <value>The namespace prefix.</value>
-    public string NamespacePrefix => _xmlReader.Prefix;
-
-    /// <summary>
-    ///     Gets the namespace URI.
-    /// </summary>
-    /// <value>The namespace URI.</value>
-    public string NamespaceUri => _xmlReader.NamespaceURI;
-
-    /// <summary>
-    ///     Gets the type of the node.
-    /// </summary>
-    /// <value>The type of the node.</value>
-    public XmlNodeType NodeType => _xmlReader.NodeType;
-
-    /// <summary>
-    ///     Gets the type of the prev node.
-    /// </summary>
-    /// <value>The type of the prev node.</value>
-    public XmlNodeType PrevNodeType => _prevNodeType;
 }

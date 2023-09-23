@@ -31,6 +31,21 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupResponse>
 {
     /// <summary>
+    ///     Gets or sets the email address.
+    /// </summary>
+    /// <value>The email address.</value>
+    public EmailAddress? EmailAddress { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ExpandGroupRequest" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal ExpandGroupRequest(ExchangeService service)
+        : base(service, ServiceErrorHandling.ThrowOnError)
+    {
+    }
+
+    /// <summary>
     ///     Validate request.
     /// </summary>
     internal override void Validate()
@@ -103,19 +118,4 @@ internal class ExpandGroupRequest : MultiResponseServiceRequest<ExpandGroupRespo
     {
         return ExchangeVersion.Exchange2007_SP1;
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ExpandGroupRequest" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal ExpandGroupRequest(ExchangeService service)
-        : base(service, ServiceErrorHandling.ThrowOnError)
-    {
-    }
-
-    /// <summary>
-    ///     Gets or sets the email address.
-    /// </summary>
-    /// <value>The email address.</value>
-    public EmailAddress? EmailAddress { get; set; }
 }

@@ -33,6 +33,28 @@ internal abstract class RecurrenceRange : ComplexProperty
     private DateTime _startDate;
 
     /// <summary>
+    ///     Gets the name of the XML element.
+    /// </summary>
+    /// <value>The name of the XML element.</value>
+    internal abstract string XmlElementName { get; }
+
+    /// <summary>
+    ///     Gets or sets the recurrence.
+    /// </summary>
+    /// <value>The recurrence.</value>
+    internal Recurrence? Recurrence { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the start date.
+    /// </summary>
+    /// <value>The start date.</value>
+    internal DateTime StartDate
+    {
+        get => _startDate;
+        set => SetFieldValue(ref _startDate, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="RecurrenceRange" /> class.
     /// </summary>
     internal RecurrenceRange()
@@ -107,27 +129,5 @@ internal abstract class RecurrenceRange : ComplexProperty
                 return false;
             }
         }
-    }
-
-    /// <summary>
-    ///     Gets the name of the XML element.
-    /// </summary>
-    /// <value>The name of the XML element.</value>
-    internal abstract string XmlElementName { get; }
-
-    /// <summary>
-    ///     Gets or sets the recurrence.
-    /// </summary>
-    /// <value>The recurrence.</value>
-    internal Recurrence? Recurrence { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the start date.
-    /// </summary>
-    /// <value>The start date.</value>
-    internal DateTime StartDate
-    {
-        get => _startDate;
-        set => SetFieldValue(ref _startDate, value);
     }
 }

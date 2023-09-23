@@ -34,6 +34,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class MoveCopyItemResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the copied or moved item. Item is null if the copy or move operation was between
+    ///     two mailboxes or between a mailbox and a public folder.
+    /// </summary>
+    public Item Item { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="MoveCopyItemResponse" /> class.
     /// </summary>
     internal MoveCopyItemResponse()
@@ -75,10 +81,4 @@ public sealed class MoveCopyItemResponse : ServiceResponse
             Item = items[0];
         }
     }
-
-    /// <summary>
-    ///     Gets the copied or moved item. Item is null if the copy or move operation was between
-    ///     two mailboxes or between a mailbox and a public folder.
-    /// </summary>
-    public Item Item { get; private set; }
 }

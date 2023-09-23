@@ -39,6 +39,20 @@ public sealed class DeleteRuleOperation : RuleOperation
     private string _ruleId;
 
     /// <summary>
+    ///     Gets or sets the Id of the rule to delete.
+    /// </summary>
+    public string RuleId
+    {
+        get => _ruleId;
+        set => SetFieldValue(ref _ruleId, value);
+    }
+
+    /// <summary>
+    ///     Gets the Xml element name of the DeleteRuleOperation object.
+    /// </summary>
+    internal override string XmlElementName => XmlElementNames.DeleteRuleOperation;
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteRuleOperation" /> class.
     /// </summary>
     public DeleteRuleOperation()
@@ -52,15 +66,6 @@ public sealed class DeleteRuleOperation : RuleOperation
     public DeleteRuleOperation(string ruleId)
     {
         _ruleId = ruleId;
-    }
-
-    /// <summary>
-    ///     Gets or sets the Id of the rule to delete.
-    /// </summary>
-    public string RuleId
-    {
-        get => _ruleId;
-        set => SetFieldValue(ref _ruleId, value);
     }
 
     /// <summary>
@@ -79,9 +84,4 @@ public sealed class DeleteRuleOperation : RuleOperation
     {
         EwsUtilities.ValidateParam(_ruleId, "RuleId");
     }
-
-    /// <summary>
-    ///     Gets the Xml element name of the DeleteRuleOperation object.
-    /// </summary>
-    internal override string XmlElementName => XmlElementNames.DeleteRuleOperation;
 }

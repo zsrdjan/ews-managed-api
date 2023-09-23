@@ -33,8 +33,8 @@ namespace Microsoft.Exchange.WebServices.Data;
 [PublicAPI]
 public sealed class ManagementRoles
 {
-    private readonly string[] _userRoles;
     private readonly string[] _applicationRoles;
+    private readonly string[] _userRoles;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ManagementRoles" /> class.

@@ -89,6 +89,11 @@ public sealed class RulePredicates : ComplexProperty
     private bool _isPermissionControlled;
 
     /// <summary>
+    ///     The IsReadReceipt  predicate.
+    /// </summary>
+    private bool _isReadReceipt;
+
+    /// <summary>
     ///     The IsSigned predicate.
     /// </summary>
     private bool _isSigned;
@@ -99,14 +104,14 @@ public sealed class RulePredicates : ComplexProperty
     private bool _isVoicemail;
 
     /// <summary>
-    ///     The IsReadReceipt  predicate.
-    /// </summary>
-    private bool _isReadReceipt;
-
-    /// <summary>
     ///     The NotSentToMe predicate.
     /// </summary>
     private bool _notSentToMe;
+
+    /// <summary>
+    ///     The Sensitivity predicate.
+    /// </summary>
+    private Sensitivity? _sensitivity;
 
     /// <summary>
     ///     SentCcMe predicate.
@@ -127,32 +132,6 @@ public sealed class RulePredicates : ComplexProperty
     ///     The SentToOrCcMe predicate.
     /// </summary>
     private bool _sentToOrCcMe;
-
-    /// <summary>
-    ///     The Sensitivity predicate.
-    /// </summary>
-    private Sensitivity? _sensitivity;
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
-    /// </summary>
-    internal RulePredicates()
-    {
-        Categories = new StringList();
-        ContainsBodyStrings = new StringList();
-        ContainsHeaderStrings = new StringList();
-        ContainsRecipientStrings = new StringList();
-        ContainsSenderStrings = new StringList();
-        ContainsSubjectOrBodyStrings = new StringList();
-        ContainsSubjectStrings = new StringList();
-        FromAddresses = new EmailAddressCollection(XmlElementNames.Address);
-        FromConnectedAccounts = new StringList();
-        ItemClasses = new StringList();
-        MessageClassifications = new StringList();
-        SentToAddresses = new EmailAddressCollection(XmlElementNames.Address);
-        WithinDateRange = new RulePredicateDateRange();
-        WithinSizeRange = new RulePredicateSizeRange();
-    }
 
     /// <summary>
     ///     Gets the categories that an incoming message should be stamped with
@@ -458,6 +437,27 @@ public sealed class RulePredicates : ComplexProperty
     ///     MinimumSize and MaximumSize properties to null.
     /// </summary>
     public RulePredicateSizeRange WithinSizeRange { get; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="RulePredicates" /> class.
+    /// </summary>
+    internal RulePredicates()
+    {
+        Categories = new StringList();
+        ContainsBodyStrings = new StringList();
+        ContainsHeaderStrings = new StringList();
+        ContainsRecipientStrings = new StringList();
+        ContainsSenderStrings = new StringList();
+        ContainsSubjectOrBodyStrings = new StringList();
+        ContainsSubjectStrings = new StringList();
+        FromAddresses = new EmailAddressCollection(XmlElementNames.Address);
+        FromConnectedAccounts = new StringList();
+        ItemClasses = new StringList();
+        MessageClassifications = new StringList();
+        SentToAddresses = new EmailAddressCollection(XmlElementNames.Address);
+        WithinDateRange = new RulePredicateDateRange();
+        WithinSizeRange = new RulePredicateSizeRange();
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

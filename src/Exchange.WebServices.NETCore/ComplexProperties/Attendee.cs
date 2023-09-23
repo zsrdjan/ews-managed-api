@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class Attendee : EmailAddress
 {
     /// <summary>
+    ///     Gets the type of response the attendee gave to the meeting invitation it received.
+    /// </summary>
+    public MeetingResponseType? ResponseType { get; private set; }
+
+    /// <summary>
+    ///     Gets the date and time when the attendee last responded to a meeting invitation or update.
+    /// </summary>
+    public DateTime? LastResponseTime { get; private set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="Attendee" /> class.
     /// </summary>
     public Attendee()
@@ -79,16 +89,6 @@ public sealed class Attendee : EmailAddress
         : base(mailbox)
     {
     }
-
-    /// <summary>
-    ///     Gets the type of response the attendee gave to the meeting invitation it received.
-    /// </summary>
-    public MeetingResponseType? ResponseType { get; private set; }
-
-    /// <summary>
-    ///     Gets the date and time when the attendee last responded to a meeting invitation or update.
-    /// </summary>
-    public DateTime? LastResponseTime { get; private set; }
 
     /// <summary>
     ///     Tries to read element from XML.

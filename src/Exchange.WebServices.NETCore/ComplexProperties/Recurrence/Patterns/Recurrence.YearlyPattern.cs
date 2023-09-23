@@ -38,8 +38,41 @@ public abstract partial class Recurrence
     [PublicAPI]
     public sealed class YearlyPattern : Recurrence
     {
-        private Month? _month;
         private int? _dayOfMonth;
+        private Month? _month;
+
+        /// <summary>
+        ///     Gets the name of the XML element.
+        /// </summary>
+        /// <value>The name of the XML element.</value>
+        internal override string XmlElementName => XmlElementNames.AbsoluteYearlyRecurrence;
+
+        /// <summary>
+        ///     Gets or sets the month of the year when each occurrence happens.
+        /// </summary>
+        public Month Month
+        {
+            get => GetFieldValueOrThrowIfNull(_month, "Month");
+            set => SetFieldValue(ref _month, value);
+        }
+
+        /// <summary>
+        ///     Gets or sets the day of the month when each occurrence happens. DayOfMonth must be between 1 and 31.
+        /// </summary>
+        public int DayOfMonth
+        {
+            get => GetFieldValueOrThrowIfNull(_dayOfMonth, "DayOfMonth");
+
+            set
+            {
+                if (value < 1 || value > 31)
+                {
+                    throw new ArgumentOutOfRangeException("DayOfMonth", Strings.DayOfMonthMustBeBetween1And31);
+                }
+
+                SetFieldValue(ref _dayOfMonth, value);
+            }
+        }
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="YearlyPattern" /> class.
@@ -60,12 +93,6 @@ public abstract partial class Recurrence
             Month = month;
             DayOfMonth = dayOfMonth;
         }
-
-        /// <summary>
-        ///     Gets the name of the XML element.
-        /// </summary>
-        /// <value>The name of the XML element.</value>
-        internal override string XmlElementName => XmlElementNames.AbsoluteYearlyRecurrence;
 
         /// <summary>
         ///     Write properties to XML.
@@ -141,33 +168,6 @@ public abstract partial class Recurrence
             return base.IsSame(otherRecurrence) &&
                    _month == otherYearlyPattern._month &&
                    _dayOfMonth == otherYearlyPattern._dayOfMonth;
-        }
-
-        /// <summary>
-        ///     Gets or sets the month of the year when each occurrence happens.
-        /// </summary>
-        public Month Month
-        {
-            get => GetFieldValueOrThrowIfNull(_month, "Month");
-            set => SetFieldValue(ref _month, value);
-        }
-
-        /// <summary>
-        ///     Gets or sets the day of the month when each occurrence happens. DayOfMonth must be between 1 and 31.
-        /// </summary>
-        public int DayOfMonth
-        {
-            get => GetFieldValueOrThrowIfNull(_dayOfMonth, "DayOfMonth");
-
-            set
-            {
-                if (value < 1 || value > 31)
-                {
-                    throw new ArgumentOutOfRangeException("DayOfMonth", Strings.DayOfMonthMustBeBetween1And31);
-                }
-
-                SetFieldValue(ref _dayOfMonth, value);
-            }
         }
     }
 }

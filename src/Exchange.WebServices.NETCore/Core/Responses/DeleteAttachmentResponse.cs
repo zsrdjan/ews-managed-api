@@ -34,6 +34,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class DeleteAttachmentResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the attachment that was deleted.
+    /// </summary>
+    internal Attachment Attachment { get; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="DeleteAttachmentResponse" /> class.
     /// </summary>
     /// <param name="attachment">The attachment.</param>
@@ -62,9 +67,4 @@ public sealed class DeleteAttachmentResponse : ServiceResponse
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Messages, XmlElementNames.RootItemId);
     }
-
-    /// <summary>
-    ///     Gets the attachment that was deleted.
-    /// </summary>
-    internal Attachment Attachment { get; }
 }

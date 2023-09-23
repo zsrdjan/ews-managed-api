@@ -33,14 +33,6 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     private ViewBase _view;
 
     /// <summary>
-    /// </summary>
-    /// <param name="service"></param>
-    internal FindConversationRequest(ExchangeService service)
-        : base(service)
-    {
-    }
-
-    /// <summary>
     ///     Gets or sets the view controlling the number of conversations returned.
     /// </summary>
     public ViewBase View
@@ -77,6 +69,14 @@ internal sealed class FindConversationRequest : SimpleServiceRequestBase
     ///     Gets or sets the mailbox search location to include in the search.
     /// </summary>
     internal MailboxSearchLocation? MailboxScope { get; set; }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="service"></param>
+    internal FindConversationRequest(ExchangeService service)
+        : base(service)
+    {
+    }
 
     /// <summary>
     ///     Validate request.

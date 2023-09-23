@@ -33,17 +33,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// </summary>
 internal class SafeXmlSchema : XmlSchema
 {
-    #region Members
-
     /// <summary>
     ///     Safe xml reader settings.
     /// </summary>
-    private static XmlReaderSettings _defaultSettings = new()
+    private static readonly XmlReaderSettings DefaultSettings = new()
     {
         DtdProcessing = DtdProcessing.Prohibit,
     };
-
-    #endregion
 
 
     #region Methods
@@ -57,9 +53,9 @@ internal class SafeXmlSchema : XmlSchema
     ///     errors.
     /// </param>
     /// <returns>The XmlSchema object representing the XML Schema.</returns>
-    public new static XmlSchema Read(Stream stream, ValidationEventHandler validationEventHandler)
+    public new static XmlSchema? Read(Stream stream, ValidationEventHandler validationEventHandler)
     {
-        using var xr = XmlReader.Create(stream, _defaultSettings);
+        using var xr = XmlReader.Create(stream, DefaultSettings);
         return XmlSchema.Read(xr, validationEventHandler);
     }
 
@@ -72,9 +68,9 @@ internal class SafeXmlSchema : XmlSchema
     ///     errors.
     /// </param>
     /// <returns>The XmlSchema object representing the XML Schema.</returns>
-    public new static XmlSchema Read(TextReader reader, ValidationEventHandler validationEventHandler)
+    public new static XmlSchema? Read(TextReader reader, ValidationEventHandler validationEventHandler)
     {
-        using var xr = XmlReader.Create(reader, _defaultSettings);
+        using var xr = XmlReader.Create(reader, DefaultSettings);
         return XmlSchema.Read(xr, validationEventHandler);
     }
 
@@ -87,7 +83,7 @@ internal class SafeXmlSchema : XmlSchema
     ///     errors.
     /// </param>
     /// <returns>The XmlSchema object representing the XML Schema.</returns>
-    public new static XmlSchema Read(XmlReader reader, ValidationEventHandler validationEventHandler)
+    public new static XmlSchema? Read(XmlReader reader, ValidationEventHandler validationEventHandler)
     {
         // we need to check to see if the reader is configured properly
         if (reader.Settings != null)

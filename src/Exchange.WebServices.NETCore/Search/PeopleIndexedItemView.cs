@@ -34,6 +34,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PeopleIndexedItemView : PagedView
 {
     /// <summary>
+    ///     Gets the properties against which the returned items should be ordered.
+    /// </summary>
+    public OrderByCollection OrderBy { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the view filter.
+    /// </summary>
+    public ViewFilter? ViewFilter { get; set; }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ItemView" /> class.
     /// </summary>
     /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
@@ -42,6 +52,26 @@ public sealed class PeopleIndexedItemView : PagedView
     public PeopleIndexedItemView(int pageSize, int offset, OffsetBasePoint offsetBasePoint)
         : base(pageSize, offset, offsetBasePoint)
     {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    public PeopleIndexedItemView(int pageSize)
+        : base(pageSize)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="ItemView" /> class.
+    /// </summary>
+    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
+    /// <param name="offset">The offset of the view from the base point.</param>
+    public PeopleIndexedItemView(int pageSize, int offset)
+        : base(pageSize, offset)
+    {
+        Offset = offset;
     }
 
     /// <summary>
@@ -110,34 +140,4 @@ public sealed class PeopleIndexedItemView : PagedView
 
         writer.WriteEndElement();
     }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    public PeopleIndexedItemView(int pageSize)
-        : base(pageSize)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemView" /> class.
-    /// </summary>
-    /// <param name="pageSize">The maximum number of elements the search operation should return.</param>
-    /// <param name="offset">The offset of the view from the base point.</param>
-    public PeopleIndexedItemView(int pageSize, int offset)
-        : base(pageSize, offset)
-    {
-        Offset = offset;
-    }
-
-    /// <summary>
-    ///     Gets the properties against which the returned items should be ordered.
-    /// </summary>
-    public OrderByCollection OrderBy { get; } = new();
-
-    /// <summary>
-    ///     Gets or sets the view filter.
-    /// </summary>
-    public ViewFilter? ViewFilter { get; set; }
 }

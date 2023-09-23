@@ -41,8 +41,8 @@ public sealed class GetEventsResults
     /// <remarks>
     ///     If you add a new notification event type, you'll need to add a new entry to the dictionary here.
     /// </remarks>
-    private static readonly LazyMember<Dictionary<string, EventType>> xmlElementNameToEventTypeMap = new(
-        () => new Dictionary<string, EventType>
+    internal static readonly IReadOnlyDictionary<string, EventType> XmlElementNameToEventTypeMap =
+        new Dictionary<string, EventType>
         {
             // @formatter:off
             { XmlElementNames.CopiedEvent, EventType.Copied },
@@ -54,14 +54,45 @@ public sealed class GetEventsResults
             { XmlElementNames.StatusEvent, EventType.Status },
             { XmlElementNames.FreeBusyChangedEvent, EventType.FreeBusyChanged },
             // @formatter:on
-        }
-    );
+        };
 
     /// <summary>
-    ///     Gets the XML element name to event type mapping.
+    ///     Gets the Id of the subscription the collection is associated with.
     /// </summary>
-    /// <value>The XML element name to event type mapping.</value>
-    internal static Dictionary<string, EventType> XmlElementNameToEventTypeMap => xmlElementNameToEventTypeMap.Member;
+    internal string SubscriptionId { get; private set; }
+
+    /// <summary>
+    ///     Gets the subscription's previous watermark.
+    /// </summary>
+    internal string PreviousWatermark { get; private set; }
+
+    /// <summary>
+    ///     Gets the subscription's new watermark.
+    /// </summary>
+    internal string NewWatermark { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether more events are available on the Exchange server.
+    /// </summary>
+    internal bool MoreEventsAvailable { get; private set; }
+
+    /// <summary>
+    ///     Gets the collection of folder events.
+    /// </summary>
+    /// <value>The folder events.</value>
+    public IEnumerable<FolderEvent> FolderEvents => AllEvents.OfType<FolderEvent>();
+
+    /// <summary>
+    ///     Gets the collection of item events.
+    /// </summary>
+    /// <value>The item events.</value>
+    public IEnumerable<ItemEvent> ItemEvents => AllEvents.OfType<ItemEvent>();
+
+    /// <summary>
+    ///     Gets the collection of all events.
+    /// </summary>
+    /// <value>The events.</value>
+    public Collection<NotificationEvent> AllEvents { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetEventsResults" /> class.
@@ -90,7 +121,7 @@ public sealed class GetEventsResults
             {
                 var eventElementName = reader.LocalName;
 
-                if (xmlElementNameToEventTypeMap.Member.TryGetValue(eventElementName, out var eventType))
+                if (XmlElementNameToEventTypeMap.TryGetValue(eventElementName, out var eventType))
                 {
                     NewWatermark = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.Watermark);
 
@@ -138,42 +169,4 @@ public sealed class GetEventsResults
         notificationEvent.LoadFromXml(reader, eventElementName);
         AllEvents.Add(notificationEvent);
     }
-
-    /// <summary>
-    ///     Gets the Id of the subscription the collection is associated with.
-    /// </summary>
-    internal string SubscriptionId { get; private set; }
-
-    /// <summary>
-    ///     Gets the subscription's previous watermark.
-    /// </summary>
-    internal string PreviousWatermark { get; private set; }
-
-    /// <summary>
-    ///     Gets the subscription's new watermark.
-    /// </summary>
-    internal string NewWatermark { get; private set; }
-
-    /// <summary>
-    ///     Gets a value indicating whether more events are available on the Exchange server.
-    /// </summary>
-    internal bool MoreEventsAvailable { get; private set; }
-
-    /// <summary>
-    ///     Gets the collection of folder events.
-    /// </summary>
-    /// <value>The folder events.</value>
-    public IEnumerable<FolderEvent> FolderEvents => AllEvents.OfType<FolderEvent>();
-
-    /// <summary>
-    ///     Gets the collection of item events.
-    /// </summary>
-    /// <value>The item events.</value>
-    public IEnumerable<ItemEvent> ItemEvents => AllEvents.OfType<ItemEvent>();
-
-    /// <summary>
-    ///     Gets the collection of all events.
-    /// </summary>
-    /// <value>The events.</value>
-    public Collection<NotificationEvent> AllEvents { get; } = new();
 }

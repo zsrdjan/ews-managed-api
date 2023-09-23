@@ -33,6 +33,12 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal class GetServerTimeZonesResponse : ServiceResponse
 {
     /// <summary>
+    ///     Gets the time zones returned by the associated GetServerTimeZones request.
+    /// </summary>
+    /// <value>The time zones.</value>
+    public Collection<TimeZoneInfo> TimeZones { get; } = new Collection<TimeZoneInfo>();
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="GetServerTimeZonesResponse" /> class.
     /// </summary>
     internal GetServerTimeZonesResponse()
@@ -65,10 +71,4 @@ internal class GetServerTimeZonesResponse : ServiceResponse
             } while (!reader.IsEndElement(XmlNamespace.Messages, XmlElementNames.TimeZoneDefinitions));
         }
     }
-
-    /// <summary>
-    ///     Gets the time zones returned by the associated GetServerTimeZones request.
-    /// </summary>
-    /// <value>The time zones.</value>
-    public Collection<TimeZoneInfo> TimeZones { get; } = new Collection<TimeZoneInfo>();
 }

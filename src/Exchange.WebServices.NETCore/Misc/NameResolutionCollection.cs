@@ -33,40 +33,6 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     private readonly List<NameResolution> _items = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="NameResolutionCollection" /> class.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    internal NameResolutionCollection(ExchangeService service)
-    {
-        EwsUtilities.Assert(service != null, "NameResolutionSet.ctor", "service is null.");
-
-        Session = service;
-    }
-
-    /// <summary>
-    ///     Loads from XML.
-    /// </summary>
-    /// <param name="reader">The reader.</param>
-    internal void LoadFromXml(EwsServiceXmlReader reader)
-    {
-        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
-
-        var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
-        IncludesAllResolutions = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
-
-        for (var i = 0; i < totalItemsInView; i++)
-        {
-            var nameResolution = new NameResolution(this);
-
-            nameResolution.LoadFromXml(reader);
-
-            _items.Add(nameResolution);
-        }
-
-        reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
-    }
-
-    /// <summary>
     ///     Gets the session.
     /// </summary>
     /// <value>The session.</value>
@@ -102,6 +68,17 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
         }
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="NameResolutionCollection" /> class.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    internal NameResolutionCollection(ExchangeService service)
+    {
+        EwsUtilities.Assert(service != null, "NameResolutionSet.ctor", "service is null.");
+
+        Session = service;
+    }
+
 
     #region IEnumerable<NameResolution> Members
 
@@ -129,4 +106,28 @@ public sealed class NameResolutionCollection : IEnumerable<NameResolution>
     }
 
     #endregion
+
+
+    /// <summary>
+    ///     Loads from XML.
+    /// </summary>
+    /// <param name="reader">The reader.</param>
+    internal void LoadFromXml(EwsServiceXmlReader reader)
+    {
+        reader.ReadStartElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
+
+        var totalItemsInView = reader.ReadAttributeValue<int>(XmlAttributeNames.TotalItemsInView);
+        IncludesAllResolutions = reader.ReadAttributeValue<bool>(XmlAttributeNames.IncludesLastItemInRange);
+
+        for (var i = 0; i < totalItemsInView; i++)
+        {
+            var nameResolution = new NameResolution(this);
+
+            nameResolution.LoadFromXml(reader);
+
+            _items.Add(nameResolution);
+        }
+
+        reader.ReadEndElement(XmlNamespace.Messages, XmlElementNames.ResolutionSet);
+    }
 }

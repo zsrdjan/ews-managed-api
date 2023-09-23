@@ -36,14 +36,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class PersonInsight : ComplexProperty
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="PersonInsight" /> class.
-    /// </summary>
-    public PersonInsight()
-    {
-        ItemList = new InsightValueCollection();
-    }
-
-    /// <summary>
     ///     Gets the string
     /// </summary>
     public string InsightType { get; internal set; }
@@ -62,6 +54,14 @@ public sealed class PersonInsight : ComplexProperty
     ///     Gets the ItemList
     /// </summary>
     public InsightValueCollection ItemList { get; internal set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PersonInsight" /> class.
+    /// </summary>
+    public PersonInsight()
+    {
+        ItemList = new InsightValueCollection();
+    }
 
     /// <summary>
     ///     Tries to read element from XML.

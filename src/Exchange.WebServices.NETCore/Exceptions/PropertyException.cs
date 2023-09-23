@@ -37,6 +37,11 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class PropertyException : ServiceLocalException
 {
     /// <summary>
+    ///     Gets the name of the property that caused the exception.
+    /// </summary>
+    public string Name { get; }
+
+    /// <summary>
     ///     PropertyException constructor.
     /// </summary>
     /// <param name="name">The name of the property that is at the origin of the exception.</param>
@@ -98,9 +103,4 @@ public class PropertyException : ServiceLocalException
 
         info.AddValue("PropertyName", Name);
     }
-
-    /// <summary>
-    ///     Gets the name of the property that caused the exception.
-    /// </summary>
-    public string Name { get; }
 }

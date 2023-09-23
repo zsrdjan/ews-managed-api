@@ -31,6 +31,16 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
 {
     /// <summary>
+    ///     Whether it's called for debugging to retrieve org master table xml
+    /// </summary>
+    private readonly bool _isDebug;
+
+    /// <summary>
+    ///     Whether it's called from admin or user scope.
+    /// </summary>
+    private readonly bool _isUserScope;
+
+    /// <summary>
     ///     The list of extension IDs to return.
     /// </summary>
     private readonly StringList? _requestedExtensionIds;
@@ -41,14 +51,9 @@ internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
     private readonly bool _shouldReturnEnabledOnly;
 
     /// <summary>
-    ///     Whether it's called from admin or user scope.
+    ///     The list of org extension IDs which user disabled.
     /// </summary>
-    private readonly bool _isUserScope;
-
-    /// <summary>
-    ///     The user identity.
-    /// </summary>
-    private readonly string _userId;
+    private readonly StringList? _userDisabledExtensionIds;
 
     /// <summary>
     ///     The list of org extension IDs which user enabled.
@@ -56,14 +61,9 @@ internal sealed class GetClientExtensionRequest : SimpleServiceRequestBase
     private readonly StringList? _userEnabledExtensionIds;
 
     /// <summary>
-    ///     The list of org extension IDs which user disabled.
+    ///     The user identity.
     /// </summary>
-    private readonly StringList? _userDisabledExtensionIds;
-
-    /// <summary>
-    ///     Whether it's called for debugging to retrieve org master table xml
-    /// </summary>
-    private readonly bool _isDebug;
+    private readonly string _userId;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="GetClientExtensionRequest" /> class.

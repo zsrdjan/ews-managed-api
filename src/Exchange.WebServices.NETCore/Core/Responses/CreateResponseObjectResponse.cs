@@ -34,6 +34,13 @@ namespace Microsoft.Exchange.WebServices.Data;
 internal sealed class CreateResponseObjectResponse : CreateItemResponseBase
 {
     /// <summary>
+    ///     Initializes a new instance of the <see cref="CreateResponseObjectResponse" /> class.
+    /// </summary>
+    internal CreateResponseObjectResponse()
+    {
+    }
+
+    /// <summary>
     ///     Gets Item instance.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -42,12 +49,5 @@ internal sealed class CreateResponseObjectResponse : CreateItemResponseBase
     internal override Item? GetObjectInstance(ExchangeService service, string xmlElementName)
     {
         return EwsUtilities.CreateEwsObjectFromXmlElementName<Item>(service, xmlElementName);
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="CreateResponseObjectResponse" /> class.
-    /// </summary>
-    internal CreateResponseObjectResponse()
-    {
     }
 }

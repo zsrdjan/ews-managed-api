@@ -36,15 +36,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 public sealed class OofReply
 {
     /// <summary>
-    ///     Writes an empty OofReply to XML.
+    ///     Gets or sets the culture of the reply.
     /// </summary>
-    /// <param name="writer">The writer.</param>
-    /// <param name="xmlElementName">Name of the XML element.</param>
-    internal static void WriteEmptyReplyToXml(EwsServiceXmlWriter writer, string xmlElementName)
-    {
-        writer.WriteStartElement(XmlNamespace.Types, xmlElementName);
-        writer.WriteEndElement(); // xmlElementName
-    }
+    public string Culture { get; set; } = CultureInfo.CurrentCulture.Name;
+
+    /// <summary>
+    ///     Gets or sets the reply message.
+    /// </summary>
+    public string Message { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OofReply" /> class.
@@ -60,6 +59,17 @@ public sealed class OofReply
     public OofReply(string message)
     {
         Message = message;
+    }
+
+    /// <summary>
+    ///     Writes an empty OofReply to XML.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="xmlElementName">Name of the XML element.</param>
+    internal static void WriteEmptyReplyToXml(EwsServiceXmlWriter writer, string xmlElementName)
+    {
+        writer.WriteStartElement(XmlNamespace.Types, xmlElementName);
+        writer.WriteEndElement(); // xmlElementName
     }
 
     /// <summary>
@@ -130,14 +140,4 @@ public sealed class OofReply
     {
         return Message;
     }
-
-    /// <summary>
-    ///     Gets or sets the culture of the reply.
-    /// </summary>
-    public string Culture { get; set; } = CultureInfo.CurrentCulture.Name;
-
-    /// <summary>
-    ///     Gets or sets the reply message.
-    /// </summary>
-    public string Message { get; set; }
 }

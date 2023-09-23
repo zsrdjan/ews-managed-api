@@ -35,16 +35,6 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class MeetingRequestSchema : MeetingMessageSchema
 {
     /// <summary>
-    ///     Field URIs for MeetingRequest.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string MeetingRequestType = "meetingRequest:MeetingRequestType";
-        public const string IntendedFreeBusyStatus = "meetingRequest:IntendedFreeBusyStatus";
-        public const string ChangeHighlights = "meetingRequest:ChangeHighlights";
-    }
-
-    /// <summary>
     ///     Defines the MeetingRequestType property.
     /// </summary>
     public static readonly PropertyDefinition MeetingRequestType = new GenericPropertyDefinition<MeetingRequestType>(
@@ -278,6 +268,13 @@ public class MeetingRequestSchema : MeetingMessageSchema
     internal new static readonly MeetingRequestSchema Instance = new();
 
     /// <summary>
+    ///     Initializes a new instance of the <see cref="MeetingRequestSchema" /> class.
+    /// </summary>
+    internal MeetingRequestSchema()
+    {
+    }
+
+    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -335,9 +332,12 @@ public class MeetingRequestSchema : MeetingMessageSchema
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MeetingRequestSchema" /> class.
+    ///     Field URIs for MeetingRequest.
     /// </summary>
-    internal MeetingRequestSchema()
+    private static class FieldUris
     {
+        public const string MeetingRequestType = "meetingRequest:MeetingRequestType";
+        public const string IntendedFreeBusyStatus = "meetingRequest:IntendedFreeBusyStatus";
+        public const string ChangeHighlights = "meetingRequest:ChangeHighlights";
     }
 }

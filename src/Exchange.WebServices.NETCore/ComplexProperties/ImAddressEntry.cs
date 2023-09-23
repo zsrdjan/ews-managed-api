@@ -39,6 +39,15 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
     private string _imAddress;
 
     /// <summary>
+    ///     Gets or sets the Instant Messaging address of the entry.
+    /// </summary>
+    public string ImAddress
+    {
+        get => _imAddress;
+        set => SetFieldValue(ref _imAddress, value);
+    }
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="ImAddressEntry" /> class.
     /// </summary>
     internal ImAddressEntry()
@@ -54,15 +63,6 @@ public sealed class ImAddressEntry : DictionaryEntryProperty<ImAddressKey>
         : base(key)
     {
         _imAddress = imAddress;
-    }
-
-    /// <summary>
-    ///     Gets or sets the Instant Messaging address of the entry.
-    /// </summary>
-    public string ImAddress
-    {
-        get => _imAddress;
-        set => SetFieldValue(ref _imAddress, value);
     }
 
     /// <summary>
