@@ -18,7 +18,7 @@ public class ItemOperationTests : IClassFixture<ExchangeProvider>
     {
         var service = _provider.CreateTestService();
 
-        _ = Folder.Bind(service, WellKnownFolderName.Inbox);
+        _ = await Folder.Bind(service, WellKnownFolderName.Inbox);
 
         // The search filter to get unread email.
         var filter = new SearchFilter.SearchFilterCollection(

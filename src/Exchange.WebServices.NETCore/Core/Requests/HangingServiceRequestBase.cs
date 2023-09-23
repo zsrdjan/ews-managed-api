@@ -151,7 +151,7 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
     {
         lock (_lockObject)
         {
-            var (request, response) = ValidateAndEmitRequest(_tokenSource.Token).GetAwaiter().GetResult();
+            var (request, response) = ValidateAndEmitRequest(true, _tokenSource.Token).GetAwaiter().GetResult();
 
             _request = request;
             _response = response;
@@ -163,10 +163,15 @@ internal abstract class HangingServiceRequestBase : ServiceRequestBase
                 // Trace Http headers
                 Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, _response);
 
-                _readTask = System.Threading.Tasks.Task.Run(
-                    async () => { await ParseResponses(_tokenSource.Token); },
-                    _tokenSource.Token
-                );
+                // Run parser on separate task-thread
+                _readTask = System.Threading.Tasks.Task.Factory.StartNew(
+                        async () => await ParseResponses(_tokenSource.Token),
+                        _tokenSource.Token,
+                        TaskCreationOptions.LongRunning,
+                        TaskScheduler.Default
+                    )
+                    .GetAwaiter()
+                    .GetResult();
             }
         }
     }

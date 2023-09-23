@@ -627,9 +627,11 @@ internal abstract class ServiceRequestBase
     /// <summary>
     ///     Validates request parameters, and emits the request to the server.
     /// </summary>
+    /// <param name="headersOnly"></param>
     /// <param name="token"></param>
     /// <returns>The response returned by the server.</returns>
     protected async Task<(EwsHttpWebRequest request, IEwsHttpWebResponse response)> ValidateAndEmitRequest(
+        bool headersOnly,
         CancellationToken token
     )
     {
@@ -660,7 +662,7 @@ internal abstract class ServiceRequestBase
 
         try
         {
-            response = await GetEwsHttpWebResponse(request, token).ConfigureAwait(false);
+            response = await GetEwsHttpWebResponse(request, headersOnly, token).ConfigureAwait(false);
         }
         finally
         {
@@ -707,10 +709,9 @@ internal abstract class ServiceRequestBase
     /// <returns>An IEwsHttpWebRequest instance</returns>
     protected async Task<EwsHttpWebRequest> BuildEwsHttpWebRequest()
     {
-        EwsHttpWebRequest? request = null;
         try
         {
-            request = await Service.PrepareHttpWebRequest(GetXmlElementName());
+            var request = await Service.PrepareHttpWebRequest(GetXmlElementName());
 
             Service.TraceHttpRequestHeaders(TraceFlags.EwsRequestHttpHeaders, request);
 
@@ -755,13 +756,18 @@ internal abstract class ServiceRequestBase
     ///     Gets the IEwsHttpWebRequest object from the specified IEwsHttpWebRequest object with exception handling
     /// </summary>
     /// <param name="request">The specified IEwsHttpWebRequest</param>
+    /// <param name="headersOnly"></param>
     /// <param name="token"></param>
     /// <returns>An IEwsHttpWebResponse instance</returns>
-    protected async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(EwsHttpWebRequest request, CancellationToken token)
+    protected async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(
+        EwsHttpWebRequest request,
+        bool headersOnly,
+        CancellationToken token
+    )
     {
         try
         {
-            return await request.GetResponse(token).ConfigureAwait(false);
+            return await request.GetResponse(headersOnly, token).ConfigureAwait(false);
         }
         catch (EwsHttpClientException ex)
         {

@@ -3305,13 +3305,13 @@ public sealed class ExchangeService : ExchangeServiceBase
     ///     Subscribes to streaming notifications. Calling this method results in a call to EWS.
     /// </summary>
     /// <param name="folderIds">The Ids of the folder to subscribe to.</param>
-    /// <param name="token"></param>
     /// <param name="eventTypes">The event types to subscribe to.</param>
+    /// <param name="token"></param>
     /// <returns>A StreamingSubscription representing the new subscription.</returns>
     public async Task<StreamingSubscription> SubscribeToStreamingNotifications(
         IEnumerable<FolderId> folderIds,
-        CancellationToken token = default,
-        params EventType[] eventTypes
+        EventType[] eventTypes,
+        CancellationToken token = default
     )
     {
         EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2010_SP1, "SubscribeToStreamingNotifications");

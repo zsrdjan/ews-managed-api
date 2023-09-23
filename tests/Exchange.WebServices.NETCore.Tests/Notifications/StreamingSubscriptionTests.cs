@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,11 +30,17 @@ public class StreamingSubscriptionTests : IClassFixture<ExchangeProvider>
             new FolderView(100, 0)
         );
 
-        var folderIds = folders.Folders.ToList().Select(x => x.Id);
+        var folderIds = folders.Folders.ToList().Select(x => x.Id).ToList();
 
-        var subscription = await service.SubscribeToStreamingNotifications(folderIds);
+        var subscription = await service.SubscribeToStreamingNotifications(
+            folderIds,
+            new[]
+            {
+                EventType.Created, EventType.Modified,
+            }
+        );
 
-        var connection = new StreamingSubscriptionConnection(
+        using var connection = new StreamingSubscriptionConnection(
             service,
             new[]
             {
@@ -42,6 +49,23 @@ public class StreamingSubscriptionTests : IClassFixture<ExchangeProvider>
             30
         );
 
+        connection.OnNotificationEvent += (sender, args) =>
+        {
+            //
+            Debugger.Break();
+        };
+
+        connection.OnSubscriptionError += (sender, args) =>
+        {
+            //
+            Debugger.Break();
+        };
+
         connection.Open();
+        Assert.True(connection.IsOpen);
+
+        await Task.Delay(10_000);
+
+        connection.Close();
     }
 }

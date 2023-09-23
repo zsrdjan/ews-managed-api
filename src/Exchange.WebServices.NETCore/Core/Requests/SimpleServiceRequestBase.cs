@@ -49,7 +49,7 @@ internal abstract class SimpleServiceRequestBase : ServiceRequestBase
     internal async Task<TResponse> InternalExecuteAsync<TResponse>(CancellationToken token)
         where TResponse : class
     {
-        var (_, response) = await ValidateAndEmitRequest(token).ConfigureAwait(false);
+        var (_, response) = await ValidateAndEmitRequest(false, token).ConfigureAwait(false);
         try
         {
             var result = await ReadResponse(response).ConfigureAwait(false) as TResponse;
