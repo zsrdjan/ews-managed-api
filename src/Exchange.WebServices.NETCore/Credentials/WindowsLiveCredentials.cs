@@ -465,10 +465,8 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
             {
                 if (TraceEnabled)
                 {
-                    var logMessage = string.Format(
-                        "Windows Live reported an error retrieving the token - {0}",
-                        rstResponse.ReadOuterXml()
-                    );
+                    var logMessage =
+                        $"Windows Live reported an error retrieving the token - {rstResponse.ReadOuterXml()}";
                     _traceListener.Trace("WindowsLiveResponse", logMessage);
                 }
 
@@ -504,27 +502,25 @@ internal sealed class WindowsLiveCredentials : WSSecurityBasedCredentials
     ///     Grabs the issued token information out of a response from Windows Live.
     /// </summary>
     /// <param name="response">The token response</param>
-    private void ProcessTokenResponse(HttpWebResponse response)
+    private void ProcessTokenResponse(WebResponse response)
     {
         // NOTE: We're not tracing responses here because they contain the actual token information
         // from Windows Live.    
-        using (var responseStream = response.GetResponseStream())
-        {
-            // Always start fresh (nulls in all the data we're going to fill in).
-            SecurityToken = null;
+        using var responseStream = response.GetResponseStream();
+        // Always start fresh (nulls in all the data we're going to fill in).
+        SecurityToken = null;
 
-            var rstResponse = new EwsXmlReader(responseStream);
+        var rstResponse = new EwsXmlReader(responseStream);
 
-            rstResponse.Read(XmlNodeType.XmlDeclaration);
-            rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPEnvelopeElementName);
+        rstResponse.Read(XmlNodeType.XmlDeclaration);
+        rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPEnvelopeElementName);
 
-            // Process the SOAP headers from the response.
-            ReadWindowsLiveRstResponseHeaders(rstResponse);
+        // Process the SOAP headers from the response.
+        ReadWindowsLiveRstResponseHeaders(rstResponse);
 
-            rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPBodyElementName);
+        rstResponse.ReadStartElement(WindowsLiveSoapNamespacePrefix, XmlElementNames.SOAPBodyElementName);
 
-            // Process the SOAP body from the response.
-            ParseWindowsLiveRstResponseBody(rstResponse);
-        }
+        // Process the SOAP body from the response.
+        ParseWindowsLiveRstResponseBody(rstResponse);
     }
 }

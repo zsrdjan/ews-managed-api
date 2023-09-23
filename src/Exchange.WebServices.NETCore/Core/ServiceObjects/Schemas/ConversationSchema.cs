@@ -23,8 +23,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics.CodeAnalysis;
-
 using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;

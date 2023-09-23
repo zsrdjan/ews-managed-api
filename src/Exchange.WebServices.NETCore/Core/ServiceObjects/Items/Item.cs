@@ -779,7 +779,7 @@ public class Item : ServiceObject
     }
 
     /// <summary>
-    ///     Gets a text summarizing the Cc receipients of this item.
+    ///     Gets a text summarizing the Cc recipients of this item.
     /// </summary>
     public string DisplayCc => (string)PropertyBag[ItemSchema.DisplayCc];
 

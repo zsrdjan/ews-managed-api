@@ -72,7 +72,7 @@ internal abstract class ServiceRequestBase
     ///     will route the request directly to the mailbox server against which the request
     ///     is to be executed.
     /// </remarks>
-    internal string AnchorMailbox { get; set; }
+    internal string? AnchorMailbox { get; set; }
 
     /// <summary>
     ///     Gets the service.
@@ -670,7 +670,7 @@ internal abstract class ServiceRequestBase
             {
                 var clientSideLatency = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
                 var requestId = string.Empty;
-                var soapAction = GetType().Name.Replace("Request", string.Empty);
+                var soapAction = GetType().Name.Replace("Request", string.Empty, StringComparison.Ordinal);
 
                 if (response?.Headers != null)
                 {
@@ -711,7 +711,7 @@ internal abstract class ServiceRequestBase
     {
         try
         {
-            var request = await Service.PrepareHttpWebRequest(GetXmlElementName());
+            var request = await Service.PrepareHttpWebRequest(GetXmlElementName()).ConfigureAwait(false);
 
             Service.TraceHttpRequestHeaders(TraceFlags.EwsRequestHttpHeaders, request);
 
@@ -739,7 +739,7 @@ internal abstract class ServiceRequestBase
         {
             if (ex.IsProtocolError && ex.Response != null)
             {
-                await ProcessEwsHttpClientException(ex);
+                await ProcessEwsHttpClientException(ex).ConfigureAwait(false);
             }
 
             // Wrap exception if the above code block didn't throw
@@ -773,7 +773,7 @@ internal abstract class ServiceRequestBase
         {
             if (ex.IsProtocolError && ex.Response != null)
             {
-                await ProcessEwsHttpClientException(ex);
+                await ProcessEwsHttpClientException(ex).ConfigureAwait(false);
             }
 
             // Wrap exception if the above code block didn't throw
@@ -813,7 +813,7 @@ internal abstract class ServiceRequestBase
                 await using (var serviceResponseStream = await GetResponseStream(httpWebResponse).ConfigureAwait(false))
                 {
                     // Copy response to in-memory stream and reset position to start.
-                    await serviceResponseStream.CopyToAsync(memoryStream);
+                    await serviceResponseStream.CopyToAsync(memoryStream).ConfigureAwait(false);
                     memoryStream.Position = 0;
                 }
 
@@ -854,7 +854,7 @@ internal abstract class ServiceRequestBase
                     {
                         // This shouldn't happen. It indicates that a request wasn't valid for the version that was specified.
                         EwsUtilities.Assert(
-                            false,
+                            condition: false,
                             "ServiceRequestBase.ProcessEwsHttpClientException",
                             "Exchange server supports requested version but request was invalid for that version"
                         );
@@ -934,7 +934,7 @@ internal abstract class ServiceRequestBase
     {
         try
         {
-            await reader.ReadAsync(XmlNodeType.XmlDeclaration);
+            await reader.ReadAsync(XmlNodeType.XmlDeclaration).ConfigureAwait(false);
         }
         catch (XmlException ex)
         {

@@ -64,15 +64,7 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     /// <value>Value associated with key.</value>
     public object? this[TKey key]
     {
-        get
-        {
-            if (TryGetValue(key, out var value))
-            {
-                return value;
-            }
-
-            return null;
-        }
+        get => TryGetValue(key, out var value) ? value : null;
 
         set
         {
@@ -118,8 +110,6 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     }
 
 
-    #region IEnumerable<KeyValuePair<TKey,object>> Members
-
     /// <summary>
     ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
@@ -129,11 +119,6 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
         return _items.GetEnumerator();
     }
 
-    #endregion
-
-
-    #region IEnumerable Members
-
     /// <summary>
     ///     Gets an enumerator that iterates through the elements of the collection.
     /// </summary>
@@ -142,8 +127,6 @@ internal class SimplePropertyBag<TKey> : IEnumerable<KeyValuePair<TKey, object>>
     {
         return _items.GetEnumerator();
     }
-
-    #endregion
 
 
     /// <summary>

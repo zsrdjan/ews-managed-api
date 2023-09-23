@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Exchange.WebServices.Data.Misc;
 
 namespace Microsoft.Exchange.WebServices.Data;
@@ -34,7 +36,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
 {
     private readonly TimeZoneDefinition _timeZoneDefinition;
     private TimeZoneTransition _transitionToDaylight;
-    private TimeZoneTransition _transitionToStandard;
+    private TimeZoneTransition? _transitionToStandard;
 
     /// <summary>
     ///     Gets a value indicating whether this group contains a transition to the Daylight period.
@@ -187,7 +189,8 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
                 Name = standardPeriod.Name,
                 Bias = standardPeriod.Bias,
             };
-            _timeZoneDefinition.Periods.AddOrUpdate(standardPeriodToSet.Id, standardPeriodToSet);
+
+            _timeZoneDefinition.Periods[standardPeriodToSet.Id] = standardPeriodToSet;
 
             _transitionToStandard = new TimeZoneTransition(_timeZoneDefinition, standardPeriodToSet);
             Transitions.Add(_transitionToStandard);
@@ -202,7 +205,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
                 Bias = standardPeriod.Bias - adjustmentRule.DaylightDelta,
             };
 
-            _timeZoneDefinition.Periods.AddOrUpdate(daylightPeriod.Id, daylightPeriod);
+            _timeZoneDefinition.Periods[daylightPeriod.Id] = daylightPeriod;
 
             _transitionToDaylight = TimeZoneTransition.CreateTimeZoneTransition(
                 _timeZoneDefinition,
@@ -216,7 +219,8 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
                 Name = standardPeriod.Name,
                 Bias = standardPeriod.Bias,
             };
-            _timeZoneDefinition.Periods.AddOrUpdate(standardPeriodToSet.Id, standardPeriodToSet);
+
+            _timeZoneDefinition.Periods[standardPeriodToSet.Id] = standardPeriodToSet;
 
             _transitionToStandard = TimeZoneTransition.CreateTimeZoneTransition(
                 _timeZoneDefinition,
@@ -272,6 +276,7 @@ internal sealed class TimeZoneTransitionGroup : ComplexProperty
     ///     Initializes the private members holding references to the transitions to the Daylight
     ///     and Standard periods.
     /// </summary>
+    [MemberNotNull(nameof(_transitionToStandard))]
     private void InitializeTransitions()
     {
         if (_transitionToStandard == null)

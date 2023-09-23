@@ -28,17 +28,16 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Security;
-using System.Security.Cryptography;
-using System.Xml;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Xml;
 
 using JetBrains.Annotations;
 
 using Microsoft.Exchange.WebServices.Data.Credentials;
 
-using System.Net.Http;
-using System;
+#pragma warning disable MA0039
 
 namespace Microsoft.Exchange.WebServices.Data;
 
@@ -46,7 +45,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     Represents an abstract binding to an Exchange Service.
 /// </summary>
 [PublicAPI]
-public abstract class ExchangeServiceBase
+public abstract class ExchangeServiceBase : IDisposable
 {
     /// <summary>
     ///     Default UserAgent
@@ -93,7 +92,6 @@ public abstract class ExchangeServiceBase
         get => _httpClientHandler.CookieContainer;
         set => _httpClientHandler.CookieContainer = value;
     }
-
 
     /// <summary>
     ///     Gets the time zone this service is scoped to.
@@ -316,28 +314,6 @@ public abstract class ExchangeServiceBase
     public IDictionary<string, string> HttpResponseHeaders { get; } = new Dictionary<string, string>();
 
     /// <summary>
-    ///     Gets the session key.
-    /// </summary>
-    internal static byte[] SessionKey
-    {
-        get
-        {
-            // this has to be computed only once.
-            lock (LockObj)
-            {
-                if (_binarySecret == null)
-                {
-                    var randomNumberGenerator = RandomNumberGenerator.Create();
-                    _binarySecret = new byte[256 / 8];
-                    randomNumberGenerator.GetBytes(_binarySecret);
-                }
-
-                return _binarySecret;
-            }
-        }
-    }
-
-    /// <summary>
     ///     For testing: suppresses generation of the SOAP version header.
     /// </summary>
     internal bool SuppressXmlVersionHeader { get; set; }
@@ -363,6 +339,29 @@ public abstract class ExchangeServiceBase
     {
         get => _httpClientHandler.AllowAutoRedirect;
         set => _httpClientHandler.AllowAutoRedirect = value;
+    }
+
+
+    /// <summary>
+    ///     Gets the session key.
+    /// </summary>
+    internal static byte[] SessionKey
+    {
+        get
+        {
+            // this has to be computed only once.
+            lock (LockObj)
+            {
+                if (_binarySecret == null)
+                {
+                    var randomNumberGenerator = RandomNumberGenerator.Create();
+                    _binarySecret = new byte[256 / 8];
+                    randomNumberGenerator.GetBytes(_binarySecret);
+                }
+
+                return _binarySecret;
+            }
+        }
     }
 
 
@@ -443,6 +442,20 @@ public abstract class ExchangeServiceBase
     {
     }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _httpClient.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
 
     /// <summary>
     ///     Occurs when the http response headers of a server call is captured.
@@ -500,7 +513,6 @@ public abstract class ExchangeServiceBase
             throw new ServiceLocalException(string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
         }
 
-
         var request = new EwsHttpWebRequest(_httpClient, url)
         {
             ContentType = "text/xml; charset=utf-8",
@@ -540,7 +552,7 @@ public abstract class ExchangeServiceBase
                 throw new ServiceLocalException(Strings.CredentialsRequired);
             }
 
-            // Temporary fix for authentication on Linux platform
+            // TODO: Temporary fix for authentication on Linux platform
             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 serviceCredentials = AdjustLinuxAuthentication(url, serviceCredentials);
@@ -556,29 +568,6 @@ public abstract class ExchangeServiceBase
         }
 
         return request;
-    }
-
-    internal static ExchangeCredentials AdjustLinuxAuthentication(Uri url, ExchangeCredentials serviceCredentials)
-    {
-        if (serviceCredentials is not WebCredentials webCredentials)
-        {
-            // Nothing to adjust
-            return serviceCredentials;
-        }
-
-        if (webCredentials.Credentials is NetworkCredential networkCredentials)
-        {
-            return new CredentialCache
-            {
-                // @formatter:off
-                { url, "NTLM", networkCredentials },
-                { url, "Digest", networkCredentials },
-                { url, "Basic", networkCredentials },
-                // @formatter:on
-            };
-        }
-
-        return serviceCredentials;
     }
 
 
@@ -839,4 +828,28 @@ public abstract class ExchangeServiceBase
     }
 
     #endregion
+
+
+    internal static ExchangeCredentials AdjustLinuxAuthentication(Uri url, ExchangeCredentials serviceCredentials)
+    {
+        if (serviceCredentials is not WebCredentials webCredentials)
+        {
+            // Nothing to adjust
+            return serviceCredentials;
+        }
+
+        if (webCredentials.Credentials is NetworkCredential networkCredentials)
+        {
+            return new CredentialCache
+            {
+                // @formatter:off
+                { url, "NTLM", networkCredentials },
+                { url, "Digest", networkCredentials },
+                { url, "Basic", networkCredentials },
+                // @formatter:on
+            };
+        }
+
+        return serviceCredentials;
+    }
 }

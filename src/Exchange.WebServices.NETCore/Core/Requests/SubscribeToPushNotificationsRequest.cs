@@ -46,7 +46,7 @@ internal class SubscribeToPushNotificationsRequest : SubscribeRequest<PushSubscr
     ///     Gets or sets the URL.
     /// </summary>
     /// <value>The URL.</value>
-    public string CallerData { get; set; }
+    public string? CallerData { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SubscribeToPushNotificationsRequest" /> class.

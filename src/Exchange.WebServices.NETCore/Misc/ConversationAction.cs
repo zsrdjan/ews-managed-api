@@ -75,7 +75,7 @@ internal class ConversationAction
     /// <summary>
     ///     Gets or sets the flag.
     /// </summary>
-    internal Flag Flag { get; set; }
+    internal Flag? Flag { get; set; }
 
     /// <summary>
     ///     ConversationLastSyncTime is used in one time action to determine the items

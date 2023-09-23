@@ -60,7 +60,7 @@ public sealed class ExchangeServerInfo
     ///     The version is a string rather than an enum since its possible for the client to
     ///     be connected to a later server for which there would be no appropriate enum value.
     /// </remarks>
-    public string VersionString { get; internal set; }
+    public string? VersionString { get; internal set; }
 
     /// <summary>
     ///     Default constructor

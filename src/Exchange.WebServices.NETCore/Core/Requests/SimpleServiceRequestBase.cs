@@ -23,7 +23,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-using System.Diagnostics;
 using System.Net.Http.Headers;
 
 namespace Microsoft.Exchange.WebServices.Data;

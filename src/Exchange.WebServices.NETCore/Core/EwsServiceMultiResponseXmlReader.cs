@@ -39,7 +39,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     If ever there comes a time we need to deal with multi-response streams with user-generated
 ///     content, we will need to tackle that parsing problem separately.
 /// </remarks>
-internal class EwsServiceMultiResponseXmlReader : EwsServiceXmlReader
+internal sealed class EwsServiceMultiResponseXmlReader : EwsServiceXmlReader
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="EwsServiceMultiResponseXmlReader" /> class.

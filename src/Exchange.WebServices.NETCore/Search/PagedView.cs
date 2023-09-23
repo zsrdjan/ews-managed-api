@@ -50,7 +50,7 @@ public abstract class PagedView : ViewBase
         {
             if (value <= 0)
             {
-                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
+                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero, nameof(value));
             }
 
             _pageSize = value;
@@ -73,7 +73,7 @@ public abstract class PagedView : ViewBase
         {
             if (value < 0)
             {
-                throw new ArgumentException(Strings.OffsetMustBeGreaterThanZero);
+                throw new ArgumentException(Strings.OffsetMustBeGreaterThanZero, nameof(value));
             }
 
             _offset = value;

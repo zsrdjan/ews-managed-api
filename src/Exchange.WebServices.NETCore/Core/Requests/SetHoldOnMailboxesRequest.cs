@@ -43,17 +43,17 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Query
     /// </summary>
-    public string Query { get; set; }
+    public string? Query { get; set; }
 
     /// <summary>
     ///     Collection of mailboxes to be held/unheld
     /// </summary>
-    public string[] Mailboxes { get; set; }
+    public string[]? Mailboxes { get; set; }
 
     /// <summary>
     ///     Query language
     /// </summary>
-    public string Language { get; set; }
+    public string? Language { get; set; }
 
     /// <summary>
     ///     InPlaceHold Identity
@@ -63,7 +63,7 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
     /// <summary>
     ///     Item hold period
     /// </summary>
-    public string ItemHoldPeriod { get; set; }
+    public string? ItemHoldPeriod { get; set; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="SetHoldOnMailboxesRequest" /> class.
@@ -131,6 +131,7 @@ internal sealed class SetHoldOnMailboxesRequest : SimpleServiceRequestBase
         writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ActionType, ActionType.ToString());
         writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.HoldId, HoldId);
         writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.Query, Query ?? string.Empty);
+
         if (Mailboxes != null && Mailboxes.Length > 0)
         {
             writer.WriteStartElement(XmlNamespace.Messages, XmlElementNames.Mailboxes);

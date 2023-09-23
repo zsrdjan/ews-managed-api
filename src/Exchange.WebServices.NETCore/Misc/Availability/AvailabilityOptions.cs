@@ -52,7 +52,8 @@ public sealed class AvailabilityOptions
             if (value < 5 || value > 1440)
             {
                 throw new ArgumentException(
-                    string.Format(Strings.InvalidPropertyValueNotInRange, "MergedFreeBusyInterval", 5, 1440)
+                    string.Format(Strings.InvalidPropertyValueNotInRange, "MergedFreeBusyInterval", 5, 1440),
+                    nameof(value)
                 );
             }
 
@@ -79,7 +80,8 @@ public sealed class AvailabilityOptions
             if (value < 1 || value > 49)
             {
                 throw new ArgumentException(
-                    string.Format(Strings.InvalidPropertyValueNotInRange, "GoodSuggestionThreshold", 1, 49)
+                    string.Format(Strings.InvalidPropertyValueNotInRange, "GoodSuggestionThreshold", 1, 49),
+                    nameof(value)
                 );
             }
 
@@ -100,7 +102,8 @@ public sealed class AvailabilityOptions
             if (value < 0 || value > 48)
             {
                 throw new ArgumentException(
-                    string.Format(Strings.InvalidPropertyValueNotInRange, "MaximumSuggestionsPerDay", 0, 48)
+                    string.Format(Strings.InvalidPropertyValueNotInRange, "MaximumSuggestionsPerDay", 0, 48),
+                    nameof(value)
                 );
             }
 
@@ -121,7 +124,13 @@ public sealed class AvailabilityOptions
             if (value < 0 || value > 48)
             {
                 throw new ArgumentException(
-                    string.Format(Strings.InvalidPropertyValueNotInRange, "MaximumNonWorkHoursSuggestionsPerDay", 0, 48)
+                    string.Format(
+                        Strings.InvalidPropertyValueNotInRange,
+                        "MaximumNonWorkHoursSuggestionsPerDay",
+                        0,
+                        48
+                    ),
+                    nameof(value)
                 );
             }
 
@@ -142,7 +151,8 @@ public sealed class AvailabilityOptions
             if (value < 30 || value > 1440)
             {
                 throw new ArgumentException(
-                    string.Format(Strings.InvalidPropertyValueNotInRange, "MeetingDuration", 30, 1440)
+                    string.Format(Strings.InvalidPropertyValueNotInRange, "MeetingDuration", 30, 1440),
+                    nameof(value)
                 );
             }
 
@@ -189,7 +199,7 @@ public sealed class AvailabilityOptions
         {
             throw new ArgumentException(
                 Strings.MergedFreeBusyIntervalMustBeSmallerThanTimeWindow,
-                "MergedFreeBusyInterval"
+                nameof(MergedFreeBusyInterval)
             );
         }
 

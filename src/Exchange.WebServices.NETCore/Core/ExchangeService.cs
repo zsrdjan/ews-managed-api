@@ -5455,7 +5455,7 @@ public sealed class ExchangeService : ExchangeServiceBase
     /// <returns>Service response object</returns>
     public Task<GetNonIndexableItemDetailsResponse> GetNonIndexableItemDetails(string[] mailboxes)
     {
-        return GetNonIndexableItemDetails(mailboxes, null, null, null);
+        return GetNonIndexableItemDetails(mailboxes, pageSize: null, pageItemReference: null, pageDirection: null);
     }
 
     /// <summary>
@@ -6102,7 +6102,7 @@ public sealed class ExchangeService : ExchangeServiceBase
 
         if (string.IsNullOrEmpty(version))
         {
-            throw new ArgumentException("Target version must not be empty.");
+            throw new ArgumentException("Target version must not be empty.", nameof(version));
         }
 
         var parts = version.Trim().Split(parameterSeparator);

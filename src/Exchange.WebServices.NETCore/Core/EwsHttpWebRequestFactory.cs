@@ -28,7 +28,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 /// <summary>
 ///     Represents an implementation of IEwsHttpWebRequestFactory using EwsHttpWebRequest.
 /// </summary>
-internal class EwsHttpWebRequestFactory
+internal static class EwsHttpWebRequestFactory
 {
     /// <summary>
     ///     Creates response from a EwsHttpClientException.

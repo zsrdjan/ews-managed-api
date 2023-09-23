@@ -78,7 +78,7 @@ internal class PropertyBag
     ///     Raised for get if property hasn't been assigned or loaded. Raised for
     ///     set if property cannot be updated or deleted.
     /// </exception>
-    internal object this[PropertyDefinition propertyDefinition]
+    internal object? this[PropertyDefinition propertyDefinition]
     {
         get
         {

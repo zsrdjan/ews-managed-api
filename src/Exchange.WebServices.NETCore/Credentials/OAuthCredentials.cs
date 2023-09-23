@@ -29,7 +29,6 @@ using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
-
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
@@ -54,7 +53,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
     /// </summary>
     /// <param name="token">The JSON web token string.</param>
     public OAuthCredentials(string token)
-        : this(token, false)
+        : this(token, verbatim: false)
     {
     }
 
@@ -84,7 +83,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
                 var authType = token.Substring(0, whiteSpacePosition);
                 if (string.Compare(authType, BearerAuthenticationType, StringComparison.OrdinalIgnoreCase) != 0)
                 {
-                    throw new ArgumentException(Strings.InvalidAuthScheme);
+                    throw new ArgumentException(Strings.InvalidAuthScheme, nameof(token));
                 }
 
                 rawToken = token.Substring(whiteSpacePosition + 1);
@@ -92,7 +91,7 @@ public sealed partial class OAuthCredentials : ExchangeCredentials
 
             if (!ValidTokenPattern.IsMatch(rawToken))
             {
-                throw new ArgumentException(Strings.InvalidOAuthToken);
+                throw new ArgumentException(Strings.InvalidOAuthToken, nameof(token));
             }
         }
 

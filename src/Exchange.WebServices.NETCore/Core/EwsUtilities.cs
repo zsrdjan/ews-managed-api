@@ -568,7 +568,7 @@ internal static partial class EwsUtilities
 
         foreach (var enumValue in enumValues)
         {
-            list.Add(Enum.Parse<T>(enumValue, false));
+            list.Add(Enum.Parse<T>(enumValue, ignoreCase: false));
         }
     }
 
@@ -607,7 +607,7 @@ internal static partial class EwsUtilities
                 return (T)(object)enumValue;
             }
 
-            return (T)Enum.Parse(typeof(T), value, false);
+            return (T)Enum.Parse(typeof(T), value, ignoreCase: false);
         }
 
         return (T)Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);

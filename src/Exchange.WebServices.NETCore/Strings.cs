@@ -446,21 +446,21 @@ internal static class Strings
     internal const string UnknownTimeZonePeriodTransitionType = "Unknown time zone transition type: {0}";
     internal const string UserPhotoSizeNotSpecified = "The UserPhotoSize must be not be null or empty.";
     internal const string UserPhotoNotSpecified = "The photo must be not be null or empty.";
-    internal static string PercentCompleteMustBeBetween0And100 = "PercentComplete must be between 0 and 100.";
+    internal const string PercentCompleteMustBeBetween0And100 = "PercentComplete must be between 0 and 100.";
 
-    internal static string InvalidOrderBy = "At least one of the property definitions in the OrderBy clause is null.";
+    internal const string InvalidOrderBy = "At least one of the property definitions in the OrderBy clause is null.";
 
-    internal static string ParentFolderDoesNotHaveId = "parentFolder doesn't have an Id.";
+    internal const string ParentFolderDoesNotHaveId = "parentFolder doesn't have an Id.";
 
-    internal static string CannotAddRequestHeader =
+    internal const string CannotAddRequestHeader =
         "HTTP header '{0}' isn't permitted. Only HTTP headers with the 'X-' prefix are permitted.";
 
-    internal static string FolderPermissionLevelMustBeSet =
+    internal const string FolderPermissionLevelMustBeSet =
         "The permission level of the folder permission at index {0} must be set.";
 
-    internal static string NewMessagesWithAttachmentsCannotBeSentDirectly =
+    internal const string NewMessagesWithAttachmentsCannotBeSentDirectly =
         "New messages with attachments can't be sent directly. You must first save the message and then send it.";
 
-    internal static string PropertyCollectionSizeMismatch =
+    internal const string PropertyCollectionSizeMismatch =
         "The collection returned by the service has a different size from the current one.";
 }

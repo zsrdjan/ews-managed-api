@@ -82,7 +82,7 @@ internal class EwsHttpWebRequest
     ///     The value of the User-agent HTTP header. The default value is null.The value for this property is stored in
     ///     <see cref="T:System.Net.WebHeaderCollection" />. If WebHeaderCollection is set, the property value is lost.
     /// </returns>
-    public string UserAgent { get; set; }
+    public string UserAgent { get; init; }
 
     /// <summary>
     ///     Gets a <see cref="T:System.IO.Stream" /> object to use to write request data.

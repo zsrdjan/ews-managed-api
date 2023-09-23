@@ -49,7 +49,7 @@ internal sealed class Time
             }
             else
             {
-                throw new ArgumentException(Strings.HourMustBeBetween0And23);
+                throw new ArgumentException(Strings.HourMustBeBetween0And23, nameof(value));
             }
         }
     }
@@ -69,7 +69,7 @@ internal sealed class Time
             }
             else
             {
-                throw new ArgumentException(Strings.MinuteMustBeBetween0And59);
+                throw new ArgumentException(Strings.MinuteMustBeBetween0And59, nameof(value));
             }
         }
     }
@@ -89,7 +89,7 @@ internal sealed class Time
             }
             else
             {
-                throw new ArgumentException(Strings.SecondMustBeBetween0And59);
+                throw new ArgumentException(Strings.SecondMustBeBetween0And59, nameof(value));
             }
         }
     }

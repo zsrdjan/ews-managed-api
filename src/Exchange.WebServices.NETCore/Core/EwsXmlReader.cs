@@ -181,7 +181,7 @@ internal class EwsXmlReader
         }
         else
         {
-            await ReadAsync(nodeType);
+            await ReadAsync(nodeType).ConfigureAwait(false);
 
             if (LocalName != localName || NamespaceUri != EwsUtilities.GetNamespaceUri(xmlNamespace))
             {
@@ -280,7 +280,7 @@ internal class EwsXmlReader
         // XmlReader.Read returns true if the next node was read successfully; false if there 
         // are no more nodes to read. The caller to EwsXmlReader.Read expects that there's another node to 
         // read. Throw an exception if not true.
-        var nodeRead = await _xmlReader.ReadAsync();
+        var nodeRead = await _xmlReader.ReadAsync().ConfigureAwait(false);
         if (!nodeRead)
         {
             throw new ServiceXmlDeserializationException(Strings.UnexpectedEndOfXmlDocument);
@@ -309,7 +309,7 @@ internal class EwsXmlReader
     /// <param name="nodeType">Type of the node.</param>
     public async System.Threading.Tasks.Task ReadAsync(XmlNodeType nodeType)
     {
-        await ReadAsync();
+        await ReadAsync().ConfigureAwait(false);
 
         if (NodeType != nodeType)
         {

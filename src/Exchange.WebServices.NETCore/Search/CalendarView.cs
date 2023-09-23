@@ -56,7 +56,7 @@ public sealed class CalendarView : ViewBase
         {
             if (value <= 0)
             {
-                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero);
+                throw new ArgumentException(Strings.ValueMustBeGreaterThanZero, nameof(value));
             }
 
             _maxItemsReturned = value;

@@ -107,6 +107,7 @@ internal class MapiTypeConverterMapEntry
         {
             throw new ArgumentException(
                 string.Format(Strings.ValueOfTypeCannotBeConverted, value, value.GetType(), Type),
+                nameof(value),
                 ex
             );
         }
@@ -165,22 +166,28 @@ internal class MapiTypeConverterMapEntry
     {
         if (value is not Array array)
         {
-            throw new ArgumentException(string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type));
+            throw new ArgumentException(
+                string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type),
+                nameof(value)
+            );
         }
 
         if (array.Rank != 1)
         {
-            throw new ArgumentException(Strings.ArrayMustHaveSingleDimension);
+            throw new ArgumentException(Strings.ArrayMustHaveSingleDimension, nameof(value));
         }
 
         if (array.Length == 0)
         {
-            throw new ArgumentException(Strings.ArrayMustHaveAtLeastOneElement);
+            throw new ArgumentException(Strings.ArrayMustHaveAtLeastOneElement, nameof(value));
         }
 
         if (array.GetType().GetElementType() != Type)
         {
-            throw new ArgumentException(string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type));
+            throw new ArgumentException(
+                string.Format(Strings.IncompatibleTypeForArray, value.GetType(), Type),
+                nameof(value)
+            );
         }
     }
 
