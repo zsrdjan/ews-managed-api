@@ -39,6 +39,53 @@ internal class EwsHttpWebRequest
 
 
     /// <summary>
+    ///     Gets or sets the value of the Accept HTTP header.
+    /// </summary>
+    /// <returns>The value of the Accept HTTP header. The default value is null.</returns>
+    public string Accept { get; init; }
+
+    /// <summary>
+    ///     Gets or sets the value of the Content-type HTTP header.
+    /// </summary>
+    /// <returns>The value of the Content-type HTTP header. The default value is null.</returns>
+    public string ContentType { get; init; }
+
+    /// <summary>
+    ///     Specifies a collection of the name/value pairs that make up the HTTP headers.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the name/value pairs that make up the headers
+    ///     for the HTTP request.
+    /// </returns>
+    public HttpRequestHeaders Headers => _httpClient.DefaultRequestHeaders;
+
+    /// <summary>
+    ///     Gets or sets the method for the request.
+    /// </summary>
+    /// <returns>The request method to use to contact the Internet resource. The default value is GET.</returns>
+    /// <exception cref="T:System.ArgumentException">No method is supplied.-or- The method string contains invalid characters. </exception>
+    public string Method { get; init; } = "GET";
+
+    /// <summary>
+    ///     Gets the original Uniform Resource Identifier (URI) of the request.
+    /// </summary>
+    /// <returns>
+    ///     A <see cref="T:System.Uri" /> that contains the URI of the Internet resource passed to the
+    ///     <see cref="M:System.Net.WebRequest.Create(System.String)" /> method.
+    /// </returns>
+    public Uri RequestUri { get; }
+
+    /// <summary>
+    ///     Gets or sets the value of the User-agent HTTP header.
+    /// </summary>
+    /// <returns>
+    ///     The value of the User-agent HTTP header. The default value is null.The value for this property is stored in
+    ///     <see cref="T:System.Net.WebHeaderCollection" />. If WebHeaderCollection is set, the property value is lost.
+    /// </returns>
+    public string UserAgent { get; set; }
+
+
+    /// <summary>
     ///     Initializes a new instance of the <see cref="EwsHttpWebRequest" /> class.
     /// </summary>
     /// <param name="httpClient">HttpClient copy</param>
@@ -69,13 +116,14 @@ internal class EwsHttpWebRequest
     {
         using var message = CreateRequestMessage();
 
-        var completion = headersOnly ? HttpCompletionOption.ResponseHeadersRead
+        // In streaming mode we only need to wait for the headers to be read
+        var completionOption = headersOnly ? HttpCompletionOption.ResponseHeadersRead
             : HttpCompletionOption.ResponseContentRead;
 
         HttpResponseMessage? response;
         try
         {
-            response = await _httpClient.SendAsync(message, completion, token);
+            response = await _httpClient.SendAsync(message, completionOption, token);
         }
         catch (Exception exception)
         {
@@ -117,51 +165,4 @@ internal class EwsHttpWebRequest
 
         return message;
     }
-
-
-    /// <summary>
-    ///     Gets or sets the value of the Accept HTTP header.
-    /// </summary>
-    /// <returns>The value of the Accept HTTP header. The default value is null.</returns>
-    public string Accept { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the value of the Content-type HTTP header.
-    /// </summary>
-    /// <returns>The value of the Content-type HTTP header. The default value is null.</returns>
-    public string ContentType { get; set; }
-
-    /// <summary>
-    ///     Specifies a collection of the name/value pairs that make up the HTTP headers.
-    /// </summary>
-    /// <returns>
-    ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the name/value pairs that make up the headers
-    ///     for the HTTP request.
-    /// </returns>
-    public HttpRequestHeaders Headers => _httpClient.DefaultRequestHeaders;
-
-    /// <summary>
-    ///     Gets or sets the method for the request.
-    /// </summary>
-    /// <returns>The request method to use to contact the Internet resource. The default value is GET.</returns>
-    /// <exception cref="T:System.ArgumentException">No method is supplied.-or- The method string contains invalid characters. </exception>
-    public string Method { get; set; } = "GET";
-
-    /// <summary>
-    ///     Gets the original Uniform Resource Identifier (URI) of the request.
-    /// </summary>
-    /// <returns>
-    ///     A <see cref="T:System.Uri" /> that contains the URI of the Internet resource passed to the
-    ///     <see cref="M:System.Net.WebRequest.Create(System.String)" /> method.
-    /// </returns>
-    public Uri RequestUri { get; }
-
-    /// <summary>
-    ///     Gets or sets the value of the User-agent HTTP header.
-    /// </summary>
-    /// <returns>
-    ///     The value of the User-agent HTTP header. The default value is null.The value for this property is stored in
-    ///     <see cref="T:System.Net.WebHeaderCollection" />. If WebHeaderCollection is set, the property value is lost.
-    /// </returns>
-    public string UserAgent { get; set; }
 }

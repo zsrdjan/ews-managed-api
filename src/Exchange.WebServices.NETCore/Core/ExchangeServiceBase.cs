@@ -292,7 +292,7 @@ public abstract class ExchangeServiceBase
     /// <summary>
     ///     Gets or sets the name of the connection group for the request.
     /// </summary>
-    [Obsolete]
+    [Obsolete("Has no effect")]
     public string ConnectionGroupName { get; set; }
 
     /// <summary>

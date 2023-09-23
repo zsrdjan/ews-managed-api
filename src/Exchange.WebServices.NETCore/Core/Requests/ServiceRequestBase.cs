@@ -759,7 +759,7 @@ internal abstract class ServiceRequestBase
     /// <param name="headersOnly"></param>
     /// <param name="token"></param>
     /// <returns>An IEwsHttpWebResponse instance</returns>
-    protected async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(
+    private async Task<IEwsHttpWebResponse> GetEwsHttpWebResponse(
         EwsHttpWebRequest request,
         bool headersOnly,
         CancellationToken token
