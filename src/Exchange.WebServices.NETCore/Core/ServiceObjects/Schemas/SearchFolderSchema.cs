@@ -35,6 +35,14 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class SearchFolderSchema : FolderSchema
 {
     /// <summary>
+    ///     Field URIs for search folders.
+    /// </summary>
+    private static class FieldUris
+    {
+        public const string SearchParameters = "folder:SearchParameters";
+    }
+
+    /// <summary>
     ///     Defines the SearchParameters property.
     /// </summary>
     public static readonly PropertyDefinition SearchParameters = new ComplexPropertyDefinition<SearchFolderParameters>(
@@ -62,13 +70,5 @@ public class SearchFolderSchema : FolderSchema
         base.RegisterProperties();
 
         RegisterProperty(SearchParameters);
-    }
-
-    /// <summary>
-    ///     Field URIs for search folders.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string SearchParameters = "folder:SearchParameters";
     }
 }

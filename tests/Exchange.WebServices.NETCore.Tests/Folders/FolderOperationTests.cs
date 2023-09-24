@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using Microsoft.Exchange.WebServices.Data;
 
 using Task = System.Threading.Tasks.Task;
@@ -26,24 +28,14 @@ public class FolderOperationTests : IClassFixture<ExchangeProvider>
         Assert.NotEmpty(folders);
     }
 
-    //[Fact]
-    //public async Task FindFoldersSearchFilterTest()
-    //{
-    //    var service = _provider.CreateTestService();
 
-    //    var filter = new SearchFilter.SearchFilterCollection(
-    //        LogicalOperator.Or,
-    //        new SearchFilter.IsNotEqualTo(FolderSchema.DisplayName, "HelloWorld"),
-    //        new SearchFilter.IsNotEqualTo(FolderSchema.DisplayName, "Test1234")
-    //    );
+    [Fact]
+    public async Task FolderBindTest()
+    {
+        var service = _provider.CreateTestService();
 
+        var folder = await Folder.Bind(service, WellKnownFolderName.ArchiveRoot, PropertySet.IdOnly);
 
-    //    var folders = await service.FindFolders(
-    //        new FolderId(WellKnownFolderName.ArchiveInbox),
-    //        filter,
-    //        new FolderView(200, 0)
-    //    );
-
-    //    Assert.NotEmpty(folders);
-    //}
+        Assert.NotNull(folder);
+    }
 }

@@ -630,35 +630,35 @@ public class Folder : ServiceObject
     /// <summary>
     ///     Gets the Id of this folder's parent folder.
     /// </summary>
-    public FolderId ParentFolderId => (FolderId)PropertyBag[FolderSchema.ParentFolderId];
+    public FolderId? ParentFolderId => (FolderId?)PropertyBag[FolderSchema.ParentFolderId];
 
     /// <summary>
     ///     Gets the number of child folders this folder has.
     /// </summary>
-    public int ChildFolderCount => (int)PropertyBag[FolderSchema.ChildFolderCount];
+    public int? ChildFolderCount => (int?)PropertyBag[FolderSchema.ChildFolderCount];
 
     /// <summary>
     ///     Gets or sets the display name of the folder.
     /// </summary>
-    public string DisplayName
+    public string? DisplayName
     {
-        get => (string)PropertyBag[FolderSchema.DisplayName];
+        get => (string?)PropertyBag[FolderSchema.DisplayName];
         set => PropertyBag[FolderSchema.DisplayName] = value;
     }
 
     /// <summary>
     ///     Gets or sets the custom class name of this folder.
     /// </summary>
-    public string FolderClass
+    public string? FolderClass
     {
-        get => (string)PropertyBag[FolderSchema.FolderClass];
+        get => (string?)PropertyBag[FolderSchema.FolderClass];
         set => PropertyBag[FolderSchema.FolderClass] = value;
     }
 
     /// <summary>
     ///     Gets the total number of items contained in the folder.
     /// </summary>
-    public int TotalCount => (int)PropertyBag[FolderSchema.TotalCount];
+    public int? TotalCount => (int?)PropertyBag[FolderSchema.TotalCount];
 
     /// <summary>
     ///     Gets a list of extended properties associated with the folder.
@@ -669,13 +669,13 @@ public class Folder : ServiceObject
     /// <summary>
     ///     Gets the Email Lifecycle Management (ELC) information associated with the folder.
     /// </summary>
-    public ManagedFolderInformation ManagedFolderInformation =>
-        (ManagedFolderInformation)PropertyBag[FolderSchema.ManagedFolderInformation];
+    public ManagedFolderInformation? ManagedFolderInformation =>
+        (ManagedFolderInformation?)PropertyBag[FolderSchema.ManagedFolderInformation];
 
     /// <summary>
     ///     Gets a value indicating the effective rights the current authenticated user has on the folder.
     /// </summary>
-    public EffectiveRights EffectiveRights => (EffectiveRights)PropertyBag[FolderSchema.EffectiveRights];
+    public EffectiveRights? EffectiveRights => (EffectiveRights?)PropertyBag[FolderSchema.EffectiveRights];
 
     /// <summary>
     ///     Gets a list of permissions for the folder.

@@ -35,6 +35,26 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class FolderSchema : ServiceObjectSchema
 {
     /// <summary>
+    ///     Field URIs for folders.
+    /// </summary>
+    private static class FieldUris
+    {
+        public const string FolderId = "folder:FolderId";
+        public const string ParentFolderId = "folder:ParentFolderId";
+        public const string DisplayName = "folder:DisplayName";
+        public const string UnreadCount = "folder:UnreadCount";
+        public const string TotalCount = "folder:TotalCount";
+        public const string ChildFolderCount = "folder:ChildFolderCount";
+        public const string FolderClass = "folder:FolderClass";
+        public const string ManagedFolderInformation = "folder:ManagedFolderInformation";
+        public const string EffectiveRights = "folder:EffectiveRights";
+        public const string PermissionSet = "folder:PermissionSet";
+        public const string PolicyTag = "folder:PolicyTag";
+        public const string ArchiveTag = "folder:ArchiveTag";
+        public const string DistinguishedFolderId = "folder:DistinguishedFolderId";
+    }
+
+    /// <summary>
     ///     Defines the Id property.
     /// </summary>
     public static readonly PropertyDefinition Id = new ComplexPropertyDefinition<FolderId>(
@@ -211,25 +231,5 @@ public class FolderSchema : ServiceObjectSchema
         RegisterProperty(WellKnownFolderName);
         RegisterProperty(PolicyTag);
         RegisterProperty(ArchiveTag);
-    }
-
-    /// <summary>
-    ///     Field URIs for folders.
-    /// </summary>
-    private static class FieldUris
-    {
-        public const string FolderId = "folder:FolderId";
-        public const string ParentFolderId = "folder:ParentFolderId";
-        public const string DisplayName = "folder:DisplayName";
-        public const string UnreadCount = "folder:UnreadCount";
-        public const string TotalCount = "folder:TotalCount";
-        public const string ChildFolderCount = "folder:ChildFolderCount";
-        public const string FolderClass = "folder:FolderClass";
-        public const string ManagedFolderInformation = "folder:ManagedFolderInformation";
-        public const string EffectiveRights = "folder:EffectiveRights";
-        public const string PermissionSet = "folder:PermissionSet";
-        public const string PolicyTag = "folder:PolicyTag";
-        public const string ArchiveTag = "folder:ArchiveTag";
-        public const string DistinguishedFolderId = "folder:DistinguishedFolderId";
     }
 }
