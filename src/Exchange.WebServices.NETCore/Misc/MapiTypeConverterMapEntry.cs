@@ -43,7 +43,7 @@ internal class MapiTypeConverterMapEntry
         { typeof(short), (short)0 },
         { typeof(int), 0 },
         { typeof(long), (long)0 },
-        { typeof(float), (float)0.0 },
+        { typeof(float), 0.0f },
         { typeof(double), 0.0 },
         { typeof(DateTime), DateTime.MinValue },
         { typeof(Guid), Guid.Empty },
@@ -118,7 +118,7 @@ internal class MapiTypeConverterMapEntry
     /// </summary>
     /// <param name="stringValue">String to convert to a value.</param>
     /// <returns>Value.</returns>
-    internal object ConvertToValue(string stringValue)
+    internal object? ConvertToValue(string stringValue)
     {
         try
         {
@@ -153,7 +153,7 @@ internal class MapiTypeConverterMapEntry
     /// <param name="stringValue">String to convert to a value.</param>
     /// <returns>Value.</returns>
     /// <remarks>For array types, this method is called for each array element.</remarks>
-    internal object ConvertToValueOrDefault(string stringValue)
+    internal object? ConvertToValueOrDefault(string stringValue)
     {
         return string.IsNullOrEmpty(stringValue) ? DefaultValue : ConvertToValue(stringValue);
     }
@@ -221,7 +221,7 @@ internal class MapiTypeConverterMapEntry
     /// <summary>
     ///     Gets the default value for the type.
     /// </summary>
-    internal object DefaultValue => DefaultValueMap[Type];
+    internal object? DefaultValue => DefaultValueMap[Type];
 
     #endregion
 }

@@ -83,12 +83,12 @@ internal class PropertyBag
         get
         {
             var propertyValue = GetPropertyValueOrException(propertyDefinition, out var serviceException);
-            if (serviceException == null)
+            if (serviceException != null)
             {
-                return propertyValue!;
+                throw serviceException;
             }
 
-            throw serviceException;
+            return propertyValue!;
         }
 
         set

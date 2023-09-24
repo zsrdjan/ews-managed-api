@@ -35,6 +35,35 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class TaskSchema : ItemSchema
 {
     /// <summary>
+    ///     Field URIs for tasks.
+    /// </summary>
+    private static class FieldUris
+    {
+        public const string ActualWork = "task:ActualWork";
+        public const string AssignedTime = "task:AssignedTime";
+        public const string BillingInformation = "task:BillingInformation";
+        public const string ChangeCount = "task:ChangeCount";
+        public const string Companies = "task:Companies";
+        public const string CompleteDate = "task:CompleteDate";
+        public const string Contacts = "task:Contacts";
+        public const string DelegationState = "task:DelegationState";
+        public const string Delegator = "task:Delegator";
+        public const string DueDate = "task:DueDate";
+        public const string IsAssignmentEditable = "task:IsAssignmentEditable";
+        public const string IsComplete = "task:IsComplete";
+        public const string IsRecurring = "task:IsRecurring";
+        public const string IsTeamTask = "task:IsTeamTask";
+        public const string Mileage = "task:Mileage";
+        public const string Owner = "task:Owner";
+        public const string PercentComplete = "task:PercentComplete";
+        public const string Recurrence = "task:Recurrence";
+        public const string StartDate = "task:StartDate";
+        public const string Status = "task:Status";
+        public const string StatusDescription = "task:StatusDescription";
+        public const string TotalWork = "task:TotalWork";
+    }
+
+    /// <summary>
     ///     Defines the ActualWork property.
     /// </summary>
     public static readonly PropertyDefinition ActualWork = new IntPropertyDefinition(
@@ -297,13 +326,6 @@ public class TaskSchema : ItemSchema
     internal new static readonly TaskSchema Instance = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="TaskSchema" /> class.
-    /// </summary>
-    internal TaskSchema()
-    {
-    }
-
-    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -339,31 +361,9 @@ public class TaskSchema : ItemSchema
     }
 
     /// <summary>
-    ///     Field URIs for tasks.
+    ///     Initializes a new instance of the <see cref="TaskSchema" /> class.
     /// </summary>
-    private static class FieldUris
+    internal TaskSchema()
     {
-        public const string ActualWork = "task:ActualWork";
-        public const string AssignedTime = "task:AssignedTime";
-        public const string BillingInformation = "task:BillingInformation";
-        public const string ChangeCount = "task:ChangeCount";
-        public const string Companies = "task:Companies";
-        public const string CompleteDate = "task:CompleteDate";
-        public const string Contacts = "task:Contacts";
-        public const string DelegationState = "task:DelegationState";
-        public const string Delegator = "task:Delegator";
-        public const string DueDate = "task:DueDate";
-        public const string IsAssignmentEditable = "task:IsAssignmentEditable";
-        public const string IsComplete = "task:IsComplete";
-        public const string IsRecurring = "task:IsRecurring";
-        public const string IsTeamTask = "task:IsTeamTask";
-        public const string Mileage = "task:Mileage";
-        public const string Owner = "task:Owner";
-        public const string PercentComplete = "task:PercentComplete";
-        public const string Recurrence = "task:Recurrence";
-        public const string StartDate = "task:StartDate";
-        public const string Status = "task:Status";
-        public const string StatusDescription = "task:StatusDescription";
-        public const string TotalWork = "task:TotalWork";
     }
 }

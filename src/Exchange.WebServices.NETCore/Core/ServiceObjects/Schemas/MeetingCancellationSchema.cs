@@ -68,13 +68,6 @@ public class MeetingCancellationSchema : MeetingMessageSchema
     internal new static readonly MeetingCancellationSchema Instance = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
-    /// </summary>
-    internal MeetingCancellationSchema()
-    {
-    }
-
-    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -91,5 +84,12 @@ public class MeetingCancellationSchema : MeetingMessageSchema
         RegisterProperty(Recurrence);
         RegisterProperty(AppointmentType);
         RegisterProperty(EnhancedLocation);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
+    /// </summary>
+    internal MeetingCancellationSchema()
+    {
     }
 }

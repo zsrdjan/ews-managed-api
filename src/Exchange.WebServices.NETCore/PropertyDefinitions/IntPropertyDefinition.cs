@@ -26,7 +26,7 @@
 namespace Microsoft.Exchange.WebServices.Data;
 
 /// <summary>
-///     Represents Integer property defintion.
+///     Represents Integer property definition.
 /// </summary>
 internal class IntPropertyDefinition : GenericPropertyDefinition<int>
 {

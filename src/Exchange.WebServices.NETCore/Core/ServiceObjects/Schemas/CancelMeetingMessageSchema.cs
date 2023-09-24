@@ -34,11 +34,11 @@ internal class CancelMeetingMessageSchema : ServiceObjectSchema
         XmlElementNames.NewBodyContent,
         PropertyDefinitionFlags.CanSet,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return new MessageBody(); }
+        () => new MessageBody()
     );
 
     // This must be declared after the property definitions
-    internal static readonly CancelMeetingMessageSchema Instance = new CancelMeetingMessageSchema();
+    internal static readonly CancelMeetingMessageSchema Instance = new();
 
     /// <summary>
     ///     Registers properties.

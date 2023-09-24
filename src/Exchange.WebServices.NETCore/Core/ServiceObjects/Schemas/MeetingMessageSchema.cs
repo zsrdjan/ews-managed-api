@@ -35,6 +35,19 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class MeetingMessageSchema : EmailMessageSchema
 {
     /// <summary>
+    ///     Field URIs for MeetingMessage.
+    /// </summary>
+    private static class FieldUris
+    {
+        public const string AssociatedCalendarItemId = "meeting:AssociatedCalendarItemId";
+        public const string IsDelegated = "meeting:IsDelegated";
+        public const string IsOutOfDate = "meeting:IsOutOfDate";
+        public const string HasBeenProcessed = "meeting:HasBeenProcessed";
+        public const string ResponseType = "meeting:ResponseType";
+        public const string IsOrganizer = "cal:IsOrganizer";
+    }
+
+    /// <summary>
     ///     Defines the AssociatedAppointmentId property.
     /// </summary>
     public static readonly PropertyDefinition AssociatedAppointmentId = new ComplexPropertyDefinition<ItemId>(
@@ -112,13 +125,6 @@ public class MeetingMessageSchema : EmailMessageSchema
     internal new static readonly MeetingMessageSchema Instance = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
-    /// </summary>
-    internal MeetingMessageSchema()
-    {
-    }
-
-    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -141,15 +147,9 @@ public class MeetingMessageSchema : EmailMessageSchema
     }
 
     /// <summary>
-    ///     Field URIs for MeetingMessage.
+    ///     Initializes a new instance of the <see cref="MeetingMessageSchema" /> class.
     /// </summary>
-    private static class FieldUris
+    internal MeetingMessageSchema()
     {
-        public const string AssociatedCalendarItemId = "meeting:AssociatedCalendarItemId";
-        public const string IsDelegated = "meeting:IsDelegated";
-        public const string IsOutOfDate = "meeting:IsOutOfDate";
-        public const string HasBeenProcessed = "meeting:HasBeenProcessed";
-        public const string ResponseType = "meeting:ResponseType";
-        public const string IsOrganizer = "cal:IsOrganizer";
     }
 }

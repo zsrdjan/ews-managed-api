@@ -35,6 +35,59 @@ namespace Microsoft.Exchange.WebServices.Data;
 public class AppointmentSchema : ItemSchema
 {
     /// <summary>
+    ///     Field URIs for Appointment.
+    /// </summary>
+    private static class FieldUris
+    {
+        public const string Start = "calendar:Start";
+        public const string End = "calendar:End";
+        public const string OriginalStart = "calendar:OriginalStart";
+        public const string IsAllDayEvent = "calendar:IsAllDayEvent";
+        public const string LegacyFreeBusyStatus = "calendar:LegacyFreeBusyStatus";
+        public const string Location = "calendar:Location";
+        public const string When = "calendar:When";
+        public const string IsMeeting = "calendar:IsMeeting";
+        public const string IsCancelled = "calendar:IsCancelled";
+        public const string IsRecurring = "calendar:IsRecurring";
+        public const string MeetingRequestWasSent = "calendar:MeetingRequestWasSent";
+        public const string IsResponseRequested = "calendar:IsResponseRequested";
+        public const string CalendarItemType = "calendar:CalendarItemType";
+        public const string MyResponseType = "calendar:MyResponseType";
+        public const string Organizer = "calendar:Organizer";
+        public const string RequiredAttendees = "calendar:RequiredAttendees";
+        public const string OptionalAttendees = "calendar:OptionalAttendees";
+        public const string Resources = "calendar:Resources";
+        public const string ConflictingMeetingCount = "calendar:ConflictingMeetingCount";
+        public const string AdjacentMeetingCount = "calendar:AdjacentMeetingCount";
+        public const string ConflictingMeetings = "calendar:ConflictingMeetings";
+        public const string AdjacentMeetings = "calendar:AdjacentMeetings";
+        public const string Duration = "calendar:Duration";
+        public const string TimeZone = "calendar:TimeZone";
+        public const string AppointmentReplyTime = "calendar:AppointmentReplyTime";
+        public const string AppointmentSequenceNumber = "calendar:AppointmentSequenceNumber";
+        public const string AppointmentState = "calendar:AppointmentState";
+        public const string Recurrence = "calendar:Recurrence";
+        public const string FirstOccurrence = "calendar:FirstOccurrence";
+        public const string LastOccurrence = "calendar:LastOccurrence";
+        public const string ModifiedOccurrences = "calendar:ModifiedOccurrences";
+        public const string DeletedOccurrences = "calendar:DeletedOccurrences";
+        public const string MeetingTimeZone = "calendar:MeetingTimeZone";
+        public const string StartTimeZone = "calendar:StartTimeZone";
+        public const string EndTimeZone = "calendar:EndTimeZone";
+        public const string ConferenceType = "calendar:ConferenceType";
+        public const string AllowNewTimeProposal = "calendar:AllowNewTimeProposal";
+        public const string IsOnlineMeeting = "calendar:IsOnlineMeeting";
+        public const string MeetingWorkspaceUrl = "calendar:MeetingWorkspaceUrl";
+        public const string NetShowUrl = "calendar:NetShowUrl";
+        public const string Uid = "calendar:UID";
+        public const string RecurrenceId = "calendar:RecurrenceId";
+        public const string DateTimeStamp = "calendar:DateTimeStamp";
+        public const string EnhancedLocation = "calendar:EnhancedLocation";
+        public const string JoinOnlineMeetingUrl = "calendar:JoinOnlineMeetingUrl";
+        public const string OnlineMeetingSettings = "calendar:OnlineMeetingSettings";
+    }
+
+    /// <summary>
     ///     Defines the StartTimeZone property.
     /// </summary>
     public static readonly PropertyDefinition StartTimeZone = new StartTimeZonePropertyDefinition(
@@ -62,7 +115,7 @@ public class AppointmentSchema : ItemSchema
         FieldUris.Start,
         PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.CanUpdate | PropertyDefinitionFlags.CanFind,
         ExchangeVersion.Exchange2007_SP1,
-        delegate { return StartTimeZone; }
+        version => StartTimeZone
     );
 
     /// <summary>
@@ -540,13 +593,6 @@ public class AppointmentSchema : ItemSchema
     internal new static readonly AppointmentSchema Instance = new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AppointmentSchema" /> class.
-    /// </summary>
-    internal AppointmentSchema()
-    {
-    }
-
-    /// <summary>
     ///     Registers properties.
     /// </summary>
     /// <remarks>
@@ -606,55 +652,9 @@ public class AppointmentSchema : ItemSchema
     }
 
     /// <summary>
-    ///     Field URIs for Appointment.
+    ///     Initializes a new instance of the <see cref="AppointmentSchema" /> class.
     /// </summary>
-    private static class FieldUris
+    internal AppointmentSchema()
     {
-        public const string Start = "calendar:Start";
-        public const string End = "calendar:End";
-        public const string OriginalStart = "calendar:OriginalStart";
-        public const string IsAllDayEvent = "calendar:IsAllDayEvent";
-        public const string LegacyFreeBusyStatus = "calendar:LegacyFreeBusyStatus";
-        public const string Location = "calendar:Location";
-        public const string When = "calendar:When";
-        public const string IsMeeting = "calendar:IsMeeting";
-        public const string IsCancelled = "calendar:IsCancelled";
-        public const string IsRecurring = "calendar:IsRecurring";
-        public const string MeetingRequestWasSent = "calendar:MeetingRequestWasSent";
-        public const string IsResponseRequested = "calendar:IsResponseRequested";
-        public const string CalendarItemType = "calendar:CalendarItemType";
-        public const string MyResponseType = "calendar:MyResponseType";
-        public const string Organizer = "calendar:Organizer";
-        public const string RequiredAttendees = "calendar:RequiredAttendees";
-        public const string OptionalAttendees = "calendar:OptionalAttendees";
-        public const string Resources = "calendar:Resources";
-        public const string ConflictingMeetingCount = "calendar:ConflictingMeetingCount";
-        public const string AdjacentMeetingCount = "calendar:AdjacentMeetingCount";
-        public const string ConflictingMeetings = "calendar:ConflictingMeetings";
-        public const string AdjacentMeetings = "calendar:AdjacentMeetings";
-        public const string Duration = "calendar:Duration";
-        public const string TimeZone = "calendar:TimeZone";
-        public const string AppointmentReplyTime = "calendar:AppointmentReplyTime";
-        public const string AppointmentSequenceNumber = "calendar:AppointmentSequenceNumber";
-        public const string AppointmentState = "calendar:AppointmentState";
-        public const string Recurrence = "calendar:Recurrence";
-        public const string FirstOccurrence = "calendar:FirstOccurrence";
-        public const string LastOccurrence = "calendar:LastOccurrence";
-        public const string ModifiedOccurrences = "calendar:ModifiedOccurrences";
-        public const string DeletedOccurrences = "calendar:DeletedOccurrences";
-        public const string MeetingTimeZone = "calendar:MeetingTimeZone";
-        public const string StartTimeZone = "calendar:StartTimeZone";
-        public const string EndTimeZone = "calendar:EndTimeZone";
-        public const string ConferenceType = "calendar:ConferenceType";
-        public const string AllowNewTimeProposal = "calendar:AllowNewTimeProposal";
-        public const string IsOnlineMeeting = "calendar:IsOnlineMeeting";
-        public const string MeetingWorkspaceUrl = "calendar:MeetingWorkspaceUrl";
-        public const string NetShowUrl = "calendar:NetShowUrl";
-        public const string Uid = "calendar:UID";
-        public const string RecurrenceId = "calendar:RecurrenceId";
-        public const string DateTimeStamp = "calendar:DateTimeStamp";
-        public const string EnhancedLocation = "calendar:EnhancedLocation";
-        public const string JoinOnlineMeetingUrl = "calendar:JoinOnlineMeetingUrl";
-        public const string OnlineMeetingSettings = "calendar:OnlineMeetingSettings";
     }
 }
