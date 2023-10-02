@@ -105,6 +105,7 @@ public sealed class MailTipsResponseMessage : ServiceResponse
 
         var email = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.EmailAddress);
         var routing = reader.ReadElementValue(XmlNamespace.Types, XmlElementNames.RoutingType);
+
         RecipientAddress = new Mailbox(email, routing);
 
         reader.ReadEndElementIfNecessary(XmlNamespace.Types, XmlElementNames.RecipientAddress);

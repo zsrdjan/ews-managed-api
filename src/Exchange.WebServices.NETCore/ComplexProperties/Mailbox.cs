@@ -23,6 +23,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
@@ -31,50 +33,25 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     Represents a mailbox reference.
 /// </summary>
 [PublicAPI]
-public class Mailbox : ComplexProperty, ISearchStringProvider
+public class Mailbox : ComplexProperty, ISearchStringProvider, IEquatable<Mailbox>
 {
-    #region ISearchStringProvider methods
+    /// <summary>
+    ///     True if this instance is valid, false otherwise.
+    /// </summary>
+    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
+    [MemberNotNullWhen(true, nameof(Address))]
+    public bool IsValid => !string.IsNullOrEmpty(Address);
 
     /// <summary>
-    ///     Get a string representation for using this instance in a search filter.
+    ///     Gets or sets the address used to refer to the user mailbox.
     /// </summary>
-    /// <returns>String representation of instance.</returns>
-    string ISearchStringProvider.GetSearchString()
-    {
-        return Address;
-    }
-
-    #endregion
-
-
-    #region Operator overloads
+    public string? Address { get; set; }
 
     /// <summary>
-    ///     Defines an implicit conversion between a string representing an SMTP address and Mailbox.
+    ///     Gets or sets the routing type of the address used to refer to the user mailbox.
     /// </summary>
-    /// <param name="smtpAddress">The SMTP address to convert to EmailAddress.</param>
-    /// <returns>A Mailbox initialized with the specified SMTP address.</returns>
-    public static implicit operator Mailbox(string smtpAddress)
-    {
-        return new Mailbox(smtpAddress);
-    }
+    public string? RoutingType { get; set; }
 
-    #endregion
-
-
-    /// <summary>
-    ///     Validates this instance.
-    /// </summary>
-    internal override void InternalValidate()
-    {
-        base.InternalValidate();
-
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(Address, "address");
-        EwsUtilities.ValidateNonBlankStringParamAllowNull(RoutingType, "routingType");
-    }
-
-
-    #region Constructors
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Mailbox" /> class.
@@ -87,7 +64,7 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     ///     Initializes a new instance of the <see cref="Mailbox" /> class.
     /// </summary>
     /// <param name="smtpAddress">The primary SMTP address of the mailbox.</param>
-    public Mailbox(string smtpAddress)
+    public Mailbox(string? smtpAddress)
         : this()
     {
         Address = smtpAddress;
@@ -104,31 +81,6 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
         RoutingType = routingType;
     }
 
-    #endregion
-
-
-    #region Public Properties
-
-    /// <summary>
-    ///     True if this instance is valid, false otherthise.
-    /// </summary>
-    /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
-    public bool IsValid => !string.IsNullOrEmpty(Address);
-
-    /// <summary>
-    ///     Gets or sets the address used to refer to the user mailbox.
-    /// </summary>
-    public string Address { get; set; }
-
-    /// <summary>
-    ///     Gets or sets the routing type of the address used to refer to the user mailbox.
-    /// </summary>
-    public string RoutingType { get; set; }
-
-    #endregion
-
-
-    #region Xml Methods
 
     /// <summary>
     ///     Tries to read element from XML.
@@ -166,10 +118,28 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
         writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.RoutingType, RoutingType);
     }
 
-    #endregion
+
+    /// <summary>
+    ///     Get a string representation for using this instance in a search filter.
+    /// </summary>
+    /// <returns>String representation of instance.</returns>
+    string ISearchStringProvider.GetSearchString()
+    {
+        return Address;
+    }
 
 
-    #region Object method overrides
+    /// <summary>
+    ///     Validates this instance.
+    /// </summary>
+    internal override void InternalValidate()
+    {
+        base.InternalValidate();
+
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(Address, "address");
+        EwsUtilities.ValidateNonBlankStringParamAllowNull(RoutingType, "routingType");
+    }
+
 
     /// <summary>
     ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
@@ -188,9 +158,19 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
             return true;
         }
 
-        if (obj is not Mailbox other)
+        return obj is Mailbox other && Equals(other);
+    }
+
+    public bool Equals(Mailbox? other)
+    {
+        if (other is null)
         {
             return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
         }
 
         if ((Address == null && other.Address == null) || (Address != null && Address.Equals(other.Address)))
@@ -202,6 +182,7 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
         return false;
     }
 
+
     /// <summary>
     ///     Serves as a hash function for a particular type.
     /// </summary>
@@ -210,19 +191,12 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
     /// </returns>
     public override int GetHashCode()
     {
-        if (!string.IsNullOrEmpty(Address))
+        if (string.IsNullOrEmpty(Address))
         {
-            var hashCode = Address.GetHashCode();
-
-            if (!string.IsNullOrEmpty(RoutingType))
-            {
-                hashCode ^= RoutingType.GetHashCode();
-            }
-
-            return hashCode;
+            return base.GetHashCode();
         }
 
-        return base.GetHashCode();
+        return HashCode.Combine(Address, RoutingType);
     }
 
     /// <summary>
@@ -246,5 +220,24 @@ public class Mailbox : ComplexProperty, ISearchStringProvider
         return Address;
     }
 
-    #endregion
+
+    /// <summary>
+    ///     Defines an implicit conversion between a string representing an SMTP address and Mailbox.
+    /// </summary>
+    /// <param name="smtpAddress">The SMTP address to convert to EmailAddress.</param>
+    /// <returns>A Mailbox initialized with the specified SMTP address.</returns>
+    public static implicit operator Mailbox(string smtpAddress)
+    {
+        return new Mailbox(smtpAddress);
+    }
+
+    public static bool operator ==(Mailbox? left, Mailbox? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(Mailbox? left, Mailbox? right)
+    {
+        return !Equals(left, right);
+    }
 }

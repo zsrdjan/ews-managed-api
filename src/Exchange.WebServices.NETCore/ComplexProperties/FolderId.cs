@@ -31,7 +31,7 @@ namespace Microsoft.Exchange.WebServices.Data;
 ///     Represents the Id of a folder.
 /// </summary>
 [PublicAPI]
-public sealed class FolderId : ServiceId
+public sealed class FolderId : ServiceId, IEquatable<FolderId>
 {
     private readonly WellKnownFolderName? _folderName;
 
@@ -47,7 +47,7 @@ public sealed class FolderId : ServiceId
     public Mailbox? Mailbox { get; }
 
     /// <summary>
-    ///     True if this instance is valid, false otherthise.
+    ///     True if this instance is valid, false otherwise.
     /// </summary>
     /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
     internal override bool IsValid
@@ -144,25 +144,6 @@ public sealed class FolderId : ServiceId
         }
     }
 
-    /// <summary>
-    ///     Defines an implicit conversion between string and FolderId.
-    /// </summary>
-    /// <param name="uniqueId">The unique Id to convert to FolderId.</param>
-    /// <returns>A FolderId initialized with the specified unique Id.</returns>
-    public static implicit operator FolderId(string uniqueId)
-    {
-        return new FolderId(uniqueId);
-    }
-
-    /// <summary>
-    ///     Defines an implicit conversion between WellKnownFolderName and FolderId.
-    /// </summary>
-    /// <param name="folderName">The folder name to convert to FolderId.</param>
-    /// <returns>A FolderId initialized with the specified folder name.</returns>
-    public static implicit operator FolderId(WellKnownFolderName folderName)
-    {
-        return new FolderId(folderName);
-    }
 
     /// <summary>
     ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
@@ -176,19 +157,24 @@ public sealed class FolderId : ServiceId
     /// <exception cref="T:System.NullReferenceException">The <paramref name="obj" /> parameter is null.</exception>
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
+        return ReferenceEquals(this, obj) || obj is FolderId other && Equals(other);
+    }
 
-        if (obj is not FolderId other)
+    public bool Equals(FolderId? other)
+    {
+        if (other is null)
         {
             return false;
         }
 
-        if (FolderName.HasValue)
+        if (ReferenceEquals(this, other))
         {
-            if (other.FolderName.HasValue && FolderName.Value.Equals(other.FolderName.Value))
+            return true;
+        }
+
+        if (_folderName.HasValue)
+        {
+            if (other._folderName.HasValue && _folderName.Value.Equals(other._folderName.Value))
             {
                 if (Mailbox != null)
                 {
@@ -217,23 +203,12 @@ public sealed class FolderId : ServiceId
     /// </returns>
     public override int GetHashCode()
     {
-        int hashCode;
-
-        if (FolderName.HasValue)
+        if (!_folderName.HasValue)
         {
-            hashCode = FolderName.Value.GetHashCode();
-
-            if (Mailbox != null && Mailbox.IsValid)
-            {
-                hashCode ^= Mailbox.GetHashCode();
-            }
-        }
-        else
-        {
-            hashCode = base.GetHashCode();
+            return base.GetHashCode();
         }
 
-        return hashCode;
+        return HashCode.Combine(_folderName, Mailbox);
     }
 
     /// <summary>
@@ -246,19 +221,50 @@ public sealed class FolderId : ServiceId
     {
         if (IsValid)
         {
-            if (FolderName.HasValue)
+            if (_folderName.HasValue)
             {
                 if (Mailbox != null && Mailbox.IsValid)
                 {
                     return $"{_folderName.Value} ({Mailbox})";
                 }
 
-                return FolderName.Value.ToString();
+                return _folderName.Value.ToString();
             }
 
             return base.ToString();
         }
 
         return string.Empty;
+    }
+
+
+    public static bool operator ==(FolderId? left, FolderId? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(FolderId? left, FolderId? right)
+    {
+        return !Equals(left, right);
+    }
+
+    /// <summary>
+    ///     Defines an implicit conversion between string and FolderId.
+    /// </summary>
+    /// <param name="uniqueId">The unique Id to convert to FolderId.</param>
+    /// <returns>A FolderId initialized with the specified unique Id.</returns>
+    public static implicit operator FolderId(string uniqueId)
+    {
+        return new FolderId(uniqueId);
+    }
+
+    /// <summary>
+    ///     Defines an implicit conversion between WellKnownFolderName and FolderId.
+    /// </summary>
+    /// <param name="folderName">The folder name to convert to FolderId.</param>
+    /// <returns>A FolderId initialized with the specified folder name.</returns>
+    public static implicit operator FolderId(WellKnownFolderName folderName)
+    {
+        return new FolderId(folderName);
     }
 }

@@ -71,8 +71,6 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     }
 
 
-    #region IEnumerable<T> Members
-
     /// <summary>
     ///     Returns an enumerator that iterates through the collection.
     /// </summary>
@@ -84,11 +82,6 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
         return Items.GetEnumerator();
     }
 
-    #endregion
-
-
-    #region IEnumerable Members
-
     /// <summary>
     ///     Returns an enumerator that iterates through a collection.
     /// </summary>
@@ -99,6 +92,4 @@ public sealed class FindItemsResults<TItem> : IEnumerable<TItem>
     {
         return Items.GetEnumerator();
     }
-
-    #endregion
 }

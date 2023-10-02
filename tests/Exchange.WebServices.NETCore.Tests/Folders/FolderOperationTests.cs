@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using Microsoft.Exchange.WebServices.Data;
 
 using Task = System.Threading.Tasks.Task;
@@ -34,7 +32,7 @@ public class FolderOperationTests : IClassFixture<ExchangeProvider>
     {
         var service = _provider.CreateTestService();
 
-        var folder = await Folder.Bind(service, WellKnownFolderName.ArchiveRoot, PropertySet.IdOnly);
+        var folder = await Folder.Bind(service, WellKnownFolderName.ArchiveRoot, PropertySet.FirstClassProperties);
 
         Assert.NotNull(folder);
     }

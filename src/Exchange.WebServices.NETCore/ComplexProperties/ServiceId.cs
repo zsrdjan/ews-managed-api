@@ -23,6 +23,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+
 using JetBrains.Annotations;
 
 namespace Microsoft.Exchange.WebServices.Data;
@@ -34,9 +37,10 @@ namespace Microsoft.Exchange.WebServices.Data;
 public abstract class ServiceId : ComplexProperty
 {
     /// <summary>
-    ///     True if this instance is valid, false otherthise.
+    ///     True if this instance is valid, false otherwise.
     /// </summary>
     /// <value><c>true</c> if this instance is valid; otherwise, <c>false</c>.</value>
+    [MemberNotNullWhen(true, nameof(UniqueId))]
     internal virtual bool IsValid => !string.IsNullOrEmpty(UniqueId);
 
     /// <summary>
@@ -64,7 +68,7 @@ public abstract class ServiceId : ComplexProperty
     internal ServiceId(string uniqueId)
         : this()
     {
-        EwsUtilities.ValidateParam(uniqueId);
+        ArgumentException.ThrowIfNullOrEmpty(uniqueId);
 
         UniqueId = uniqueId;
     }
@@ -129,8 +133,6 @@ public abstract class ServiceId : ComplexProperty
     }
 
 
-    #region Object method overrides
-
     /// <summary>
     ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
     ///     <see cref="T:System.Object" />.
@@ -175,7 +177,12 @@ public abstract class ServiceId : ComplexProperty
     /// </returns>
     public override int GetHashCode()
     {
-        return IsValid ? UniqueId.GetHashCode() : base.GetHashCode();
+        if (IsValid)
+        {
+            return UniqueId.GetHashCode();
+        }
+
+        return RuntimeHelpers.GetHashCode(this);
     }
 
     /// <summary>
@@ -188,6 +195,4 @@ public abstract class ServiceId : ComplexProperty
     {
         return UniqueId ?? string.Empty;
     }
-
-    #endregion
 }

@@ -223,14 +223,9 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
             writer.WriteElementValue(XmlNamespace.Types, XmlElementNames.OriginalDisplayName, OriginalDisplayName);
         }
 
-        if (Id != null)
-        {
-            Id.WriteToXml(writer, XmlElementNames.ItemId);
-        }
+        Id?.WriteToXml(writer, XmlElementNames.ItemId);
     }
 
-
-    #region Object method overrides
 
     /// <summary>
     ///     Returns a <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
@@ -263,6 +258,4 @@ public sealed class PersonaEmailAddress : ComplexProperty, ISearchStringProvider
 
         return addressPart;
     }
-
-    #endregion
 }

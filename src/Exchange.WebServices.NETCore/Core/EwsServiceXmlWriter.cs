@@ -330,7 +330,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="localName">The local name of the element.</param>
     /// <param name="displayName">The name that should appear in the exception message when the value can not be serialized.</param>
     /// <param name="value">The value.</param>
-    internal void WriteElementValue(XmlNamespace xmlNamespace, string localName, string displayName, object value)
+    internal void WriteElementValue(XmlNamespace xmlNamespace, string localName, string displayName, object? value)
     {
         if (!TryConvertObjectToString(value, out var stringValue))
         {
@@ -371,7 +371,7 @@ internal class EwsServiceXmlWriter : IDisposable
     /// <param name="xmlNamespace">The XML namespace.</param>
     /// <param name="localName">The local name of the element.</param>
     /// <param name="value">The value.</param>
-    public void WriteElementValue(XmlNamespace xmlNamespace, string localName, object value)
+    public void WriteElementValue(XmlNamespace xmlNamespace, string localName, object? value)
     {
         WriteElementValue(xmlNamespace, localName, localName, value);
     }

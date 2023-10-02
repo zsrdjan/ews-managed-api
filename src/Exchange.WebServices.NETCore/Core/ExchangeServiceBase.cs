@@ -37,7 +37,6 @@ using JetBrains.Annotations;
 
 using Microsoft.Exchange.WebServices.Data.Credentials;
 
-#pragma warning disable MA0039
 
 namespace Microsoft.Exchange.WebServices.Data;
 

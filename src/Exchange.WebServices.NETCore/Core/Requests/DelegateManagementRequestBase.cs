@@ -36,7 +36,7 @@ internal abstract class DelegateManagementRequestBase<TResponse> : SimpleService
     ///     Gets or sets the mailbox.
     /// </summary>
     /// <value>The mailbox.</value>
-    public Mailbox Mailbox { get; set; }
+    public Mailbox Mailbox { get; init; }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DelegateManagementRequestBase&lt;TResponse&gt;" /> class.
