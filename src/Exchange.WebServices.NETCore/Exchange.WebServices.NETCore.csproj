@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 
 		<AssemblyName>Exchange.WebServices.NETCore</AssemblyName>
 		<PackageId>Exchange.WebServices.NETCore</PackageId>
@@ -31,7 +31,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.1" />
+		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
