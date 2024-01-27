@@ -31,7 +31,7 @@ public class FolderIdTests : IClassFixture<ExchangeProvider>
         var a = new FolderId(WellKnownFolderName.AdminAuditLogs);
         var b = new FolderId(WellKnownFolderName.ArchiveInbox);
 
-        Assert.True(a.Equals(b));
+        Assert.False(a.Equals(b));
     }
 
     [Fact]

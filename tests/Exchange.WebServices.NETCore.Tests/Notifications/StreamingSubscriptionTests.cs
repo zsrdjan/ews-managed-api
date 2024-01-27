@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Microsoft.Exchange.WebServices.Data;
 
@@ -34,10 +29,7 @@ public class StreamingSubscriptionTests : IClassFixture<ExchangeProvider>
 
         var subscription = await service.SubscribeToStreamingNotifications(
             folderIds,
-            new[]
-            {
-                EventType.Created, EventType.Modified,
-            }
+            [EventType.Created, EventType.Modified,]
         );
 
         using var connection = new StreamingSubscriptionConnection(
