@@ -321,7 +321,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
                 // We got notifications; dole them out.
                 IssueNotificationEvents(gseResponse);
             }
-            //// This was just a heartbeat, nothing to do here.
+            // This was just a heartbeat, nothing to do here.
         }
         else if (gseResponse.Result == ServiceResult.Error)
         {
@@ -353,10 +353,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
             lock (_lockObject)
             {
                 // Client can do any good or bad things in the below event handler
-                if (_subscriptions != null && _subscriptions.ContainsKey(id))
-                {
-                    subscription = _subscriptions[id];
-                }
+                _subscriptions?.TryGetValue(id, out subscription);
             }
 
             if (subscription != null)
@@ -405,10 +402,7 @@ public sealed class StreamingSubscriptionConnection : IDisposable
             lock (_lockObject)
             {
                 // Client can do any good or bad things in the below event handler
-                if (_subscriptions != null && _subscriptions.ContainsKey(events.SubscriptionId))
-                {
-                    subscription = _subscriptions[events.SubscriptionId];
-                }
+                _subscriptions?.TryGetValue(events.SubscriptionId, out subscription);
             }
 
             if (subscription != null)
@@ -436,6 +430,8 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// </summary>
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
+
         Dispose(true);
     }
 
@@ -445,15 +441,15 @@ public sealed class StreamingSubscriptionConnection : IDisposable
     /// <param name="suppressFinalizer">Value indicating whether to suppress the garbage collector's finalizer..</param>
     private void Dispose(bool suppressFinalizer)
     {
-        if (suppressFinalizer)
-        {
-            GC.SuppressFinalize(this);
-        }
-
         lock (_lockObject)
         {
             if (!_isDisposed)
             {
+                if (_currentHangingRequest != null && _currentHangingRequest.IsConnected)
+                {
+                    _currentHangingRequest.Disconnect();
+                }
+
                 _currentHangingRequest = null;
                 _subscriptions = null;
                 _session = null;
