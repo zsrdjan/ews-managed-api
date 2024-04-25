@@ -32,14 +32,7 @@ public class StreamingSubscriptionTests : IClassFixture<ExchangeProvider>
             [EventType.Created, EventType.Modified,]
         );
 
-        using var connection = new StreamingSubscriptionConnection(
-            service,
-            new[]
-            {
-                subscription,
-            },
-            30
-        );
+        using var connection = new StreamingSubscriptionConnection(service, [subscription,], 30);
 
         connection.OnNotificationEvent += (sender, args) =>
         {
@@ -59,5 +52,33 @@ public class StreamingSubscriptionTests : IClassFixture<ExchangeProvider>
         await Task.Delay(10_000);
 
         connection.Close();
+    }
+
+    [Fact]
+    public async Task StreamingEventsTest()
+    {
+        var service = _provider.CreateTestService();
+
+        EventType[] events =
+        [
+            EventType.NewMail, EventType.Deleted, EventType.Modified, EventType.Moved, EventType.Copied,
+            EventType.Created, EventType.FreeBusyChanged,
+        ];
+
+        var sub = await service.SubscribeToStreamingNotificationsOnAllFolders(eventTypes: events);
+
+        using (var conn = new StreamingSubscriptionConnection(service, 1))
+        {
+            // Lifetime = one min
+            conn.AddSubscription(sub);
+
+            conn.OnNotificationEvent += (sender, args) => { Debugger.Break(); };
+
+            // Never called. Should be called one min after calling Open();
+            conn.OnDisconnect += (sender, args) => { Debugger.Break(); };
+            conn.OnSubscriptionError += (sender, args) => { Debugger.Break(); };
+
+            conn.Open();
+        }
     }
 }

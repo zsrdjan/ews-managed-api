@@ -1,6 +1,6 @@
 # Quick introduction
 
-This is a .NET Core 7 port of the [Microsoft.Exchange.WebServices.NETStandard](https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard) package with
+This is a .NET Core 8 port of the [Microsoft.Exchange.WebServices.NETStandard](https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard) package with
 minor modifications.
 
 Here are some tips to take into account:
