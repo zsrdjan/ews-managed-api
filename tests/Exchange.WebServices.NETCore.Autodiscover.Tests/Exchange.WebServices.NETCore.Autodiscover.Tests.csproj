@@ -11,6 +11,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\src\Exchange.WebServices.NETCore.Autodiscover\Exchange.WebServices.NETCore.Autodiscover.csproj" />
 	</ItemGroup>
 
