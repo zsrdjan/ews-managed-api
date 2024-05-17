@@ -167,15 +167,9 @@ internal sealed class MeetingTimeZone : ComplexProperty
             );
         }
 
-        if (Standard != null)
-        {
-            Standard.WriteToXml(writer, XmlElementNames.Standard);
-        }
+        Standard?.WriteToXml(writer, XmlElementNames.Standard);
 
-        if (Daylight != null)
-        {
-            Daylight.WriteToXml(writer, XmlElementNames.Daylight);
-        }
+        Daylight?.WriteToXml(writer, XmlElementNames.Daylight);
     }
 
     /// <summary>
