@@ -8,10 +8,7 @@ namespace Exchange.WebServices.NETCore.Tests.Credentials;
 
 internal class TokenProvider : OAuthAccessTokenCredentials
 {
-    private static readonly string[] EwsScopes =
-    {
-        "https://outlook.office365.com/.default",
-    };
+    private static readonly string[] EwsScopes = ["https://outlook.office365.com/.default",];
 
     private readonly IConfidentialClientApplication _cca;
 

@@ -82,7 +82,7 @@ public sealed class AttributedString : ComplexProperty
 
         foreach (var s in attributions)
         {
-            EwsUtilities.ValidateParam(s, "attributions");
+            EwsUtilities.ValidateParam(s, nameof(attributions));
         }
 
         Attributions = attributions;
@@ -133,7 +133,7 @@ public sealed class AttributedString : ComplexProperty
         if (!reader.IsEmptyElement)
         {
             var localName = reader.LocalName;
-            _attributionList = new List<string>();
+            _attributionList = [];
 
             do
             {

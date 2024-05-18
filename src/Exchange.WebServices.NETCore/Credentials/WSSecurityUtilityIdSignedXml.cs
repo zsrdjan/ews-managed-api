@@ -100,7 +100,7 @@ internal class WsSecurityUtilityIdSignedXml : SignedXml
     /// <param name="document">The XmlDocument object to retrieve the XmlElement object from</param>
     /// <param name="idValue">The ID of the XmlElement object to retrieve from the XmlDocument object.</param>
     /// <returns>The XmlElement object with the specified ID from the specified XmlDocument object</returns>
-    public override XmlElement GetIdElement(XmlDocument document, string idValue)
+    public override XmlElement GetIdElement(XmlDocument? document, string idValue)
     {
         return _ids[idValue];
     }
