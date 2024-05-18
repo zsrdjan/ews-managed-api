@@ -81,6 +81,14 @@ internal class ServiceObjectInfo
             (itemAttachment, isNew) => new Appointment(itemAttachment, isNew)
         );
 
+        // Booking
+        AddServiceObjectType(
+            XmlElementNames.Booking,
+            typeof(Booking),
+            srv => new Booking(srv),
+            (itemAttachment, isNew) => new Appointment(itemAttachment, isNew)
+        );
+
         // CalendarFolder
         AddServiceObjectType(
             XmlElementNames.CalendarFolder,
