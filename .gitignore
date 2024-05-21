@@ -193,3 +193,4 @@ appsettings.json
 .env*
 *.args.json
 launchSettings.json
+/.idea
