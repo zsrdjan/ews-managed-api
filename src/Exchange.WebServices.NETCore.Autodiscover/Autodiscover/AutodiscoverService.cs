@@ -1731,13 +1731,13 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 serviceCredentials = AdjustLinuxAuthentication(_url, serviceCredentials);
             }
 
-            // TODO support different credentials
-            if (serviceCredentials is not WebCredentials)
+            httpClientHandler.Credentials = serviceCredentials switch
             {
-                throw new NotImplementedException();
-            }
-
-            httpClientHandler.Credentials = (Credentials as WebCredentials)?.Credentials;
+                WebCredentials => (Credentials as WebCredentials)?.Credentials,
+                OAuthCredentials => (Credentials as OAuthCredentials)?.Credentials,
+                // TODO support different credentials
+                _ => throw new NotImplementedException(),
+            };
 
             // Apply credentials to the request
             // serviceCredentials.PrepareWebRequest(request);
