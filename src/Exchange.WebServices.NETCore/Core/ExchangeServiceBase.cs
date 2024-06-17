@@ -213,7 +213,7 @@ public abstract class ExchangeServiceBase : IDisposable
     /// </summary>
     public int Timeout
     {
-        get => _httpClient.Timeout.Milliseconds;
+        get => (int)_httpClient.Timeout.TotalMilliseconds;
 
         set
         {

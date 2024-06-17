@@ -420,7 +420,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <param name="redirectionEmailAddresses">List of previous email addresses.</param>
     /// <param name="currentHop">Current number of redirection urls/addresses attempted so far.</param>
     /// <returns>The requested configuration settings.</returns>
-    private async Task<Tuple<TSettings, int>> InternalGetLegacyUserSettings<TSettings>(
+    private async Task<(TSettings settings, int hops)> InternalGetLegacyUserSettings<TSettings>(
         string emailAddress,
         List<string> redirectionEmailAddresses,
         int currentHop
@@ -467,7 +467,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         }
 
                         Url = autodiscoverUrl;
-                        return Tuple.Create(settings, currentHop);
+                        return (settings, currentHop);
                     }
                     case AutodiscoverResponseType.RedirectUrl:
                     {
@@ -608,7 +608,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
             var result = await TryLastChanceHostRedirection<TSettings>(emailAddress, redirectionUrl);
             if (result.Item1)
             {
-                return Tuple.Create(settings, currentHop);
+                return (settings, currentHop);
             }
         }
 
@@ -621,7 +621,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                 var result = await TryLastChanceHostRedirection<TSettings>(emailAddress, redirectionUrl);
                 if (result.Item1)
                 {
-                    return Tuple.Create(settings, currentHop);
+                    return (settings, currentHop);
                 }
             }
 
@@ -666,7 +666,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     /// <typeparam name="TSettings">The type of the settings.</typeparam>
     /// <param name="emailAddress">The email address.</param>
     /// <param name="redirectionUrl">Redirection Url.</param>
-    private async Task<Tuple<bool, TSettings>> TryLastChanceHostRedirection<TSettings>(
+    private async Task<(bool result, TSettings? settings)> TryLastChanceHostRedirection<TSettings>(
         string emailAddress,
         Uri redirectionUrl
     )
@@ -690,7 +690,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                     {
                         case AutodiscoverResponseType.Success:
                         {
-                            return Tuple.Create(true, settings);
+                            return (true, settings);
                         }
                         case AutodiscoverResponseType.Error:
                         {
@@ -709,7 +709,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                             );
                             settings = result.Item1;
                             currentHop = result.Item2;
-                            return Tuple.Create(true, settings);
+                            return (true, settings);
                         }
 
                         case AutodiscoverResponseType.RedirectUrl:
@@ -724,7 +724,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                                     TraceFlags.AutodiscoverConfiguration,
                                     $"Service returned invalid redirection URL {settings.RedirectTarget}"
                                 );
-                                return Tuple.Create(false, settings);
+                                return (false, settings);
                             }
 
                             break;
@@ -734,7 +734,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                             var failureMessage =
                                 $"Autodiscover call at {redirectionUrl} failed with error {settings.ResponseType}, target {settings.RedirectTarget}";
                             TraceMessage(TraceFlags.AutodiscoverConfiguration, failureMessage);
-                            return Tuple.Create(false, settings);
+                            return (false, settings);
                         }
                     }
                 }
@@ -760,7 +760,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         $"{_url} failed: {ex.GetType().Name} ({ex.Message})"
                     );
 
-                    return Tuple.Create(false, settings);
+                    return (false, settings);
                 }
                 catch (XmlException ex)
                 {
@@ -770,7 +770,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         $"{redirectionUrl} failed: XML parsing error: {ex.Message}"
                     );
 
-                    return Tuple.Create(false, settings);
+                    return (false, settings);
                 }
                 catch (Exception ex)
                 {
@@ -779,12 +779,12 @@ public sealed class AutodiscoverService : ExchangeServiceBase
                         $"{redirectionUrl} failed: I/O error: {ex.Message}"
                     );
 
-                    return Tuple.Create(false, settings);
+                    return (false, settings);
                 }
             }
         }
 
-        return Tuple.Create(false, settings);
+        return (false, settings);
     }
 
     /// <summary>
@@ -988,7 +988,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
         else
         {
             // Assume caller is not inside the Intranet, regardless of whether SCP Urls 
-            // were returned or not. SCP Urls are only relevent if one of them returns
+            // were returned or not. SCP Urls are only relevant if one of them returns
             // valid Autodiscover settings.
             IsExternal = true;
 
@@ -1091,7 +1091,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     )
     {
         // The response to GetUserSettings can be a redirection. Execute GetUserSettings until we get back 
-        // a valid response or we've followed too many redirections.
+        // a valid response, or we've followed too many redirections.
         for (var currentHop = 0; currentHop < AutodiscoverMaxRedirections; currentHop++)
         {
             var request = new GetUserSettingsRequest(this, autodiscoverUrl)
@@ -1163,7 +1163,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     )
     {
         // The response to GetDomainSettings can be a redirection. Execute GetDomainSettings until we get back 
-        // a valid response or we've followed too many redirections.
+        // a valid response, or we've followed too many redirections.
         for (var currentHop = 0; currentHop < AutodiscoverMaxRedirections; currentHop++)
         {
             var request = new GetDomainSettingsRequest(this, autodiscoverUrl)
@@ -1310,7 +1310,7 @@ public sealed class AutodiscoverService : ExchangeServiceBase
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return new List<string>();
+            return [];
         }
 
         var helper = new DirectoryHelper(this);
@@ -2031,18 +2031,8 @@ public sealed class AutodiscoverService : ExchangeServiceBase
 
         var request = new GetUserSettingsRequest(this, Url, true)
         {
-            SmtpAddresses = new List<string>(
-                new[]
-                {
-                    smtpAddress,
-                }
-            ),
-            Settings = new List<UserSettingName>(
-                new[]
-                {
-                    UserSettingName.ExternalEwsUrl,
-                }
-            ),
+            SmtpAddresses = [smtpAddress,],
+            Settings = [UserSettingName.ExternalEwsUrl,],
         };
 
         GetUserSettingsResponseCollection? response;

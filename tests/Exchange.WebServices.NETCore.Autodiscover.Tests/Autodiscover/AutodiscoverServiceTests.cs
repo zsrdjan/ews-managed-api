@@ -67,4 +67,17 @@ public class AutodiscoverServiceTests : IClassFixture<AutodiscoverProvider>
 
         await service.AutodiscoverUrl(options.UserName, _ => true);
     }
+
+    [Fact]
+    public async Task AutoDiscovery_SetTimeout_NoException()
+    {
+        var options = _provider.ConnectionOptions.Value;
+
+        var service = new AutodiscoverService
+        {
+            Credentials = new WebCredentials(options.UserName, options.Password),
+        };
+
+        await service.GetUserSettings(options.UserName, UserSettingName.ExternalEwsUrl);
+    }
 }
