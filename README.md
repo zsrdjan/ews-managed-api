@@ -1,17 +1,21 @@
 # Quick introduction
 
-This is a .NET Core 8 port of the [Microsoft.Exchange.WebServices.NETStandard](https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard) package with
-minor modifications.
+[![NuGet Version](https://img.shields.io/nuget/v/Exchange.WebServices.NETCore)](https://www.nuget.org/packages/Exchange.WebServices.NETCore)
 
-Here are some tips to take into account:
+This is a .NET Core 8 fork of [sherlock1982's](https://www.nuget.org/packages/Microsoft.Exchange.WebServices.NETStandard) fork with
+multiple additions and fixes:
 
-- Almost all functions involving HTTP requests are now async
-- Outdated async Begin/End functions were removed
-- NET Standard: LDAP Autodiscovery feature will not work
+- Autodiscovery features where moved into a seperate package [Exchange.WebServices.NETCore.Autodiscover](https://www.nuget.org/packages/Exchange.WebServices.NETCore.Autodiscover/)
 - `ExchangeService.ServerCertificateValidationCallback` can now be specified to configure SSL validation
-- Autodiscovery features where moved to `Exchange.WebServices.NETCore.Autodiscover`
-- Nuget package can be found here: [https://www.nuget.org/packages/Exchange.WebServices.NETCore/](https://www.nuget.org/packages/Exchange.WebServices.NETCore/)
+- `OAuthAccessTokenCredentials` provider, to allow integration of `IConfidentialClientApplication` ([example](https://github.com/ItsClemi/ews-managed-api/blob/master/tests/Exchange.WebServices.NETCore.Tests/Credentials/OAuthAccessTokenCredentialsTests.cs))
+- [GetMailTips](https://github.com/sherlock1982/ews-managed-api/pull/42/files)
+- [Non hanging subscriptions](https://github.com/sherlock1982/ews-managed-api/pull/39/files)
+- [Booking](https://github.com/sherlock1982/ews-managed-api/pull/71)
+- ... and multiple minor improvements and fixes!
 
+
+## Legacy Readme
+ 
 # Getting Started with the EWS Managed API
 [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/OfficeDev/ews-managed-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
