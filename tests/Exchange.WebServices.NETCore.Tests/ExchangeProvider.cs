@@ -1,4 +1,8 @@
+#define TRACING
+
 using System.Reflection;
+
+using Exchange.WebServices.NETCore.Tests.Utility;
 
 using JetBrains.Annotations;
 
@@ -6,6 +10,7 @@ using Microsoft.Exchange.WebServices.Data;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web.TokenCacheProviders;
 using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
@@ -66,6 +71,12 @@ public class ExchangeProvider
             Url = new Uri(options.ServiceUrl),
             ImpersonatedUserId = new ImpersonatedUserId(ConnectingIdType.PrincipalName, options.ImpersonationUpn),
             ServerCertificateValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+            SendClientLatencies = true,
+#if TRACING
+            TraceEnabled = true,
+            TraceFlags = TraceFlags.All,
+            TraceListener = new EwsTraceListener(),
+#endif
         };
     }
 

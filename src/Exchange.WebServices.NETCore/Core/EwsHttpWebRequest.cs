@@ -37,6 +37,11 @@ internal class EwsHttpWebRequest
     /// </summary>
     private readonly HttpClient _httpClient;
 
+    /// <summary>
+    ///     Backing message for collecting http headers
+    /// </summary>
+    private readonly HttpRequestMessage _backingMessage = new();
+
 
     /// <summary>
     ///     Gets or sets the value of the Accept HTTP header.
@@ -57,7 +62,7 @@ internal class EwsHttpWebRequest
     ///     A <see cref="T:System.Net.WebHeaderCollection" /> that contains the name/value pairs that make up the headers
     ///     for the HTTP request.
     /// </returns>
-    public HttpRequestHeaders Headers => _httpClient.DefaultRequestHeaders;
+    public HttpRequestHeaders Headers => _backingMessage.Headers;
 
     /// <summary>
     ///     Gets or sets the method for the request.
@@ -144,6 +149,14 @@ internal class EwsHttpWebRequest
         {
             Content = new StringContent(Content),
         };
+
+        message.Headers.ConnectionClose = _httpClient.DefaultRequestHeaders.ConnectionClose;
+
+        // Copy http headers into our request message
+        foreach (var (key, value) in _backingMessage.Headers)
+        {
+            message.Headers.Add(key, value);
+        }
 
         if (!string.IsNullOrEmpty(ContentType))
         {
